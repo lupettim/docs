@@ -1,0 +1,89 @@
+---
+title: "ImFusion: Medical Imaging SDK & Tools"
+sidebarTitle: "Home"
+description: "Build production-grade medical imaging applications with ImFusion's modular SDK, Python bindings, annotation tools, and AI integration."
+---
+
+ImFusion gives developers and researchers a complete toolkit for medical image computing — from GPU-accelerated Python scripting to a full C\+\+ SDK, an interactive prototyping Suite, and AI training data tooling. Whether you're building a clinical application, running ML experiments, or annotating imaging datasets, ImFusion has you covered.
+
+<CardGroup cols={2}>
+  <Card title="Quickstart" icon="rocket" href="/quickstart">
+    Install the Python SDK and run your first imaging pipeline in minutes.
+  </Card>
+
+  <Card title="Python SDK" icon="python" href="/python-sdk/installation">
+    Load, process, and visualize medical images with a Pythonic API.
+  </Card>
+
+  <Card title="C++ SDK" icon="code" href="/cpp-sdk/overview">
+    Build high-performance production applications with the full C\+\+ library.
+  </Card>
+
+  <Card title="API Reference" icon="book" href="/api/imfusion-module">
+    Complete reference for every class, function, and module in the Python API.
+  </Card>
+</CardGroup>
+
+## What can you build with ImFusion?
+
+ImFusion is a modular, plugin-based SDK designed to take you from prototype to production without rewriting your code. It supports Windows, Linux, and macOS, and integrates with NumPy, PyTorch, and standard medical formats like DICOM and NIfTI.
+
+<CardGroup cols={3}>
+  <Card title="ImFusion Suite" icon="display" href="/suite/overview">
+    Interactive GUI for prototyping, debugging, and running algorithms visually.
+  </Card>
+
+  <Card title="ImFusion Labels" icon="tag" href="/labels/overview">
+    Annotate medical imaging datasets for AI training pipelines.
+  </Card>
+
+  <Card title="AI & MCP Server" icon="brain" href="/ai/ask-ai">
+    Ask AI questions about the SDK and connect ImFusion tools to AI assistants.
+  </Card>
+</CardGroup>
+
+## Get started in three steps
+
+<Steps>
+  <Step title="Install the Python SDK">
+    Install `imfusion-sdk` from the ImFusion package index and activate your license.
+
+    ```bash
+    pip install imfusion-sdk --extra-index-url https://pypi.imfusion.com/simple
+    ```
+  </Step>
+  <Step title="Load and process an image">
+    Use `imfusion.load()` to open any supported format and run built-in algorithms.
+
+    ```python
+    import imfusion
+    
+    images = imfusion.load("scan.nii")
+    result = imfusion.execute_algorithm("Base.ImageResampling", images, {"targetSpacing": [1.0, 1.0, 1.0]})
+    imfusion.save(result, "resampled.nii")
+    ```
+  </Step>
+  <Step title="Explore more">
+    Browse the [Python SDK guides](/python-sdk/core-concepts), check the [API Reference](/api/imfusion-module), or open ImFusion Suite for interactive exploration.
+  </Step>
+</Steps>
+
+## Explore by use case
+
+<CardGroup cols={2}>
+  <Card title="Licensing & Plans" icon="key" href="/licensing">
+    Free tier, Starter, and Professional plans. 30-day trial available.
+  </Card>
+
+  <Card title="Machine Learning" icon="microchip" href="/python-sdk/machine-learning">
+    Build and run inference pipelines with the ML module.
+  </Card>
+
+  <Card title="Workspaces" icon="folder-open" href="/suite/workspaces">
+    Save and share reproducible algorithm pipelines in ImFusion Suite.
+  </Card>
+
+  <Card title="Troubleshooting" icon="circle-question" href="/troubleshooting">
+    Common issues and how to resolve them.
+  </Card>
+</CardGroup>

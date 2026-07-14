@@ -1,0 +1,18 @@
+---
+title: "ImFusion C++ SDK: Architecture and MVC Design Pattern"
+sidebarTitle: "Architecture"
+description: "Understand the Model-View-Controller design of the ImFusion C++ SDK: DataModel, DisplayWidgetMulti, ApplicationController, and the plugin system."
+---
+
+The ImFusion C\+\+ SDK follows a Model-View-Controller design that cleanly separates data, presentation, and application logic.
+
+## Core components
+
+- **DataModel** — holds the shared image data, annotations, and derived results.
+- **DisplayWidgetMulti** — the multi-view Qt widget that renders 2D/3D/4D data.
+- **ApplicationController** — coordinates user interaction, algorithms, and views.
+- **Algorithm / BaseAlgorithm** — the unit of processing; plugins register algorithms into the runtime.
+
+## Plugin system
+
+Plugins are dynamically-loaded shared libraries that register algorithms, IO handlers, and UI panels with the runtime. This lets you extend the SDK without touching the core.

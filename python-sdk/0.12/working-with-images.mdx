@@ -1,0 +1,14 @@
+---
+title: "Load, Manipulate, and Save Medical Images (0.12)"
+sidebarTitle: "Image Operations"
+description: "Load DICOM, NIfTI, and MHD files, convert to NumPy, crop, resize, resample, and save results using the ImFusion Python SDK 0.12."
+---
+
+Load, manipulate, and save medical images with `imfusion.load`, NumPy interop, and `imfusion.save`.
+
+```python
+import imfusion
+sis = imfusion.load('scan.dcm')
+arr = sis[0].numpy()
+imfusion.save(sis, 'out.nii.gz')
+```
