@@ -1,0 +1,47 @@
+var class_im_fusion_1_1_g_u_i_1_1_display_auto_layouter =
+[
+    [ "LayoutInfo", "struct_im_fusion_1_1_g_u_i_1_1_display_auto_layouter_1_1_layout_info.html", null ],
+    [ "LayoutAlgorithm", "class_im_fusion_1_1_g_u_i_1_1_display_auto_layouter_1_1_layout_algorithm.html", "class_im_fusion_1_1_g_u_i_1_1_display_auto_layouter_1_1_layout_algorithm" ],
+    [ "Mode", "class_im_fusion_1_1_g_u_i_1_1_display_auto_layouter.html#ab7491d55abea42f7ffe1fdb9aa1d0745", [
+      [ "Auto", "class_im_fusion_1_1_g_u_i_1_1_display_auto_layouter.html#ab7491d55abea42f7ffe1fdb9aa1d0745a06b9281e396db002010bde1de57262eb", null ],
+      [ "Rows", "class_im_fusion_1_1_g_u_i_1_1_display_auto_layouter.html#ab7491d55abea42f7ffe1fdb9aa1d0745a530f488f7a9800411efc6926ab189708", null ],
+      [ "FocusPlusStack", "class_im_fusion_1_1_g_u_i_1_1_display_auto_layouter.html#ab7491d55abea42f7ffe1fdb9aa1d0745a4ebf5f751e13ab7052398125e119ef28", null ],
+      [ "FocusPlusRows", "class_im_fusion_1_1_g_u_i_1_1_display_auto_layouter.html#ab7491d55abea42f7ffe1fdb9aa1d0745ab451669cfee57c11fba8602508399fda", null ],
+      [ "Custom", "class_im_fusion_1_1_g_u_i_1_1_display_auto_layouter.html#ab7491d55abea42f7ffe1fdb9aa1d0745a90589c47f06eb971d548591f23c285af", null ]
+    ] ],
+    [ "Feature", "class_im_fusion_1_1_g_u_i_1_1_display_auto_layouter.html#ab41ec5f1b26f35c0df8209f50de8f6da", [
+      [ "Supports2DView", "class_im_fusion_1_1_g_u_i_1_1_display_auto_layouter.html#ab41ec5f1b26f35c0df8209f50de8f6daa2be61c37c7f5c2626c355570bc2d8c43", null ],
+      [ "SupportsMPRViews", "class_im_fusion_1_1_g_u_i_1_1_display_auto_layouter.html#ab41ec5f1b26f35c0df8209f50de8f6daa957ff18a9cf73b48509ca1eb521cc21b", null ],
+      [ "Supports3DView", "class_im_fusion_1_1_g_u_i_1_1_display_auto_layouter.html#ab41ec5f1b26f35c0df8209f50de8f6daa4a94b81f0f3441ae83b54e8a1d8df2b8", null ],
+      [ "SupportsAlgorithmViews", "class_im_fusion_1_1_g_u_i_1_1_display_auto_layouter.html#ab41ec5f1b26f35c0df8209f50de8f6daab313f5677cdba1e758de97ab99d4cd3b", null ],
+      [ "SupportsFocus", "class_im_fusion_1_1_g_u_i_1_1_display_auto_layouter.html#ab41ec5f1b26f35c0df8209f50de8f6daacced4e09ea0507a71627a4f68b4e8141", null ],
+      [ "SupportsTopBottomRow", "class_im_fusion_1_1_g_u_i_1_1_display_auto_layouter.html#ab41ec5f1b26f35c0df8209f50de8f6daa3475b9de8d50731da1b7696e9cd741ba", null ]
+    ] ],
+    [ "isViewHidden", "class_im_fusion_1_1_g_u_i_1_1_display_auto_layouter.html#aead789ec0c498370d4de4477bef7dd3d", null ],
+    [ "setViewHidden", "class_im_fusion_1_1_g_u_i_1_1_display_auto_layouter.html#a2f6b90075b8e5b7181086ff3a8be9d00", null ],
+    [ "setViewsHidden", "class_im_fusion_1_1_g_u_i_1_1_display_auto_layouter.html#ac97762f08d526cd6f4a8f1b8ec92309b", null ],
+    [ "visibleViews", "class_im_fusion_1_1_g_u_i_1_1_display_auto_layouter.html#adda18d103ed36e1874075c516deea8fd", null ],
+    [ "setViewOrder", "class_im_fusion_1_1_g_u_i_1_1_display_auto_layouter.html#ad965787ee1b26f829ad9f189b4cc77d5", null ],
+    [ "viewOrder", "class_im_fusion_1_1_g_u_i_1_1_display_auto_layouter.html#a2e3bfd67fd0a5359457e4dd39420b809", null ],
+    [ "swapViewOrder", "class_im_fusion_1_1_g_u_i_1_1_display_auto_layouter.html#a6b5118f4ec80bddf06f3c869d993694e", null ],
+    [ "maximizedView", "class_im_fusion_1_1_g_u_i_1_1_display_auto_layouter.html#afc30ffba8fe76ccdbb2e6bb9168181fc", null ],
+    [ "setMaximizedView", "class_im_fusion_1_1_g_u_i_1_1_display_auto_layouter.html#a440cf369a9561f61e02217b443b98d22", null ],
+    [ "focusedView", "class_im_fusion_1_1_g_u_i_1_1_display_auto_layouter.html#ae4d92c33ece5f8df9aedf86344732e46", null ],
+    [ "setFocusedView", "class_im_fusion_1_1_g_u_i_1_1_display_auto_layouter.html#a3a7dc2e64257f08f48c2c1dec891cd91", null ],
+    [ "lastViewInTopRow", "class_im_fusion_1_1_g_u_i_1_1_display_auto_layouter.html#a79aa299cd17eb501f31f0d9d374e904e", null ],
+    [ "moveViewToTopRow", "class_im_fusion_1_1_g_u_i_1_1_display_auto_layouter.html#a3ec1b3a8884ca34b90be18f43472ead3", null ],
+    [ "moveViewToBottomRow", "class_im_fusion_1_1_g_u_i_1_1_display_auto_layouter.html#acfcbe4dbbed8eef692865904c28d06b0", null ],
+    [ "currentMode", "class_im_fusion_1_1_g_u_i_1_1_display_auto_layouter.html#abd51cb673ce517b3eb6c57bb8fd56b95", null ],
+    [ "setCurrentMode", "class_im_fusion_1_1_g_u_i_1_1_display_auto_layouter.html#ae6068eeba3b008873f4c5065bd2cc215", null ],
+    [ "currentLayoutAlgorithm", "class_im_fusion_1_1_g_u_i_1_1_display_auto_layouter.html#adf4007e46bed3f79bc1505fcccd08bef", null ],
+    [ "addLayoutAlgorithm", "class_im_fusion_1_1_g_u_i_1_1_display_auto_layouter.html#aa3110c3aa9b1091d967c2cdbf8145ab1", null ],
+    [ "removeLayoutAlgorithm", "class_im_fusion_1_1_g_u_i_1_1_display_auto_layouter.html#af762093a4bf34db12df7ff7e4db6e418", null ],
+    [ "layoutAlgorithm", "class_im_fusion_1_1_g_u_i_1_1_display_auto_layouter.html#a9ee9bc00ce11fbfe729e11b18aa0b2ab", null ],
+    [ "resetLayout", "class_im_fusion_1_1_g_u_i_1_1_display_auto_layouter.html#a365bc4c6e067a53e814ce3a08c9cefc6", null ],
+    [ "lastLayoutConfig", "class_im_fusion_1_1_g_u_i_1_1_display_auto_layouter.html#a4ea1913286e6f860047581bcb75bd785", null ],
+    [ "configure", "class_im_fusion_1_1_g_u_i_1_1_display_auto_layouter.html#aaa676856779184cdf2b912b10c6830ea", null ],
+    [ "configuration", "class_im_fusion_1_1_g_u_i_1_1_display_auto_layouter.html#addca0fbdfaba9241f631037cb8799fe2", null ],
+    [ "signalModeChanged", "class_im_fusion_1_1_g_u_i_1_1_display_auto_layouter.html#a827b9cb3d06cd7002543943df236d523", null ],
+    [ "signalLayoutingPerformed", "class_im_fusion_1_1_g_u_i_1_1_display_auto_layouter.html#a86520b4a441249f9e1886f938443caf0", null ],
+    [ "signalViewHiddenChanged", "class_im_fusion_1_1_g_u_i_1_1_display_auto_layouter.html#a21ee8bd8a6fa68ae967d6066f3d6c59e", null ]
+];

@@ -1,0 +1,35 @@
+var class_im_fusion_1_1_project =
+[
+    [ "Settings", "struct_im_fusion_1_1_project_1_1_settings.html", "struct_im_fusion_1_1_project_1_1_settings" ],
+    [ "SettingsUpdate", "struct_im_fusion_1_1_project_1_1_settings_update.html", null ],
+    [ "TypeSpecificData", "class_im_fusion_1_1_project_1_1_type_specific_data.html", "class_im_fusion_1_1_project_1_1_type_specific_data" ],
+    [ "PixelwiseLabelType", "struct_im_fusion_1_1_project_1_1_pixelwise_label_type.html", "struct_im_fusion_1_1_project_1_1_pixelwise_label_type" ],
+    [ "GeometricAnnotationType", "struct_im_fusion_1_1_project_1_1_geometric_annotation_type.html", "struct_im_fusion_1_1_project_1_1_geometric_annotation_type" ],
+    [ "Permissions", "struct_im_fusion_1_1_project_1_1_permissions.html", null ],
+    [ "ImportResult", "struct_im_fusion_1_1_project_1_1_import_result.html", null ],
+    [ "ProjectImportResult", "struct_im_fusion_1_1_project_1_1_project_import_result.html", null ],
+    [ "FailureActionAndPath", "class_im_fusion_1_1_project.html#a8a0897fc22f3ee8e6b3887c88fe847eb", null ],
+    [ "FailureAction", "class_im_fusion_1_1_project.html#a6cb8c50a6e95b3284059b5cf0f236a81", [
+      [ "Discard", "class_im_fusion_1_1_project.html#a6cb8c50a6e95b3284059b5cf0f236a81ad94b42030b9785fd754d5c1754961269", null ],
+      [ "Retry", "class_im_fusion_1_1_project.html#a6cb8c50a6e95b3284059b5cf0f236a81a6327b4e59f58137083214a1fec358855", null ],
+      [ "Export", "class_im_fusion_1_1_project.html#a6cb8c50a6e95b3284059b5cf0f236a81a0095a9fa74d1713e43e370a7d7846224", null ]
+    ] ],
+    [ "copyToRemote", "class_im_fusion_1_1_project.html#a0658ab125a29b159319dc14983482eff", null ],
+    [ "import", "class_im_fusion_1_1_project.html#a62c71cb182cb0b84030e2b2b8770264d", null ],
+    [ "import", "class_im_fusion_1_1_project.html#a10aaa07a0210c0080c5eecca33161774", null ],
+    [ "switchDataSetWithProgress", "class_im_fusion_1_1_project.html#aad6157f1c862b659900e180dba6c68e3", null ],
+    [ "setFailureCallback", "class_im_fusion_1_1_project.html#ace767c25e30bcd60a388e144d6362365", null ],
+    [ "projectId", "class_im_fusion_1_1_project.html#ab81b6472cdfc901c9ac6554ab02ed40b", null ],
+    [ "permissions", "class_im_fusion_1_1_project.html#af1cb2a1408c99e4fdd5236ab3c23d13b", null ],
+    [ "serverVersion", "class_im_fusion_1_1_project.html#ad5aa3a98ed3c71e5e11394c994c7e378", null ],
+    [ "isSupportRemoteIoAlgorithm", "class_im_fusion_1_1_project.html#a8ff9a346c75eb2b17192b195c1456097", null ],
+    [ "pixelwiseColorTable", "class_im_fusion_1_1_project.html#aad8ad1866264fe82c01e4ef99b76b9ff", null ],
+    [ "configuration", "class_im_fusion_1_1_project.html#a77cc8c23739f1b49ca47c7c56ce63ee0", null ],
+    [ "configure", "class_im_fusion_1_1_project.html#ae08c04bcda76a74c999686c26248dbfc", null ],
+    [ "authProvider", "class_im_fusion_1_1_project.html#aaef8c260eca4d0898b301058f82f0484", null ],
+    [ "loadInstructions", "class_im_fusion_1_1_project.html#a11bf42fd853ca6c9e58b25c2d7d6a548", null ],
+    [ "datasetGroupingHierarchy", "class_im_fusion_1_1_project.html#ab86437e35161a72196e293fbbe66ba27", null ],
+    [ "setDatasetGroupingHierarchy", "class_im_fusion_1_1_project.html#ad3e9f81d61eda3691656819de2ac794c", null ],
+    [ "datasetGroupingHierachy", "class_im_fusion_1_1_project.html#acb0cbf6c933bb47edf62fade919433ae", null ],
+    [ "setDatasetGroupingHierachy", "class_im_fusion_1_1_project.html#aef43e43fd39cb0627dcc7b4d3d3da495", null ]
+];

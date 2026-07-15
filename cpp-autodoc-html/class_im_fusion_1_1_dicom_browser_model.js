@@ -1,0 +1,38 @@
+var class_im_fusion_1_1_dicom_browser_model =
+[
+    [ "ParameterList", "class_im_fusion_1_1_dicom_browser_model.html#aaa102afd93cbbd8c16eddd1debbb4eb1", null ],
+    [ "Roles", "class_im_fusion_1_1_dicom_browser_model.html#a78a31ea2efb7abeea0bd6b68b316bfa5", [
+      [ "ParameterRole", "class_im_fusion_1_1_dicom_browser_model.html#a78a31ea2efb7abeea0bd6b68b316bfa5a45bc7203c93e9fe1d2285ded0bced8e9", null ],
+      [ "SortRole", "class_im_fusion_1_1_dicom_browser_model.html#a78a31ea2efb7abeea0bd6b68b316bfa5a024d62eb84b25e4165abf518ef3c46e3", null ],
+      [ "PatientRole", "class_im_fusion_1_1_dicom_browser_model.html#a78a31ea2efb7abeea0bd6b68b316bfa5aac8c913f310ef5c2c279b14d81bf1efe", null ],
+      [ "StudyRole", "class_im_fusion_1_1_dicom_browser_model.html#a78a31ea2efb7abeea0bd6b68b316bfa5a0aede5f20d0b7f2b2d20e17ea90746db", null ],
+      [ "SeriesRole", "class_im_fusion_1_1_dicom_browser_model.html#a78a31ea2efb7abeea0bd6b68b316bfa5a58daad79be00a40dfbe90418931b6647", null ],
+      [ "ImageRole", "class_im_fusion_1_1_dicom_browser_model.html#a78a31ea2efb7abeea0bd6b68b316bfa5a26f64f8b4c5f968fe535c24de2d7efd8", null ],
+      [ "PacsSeriesProxyRole", "class_im_fusion_1_1_dicom_browser_model.html#a78a31ea2efb7abeea0bd6b68b316bfa5a671568e91bfedbdade53a796a9088a54", null ]
+    ] ],
+    [ "DicomBrowserModel", "class_im_fusion_1_1_dicom_browser_model.html#a6c449ee04e17472aff0f938e5d791e09", null ],
+    [ "DicomBrowserModel", "class_im_fusion_1_1_dicom_browser_model.html#a0257b2f5a045761e4538a0e5f866bc13", null ],
+    [ "setDatasetCache", "class_im_fusion_1_1_dicom_browser_model.html#a96817a55583ffb7b72d37327fc453700", null ],
+    [ "setUpdateSeriesDimensionsAfterScan", "class_im_fusion_1_1_dicom_browser_model.html#a8048f0bae393fd40411562318c6d333a", null ],
+    [ "columnCount", "class_im_fusion_1_1_dicom_browser_model.html#a32696e4b87a6782440000793fa205d35", null ],
+    [ "setData", "class_im_fusion_1_1_dicom_browser_model.html#a37369a912b1aaa64194187b6ff85145c", null ],
+    [ "selectedSeries", "class_im_fusion_1_1_dicom_browser_model.html#aeecdd2112b1c35597ecb4196a6368936", null ],
+    [ "patients", "class_im_fusion_1_1_dicom_browser_model.html#aa07904e801410d8ec9b212e2f5324a00", null ],
+    [ "scanCompleted", "class_im_fusion_1_1_dicom_browser_model.html#acad4beca8b3949feddef5c82ba9c4203", null ],
+    [ "addPatient", "class_im_fusion_1_1_dicom_browser_model.html#a35b205bdeadb2c7899d22c6b0cdd4bb9", null ],
+    [ "remove", "class_im_fusion_1_1_dicom_browser_model.html#a1e1fa9a7d9931e02afb19c98e8a99dbf", null ],
+    [ "scanDirectoryAsync", "class_im_fusion_1_1_dicom_browser_model.html#ac043ead3568f9936221b7f8c01d077eb", null ],
+    [ "scanDirectoryBlocking", "class_im_fusion_1_1_dicom_browser_model.html#a921cc85dfd35d038dd0d8edaa5a3aa5c", null ],
+    [ "scanDicomDirAsync", "class_im_fusion_1_1_dicom_browser_model.html#ae214236b102e92962c8c8736f6d8dbc2", null ],
+    [ "scanDicomDirBlocking", "class_im_fusion_1_1_dicom_browser_model.html#a69ef8cc37ea79e8e705bd50daae1e67c", null ],
+    [ "scanWebAsync", "class_im_fusion_1_1_dicom_browser_model.html#a180115abc0d1303228320b13d4721a41", null ],
+    [ "scanWebBlocking", "class_im_fusion_1_1_dicom_browser_model.html#a240854cdb61b96ce0f99d7f221baba1d", null ],
+    [ "scanPacsAsync", "class_im_fusion_1_1_dicom_browser_model.html#a03317b027e9fe02efc38e9b360b5eaeb", null ],
+    [ "scanPacsBlocking", "class_im_fusion_1_1_dicom_browser_model.html#a11cb9acda6a2b7c39e0a58175aa7a472", null ],
+    [ "getPacsSeriesAsync", "class_im_fusion_1_1_dicom_browser_model.html#ac8d15b5f986570c4f5c9c70e4eddc295", null ],
+    [ "getPacsSeriesBlocking", "class_im_fusion_1_1_dicom_browser_model.html#a51166b8294fbc0e03aa70d10b5a12319", null ],
+    [ "cancelScan", "class_im_fusion_1_1_dicom_browser_model.html#ac0664f54c9603cbf5a4d6ad8cceaa6e0", null ],
+    [ "isScanning", "class_im_fusion_1_1_dicom_browser_model.html#a68845519ad23de2c7f257ca0bd658275", null ],
+    [ "clear", "class_im_fusion_1_1_dicom_browser_model.html#adf55b61752012d439256565cd09781aa", null ],
+    [ "updateSeriesDimensionsAsync", "class_im_fusion_1_1_dicom_browser_model.html#a0b5f1bda1dce1039aee300d5922b0925", null ]
+];

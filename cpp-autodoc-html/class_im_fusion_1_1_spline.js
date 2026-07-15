@@ -1,0 +1,28 @@
+var class_im_fusion_1_1_spline =
+[
+    [ "addPoint", "class_im_fusion_1_1_spline.html#a8a15e6db8a4a8e625526fa2c78445e2e", null ],
+    [ "removePoint", "class_im_fusion_1_1_spline.html#a1e6a6a61e6ca42a7b383a06516a38f60", null ],
+    [ "setPoints", "class_im_fusion_1_1_spline.html#aa73f83f7942270b91209da22eed30939", null ],
+    [ "getPoints", "class_im_fusion_1_1_spline.html#ae286785d2492a006780067d874959326", null ],
+    [ "points", "class_im_fusion_1_1_spline.html#a9f92bc4c197dbf3f819e4b8c05b0d8dc", null ],
+    [ "evaluate", "class_im_fusion_1_1_spline.html#a129ba8a9a37670e716ecf3665ccfeff1", null ],
+    [ "evaluateTangent", "class_im_fusion_1_1_spline.html#afee63d145f3c7eb22326b4f2dab72880", null ],
+    [ "evaluateNormal", "class_im_fusion_1_1_spline.html#a42d2360747eeb894b316677906d2141f", null ],
+    [ "evaluateNormal", "class_im_fusion_1_1_spline.html#ab6f735849af9e1f453c973661325fc92", null ],
+    [ "getCurveLength", "class_im_fusion_1_1_spline.html#ac7a1c2508fdd0621f56c316448ae75f2", null ],
+    [ "getProjectedCurveLength", "class_im_fusion_1_1_spline.html#abfff7b3beaaec049c6d8dad2e61c66de", null ],
+    [ "getProjectedCurveLength", "class_im_fusion_1_1_spline.html#a6c2535501be7a1d695692d3998d34bf9", null ],
+    [ "getUniformSamples", "class_im_fusion_1_1_spline.html#a8ce045fb0ca9070b246600fe8344a138", null ],
+    [ "getParametricUniformSamples", "class_im_fusion_1_1_spline.html#aedeb21a5a5a5df26f35189d42e4b2f60", null ],
+    [ "getUniformSamplesX", "class_im_fusion_1_1_spline.html#a4aa717916f332fab1e25707b2685d657", null ],
+    [ "getUniformSamples", "class_im_fusion_1_1_spline.html#abca05f6b9ca61c3ad5df8d54c77a96e2", null ],
+    [ "getProjectedUniformSamples", "class_im_fusion_1_1_spline.html#acfa87e759c080ebcd4a1159b1fe793a5", null ],
+    [ "getProjectedUniformSamples", "class_im_fusion_1_1_spline.html#ae14a36b2355293679094fffef50311c3", null ],
+    [ "arcLengthToSplineCoord", "class_im_fusion_1_1_spline.html#a8eb766788c4dd0b9dc7c70dd2376281b", null ],
+    [ "splineCoordToArcLength", "class_im_fusion_1_1_spline.html#a0ea0219b4e6427fc19c31c4160d9468d", null ],
+    [ "convertToLabelMap", "class_im_fusion_1_1_spline.html#ae4a74442529ecf19143b3d77d3a33f95", null ],
+    [ "calculateNearestPointArcLength", "class_im_fusion_1_1_spline.html#a3a8391372fdd3065da543494bc7d92d3", null ],
+    [ "getApproximateSpline", "class_im_fusion_1_1_spline.html#af7431cff8de5a6c76e6811da2b5d6a22", null ],
+    [ "getApproximateClosedSpline", "class_im_fusion_1_1_spline.html#a04ba064bc1e18c5aff988429e44c0317", null ],
+    [ "evaluateLoop", "class_im_fusion_1_1_spline.html#a479bcdb6065a2206bf74d78b22944db6", null ]
+];

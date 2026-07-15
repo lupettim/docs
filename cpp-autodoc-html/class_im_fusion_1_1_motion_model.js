@@ -1,0 +1,25 @@
+var class_im_fusion_1_1_motion_model =
+[
+    [ "MotionModel", "class_im_fusion_1_1_motion_model.html#afd816e8e63d543efbbe46ce1ca126e52", null ],
+    [ "setControlPoints", "class_im_fusion_1_1_motion_model.html#aa7747d746f46956ecdf73b5134453278", null ],
+    [ "setPoseParameterSelection", "class_im_fusion_1_1_motion_model.html#a25f451e0154b104d20f2a9d1d3409722", null ],
+    [ "fit", "class_im_fusion_1_1_motion_model.html#a60aee43385b29f535451e89b088a389c", null ],
+    [ "optimize", "class_im_fusion_1_1_motion_model.html#a9cff03244cee485f95f1488546becec3", null ],
+    [ "applyParameters", "class_im_fusion_1_1_motion_model.html#a90b839d82c71525d1a5e49c2d2e9aaf7", null ],
+    [ "parameters", "class_im_fusion_1_1_motion_model.html#a6416347b72f4f3a59a0cf6211f65c46a", null ],
+    [ "matrices", "class_im_fusion_1_1_motion_model.html#abb2bec0fcc599a7b484764da01530c06", null ],
+    [ "points", "class_im_fusion_1_1_motion_model.html#ab39b87d4b0fa86c63b76624dd99a0289", null ],
+    [ "numberOfControlPointsToOptimize", "class_im_fusion_1_1_motion_model.html#afc8cc005f7bfd8bd015bfebdd23fbd1d", null ],
+    [ "numberOfControlPointLocationsToOptimize", "class_im_fusion_1_1_motion_model.html#a01d3468eb23d10c8eb67b15f125d267a", null ],
+    [ "numberOfParameters", "class_im_fusion_1_1_motion_model.html#ac68f409de0a0d8aeb287ead521e41a7e", null ],
+    [ "numberOfControlPoints", "class_im_fusion_1_1_motion_model.html#a99367a4c581d9681d2922e9b69fc18e1", null ],
+    [ "setUseBorderPoints", "class_im_fusion_1_1_motion_model.html#ac2fa21e3d8bdf512d40a5a252c1aa140", null ],
+    [ "setOptimizePosition", "class_im_fusion_1_1_motion_model.html#a3a37c0354693c21b03dc6c51d9759f9d", null ],
+    [ "setLinkLastPoint", "class_im_fusion_1_1_motion_model.html#a887713e8069c818b2592b0ab26cc05f3", null ],
+    [ "setBlockMode", "class_im_fusion_1_1_motion_model.html#a774fd057787b3669620f4c2add0590da", null ],
+    [ "p_numControlPoints", "class_im_fusion_1_1_motion_model.html#a6133517e0b8b47d19b2127c4727c4bf6", null ],
+    [ "p_useFirstControlPoint", "class_im_fusion_1_1_motion_model.html#af2b5ba8b48897809d6750f97c77aa26d", null ],
+    [ "p_useLastControlPoint", "class_im_fusion_1_1_motion_model.html#a3d491418d25a465e8bbfd2b15c881f9b", null ],
+    [ "p_optimizeCPPositions", "class_im_fusion_1_1_motion_model.html#af9f9fe6eda6bbf32d80135d3a5f621ce", null ],
+    [ "p_blockMode", "class_im_fusion_1_1_motion_model.html#a8cb893192b0d9f1b709f73e2c22af7c3", null ]
+];

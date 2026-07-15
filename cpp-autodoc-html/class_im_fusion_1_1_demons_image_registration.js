@@ -1,0 +1,38 @@
+var class_im_fusion_1_1_demons_image_registration =
+[
+    [ "Adjustment", "class_im_fusion_1_1_demons_image_registration.html#a6c8adcf04f7e1ba15b2e7a8197adda1a", null ],
+    [ "GradientType", "class_im_fusion_1_1_demons_image_registration.html#a98c4861d9d526b25941cae492b74c7e3", [
+      [ "REFERENCE", "class_im_fusion_1_1_demons_image_registration.html#a98c4861d9d526b25941cae492b74c7e3adcd320d017d7f3c317bc8b234287bc9f", null ],
+      [ "MOVING", "class_im_fusion_1_1_demons_image_registration.html#a98c4861d9d526b25941cae492b74c7e3aaf5a690fd5ec6f789dbfc51ec6a891ba", null ],
+      [ "SYMMETRIC", "class_im_fusion_1_1_demons_image_registration.html#a98c4861d9d526b25941cae492b74c7e3a161b3d9016563aba9ac190fc02ada9bb", null ]
+    ] ],
+    [ "DemonsImageRegistration", "class_im_fusion_1_1_demons_image_registration.html#aaaf4c2c5b4e7445393f9f920d7813d92", null ],
+    [ "compute", "class_im_fusion_1_1_demons_image_registration.html#ad7ba67d4354ca74f378c48c07946cd72", null ],
+    [ "reference", "class_im_fusion_1_1_demons_image_registration.html#a30ad86e97ee4d22d9a32251653f2059d", null ],
+    [ "setFixedWeight", "class_im_fusion_1_1_demons_image_registration.html#ac8d79e63aff9b198ab312328548ae644", null ],
+    [ "deformation", "class_im_fusion_1_1_demons_image_registration.html#afc8fcb89248f2c94b132f0b094cc0a46", null ],
+    [ "reset", "class_im_fusion_1_1_demons_image_registration.html#ad1acb4c33962960585026a534b66b0fd", null ],
+    [ "isDeformable", "class_im_fusion_1_1_demons_image_registration.html#a27603febbc5a0827b6568f4c3378be88", null ],
+    [ "bestSimilarityValue", "class_im_fusion_1_1_demons_image_registration.html#a87ca141397bc2405627f30d293376074", null ],
+    [ "setConstrainDeformationByFixedImageMask", "class_im_fusion_1_1_demons_image_registration.html#a902323a2458eb7414dce074d3c6d02d2", null ],
+    [ "configure", "class_im_fusion_1_1_demons_image_registration.html#a53388a75aadc807b4bd28bb02d5efd7f", null ],
+    [ "configuration", "class_im_fusion_1_1_demons_image_registration.html#a757d34fca33be0246cde8e76c76d646b", null ],
+    [ "runRegistration", "class_im_fusion_1_1_demons_image_registration.html#a651f0b79f0b33fa2f67a278e6b4b8a68", null ],
+    [ "p_maxLevel", "class_im_fusion_1_1_demons_image_registration.html#a17532fc0fa177ff1784de29353d289f2", null ],
+    [ "p_halfKernelSize", "class_im_fusion_1_1_demons_image_registration.html#adad5585ca65eb7fe7ac80bd0322e86be", null ],
+    [ "p_alpha", "class_im_fusion_1_1_demons_image_registration.html#affd8b191ab510b42936141709d1b3da3", null ],
+    [ "p_maxIterations", "class_im_fusion_1_1_demons_image_registration.html#a8d3d4c20f14e80eef773baa460170df2", null ],
+    [ "p_restrictToInputs", "class_im_fusion_1_1_demons_image_registration.html#a2287c0af817ade9b6322a16285829da6", null ],
+    [ "p_damping", "class_im_fusion_1_1_demons_image_registration.html#ad7d480f8d980a7a5e1f24d4216b41c22", null ],
+    [ "p_useAdamOptimizer", "class_im_fusion_1_1_demons_image_registration.html#acaaa0b70e5a9926e6282ac58750c84fb", null ],
+    [ "p_tolAbs", "class_im_fusion_1_1_demons_image_registration.html#a41868629eef502f5b0656dea28b2aa27", null ],
+    [ "p_verbose", "class_im_fusion_1_1_demons_image_registration.html#a71d85f9407d03fdcb138a6800db58f61", null ],
+    [ "p_noSmoothingFinalStep", "class_im_fusion_1_1_demons_image_registration.html#ad2048d18316734cd50185a47612b6659", null ],
+    [ "p_affineSkip", "class_im_fusion_1_1_demons_image_registration.html#a4381daea596fea305dfc92dcfc48c28c", null ],
+    [ "p_channelWeights", "class_im_fusion_1_1_demons_image_registration.html#a8450a713f481a188285054e0c9137888", null ],
+    [ "m_progDemons", "class_im_fusion_1_1_demons_image_registration.html#a01c44320a11093b3996d5632a5175d67", null ],
+    [ "m_logData", "class_im_fusion_1_1_demons_image_registration.html#a3b49b6eca6afad6f4e9608307c51516c", null ],
+    [ "m_vff", "class_im_fusion_1_1_demons_image_registration.html#a1e39bd0621a2bb3e2bb40689f7c377af", null ],
+    [ "m_fixedWeight", "class_im_fusion_1_1_demons_image_registration.html#a72afff009c10ce5dea651dbf54a762b2", null ],
+    [ "m_constrainDeformationByFixedImageMask", "class_im_fusion_1_1_demons_image_registration.html#aa0444cbed2065da20713d970196df94a", null ]
+];

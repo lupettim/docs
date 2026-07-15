@@ -1,0 +1,37 @@
+var class_im_fusion_1_1_g_u_i_1_1_slice_view =
+[
+    [ "ZoomMode", "class_im_fusion_1_1_g_u_i_1_1_slice_view.html#a5283c5d6808a3adce4a34cabd27dc20a", [
+      [ "FitToView", "class_im_fusion_1_1_g_u_i_1_1_slice_view.html#a5283c5d6808a3adce4a34cabd27dc20aa1eb0947e59061a1b91b449cc9cd39d98", null ],
+      [ "Fixed", "class_im_fusion_1_1_g_u_i_1_1_slice_view.html#a5283c5d6808a3adce4a34cabd27dc20aa4457d440870ad6d42bab9082d9bf9b61", null ],
+      [ "OriginalPixelSize", "class_im_fusion_1_1_g_u_i_1_1_slice_view.html#a5283c5d6808a3adce4a34cabd27dc20aa625fce0682d64a99f48e4d91e8231e19", null ]
+    ] ],
+    [ "ResetOptions", "class_im_fusion_1_1_g_u_i_1_1_slice_view.html#a6075e985ace2871abe99cc2eabda2c16", null ],
+    [ "SliceView", "class_im_fusion_1_1_g_u_i_1_1_slice_view.html#a6f8ad0fbd0dd65e634d6c1fc6d30c452", null ],
+    [ "SliceView", "class_im_fusion_1_1_g_u_i_1_1_slice_view.html#a4e4ce9d3200207c56650b7476964a991", null ],
+    [ "glView", "class_im_fusion_1_1_g_u_i_1_1_slice_view.html#a9ef0a43cd5f9c27c51161a4735a8f1c8", null ],
+    [ "viewGroup", "class_im_fusion_1_1_g_u_i_1_1_slice_view.html#ab1eded83c70e88012ac738c2e4fee1fa", null ],
+    [ "displayOptions", "class_im_fusion_1_1_g_u_i_1_1_slice_view.html#a00919cab40e8f5e5b0641c2bf367e628", null ],
+    [ "defaultEventHandler", "class_im_fusion_1_1_g_u_i_1_1_slice_view.html#a8681bd2b561734990a111d08044990b1", null ],
+    [ "zoomMode", "class_im_fusion_1_1_g_u_i_1_1_slice_view.html#a48203f30af736b3f9d8bfc3a626921fc", null ],
+    [ "setZoomMode", "class_im_fusion_1_1_g_u_i_1_1_slice_view.html#a721ef111bfe48eba6e6a3de14cca6be4", null ],
+    [ "zoomFactor", "class_im_fusion_1_1_g_u_i_1_1_slice_view.html#adec683e15c4505c0b58433a944ae8f57", null ],
+    [ "setZoomFactor", "class_im_fusion_1_1_g_u_i_1_1_slice_view.html#a452771723729dd2ad7d96380a833bce9", null ],
+    [ "flipsY", "class_im_fusion_1_1_g_u_i_1_1_slice_view.html#af503d13b0c22b0db50a1f6d985d5c87a", null ],
+    [ "setFlipY", "class_im_fusion_1_1_g_u_i_1_1_slice_view.html#a6d62e440197f268d562b448607e6094f", null ],
+    [ "interpolationMode", "class_im_fusion_1_1_g_u_i_1_1_slice_view.html#aed5cba890d4f04b3552fd9fea4c5790f", null ],
+    [ "setInterpolationMode", "class_im_fusion_1_1_g_u_i_1_1_slice_view.html#a67deccf47c524ebc03b09cf9565e9965", null ],
+    [ "blendingMode", "class_im_fusion_1_1_g_u_i_1_1_slice_view.html#ad1d574648afa331f3741247c93c79dc4", null ],
+    [ "setBlendingMode", "class_im_fusion_1_1_g_u_i_1_1_slice_view.html#a519cba285ecfea208c7948a64d5b571b", null ],
+    [ "blendingFactor", "class_im_fusion_1_1_g_u_i_1_1_slice_view.html#a9b5ded2d1d29a607295b0a2c6f4bc2bd", null ],
+    [ "setBlendingFactor", "class_im_fusion_1_1_g_u_i_1_1_slice_view.html#ac3287c756e069fe53c51f4c159a0d58e", null ],
+    [ "autoViewSettings", "class_im_fusion_1_1_g_u_i_1_1_slice_view.html#a0310ab9993bcaf02f44126943e197886", null ],
+    [ "setAutoViewSettings", "class_im_fusion_1_1_g_u_i_1_1_slice_view.html#adaaa918ffab9c0a734d5f9c56ab51d37", null ],
+    [ "setMatrix", "class_im_fusion_1_1_g_u_i_1_1_slice_view.html#aaadb4dbd1846ef559ebb8bb32ac0df2d", null ],
+    [ "setMatrix", "class_im_fusion_1_1_g_u_i_1_1_slice_view.html#a0e36e7226d0f25627923e2afb22e488d", null ],
+    [ "setSliceDepth", "class_im_fusion_1_1_g_u_i_1_1_slice_view.html#ad4291fa330efc9f65cfcd3b602806be8", null ],
+    [ "reset", "class_im_fusion_1_1_g_u_i_1_1_slice_view.html#a86bc6341fe81de6613c5a93b0b6b6aab", null ],
+    [ "setViewport", "class_im_fusion_1_1_g_u_i_1_1_slice_view.html#a64eed9017b7410288be712bcdc94f813", null ],
+    [ "setBorderConfig", "class_im_fusion_1_1_g_u_i_1_1_slice_view.html#a80f2b918d6d0dee72c923f25cf6150b7", null ],
+    [ "showDataImpl", "class_im_fusion_1_1_g_u_i_1_1_slice_view.html#a32a5bad6808c5c4cc72801ff785ff4bd", null ],
+    [ "signalSettingsChanged", "class_im_fusion_1_1_g_u_i_1_1_slice_view.html#a22e68b4b2a267afa9172171ad440410a", null ]
+];

@@ -1,0 +1,27 @@
+var class_im_fusion_1_1_optimization_dialog =
+[
+    [ "OptimizationDialog", "class_im_fusion_1_1_optimization_dialog.html#ad9e9ac822f0ff0dfb9ded77e7693c3c0", null ],
+    [ "clear", "class_im_fusion_1_1_optimization_dialog.html#a53888925ed724e416781e6bbe7218a7a", null ],
+    [ "setOptimizer", "class_im_fusion_1_1_optimization_dialog.html#a1e248ac87c53d35aaac5b7472fb953e8", null ],
+    [ "optimizer", "class_im_fusion_1_1_optimization_dialog.html#a372865192127de2e1ce3ceaf9b0f6f56", null ],
+    [ "addParameter", "class_im_fusion_1_1_optimization_dialog.html#a4d2cde35b500c83523bad25e0c743260", null ],
+    [ "addRigidParameters", "class_im_fusion_1_1_optimization_dialog.html#ad7137379ac0a433801b281821e262aa9", null ],
+    [ "addAffineParameters", "class_im_fusion_1_1_optimization_dialog.html#a41d05fa47fb8c1c7c9990a116080482c", null ],
+    [ "setParameterChecked", "class_im_fusion_1_1_optimization_dialog.html#a0c7968840fc25e53f698987c042239c0", null ],
+    [ "evaluate", "class_im_fusion_1_1_optimization_dialog.html#a048e2575500f069650761de201db3cf1", null ],
+    [ "setShowRunButton", "class_im_fusion_1_1_optimization_dialog.html#a174e9e0ed52b5ec97ed37f11bace9f71", null ],
+    [ "setGlobal", "class_im_fusion_1_1_optimization_dialog.html#ac442c1509a90a6969ef143c7c010f05f", null ],
+    [ "setAlwaysUpdateGUI", "class_im_fusion_1_1_optimization_dialog.html#abd33307d79ffa0ba49a4046dc5d374aa", null ],
+    [ "setPlotView", "class_im_fusion_1_1_optimization_dialog.html#a0e4349091ab67bacab84c4860af60641", null ],
+    [ "updatePlot", "class_im_fusion_1_1_optimization_dialog.html#a31342f6086ea40a22b78ba647a187daf", null ],
+    [ "evaluateStudyResult", "class_im_fusion_1_1_optimization_dialog.html#ab3b3905951f10872ed7f7bd1d2994ed2", null ],
+    [ "alwaysUpdateGUI", "class_im_fusion_1_1_optimization_dialog.html#a61565b77262daf965b1e38d68a46c1f6", null ],
+    [ "setOnlyUpdateIfBetter", "class_im_fusion_1_1_optimization_dialog.html#ab7dcf2ad0e70a29107ae7071f7a6bf47", null ],
+    [ "algorithm", "class_im_fusion_1_1_optimization_dialog.html#a8371ea85c1466b895613fceb6df1716c", null ],
+    [ "parName", "class_im_fusion_1_1_optimization_dialog.html#a4bb93f8242c1d218f06e2f9c9481e9e8", null ],
+    [ "createOptimizer", "class_im_fusion_1_1_optimization_dialog.html#a9334a9856ae65f7a896677e4c0b39912", null ],
+    [ "run", "class_im_fusion_1_1_optimization_dialog.html#a5524154b48206fbe350642a3d10d363a", null ],
+    [ "addResult", "class_im_fusion_1_1_optimization_dialog.html#a58b9141c37d5488f92a7d30d392bffc9", null ],
+    [ "clearResults", "class_im_fusion_1_1_optimization_dialog.html#aaf17b6402478214700d0f340787b3aa5", null ],
+    [ "selectResult", "class_im_fusion_1_1_optimization_dialog.html#a502ab8dfef5cbd50c48df7d069d18367", null ]
+];

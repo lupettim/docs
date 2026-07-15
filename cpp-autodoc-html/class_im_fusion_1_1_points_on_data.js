@@ -1,0 +1,28 @@
+var class_im_fusion_1_1_points_on_data =
+[
+    [ "points", "class_im_fusion_1_1_points_on_data.html#a3c596a2d0fd3c1494da40f9960a9743a", null ],
+    [ "selectedPoints", "class_im_fusion_1_1_points_on_data.html#a095ea9d8e413ca57a7f2f3fbfa54d757", null ],
+    [ "allPoints", "class_im_fusion_1_1_points_on_data.html#a56766d0b36311309c4d4704509f5f227", null ],
+    [ "data", "class_im_fusion_1_1_points_on_data.html#ab2a164df3ab71ce7b47d42769ce70cf5", null ],
+    [ "remove", "class_im_fusion_1_1_points_on_data.html#a9a7f1756fc430d8312ce438c8e5a710e", null ],
+    [ "remove", "class_im_fusion_1_1_points_on_data.html#aa8d7eaf65551b314df3d875aa6b26634", null ],
+    [ "size", "class_im_fusion_1_1_points_on_data.html#a9099c2d3fa348de09e4f8a1d3778a4e5", null ],
+    [ "empty", "class_im_fusion_1_1_points_on_data.html#a175617469592fae68b521ea6dc9d8575", null ],
+    [ "clear", "class_im_fusion_1_1_points_on_data.html#a791bc14be3664de4bcf8becf6dcdda3b", null ],
+    [ "point", "class_im_fusion_1_1_points_on_data.html#a4db803c020bb64851a743fb622e7f52f", null ],
+    [ "name", "class_im_fusion_1_1_points_on_data.html#acf8cb836c414e9cd79fc19904f647489", null ],
+    [ "setName", "class_im_fusion_1_1_points_on_data.html#a976d19d7220ee3be2e2dc08a360ad7cf", null ],
+    [ "isSelected", "class_im_fusion_1_1_points_on_data.html#aa03fda81637c8296d44793939e46ab34", null ],
+    [ "setSelected", "class_im_fusion_1_1_points_on_data.html#a39bbd08cd33b412180d6191dd945f452", null ],
+    [ "find", "class_im_fusion_1_1_points_on_data.html#ab6fa0e522d209fc9cd11925370f6d273", null ],
+    [ "configurePoint", "class_im_fusion_1_1_points_on_data.html#aee68f2b963436cc66270b567eee3a0e2", null ],
+    [ "pointConfiguration", "class_im_fusion_1_1_points_on_data.html#a389f76ab04ee867f565a58fec4b2c2f3", null ],
+    [ "configure", "class_im_fusion_1_1_points_on_data.html#a7a87a98b56edd967a8d7ea96551b1e6e", null ],
+    [ "configuration", "class_im_fusion_1_1_points_on_data.html#a6f332077e66589c2d7b4fe60f7946c27", null ],
+    [ "signalPointsChanged", "class_im_fusion_1_1_points_on_data.html#a5bfe4f3025d3c4621ab12cb5c060ea74", null ],
+    [ "signalPointsAdded", "class_im_fusion_1_1_points_on_data.html#a14a2ac9f2adb198afa38707f9cfce7ac", null ],
+    [ "signalPointsRemoved", "class_im_fusion_1_1_points_on_data.html#aa9bd9b6ebe381bb9551640ba3d9deade", null ],
+    [ "signalPointsRenamed", "class_im_fusion_1_1_points_on_data.html#afbdfc65e9e09516349fd6f396a5d5707", null ],
+    [ "m_names", "class_im_fusion_1_1_points_on_data.html#aa7540833535aa9ce95406feca8bc4d1b", null ],
+    [ "m_pointSetName", "class_im_fusion_1_1_points_on_data.html#a68f79b0a2eda953298a776250559f7c7", null ]
+];

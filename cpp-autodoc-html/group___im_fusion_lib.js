@@ -1,0 +1,27 @@
+var group___im_fusion_lib =
+[
+    [ "Animations", "group___animations_a_p_i.html", "group___animations_a_p_i" ],
+    [ "Data Model", "group___data_model.html", "group___data_model" ],
+    [ "DataComponent API", "group___data_components.html", "group___data_components" ],
+    [ "ImFusionGUI", "group___im_fusion_g_u_i.html", "group___im_fusion_g_u_i" ],
+    [ "Image Masks", "group___image_masks.html", "group___image_masks" ],
+    [ "Images", "group___image_a_p_i.html", "group___image_a_p_i" ],
+    [ "Layouting a DisplayWidgetMulti", "group___display_layout.html", null ],
+    [ "License System", "group___license_system.html", null ],
+    [ "OpenGL", "group___open_g_l.html", "group___open_g_l" ],
+    [ "OpenGL Image Processing", "group___gl_image_processing.html", "group___gl_image_processing" ],
+    [ "Poses", "group___poses.html", "group___poses" ],
+    [ "Progress Reporting", "group___progress_a_p_i.html", "group___progress_a_p_i" ],
+    [ "Visualization and Views", "group___visualization.html", "group___visualization" ],
+    [ "Workspaces API", "group___workspace_a_p_i.html", "group___workspace_a_p_i" ],
+    [ "IMFUSION_SDK_VERSION_MAJOR", "group___im_fusion_lib.html#gab1f6cdd68eb4eb5e20e13a6636212c55", null ],
+    [ "IMFUSION_SDK_VERSION_MINOR", "group___im_fusion_lib.html#gabbfb20f0e12aa98f5ea88bfd9eef15b0", null ],
+    [ "IMFUSION_SDK_VERSION_PATCH", "group___im_fusion_lib.html#gae065d06b8977b566aacdf9dffd84f401", null ],
+    [ "IMFUSION_SDK_VERSION_SUFFIX", "group___im_fusion_lib.html#gaa96a2e444dcee3996b07af429085023b", null ],
+    [ "IMFUSION_SDK_VERSION_METADATA", "group___im_fusion_lib.html#gae4b93a13e85119b69f2f4057dabd2414", null ],
+    [ "IMFUSION_SDK_VERSION_SHORT_STRING", "group___im_fusion_lib.html#ga33f0c103386b84a5632fe5c2f18dea62", null ],
+    [ "IMFUSION_SDK_VERSION_STRING", "group___im_fusion_lib.html#ga5debb6cf1d88e48a8be2279d5b8e005f", null ],
+    [ "IMFUSION_SDK_RELEASE_YEAR", "group___im_fusion_lib.html#ga1e79f8ba4666a2518f31454addb908a5", null ],
+    [ "IMFUSION_SDK_RELEASE_MONTH", "group___im_fusion_lib.html#gaf80c571ffb706bdee73acf379251298f", null ],
+    [ "IMFUSION_SDK_RELEASE_DAY", "group___im_fusion_lib.html#ga524f046b55d8669886de0a4faea1cfe8", null ]
+];

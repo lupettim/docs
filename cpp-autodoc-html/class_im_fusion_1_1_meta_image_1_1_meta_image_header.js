@@ -1,0 +1,35 @@
+var class_im_fusion_1_1_meta_image_1_1_meta_image_header =
+[
+    [ "ByteOrder", "class_im_fusion_1_1_meta_image_1_1_meta_image_header.html#a0815a2a76931aeb55dd23b8e0b2fdb82", [
+      [ "BigEndian", "class_im_fusion_1_1_meta_image_1_1_meta_image_header.html#a0815a2a76931aeb55dd23b8e0b2fdb82a2ce7a92ae43763828ac4acb4560c2a5b", null ],
+      [ "LittleEndian", "class_im_fusion_1_1_meta_image_1_1_meta_image_header.html#a0815a2a76931aeb55dd23b8e0b2fdb82a3c0ba6b22b526d7fd50c3026435a8c02", null ]
+    ] ],
+    [ "load", "class_im_fusion_1_1_meta_image_1_1_meta_image_header.html#af14a3b1aadac244acafb030e653eb9c0", null ],
+    [ "save", "class_im_fusion_1_1_meta_image_1_1_meta_image_header.html#a53af2e8feb4d42e0727d00a2aca4ea49", null ],
+    [ "fromImageDescriptor", "class_im_fusion_1_1_meta_image_1_1_meta_image_header.html#affc133c5e665d4475dbfbe4cb5519414", null ],
+    [ "fromSharedImageSet", "class_im_fusion_1_1_meta_image_1_1_meta_image_header.html#add2d05a0678a5f948f8c123d6530455b", null ],
+    [ "fromFileName", "class_im_fusion_1_1_meta_image_1_1_meta_image_header.html#a4028b8c47919f056284d270f2c58135f", null ],
+    [ "createImageDescriptor", "class_im_fusion_1_1_meta_image_1_1_meta_image_header.html#a60555e8ca080b6b79806ea563df07a9c", null ],
+    [ "metaImageFileType", "class_im_fusion_1_1_meta_image_1_1_meta_image_header.html#af06eb53a37f63c5136317eeb4cb15c3a", null ],
+    [ "loadSharedImageSet", "class_im_fusion_1_1_meta_image_1_1_meta_image_header.html#a4b4236c54ac641e6aa77a4e07d8516e9", null ],
+    [ "saveSharedImageSet", "class_im_fusion_1_1_meta_image_1_1_meta_image_header.html#abc3261388c38a9e575b9f2aa13f44c7c", null ],
+    [ "save", "class_im_fusion_1_1_meta_image_1_1_meta_image_header.html#ac136612f9676d66f7c22c7c7dc3a5d96", null ],
+    [ "load", "class_im_fusion_1_1_meta_image_1_1_meta_image_header.html#a1d80c73b3372dbcd12fddae65a3bf158", null ],
+    [ "m_rawFiles", "class_im_fusion_1_1_meta_image_1_1_meta_image_header.html#afc9d45e8e4ee62b08171fa242c438af7", null ],
+    [ "m_metaImageFileType", "class_im_fusion_1_1_meta_image_1_1_meta_image_header.html#a545600e4635c59a7662e08bc9ef102da", null ],
+    [ "m_frames", "class_im_fusion_1_1_meta_image_1_1_meta_image_header.html#aa33da7b47d1bb05aceb4c6f3df5a28ee", null ],
+    [ "m_ndims", "class_im_fusion_1_1_meta_image_1_1_meta_image_header.html#a9358b8c114ed1083177ac090d4030004", null ],
+    [ "m_elementNumberOfChannels", "class_im_fusion_1_1_meta_image_1_1_meta_image_header.html#aaa1d13cb8cbd059e8265745227514ebb", null ],
+    [ "m_dimSize", "class_im_fusion_1_1_meta_image_1_1_meta_image_header.html#aabdf03aecd2419ad7e7096461a0bc620", null ],
+    [ "m_elementSpacing", "class_im_fusion_1_1_meta_image_1_1_meta_image_header.html#a38be322189ddb3dcf26fdba0866ffedf", null ],
+    [ "m_msb", "class_im_fusion_1_1_meta_image_1_1_meta_image_header.html#a5e96606e570e16a5afb96c908f0f7160", null ],
+    [ "m_comSize", "class_im_fusion_1_1_meta_image_1_1_meta_image_header.html#a254333b5445596c11896a3f292e744e9", null ],
+    [ "m_offset", "class_im_fusion_1_1_meta_image_1_1_meta_image_header.html#a3fb9502e269c1cc1631a67f68463ff41", null ],
+    [ "m_matrix", "class_im_fusion_1_1_meta_image_1_1_meta_image_header.html#a48c7ccb337828ff9dd50d3c1f5e786b8", null ],
+    [ "m_modality", "class_im_fusion_1_1_meta_image_1_1_meta_image_header.html#adff0233f74878484233e6a9045fd7410", null ],
+    [ "m_imfusionElementShift", "class_im_fusion_1_1_meta_image_1_1_meta_image_header.html#a65c58758a4b5567e62d8bb6449a5a25b", null ],
+    [ "m_imfusionElementScale", "class_im_fusion_1_1_meta_image_1_1_meta_image_header.html#ab48c2cec7d22a4c44979c3bdc378e32b", null ],
+    [ "m_imfusionMetaImageVersion", "class_im_fusion_1_1_meta_image_1_1_meta_image_header.html#ae41d693af5e960bbc8ab3387cfc22b89", null ],
+    [ "m_keepScaleAndOffset", "class_im_fusion_1_1_meta_image_1_1_meta_image_header.html#adaeb05c51787a12e580255a98b9b7232", null ],
+    [ "m_compressed", "class_im_fusion_1_1_meta_image_1_1_meta_image_header.html#aa240abf369f3d799b8cceac45b05ac04", null ]
+];

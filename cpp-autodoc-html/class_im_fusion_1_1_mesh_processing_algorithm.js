@@ -1,0 +1,48 @@
+var class_im_fusion_1_1_mesh_processing_algorithm =
+[
+    [ "Mode", "class_im_fusion_1_1_mesh_processing_algorithm.html#ab66fa52334b058a0dfd32a56edc7ba9d", [
+      [ "NONE", "class_im_fusion_1_1_mesh_processing_algorithm.html#ab66fa52334b058a0dfd32a56edc7ba9da095c0d166a7c4bad2900beba3aa3c397", null ],
+      [ "SMOOTH", "class_im_fusion_1_1_mesh_processing_algorithm.html#ab66fa52334b058a0dfd32a56edc7ba9daf5e33774fc4fae35911c252383123bab", null ],
+      [ "DECIMATE", "class_im_fusion_1_1_mesh_processing_algorithm.html#ab66fa52334b058a0dfd32a56edc7ba9dae02287db3271ee616e95c408693d8d57", null ],
+      [ "FILL_HOLES", "class_im_fusion_1_1_mesh_processing_algorithm.html#ab66fa52334b058a0dfd32a56edc7ba9da7c89133b4887d93ed2cd308f9146ec5c", null ],
+      [ "COLOR", "class_im_fusion_1_1_mesh_processing_algorithm.html#ab66fa52334b058a0dfd32a56edc7ba9da7f204422968abfdb4369b119e602a39e", null ],
+      [ "CROP", "class_im_fusion_1_1_mesh_processing_algorithm.html#ab66fa52334b058a0dfd32a56edc7ba9da4874127cea2c93c77ee0577a06d7c921", null ],
+      [ "CLEAN", "class_im_fusion_1_1_mesh_processing_algorithm.html#ab66fa52334b058a0dfd32a56edc7ba9da1814d57ff8dfe52280cede843d250c22", null ],
+      [ "AUTO_ALIGN", "class_im_fusion_1_1_mesh_processing_algorithm.html#ab66fa52334b058a0dfd32a56edc7ba9da0695fe549bf97e37f515c49b3ca999e9", null ],
+      [ "REMOVE_EDGES", "class_im_fusion_1_1_mesh_processing_algorithm.html#ab66fa52334b058a0dfd32a56edc7ba9da595f607e9f19351e655121735ac8b2b8", null ],
+      [ "INVERT_NORMALS", "class_im_fusion_1_1_mesh_processing_algorithm.html#ab66fa52334b058a0dfd32a56edc7ba9da7c8f8fa12bd5f8893ef4de3eed1d547f", null ],
+      [ "MERGE_CLOSE_VERTICES", "class_im_fusion_1_1_mesh_processing_algorithm.html#ab66fa52334b058a0dfd32a56edc7ba9da4b56acdb451b233cc2d2d01fc09acc2d", null ]
+    ] ],
+    [ "StatusExt", "class_im_fusion_1_1_mesh_processing_algorithm.html#a0b1412abcb83280c1d16f7aacba2ae6f", [
+      [ "FillHolesNotSupported", "class_im_fusion_1_1_mesh_processing_algorithm.html#a0b1412abcb83280c1d16f7aacba2ae6fadcb15d2e32a2d87cfedc47a17a2a68c0", null ],
+      [ "ColoringFailed", "class_im_fusion_1_1_mesh_processing_algorithm.html#a0b1412abcb83280c1d16f7aacba2ae6fa519e3e3021037f100a6bb8cc597286eb", null ],
+      [ "ComputationFailed", "class_im_fusion_1_1_mesh_processing_algorithm.html#a0b1412abcb83280c1d16f7aacba2ae6fac12871375c41d2ad6e44aeb147436c23", null ]
+    ] ],
+    [ "MeshProcessingAlgorithm", "class_im_fusion_1_1_mesh_processing_algorithm.html#ab0e1c899e6becc815ff73c7e594c9503", null ],
+    [ "~MeshProcessingAlgorithm", "class_im_fusion_1_1_mesh_processing_algorithm.html#af3d9843506edfb89ecff317f8489b94f", null ],
+    [ "mesh", "class_im_fusion_1_1_mesh_processing_algorithm.html#a336d3977ccce8c64819ffaec03a22896", null ],
+    [ "compute", "class_im_fusion_1_1_mesh_processing_algorithm.html#a319779fe9d6f22b7942096e4b56895bb", null ],
+    [ "takeOutput", "class_im_fusion_1_1_mesh_processing_algorithm.html#ad093810b4cbd05527e4026bfcfda16c8", null ],
+    [ "setMode", "class_im_fusion_1_1_mesh_processing_algorithm.html#aaeea90045edddfa0f1ef2abe5ba0a7f3", null ],
+    [ "mode", "class_im_fusion_1_1_mesh_processing_algorithm.html#a9aa4820225fc4944db05a580afd1a5a8", null ],
+    [ "setSmoothMode", "class_im_fusion_1_1_mesh_processing_algorithm.html#a3ef3f854c562a81375efabfa71a10630", null ],
+    [ "smoothMode", "class_im_fusion_1_1_mesh_processing_algorithm.html#affe5ddae01c8f59166b041673056e720", null ],
+    [ "setSmoothParam", "class_im_fusion_1_1_mesh_processing_algorithm.html#af2df6a36916b1e734ed4eaaf0d126dbf", null ],
+    [ "smoothParam", "class_im_fusion_1_1_mesh_processing_algorithm.html#ae2ea207c7c4ee4e8178135821fbcd91e", null ],
+    [ "setRemoveEdgesParam", "class_im_fusion_1_1_mesh_processing_algorithm.html#a582576956d0de3984c78d82431835f69", null ],
+    [ "removeEgdesParam", "class_im_fusion_1_1_mesh_processing_algorithm.html#a88782e5a7ba2572c854658939b3f85e6", null ],
+    [ "setDecimationParam", "class_im_fusion_1_1_mesh_processing_algorithm.html#a3e1e8880be04f0fa72717d6279931f2e", null ],
+    [ "decimationParam", "class_im_fusion_1_1_mesh_processing_algorithm.html#aa32a6d93c10a987e0317f4ea10375ea8", null ],
+    [ "setDecimationParam", "class_im_fusion_1_1_mesh_processing_algorithm.html#a0499fcc3c25d8b0ff88762ad5b95df49", null ],
+    [ "decimationParam", "class_im_fusion_1_1_mesh_processing_algorithm.html#ad3f40e731d86c18d39b27700d6348d11", null ],
+    [ "setColorParam", "class_im_fusion_1_1_mesh_processing_algorithm.html#a6c0223a44a25ed95f8fedd9a4d46de03", null ],
+    [ "colorParam", "class_im_fusion_1_1_mesh_processing_algorithm.html#a906bc61046ca8146ff9248a5c116ea51", null ],
+    [ "setCropParam", "class_im_fusion_1_1_mesh_processing_algorithm.html#ae5ff9695ec61c8d1559720e88921514e", null ],
+    [ "cropParam", "class_im_fusion_1_1_mesh_processing_algorithm.html#abfe5da88c608aa416a7ea3c6b935a196", null ],
+    [ "setCleanParam", "class_im_fusion_1_1_mesh_processing_algorithm.html#a1dce9c99817948cf54fa492820436d7c", null ],
+    [ "cleanParam", "class_im_fusion_1_1_mesh_processing_algorithm.html#aba1f47d9223ac07df1a84e5af1050f49", null ],
+    [ "setAutoAlignParam", "class_im_fusion_1_1_mesh_processing_algorithm.html#a570e551ca19520d6fa5e09f6a0acd0b6", null ],
+    [ "autoAlignParam", "class_im_fusion_1_1_mesh_processing_algorithm.html#a9ab4a9736ca716218c47d59c56685e0b", null ],
+    [ "configure", "class_im_fusion_1_1_mesh_processing_algorithm.html#a1897a247f409d1a0d2417cc45a23050e", null ],
+    [ "configuration", "class_im_fusion_1_1_mesh_processing_algorithm.html#acf673012c02723332049513f176bbd7f", null ]
+];

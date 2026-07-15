@@ -1,0 +1,25 @@
+var class_im_fusion_1_1_tracked_shared_image_set_properties_algorithm =
+[
+    [ "SampleTimeoutCriteria", "class_im_fusion_1_1_tracked_shared_image_set_properties_algorithm.html#ae95606ebccbe7f65897505fe4134bd5a", null ],
+    [ "TrackedSharedImageSetPropertiesAlgorithm", "class_im_fusion_1_1_tracked_shared_image_set_properties_algorithm.html#ade1f50532a17da137b7c7f4de22e0749", null ],
+    [ "TrackedSharedImageSetPropertiesAlgorithm", "class_im_fusion_1_1_tracked_shared_image_set_properties_algorithm.html#acd53bebf0252550fd6805a43131dc689", null ],
+    [ "TrackedSharedImageSetPropertiesAlgorithm", "class_im_fusion_1_1_tracked_shared_image_set_properties_algorithm.html#ad0de51aeba8d5900894c7bef96c2e31e", null ],
+    [ "~TrackedSharedImageSetPropertiesAlgorithm", "class_im_fusion_1_1_tracked_shared_image_set_properties_algorithm.html#ad6683707c23e4756f347f734bf29eb24", null ],
+    [ "clearMetadata", "class_im_fusion_1_1_tracked_shared_image_set_properties_algorithm.html#a56c5b76953c520c74b01b895c8e54ce6", null ],
+    [ "hasTrackingGaps", "class_im_fusion_1_1_tracked_shared_image_set_properties_algorithm.html#a96284ad86136aa007460cd55586c0c45", null ],
+    [ "resampleTracking", "class_im_fusion_1_1_tracked_shared_image_set_properties_algorithm.html#a4ae25053f6f02b02901a71f3c1ed2f19", null ],
+    [ "hasBothTimestamps", "class_im_fusion_1_1_tracked_shared_image_set_properties_algorithm.html#a063c612caf33ebf54917f696074e273b", null ],
+    [ "setUseMaxTimestepBetweenSamples", "class_im_fusion_1_1_tracked_shared_image_set_properties_algorithm.html#aef0ef7f6cd71af8771ea928dce6664ae", null ],
+    [ "usesArrivalTimestamps", "class_im_fusion_1_1_tracked_shared_image_set_properties_algorithm.html#a75f403ac7d28bbf19260c1fa70aed4ae", null ],
+    [ "applyTimestampsFromSeries", "class_im_fusion_1_1_tracked_shared_image_set_properties_algorithm.html#a43b0e2bace2f5d6c90cbbb6c9438795e", null ],
+    [ "image", "class_im_fusion_1_1_tracked_shared_image_set_properties_algorithm.html#a3580513653c43b0d682a2400fce5c577", null ],
+    [ "images", "class_im_fusion_1_1_tracked_shared_image_set_properties_algorithm.html#a4fb528009fa55aa30f226fc61ec104dc", null ],
+    [ "compute", "class_im_fusion_1_1_tracked_shared_image_set_properties_algorithm.html#a03eeb669b067283743b680df699b0413", null ],
+    [ "configure", "class_im_fusion_1_1_tracked_shared_image_set_properties_algorithm.html#af6919aa91ef4525f846a7043f56d905b", null ],
+    [ "configuration", "class_im_fusion_1_1_tracked_shared_image_set_properties_algorithm.html#aebef678c9a9aa13fc6df84ed958e8489", null ],
+    [ "m_tsis", "class_im_fusion_1_1_tracked_shared_image_set_properties_algorithm.html#a946ca4335842a6df6f5ce2623fa76ca1", null ],
+    [ "m_tsisAll", "class_im_fusion_1_1_tracked_shared_image_set_properties_algorithm.html#ae42e025abbe6f4aecb5abeec8ddd4e4a", null ],
+    [ "m_resampleTracking", "class_im_fusion_1_1_tracked_shared_image_set_properties_algorithm.html#a0c6ece6fe22be4120e244fb5c2b4659f", null ],
+    [ "m_clearMetadata", "class_im_fusion_1_1_tracked_shared_image_set_properties_algorithm.html#ab15a881159a1dabd53f67b7724a6cbef", null ],
+    [ "m_sampleTimeoutCriteria", "class_im_fusion_1_1_tracked_shared_image_set_properties_algorithm.html#a5015cb0f9f20c96d4762e70cc2532bb6", null ]
+];

@@ -1,0 +1,27 @@
+var class_im_fusion_1_1_factory_registry =
+[
+    [ "registerAlgorithmFactory", "class_im_fusion_1_1_factory_registry.html#ac4ec3899d761ffe4e4ff57f41765a14f", null ],
+    [ "unregisterAlgorithmFactory", "class_im_fusion_1_1_factory_registry.html#a047ce6a417631770da09134f3090f6d0", null ],
+    [ "getAlgorithmFactories", "class_im_fusion_1_1_factory_registry.html#a5e742dd247a72466574b4688b8cf7143", null ],
+    [ "instantiateAlgorithm", "class_im_fusion_1_1_factory_registry.html#ab23dafcfd45e5e31cce0c7e2cf29268b", null ],
+    [ "instantiateAlgorithm", "class_im_fusion_1_1_factory_registry.html#a940dab26bdaa4b0d95ab90d9bb1e2d89", null ],
+    [ "instantiateIoAlgorithm", "class_im_fusion_1_1_factory_registry.html#afb3a3cebe1e19e253c6c2ab3a3832faf", null ],
+    [ "algorithmDescriptor", "class_im_fusion_1_1_factory_registry.html#ac843b935945d9fcaff0f41194f0bebc2", null ],
+    [ "algorithmDescriptor", "class_im_fusion_1_1_factory_registry.html#a0dba95d07f8a9600f76650188b616988", null ],
+    [ "compatibleDescriptors", "class_im_fusion_1_1_factory_registry.html#a507be0206c55c78cf1bf0ddd60bc1519", null ],
+    [ "compatibleIoDescriptors", "class_im_fusion_1_1_factory_registry.html#abcc0f816ae0275e41d6b64b47a41fdb6", null ],
+    [ "compatibleIoDescriptors", "class_im_fusion_1_1_factory_registry.html#a0fb0dc13b40c4e79ca50b5c89dab2ac3", null ],
+    [ "algorithmDescriptors", "class_im_fusion_1_1_factory_registry.html#a135407f0e4d2e8957ee9275662420e41", null ],
+    [ "createDataController", "class_im_fusion_1_1_factory_registry.html#ad3a804f076e54da602269f5f62e40a5c", null ],
+    [ "compatibleDataControllers", "class_im_fusion_1_1_factory_registry.html#aed1eb118e23ac7764a96fc7b7b5b2a6d", null ],
+    [ "registerAlgorithmControllerFactory", "class_im_fusion_1_1_factory_registry.html#a261e1980dc8463b249b3cde6ef04590b", null ],
+    [ "unregisterAlgorithmControllerFactory", "class_im_fusion_1_1_factory_registry.html#a067cfb26b4bbe351f94304ecbc4ebdb7", null ],
+    [ "getAlgorithmControllerFactories", "class_im_fusion_1_1_factory_registry.html#a5d7f4c3b60f86925ad4e17af283ccb8b", null ],
+    [ "createAlgorithmController", "class_im_fusion_1_1_factory_registry.html#a8cadc2e87a1dc7a093738489c47df539", null ],
+    [ "registerDataAnnotationFactory", "class_im_fusion_1_1_factory_registry.html#a1a7bc8a37558b5ecf2001b48bf4a6d03", null ],
+    [ "unregisterDataAnnotationFactory", "class_im_fusion_1_1_factory_registry.html#a33f5061d4326bc9acb093522855028d1", null ],
+    [ "getDataAnnotationFactories", "class_im_fusion_1_1_factory_registry.html#aba9543f4139dcfe51f526e9242cecbdf", null ],
+    [ "createDataAnnotation", "class_im_fusion_1_1_factory_registry.html#a7f3bc19f3f1357493d947500c2c05264", null ],
+    [ "compatibleDataAnnotations", "class_im_fusion_1_1_factory_registry.html#ad747099a1290302cb0522815d7ada7dd", null ],
+    [ "cloneData", "class_im_fusion_1_1_factory_registry.html#a4410cad690f3cc5e3b00d86fa4b358d5", null ]
+];

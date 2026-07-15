@@ -1,0 +1,38 @@
+var class_im_fusion_1_1_label_data_component =
+[
+    [ "LabelConfig", "struct_im_fusion_1_1_label_data_component_1_1_label_config.html", "struct_im_fusion_1_1_label_data_component_1_1_label_config" ],
+    [ "SegmentationAlgorithmType", "class_im_fusion_1_1_label_data_component.html#a8966c335dea0c42df9c330edf5a64ae7", [
+      [ "Unknown", "class_im_fusion_1_1_label_data_component.html#a8966c335dea0c42df9c330edf5a64ae7a88183b946cc5f0e8c96b2e66e1c74a7e", null ],
+      [ "Automatic", "class_im_fusion_1_1_label_data_component.html#a8966c335dea0c42df9c330edf5a64ae7a086247a9b57fde6eefee2a0c4752242d", null ],
+      [ "SemiAutomatic", "class_im_fusion_1_1_label_data_component.html#a8966c335dea0c42df9c330edf5a64ae7a07c3a8ffb58268aa20f33e81eabe91e3", null ],
+      [ "Manual", "class_im_fusion_1_1_label_data_component.html#a8966c335dea0c42df9c330edf5a64ae7ae1ba155a9f2e8c3be94020eef32a0301", null ]
+    ] ],
+    [ "LabelDataComponent", "class_im_fusion_1_1_label_data_component.html#a98c40756c4936d1c367ead875b29cd9d", null ],
+    [ "labelConfigs", "class_im_fusion_1_1_label_data_component.html#afa88b27019c8385de7a33c0d75339a52", null ],
+    [ "setLabelConfigs", "class_im_fusion_1_1_label_data_component.html#a2416a1ad475b4c496485dc40e8f32310", null ],
+    [ "labelConfig", "class_im_fusion_1_1_label_data_component.html#a7647517b22a2553a918346a7b423bc0c", null ],
+    [ "setLabelConfig", "class_im_fusion_1_1_label_data_component.html#a7d7d872ab96a8ef9a6f23c19f0aeef68", null ],
+    [ "setDefaultLabelConfig", "class_im_fusion_1_1_label_data_component.html#afaa11f278bf09b3ae9b43fb203a82957", null ],
+    [ "hasLabel", "class_im_fusion_1_1_label_data_component.html#adcd2e51f63977f3b7b2ac4f068cdbd82", null ],
+    [ "removeLabel", "class_im_fusion_1_1_label_data_component.html#a4d87d4fd954ed3afe6bc7bfa5425d9c8", null ],
+    [ "setLabelColor", "class_im_fusion_1_1_label_data_component.html#ae5fc54828b71991d202e77f9b8d5c428", null ],
+    [ "setVisibility2d", "class_im_fusion_1_1_label_data_component.html#a5c1d6721b5c753b5b4edff987d6193e0", null ],
+    [ "setVisibility3d", "class_im_fusion_1_1_label_data_component.html#aabb90a164a6edb09cacb2f11343933ad", null ],
+    [ "setLabelName", "class_im_fusion_1_1_label_data_component.html#a24f3a06021eee3d1b385c1c62bb2f88b", null ],
+    [ "detectLabels", "class_im_fusion_1_1_label_data_component.html#ad12f4f7df545690340c81ff665d1efd1", null ],
+    [ "removeUnusedLabels", "class_im_fusion_1_1_label_data_component.html#ad7aa3eb35888e3e88c8f8fb2de3a1cdb", null ],
+    [ "sourceModality", "class_im_fusion_1_1_label_data_component.html#a76419f961b4f06f5f1c757081be7abf4", null ],
+    [ "setSourceModality", "class_im_fusion_1_1_label_data_component.html#a3e61dffe3821d2e6c9917b62391eddcd", null ],
+    [ "overlapEncoder", "class_im_fusion_1_1_label_data_component.html#aa5e50c8e858254e044235deecdaf4145", null ],
+    [ "setOverlapEncoder", "class_im_fusion_1_1_label_data_component.html#a58d9aea5dccaf07a756d6b1881f1ee66", null ],
+    [ "convertOverlapEncoderToLayers", "class_im_fusion_1_1_label_data_component.html#a0554f2f0da5aa59859f1d9bc89ef4e28", null ],
+    [ "colormap2d", "class_im_fusion_1_1_label_data_component.html#ae037b2a4be1ae01ffb8c58404d9a43aa", null ],
+    [ "colormap3d", "class_im_fusion_1_1_label_data_component.html#aeffd390e87a419b674d97ae8ec2ccf8f", null ],
+    [ "colormap3dPreIntegrated", "class_im_fusion_1_1_label_data_component.html#a75c6e9adfdbd514488565a642d7d42d2", null ],
+    [ "windowLevelNormalized", "class_im_fusion_1_1_label_data_component.html#a02be4cb8c2e9ec797e5e1856446f061c", null ],
+    [ "opaqueRange3d", "class_im_fusion_1_1_label_data_component.html#a107aabfc5059c5d82f0b871b8d6278b1", null ],
+    [ "id", "class_im_fusion_1_1_label_data_component.html#a1f8431f6f53904f46d5b9286daff2c62", null ],
+    [ "configure", "class_im_fusion_1_1_label_data_component.html#a6e82fed12a04aef9a7ca6ddf08b47d22", null ],
+    [ "configuration", "class_im_fusion_1_1_label_data_component.html#adad4f9533bd78f5b958af23144838822", null ],
+    [ "signalChanged", "class_im_fusion_1_1_label_data_component.html#a842220374cd906a055e200e13b2f8231", null ]
+];

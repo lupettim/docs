@@ -1,0 +1,36 @@
+var class_im_fusion_1_1_point_based_annotation_manipulator =
+[
+    [ "MouseEvent", "struct_im_fusion_1_1_point_based_annotation_manipulator_1_1_mouse_event.html", "struct_im_fusion_1_1_point_based_annotation_manipulator_1_1_mouse_event" ],
+    [ "InteractionModeWrapper", "class_im_fusion_1_1_point_based_annotation_manipulator_1_1_interaction_mode_wrapper.html", null ],
+    [ "VolumeViewPickingMode", "class_im_fusion_1_1_point_based_annotation_manipulator.html#a312b1c52f55dacee5419615d67ec3d6f", [
+      [ "On", "class_im_fusion_1_1_point_based_annotation_manipulator.html#a312b1c52f55dacee5419615d67ec3d6fa521c36a31c2762741cf0f8890cbe05e3", null ],
+      [ "Off", "class_im_fusion_1_1_point_based_annotation_manipulator.html#a312b1c52f55dacee5419615d67ec3d6fad15305d7a4e34e02489c74a5ef542f36", null ],
+      [ "Automatic", "class_im_fusion_1_1_point_based_annotation_manipulator.html#a312b1c52f55dacee5419615d67ec3d6fa086247a9b57fde6eefee2a0c4752242d", null ]
+    ] ],
+    [ "setInteractionMode", "class_im_fusion_1_1_point_based_annotation_manipulator.html#ae5f9a30e22e4b447abec55988db1d4d9", null ],
+    [ "interactionMode", "class_im_fusion_1_1_point_based_annotation_manipulator.html#a4ca9fb1539220ef319fff7b26bd3360b", null ],
+    [ "setAllowedInteractions", "class_im_fusion_1_1_point_based_annotation_manipulator.html#ae3ccfc781b01d40869ba49a4d1edf9f3", null ],
+    [ "allowedInteractions", "class_im_fusion_1_1_point_based_annotation_manipulator.html#a87a8525b6020b1b9d3ea25c409461bd9", null ],
+    [ "setHovering", "class_im_fusion_1_1_point_based_annotation_manipulator.html#a8517c6e60be2ff0e98b98f861435fdea", null ],
+    [ "hovering", "class_im_fusion_1_1_point_based_annotation_manipulator.html#afd2a1620b60419a85eecea38e2b27b4f", null ],
+    [ "reset", "class_im_fusion_1_1_point_based_annotation_manipulator.html#a6b330bcba30e939352fbac48808cee64", null ],
+    [ "setAxisManip", "class_im_fusion_1_1_point_based_annotation_manipulator.html#afa479f334fa6c49d3221fe0634b58723", null ],
+    [ "clearAxisManip", "class_im_fusion_1_1_point_based_annotation_manipulator.html#a1984ed88d0bbdc7c95e7cd8e8b809b3f", null ],
+    [ "setBounds", "class_im_fusion_1_1_point_based_annotation_manipulator.html#a5b1a7096b6a7dfa57bfda2f2639c7957", null ],
+    [ "clearBounds", "class_im_fusion_1_1_point_based_annotation_manipulator.html#af852f34fe1ec67da7156dcdaa69bf60c", null ],
+    [ "lastButton", "class_im_fusion_1_1_point_based_annotation_manipulator.html#a0e1423a25fad2aaa120de507db5c5b7b", null ],
+    [ "setHoverCursor", "class_im_fusion_1_1_point_based_annotation_manipulator.html#a9eef9b2ac922a610819aa04c4b8115b2", null ],
+    [ "setInteractionCursor", "class_im_fusion_1_1_point_based_annotation_manipulator.html#ac8b8758966ad9d0d95f03f999aaf42c8", null ],
+    [ "resetCursor", "class_im_fusion_1_1_point_based_annotation_manipulator.html#aebb82a0bf916d0e08584e43ed1825b70", null ],
+    [ "requiresFocus", "class_im_fusion_1_1_point_based_annotation_manipulator.html#a6b7c3123eb8eb0ed427c7543b964a588", null ],
+    [ "selectInteraction", "class_im_fusion_1_1_point_based_annotation_manipulator.html#acf87e853f3e2065ce4d7996d067415c7", null ],
+    [ "onCreate", "class_im_fusion_1_1_point_based_annotation_manipulator.html#a3b186295d1b80da5759f0dfa94587182", null ],
+    [ "onMove", "class_im_fusion_1_1_point_based_annotation_manipulator.html#acada0bd2ac6abd24132fd59c9b475d1d", null ],
+    [ "onAdd", "class_im_fusion_1_1_point_based_annotation_manipulator.html#a00df555cf7a69ce9e83165d69a65a005", null ],
+    [ "onRemove", "class_im_fusion_1_1_point_based_annotation_manipulator.html#aec71a5180dc9299eb391c912954450c6", null ],
+    [ "onEdit", "class_im_fusion_1_1_point_based_annotation_manipulator.html#adbeb46d07f70b7dae6a80bb06cdb8590", null ],
+    [ "onScale", "class_im_fusion_1_1_point_based_annotation_manipulator.html#acea04e1b9a0d990e6c642112aff0cc52", null ],
+    [ "onRotate", "class_im_fusion_1_1_point_based_annotation_manipulator.html#af7235178e04cb7e1fba5f5dbeae28c87", null ],
+    [ "signalCreatingFinished", "class_im_fusion_1_1_point_based_annotation_manipulator.html#a58e2679ee314598da85c9721ee542ae5", null ],
+    [ "m_suppressNextContextMenuEvent", "class_im_fusion_1_1_point_based_annotation_manipulator.html#a7aa91b21cbac42e33937811614eafdcb", null ]
+];

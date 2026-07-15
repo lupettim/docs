@@ -1,0 +1,6 @@
+var class_im_fusion_1_1_dicom_1_1_enhanced_multi_frame_image_i_o_d_1_1_functional_group_macro =
+[
+    [ "SegmentIdentificationSequenceItem", "class_im_fusion_1_1_dicom_1_1_enhanced_multi_frame_image_i_o_d_1_1_functional_group_macro_1_1_seed876a03178487ad8b108b4d4990f315.html", null ],
+    [ "FrameContentSequenceItem", "class_im_fusion_1_1_dicom_1_1_enhanced_multi_frame_image_i_o_d_1_1_functional_group_macro_1_1_frame_content_sequence_item.html", "class_im_fusion_1_1_dicom_1_1_enhanced_multi_frame_image_i_o_d_1_1_functional_group_macro_1_1_frame_content_sequence_item" ],
+    [ "dataset", "class_im_fusion_1_1_dicom_1_1_enhanced_multi_frame_image_i_o_d_1_1_functional_group_macro.html#a4cafb92939aa6fa9bf3d1406e79dcd01", null ]
+];

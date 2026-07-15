@@ -1,0 +1,125 @@
+var group___im_fusion_core_utils =
+[
+    [ "ImFusion::Literals", "namespace_im_fusion_1_1_literals.html", null ],
+    [ "ImFusion::ByteBufferView", "class_im_fusion_1_1_byte_buffer_view.html", [
+      [ "ByteBufferView", "class_im_fusion_1_1_byte_buffer_view.html#a4a2eda2fa2a072efc2bf0fbf2d3c1883", null ],
+      [ "ByteBufferView", "class_im_fusion_1_1_byte_buffer_view.html#acbe4c82454839f7659481cdafad19dbd", null ],
+      [ "ByteBufferView", "class_im_fusion_1_1_byte_buffer_view.html#acb4af1e5294b45d67130c11e707b3259", null ],
+      [ "data", "class_im_fusion_1_1_byte_buffer_view.html#a84f72c23e3d558e30e5d2c7db44f2613", null ],
+      [ "size", "class_im_fusion_1_1_byte_buffer_view.html#aa148a355ccfc268bb794265e52cd70b2", null ],
+      [ "toString", "class_im_fusion_1_1_byte_buffer_view.html#a4ddafd5fd145b69172259d5f70faf2e8", null ],
+      [ "toStringView", "class_im_fusion_1_1_byte_buffer_view.html#a833a7a967344c6ff487c4062e0aed3f3", null ],
+      [ "isEmpty", "class_im_fusion_1_1_byte_buffer_view.html#a6a469de3b42229b22f013233813cf65c", null ],
+      [ "copy", "class_im_fusion_1_1_byte_buffer_view.html#a8d3703b71237dfbf7cff86107faa1aaa", null ],
+      [ "subCopy", "class_im_fusion_1_1_byte_buffer_view.html#a3261aa9c4f3a4a80d5f810f13332fac7", null ],
+      [ "view", "class_im_fusion_1_1_byte_buffer_view.html#ae783ea031d2004906fd4d27fd370fddc", null ],
+      [ "subView", "class_im_fusion_1_1_byte_buffer_view.html#aa772bf50c3536dc3fbb4c779b30b8573", null ],
+      [ "begin", "class_im_fusion_1_1_byte_buffer_view.html#a4211013a3852b21326015b65b05f394a", null ],
+      [ "end", "class_im_fusion_1_1_byte_buffer_view.html#a3609a5fe5f53b2c30706b734054db681", null ],
+      [ "operator==", "class_im_fusion_1_1_byte_buffer_view.html#a124ed3948019211b1d6c5185aa4c757a", null ],
+      [ "m_data", "class_im_fusion_1_1_byte_buffer_view.html#a3e7c302329e7a5529d4eb57710869b18", null ],
+      [ "m_size", "class_im_fusion_1_1_byte_buffer_view.html#a642377f0367ca49ccbd1c3d226ba58d0", null ]
+    ] ],
+    [ "ImFusion::ByteBufferMutableView", "class_im_fusion_1_1_byte_buffer_mutable_view.html", [
+      [ "ByteBufferMutableView", "class_im_fusion_1_1_byte_buffer_mutable_view.html#a64af30c804ae15386a73e6d80f860173", null ],
+      [ "ByteBufferMutableView", "class_im_fusion_1_1_byte_buffer_mutable_view.html#a3ac7e88f167afcbec4c245e55a5888a7", null ],
+      [ "ByteBufferMutableView", "class_im_fusion_1_1_byte_buffer_mutable_view.html#a1bc4c60c9182f4f9ca0362048619c13e", null ],
+      [ "mutableView", "class_im_fusion_1_1_byte_buffer_mutable_view.html#a6cf14fe3a4444ccb852eb3d2fb1024be", null ],
+      [ "mutableSubView", "class_im_fusion_1_1_byte_buffer_mutable_view.html#ab4cb1aa6db4e5d5f4ff44c905c1a25f1", null ],
+      [ "data", "class_im_fusion_1_1_byte_buffer_mutable_view.html#a78dac7a28b6334fac8ed871b1586d9f3", null ],
+      [ "data", "class_im_fusion_1_1_byte_buffer_mutable_view.html#a45e7f05da74e1a58ea63816df520b82c", null ],
+      [ "begin", "class_im_fusion_1_1_byte_buffer_mutable_view.html#ae2ac9dbe4f649afb26603d130c79349f", null ],
+      [ "begin", "class_im_fusion_1_1_byte_buffer_mutable_view.html#aa6c5ed5b85b0f3ec8fe11ac1f2e2fd52", null ],
+      [ "end", "class_im_fusion_1_1_byte_buffer_mutable_view.html#a8b01a7a8dee872d914f14eebff50b27f", null ],
+      [ "end", "class_im_fusion_1_1_byte_buffer_mutable_view.html#a2ee426641f9f3916231fb32e2e29097f", null ]
+    ] ],
+    [ "ImFusion::ByteBuffer", "class_im_fusion_1_1_byte_buffer.html", [
+      [ "ByteBuffer", "class_im_fusion_1_1_byte_buffer.html#ae2a3ffa9160c8d28aeb5610748247a9e", null ],
+      [ "ByteBuffer", "class_im_fusion_1_1_byte_buffer.html#a61857bbab3f213951a163a6ec4cb1247", null ],
+      [ "ByteBuffer", "class_im_fusion_1_1_byte_buffer.html#a0fd829769c221054328b7c889a98f5d7", null ],
+      [ "ByteBuffer", "class_im_fusion_1_1_byte_buffer.html#aa2f34a30e662def56225087a57654b37", null ],
+      [ "ByteBuffer", "class_im_fusion_1_1_byte_buffer.html#a31634530be6438a9df31190172cf0c0b", null ],
+      [ "ByteBuffer", "class_im_fusion_1_1_byte_buffer.html#a91be5c1895f9ae4c10e608c58d325c1a", null ],
+      [ "operator=", "class_im_fusion_1_1_byte_buffer.html#a808054d8e6c0650ba5ab2ad497a1f459", null ],
+      [ "operator=", "class_im_fusion_1_1_byte_buffer.html#a56a7af034e82218a2ab647fb025e4eaa", null ],
+      [ "release", "class_im_fusion_1_1_byte_buffer.html#a55e016d29b70504c3ac37abc94b71105", null ]
+    ] ],
+    [ "ImFusion::ByteBufferStream", "class_im_fusion_1_1_byte_buffer_stream.html", null ],
+    [ "ImFusion::ByteSize", "class_im_fusion_1_1_byte_size.html", [
+      [ "ByteSize", "class_im_fusion_1_1_byte_size.html#acae6a28c187aac9a68f03b5c737092b5", null ],
+      [ "operator size_t", "class_im_fusion_1_1_byte_size.html#a724e067d58318c40e3d90f10b0808eb0", null ],
+      [ "numBytes", "class_im_fusion_1_1_byte_size.html#afb0ac3b5692c1b2ef37ffc73000f8869", null ],
+      [ "numKB", "class_im_fusion_1_1_byte_size.html#afe485c80f966405991e5da6a459319a2", null ],
+      [ "numMB", "class_im_fusion_1_1_byte_size.html#a01cf768c7699ca788888f200ad37b63e", null ],
+      [ "numGB", "class_im_fusion_1_1_byte_size.html#a40bb711e12d8bd31f34a526de3c7bde2", null ],
+      [ "toString", "class_im_fusion_1_1_byte_size.html#a8135010c3a8a8c4c90083ecc2bac10f9", null ]
+    ] ],
+    [ "ImFusion::Flags&lt; Enum &gt;", "class_im_fusion_1_1_flags.html", [
+      [ "Flags", "class_im_fusion_1_1_flags.html#ac4cc31118282241f58cf4bd1139b165b", null ],
+      [ "Flags", "class_im_fusion_1_1_flags.html#ad1dde1d3834d2a6192a56278a20a64fa", null ],
+      [ "Flags", "class_im_fusion_1_1_flags.html#addadf621f98ecee4954b7c1babb74c8e", null ],
+      [ "Flags", "class_im_fusion_1_1_flags.html#a165addaaa0f2c6216a45c304d4ebf7f5", null ],
+      [ "testFlag", "class_im_fusion_1_1_flags.html#aa8fbf93f42555fbf9ab72d78cb8524be", null ],
+      [ "setFlag", "class_im_fusion_1_1_flags.html#ab5bddaad15fe063bd844802b0eefbd50", null ],
+      [ "toggleFlag", "class_im_fusion_1_1_flags.html#a11f8317892c74f16126b452c8b4fe661", null ],
+      [ "value", "class_im_fusion_1_1_flags.html#aa9bcabb315a15a348f45c79caf89486c", null ]
+    ] ],
+    [ "ImFusion::GlobalSettings", "class_im_fusion_1_1_global_settings.html", null ],
+    [ "ImFusion::Timer", "class_im_fusion_1_1_timer.html", [
+      [ "Timer", "class_im_fusion_1_1_timer.html#ab3e10919bf57fa593f1e8920a87b732f", null ],
+      [ "start", "class_im_fusion_1_1_timer.html#ac552d9ba3453e1a99471989e3ed299f9", null ],
+      [ "stop", "class_im_fusion_1_1_timer.html#a5caea7f95da0216048da833b87faeeeb", null ],
+      [ "pause", "class_im_fusion_1_1_timer.html#adfcfd92fece3c674628faac24ecb23e5", null ],
+      [ "resume", "class_im_fusion_1_1_timer.html#aac415dd150bb2a87b56ea5a1738b9fb4", null ],
+      [ "reset", "class_im_fusion_1_1_timer.html#adb44ad1c5db8f593048c78a875337353", null ],
+      [ "restart", "class_im_fusion_1_1_timer.html#a4612beb8405f398cb22ed762b1577d2e", null ],
+      [ "isRunning", "class_im_fusion_1_1_timer.html#af686245b8cf5ec2adf153a097c73f393", null ],
+      [ "isPaused", "class_im_fusion_1_1_timer.html#a89c1a1f773210422b58d30b21b0acdfa", null ],
+      [ "getPassedMs", "class_im_fusion_1_1_timer.html#a01dc36d7cf42057f166b8865df95ff63", null ],
+      [ "getPassedMsAndReset", "class_im_fusion_1_1_timer.html#a0930bfaf3b07ffcbb4be3bbb19af0b9f", null ],
+      [ "formatPassed", "class_im_fusion_1_1_timer.html#af9a1b38e98bceb74eb65832aadc4e077", null ],
+      [ "formatPassedAndReset", "class_im_fusion_1_1_timer.html#aeae64495d433f25b1d8599282c0d7245", null ]
+    ] ],
+    [ "ImFusion::LoggingTimer", "class_im_fusion_1_1_logging_timer.html", [
+      [ "LoggingTimer", "class_im_fusion_1_1_logging_timer.html#a11ec537c3f706337753f9118e9590de9", null ],
+      [ "~LoggingTimer", "class_im_fusion_1_1_logging_timer.html#a533b1114fc81c4bcf47ff75cd4688918", null ],
+      [ "resume", "class_im_fusion_1_1_logging_timer.html#a3a9bbcdec8d724f2c3b3b966f5527c68", null ],
+      [ "pause", "class_im_fusion_1_1_logging_timer.html#a6b9ebfb68843a33efa3ca859ee5cc534", null ],
+      [ "startScopedTimer", "class_im_fusion_1_1_logging_timer.html#a831825dd365d484ee7ed481155231ceb", null ],
+      [ "reset", "class_im_fusion_1_1_logging_timer.html#adacc532090bc15ee844b3c71332703f2", null ]
+    ] ],
+    [ "ImFusion::MultiTimer", "class_im_fusion_1_1_multi_timer.html", [
+      [ "MultiTimer", "class_im_fusion_1_1_multi_timer.html#a4e96d5e79f1086f056af19cebedaba58", null ],
+      [ "~MultiTimer", "class_im_fusion_1_1_multi_timer.html#a3a9fdeee29301e80925232c6a0446a8d", null ],
+      [ "startTaskTimer", "class_im_fusion_1_1_multi_timer.html#ae8c66e858df543df03099b15ce358163", null ],
+      [ "stopCurrentTaskTimer", "class_im_fusion_1_1_multi_timer.html#aacc6cd3d3cca4c6cc05f4fd203a9ac0c", null ]
+    ] ],
+    [ "ImFusion::Utils::NotCopyable", "class_im_fusion_1_1_utils_1_1_not_copyable.html", null ],
+    [ "ImFusion::Utils::Overloaded&lt; Ts &gt;", "struct_im_fusion_1_1_utils_1_1_overloaded.html", null ],
+    [ "ImFusion::Utils::ScopeGuard&lt; ReleaseFunc &gt;", "class_im_fusion_1_1_utils_1_1_scope_guard.html", null ],
+    [ "ImFusion::Utils::Variant&lt; Types &gt;", "struct_im_fusion_1_1_utils_1_1_variant.html", [
+      [ "holds", "struct_im_fusion_1_1_utils_1_1_variant.html#a15684cad5d64dd137e4a246a2d8765ff", null ],
+      [ "equals", "struct_im_fusion_1_1_utils_1_1_variant.html#adc8730930c7ae96df8cd7d83a7caf4c9", null ],
+      [ "getIf", "struct_im_fusion_1_1_utils_1_1_variant.html#ad9facca24e5a8b3db4f7423facca8df4", null ],
+      [ "getIf", "struct_im_fusion_1_1_utils_1_1_variant.html#a7385b476cd951e3bd1d0c12aab7423a4", null ],
+      [ "visit", "struct_im_fusion_1_1_utils_1_1_variant.html#a7ffda820ac483db70e2b03b5ba1d173b", null ],
+      [ "visit", "struct_im_fusion_1_1_utils_1_1_variant.html#a890b0467159fa482e2df8cec1f545069", null ]
+    ] ],
+    [ "ImFusion::Utils::Version", "struct_im_fusion_1_1_utils_1_1_version.html", [
+      [ "Version", "struct_im_fusion_1_1_utils_1_1_version.html#ae9cd9cf8563a03d9bc6f95f025976fe0", null ],
+      [ "isValid", "struct_im_fusion_1_1_utils_1_1_version.html#a4a034a380003369f0dbd506291f7cad9", null ],
+      [ "isValidAndNotZero", "struct_im_fusion_1_1_utils_1_1_version.html#ab13d490dd28e78299855a214fa9c1164", null ],
+      [ "toString", "struct_im_fusion_1_1_utils_1_1_version.html#a3eef2d242a0944bece8ffaceb550ba64", null ],
+      [ "major", "struct_im_fusion_1_1_utils_1_1_version.html#a0f9a0860589d087162e3cab1580121ec", null ],
+      [ "minor", "struct_im_fusion_1_1_utils_1_1_version.html#a7889ac83d2744f90c4a760c2328936ca", null ],
+      [ "patch", "struct_im_fusion_1_1_utils_1_1_version.html#a5a705360e323063d3cf38d8f20bbd045", null ],
+      [ "suffix", "struct_im_fusion_1_1_utils_1_1_version.html#a206bfa159b7688c6b110e680e48a09c9", null ],
+      [ "metadata", "struct_im_fusion_1_1_utils_1_1_version.html#a5b12481060b0f435f96bc18ff3dff9b2", null ]
+    ] ],
+    [ "ImFusion::Utils::range", "group___im_fusion_core_utils.html#ga534259db711e50a0074ab82080c70bf2", null ],
+    [ "ImFusion::Utils::range", "group___im_fusion_core_utils.html#ga6e80f1720987265933d4523ba5a66105", null ],
+    [ "ImFusion::Utils::range", "group___im_fusion_core_utils.html#gad408967e0131eb0ab98afc33509e0f5d", null ],
+    [ "ImFusion::Utils::reverse", "group___im_fusion_core_utils.html#ga9943a4d0c34697466a303de133452bae", null ],
+    [ "ImFusion::Utils::makeScopeGuard", "group___im_fusion_core_utils.html#ga97902230354070ed3386832600822e0c", null ],
+    [ "ImFusion::Utils::makeScopeGuard", "group___im_fusion_core_utils.html#ga7fa4cea30016dc56fb54362cd76367d3", null ]
+];

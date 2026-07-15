@@ -1,0 +1,525 @@
+@font-face {
+	font-family: InterVariable;
+	font-style: normal;
+	font-weight: 100 900;
+	font-display: swap;
+	src: url('InterVariable.woff2') format('woff2');
+}
+@font-face {
+	font-family: InterVariable;
+	font-style: italic;
+	font-weight: 100 900;
+	font-display: swap;
+	src: url('InterVariable-Italic.woff2') format('woff2');
+}
+@font-face {
+	font-family: JetBrainsMono;
+	src: url('JetBrainsMono-Regular.woff2');
+	font-weight: 500;
+}
+@font-face {
+	font-family: JetBrainsMono;
+	src: url('JetBrainsMono-SemiBold.woff2');
+	font-weight: 600;
+}
+@font-face {
+	font-family: JetBrainsMono;
+	src: url('JetBrainsMono-Italic.woff2');
+	font-weight: 500;
+	font-style: italic;
+}
+@font-face {
+	font-family: JetBrainsMono;
+	src: url('JetBrainsMono-SemiBoldItalic.woff2');
+	font-weight: 600;
+	font-style: italic;
+}
+@supports (font-variation-settings: normal) {
+	:root { font-family: InterVariable, sans-serif; }
+}
+
+:root {
+	--side-nav-arrow-opacity: 0.4;
+	--side-nav-arrow-hover-opacity: 1.0;
+	--deprecated-color: #f2f3f4;
+	--tree-item-height: 1.6em;
+	--page-foreground-color: #161F26;
+	--side-nav-background: #F6F7F8;
+	--fragment-foreground: #263238;
+	--fragment-background: #F6F7F8;
+	--fragment-linenumber-background: #F0F0F0;
+	--tablehead-background: #EEEEEE;
+	--deprecated-color-dark: #CC8400;
+
+	--font-family: InterVariable,Roboto,sans-serif;
+	--font-family-monospace: JetbrainsMono,Consolas,monospace;
+	--page-font-size: 15.5px;
+	--code-font-size: 14px;
+	--toc-font-size: 13.5px;
+	--navigation-font-size: 13.5px;
+	font-feature-settings: 'liga' 1, 'calt' 1; /* fix for Chrome */
+}
+
+html.dark-mode {
+		--page-foreground-color: #DAE2E5;
+		--side-nav-background: #252628;
+		--fragment-foreground: #dbe4eb;
+		--fragment-background: #282c34;
+		--fragment-linenumber-background: #35393c;
+		--tablehead-background: #222426;
+		--deprecated-color-dark: #D88500;
+}
+
+@media (prefers-color-scheme: dark) {
+	html:not(.light-mode) {
+		--page-foreground-color: #DAE2E5;
+		--side-nav-background: #252628;
+		--fragment-foreground: #dbe4eb;
+		--fragment-background: #282c34;
+		--fragment-linenumber-background: #35393c;
+		--tablehead-background: #222426;
+		--deprecated-color-dark: #D88500;
+	}
+}
+
+@media (prefers-color-scheme: dark) {
+	html:not(.dark-mode) {
+		--page-foreground-color: #161F26;
+		--side-nav-background: #F6F7F8;
+		--fragment-foreground: #263238;
+		--fragment-background: #F6F7F8;
+		--fragment-linenumber-background: #F0F0F0;
+		--tablehead-background: #EEEEEE;
+		--deprecated-color-dark: #CC8400;
+    }
+}
+
+
+
+/* override global settings from doxygen */
+body, table, div, p, dl {
+	line-height: 150%;
+}
+hr, .contents hr {
+	box-shadow: unset;
+}
+td h2.groupheader, h2.groupheader {
+	box-shadow: 13px 0 var(--page-background-color),
+		-13px 0 var(--page-background-color),
+		13px 1px var(--separator-color),
+		-13px 1px var(--separator-color);
+}
+a.el {
+	font-weight: 600;
+}
+h1 {
+	font-size: 160%;
+}
+h2 {
+	font-size: 130%;
+}
+h3 {
+	font-size: 115%;
+}
+
+
+/* horizontal top menu */
+#main-menu li a {
+	padding: 0 0.75em;
+}
+#main-menu li a.has-submenu {
+	padding-right: 1.5em;
+}
+
+
+/* left side menu */
+#nav-tree div.item {
+	line-height: var(--tree-item-height);
+	height: var(--tree-item-height);
+}
+#nav-tree div.item:hover {
+	background-color: var(--fragment-linenumber-background);
+}
+#nav-tree .selected {
+	background-color: var(--note-color);
+}
+#nav-tree .children_ul {
+	margin-bottom: 0.5em;
+}
+#nav-tree a:hover, #nav-tree a:focus {
+	text-decoration: none; /* no underline */
+	outline-style: none; /* no box */
+}
+
+
+/* right side menu */
+#page-nav {
+	background-color: var(--side-nav-background);
+}
+#page-nav li {
+	line-height: var(--tree-item-height);
+	height: var(--tree-item-height);
+}
+#page-nav ul.page-outline li a {
+	color: var(--side-nav-foreground) !important;
+	font-weight: normal;
+}
+#page-nav li.vis {
+	background-color: var(--note-color) !important;
+}
+#page-nav ul.page-outline li.vis a {
+	font-weight: 600;
+	color: var(--primary-color) !important;
+}
+#page-nav-tree .item:hover {
+	background-color: var(--fragment-linenumber-background);
+}
+#page-nav-tree a:focus, #page-nav-tree a:hover {
+	text-decoration: none;
+}
+#page-nav ul.page-outline .vis::after {
+	background-color: var(--primary-color);
+}
+
+/* Show links to C++ symbols in left nav trees in monospace (css selectors are heuristics and likely fragile) */
+#nav-tree a[class^='class_'],
+#nav-tree a[class^='struct_'],
+#nav-tree a[class^='namespace_'],
+#nav-tree a[class^='group_'][class*=':'] {
+	font-family: var(--font-family-monospace) !important;
+}
+
+
+/* permanently hide built-in search box */
+#MSearchBox {
+	display: none !important;
+}
+
+
+/* CSS for our custom search */
+span.keyboard {
+	border-radius: 0.4em;
+	font-size: 75%;
+	font-weight: normal;
+	padding: 0.2em 0.5em;
+	vertical-align: 2.5%;
+	background-color: var(--fragment-linenumber-background);
+	border: 1px solid var(--fragment-linenumber-color);
+	color: var(--fragment-foreground);
+}
+
+#search-overlay {
+	display: none;
+	z-index: 10000;
+	position: fixed;
+	left: 0;
+	right: 0;
+	top: 0;
+	bottom: 0;
+	background-color: rgba(34, 39, 46, 0.85);
+}
+#search-overlay:target {
+	display: block;
+}
+#search-overlay > a {
+	display: block;
+	position: absolute;
+	left: 0;
+	right: 0;
+	top: 0;
+	bottom: 0;
+}
+
+#search-container {
+	position: relative;
+	z-index: 10001;
+	max-width: 45em;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 4em;
+	background-color: #333;
+}
+
+#search-container dl {
+	background-color: var(--deprecated-color);
+}
+
+#search-container dl dt span {
+	color: var(--heading-font-color);
+}
+
+#search-container dl dd {
+	padding-left: 0;
+}
+
+#search-container .paramtype {
+	font-family: var(--font-family-monospace);
+}
+
+#search-container input {
+	width: 100%;
+	height: 2em;
+	font-size: 1em;
+	color: var(--main-font-color);
+	background-color: var(--fragment-linenumber-background);
+	border: 1px solid var(--fragment-linenumber-color);
+	border-radius: 0.2rem;
+	padding: 0.25em 0.5em;
+}
+#search-container input:focus {
+	outline: none;
+}
+
+#search-results {
+	min-height: 6em;
+	max-height: calc(100vh - 20em);
+	padding-right: 0.5em;
+	overflow: auto;
+	display: none;
+}
+#search-results ul {
+	display: block;
+	list-style-type: none;
+	padding-left: 0;
+}
+#search-results ul li {
+	list-style-type: none;
+	white-space: nowrap;
+	overflow: hidden;
+	padding-left: 0.4em;
+}
+
+#search-results .search-result-item {
+	line-height: unset !important;
+}
+
+#search-results div.item {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	font-size: var(--toc-font-size);
+	height: 1.5em !important;
+}
+
+#search-results div.item .args {
+	color: var(--page-secondary-foreground-color);
+}
+
+#search-results div.mlabel {
+	float: right;
+	padding: 0.0em 0.25em;
+	font-size: 75%;
+	margin-top: 0.2em;
+	margin-bottom: 0.2em;
+	margin-left: 0.25em;
+	margin-right: 0.1em;
+	border-radius: 0.4em;
+	background-color: var(--fragment-linenumber-background);
+	border: 1px solid var(--fragment-linenumber-color);
+}
+
+#search-results .deprecated {
+	color: var(--warning-color) !important;
+	background-color: var(--warning-color-dark) !important;
+	font-weight: normal !important;
+}
+#search-results .deleted {
+	color: var(--bug-color) !important;
+	background-color: var(--bug-color-dark) !important;
+	font-weight: normal !important;
+}
+#search-results .defaulted {
+	color: var(--note-color) !important;
+	background-color: var(--note-color-dark) !important;
+	font-weight: normal !important;
+}
+
+#search-current {
+	background-color: var(--primary-light-color);
+}
+#search-results a {
+	color: var(--side-nav-foreground) !important;
+	font-size: var(--toc-font-size);
+	font-weight: normal;
+}
+
+.search-wordlist {
+	font-size: 9pt;
+	display: none;
+	padding-left: 1em;
+}
+
+
+doxygen-awesome-dark-mode-toggle {
+	height: 1.6em;
+}
+
+
+/* format include file hints in class docs/group member docs */
+p:has(.include-hint) {
+	margin: 0 0.5rem;
+}
+
+.include-hint {
+	background-color: transparent !important;
+	border: none !important;
+	color: var(--page-secondary-foreground-color);
+	display: inline-block;
+	width: 100%;
+	margin: -3px -5px -5px -5px;
+	text-align: right;
+	border: 0;
+	background-color: inherit;
+	font-style: italic;
+	font-size: 12px !important;
+}
+
+.include-hint a {
+	font-size: 12px !important;
+}
+
+
+/* inline code blocks */
+span.tt, dl.warning .tt, dl.note .tt, dl.bug .tt, dl.deprecated .tt, dl.invariant .tt, dl.pre .tt, dl.post .tt, dl.todo .tt, dl.remark .tt {
+	background-color: var(--fragment-background);
+	border: 1px solid var(--fragment-linenumber-border);
+	border-radius: 0.25rem;
+	padding: 0.1rem 0.25rem;
+	margin: 0 0.1rem;
+}
+
+
+/* member lists */
+table.memberdecls td.ititle {
+	border: 0 !important;
+}
+table.memberdecls .memTemplParams {
+	border: 0 !important;
+	padding-top: 0.15em !important;
+	padding-bottom: 0.05em !important;
+	font-size: 12px !important;
+	line-height: 125%;
+}
+.memItemLeft, .memItemRight, .mdescLeft, .mdescRight {
+	border: 0 !important;
+}
+.memItemLeft, .memItemRight {
+	border: 0 !important;
+	padding-top: 0.2em !important;
+	padding-bottom: 0.15em !important;
+}
+.mdescLeft, .mdescRight {
+	padding-top: 0 !important;
+	padding-bottom: 0.4em !important;
+}
+.memItemLeft, .mdescLeft {
+	max-width: calc(var(--content-maxwidth) * 0.4) !important;
+	text-overflow: ellipsis;
+	overflow: hidden;
+}
+div.memitem {
+	overflow-x: auto;
+}
+tr[class^="memdesc"] {
+	background-color: var(--fragment-background) !important;
+	box-shadow: none;
+}
+tr[class^="memdesc"]:has(+ tr[class^="memitem"]) td,
+tr[class^="memitem"]:has(+ tr[class^="memitem"]) td:not(.memTemplParams) {
+	border-bottom: 1px solid var(--fragment-linenumber-border) !important;
+}
+
+
+
+/* enumeration tables */
+table.fieldtable, table.doxtable {
+	border-radius: 0.4rem;
+}
+.fieldtable, .fieldtable tr, .fieldtable th, .fieldtable td,
+table.doxtable, table.doxtable tr, table.doxtable th, table.doxtable td{
+	border: 0 !important;
+	border-bottom: 1px solid var(--fragment-linenumber-border) !important;
+	border-collapse:collapse;
+	padding: 0.5em 1em;
+}
+.fieldtable th, table.doxtable th {
+	background-color: var(--tablehead-background);
+	font-weight: bold;
+	font-size: 100%;
+}
+.fieldtable td, table.doxtable td {
+	background: var(--fragment-background) !important;
+}
+.fieldname {
+	font-family: var(--font-family-monospace);
+}
+.fieldtable p, table.doxtable p {
+	line-height: 125% !important;
+}
+
+table.params .paramname, table.tparams .paramname {
+	padding-right: 0.75em;
+}
+
+/* show exception specification in member docs in \warning style */
+dl.exception {
+	background: var(--warning-color);
+	border-left: 8px solid var(--warning-color-dark);
+	color: var(--warning-color-darker);
+	padding: var(--spacing-medium);
+	margin: var(--spacing-medium) 0;
+	margin-left: 0;
+	border-radius: var(--border-radius-small);
+}
+dl.exception dd {
+	margin-left: 22px;
+}
+dl.exception dt {
+	color: var(--warning-color-dark);
+}
+dl.exception td.paramname {
+	margin-left: 0;
+	padding-right: 0.75em;
+}
+
+
+/* custom paragraphs */
+dl.section dd {
+	padding-left: 2em;
+}
+
+
+/* custom tags in changelog */
+span.tag {
+	background-color: var(--fragment-linenumber-background);
+	border: 1px solid var(--fragment-linenumber-border);
+	padding: 0.05em 0.5em;
+	border-radius: 0.2em;
+	font-weight: bold;
+	font-size: 80%;
+	display: inline-block;
+}
+span.added {
+	color: #00aa00;
+}
+span.changed {
+	color: #ee9900;
+}
+span.fixed {
+	color: #0077cc;
+}
+span.removed, span.api-break {
+	color: #cc0000;
+}
+span.deprecated, span.deprecation {
+	color: #888888;
+}
+
+
+div.ingroups {
+	font-size: 12px;
+}
+
+summary {
+	font-weight: bold;
+	margin-bottom: 1em;
+}
