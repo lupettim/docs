@@ -1,0 +1,59 @@
+---
+title: imfusion.io
+---
+
+# `imfusion.io`
+
+IO
+
+## Functions
+
+### `open`
+
+```python
+def open(path: str | os.PathLike) -> list
+```
+
+Load the content of a file or folder as a list of `~imfusion.Data`.
+
+The list can contain instances of any class deriving from `Data`, i.e. `~imfusion.SharedImage`, `~imfusion.Mesh`, `~imfusion.PointCloud`, etc...
+
+Args:
+    path: can be path to a file containing a supported file formats, or a folder containing Dicom data, if the imfusion package was built with Dicom support.
+
+Note:
+    An IOError is raised if the file cannot be opened or a ValueError if the filetype is not supported. Some filetypes (like workspaces) cannot be opened by this function, but must be opened with `imfusion.ApplicationController.open`.
+    
+    For `~imfusion.PointCloud` files in `.pcd` format: PCD files store colors as integers in the range [0, 255], however, the returned PointCloud will have colors converted to floating-point values in the range [0.0, 1.0].
+
+Example:
+    &gt;&gt;&gt; imfusion.load('ct_image.png')  # doctest: +SKIP
+    [imfusion.SharedImageSet(size: 1, [imfusion.SharedImage(USHORT width: 512 height: 512 spacing: 0.661813x0.661813x1 mm)])]  # doctest: +SKIP
+    &gt;&gt;&gt; imfusion.load('multi_label_segmentation.nii.gz')  # doctest: +SKIP
+    [imfusion.SharedImageSet(size: 1, [imfusion.SharedImage(UBYTE width: 128 height: 128 slices: 128 channels: 3 spacing: 1x1x1 mm)])]  # doctest: +SKIP
+    &gt;&gt;&gt; imfusion.load('us_sweep.dcm')  # doctest: +SKIP
+    [imfusion.SharedImageSet(size: 20, [  # doctest: +SKIP
+            imfusion.SharedImage(UBYTE width: 164 height: 552 spacing: 0.228659x0.0724638x1 mm),  # doctest: +SKIP
+            imfusion.SharedImage(UBYTE width: 164 height: 552 spacing: 0.228659x0.0724638x1 mm),  # doctest: +SKIP
+            ...  # doctest: +SKIP
+            imfusion.SharedImage(UBYTE width: 164 height: 552 spacing: 0.228659x0.0724638x1 mm)  # doctest: +SKIP
+    &gt;&gt;&gt; imfusion.load('path_to_folder_containing_multiple_dcm_datasets')  # doctest: +SKIP
+    [imfusion.SharedImageSet(size: 1, [imfusion.SharedImage(FLOAT width: 400 height: 400 slices: 300 spacing: 2.03642x2.03642x3 mm)])]  # doctest: +SKIP
+
+### `write`
+
+```python
+def write(data_list: list[imfusion.Data], file_path: str | os.PathLike) -> None
+```
+
+Save a `~imfusion.Data` instance to the specified file path as an ImFusion file.
+
+:param data: any instance of class deriving from `~imfusion.Data` can be saved with this methods, examples are `~imfusion.SharedImageSet`, `~imfusion.Mesh` and `~imfusion.PointCloud`.
+:param file_path: Path to ImFusion file. The data is saved in a single file. File path must end with `.imf`.
+
+Note:
+    Raises a RuntimeError on failure or if `file_path` doesn't end with `.imf` extension.
+
+Example:
+    &gt;&gt;&gt; mesh = imfusion.mesh.create(imfusion.mesh.Primitive.SPHERE)
+    &gt;&gt;&gt; imfusion.save(mesh, tmp_path / 'mesh.imf')

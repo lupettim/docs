@@ -1,0 +1,22 @@
+---
+title: imfusion.machinelearning.torch_utils
+---
+
+# `imfusion.machinelearning.torch_utils`
+
+## Functions
+
+### `to_torch`
+
+```python
+def to_torch(self: typing.Union[imfusion.machinelearning.DataElement, imfusion.SharedImageSet, imfusion.SharedImage], device: torch.device = None, dtype: torch.dtype = None, same_as: torch.Tensor = None) -> torch.Tensor
+```
+
+Convert SharedImageSet or a SharedImage to a torch.Tensor.
+
+:param self: Instance of SharedImageSet or SharedImage (this function bound as a method to SharedImageSet and SharedImage)
+:param device: Target device for the new torch.Tensor
+:param dtype: Type of the new torch.Tensor
+:param same_as: Template tensor whose device and dtype configuration should be matched.
+                `device` and `dtype` are still applied afterwards.
+:return: New torch.Tensor

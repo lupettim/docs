@@ -1,0 +1,685 @@
+---
+title: imfusion.dicom
+---
+
+# `imfusion.dicom`
+
+Submodules containing `DICOM &lt;https://www.dicomstandard.org/&gt;` related functionalities.
+
+To load a single DICOM file, use `imfusion.dicom.load_file` and `imfusion.dicom.load_folder` to load all series contained in a folder.
+Both functions return a list of results.
+In general, each DICOM series is loaded as one `~imfusion.Data`.
+This is not always possible though.
+For example DICOM slices might not stack up in a way representable by a `~imfusion.SharedImageSet`.
+
+Besides loading DICOMs from the local filesystem, PACS and DicomWeb are supported as well through the `imfusion.dicom.load_url` function.
+
+To load a series from PACS, use an URL with the following format:
+``pacs://&lt;hostname&gt;:&lt;port&gt;/&lt;PACS AE title&gt;?series=&lt;series instance uid&gt;&study=&lt;study instance uid&gt;``
+To receive DICOMs from the PACS, a temporary server will be started on the port defined
+by `imfusion.dicom.set_pacs_client_config`.
+
+To load a series from a DicomWeb compatible server, use the DicomWeb endpoint (depends on the server), e.g.:
+``https://&lt;hostname&gt;:&lt;port&gt;/dicom-web/studies/&lt;study instance uid&gt;/series/&lt;series instance uid&gt;``.
+If the server requires authentication, a `imfusion.dicom.AuthenticationProvider` has to be registered.
+The authentication scheme depends on the server, but here is an example for HTTP Basic Auth with username and password:
+
+```python
+
+    class AuthProvider(imfusion.dicom.AuthorizationProvider):
+            def __init_(self):
+                    imfusion.dicom.AuthorizationProvider.__init_(self)
+                    self.token = ""
+
+            def authorization(self, url):
+                    return self.token
+
+            def refresh_authorization(self, url, num_failed_requests):
+                    if acquire_authorization(url, ""):
+                            return True
+                    else:
+                            self.token = ""
+                            return False
+
+            def acquire_authorization(self, url, message):
+                    print("Please provide authorization for accessing", url)
+                    if (message):
+                            print(message)
+
+                    try:
+                            username = input("Username: ")
+                            password = getpass.getpass()
+                    except KeyboardInterrupt:
+                            return False
+
+                    self.token = "Basic " + base64.b64encode(f"{username}:{password}".encode("utf-8")).decode("utf=8")
+                    return True
+
+    imfusion.dicom.set_default_authorization_provider(AuthProvider())
+
+    imfusion.dicom.load_url("https://example.com/dicom-web/studies/1.2.3.4/series/5.6.7.8")
+```
+
+## Functions
+
+### `load_file`
+
+```python
+def load_file(file_path: str) -> list
+```
+
+Load a single file as DICOM.
+
+Depending on the SOPClassUID of the DICOM file, this can result in:
+
+- a 2D or 3D `~imfusion.SharedImageSet` containing one or multiple frames
+- a segmentation labelmap (i.e. a 8-bit `~imfusion.SharedImageSet` with a `~imfusion.LabelDataComponent`)
+- a RT Structure Set (i.e. a `~imfusion.PointCloud` with a `~imfusion.RTStructureDataComponent`)
+
+For regular images, usually only one result is generated.
+If not it is usually an indication that the file could not be entirely reconstructed as a volume
+(e.g. the spacing between slices is not uniform).
+
+For segmentations, multiple labelmaps will be returned if labels overlap (i.e. one pixel has at least 2 labels).
+
+For RT Structure Sets, one `~imfusion.PointCloud` is returned per structure.
+
+### `load_folder`
+
+```python
+def load_folder(folder_path: str, recursive: bool = True, ignore_non_dicom: bool = True) -> list
+```
+
+Load all DICOM files from a folder.
+
+Generally this produces one dataset per DICOM series, however, this might not always be the case.
+Check `~imfusion.ImageInfoDataComponent` for the actual series UID.
+
+See `imfusion.dicom.load_file` for a list of datasets that can be generated.
+
+Args:
+    folder_path (str): A path to a folder or an URL.
+    recursive (bool): Whether subfolders should be scanned recursively for all DICOM files.
+    ignore_non_dicom(bool): Whether files without a valid DICOM header should be ignored.
+                                                    This is usually faster and produces less warnings/errors,
+                                                    but technically the DICOM header is optional and might be missing.
+                                                    This is very rare though.
+
+### `load_url`
+
+```python
+def load_url(url: str, recursive: bool = True, ignore_non_dicom: bool = True) -> list
+```
+
+Load all DICOM files from a URL.
+
+Generally this produces one dataset per DICOM series, however, this might not always be the case.
+Check `~imfusion.ImageInfoDataComponent` for the actual series UID.
+
+The URL support the file://, http(s):// and pacs:// schemes.
+
+To load a series from PACS, use an URL with the following format:
+``pacs://&lt;hostname&gt;:&lt;port&gt;/&lt;PACS AE title&gt;?series=&lt;series instance uid&gt;&study=&lt;study instance uid&gt;``
+To receive DICOMs from the PACS, a temporary server will be started on the port defined
+by `imfusion.dicom.set_pacs_client_config`.
+
+Args:
+    url (str): An URL.
+    recursive (bool): Whether subfolders should be scanned recursively for all DICOM files. Only used for file:// URLs.
+    ignore_non_dicom(bool): Whether files without a valid DICOM header should be ignored.
+                                                    This is usually faster and produces less warnings/errors,
+                                                    but technically the DICOM header is optional and might be missing.
+                                                    This is very rare though.
+                                                    Only used for file:// URLs.
+
+### `rtstruct_to_labelmap`
+
+```python
+def rtstruct_to_labelmap(rtstruct_set: list[imfusion.PointCloud], referenced_image: imfusion.SharedImageSet, combine_label_maps: bool = False) -> list[imfusion.SharedImageSet]
+```
+
+Algorithm to convert a `~imfusion.PointCloud` with a `~imfusion.RTStructureDataComponent` datacomponent to a labelmap.
+
+This is currently only supported for CLOSED_PLANAR contours in `~imfusion.RTStructureDataComponent`.
+The algorithm requires a reference volume that determines the size of the labelmap.
+Each contour is expected to be planar on a slice in the reference volume.
+This algorithm works best when using the volume that is referenced by the original DICOM RTStructureDataSet
+(see :py`imfusion.RTStructureDataComponent.referenced_frame_of_reference_UID`).
+
+Returns one labelmap per input RT Structure.
+
+### `save_file`
+
+```python
+def save_file(image: imfusion.SharedImageSet, file_path: str, referenced_image: imfusion.SharedImageSet = None) -> None
+```
+
+Save an image as a single DICOM file.
+
+The SOP Class that is used for the export is determined based on the modality of the image.
+For example, CT images will be exported as 'Enhanced CT Image Storage' and LABEL images as 'Segmentation Storage'.
+
+When exporting volumes, note that older software might not be able to load them. Use `imfusion.dicom.save_folder` instead.
+
+Optionally, the generated DICOMs can also reference another DICOM image, which is passed with the `referenced_image` argument.
+This `referenced_image` must have been loaded from DICOM and/or contain a elementwise `~imfusion.SourceInfoComponent` and
+a `~imfusion.ImageInfoDataComponent` contain a valid series instance UID.
+With such a reference, other software can determine whether different DICOMs are related.
+This is especially important when exporting segmentations with modality LABEL.
+The exported segmentations must reference the data that was used to generate the segmentation.
+If this reference is missing, the exported segmentations cannot be loaded in some software.
+
+When exporting segmentations, only the slices containing non-zero labels will be exported. After re-importing the
+file, it therefore might have a different number of slices.
+
+For saving RT Structures, see `imfusion.dicom.save_rtstruct`.
+
+Args:
+    image (imfusion.SharedImageSet): The image to export
+    file_path (str): File to write the resulting DICOM to. Existing files will be overwritten!
+    referenced_image (imfusion.SharedImageSet): An optional image that the exported image should reference.
+
+Warning:
+    At the moment, only exporting single frame CT and MR volumes is well supported. Since DICOM is an extensive
+    standard, any other kind of image might lead to a non-standard or invalid DICOM.
+
+### `save_folder`
+
+```python
+def save_folder(image: imfusion.SharedImageSet, folder_path: str, referenced_image: imfusion.SharedImageSet = None) -> None
+```
+
+Save an image as a DICOM folder containing potentially multiple files.
+
+The SOP Class that is used for the export is determined based on the modality of the image.
+For example, CT images will be exported as 'CT Image Storage'.
+
+Works like `imfusion.dicom.save_file` except for using different SOP Class UIDs.
+
+### `save_rtstruct`
+
+```python
+def save_rtstruct(labelmap: imfusion.SharedImageSet, referenced_image: imfusion.SharedImageSet, file_path: str) -> None
+```
+
+Save a labelmap as a RT Structure Set.
+
+The contours of a label inside the labelmap will be used as a contour in the RT Structure.
+Each slice of the labelmap generates seperate contours (RT Structure does not support 3D contours).
+
+### `save_rtstruct`
+
+```python
+def save_rtstruct(rtstruct_set: list[imfusion.PointCloud], referenced_image: imfusion.SharedImageSet, file_path: str) -> None
+```
+
+Save a list of `~imfusion.PointCloud` as a RT Structure Set.
+
+Each `~imfusion.PointCloud` must provide a `~imfusion.RTStructureDataComponent`.
+
+### `set_default_authorization_provider`
+
+```python
+def set_default_authorization_provider(arg0: AuthorizationProvider) -> None
+```
+
+### `set_pacs_client_config`
+
+```python
+def set_pacs_client_config(ae_title: str, port: int) -> None
+```
+
+Set the client configuration when connecting to a PACS.
+
+To receive DICOMs from a PACS server, the AE title and port needs to be registered
+with the PACS as well (vendor specific and *not* done by this function!).
+
+Warning:
+        The values will be persisted on the system and will be restored when the application is restarted.
+
+## Classes
+
+### `AuthorizationProvider`
+
+```python
+class AuthorizationProvider
+```
+
+#### Methods
+
+##### `__init__`
+
+```python
+def __init__(self) -> None
+```
+
+##### `acquire_authorization`
+
+```python
+def acquire_authorization(self, url: str, message: str) -> bool
+```
+
+Acquire authorization by e.g. asking the user.
+
+This method might get called from another thread.
+In this case, implementations that require the main thread to show a GUI should just return false.
+An optional message can be provided (e.g. to display an error from a previous login attempt).
+
+##### `authorization`
+
+```python
+def authorization(self, url: str) -> str
+```
+
+Get the Authorization header for the given url.
+
+The url is the complete url for the request that is going to be performed.
+Implementation should cache the value according to the server URL (see extract_server_url).
+When an empty string is returned, no Authorization header should be send.
+This method will be call from multiple threads.
+
+##### `extract_server_url`
+
+```python
+def extract_server_url(self, url: str) -> str
+```
+
+Extract the server part of the URL.
+
+E.g. http://example.com:8080/dicomweb/studies becomes http://example.com:8080.
+
+##### `refresh_authorization`
+
+```python
+def refresh_authorization(self, url: str, num_failed_requests: int) -> bool
+```
+
+Try to refresh the authorization without user interaction.
+
+Implementations should stop retrying after a certain number of failed attemps.
+This method will be call from multiple threads.
+
+##### `remove_authorization`
+
+```python
+def remove_authorization(self, url: str) -> None
+```
+
+Remove any cached authorization for the given server.
+
+This should essentially log out the user and let the user re-authenticate
+with the next acquireAuthorization call.
+
+### `GeneralEquipmentModuleDataComponent`
+
+```python
+class GeneralEquipmentModuleDataComponent(imfusion.DataComponentBase)
+```
+
+#### Attributes
+
+##### `anatomical_orientation_type`
+
+```python
+anatomical_orientation_type: str
+```
+
+##### `device_serial_number`
+
+```python
+device_serial_number: str
+```
+
+##### `gantry_id`
+
+```python
+gantry_id: str
+```
+
+##### `institution_address`
+
+```python
+institution_address: str
+```
+
+##### `institution_name`
+
+```python
+institution_name: str
+```
+
+##### `institutional_departmentname`
+
+```python
+institutional_departmentname: str
+```
+
+##### `manufacturer`
+
+```python
+manufacturer: str
+```
+
+##### `manufacturers_model_name`
+
+```python
+manufacturers_model_name: str
+```
+
+##### `software_versions`
+
+```python
+software_versions: str
+```
+
+##### `spatial_resolution`
+
+```python
+spatial_resolution: float
+```
+
+##### `station_name`
+
+```python
+station_name: str
+```
+
+#### Methods
+
+##### `__init__`
+
+```python
+def __init__(self) -> None
+```
+
+### `RTStructureDataComponent`
+
+```python
+class RTStructureDataComponent(imfusion.DataComponentBase)
+```
+
+DataComponent for PointClouds loaded from a DICOM RTStructureSet.
+
+Provides information about the original structure/grouping of the points.
+See RTStructureIoAlgorithm for details about how RTStructureSets are loaded.
+
+.. warning::
+        Since this component uses fixed indices into the PointCloud's points structure,
+        it can only be used if the PointCloud remains unchanged!
+
+#### Attributes
+
+##### `color`
+
+```python
+color: numpy.ndarray[numpy.float64[3, 1]]
+```
+
+##### `contours`
+
+```python
+contours: list[RTStructureDataComponent.Contour]
+```
+
+##### `generation_algorithm`
+
+```python
+generation_algorithm: RTStructureDataComponent.ROIGenerationAlgorithm
+```
+
+##### `referenced_frame_of_reference_UID`
+
+```python
+referenced_frame_of_reference_UID: str
+```
+
+#### Methods
+
+##### `__init__`
+
+```python
+def __init__(self) -> None
+```
+
+#### Nested Classes
+
+##### `Contour`
+
+```python
+class Contour
+```
+
+Represents a single item in the original 'Contour Sequence' (3006,0040).
+
+###### Attributes
+
+####### `length`
+
+```python
+length: int
+```
+
+####### `start_index`
+
+```python
+start_index: int
+```
+
+####### `type`
+
+```python
+type: RTStructureDataComponent.GeometryType
+```
+
+#### Nested Enums
+
+##### `GeometryType`
+
+```python
+class GeometryType
+```
+
+Defines how the points of a contour should be interpreted.
+
+Members:
+
+  POINT
+
+  OPEN_PLANAR
+
+  CLOSED_PLANAR
+
+  OPEN_NONPLANAR
+
+###### Attributes
+
+####### `CLOSED_PLANAR`
+
+```python
+CLOSED_PLANAR: typing.ClassVar[RTStructureDataComponent.GeometryType]
+```
+
+####### `OPEN_NONPLANAR`
+
+```python
+OPEN_NONPLANAR: typing.ClassVar[RTStructureDataComponent.GeometryType]
+```
+
+####### `OPEN_PLANAR`
+
+```python
+OPEN_PLANAR: typing.ClassVar[RTStructureDataComponent.GeometryType]
+```
+
+####### `POINT`
+
+```python
+POINT: typing.ClassVar[RTStructureDataComponent.GeometryType]
+```
+
+###### Methods
+
+####### `__init__`
+
+```python
+def __init__(self, value: int) -> None
+```
+
+####### `name`
+
+*property*
+
+```python
+def name(self) -> str
+```
+
+####### `value`
+
+*property*
+
+```python
+def value(self) -> int
+```
+
+##### `ROIGenerationAlgorithm`
+
+```python
+class ROIGenerationAlgorithm
+```
+
+Defines how the RT structure was generated
+
+Members:
+
+  UNKNOWN
+
+  AUTOMATIC
+
+  SEMI_AUTOMATIC
+
+  MANUAL
+
+###### Attributes
+
+####### `AUTOMATIC`
+
+```python
+AUTOMATIC: typing.ClassVar[RTStructureDataComponent.ROIGenerationAlgorithm]
+```
+
+####### `MANUAL`
+
+```python
+MANUAL: typing.ClassVar[RTStructureDataComponent.ROIGenerationAlgorithm]
+```
+
+####### `SEMI_AUTOMATIC`
+
+```python
+SEMI_AUTOMATIC: typing.ClassVar[RTStructureDataComponent.ROIGenerationAlgorithm]
+```
+
+####### `UNKNOWN`
+
+```python
+UNKNOWN: typing.ClassVar[RTStructureDataComponent.ROIGenerationAlgorithm]
+```
+
+###### Methods
+
+####### `__init__`
+
+```python
+def __init__(self, value: int) -> None
+```
+
+####### `name`
+
+*property*
+
+```python
+def name(self) -> str
+```
+
+####### `value`
+
+*property*
+
+```python
+def value(self) -> int
+```
+
+### `ReferencedInstancesComponent`
+
+```python
+class ReferencedInstancesComponent(imfusion.DataComponentBase)
+```
+
+DataComponent to store DICOM instances that are referenced by the dataset.
+
+A DICOM dataset can reference a number of other DICOM datasets that are somehow related.
+The references in this component are determined by the ReferencedSeriesSequence.
+
+#### Methods
+
+##### `__init__`
+
+```python
+def __init__(self) -> None
+```
+
+##### `is_referencing`
+
+```python
+def is_referencing(self, arg0: SourceInfoComponent) -> bool
+```
+
+Returns true if the instances of the given SourceInfoComponent are referenced by this component.
+
+The instances and references have to only intersect for this to return true.
+This way, e.g. a segmentation would be considered referencing a CT if it only overlaps in a view
+slices.
+
+##### `is_referencing`
+
+```python
+def is_referencing(self, arg0: imfusion.SharedImageSet) -> bool
+```
+
+Convenient method that calls the above method with SourceInfoComponent of sis.
+
+Only returns true if all elementwise SourceInfoComponents are referenced.
+
+### `SourceInfoComponent`
+
+```python
+class SourceInfoComponent(imfusion.DataComponentBase)
+```
+
+#### Attributes
+
+##### `sop_class_uids`
+
+```python
+sop_class_uids: list[str]
+```
+
+##### `sop_instance_uids`
+
+```python
+sop_instance_uids: list[str]
+```
+
+##### `source_uris`
+
+```python
+source_uris: list[str]
+```
+
+#### Methods
+
+##### `__init__`
+
+```python
+def __init__(self) -> None
+```

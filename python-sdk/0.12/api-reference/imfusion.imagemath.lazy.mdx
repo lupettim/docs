@@ -1,0 +1,794 @@
+---
+title: imfusion.imagemath.lazy
+---
+
+# `imfusion.imagemath.lazy`
+
+Lazy evaluation (imagemath.lazy)
+
+## Functions
+
+### `absolute`
+
+```python
+def absolute(x: Expression) -> Expression
+```
+
+Expression for absolute value, element-wise.
+
+Args:
+
+    x:      `~imfusion.imagemath.lazy.Expression` instance wrapping `~imfusion.SharedImage` or `~imfusion.SharedImageSet`.
+
+Returns:
+
+    `~imfusion.imagemath.lazy.Expression` instance wrapping `~imfusion.SharedImage` or `~imfusion.SharedImageSet`.
+
+### `add`
+
+```python
+def add(x1: Expression | imfusion.SharedImage | imfusion.SharedImageSet | int | float, x2: Expression | imfusion.SharedImage | imfusion.SharedImageSet | int | float) -> Expression
+```
+
+Expression for addition, element-wise.
+
+Args:
+
+    x1:     `~imfusion.imagemath.lazy.Expression` instance (wrapping `~imfusion.SharedImage`, `~imfusion.SharedImageSet`, `int`, or `float`), `~imfusion.SharedImage` instance, `~imfusion.SharedImageSet` instance, or a numeric value.
+
+    x2:     `~imfusion.imagemath.lazy.Expression` instance (wrapping `~imfusion.SharedImage`, `~imfusion.SharedImageSet`, `int`, or `float`), `~imfusion.SharedImage` instance, `~imfusion.SharedImageSet` instance, or a numeric value.
+
+Returns:
+
+    `~imfusion.imagemath.lazy.Expression` instance wrapping `~imfusion.SharedImage` or `~imfusion.SharedImageSet`.
+
+### `arctan2`
+
+```python
+def arctan2(x1: Expression | imfusion.SharedImage | imfusion.SharedImageSet | int | float, x2: Expression | imfusion.SharedImage | imfusion.SharedImageSet | int | float) -> Expression
+```
+
+Expression for trigonometric inverse tangent, element-wise.
+
+Args:
+
+    x1:     `~imfusion.imagemath.lazy.Expression` instance (wrapping `~imfusion.SharedImage`, `~imfusion.SharedImageSet`, `int`, or `float`), `~imfusion.SharedImage` instance, `~imfusion.SharedImageSet` instance, or a numeric value.
+
+    x2:     `~imfusion.imagemath.lazy.Expression` instance (wrapping `~imfusion.SharedImage`, `~imfusion.SharedImageSet`, `int`, or `float`), `~imfusion.SharedImage` instance, `~imfusion.SharedImageSet` instance, or a numeric value.
+
+Returns:
+
+    `~imfusion.imagemath.lazy.Expression` instance wrapping `~imfusion.SharedImage` or `~imfusion.SharedImageSet`.
+
+### `argmax`
+
+```python
+def argmax(x: Expression) -> list[numpy.ndarray[numpy.int32[4, 1]]]
+```
+
+Return a list of the indices of maximum values, channel-wise. The indices are represented as (x, y, z, image index).
+
+Args:
+
+    x:      `~imfusion.imagemath.lazy.Expression` instance wrapping `~imfusion.SharedImage` or `~imfusion.SharedImageSet`.
+
+Returns:
+
+    List of indices (x, y, z, image index) returned as a list of numpy arrays.
+
+### `argmin`
+
+```python
+def argmin(x: Expression) -> list[numpy.ndarray[numpy.int32[4, 1]]]
+```
+
+Return a list of the indices of minimum values, channel-wise. The indices are represented as (x, y, z, image index).
+
+Args:
+
+    x:      `~imfusion.imagemath.lazy.Expression` instance wrapping `~imfusion.SharedImage` or `~imfusion.SharedImageSet`.
+
+Returns:
+
+    List of indices (x, y, z, image index) returned as a list of numpy arrays.
+
+### `astype`
+
+```python
+def astype(x: Expression, image_type: typing.Any) -> Expression
+```
+
+Expression for element-wise cast expression to float of image elements.
+
+Args:
+
+    x:      `~imfusion.imagemath.lazy.Expression` instance wrapping `~imfusion.SharedImage` or `~imfusion.SharedImageSet`.
+
+### `channel_swizzle`
+
+```python
+def channel_swizzle(x: Expression, indices: list[int]) -> Expression
+```
+
+Returns the expression which reorders the channels of an image based on the input indices, e.g. ``indices[0]`` will correspond to the first channel of the output image.
+
+Args:
+
+    x:      `~imfusion.imagemath.lazy.Expression` instance wrapping `~imfusion.SharedImage` or `~imfusion.SharedImageSet`.
+
+    indices:        List of channel indices to swizzle the channels of the input.
+
+Returns:
+
+    `~imfusion.imagemath.lazy.Expression` instance wrapping `~imfusion.SharedImage` or `~imfusion.SharedImageSet`.
+
+### `cos`
+
+```python
+def cos(x: Expression) -> Expression
+```
+
+Expression for cosine, element-wise.
+
+Args:
+
+    x:      `~imfusion.imagemath.lazy.Expression` instance wrapping `~imfusion.SharedImage` or `~imfusion.SharedImageSet`.
+
+Returns:
+
+    `~imfusion.imagemath.lazy.Expression` instance wrapping `~imfusion.SharedImage` or `~imfusion.SharedImageSet`.
+
+### `divide`
+
+```python
+def divide(x1: Expression | imfusion.SharedImage | imfusion.SharedImageSet | int | float, x2: Expression | imfusion.SharedImage | imfusion.SharedImageSet | int | float) -> Expression
+```
+
+Expression for division, element-wise.
+
+Args:
+
+    x1:     `~imfusion.imagemath.lazy.Expression` instance (wrapping `~imfusion.SharedImage`, `~imfusion.SharedImageSet`, `int`, or `float`), `~imfusion.SharedImage` instance, `~imfusion.SharedImageSet` instance, or a numeric value.
+
+    x2:     `~imfusion.imagemath.lazy.Expression` instance (wrapping `~imfusion.SharedImage`, `~imfusion.SharedImageSet`, `int`, or `float`), `~imfusion.SharedImage` instance, `~imfusion.SharedImageSet` instance, or a numeric value.
+
+Returns:
+
+    `~imfusion.imagemath.lazy.Expression` instance wrapping `~imfusion.SharedImage` or `~imfusion.SharedImageSet`.
+
+### `equal`
+
+```python
+def equal(x1: Expression | imfusion.SharedImage | imfusion.SharedImageSet | int | float, x2: Expression | imfusion.SharedImage | imfusion.SharedImageSet | int | float) -> Expression
+```
+
+Return the expression for computing the truth value of (x1 == x2), element-wise.
+
+Args:
+
+    x1:     `~imfusion.imagemath.lazy.Expression` instance (wrapping `~imfusion.SharedImage`, `~imfusion.SharedImageSet`, `int`, or `float`), `~imfusion.SharedImage` instance, `~imfusion.SharedImageSet` instance, or a numeric value.
+
+    x2:     `~imfusion.imagemath.lazy.Expression` instance (wrapping `~imfusion.SharedImage`, `~imfusion.SharedImageSet`, `int`, or `float`), `~imfusion.SharedImage` instance, `~imfusion.SharedImageSet` instance, or a numeric value.
+
+Returns:
+
+    `~imfusion.imagemath.lazy.Expression` instance wrapping `~imfusion.SharedImage` or `~imfusion.SharedImageSet`.
+
+### `exp`
+
+```python
+def exp(x: Expression) -> Expression
+```
+
+Expression for exponential operation, element-wise.
+
+Args:
+
+    x:      `~imfusion.imagemath.lazy.Expression` instance wrapping `~imfusion.SharedImage` or `~imfusion.SharedImageSet`.
+
+Returns:
+
+    `~imfusion.imagemath.lazy.Expression` instance wrapping `~imfusion.SharedImage` or `~imfusion.SharedImageSet`.
+
+### `greater`
+
+```python
+def greater(x1: Expression | imfusion.SharedImage | imfusion.SharedImageSet | int | float, x2: Expression | imfusion.SharedImage | imfusion.SharedImageSet | int | float) -> Expression
+```
+
+Return the expression for computing the truth value of (x1 &gt; x2), element-wise.
+
+Args:
+
+    x1:     `~imfusion.imagemath.lazy.Expression` instance (wrapping `~imfusion.SharedImage`, `~imfusion.SharedImageSet`, `int`, or `float`), `~imfusion.SharedImage` instance, `~imfusion.SharedImageSet` instance, or a numeric value.
+
+    x2:     `~imfusion.imagemath.lazy.Expression` instance (wrapping `~imfusion.SharedImage`, `~imfusion.SharedImageSet`, `int`, or `float`), `~imfusion.SharedImage` instance, `~imfusion.SharedImageSet` instance, or a numeric value.
+
+Returns:
+
+    `~imfusion.imagemath.lazy.Expression` instance wrapping `~imfusion.SharedImage` or `~imfusion.SharedImageSet`.
+
+### `greater_equal`
+
+```python
+def greater_equal(x1: Expression | imfusion.SharedImage | imfusion.SharedImageSet | int | float, x2: Expression | imfusion.SharedImage | imfusion.SharedImageSet | int | float) -> Expression
+```
+
+Return the expression for computing the truth value of (x1 &gt;= x2), element-wise.
+
+Args:
+
+    x1:     `~imfusion.imagemath.lazy.Expression` instance (wrapping `~imfusion.SharedImage`, `~imfusion.SharedImageSet`, `int`, or `float`), `~imfusion.SharedImage` instance, `~imfusion.SharedImageSet` instance, or a numeric value.
+
+    x2:     `~imfusion.imagemath.lazy.Expression` instance (wrapping `~imfusion.SharedImage`, `~imfusion.SharedImageSet`, `int`, or `float`), `~imfusion.SharedImage` instance, `~imfusion.SharedImageSet` instance, or a numeric value.
+
+Returns:
+
+    `~imfusion.imagemath.lazy.Expression` instance wrapping `~imfusion.SharedImage` or `~imfusion.SharedImageSet`.
+
+### `less`
+
+```python
+def less(x1: Expression | imfusion.SharedImage | imfusion.SharedImageSet | int | float, x2: Expression | imfusion.SharedImage | imfusion.SharedImageSet | int | float) -> Expression
+```
+
+Return the expression for computing the truth value of (x1 &lt; x2), element-wise.
+
+Args:
+
+    x1:     `~imfusion.imagemath.lazy.Expression` instance (wrapping `~imfusion.SharedImage`, `~imfusion.SharedImageSet`, `int`, or `float`), `~imfusion.SharedImage` instance, `~imfusion.SharedImageSet` instance, or a numeric value.
+
+    x2:     `~imfusion.imagemath.lazy.Expression` instance (wrapping `~imfusion.SharedImage`, `~imfusion.SharedImageSet`, `int`, or `float`), `~imfusion.SharedImage` instance, `~imfusion.SharedImageSet` instance, or a numeric value.
+
+Returns:
+
+    `~imfusion.imagemath.lazy.Expression` instance wrapping `~imfusion.SharedImage` or `~imfusion.SharedImageSet`.
+
+### `less_equal`
+
+```python
+def less_equal(x1: Expression | imfusion.SharedImage | imfusion.SharedImageSet | int | float, x2: Expression | imfusion.SharedImage | imfusion.SharedImageSet | int | float) -> Expression
+```
+
+Return the expression for computing the truth value of (x1 &lt;= x2), element-wise.
+
+Args:
+
+    x1:     `~imfusion.imagemath.lazy.Expression` instance (wrapping `~imfusion.SharedImage`, `~imfusion.SharedImageSet`, `int`, or `float`), `~imfusion.SharedImage` instance, `~imfusion.SharedImageSet` instance, or a numeric value.
+
+    x2:     `~imfusion.imagemath.lazy.Expression` instance (wrapping `~imfusion.SharedImage`, `~imfusion.SharedImageSet`, `int`, or `float`), `~imfusion.SharedImage` instance, `~imfusion.SharedImageSet` instance, or a numeric value.
+
+Returns:
+
+    `~imfusion.imagemath.lazy.Expression` instance wrapping `~imfusion.SharedImage` or `~imfusion.SharedImageSet`.
+
+### `log`
+
+```python
+def log(x: Expression) -> Expression
+```
+
+Expression for natural logarithm, element-wise.
+
+Args:
+
+    x:      `~imfusion.imagemath.lazy.Expression` instance wrapping `~imfusion.SharedImage` or `~imfusion.SharedImageSet`.
+
+Returns:
+
+    `~imfusion.imagemath.lazy.Expression` instance wrapping `~imfusion.SharedImage` or `~imfusion.SharedImageSet`.
+
+### `max`
+
+```python
+def max(x: Expression) -> numpy.ndarray[numpy.float64[m, 1]]
+```
+
+Return the list of the maximum elements of images, channel-wise.
+
+Args:
+
+    x:      `~imfusion.imagemath.lazy.Expression` instance wrapping `~imfusion.SharedImage` or `~imfusion.SharedImageSet`.
+
+Returns:
+
+    Channel-wise values returned as a numpy array.
+
+### `maximum`
+
+```python
+def maximum(x1: Expression | imfusion.SharedImage | imfusion.SharedImageSet | int | float, x2: Expression | imfusion.SharedImage | imfusion.SharedImageSet | int | float) -> Expression
+```
+
+Return the expression for computing element-wise maximum of arguments.
+
+Args:
+
+    x1:     `~imfusion.imagemath.lazy.Expression` instance (wrapping `~imfusion.SharedImage`, `~imfusion.SharedImageSet`, `int`, or `float`), `~imfusion.SharedImage` instance, `~imfusion.SharedImageSet` instance, or a numeric value.
+
+    x2:     `~imfusion.imagemath.lazy.Expression` instance (wrapping `~imfusion.SharedImage`, `~imfusion.SharedImageSet`, `int`, or `float`), `~imfusion.SharedImage` instance, `~imfusion.SharedImageSet` instance, or a numeric value.
+
+Returns:
+
+    `~imfusion.imagemath.lazy.Expression` instance wrapping `~imfusion.SharedImage` or `~imfusion.SharedImageSet`.
+
+### `mean`
+
+```python
+def mean(x: Expression) -> numpy.ndarray[numpy.float64[m, 1]]
+```
+
+Return a list of channel-wise average of image elements.
+
+Args:
+
+    x:      `~imfusion.imagemath.lazy.Expression` instance wrapping `~imfusion.SharedImage` or `~imfusion.SharedImageSet`.
+
+Returns:
+
+    Channel-wise values returned as a numpy array.
+
+### `min`
+
+```python
+def min(x: Expression) -> numpy.ndarray[numpy.float64[m, 1]]
+```
+
+Return the list of the minimum elements of images, channel-wise.
+
+Args:
+
+    x:      `~imfusion.imagemath.lazy.Expression` instance wrapping `~imfusion.SharedImage` or `~imfusion.SharedImageSet`.
+
+Returns:
+
+    Channel-wise values returned as a numpy array.
+
+### `minimum`
+
+```python
+def minimum(x1: Expression | imfusion.SharedImage | imfusion.SharedImageSet | int | float, x2: Expression | imfusion.SharedImage | imfusion.SharedImageSet | int | float) -> Expression
+```
+
+Return the expression for computing element-wise minimum of arguments.
+
+Args:
+
+    x1:     `~imfusion.imagemath.lazy.Expression` instance (wrapping `~imfusion.SharedImage`, `~imfusion.SharedImageSet`, `int`, or `float`), `~imfusion.SharedImage` instance, `~imfusion.SharedImageSet` instance, or a numeric value.
+
+    x2:     `~imfusion.imagemath.lazy.Expression` instance (wrapping `~imfusion.SharedImage`, `~imfusion.SharedImageSet`, `int`, or `float`), `~imfusion.SharedImage` instance, `~imfusion.SharedImageSet` instance, or a numeric value.
+
+Returns:
+
+    `~imfusion.imagemath.lazy.Expression` instance wrapping `~imfusion.SharedImage` or `~imfusion.SharedImageSet`.
+
+### `multiply`
+
+```python
+def multiply(x1: Expression | imfusion.SharedImage | imfusion.SharedImageSet | int | float, x2: Expression | imfusion.SharedImage | imfusion.SharedImageSet | int | float) -> Expression
+```
+
+Expression for multiplication, element-wise.
+
+Args:
+
+    x1:     `~imfusion.imagemath.lazy.Expression` instance (wrapping `~imfusion.SharedImage`, `~imfusion.SharedImageSet`, `int`, or `float`), `~imfusion.SharedImage` instance, `~imfusion.SharedImageSet` instance, or a numeric value.
+
+    x2:     `~imfusion.imagemath.lazy.Expression` instance (wrapping `~imfusion.SharedImage`, `~imfusion.SharedImageSet`, `int`, or `float`), `~imfusion.SharedImage` instance, `~imfusion.SharedImageSet` instance, or a numeric value.
+
+Returns:
+
+    `~imfusion.imagemath.lazy.Expression` instance wrapping `~imfusion.SharedImage` or `~imfusion.SharedImageSet`.
+
+### `negative`
+
+```python
+def negative(x: Expression) -> Expression
+```
+
+Expression for numerical negative, element-wise.
+
+Args:
+
+    x:      `~imfusion.imagemath.lazy.Expression` instance wrapping `~imfusion.SharedImage` or `~imfusion.SharedImageSet`.
+
+Returns:
+
+    `~imfusion.imagemath.lazy.Expression` instance wrapping `~imfusion.SharedImage` or `~imfusion.SharedImageSet`.
+
+### `norm`
+
+```python
+def norm(x: Expression, order: int | float | str = 2) -> numpy.ndarray[numpy.float64[m, 1]]
+```
+
+Returns the norm of an image instance, channel-wise.
+
+Args:
+
+    x:      `~imfusion.imagemath.lazy.Expression` instance wrapping `~imfusion.SharedImage` or `~imfusion.SharedImageSet`.
+
+    order:  Order of the norm. Use a number (e.g., 1 or 2) or 'inf'. The default is the L2 norm.
+
+Returns:
+
+    Norm values per channel returned as a numpy array.
+
+### `not_equal`
+
+```python
+def not_equal(x1: Expression | imfusion.SharedImage | imfusion.SharedImageSet | int | float, x2: Expression | imfusion.SharedImage | imfusion.SharedImageSet | int | float) -> Expression
+```
+
+Return the expression for computing the truth value of (x1 != x2), element-wise.
+
+Args:
+
+    x1:     `~imfusion.imagemath.lazy.Expression` instance (wrapping `~imfusion.SharedImage`, `~imfusion.SharedImageSet`, `int`, or `float`), `~imfusion.SharedImage` instance, `~imfusion.SharedImageSet` instance, or a numeric value.
+
+    x2:     `~imfusion.imagemath.lazy.Expression` instance (wrapping `~imfusion.SharedImage`, `~imfusion.SharedImageSet`, `int`, or `float`), `~imfusion.SharedImage` instance, `~imfusion.SharedImageSet` instance, or a numeric value.
+
+Returns:
+
+    `~imfusion.imagemath.lazy.Expression` instance wrapping `~imfusion.SharedImage` or `~imfusion.SharedImageSet`.
+
+### `power`
+
+```python
+def power(x1: Expression | imfusion.SharedImage | imfusion.SharedImageSet | int | float, x2: Expression | imfusion.SharedImage | imfusion.SharedImageSet | int | float) -> Expression
+```
+
+Expression for power operation. The first argument is raised to powers of the second argument, element-wise.
+
+Args:
+
+    x1:     `~imfusion.imagemath.lazy.Expression` instance (wrapping `~imfusion.SharedImage`, `~imfusion.SharedImageSet`, `int`, or `float`), `~imfusion.SharedImage` instance, `~imfusion.SharedImageSet` instance, or a numeric value.
+
+    x2:     `~imfusion.imagemath.lazy.Expression` instance (wrapping `~imfusion.SharedImage`, `~imfusion.SharedImageSet`, `int`, or `float`), `~imfusion.SharedImage` instance, `~imfusion.SharedImageSet` instance, or a numeric value.
+
+Returns:
+
+    `~imfusion.imagemath.lazy.Expression` instance wrapping `~imfusion.SharedImage` or `~imfusion.SharedImageSet`.
+
+### `prod`
+
+```python
+def prod(x: Expression) -> numpy.ndarray[numpy.float64[m, 1]]
+```
+
+Return a list of channel-wise production of image elements.
+
+Args:
+
+    x:      `~imfusion.imagemath.lazy.Expression` instance wrapping `~imfusion.SharedImage` or `~imfusion.SharedImageSet`.
+
+Returns:
+
+    Channel-wise values returned as a numpy array.
+
+### `sign`
+
+```python
+def sign(x: Expression) -> Expression
+```
+
+Expression for element-wise indication of the sign of image elements.
+
+Args:
+
+    x:      `~imfusion.imagemath.lazy.Expression` instance wrapping `~imfusion.SharedImage` or `~imfusion.SharedImageSet`.
+
+Returns:
+
+    `~imfusion.imagemath.lazy.Expression` instance wrapping `~imfusion.SharedImage` or `~imfusion.SharedImageSet`.
+
+### `sin`
+
+```python
+def sin(x: Expression) -> Expression
+```
+
+Expression for sine, element-wise.
+
+Args:
+
+    x:      `~imfusion.imagemath.lazy.Expression` instance wrapping `~imfusion.SharedImage` or `~imfusion.SharedImageSet`.
+
+Returns:
+
+    `~imfusion.imagemath.lazy.Expression` instance wrapping `~imfusion.SharedImage` or `~imfusion.SharedImageSet`.
+
+### `sqrt`
+
+```python
+def sqrt(x: Expression) -> Expression
+```
+
+Expression for the square-root operation, element-wise.
+
+Args:
+
+    x:      `~imfusion.imagemath.lazy.Expression` instance wrapping `~imfusion.SharedImage` or `~imfusion.SharedImageSet`.
+
+Returns:
+
+    `~imfusion.imagemath.lazy.Expression` instance wrapping `~imfusion.SharedImage` or `~imfusion.SharedImageSet`.
+
+### `square`
+
+```python
+def square(x: Expression) -> Expression
+```
+
+Expression for the square operation, element-wise.
+
+Args:
+
+    x:      `~imfusion.imagemath.lazy.Expression` instance wrapping `~imfusion.SharedImage` or `~imfusion.SharedImageSet`.
+
+Returns:
+
+    `~imfusion.imagemath.lazy.Expression` instance wrapping `~imfusion.SharedImage` or `~imfusion.SharedImageSet`.
+
+### `subtract`
+
+```python
+def subtract(x1: Expression | imfusion.SharedImage | imfusion.SharedImageSet | int | float, x2: Expression | imfusion.SharedImage | imfusion.SharedImageSet | int | float) -> Expression
+```
+
+Expression for subtraction, element-wise.
+
+Args:
+
+    x1:     `~imfusion.imagemath.lazy.Expression` instance (wrapping `~imfusion.SharedImage`, `~imfusion.SharedImageSet`, `int`, or `float`), `~imfusion.SharedImage` instance, `~imfusion.SharedImageSet` instance, or a numeric value.
+
+    x2:     `~imfusion.imagemath.lazy.Expression` instance (wrapping `~imfusion.SharedImage`, `~imfusion.SharedImageSet`, `int`, or `float`), `~imfusion.SharedImage` instance, `~imfusion.SharedImageSet` instance, or a numeric value.
+
+Returns:
+
+    `~imfusion.imagemath.lazy.Expression` instance wrapping `~imfusion.SharedImage` or `~imfusion.SharedImageSet`.
+
+### `sum`
+
+```python
+def sum(x: Expression) -> numpy.ndarray[numpy.float64[m, 1]]
+```
+
+Return a list of channel-wise sum of image elements.
+
+Args:
+
+    x:      `~imfusion.imagemath.lazy.Expression` instance wrapping `~imfusion.SharedImage` or `~imfusion.SharedImageSet`.
+
+Returns:
+
+    Channel-wise values returned as a numpy array.
+
+## Classes
+
+### `Expression`
+
+```python
+class Expression
+```
+
+Expressions to be used for lazy evaluation.
+
+This class serves as a wrapper for `~imfusion.SharedImage`, `~imfusion.SharedImageSet`, and scalar values to be used for lazy evaluation. Lazy evaluation approach delays the actual evaluation until the point that the result is needed. If you prefer the eager evaluation approach, you can directly invoke operations on `~imfusion.SharedImage` and `~imfusion.SharedImageSet` objects.
+
+Here is an example how to use lazy evaluation approach:
+
+&gt;&gt;&gt; from imfusion import imagemath
+
+Create expressions from `~imfusion.SharedImage` instances:
+
+&gt;&gt;&gt; expr1 = imagemath.lazy.Expression(si1)
+&gt;&gt;&gt; expr2 = imagemath.lazy.Expression(si2)
+
+Any operation with the expressions will return another expression. Expressions are stored in the expression tree and not evaluated yet without any evaluation. 
+
+&gt;&gt;&gt; expr3 = expr1 + expr2
+
+Expressions must be explicitly evaluated to get results. Use the `evaluate` method for this purpose:
+
+&gt;&gt;&gt; res = expr3.evaluate()
+
+Here, result is a `~imfusion.SharedImage` instance:
+
+&gt;&gt;&gt; print(res)
+imfusion.SharedImage(USHORT width: 512 height: 512 spacing: 0.661813x0.661813x1 mm)
+
+#### Methods
+
+##### `__init__`
+
+```python
+def __init__(self, shared_image: imfusion.SharedImageSet) -> None
+```
+
+Creates an expression wrapping a `~imfusion.SharedImage` instance.
+
+Args:
+
+        shared_image: `~imfusion.SharedImage` instance.
+
+Returns:
+
+        `~imfusion.imagemath.lazy.Expression` wrapping a `~imfusion.SharedImage` instance.
+
+##### `__init__`
+
+```python
+def __init__(self, shared_image_set: imfusion.SharedImage) -> None
+```
+
+Creates an expression wrapping a `~imfusion.SharedImageSet` instance.
+
+Args:
+
+        shared_image_set: `~imfusion.SharedImageSet` instance.
+
+Returns:
+
+        `~imfusion.imagemath.lazy.Expression` wrapping a `~imfusion.SharedImageSet` instance.
+
+##### `__init__`
+
+```python
+def __init__(self, value: int | float) -> None
+```
+
+Creates an expression wrapping a scalar value.
+
+Args:
+
+        value: Scalar value.
+
+Returns:
+
+        `~imfusion.imagemath.lazy.Expression` wrapping a scalar value.
+
+##### `__init__`
+
+```python
+def __init__(self, channel: int) -> None
+```
+
+Creates an `~imfusion.imagemath.lazy.Expression` wrapping a variable, e.g. a result of another computation which is not yet available during creation of the `~imfusion.imagemath.lazy.Expression` instance. Currently, only one per expression is allowed.
+
+Args:
+
+        channel: The channel of the variable wrapped by `~imfusion.imagemath.lazy.Expression`.
+
+Returns:
+
+        `~imfusion.imagemath.lazy.Expression` wrapping a variable.
+
+##### `argmax`
+
+```python
+def argmax(self) -> list[numpy.ndarray[numpy.int32[4, 1]]]
+```
+
+Return a list of the indices of maximum values, channel-wise. The indices are represented as (x, y, z, image index).
+
+Returns:
+
+        List of indices (x, y, z, image index) returned as a list of numpy arrays.
+
+##### `argmin`
+
+```python
+def argmin(self) -> list[numpy.ndarray[numpy.int32[4, 1]]]
+```
+
+Return a list of the indices of minimum values, channel-wise. The indices are represented as (x, y, z, image index).
+
+Returns:
+
+        List of indices (x, y, z, image index) returned as a list of numpy arrays.
+
+##### `channel_swizzle`
+
+```python
+def channel_swizzle(self, indices: list[int]) -> Expression
+```
+
+Returns the expression which reorders the channels of an image based on the input indices, e.g. ``indices[0]`` will correspond to the first channel of the output image.
+
+Args:
+
+        indices:        List of channel indices to swizzle the channels of the input.
+
+Returns:
+
+        `~imfusion.imagemath.lazy.Expression` instance wrapping `~imfusion.SharedImage` or `~imfusion.SharedImageSet` with reordered channels.
+
+##### `evaluate`
+
+```python
+def evaluate(self) -> imfusion.SharedImage | imfusion.SharedImageSet | None
+```
+
+Evaluate the expression into an image object, which is `~imfusion.SharedImage` or `~imfusion.SharedImageSet` instance. Scalar expressions and variable expressions return None when evaluated.
+Until this method is called, the operands and operations are stored in an expression tree but not evaluated yet. 
+                
+Returns:
+
+        `~imfusion.SharedImage` or `~imfusion.SharedImageSet` instance depending on the end result of the expression tree.
+
+##### `max`
+
+```python
+def max(self) -> numpy.ndarray[numpy.float64[m, 1]]
+```
+
+Return the list of the maximum elements of images, channel-wise.
+
+Returns:
+
+        Channel-wise values returned as a numpy array.
+
+##### `mean`
+
+```python
+def mean(self) -> numpy.ndarray[numpy.float64[m, 1]]
+```
+
+Return a list of channel-wise average of image elements.
+
+Returns:
+
+        Channel-wise values returned as a numpy array.
+
+##### `min`
+
+```python
+def min(self) -> numpy.ndarray[numpy.float64[m, 1]]
+```
+
+Return the list of the minimum elements of images, channel-wise.
+
+Returns:
+
+        Channel-wise values returned as a numpy array.
+
+##### `norm`
+
+```python
+def norm(self, order: int | float | str = 2) -> numpy.ndarray[numpy.float64[m, 1]]
+```
+
+Returns the norm of an image instance, channel-wise.
+
+Args:
+
+        order:  Order of the norm. Use a number (e.g., 1 or 2) or 'inf'. The default is the L2 norm.
+
+Returns:
+
+        Norm values per channel returned as a numpy array.
+
+##### `prod`
+
+```python
+def prod(self) -> numpy.ndarray[numpy.float64[m, 1]]
+```
+
+Return a list of channel-wise production of image elements.
+
+Returns:
+
+        Channel-wise values returned as a numpy array.
+
+##### `sum`
+
+```python
+def sum(self) -> numpy.ndarray[numpy.float64[m, 1]]
+```
+
+Return a list of channel-wise sum of image elements.
+
+Returns:
+
+        Channel-wise values returned as a numpy array.

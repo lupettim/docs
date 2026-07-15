@@ -1,0 +1,672 @@
+---
+title: imfusion.imagemath
+---
+
+# `imfusion.imagemath`
+
+imfusion.imagemath - Bindings for ImageMath Operations  
+======================================================
+
+This module provides element-wise arithmetic operations for `~imfusion.SharedImage` and `~imfusion.SharedImageSet`. You can apply these `~imfusion.imagemath` functionalities directly to objects of `~imfusion.SharedImage` and `~imfusion.SharedImageSet` with eager evaluation. Alternatively, the module offers lazy evaluation functionality through the submodule `~imfusion.imagemath.lazy`. You can create wrapper expressions using the `~imfusion.imagemath.lazy.Expression` provided by `~imfusion.imagemath.lazy`.
+
+See `~imfusion.imagemath.lazy.Expression` for details.
+
+*Example for eager evaluation:*
+
+&gt;&gt;&gt; from imfusion import imagemath
+
+Add ``si1`` and ``si2``, which are `~imfusion.SharedImage` instances:
+
+&gt;&gt;&gt; si1 = imfusion.load(ct_image_png)[0][0]
+&gt;&gt;&gt; si2 = si1.clone()
+&gt;&gt;&gt; res = si1 + si2
+
+``res`` is a `~imfusion.SharedImage` instance.
+
+&gt;&gt;&gt; print(res)
+imfusion.SharedImage(USHORT width: 512 height: 512 spacing: 0.661813x0.661813x1 mm)
+
+*Example for lazy evaluation:*
+
+&gt;&gt;&gt; from imfusion.imagemath import lazy
+
+Create expressions from `~imfusion.SharedImage` instances:
+
+&gt;&gt;&gt; expr1 = lazy.Expression(si1)
+&gt;&gt;&gt; expr2 = lazy.Expression(si2)
+
+Add ``expr1`` and ``expr2``:
+
+&gt;&gt;&gt; expr3 = expr1 + expr2
+
+Alternatively, you could add ``expr1`` and ``si2`` or ``si1`` and ``expr2``. Any expression containing an instance of `~imfusion.imagemath.lazy.Expression` will be converted to lazy evaluation expression. 
+
+&gt;&gt;&gt; expr3 = expr1 + si2
+
+Find the result with lazy evaluation: 
+
+&gt;&gt;&gt; res = expr3.evaluate()
+
+``res`` is a `~imfusion.SharedImage` instance similar to eager evaluation case.
+
+&gt;&gt;&gt; print(res)
+imfusion.SharedImage(USHORT width: 512 height: 512 spacing: 0.661813x0.661813x1 mm)
+
+## Functions
+
+### `absolute`
+
+```python
+def absolute(x: imfusion.SharedImage | imfusion.SharedImageSet) -> imfusion.SharedImage | imfusion.SharedImageSet
+```
+
+Absolute value, element-wise.
+
+Args:
+
+    x:      `~imfusion.SharedImage` instance or `~imfusion.SharedImageSet` instance.
+
+Returns:
+
+    `~imfusion.SharedImage` instance or `~imfusion.SharedImageSet` instance.
+
+### `add`
+
+```python
+def add(x1: imfusion.SharedImage | imfusion.SharedImageSet | int | float, x2: imfusion.SharedImage | imfusion.SharedImageSet | int | float) -> imfusion.SharedImage | imfusion.SharedImageSet
+```
+
+Addition, element-wise.
+
+Args:
+
+    x1:     `~imfusion.SharedImage` instance, `~imfusion.SharedImageSet` instance, or a numeric value.
+
+    x2:     `~imfusion.SharedImage` instance, `~imfusion.SharedImageSet` instance, or a numeric value.
+
+Returns:
+
+    `~imfusion.SharedImage` instance or `~imfusion.SharedImageSet` instance.
+
+### `arctan2`
+
+```python
+def arctan2(x1: imfusion.SharedImage | imfusion.SharedImageSet | int | float, x2: imfusion.SharedImage | imfusion.SharedImageSet | int | float) -> imfusion.SharedImage | imfusion.SharedImageSet
+```
+
+Trigonometric inverse tangent, element-wise.
+
+Args:
+
+    x1:     `~imfusion.SharedImage` instance, `~imfusion.SharedImageSet` instance, or a numeric value.
+
+    x2:     `~imfusion.SharedImage` instance, `~imfusion.SharedImageSet` instance, or a numeric value.
+
+Returns:
+
+    `~imfusion.SharedImage` instance or `~imfusion.SharedImageSet` instance.
+
+### `argmax`
+
+```python
+def argmax(x: imfusion.SharedImage | imfusion.SharedImageSet) -> list[numpy.ndarray[numpy.int32[4, 1]]]
+```
+
+Return a list of the indices of maximum values, channel-wise. The indices are represented as (x, y, z, image index).
+
+Args:
+
+    x:      `~imfusion.SharedImage` instance or `~imfusion.SharedImageSet` instance.
+
+Returns:
+
+    List of indices (x, y, z, image index) returned as a list of numpy arrays.
+
+### `argmin`
+
+```python
+def argmin(x: imfusion.SharedImage | imfusion.SharedImageSet) -> list[numpy.ndarray[numpy.int32[4, 1]]]
+```
+
+Return a list of the indices of minimum values, channel-wise. The indices are represented as (x, y, z, image index).
+
+Args:
+
+    x:      `~imfusion.SharedImage` instance or `~imfusion.SharedImageSet` instance.
+
+Returns:
+
+    List of indices (x, y, z, image index) returned as a list of numpy arrays.
+
+### `channel_swizzle`
+
+```python
+def channel_swizzle(x: imfusion.SharedImage | imfusion.SharedImageSet, indices: list[int]) -> imfusion.SharedImage | imfusion.SharedImageSet
+```
+
+Reorders the channels of an image based on the input indices, e.g. ``indices[0]`` will correspond to the first channel of the output image.
+
+Args:
+
+    x:      `~imfusion.SharedImage` instance or `~imfusion.SharedImageSet` instance.
+
+    indices:        List of channel indices to swizzle the channels of the input.
+
+Returns:
+
+    `~imfusion.SharedImage` instance or `~imfusion.SharedImageSet` instance.
+
+### `cos`
+
+```python
+def cos(x: imfusion.SharedImage | imfusion.SharedImageSet) -> imfusion.SharedImage | imfusion.SharedImageSet
+```
+
+Cosine, element-wise.
+
+Args:
+
+    x:      `~imfusion.SharedImage` instance or `~imfusion.SharedImageSet` instance.
+
+Returns:
+
+    `~imfusion.SharedImage` instance or `~imfusion.SharedImageSet` instance.
+
+### `divide`
+
+```python
+def divide(x1: imfusion.SharedImage | imfusion.SharedImageSet | int | float, x2: imfusion.SharedImage | imfusion.SharedImageSet | int | float) -> imfusion.SharedImage | imfusion.SharedImageSet
+```
+
+Division, element-wise.
+
+Args:
+
+    x1:     `~imfusion.SharedImage` instance, `~imfusion.SharedImageSet` instance, or a numeric value.
+
+    x2:     `~imfusion.SharedImage` instance, `~imfusion.SharedImageSet` instance, or a numeric value.
+
+Returns:
+
+    `~imfusion.SharedImage` instance or `~imfusion.SharedImageSet` instance.
+
+### `equal`
+
+```python
+def equal(x1: imfusion.SharedImage | imfusion.SharedImageSet | int | float, x2: imfusion.SharedImage | imfusion.SharedImageSet | int | float) -> imfusion.SharedImage | imfusion.SharedImageSet
+```
+
+Return the truth value of (x1 == x2), element-wise.
+
+Args:
+
+    x1:     `~imfusion.SharedImage` instance, `~imfusion.SharedImageSet` instance, or a numeric value.
+
+    x2:     `~imfusion.SharedImage` instance, `~imfusion.SharedImageSet` instance, or a numeric value.
+
+Returns:
+
+    `~imfusion.SharedImage` instance or `~imfusion.SharedImageSet` instance.
+
+### `exp`
+
+```python
+def exp(x: imfusion.SharedImage | imfusion.SharedImageSet) -> imfusion.SharedImage | imfusion.SharedImageSet
+```
+
+Exponential operation, element-wise.
+
+Args:
+
+    x:      `~imfusion.SharedImage` instance or `~imfusion.SharedImageSet` instance.
+
+Returns:
+
+    `~imfusion.SharedImage` instance or `~imfusion.SharedImageSet` instance.
+
+### `greater`
+
+```python
+def greater(x1: imfusion.SharedImage | imfusion.SharedImageSet | int | float, x2: imfusion.SharedImage | imfusion.SharedImageSet | int | float) -> imfusion.SharedImage | imfusion.SharedImageSet
+```
+
+Return the truth value of (x1 &gt; x2), element-wise.
+
+Args:
+
+    x1:     `~imfusion.SharedImage` instance, `~imfusion.SharedImageSet` instance, or a numeric value.
+
+    x2:     `~imfusion.SharedImage` instance, `~imfusion.SharedImageSet` instance, or a numeric value.
+
+Returns:
+
+    `~imfusion.SharedImage` instance or `~imfusion.SharedImageSet` instance.
+
+### `greater_equal`
+
+```python
+def greater_equal(x1: imfusion.SharedImage | imfusion.SharedImageSet | int | float, x2: imfusion.SharedImage | imfusion.SharedImageSet | int | float) -> imfusion.SharedImage | imfusion.SharedImageSet
+```
+
+Return the truth value of (x1 &gt;= x2), element-wise.
+
+Args:
+
+    x1:     `~imfusion.SharedImage` instance, `~imfusion.SharedImageSet` instance, or a numeric value.
+
+    x2:     `~imfusion.SharedImage` instance, `~imfusion.SharedImageSet` instance, or a numeric value.
+
+Returns:
+
+    `~imfusion.SharedImage` instance or `~imfusion.SharedImageSet` instance.
+
+### `less`
+
+```python
+def less(x1: imfusion.SharedImage | imfusion.SharedImageSet | int | float, x2: imfusion.SharedImage | imfusion.SharedImageSet | int | float) -> imfusion.SharedImage | imfusion.SharedImageSet
+```
+
+Return the truth value of (x1 &lt; x2), element-wise.
+
+Args:
+
+    x1:     `~imfusion.SharedImage` instance, `~imfusion.SharedImageSet` instance, or a numeric value.
+
+    x2:     `~imfusion.SharedImage` instance, `~imfusion.SharedImageSet` instance, or a numeric value.
+
+Returns:
+
+    `~imfusion.SharedImage` instance or `~imfusion.SharedImageSet` instance.
+
+### `less_equal`
+
+```python
+def less_equal(x1: imfusion.SharedImage | imfusion.SharedImageSet | int | float, x2: imfusion.SharedImage | imfusion.SharedImageSet | int | float) -> imfusion.SharedImage | imfusion.SharedImageSet
+```
+
+Return the truth value of (x1 &lt;= x2), element-wise.
+
+Args:
+
+    x1:     `~imfusion.SharedImage` instance, `~imfusion.SharedImageSet` instance, or a numeric value.
+
+    x2:     `~imfusion.SharedImage` instance, `~imfusion.SharedImageSet` instance, or a numeric value.
+
+Returns:
+
+    `~imfusion.SharedImage` instance or `~imfusion.SharedImageSet` instance.
+
+### `log`
+
+```python
+def log(x: imfusion.SharedImage | imfusion.SharedImageSet) -> imfusion.SharedImage | imfusion.SharedImageSet
+```
+
+Natural logarithm, element-wise.
+
+Args:
+
+    x:      `~imfusion.SharedImage` instance or `~imfusion.SharedImageSet` instance.
+
+Returns:
+
+    `~imfusion.SharedImage` instance or `~imfusion.SharedImageSet` instance.
+
+### `max`
+
+```python
+def max(x: imfusion.SharedImage | imfusion.SharedImageSet) -> numpy.ndarray[numpy.float64[m, 1]]
+```
+
+Return the list of the maximum elements of images, channel-wise.
+
+Args:
+
+    x:      `~imfusion.SharedImage` instance or `~imfusion.SharedImageSet` instance.
+
+Returns:
+
+    Channel-wise values returned as a numpy array.
+
+### `maximum`
+
+```python
+def maximum(x1: imfusion.SharedImage | imfusion.SharedImageSet | int | float, x2: imfusion.SharedImage | imfusion.SharedImageSet | int | float) -> imfusion.SharedImage | imfusion.SharedImageSet
+```
+
+Return element-wise maximum of arguments.
+
+Args:
+
+    x1:     `~imfusion.SharedImage` instance, `~imfusion.SharedImageSet` instance, or a numeric value.
+
+    x2:     `~imfusion.SharedImage` instance, `~imfusion.SharedImageSet` instance, or a numeric value.
+
+Returns:
+
+    `~imfusion.SharedImage` instance or `~imfusion.SharedImageSet` instance.
+
+### `mean`
+
+```python
+def mean(x: imfusion.SharedImage | imfusion.SharedImageSet) -> numpy.ndarray[numpy.float64[m, 1]]
+```
+
+Return a list of channel-wise average of image elements.
+
+Args:
+
+    x:      `~imfusion.SharedImage` instance or `~imfusion.SharedImageSet` instance.
+
+Returns:
+
+    Channel-wise values returned as a numpy array.
+
+### `min`
+
+```python
+def min(x: imfusion.SharedImage | imfusion.SharedImageSet) -> numpy.ndarray[numpy.float64[m, 1]]
+```
+
+Return the list of the minimum elements of images, channel-wise.
+
+Args:
+
+    x:      `~imfusion.SharedImage` instance or `~imfusion.SharedImageSet` instance.
+
+Returns:
+
+    Channel-wise values returned as a numpy array.
+
+### `minimum`
+
+```python
+def minimum(x1: imfusion.SharedImage | imfusion.SharedImageSet | int | float, x2: imfusion.SharedImage | imfusion.SharedImageSet | int | float) -> imfusion.SharedImage | imfusion.SharedImageSet
+```
+
+Return element-wise minimum of arguments.
+
+Args:
+
+    x1:     `~imfusion.SharedImage` instance, `~imfusion.SharedImageSet` instance, or a numeric value.
+
+    x2:     `~imfusion.SharedImage` instance, `~imfusion.SharedImageSet` instance, or a numeric value.
+
+Returns:
+
+    `~imfusion.SharedImage` instance or `~imfusion.SharedImageSet` instance.
+
+### `multiply`
+
+```python
+def multiply(x1: imfusion.SharedImage | imfusion.SharedImageSet | int | float, x2: imfusion.SharedImage | imfusion.SharedImageSet | int | float) -> imfusion.SharedImage | imfusion.SharedImageSet
+```
+
+Multiplication, element-wise.
+
+Args:
+
+    x1:     `~imfusion.SharedImage` instance, `~imfusion.SharedImageSet` instance, or a numeric value.
+
+    x2:     `~imfusion.SharedImage` instance, `~imfusion.SharedImageSet` instance, or a numeric value.
+
+Returns:
+
+    `~imfusion.SharedImage` instance or `~imfusion.SharedImageSet` instance.
+
+### `negative`
+
+```python
+def negative(x: imfusion.SharedImage | imfusion.SharedImageSet) -> imfusion.SharedImage | imfusion.SharedImageSet
+```
+
+Numerical negative, element-wise.
+
+Args:
+
+    x:      `~imfusion.SharedImage` instance or `~imfusion.SharedImageSet` instance.
+
+Returns:
+
+    `~imfusion.SharedImage` instance or `~imfusion.SharedImageSet` instance.
+
+### `norm`
+
+```python
+def norm(x: imfusion.SharedImage | imfusion.SharedImageSet, order: int | float | str = 2) -> numpy.ndarray[numpy.float64[m, 1]]
+```
+
+Returns the norm of an image instance, channel-wise.
+
+Args:
+
+    x:      `~imfusion.SharedImage` instance or `~imfusion.SharedImageSet` instance.
+
+    order:  Order of the norm. Use a number (e.g., 1 or 2) or 'inf'. The default is the L2 norm.
+
+Returns:
+
+    Norm values per channel returned as a numpy array.
+
+### `not_equal`
+
+```python
+def not_equal(x1: imfusion.SharedImage | imfusion.SharedImageSet | int | float, x2: imfusion.SharedImage | imfusion.SharedImageSet | int | float) -> imfusion.SharedImage | imfusion.SharedImageSet
+```
+
+Return the truth value of (x1 != x2), element-wise.
+
+Args:
+
+    x1:     `~imfusion.SharedImage` instance, `~imfusion.SharedImageSet` instance, or a numeric value.
+
+    x2:     `~imfusion.SharedImage` instance, `~imfusion.SharedImageSet` instance, or a numeric value.
+
+Returns:
+
+    `~imfusion.SharedImage` instance or `~imfusion.SharedImageSet` instance.
+
+### `power`
+
+```python
+def power(x1: imfusion.SharedImage | imfusion.SharedImageSet | int | float, x2: imfusion.SharedImage | imfusion.SharedImageSet | int | float) -> imfusion.SharedImage | imfusion.SharedImageSet
+```
+
+The first argument is raised to powers of the second argument, element-wise.
+
+Args:
+
+    x1:     `~imfusion.SharedImage` instance, `~imfusion.SharedImageSet` instance, or a numeric value.
+
+    x2:     `~imfusion.SharedImage` instance, `~imfusion.SharedImageSet` instance, or a numeric value.
+
+Returns:
+
+    `~imfusion.SharedImage` instance or `~imfusion.SharedImageSet` instance.
+
+### `prod`
+
+```python
+def prod(x: imfusion.SharedImage | imfusion.SharedImageSet) -> numpy.ndarray[numpy.float64[m, 1]]
+```
+
+Return a list of channel-wise production of image elements.
+
+Args:
+
+    x:      `~imfusion.SharedImage` instance or `~imfusion.SharedImageSet` instance.
+
+Returns:
+
+    Channel-wise values returned as a numpy array.
+
+### `sign`
+
+```python
+def sign(x: imfusion.SharedImage | imfusion.SharedImageSet) -> imfusion.SharedImage | imfusion.SharedImageSet
+```
+
+Element-wise indication of the sign of image elements.
+
+Args:
+
+    x:      `~imfusion.SharedImage` instance or `~imfusion.SharedImageSet` instance.
+
+Returns:
+
+    `~imfusion.SharedImage` instance or `~imfusion.SharedImageSet` instance.
+
+### `sin`
+
+```python
+def sin(x: imfusion.SharedImage | imfusion.SharedImageSet) -> imfusion.SharedImage | imfusion.SharedImageSet
+```
+
+Sine, element-wise.
+
+Args:
+
+    x:      `~imfusion.SharedImage` instance or `~imfusion.SharedImageSet` instance.
+
+Returns:
+
+    `~imfusion.SharedImage` instance or `~imfusion.SharedImageSet` instance.
+
+### `sqrt`
+
+```python
+def sqrt(x: imfusion.SharedImage | imfusion.SharedImageSet) -> imfusion.SharedImage | imfusion.SharedImageSet
+```
+
+Square-root operation, element-wise.
+
+Args:
+
+    x:      `~imfusion.SharedImage` instance or `~imfusion.SharedImageSet` instance.
+
+Returns:
+
+    `~imfusion.SharedImage` instance or `~imfusion.SharedImageSet` instance.
+
+### `square`
+
+```python
+def square(x: imfusion.SharedImage | imfusion.SharedImageSet) -> imfusion.SharedImage | imfusion.SharedImageSet
+```
+
+Square operation, element-wise.
+
+Args:
+
+    x:      `~imfusion.SharedImage` instance or `~imfusion.SharedImageSet` instance.
+
+Returns:
+
+    `~imfusion.SharedImage` instance or `~imfusion.SharedImageSet` instance.
+
+### `subtract`
+
+```python
+def subtract(x1: imfusion.SharedImage | imfusion.SharedImageSet | int | float, x2: imfusion.SharedImage | imfusion.SharedImageSet | int | float) -> imfusion.SharedImage | imfusion.SharedImageSet
+```
+
+Subtraction, element-wise.
+
+Args:
+
+    x1:     `~imfusion.SharedImage` instance, `~imfusion.SharedImageSet` instance, or a numeric value.
+
+    x2:     `~imfusion.SharedImage` instance, `~imfusion.SharedImageSet` instance, or a numeric value.
+
+Returns:
+
+    `~imfusion.SharedImage` instance or `~imfusion.SharedImageSet` instance.
+
+### `sum`
+
+```python
+def sum(x: imfusion.SharedImage | imfusion.SharedImageSet) -> numpy.ndarray[numpy.float64[m, 1]]
+```
+
+Return a list of channel-wise sum of image elements.
+
+Args:
+
+    x:      `~imfusion.SharedImage` instance or `~imfusion.SharedImageSet` instance.
+
+Returns:
+
+    Channel-wise values returned as a numpy array.
+
+## Enums
+
+### `CoordinateType`
+
+```python
+class CoordinateType
+```
+
+Coordinate system types for image operations.
+
+Defines which coordinate system to use for various image operations,
+particularly useful for projection and geometric transformations.
+
+Members:
+
+  WORLD : World coordinate system.
+
+  IMAGE : Image coordinate system.
+
+  TEXTURE : Texture coordinate system (normalized 0-1).
+
+  PIXEL : Pixel coordinate system.
+
+#### Attributes
+
+##### `IMAGE`
+
+```python
+IMAGE: typing.ClassVar[CoordinateType]
+```
+
+##### `PIXEL`
+
+```python
+PIXEL: typing.ClassVar[CoordinateType]
+```
+
+##### `TEXTURE`
+
+```python
+TEXTURE: typing.ClassVar[CoordinateType]
+```
+
+##### `WORLD`
+
+```python
+WORLD: typing.ClassVar[CoordinateType]
+```
+
+#### Methods
+
+##### `__init__`
+
+```python
+def __init__(self, value: int) -> None
+```
+
+##### `name`
+
+*property*
+
+```python
+def name(self) -> str
+```
+
+##### `value`
+
+*property*
+
+```python
+def value(self) -> int
+```

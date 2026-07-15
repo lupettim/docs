@@ -1,0 +1,213 @@
+---
+title: imfusion.mesh
+---
+
+# `imfusion.mesh`
+
+Submodules containing routines for pre- and post-processing meshes.
+
+## Functions
+
+### `create`
+
+```python
+def create(shape: Primitive) -> imfusion.Mesh
+```
+
+Create a mesh primitive.
+
+Args:
+        shape: The shape of the primitive to create.
+
+### `point_distance`
+
+```python
+def point_distance(target: imfusion.Mesh, source: imfusion.Mesh, signed_distance: bool = False, range_of_interest: tuple[int, int] | None = None) -> PointDistanceResult
+```
+
+Compute point-wise distances between: 1. source mesh vertices and target mesh surface, 2. source point cloud and target mesh surface, 3. source mesh vertices and target point cloud vertices, 4. source point cloud and the target point cloud
+
+Args:
+        target: Target data, defining the locations to estimate the distance to.
+        source: Source data, defining the locations to estimate the distance from.
+        signed_distance: Whether to compute signed distances (applicable to meshes only). Defaults to False.
+        range_of_interest: Optional range of distances to consider (min, max) in percentage (integer-valued). Distances outside of this range will be set to NaN. Statistics are computed only over non-NaN distances. Defaults to None.
+
+Returns:
+        A PointDistanceResult object containing the computed statistics and distances.
+
+### `point_distance`
+
+```python
+def point_distance(target: imfusion.PointCloud, source: imfusion.Mesh, signed_distance: bool = False, range_of_interest: tuple[int, int] | None = None) -> PointDistanceResult
+```
+
+### `point_distance`
+
+```python
+def point_distance(target: imfusion.PointCloud, source: imfusion.PointCloud, signed_distance: bool = False, range_of_interest: tuple[int, int] | None = None) -> PointDistanceResult
+```
+
+### `point_distance`
+
+```python
+def point_distance(target: imfusion.Mesh, source: imfusion.PointCloud, signed_distance: bool = False, range_of_interest: tuple[int, int] | None = None) -> PointDistanceResult
+```
+
+## Classes
+
+### `PointDistanceResult`
+
+```python
+class PointDistanceResult
+```
+
+#### Methods
+
+##### `__init__`
+
+```python
+def __init__(self, mean_distance: float, median_distance: float, standard_deviation: float, min_distance: float, max_distance: float, distances: numpy.ndarray[numpy.float64[m, 1]]) -> None
+```
+
+##### `distances`
+
+*property*
+
+```python
+def distances(self) -> numpy.ndarray[numpy.float64[m, 1]]
+```
+
+##### `max_distance`
+
+*property*
+
+```python
+def max_distance(self) -> float
+```
+
+##### `mean_distance`
+
+*property*
+
+```python
+def mean_distance(self) -> float
+```
+
+##### `median_distance`
+
+*property*
+
+```python
+def median_distance(self) -> float
+```
+
+##### `min_distance`
+
+*property*
+
+```python
+def min_distance(self) -> float
+```
+
+##### `standard_deviation`
+
+*property*
+
+```python
+def standard_deviation(self) -> float
+```
+
+## Enums
+
+### `Primitive`
+
+```python
+class Primitive
+```
+
+Enumeration of supported mesh primitives.
+
+Members:
+
+  SPHERE
+
+  CYLINDER
+
+  PYRAMID
+
+  CUBE
+
+  ICOSAHEDRON_SPHERE
+
+  CONE
+
+  GRID
+
+#### Attributes
+
+##### `CONE`
+
+```python
+CONE: typing.ClassVar[Primitive]
+```
+
+##### `CUBE`
+
+```python
+CUBE: typing.ClassVar[Primitive]
+```
+
+##### `CYLINDER`
+
+```python
+CYLINDER: typing.ClassVar[Primitive]
+```
+
+##### `GRID`
+
+```python
+GRID: typing.ClassVar[Primitive]
+```
+
+##### `ICOSAHEDRON_SPHERE`
+
+```python
+ICOSAHEDRON_SPHERE: typing.ClassVar[Primitive]
+```
+
+##### `PYRAMID`
+
+```python
+PYRAMID: typing.ClassVar[Primitive]
+```
+
+##### `SPHERE`
+
+```python
+SPHERE: typing.ClassVar[Primitive]
+```
+
+#### Methods
+
+##### `__init__`
+
+```python
+def __init__(self, value: int) -> None
+```
+
+##### `name`
+
+*property*
+
+```python
+def name(self) -> str
+```
+
+##### `value`
+
+*property*
+
+```python
+def value(self) -> int
+```

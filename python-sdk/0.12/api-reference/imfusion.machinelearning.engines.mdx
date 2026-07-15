@@ -1,0 +1,33 @@
+---
+title: imfusion.machinelearning.engines
+---
+
+# `imfusion.machinelearning.engines`
+
+## Classes
+
+### `LazyModule`
+
+```python
+class LazyModule
+```
+
+Wrapper that delays importing a package until its attributes are accessed.
+We need this to keep the import time of the `ìmfusion` package reasonable.
+
+.. note::
+
+    This wrapper is fairly basic and does not support assignments to the modules, i.e. no monkey-patching.
+
+#### Methods
+
+##### `__init__`
+
+```python
+def __init__(self, name: str)
+```
+
+Initialize a LazyModule wrapper.
+
+Args:
+    name: Fully qualified name of the module to load lazily (e.g., 'torch', 'onnxruntime')

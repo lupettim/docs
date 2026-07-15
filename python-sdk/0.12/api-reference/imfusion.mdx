@@ -1,0 +1,2726 @@
+---
+title: imfusion
+---
+
+# `imfusion`
+
+imfusion - ImFusion SDK for Medical Imaging
+===========================================
+
+This module provides Python bindings for the C++ ImFusion libraries.
+
+## Attributes
+
+### `app`
+
+```python
+app = None
+```
+
+### `libplugin`
+
+```python
+libplugin: importlib.metadata.EntryPoint
+```
+
+### `libplugin_path`
+
+```python
+libplugin_path: pathlib.PosixPath
+```
+
+### `name`
+
+```python
+name: str = 'Algorithm'
+```
+
+### `to_wrap`
+
+```python
+to_wrap: list = ['BaseAlgorithm', 'ImageResamplingAlgorithm', 'Algorithm']
+```
+
+## Functions
+
+### `algorithm_name`
+
+```python
+def algorithm_name(id: str) -> str
+```
+
+Returns the name of the algorithm with the given id.
+
+### `algorithm_properties`
+
+```python
+def algorithm_properties(id: str, data: list) -> Properties
+```
+
+Returns the default properties of the given algorithm.
+This is useful to figure out what properties are supported by an algorithm.
+
+### `auto_window`
+
+```python
+def auto_window(image: SharedImageSet, change2d: bool = True, change3d: bool = True, lower_limit: float = 0.0, upper_limit: float = 0.0) -> None
+```
+
+Update window/level of input image to show the entire intensity range of the image.
+
+Args:
+    image (SharedImageSet): Image to change the windowing for.
+    change2d (bool): Flag whether update the DisplayOptions2d attached to  img.
+    change3d (bool): Flag whether update the DisplayOptions3d attached to  img.
+    lower_limit (double): Ratio of lower values removed by the auto windowing.
+    upper_limit (double): Ratio of upper values removed by the auto windowing.
+
+### `available_algorithms`
+
+```python
+def available_algorithms(sub_string: str = '', case_sensitive: bool = False) -> list[str]
+```
+
+Return a list of all available algorithm ids.
+
+Optionally, a substring can be given to filter the list (case-insensitive by default).
+
+### `available_data_components`
+
+```python
+def available_data_components() -> list[str]
+```
+
+Returns the Unique IDs of all DataComponents registered in `DataComponentFactory`.
+
+### `close_viewers`
+
+```python
+def close_viewers() -> None
+```
+
+Close all the visualizers that were opened with `show`.
+
+### `create_algorithm`
+
+```python
+def create_algorithm(id: str, data: list = [], properties: Properties = None) -> typing.Any
+```
+
+Create the algorithm with the given id and but without executing it.
+
+The algorithm will only be created if it is compatible with the given data.
+The optional `~imfusion.Properties` object will be used to configure the algorithm.
+
+Args:
+    id: String identifier of the Algorithm to create.
+    data: List of input data that the Algorithm expects.
+    properties: Configuration for the Algorithm in the form of a `~imfusion.Properties` instance.
+
+Example:
+    &gt;&gt;&gt; create_algorithm("Create Synthetic Data", [])  # doctest: +SKIP
+    &lt;imfusion.BaseAlgorithm object at ...&gt;
+
+### `create_data_component`
+
+```python
+def create_data_component(id: str, properties: Properties = None) -> typing.Any
+```
+
+Instantiates a DataComponent specified by the given ID.
+
+:param id: Unique ID of the DataComponent to create.
+:param properties: Optional Properties object. If not None, it will used to configure the newly created DataComponent.
+
+### `deinit`
+
+```python
+def deinit() -> None
+```
+
+De-initializes the framework.
+
+Deletes the main OpenGL context and unloads all plugins.
+
+This should only be called at the end of the application.
+Automatically called when the module is unloaded.
+
+Does nothing if the framework was not initialized yet.
+
+### `execute_algorithm`
+
+```python
+def execute_algorithm(id: str, data: list = [], properties: Properties = None) -> list
+```
+
+Execute the algorithm with the given id and returns its output.
+
+The algorithm will only be executed if it is compatible with the given data.
+The optional `Properties` object will be used to configure the algorithm before executing it.
+
+### `get_entrypoints_by_group`
+
+```python
+def get_entrypoints_by_group(group: str) -> importlib.metadata.EntryPoints
+```
+
+### `gpu_info`
+
+```python
+def gpu_info() -> str | None
+```
+
+Return string with information about GPU to check if hardware support for OpenGL is available.
+
+### `has_gl_context`
+
+```python
+def has_gl_context() -> bool
+```
+
+### `info`
+
+```python
+def info() -> FrameworkInfo
+```
+
+Provides general information about the framework.
+
+### `init`
+
+```python
+def init(pluginFolders: list = [], initOpenGL: bool = True) -> None
+```
+
+### `is_compatible_imfusion_plugin`
+
+```python
+def is_compatible_imfusion_plugin(arg0: str | os.PathLike) -> bool
+```
+
+### `keep_data_alive`
+
+```python
+def keep_data_alive(cls)
+```
+
+### `list_viewers`
+
+```python
+def list_viewers() -> list[VisualizerHandle]
+```
+
+Return a list of visualization handles that were created with `show`.
+Please note that this method may return viewers that have been closed
+without `VisualizerHandle.close` or `close_viewers`.
+
+### `load`
+
+```python
+def load(path: str | os.PathLike) -> list
+```
+
+Load the content of a file or folder as a list of `~imfusion.Data`.
+
+The list can contain instances of any class deriving from `Data`, i.e. `~imfusion.SharedImage`, `~imfusion.Mesh`, `~imfusion.PointCloud`, etc...
+
+Args:
+    path: can be path to a file containing a supported file formats, or a folder containing Dicom data, if the imfusion package was built with Dicom support.
+
+Note:
+    An IOError is raised if the file cannot be opened or a ValueError if the filetype is not supported. Some filetypes (like workspaces) cannot be opened by this function, but must be opened with `imfusion.ApplicationController.open`.
+    
+    For `~imfusion.PointCloud` files in `.pcd` format: PCD files store colors as integers in the range [0, 255], however, the returned PointCloud will have colors converted to floating-point values in the range [0.0, 1.0].
+
+Example:
+    &gt;&gt;&gt; imfusion.load('ct_image.png')  # doctest: +SKIP
+    [imfusion.SharedImageSet(size: 1, [imfusion.SharedImage(USHORT width: 512 height: 512 spacing: 0.661813x0.661813x1 mm)])]  # doctest: +SKIP
+    &gt;&gt;&gt; imfusion.load('multi_label_segmentation.nii.gz')  # doctest: +SKIP
+    [imfusion.SharedImageSet(size: 1, [imfusion.SharedImage(UBYTE width: 128 height: 128 slices: 128 channels: 3 spacing: 1x1x1 mm)])]  # doctest: +SKIP
+    &gt;&gt;&gt; imfusion.load('us_sweep.dcm')  # doctest: +SKIP
+    [imfusion.SharedImageSet(size: 20, [  # doctest: +SKIP
+            imfusion.SharedImage(UBYTE width: 164 height: 552 spacing: 0.228659x0.0724638x1 mm),  # doctest: +SKIP
+            imfusion.SharedImage(UBYTE width: 164 height: 552 spacing: 0.228659x0.0724638x1 mm),  # doctest: +SKIP
+            ...  # doctest: +SKIP
+            imfusion.SharedImage(UBYTE width: 164 height: 552 spacing: 0.228659x0.0724638x1 mm)  # doctest: +SKIP
+    &gt;&gt;&gt; imfusion.load('path_to_folder_containing_multiple_dcm_datasets')  # doctest: +SKIP
+    [imfusion.SharedImageSet(size: 1, [imfusion.SharedImage(FLOAT width: 400 height: 400 slices: 300 spacing: 2.03642x2.03642x3 mm)])]  # doctest: +SKIP
+
+### `load_plugin`
+
+```python
+def load_plugin(path: str | os.PathLike) -> str
+```
+
+Load a single ImFusionLib plugin from the given file. WARNING: This might execute arbitary code. Only use with trusted files!
+
+### `load_plugins`
+
+```python
+def load_plugins(folder: str | os.PathLike) -> None
+```
+
+Loads all ImFusionLib plugins from the given folder. WARNING: This might execute arbitary code. Only use with trusted folders!
+
+### `log_debug`
+
+```python
+def log_debug(message: str) -> None
+```
+
+### `log_error`
+
+```python
+def log_error(message: str) -> None
+```
+
+### `log_fatal`
+
+```python
+def log_fatal(message: str) -> None
+```
+
+### `log_info`
+
+```python
+def log_info(message: str) -> None
+```
+
+### `log_level`
+
+```python
+def log_level() -> int
+```
+
+Returns the level of the logging in the ImFusionSDK
+(Trace = 0, Debug = 1, Info = 2, Warning = 3, Error = 4, Fatal = 5, Quiet = 6)
+
+### `log_trace`
+
+```python
+def log_trace(message: str) -> None
+```
+
+### `log_warn`
+
+```python
+def log_warn(message: str) -> None
+```
+
+### `open`
+
+```python
+def open(file: str) -> list
+```
+
+Open a file and load it as data.
+
+Return a list of loaded datasets.
+An IOError is raised if the file cannot be opened or a ValueError if
+the filetype is not supported.
+
+Some filetypes (like workspaces) cannot be opened by this function,
+but must be opened with `imfusion.ApplicationController.open`.
+
+### `open_in_suite`
+
+```python
+def open_in_suite(data: list[Data]) -> None
+```
+
+Starts the ImFusion Suite with the input data list. The `ImFusionSuite` executable must be in your PATH.
+
+### `py_doc_url`
+
+```python
+def py_doc_url() -> str
+```
+
+### `register_algorithm`
+
+```python
+def register_algorithm(id, name, cls)
+```
+
+Register an Algorithm to the framework.
+
+The Algorithm will be accessible through the given id.
+If the id is already used, the registration will fail.
+
+cls must derive from Algorithm otherwise a TypeError is
+raised.
+
+### `save`
+
+```python
+def save(shared_image_set: SharedImageSet, path: str | os.PathLike, **kwargs) -> None
+```
+
+Save a `~imfusion.SharedImageSet` to the specified file or folder path.
+The path extension is used to determine which file format to save to. If a folder path is provided instead, then images are saved in the directory as separate `png` files.
+Currently supported file formats are:
+
+    - ImFusion File, extension `imf`
+    - NIfTI File, extensions [`nii`, `nii.gz`]
+    - Folder path
+
+:param shared_image_set: Instance of `~imfusion.SharedImageSet`.
+:param path: Path to output file or folder. The path extension is used to determine the file format.
+:param \**kwargs:
+    * *keep_ras_coordinates* (``bool``) -- NIfTI only. Sets whether to the keep RAS (`Right, Anterior, Superior &lt;https://bids-specification.readthedocs.io/en/v1.4.1/99-appendices/08-coordinate-systems.html&gt;`) coordinate system.
+    * *compression_level* (``int``) -- Folder only. Compression level of the output `png` files. Valid values range from 0-9 (0 - no compression, 9 - "maximal" compression).
+
+Raises:
+    RuntimeError if `path` extension is not supported. Currently supported extensions are ['imf', 'nii', 'nii.gz'], or no extension (save to folder).
+
+Example:
+    &gt;&gt;&gt; image_set = imfusion.SharedImageSet(np.ones((1,8,8,1)))
+    &gt;&gt;&gt; imfusion.save(image_set, tmp_path / 'file.imf')  # saves an ImFusion file
+    &gt;&gt;&gt; imfusion.save(image_set, tmp_path / 'file.nii.gz', keep_ras_coordinates=True)  # saves a NIfTI file
+
+### `save`
+
+```python
+def save(mesh: Mesh, file_path: str | os.PathLike) -> None
+```
+
+Save a `imfusion.Mesh` to the specified file path.
+The path extension is used to determine which file format to save to.
+Currently supported file formats are:
+
+    - ImFusion File, extension `imf`
+    - Polygon File Format or the Stanford Triangle Format, extension `ply`
+    - STL file format used for 3D printing and computer-aided design (CAD), extension `stl`
+    - Object File Format, extension `off`
+    - OBJ file format developed by Wavefront , extension `obj`
+    - Virtual Reality Modeling Language file format, extension `wrl`
+    - Standard Starlink NDF (SUN/33) file format, extension `surf`
+    - Raster GIS file format developed by Esri, extension `grid`
+    - 3D Manufacturing Format , extension `3mf`
+
+Args:
+    mesh: Instance of `imfusion.Mesh`.
+    file_path: Path to output file. The path extension is used to determine the file format.
+
+Raises:
+    RuntimeError if `file_path` extension is not supported. Currently supported extensions are [ply", "stl", "off", "obj", "wrl", "surf", "grid", "3mf].
+
+Example:
+    &gt;&gt;&gt; mesh = imfusion.mesh.create(imfusion.mesh.Primitive.SPHERE)
+    &gt;&gt;&gt; imfusion.save(mesh, tmp_path / 'mesh.imf')
+
+### `save`
+
+```python
+def save(point_cloud: PointCloud, file_path: str | os.PathLike) -> None
+```
+
+Save a `imfusion.PointCloud` to the specified file path.
+The path extension is used to determine which file format to save to.
+Currently supported file formats are:
+
+    - ImFusion File, extension `imf`
+    - Point Cloud Data used inside Point Cloud Library (PCL), extension `pcd`
+    - OBJ file format developed by Wavefront , extension `obj`
+    - Polygon File Format or the Stanford Triangle Format, extension `ply`
+
+Args:
+    point_cloud: Instance of `imfusion.PointCloud`.
+    file_path: Path to output file. The path extension is used to determine the file format.
+
+Note:
+    For `.pcd` and `.imf` files, colors are stored as integers in the range [0, 255], even if the PointCloud has colors in the floating-point range [0.0, 1.0].
+    When saving to these formats, all color values must be in the range [0.0, 1.0], otherwise a ValueError will be raised.
+
+Raises:
+    RuntimeError if `file_path` extension is not supported. Currently supported extensions are ['imf', 'pcd', 'obj', 'ply', 'txt', 'xyz'].
+    ValueError if saving to `.pcd` or `.imf` format and any color value is outside the range [0.0, 1.0].
+
+Example:
+    &gt;&gt;&gt; pc = imfusion.PointCloud([(0,0,0), (1,1,1), (-1,-1,-1)])
+    &gt;&gt;&gt; imfusion.save(pc, tmp_path / 'point_cloud.pcd')
+
+### `save`
+
+```python
+def save(data: Data, file_path: str | os.PathLike) -> None
+```
+
+Save a `~imfusion.Data` instance to the specified file path as an ImFusion file.
+
+:param data: any instance of class deriving from `~imfusion.Data` can be saved with this methods, examples are `~imfusion.SharedImageSet`, `~imfusion.Mesh` and `~imfusion.PointCloud`.
+:param file_path: Path to ImFusion file. The data is saved in a single file. File path must end with `.imf`.
+
+Note:
+    Raises a RuntimeError on failure or if `file_path` doesn't end with `.imf` extension.
+
+Example:
+    &gt;&gt;&gt; mesh = imfusion.mesh.create(imfusion.mesh.Primitive.SPHERE)
+    &gt;&gt;&gt; imfusion.save(mesh, tmp_path / 'mesh.imf')
+
+### `save`
+
+```python
+def save(data_list: list[Data], file_path: str | os.PathLike) -> None
+```
+
+Save a list of data to the specified file path as an ImFusion file.
+
+:param data_list: List of `~imfusion.Data`. Any class deriving from `Data` can be saved with this methods. Examples of `Data` are `~imfusion.SharedImageSet`, `~imfusion.Mesh`, `~imfusion.PointCloud`, etc.
+:param file_path: Path to ImFusion file. The entire list of Data is saved in a single file. File path must end with `.imf`
+
+Note:
+    Raises a RuntimeError on failure or if `file_path` doesn't end with `.imf` extension.
+
+Example:
+    &gt;&gt;&gt; image_set = imfusion.SharedImageSet(np.ones((1,8,8,1)))
+    &gt;&gt;&gt; mesh = imfusion.mesh.create(imfusion.mesh.Primitive.SPHERE)
+    &gt;&gt;&gt; point_cloud = imfusion.PointCloud([(0,0,0), (1,1,1), (-1,-1,-1)])
+    &gt;&gt;&gt; another_image_set = imfusion.SharedImageSet(np.ones((1,8,8,1)))
+    &gt;&gt;&gt; imfusion.save([image_set, mesh, point_cloud, another_image_set], tmp_path / 'file.imf')
+
+### `set_log_level`
+
+```python
+def set_log_level(level: int) -> None
+```
+
+Sets the level of the logging in the ImFusionSDK
+(Trace = 0, Debug = 1, Info = 2, Warning = 3, Error = 4, Fatal = 5, Quiet = 6).
+
+The initial log level is 3 (Warning), but can be set explicitly with the IMFUSION_LOG_LEVEL environment variable.
+
+Note:
+    After calling `transfer_logging_to_python()` this function has no effect.
+
+### `show`
+
+```python
+def show(data: Data, *, title: str | None = None) -> VisualizerHandle
+```
+
+Launch a visualizer displaying the input data (e.g. a SharedImageSet). A title can also optionally be assigned.
+
+### `show`
+
+```python
+def show(data_list: list[Data], *, title: str | None = None) -> VisualizerHandle
+```
+
+Launch a visualizer displaying the input list of data. A title can also optionally be assigned.
+
+### `show`
+
+```python
+def show(filepath: str | os.PathLike, *, title: str | None = None) -> VisualizerHandle
+```
+
+Launch a visualizer displaying the content of the filepath. Only .imf files are supported at this point. A title can also optionally be assigned.
+
+### `transfer_logging_to_python`
+
+```python
+def transfer_logging_to_python() -> None
+```
+
+Transfers the control of logging from ImFusionLib to the "ImFusion" logger, which can obtained
+through the python's logging module with ``logging.getLogger("ImFusion")``.
+
+After calling ``transfer_logging_to_python``, the configuration of the logger will be possible exclusively
+through the Python's logging module interface, e.g. using ``logging.getLogger("ImFusion").setLevel``.
+Besides, all the imfusion logs that happen after calling this function but before importing the
+``logging`` module will not be captured.
+
+Note:
+    Please note that this redirection cannot be cancelled and that any subsequent calls to this functions will have no effect.
+
+Warning:
+    Due to the GIL, log messages from internal threads won't be forwarded to the logger.
+
+### `unregister_algorithm`
+
+```python
+def unregister_algorithm(name: str) -> None
+```
+
+Unregister a previously registered algorithm.
+
+This only works for algorithm that where registered through the Python interface
+but not for built-in algorithm.
+
+## Classes
+
+### `Algorithm`
+
+```python
+class Algorithm(BaseAlgorithm)
+```
+
+Base class for Algorithms.
+
+An Algorithm accepts certain Data as input and performs some
+computation on it.
+
+Example for an algorithm that takes exactly one image and prints
+its name:
+
+&gt;&gt;&gt; class MyAlgorithm(imfusion.Algorithm):
+...     def __init_(self, image):
+...         super().__init_()
+...         self.image = image
+...
+...     @classmethod
+...     def convert_input(cls, data):
+...         images = data.images()
+...         if len(images) == 1 and len(data) == 1:
+...             return [images[0]]
+...         raise IncompatibleError('Requires exactly one image')
+...
+...     def compute(self):
+...         print(self.image.name)
+
+In order to make an Algorithm available to the ImFusion Suite (i.e. the
+context menu when right-clicking on selected data), it has to be registered to the
+ApplicationController:
+
+&gt;&gt;&gt; imfusion.register_algorithm('Python.MyAlgorithm','My Algorithm', MyAlgorithm)
+
+If the Algorithm is created through the ImFusion Suite, the
+`convert_input` method is called to determine if the Algorithm
+is compatible with the desired input data.
+If this method does not raise an exception, the Algorithm is initialized
+with the data returned by `convert_input`. The implementation is
+similar to this:
+
+```python
+
+```
+   try:
+       input = MyAlgorithm.convert_input(some_data)
+       return MyAlgorithm(*input)
+   except IncompatibleError:
+       return None
+
+The Algorithm class also provides default implementations for the
+`configuration` and `configure` methods that automatically
+serialize attributes created with `add_param`.
+
+#### Methods
+
+##### `__init__`
+
+```python
+def __init__(self, *args, **kwargs)
+```
+
+##### `add_param`
+
+```python
+def add_param(self, name, value, attributes = '')
+```
+
+Add a new parameter to the object.
+
+The parameter is available as a new attribute with the given name
+and value. The attribute will be configured automatically.
+
+&gt;&gt;&gt; class MyAlgorithm(imfusion.Algorithm):
+...     def __init_(self):
+...         super().__init_()
+...         self.add_param('x', 5)
+&gt;&gt;&gt; a = MyAlgorithm()
+&gt;&gt;&gt; a.x
+5
+
+##### `configuration`
+
+```python
+def configuration(self)
+```
+
+Returns a copy of the current algorithm configuration.
+
+##### `configure`
+
+```python
+def configure(self, p)
+```
+
+Sets the current algorithm configuration with the given Properties.
+
+##### `convert_input`
+
+*classmethod*
+
+```python
+def convert_input(cls, data: typing.List[imfusion.Data]) -> typing.List[imfusion.Data]
+```
+
+Convert the given DataList to a valid input for the algorithm.
+
+Must be overridden in derived classes.
+Raise an `IncompatibleError` if the given data does not exactly
+match the required input of the algorithm.
+Should return a list, a dict or a generator.
+
+##### `output`
+
+```python
+def output(self)
+```
+
+Return the output generated by the previous call to `compute`.
+The returned type must be a list of Data objects!
+The default implementation returns an empty list.
+
+#### Nested Classes
+
+##### `action`
+
+```python
+class action
+```
+
+Decorator to demarcate a method as an "action".
+Actions are displayed as additional buttons when creating an AlgorithmController in the Suite
+and can be run generically, using their id, through `~imfusion.Algorithm.run_action`.
+
+Args:
+    display_name: Text that should be shown on the Controller button.
+
+###### Methods
+
+####### `__call__`
+
+```python
+def __call__(self, method)
+```
+
+####### `__init__`
+
+```python
+def __init__(self, display_name: str)
+```
+
+####### `action_wrapper`
+
+*staticmethod*
+
+```python
+def action_wrapper(func: typing.Callable[[imfusion.BaseAlgorithm], typing.Optional[imfusion.BaseAlgorithm.Status]]) -> typing.Callable[[imfusion.BaseAlgorithm], imfusion.BaseAlgorithm.Status]
+```
+
+Helper that returns `~imfusion.Algorithm.UNKNOWN` automatically if the wrapped method did not return a status.
+
+### `AlgorithmExecutionError`
+
+```python
+class AlgorithmExecutionError(RuntimeError)
+```
+
+### `AnnotationModel`
+
+```python
+class AnnotationModel
+```
+
+#### Methods
+
+##### `annotations`
+
+*property*
+
+```python
+def annotations(self) -> list[Annotation]
+```
+
+##### `create_annotation`
+
+```python
+def create_annotation(self, arg0: Annotation.AnnotationType) -> Annotation
+```
+
+### `ApplicationController`
+
+```python
+class ApplicationController
+```
+
+A ApplicationController instance serves as the center of the ImFusionSDK.
+
+It provides an OpenGL context, a `DataModel`, executes algorithms and more.
+While multiple instances are possible, in general there is only one instance.
+
+#### Methods
+
+##### `add_algorithm`
+
+```python
+def add_algorithm(self, id: str, data: list = [], properties: Properties = None) -> typing.Any
+```
+
+Add the algorithm with the given name to the application.
+
+The algorithm will only be created if it is compatible with the given data.
+The optional Properties object will be used to configure the algorithm.
+Returns the created algorithm or ``None`` if no compatible algorithm could be found.
+
+&gt;&gt;&gt; app.add_algorithm("Create Synthetic Data", [])  # doctest: +SKIP
+&lt;imfusion.BaseAlgorithm object at ...&gt;
+
+##### `algorithms`
+
+*property*
+
+```python
+def algorithms(self) -> list[BaseAlgorithm]
+```
+
+Return a list of all open algorithms.
+
+##### `annotation_model`
+
+*property*
+
+```python
+def annotation_model(self) -> AnnotationModel
+```
+
+##### `close_all`
+
+```python
+def close_all(self) -> None
+```
+
+Delete all algorithms and datasets. Make sure to not reference any deleted objects after calling this!
+
+##### `data_model`
+
+*property*
+
+```python
+def data_model(self) -> DataModel
+```
+
+##### `display`
+
+*property*
+
+```python
+def display(self) -> Display
+```
+
+##### `execute_algorithm`
+
+```python
+def execute_algorithm(self, id: str, data: list = [], properties: Properties = None) -> list
+```
+
+Execute the algorithm with the given name and returns its output.
+
+The algorithm will only be executed if it is compatible with the given data.
+The optional `Properties` object will be used to configure the algorithm before executing it.
+Any data created by the algorithm is added to the `DataModel` before being returned.
+
+##### `load_workspace`
+
+```python
+def load_workspace(self, path: str, **kwargs) -> bool
+```
+
+Loads a workspace file and returns True if the loading was successful.
+Placeholders can be specified as keyword arguments, for example:
+&gt;&gt;&gt; app.load_workspace("path/to/workspace.iws", sweep=sweep, case=case)
+
+##### `open`
+
+```python
+def open(self, path: str) -> list
+```
+
+Tries to open the given filepath as data.
+If successful the data is added to `DataModel` and returned.
+Otherwise raises a FileNotFoundError.
+
+##### `remove_algorithm`
+
+```python
+def remove_algorithm(self, algorithm: BaseAlgorithm) -> None
+```
+
+Remove and deletes the given algorithm from the application. Don't reference the given algorithm afterwards!
+
+##### `save_workspace`
+
+```python
+def save_workspace(self, path: str) -> bool
+```
+
+Saves current workspace to a iws file
+
+##### `select_data`
+
+```python
+def select_data(self, arg0: Data) -> None
+```
+
+##### `select_data`
+
+```python
+def select_data(self, arg0: DataList) -> None
+```
+
+##### `select_data`
+
+```python
+def select_data(self, arg0: list) -> None
+```
+
+##### `selected_data`
+
+*property*
+
+```python
+def selected_data(self) -> DataList
+```
+
+##### `update`
+
+```python
+def update(self) -> None
+```
+
+##### `update_display`
+
+```python
+def update_display(self) -> None
+```
+
+### `Configurable`
+
+```python
+class Configurable
+```
+
+#### Methods
+
+##### `configuration`
+
+```python
+def configuration(self) -> Properties
+```
+
+##### `configure`
+
+```python
+def configure(self, properties: Properties) -> None
+```
+
+##### `configure_defaults`
+
+```python
+def configure_defaults(self) -> None
+```
+
+### `ConsoleController`
+
+```python
+class ConsoleController(ApplicationController)
+```
+
+ApplicationController without a UI interface.
+
+This class is not available in the embedded Python interpreter in the ImFusionSuite.
+
+#### Methods
+
+##### `__init__`
+
+```python
+def __init__(self, name: str = 'ImFusion Python Module') -> None
+```
+
+### `Data`
+
+```python
+class Data
+```
+
+#### Attributes
+
+##### `name`
+
+```python
+name: str
+```
+
+#### Methods
+
+##### `components`
+
+*property*
+
+```python
+def components(self) -> DataComponentList
+```
+
+##### `kind`
+
+*property*
+
+```python
+def kind(self) -> Data.Kind
+```
+
+##### `matrix_from_world`
+
+```python
+def matrix_from_world(self) -> numpy.ndarray[numpy.float64[4, 4]]
+```
+
+##### `matrix_to_world`
+
+```python
+def matrix_to_world(self) -> numpy.ndarray[numpy.float64[4, 4]]
+```
+
+##### `set_matrix_from_world`
+
+```python
+def set_matrix_from_world(self, arg0: numpy.ndarray[numpy.float64[4, 4]]) -> None
+```
+
+##### `set_matrix_to_world`
+
+```python
+def set_matrix_to_world(self, arg0: numpy.ndarray[numpy.float64[4, 4]]) -> None
+```
+
+#### Nested Enums
+
+##### `Kind`
+
+```python
+class Kind
+```
+
+Members:
+
+UNKNOWN
+
+IMAGE
+
+VOLUME
+
+IMAGE_SET
+
+VOLUME_SET
+
+IMAGE_STREAM
+
+VOLUME_STREAM
+
+POINT_SET
+
+SURFACE
+
+TRACKING_STREAM
+
+TRACKING_DATA
+
+STEREOIMAGESET
+
+###### Attributes
+
+####### `IMAGE`
+
+```python
+IMAGE: typing.ClassVar[Data.Kind]
+```
+
+####### `IMAGE_SET`
+
+```python
+IMAGE_SET: typing.ClassVar[Data.Kind]
+```
+
+####### `IMAGE_STREAM`
+
+```python
+IMAGE_STREAM: typing.ClassVar[Data.Kind]
+```
+
+####### `POINT_SET`
+
+```python
+POINT_SET: typing.ClassVar[Data.Kind]
+```
+
+####### `STEREOIMAGESET`
+
+```python
+STEREOIMAGESET: typing.ClassVar[Data.Kind]
+```
+
+####### `SURFACE`
+
+```python
+SURFACE: typing.ClassVar[Data.Kind]
+```
+
+####### `TRACKING_DATA`
+
+```python
+TRACKING_DATA: typing.ClassVar[Data.Kind]
+```
+
+####### `TRACKING_STREAM`
+
+```python
+TRACKING_STREAM: typing.ClassVar[Data.Kind]
+```
+
+####### `UNKNOWN`
+
+```python
+UNKNOWN: typing.ClassVar[Data.Kind]
+```
+
+####### `VOLUME`
+
+```python
+VOLUME: typing.ClassVar[Data.Kind]
+```
+
+####### `VOLUME_SET`
+
+```python
+VOLUME_SET: typing.ClassVar[Data.Kind]
+```
+
+####### `VOLUME_STREAM`
+
+```python
+VOLUME_STREAM: typing.ClassVar[Data.Kind]
+```
+
+###### Methods
+
+####### `__init__`
+
+```python
+def __init__(self, value: int) -> None
+```
+
+####### `name`
+
+*property*
+
+```python
+def name(self) -> str
+```
+
+####### `value`
+
+*property*
+
+```python
+def value(self) -> int
+```
+
+##### `Modality`
+
+```python
+class Modality
+```
+
+Members:
+
+NA
+
+XRAY
+
+CT
+
+MRI
+
+ULTRASOUND
+
+VIDEO
+
+NM
+
+OCT
+
+LABEL
+
+###### Attributes
+
+####### `CT`
+
+```python
+CT: typing.ClassVar[Data.Modality]
+```
+
+####### `LABEL`
+
+```python
+LABEL: typing.ClassVar[Data.Modality]
+```
+
+####### `MRI`
+
+```python
+MRI: typing.ClassVar[Data.Modality]
+```
+
+####### `NA`
+
+```python
+NA: typing.ClassVar[Data.Modality]
+```
+
+####### `NM`
+
+```python
+NM: typing.ClassVar[Data.Modality]
+```
+
+####### `OCT`
+
+```python
+OCT: typing.ClassVar[Data.Modality]
+```
+
+####### `ULTRASOUND`
+
+```python
+ULTRASOUND: typing.ClassVar[Data.Modality]
+```
+
+####### `VIDEO`
+
+```python
+VIDEO: typing.ClassVar[Data.Modality]
+```
+
+####### `XRAY`
+
+```python
+XRAY: typing.ClassVar[Data.Modality]
+```
+
+###### Methods
+
+####### `__init__`
+
+```python
+def __init__(self, value: int) -> None
+```
+
+####### `name`
+
+*property*
+
+```python
+def name(self) -> str
+```
+
+####### `value`
+
+*property*
+
+```python
+def value(self) -> int
+```
+
+### `DataComponent`
+
+```python
+class DataComponent
+```
+
+Data components provide a way to generically attach custom information to `~imfusion.Data`.
+
+`Data` and `StreamData` are the two main classes that hold a list of data components, allowing custom
+information (for example optional data or configuration settings) to be attached to instances of these
+classes. Data components are meant to be used for information that is bound to a specific Data instance
+and that can not be represented by the usual ImFusion data types.
+
+Data components should implement the Configurable methods, in order to support
+generic (de)serialization.
+
+Note:
+        Data components are supposed to act as generic storage for custom information.
+        When subclassing DataComponent, you should not implement any heavy evaluation logic
+        since this is the domain of Algorithms or other classes accessing the DataComponents.
+
+Example:
+        ```python
+
+                class MyComponent(imfusion.DataComponent, accessor_name="my_component"):
+                        def __init_(self, a=""):
+                                imfusion.DataComponent.__init_(self)
+                                self.a = a
+
+                        @property
+                        def a(self):
+                                return self._a
+
+                        @a.setter
+                        def a(self, value):
+                                if value and not isinstance(value, str):
+                                        raise TypeError("`a` must be of type `str`")
+                                self._a = value
+
+                        def configure(self, properties: imfusion.Properties) -> None:
+                                self.a = str(properties["a"])
+
+                        def configuration(self) -> imfusion.Properties:
+                                return imfusion.Properties({"a": self.a})
+
+                        def __eq_(self, other: "MyComponent") -> bool:
+                                return self.a == other.a
+
+#### Methods
+
+##### `__init__`
+
+```python
+def __init__(self) -> None
+```
+
+##### `configuration`
+
+```python
+def configuration(self) -> Properties
+```
+
+##### `configure`
+
+```python
+def configure(self, properties: Properties) -> None
+```
+
+##### `id`
+
+*property*
+
+```python
+def id(self) -> str
+```
+
+Returns a unique string identifier for this type of data component
+
+### `DataComponentBase`
+
+```python
+class DataComponentBase(Configurable)
+```
+
+#### Methods
+
+##### `id`
+
+*property*
+
+```python
+def id(self) -> str
+```
+
+Returns the unique string identifier of this component class.
+
+### `DataComponentList`
+
+```python
+class DataComponentList
+```
+
+A list of DataComponent. The list contains properties for specific DataComponent types.
+Each DataComponent type can only occur once.
+
+#### Methods
+
+##### `add`
+
+```python
+def add(self, component: DataComponent) -> typing.Any
+```
+
+Adds the component to the component list and returns a reference to the copy.
+
+##### `add`
+
+```python
+def add(self, arg0: ImageInfoDataComponent) -> DataComponentBase
+```
+
+Adds a copy of the component to the component list and returns a reference to the copy.
+
+##### `add`
+
+```python
+def add(self, arg0: DisplayOptions2d) -> DataComponentBase
+```
+
+Adds a copy of the component to the component list and returns a reference to the copy.
+
+##### `add`
+
+```python
+def add(self, arg0: DisplayOptions3d) -> DataComponentBase
+```
+
+Adds a copy of the component to the component list and returns a reference to the copy.
+
+##### `add`
+
+```python
+def add(self, arg0: TransformationStashDataComponent) -> DataComponentBase
+```
+
+Adds a copy of the component to the component list and returns a reference to the copy.
+
+##### `add`
+
+```python
+def add(self, arg0: DataSourceComponent) -> DataComponentBase
+```
+
+Adds a copy of the component to the component list and returns a reference to the copy.
+
+##### `add`
+
+```python
+def add(self, arg0: LabelDataComponent) -> DataComponentBase
+```
+
+Adds a copy of the component to the component list and returns a reference to the copy.
+
+##### `add`
+
+```python
+def add(self, arg0: DatasetLicenseComponent) -> DataComponentBase
+```
+
+Adds a copy of the component to the component list and returns a reference to the copy.
+
+##### `add`
+
+```python
+def add(self, arg0: RealWorldMappingDataComponent) -> DataComponentBase
+```
+
+Adds a copy of the component to the component list and returns a reference to the copy.
+
+##### `data_source`
+
+*property*
+
+```python
+def data_source(self) -> DataSourceComponent
+```
+
+##### `dataset_license`
+
+*property*
+
+```python
+def dataset_license(self) -> DatasetLicenseComponent
+```
+
+##### `display_options_2d`
+
+*property*
+
+```python
+def display_options_2d(self) -> DisplayOptions2d
+```
+
+##### `display_options_3d`
+
+*property*
+
+```python
+def display_options_3d(self) -> DisplayOptions3d
+```
+
+##### `image_info`
+
+*property*
+
+```python
+def image_info(self) -> ImageInfoDataComponent
+```
+
+##### `label`
+
+*property*
+
+```python
+def label(self) -> LabelDataComponent
+```
+
+##### `real_world_mapping`
+
+*property*
+
+```python
+def real_world_mapping(self) -> RealWorldMappingDataComponent
+```
+
+##### `transformation_stash`
+
+*property*
+
+```python
+def transformation_stash(self) -> TransformationStashDataComponent
+```
+
+### `DataGroup`
+
+```python
+class DataGroup(Data)
+```
+
+#### Methods
+
+##### `children`
+
+*property*
+
+```python
+def children(self) -> DataList
+```
+
+##### `children_recursive`
+
+```python
+def children_recursive(self) -> DataList
+```
+
+##### `proxy_child`
+
+*property*
+
+```python
+def proxy_child(self) -> Data
+```
+
+### `DataList`
+
+```python
+class DataList
+```
+
+List of Data.
+Is implicitly converted from and to regular Python lists.
+
+.. deprecated:: 2.15
+    Use a regular ``list`` instead.
+
+#### Methods
+
+##### `__init__`
+
+```python
+def __init__(self) -> None
+```
+
+##### `__init__`
+
+```python
+def __init__(self, list: list) -> None
+```
+
+##### `add`
+
+```python
+def add(self, arg0: Data) -> None
+```
+
+##### `append`
+
+```python
+def append(self, arg0: Data) -> None
+```
+
+##### `get_images`
+
+```python
+def get_images(self, kind: Data.Kind = Data.Kind.UNKNOWN, modality: Data.Modality = Data.Modality.NA) -> list
+```
+
+### `DataModel`
+
+```python
+class DataModel
+```
+
+The DataModel instance holds all datasets of an ApplicationController.
+
+#### Methods
+
+##### `add`
+
+```python
+def add(self, data: Data, name: str = '') -> Data
+```
+
+Add data to the model.
+The data will be copied and a reference to the copy is returned.
+If the data cannot be added, a ``ValueError`` is raised.
+
+##### `add`
+
+```python
+def add(self, data_list: list[Data]) -> list
+```
+
+Add multiple pieces of data to the model.
+The data will be copied and a reference to the copy is returned.
+If the data cannot be added, a ``ValueError`` is raised.
+
+##### `clear`
+
+```python
+def clear(self) -> None
+```
+
+Remove *all* data from the model
+
+##### `contains`
+
+```python
+def contains(self, data: Data) -> bool
+```
+
+##### `create_group`
+
+```python
+def create_group(self, arg0: DataList) -> DataGroup
+```
+
+Groups a list of Data in the model.
+Only Data that is already part of the model can be grouped.
+
+##### `get`
+
+```python
+def get(self, name: str) -> Data
+```
+
+##### `get_common_parent`
+
+```python
+def get_common_parent(self, data_list: DataList) -> DataGroup
+```
+
+Return the most common parent of all given Data
+
+##### `get_parent`
+
+```python
+def get_parent(self, data: Data) -> DataGroup
+```
+
+Return the parent DataGroup of the given Data or None if it is not part of the model.
+For top-level data this function will return ``get_root_node()``.
+
+##### `index`
+
+```python
+def index(self, data: Data) -> int
+```
+
+Return index of data.
+The index is depth-first for all groups.
+
+##### `remove`
+
+```python
+def remove(self, data: Data) -> None
+```
+
+Remove and delete data from the model.
+Afterwards data must not be reference anymore!
+
+##### `root_node`
+
+*property*
+
+```python
+def root_node(self) -> DataGroup
+```
+
+Return the parent DataGroup of the given Data or None if it does not have a parent
+
+##### `size`
+
+*property*
+
+```python
+def size(self) -> int
+```
+
+Return the total amount of data in the model
+
+### `DataSourceComponent`
+
+```python
+class DataSourceComponent(DataComponentBase)
+```
+
+#### Methods
+
+##### `filenames`
+
+*property*
+
+```python
+def filenames(self) -> list[str]
+```
+
+##### `sources`
+
+*property*
+
+```python
+def sources(self) -> list[DataSourceComponent.DataSourceInfo]
+```
+
+#### Nested Classes
+
+##### `DataSourceInfo`
+
+```python
+class DataSourceInfo(Configurable)
+```
+
+###### Attributes
+
+####### `filename`
+
+```python
+filename: str
+```
+
+####### `history`
+
+```python
+history: list[DataSourceComponent.DataSourceInfo]
+```
+
+####### `index_in_file`
+
+```python
+index_in_file: int
+```
+
+####### `io_algorithm_config`
+
+```python
+io_algorithm_config: Properties
+```
+
+####### `io_algorithm_name`
+
+```python
+io_algorithm_name: str
+```
+
+###### Methods
+
+####### `__init__`
+
+```python
+def __init__(self, arg0: str, arg1: str, arg2: Properties, arg3: int, arg4: list[DataSourceComponent.DataSourceInfo]) -> None
+```
+
+####### `update`
+
+```python
+def update(self, arg0: DataSourceComponent.DataSourceInfo) -> None
+```
+
+### `DatasetLicenseComponent`
+
+```python
+class DatasetLicenseComponent(DataComponentBase)
+```
+
+#### Methods
+
+##### `__init__`
+
+```python
+def __init__(self) -> None
+```
+
+##### `__init__`
+
+```python
+def __init__(self, infos: list[DatasetLicenseComponent.DatasetInfo]) -> None
+```
+
+##### `infos`
+
+```python
+def infos(self) -> list[DatasetLicenseComponent.DatasetInfo]
+```
+
+#### Nested Classes
+
+##### `DatasetInfo`
+
+```python
+class DatasetInfo
+```
+
+###### Methods
+
+####### `__init__`
+
+```python
+def __init__(self) -> None
+```
+
+####### `__init__`
+
+```python
+def __init__(self, name: str, authors: str, website: str, license: str, attribution_required: bool, commercial_use_allowed: bool) -> None
+```
+
+####### `attribution_required`
+
+*property*
+
+```python
+def attribution_required(self) -> bool
+```
+
+####### `authors`
+
+*property*
+
+```python
+def authors(self) -> str
+```
+
+####### `commercial_use_allowed`
+
+*property*
+
+```python
+def commercial_use_allowed(self) -> bool
+```
+
+####### `license`
+
+*property*
+
+```python
+def license(self) -> str
+```
+
+####### `name`
+
+*property*
+
+```python
+def name(self) -> str
+```
+
+####### `website`
+
+*property*
+
+```python
+def website(self) -> str
+```
+
+### `Deformation`
+
+```python
+class Deformation
+```
+
+#### Methods
+
+##### `configuration`
+
+```python
+def configuration(self) -> Properties
+```
+
+##### `configure`
+
+```python
+def configure(self, properties: Properties) -> None
+```
+
+##### `displace_point`
+
+```python
+def displace_point(self, at: numpy.ndarray[numpy.float64[3, 1]]) -> numpy.ndarray[numpy.float64[3, 1]]
+```
+
+##### `displace_points`
+
+```python
+def displace_points(self, at: list[numpy.ndarray[numpy.float64[3, 1]]]) -> list[numpy.ndarray[numpy.float64[3, 1]]]
+```
+
+##### `displacement`
+
+```python
+def displacement(self, at: numpy.ndarray[numpy.float64[3, 1]]) -> numpy.ndarray[numpy.float64[3, 1]]
+```
+
+##### `displacement`
+
+```python
+def displacement(self, at: numpy.ndarray[numpy.float64[2, 1]]) -> numpy.ndarray[numpy.float64[3, 1]]
+```
+
+##### `displacement`
+
+```python
+def displacement(self, at: list[numpy.ndarray[numpy.float64[3, 1]]]) -> list[numpy.ndarray[numpy.float64[3, 1]]]
+```
+
+### `DenseDeformation`
+
+```python
+class DenseDeformation(Deformation)
+```
+
+#### Methods
+
+##### `__init__`
+
+```python
+def __init__(self, arg0: SharedImage) -> None
+```
+
+##### `set_displacement`
+
+```python
+def set_displacement(self, arg0: SharedImage) -> None
+```
+
+### `Display`
+
+```python
+class Display
+```
+
+#### Attributes
+
+##### `focus_view`
+
+```python
+focus_view: View
+```
+
+##### `layout_mode`
+
+```python
+layout_mode: LayoutMode
+```
+
+#### Methods
+
+##### `maximize_view`
+
+```python
+def maximize_view(self, view: View) -> None
+```
+
+##### `unmaximize_view`
+
+```python
+def unmaximize_view(self) -> None
+```
+
+##### `views`
+
+```python
+def views(self) -> list
+```
+
+##### `views2d`
+
+```python
+def views2d(self) -> list
+```
+
+##### `views3d`
+
+```python
+def views3d(self) -> list
+```
+
+##### `views_slice`
+
+```python
+def views_slice(self) -> list
+```
+
+### `DisplayOptions2d`
+
+```python
+class DisplayOptions2d(DataComponentBase)
+```
+
+#### Attributes
+
+##### `gamma`
+
+```python
+gamma: float
+```
+
+##### `invert`
+
+```python
+invert: bool
+```
+
+##### `level`
+
+```python
+level: float
+```
+
+##### `window`
+
+```python
+window: float
+```
+
+#### Methods
+
+##### `__init__`
+
+```python
+def __init__(self, arg0: Data) -> None
+```
+
+### `DisplayOptions3d`
+
+```python
+class DisplayOptions3d(DataComponentBase)
+```
+
+#### Attributes
+
+##### `alpha`
+
+```python
+alpha: float
+```
+
+##### `invert`
+
+```python
+invert: bool
+```
+
+##### `level`
+
+```python
+level: float
+```
+
+##### `window`
+
+```python
+window: float
+```
+
+#### Methods
+
+##### `__init__`
+
+```python
+def __init__(self, arg0: Data) -> None
+```
+
+### `ExplicitIntensityMask`
+
+```python
+class ExplicitIntensityMask(Mask)
+```
+
+Combination of an ExplicitMask and an IntensityMask.
+
+#### Methods
+
+##### `__init__`
+
+```python
+def __init__(self, ref_image: SharedImage, mask_image: SharedImage) -> None
+```
+
+##### `border_clamp`
+
+*property*
+
+```python
+def border_clamp(self) -> bool
+```
+
+If true, set sampler wrapping mode to ``CLAMP_TO_BORDER`` (default). If false, set to ``CLAMP_TO_EDGE``.
+
+##### `border_clamp`
+
+```python
+def border_clamp(self, arg1: bool) -> None
+```
+
+##### `border_color`
+
+*property*
+
+```python
+def border_color(self) -> float
+```
+
+Border color (normalized for integer images)
+
+##### `border_color`
+
+```python
+def border_color(self, arg1: float) -> None
+```
+
+##### `intensity_range`
+
+*property*
+
+```python
+def intensity_range(self) -> numpy.ndarray[numpy.float32[2, 1]]
+```
+
+Range of allowed pixel values
+
+##### `intensity_range`
+
+```python
+def intensity_range(self, arg1: numpy.ndarray[numpy.float32[2, 1]]) -> None
+```
+
+### `ExplicitMask`
+
+```python
+class ExplicitMask(Mask)
+```
+
+Mask holding an individual mask value for every pixel.
+
+#### Methods
+
+##### `__init__`
+
+```python
+def __init__(self, width: int, height: int, slices: int, initial: int = 0) -> None
+```
+
+##### `__init__`
+
+```python
+def __init__(self, dimensions: numpy.ndarray[numpy.int32[3, 1]], initial: int = 0) -> None
+```
+
+##### `__init__`
+
+```python
+def __init__(self, mask_image: MemImage) -> None
+```
+
+##### `mask_image`
+
+```python
+def mask_image(self) -> SharedImage
+```
+
+Returns a copy of the mask image held by the mask.
+
+### `FileNotFoundError`
+
+```python
+class FileNotFoundError(FileNotFoundError)
+```
+
+### `FrameworkInfo`
+
+```python
+class FrameworkInfo
+```
+
+Provides general information about the framework.
+
+#### Methods
+
+##### `license`
+
+*property*
+
+```python
+def license(self) -> LicenseInfo
+```
+
+##### `opengl`
+
+*property*
+
+```python
+def opengl(self) -> GlPlatformInfo | None
+```
+
+##### `plugins`
+
+*property*
+
+```python
+def plugins(self) -> list[PluginInfo]
+```
+
+### `FreeFormDeformation`
+
+```python
+class FreeFormDeformation(Deformation)
+```
+
+#### Methods
+
+##### `__init__`
+
+```python
+def __init__(self, arg0: numpy.ndarray[numpy.int32[3, 1]], arg1: SharedImage) -> None
+```
+
+##### `configuration`
+
+```python
+def configuration(self) -> Properties
+```
+
+##### `configure`
+
+```python
+def configure(self, arg0: Properties) -> None
+```
+
+##### `control_points`
+
+```python
+def control_points(self) -> list[numpy.ndarray[numpy.float64[3, 1]]]
+```
+
+Get current control point locations (including displacement)
+
+##### `displacements`
+
+*property*
+
+```python
+def displacements(self) -> list[numpy.ndarray[numpy.float32[3, 1]]]
+```
+
+Displacement in mm of all control points
+
+##### `displacements`
+
+```python
+def displacements(self, arg1: list[numpy.ndarray[numpy.float32[3, 1]]]) -> None
+```
+
+##### `grid_spacing`
+
+*property*
+
+```python
+def grid_spacing(self) -> numpy.ndarray[numpy.float64[3, 1]]
+```
+
+Spacing of the control point grid
+
+##### `grid_spacing`
+
+```python
+def grid_spacing(self, arg1: numpy.ndarray[numpy.float64[3, 1]]) -> None
+```
+
+##### `grid_transformation`
+
+*property*
+
+```python
+def grid_transformation(self) -> numpy.ndarray[numpy.float64[4, 4]]
+```
+
+Transformation matrix of the control point grid
+
+##### `grid_transformation`
+
+```python
+def grid_transformation(self, arg1: numpy.ndarray[numpy.float64[4, 4]]) -> None
+```
+
+##### `set_displacement`
+
+```python
+def set_displacement(self, arg0: list[numpy.ndarray[numpy.float32[3, 1]]]) -> None
+```
+
+##### `subdivisions`
+
+*property*
+
+```python
+def subdivisions(self) -> numpy.ndarray[numpy.int32[3, 1]]
+```
+
+Subdivisions of the control point grid
+
+##### `subdivisions`
+
+```python
+def subdivisions(self, arg1: numpy.ndarray[numpy.int32[3, 1]]) -> None
+```
+
+### `GlPlatformInfo`
+
+```python
+class GlPlatformInfo
+```
+
+Provides information about the underlying OpenGL driver.
+
+#### Methods
+
+##### `extensions`
+
+*property*
+
+```python
+def extensions(self) -> list[str]
+```
+
+##### `renderer`
+
+*property*
+
+```python
+def renderer(self) -> str
+```
+
+##### `vendor`
+
+*property*
+
+```python
+def vendor(self) -> str
+```
+
+##### `version`
+
+*property*
+
+```python
+def version(self) -> str
+```
+
+### `IOError`
+
+```python
+class IOError(OSError)
+```
+
+### `ImageDescriptor`
+
+```python
+class ImageDescriptor
+```
+
+Struct describing the essential properties of an image.
+
+The ImFusion framework distinguishes two main image pixel value domains, which are indicated by the
+shift and scale parameters of this image descriptor:
+
+    - Original pixel value domain: Pixel values are the same as in their original source (e.g. when loaded from a file). Same as the storage pixel value domain if the image's scale is 1 and the shift is 0
+    - Storage pixel value domain: Pixel values as they are stored in a MemImage. The user may decide to apply such a rescaling in order to better use the available limits of the underlying type.
+
+The following conversion rules apply:
+
+    - OV = (SV / scale) - shift
+    - SV = (OV + shift) * scale
+
+#### Attributes
+
+##### `channels`
+
+```python
+channels: int
+```
+
+##### `dimensions`
+
+```python
+dimensions: numpy.ndarray[numpy.int32[3, 1]]
+```
+
+##### `height`
+
+```python
+height: int
+```
+
+##### `is_metric`
+
+```python
+is_metric: bool
+```
+
+##### `pixel_type`
+
+```python
+pixel_type: PixelType
+```
+
+##### `scale`
+
+```python
+scale: float
+```
+
+##### `shift`
+
+```python
+shift: float
+```
+
+##### `slices`
+
+```python
+slices: int
+```
+
+##### `width`
+
+```python
+width: int
+```
+
+#### Methods
+
+##### `__init__`
+
+```python
+def __init__(self) -> None
+```
+
+##### `__init__`
+
+```python
+def __init__(self, type: PixelType, dimensions: numpy.ndarray[numpy.int32[3, 1]], channels: int = 1) -> None
+```
+
+##### `__init__`
+
+```python
+def __init__(self, type: PixelType, width: int, height: int, slices: int = 1, channels: int = 1) -> None
+```
+
+##### `byte_size`
+
+*property*
+
+```python
+def byte_size(self) -> int
+```
+
+Return the size of the image in bytes
+
+##### `configuration`
+
+*property*
+
+```python
+def configuration(self) -> Properties
+```
+
+Serialize an image descriptor to Properties
+
+##### `configure`
+
+```python
+def configure(self, properties: Properties) -> None
+```
+
+Deserialize an image descriptor from Properties
+
+##### `coord`
+
+```python
+def coord(self, index: int) -> numpy.ndarray[numpy.int32[4, 1]]
+```
+
+Return the pixel/voxel coordinate (x,y,z,c) for a given index
+
+##### `dimension`
+
+*property*
+
+```python
+def dimension(self) -> int
+```
+
+##### `extent`
+
+*property*
+
+```python
+def extent(self) -> numpy.ndarray[numpy.float64[3, 1]]
+```
+
+##### `has_index`
+
+```python
+def has_index(self, x: int, y: int, z: int = 0, c: int = 0) -> int
+```
+
+Return true if the pixel at (x,y,z) exists, false otherwise
+
+##### `image_to_pixel`
+
+```python
+def image_to_pixel(self, world: numpy.ndarray[numpy.float64[3, 1]]) -> numpy.ndarray[numpy.float64[3, 1]]
+```
+
+Convert 3D image coordinates to pixel/voxel position
+
+##### `image_to_pixel_matrix`
+
+*property*
+
+```python
+def image_to_pixel_matrix(self) -> numpy.ndarray[numpy.float64[4, 4]]
+```
+
+Return a 4x4 matrix to transform from image space to pixel space
+
+##### `image_to_texture_matrix`
+
+*property*
+
+```python
+def image_to_texture_matrix(self) -> numpy.ndarray[numpy.float64[4, 4]]
+```
+
+Return a 4x4 matrix to transform from image space to texture space
+
+##### `index`
+
+```python
+def index(self, x: int, y: int, z: int = 0, c: int = 0) -> int
+```
+
+Return a linear memory index for a pixel or voxel
+
+##### `is_compatible`
+
+```python
+def is_compatible(self, other: ImageDescriptor, ignore_type: bool = False, ignore_3D: bool = False, ignore_channels: bool = False, ignore_spacing: bool = True) -> bool
+```
+
+Convenience function to perform partial comparison of two image descriptors.
+Two descriptors are compatible if their width and height, and optionally number of slices,
+number of channels and type are the same
+
+##### `is_valid`
+
+```python
+def is_valid(self) -> bool
+```
+
+Return if the descriptor is valid (a size of one is allowed)
+
+##### `original_to_storage`
+
+```python
+def original_to_storage(self, value: float) -> float
+```
+
+Apply the image's shift and scale in order to convert a value from original pixel value domain to storage pixel value domain
+
+##### `pixel_to_image`
+
+```python
+def pixel_to_image(self, pixel: numpy.ndarray[numpy.float64[3, 1]]) -> numpy.ndarray[numpy.float64[3, 1]]
+```
+
+Convert a 3D pixel/voxel position to image coordinates
+
+##### `pixel_to_image_matrix`
+
+*property*
+
+```python
+def pixel_to_image_matrix(self) -> numpy.ndarray[numpy.float64[4, 4]]
+```
+
+Return a 4x4 matrix to transform from pixel space to image space
+
+##### `set_dimensions`
+
+```python
+def set_dimensions(self, dimensions: numpy.ndarray[numpy.int32[3, 1]], channels: int = 0) -> None
+```
+
+Convenience function for specifying the image dimensions and channels at once.
+If ``channels`` is 0, the number of channels will remain unchanged
+
+##### `set_spacing`
+
+```python
+def set_spacing(self, spacing: numpy.ndarray[numpy.float64[3, 1]], is_metric: bool) -> None
+```
+
+Convenience function for specifying spacing and metric flag at the same time
+
+##### `size`
+
+*property*
+
+```python
+def size(self) -> int
+```
+
+Return the size (number of elements) of the image
+
+##### `spacing`
+
+*property*
+
+```python
+def spacing(self) -> numpy.ndarray[numpy.float64[3, 1]]
+```
+
+Access the image descriptor spacing.
+When setting the spacing, it is always assumed that the given spacing is metric.
+If you want to specify a non-metric spacing, use ``desc.set_spacing(new_spacing, is_metric=False)``
+
+##### `spacing`
+
+```python
+def spacing(self, arg1: numpy.ndarray[numpy.float64[3, 1]]) -> None
+```
+
+##### `storage_to_original`
+
+```python
+def storage_to_original(self, value: float) -> float
+```
+
+Apply the image's shift and scale in order to convert a value from storage pixel value domain to original pixel value domain
+
+##### `texture_to_image_matrix`
+
+*property*
+
+```python
+def texture_to_image_matrix(self) -> numpy.ndarray[numpy.float64[4, 4]]
+```
+
+Return a 4x4 matrix to transform from texture space to image space
+
+##### `type_size`
+
+*property*
+
+```python
+def type_size(self) -> int
+```
+
+Return the nominal size in bytes of the current component type, zero if unknown
+
+### `ImageDescriptorWorld`
+
+```python
+class ImageDescriptorWorld
+```
+
+Convenience struct extending an ImageDescriptor to also include
+a matrix describing the image orientation in world coordinates.
+
+This struct can be useful for describing the geometrical properties of an image
+without need to hold the (heavy) image content. As such it can be used for
+representing reference geometries (see `~imfusion.ImageResamplingAlgorithm`), or
+for one-line creation of a new SharedImage.
+
+#### Attributes
+
+##### `matrix_from_world`
+
+```python
+matrix_from_world: numpy.ndarray[numpy.float64[4, 4]]
+```
+
+##### `matrix_to_world`
+
+```python
+matrix_to_world: numpy.ndarray[numpy.float64[4, 4]]
+```
+
+#### Methods
+
+##### `__init__`
+
+```python
+def __init__(self, descriptor: ImageDescriptor, matrix_to_world: numpy.ndarray[numpy.float64[4, 4]]) -> None
+```
+
+##### `__init__`
+
+```python
+def __init__(self, shared_image: SharedImage) -> None
+```
+
+##### `descriptor`
+
+*property*
+
+```python
+def descriptor(self) -> ImageDescriptor
+```
+
+##### `image_to_pixel`
+
+```python
+def image_to_pixel(self, world: numpy.ndarray[numpy.float64[3, 1]]) -> numpy.ndarray[numpy.float64[3, 1]]
+```
+
+Convert 3D image coordinates to pixel/voxel position
+
+##### `image_to_pixel_matrix`
+
+*property*
+
+```python
+def image_to_pixel_matrix(self) -> numpy.ndarray[numpy.float64[4, 4]]
+```
+
+Return a 4x4 matrix to transform from image space to pixel space
+
+##### `is_spatially_compatible`
+
+```python
+def is_spatially_compatible(self, other: ImageDescriptorWorld) -> bool
+```
+
+Convenience function to compare two image world descriptors (for instance to know whether a resampling is necessary).
+Two descriptors are compatible if their dimensions, matrix and spacing are identical.
+

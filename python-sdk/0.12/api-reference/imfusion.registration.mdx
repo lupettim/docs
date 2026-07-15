@@ -1,0 +1,921 @@
+---
+title: imfusion.registration
+---
+
+# `imfusion.registration`
+
+This module contains functionality for all kinds of registration tasks.
+You can find a demonstration of how to perform image registration on our `GitHub &lt;https://github.com/ImFusionGmbH/public-python-demos/blob/master/imfusion_sdk/5_image_registration.ipynb&gt;`.
+
+## Functions
+
+### `apply_deformation`
+
+```python
+def apply_deformation(image: imfusion.SharedImageSet, adjust_size: bool = True, nearest_interpolation: bool = False) -> imfusion.SharedImageSet
+```
+
+Creates a deformed image from the input image and its deformation.
+
+Args:
+    image (SharedImageSet): Input image assumed to have a deformation.
+    adjust_size (bool): Whether the resulting image should adjust its size to encompass the deformation.
+    nearest_interpolation (bool): Whether nearest or linear interpolation is used.
+
+### `compute_rigid_pose_distance`
+
+```python
+def compute_rigid_pose_distance(first_pose: numpy.ndarray[numpy.float64[4, 4]], second_pose: numpy.ndarray[numpy.float64[4, 4]]) -> typing.Any
+```
+
+Computes the distance in translation (mm) and rotation (degrees) between two rigid pose matrices.
+
+Args:
+    first_pose: First pose matrix.
+    second_pose: Second pose matrix.
+
+Returns:
+    namedtuple with fields 'relative_rotation' (degrees) and 'relative_translation' (millimeters)
+
+### `load_registration_results`
+
+```python
+def load_registration_results(path: str) -> RegistrationResults
+```
+
+### `scan_for_registration_results`
+
+```python
+def scan_for_registration_results(directory: str) -> list[RegistrationResults]
+```
+
+## Classes
+
+### `AbstractImageRegistration`
+
+```python
+class AbstractImageRegistration(imfusion.BaseAlgorithm)
+```
+
+### `ParametricImageRegistration`
+
+```python
+class ParametricImageRegistration(imfusion.BaseAlgorithm)
+```
+
+### `RegistrationResults`
+
+```python
+class RegistrationResults
+```
+
+Class responsible for handling and storing results of data registration.
+Provides functionality to add, remove, apply and manage registration results and their related data.
+`RegistrationResults` can be saved and loaded into ImFusion Registration Results (irr) files, potentially including data source information.
+When data source information is available this class can load the missing data to be able to apply the results.
+Each result contains a registration matrix and (when applicable) a deformation.
+
+#### Methods
+
+##### `__init__`
+
+```python
+def __init__(self) -> None
+```
+
+##### `add`
+
+```python
+def add(self, datalist: list[imfusion.Data], name: str = '', ground_truth: bool = False) -> None
+```
+
+##### `clear`
+
+```python
+def clear(self) -> None
+```
+
+Clears all results.
+
+##### `has_ground_truth`
+
+*property*
+
+```python
+def has_ground_truth(self) -> bool
+```
+
+##### `load_missing_data`
+
+```python
+def load_missing_data(self, result_index: int = -1) -> list[imfusion.Data]
+```
+
+##### `remove`
+
+```python
+def remove(self, index: int) -> bool
+```
+
+Removes the result at the given index.
+
+##### `resolve_data`
+
+```python
+def resolve_data(self, datalist: list[imfusion.Data]) -> None
+```
+
+##### `save`
+
+```python
+def save(self, path: str | os.PathLike) -> None
+```
+
+##### `some_data_missing`
+
+*property*
+
+```python
+def some_data_missing(self) -> bool
+```
+
+##### `source_path`
+
+*property*
+
+```python
+def source_path(self) -> str | None
+```
+
+Returns the number of results.
+
+#### Nested Classes
+
+##### `Result`
+
+```python
+class Result
+```
+
+###### Attributes
+
+####### `ground_truth`
+
+```python
+ground_truth: bool
+```
+
+####### `name`
+
+```python
+name: str
+```
+
+###### Methods
+
+####### `apply`
+
+```python
+def apply(self) -> imfusion.DataList
+```
+
+Applies the current result.
+Return: the list of affected data.
+
+### `RegistrationResultsAlgorithm`
+
+```python
+class RegistrationResultsAlgorithm(imfusion.BaseAlgorithm)
+```
+
+#### Methods
+
+##### `results`
+
+*property*
+
+```python
+def results(self) -> RegistrationResults
+```
+
+### `VolumeBasedMeshRegistrationAlgorithm`
+
+```python
+class VolumeBasedMeshRegistrationAlgorithm(imfusion.BaseAlgorithm)
+```
+
+Calculates a deformable registration between two meshes by calculating a deformable registration between distance volumes.
+Internally, an instance of the DemonsImageRegistration algorithm is used to register the "fixed" distance volume to the "moving" distance volume.
+As this registration computes the **inverse** of the mapping from the fixed to the moving volume, this directly yields a registration of the "moving" Mesh
+to the "fixed" Mesh.
+
+#### Methods
+
+##### `__init__`
+
+```python
+def __init__(self, fixed: imfusion.Mesh, moving: imfusion.Mesh, pointcloud: imfusion.PointCloud = None) -> None
+```
+
+## Enums
+
+### `DescriptorsRegistrationAlgorithm`
+
+```python
+class DescriptorsRegistrationAlgorithm
+```
+
+Class for performing image registration using local feature descriptors.
+
+This algorithm performs the following steps:
+1) Preprocess the fixed and moving images to prepare them for feature extraction. This consists of resampling to `~imfusion.reg.DescriptorsRegistrationAlgorithm.spacing` and baking-in the rotation.
+2) Extract feature descriptors using either DISAFeaturesAlgorithm or MINDDescriptorAlgorithm depending on `~imfusion.reg.DescriptorsRegistrationAlgorithm.descriptor_type`\.
+3) Computes the weight for the moving image features.
+4) Instantiates and uses `~imfusion.reg.FeatureMapsRegistrationAlgorithm` to register the feature descriptors images. The computed registration is then applied to the moving image.
+
+#### Attributes
+
+##### `DISA`
+
+```python
+DISA: typing.ClassVar[DescriptorsRegistrationAlgorithm.DescriptorType]
+```
+
+##### `MIND`
+
+```python
+MIND: typing.ClassVar[DescriptorsRegistrationAlgorithm.DescriptorType]
+```
+
+##### `spacing`
+
+```python
+spacing: float
+```
+
+##### `type`
+
+```python
+type: DescriptorsRegistrationAlgorithm.DescriptorType
+```
+
+#### Methods
+
+##### `__init__`
+
+```python
+def __init__(self, arg0: imfusion.SharedImageSet, arg1: imfusion.SharedImageSet) -> None
+```
+
+##### `globalRegistration`
+
+```python
+def globalRegistration(self) -> None
+```
+
+##### `heatmap`
+
+```python
+def heatmap(self, point: numpy.ndarray[numpy.float64[3, 1]]) -> imfusion.SharedImageSet
+```
+
+##### `initialize_pose`
+
+```python
+def initialize_pose(self) -> None
+```
+
+##### `localRegistration`
+
+```python
+def localRegistration(self) -> None
+```
+
+##### `processed_fixed`
+
+```python
+def processed_fixed(self) -> imfusion.SharedImageSet
+```
+
+##### `processed_moving`
+
+```python
+def processed_moving(self) -> imfusion.SharedImageSet
+```
+
+##### `weight`
+
+*property*
+
+```python
+def weight(self) -> imfusion.SharedImageSet
+```
+
+#### Nested Enums
+
+##### `DescriptorType`
+
+```python
+class DescriptorType
+```
+
+Members:
+
+DISA : Use the DISA descriptors defined in the paper "DISA: DIfferentiable Similarity Approximation for Universal Multimodal Registration", Ronchetti et al. 2023
+
+MIND
+
+###### Attributes
+
+####### `DISA`
+
+```python
+DISA: typing.ClassVar[DescriptorsRegistrationAlgorithm.DescriptorType]
+```
+
+####### `MIND`
+
+```python
+MIND: typing.ClassVar[DescriptorsRegistrationAlgorithm.DescriptorType]
+```
+
+###### Methods
+
+####### `__init__`
+
+```python
+def __init__(self, value: int) -> None
+```
+
+####### `name`
+
+*property*
+
+```python
+def name(self) -> str
+```
+
+####### `value`
+
+*property*
+
+```python
+def value(self) -> int
+```
+
+### `ImageRegistrationAlgorithm`
+
+```python
+class ImageRegistrationAlgorithm(imfusion.BaseAlgorithm)
+```
+
+High-level interface for image registration.
+The image registration algorithm wraps several concrete image registration algorithms (e.g. linear and deformable) and extends them with
+pre-processing techniques. Available pre-processing options include downsampling and gradient-magnitude used for LC2. On creation, the
+algorithm tries to find the best settings for the registration problem depending on the modality, size and other properties of the input
+images. The image registration comes with a default set of different transformation models.
+
+#### Attributes
+
+##### `ADJUST_SPACING`
+
+```python
+ADJUST_SPACING: typing.ClassVar[ImageRegistrationAlgorithm.PreprocessingOptions]
+```
+
+##### `CACHE_RESULTS`
+
+```python
+CACHE_RESULTS: typing.ClassVar[ImageRegistrationAlgorithm.PreprocessingOptions]
+```
+
+##### `DEMONS`
+
+```python
+DEMONS: typing.ClassVar[ImageRegistrationAlgorithm.TransformationModel]
+```
+
+##### `FFD`
+
+```python
+FFD: typing.ClassVar[ImageRegistrationAlgorithm.TransformationModel]
+```
+
+##### `GREEDY_DEMONS`
+
+```python
+GREEDY_DEMONS: typing.ClassVar[ImageRegistrationAlgorithm.TransformationModel]
+```
+
+##### `IGNORE_FILTERING`
+
+```python
+IGNORE_FILTERING: typing.ClassVar[ImageRegistrationAlgorithm.PreprocessingOptions]
+```
+
+##### `LINEAR`
+
+```python
+LINEAR: typing.ClassVar[ImageRegistrationAlgorithm.TransformationModel]
+```
+
+##### `NORMALIZE`
+
+```python
+NORMALIZE: typing.ClassVar[ImageRegistrationAlgorithm.PreprocessingOptions]
+```
+
+##### `NO_PREPROCESSING`
+
+```python
+NO_PREPROCESSING: typing.ClassVar[ImageRegistrationAlgorithm.PreprocessingOptions]
+```
+
+##### `POLY_RIGID`
+
+```python
+POLY_RIGID: typing.ClassVar[ImageRegistrationAlgorithm.TransformationModel]
+```
+
+##### `RESTRICT_MEMORY`
+
+```python
+RESTRICT_MEMORY: typing.ClassVar[ImageRegistrationAlgorithm.PreprocessingOptions]
+```
+
+##### `TPS`
+
+```python
+TPS: typing.ClassVar[ImageRegistrationAlgorithm.TransformationModel]
+```
+
+##### `USER_DEFINED`
+
+```python
+USER_DEFINED: typing.ClassVar[ImageRegistrationAlgorithm.TransformationModel]
+```
+
+#### Methods
+
+##### `__init__`
+
+```python
+def __init__(self, fixed: imfusion.SharedImageSet, moving: imfusion.SharedImageSet, model: ImageRegistrationAlgorithm.TransformationModel = ImageRegistrationAlgorithm.TransformationModel.LINEAR) -> None
+```
+
+Args:
+fixed: Input image that stays fixed during the registration.
+moving: Input image that will be moving registration.
+model: Defines the registration approach to use. Defaults to rigid / affine registration.
+
+##### `best_similarity`
+
+*property*
+
+```python
+def best_similarity(self) -> float
+```
+
+Returns the best value of the similarity measure after optimization.
+
+##### `compute_preprocessing`
+
+```python
+def compute_preprocessing(self) -> bool
+```
+
+Applies the pre-processing options on the input images.
+Results are cached so this is a no-op if the preprocessing options have not changed.
+This function is automatically called by the `compute` method, and therefore does not have to be explicitly called in most cases.
+
+##### `fixed`
+
+*property*
+
+```python
+def fixed(self) -> imfusion.SharedImageSet
+```
+
+Returns input image that is currently considered to be fixed.
+
+##### `is_deformable`
+
+*property*
+
+```python
+def is_deformable(self) -> bool
+```
+
+Indicates whether the current configuration uses a deformable registration
+
+##### `max_memory`
+
+*property*
+
+```python
+def max_memory(self) -> int
+```
+
+Restrict the memory used by the registration to the given amount in mebibyte.
+The value can be set in any case but will only have an effect if the RestrictMemory option is enabled.
+This will restrict video memory as well.
+The minimum size is 64 MB (the value will be clamped).
+
+##### `max_memory`
+
+```python
+def max_memory(self, arg1: int) -> None
+```
+
+##### `moving`
+
+*property*
+
+```python
+def moving(self) -> imfusion.SharedImageSet
+```
+
+Returns input image that is currently considered to be moving.
+
+##### `optimizer`
+
+*property*
+
+```python
+def optimizer(self) -> imfusion.Optimizer
+```
+
+Reference to the underlying optimizer.
+
+##### `optimizer`
+
+```python
+def optimizer(self, arg1: imfusion.Optimizer) -> None
+```
+
+##### `param_registration`
+
+*property*
+
+```python
+def param_registration(self) -> ParametricImageRegistration
+```
+
+Reference to the underlying parametric registration object that actually performs the computation (e.g. parametric registration, deformable registration, etc.).
+Will return None if the transformation model is not parametric.
+
+##### `preprocessing_options`
+
+*property*
+
+```python
+def preprocessing_options(self) -> ImageRegistrationAlgorithm.PreprocessingOptions
+```
+
+Which options should be enabled for preprocessing.
+The options are bitwise OR combination of PreprocessingOptions.
+
+##### `preprocessing_options`
+
+```python
+def preprocessing_options(self, arg1: ImageRegistrationAlgorithm.PreprocessingOptions) -> None
+```
+
+##### `registration`
+
+*property*
+
+```python
+def registration(self) -> AbstractImageRegistration
+```
+
+Reference to the underlying registration object that actually performs the computation (e.g. parametric registration, deformable registration, etc.)
+
+##### `reset`
+
+```python
+def reset(self) -> None
+```
+
+Resets the transformation of moving to its initial transformation.
+
+##### `swap_fixed_and_moving`
+
+```python
+def swap_fixed_and_moving(self) -> None
+```
+
+Swaps which image is considered fixed and moving.
+
+##### `transformation_model`
+
+*property*
+
+```python
+def transformation_model(self) -> ImageRegistrationAlgorithm.TransformationModel
+```
+
+Transformation model to be used for the registration.
+If the transformation model changes, internal objects will be deleted and recreated.
+The configuration of the current model will be saved and the new model will be configured with any previously saved configuration for that model.
+Any attached identity deformations are removed from both images.
+
+##### `transformation_model`
+
+```python
+def transformation_model(self, arg1: ImageRegistrationAlgorithm.TransformationModel) -> None
+```
+
+##### `verbose`
+
+*property*
+
+```python
+def verbose(self) -> bool
+```
+
+Indicates whether the algorithm is going to print additional and detailed info messages.
+
+##### `verbose`
+
+```python
+def verbose(self, arg1: bool) -> None
+```
+
+#### Nested Enums
+
+##### `PreprocessingOptions`
+
+```python
+class PreprocessingOptions
+```
+
+Flags to enable/disable certain preprocessing options.
+
+Members:
+
+  NO_PREPROCESSING : Disable preprocessing completely (this cannot be ORed with other options)
+
+  RESTRICT_MEMORY : Downsamples the images so that the registration will not use more than a given maximum of (video) memory
+
+  ADJUST_SPACING : if the spacing difference of both images is large, the spacing of the adjusted to the smaller one
+
+  IGNORE_FILTERING : Ignore any PreProcessingFilter required by the AbstractImageRegistration object
+
+  CACHE_RESULTS : Store PreProcessing results and only re-compute if necessary
+
+  NORMALIZE : Normalize images to float range [0.0, 1.0]
+
+###### Attributes
+
+####### `ADJUST_SPACING`
+
+```python
+ADJUST_SPACING: typing.ClassVar[ImageRegistrationAlgorithm.PreprocessingOptions]
+```
+
+####### `CACHE_RESULTS`
+
+```python
+CACHE_RESULTS: typing.ClassVar[ImageRegistrationAlgorithm.PreprocessingOptions]
+```
+
+####### `IGNORE_FILTERING`
+
+```python
+IGNORE_FILTERING: typing.ClassVar[ImageRegistrationAlgorithm.PreprocessingOptions]
+```
+
+####### `NORMALIZE`
+
+```python
+NORMALIZE: typing.ClassVar[ImageRegistrationAlgorithm.PreprocessingOptions]
+```
+
+####### `NO_PREPROCESSING`
+
+```python
+NO_PREPROCESSING: typing.ClassVar[ImageRegistrationAlgorithm.PreprocessingOptions]
+```
+
+####### `RESTRICT_MEMORY`
+
+```python
+RESTRICT_MEMORY: typing.ClassVar[ImageRegistrationAlgorithm.PreprocessingOptions]
+```
+
+###### Methods
+
+####### `__init__`
+
+```python
+def __init__(self, value: int) -> None
+```
+
+####### `name`
+
+*property*
+
+```python
+def name(self) -> str
+```
+
+####### `value`
+
+*property*
+
+```python
+def value(self) -> int
+```
+
+##### `TransformationModel`
+
+```python
+class TransformationModel
+```
+
+Available transformation models. Each one represents a specific registration approach.
+
+Members:
+
+  LINEAR : Rigid or affine DOF registration
+
+  FFD : Registration with non-linear Free-Form deformations
+
+  TPS : Registration with non-linear Thin-Plate-Splines deformations
+
+  DEMONS : Registration with non-linear dense (per-pixel) deformations
+
+  GREEDY_DEMONS : Registration with non-linear dense (per-pixel) deformations using patch-based SimilarityMeasures
+
+  POLY_RIGID : Registration with poly-rigid (i.e. partially piecewise rigid) deformations.
+
+  USER_DEFINED
+
+###### Attributes
+
+####### `DEMONS`
+
+```python
+DEMONS: typing.ClassVar[ImageRegistrationAlgorithm.TransformationModel]
+```
+
+####### `FFD`
+
+```python
+FFD: typing.ClassVar[ImageRegistrationAlgorithm.TransformationModel]
+```
+
+####### `GREEDY_DEMONS`
+
+```python
+GREEDY_DEMONS: typing.ClassVar[ImageRegistrationAlgorithm.TransformationModel]
+```
+
+####### `LINEAR`
+
+```python
+LINEAR: typing.ClassVar[ImageRegistrationAlgorithm.TransformationModel]
+```
+
+####### `POLY_RIGID`
+
+```python
+POLY_RIGID: typing.ClassVar[ImageRegistrationAlgorithm.TransformationModel]
+```
+
+####### `TPS`
+
+```python
+TPS: typing.ClassVar[ImageRegistrationAlgorithm.TransformationModel]
+```
+
+####### `USER_DEFINED`
+
+```python
+USER_DEFINED: typing.ClassVar[ImageRegistrationAlgorithm.TransformationModel]
+```
+
+###### Methods
+
+####### `__init__`
+
+```python
+def __init__(self, value: int) -> None
+```
+
+####### `name`
+
+*property*
+
+```python
+def name(self) -> str
+```
+
+####### `value`
+
+*property*
+
+```python
+def value(self) -> int
+```
+
+### `RegistrationInitAlgorithm`
+
+```python
+class RegistrationInitAlgorithm(imfusion.BaseAlgorithm)
+```
+
+Initialize the registration of two volumes by moving the second one.
+
+#### Attributes
+
+##### `BOUNDING_BOX`
+
+```python
+BOUNDING_BOX: typing.ClassVar[RegistrationInitAlgorithm.Mode]
+```
+
+##### `CENTER_OF_MASS`
+
+```python
+CENTER_OF_MASS: typing.ClassVar[RegistrationInitAlgorithm.Mode]
+```
+
+#### Methods
+
+##### `__init__`
+
+```python
+def __init__(self, image1: imfusion.SharedImageSet, image2: imfusion.SharedImageSet) -> None
+```
+
+##### `mode`
+
+*property*
+
+```python
+def mode(self) -> RegistrationInitAlgorithm.Mode
+```
+
+Initialization mode (align bounding box centers, or center of mass).
+
+##### `mode`
+
+```python
+def mode(self, arg1: RegistrationInitAlgorithm.Mode) -> None
+```
+
+#### Nested Enums
+
+##### `Mode`
+
+```python
+class Mode
+```
+
+Specifies how the distance between images should be computed.
+
+Members:
+
+  BOUNDING_BOX
+
+  CENTER_OF_MASS
+
+###### Attributes
+
+####### `BOUNDING_BOX`
+
+```python
+BOUNDING_BOX: typing.ClassVar[RegistrationInitAlgorithm.Mode]
+```
+
+####### `CENTER_OF_MASS`
+
+```python
+CENTER_OF_MASS: typing.ClassVar[RegistrationInitAlgorithm.Mode]
+```
+
+###### Methods
+
+####### `__init__`
+
+```python
+def __init__(self, value: int) -> None
+```
+
+####### `name`
+
+*property*
+
+```python
+def name(self) -> str
+```
+
+####### `value`
+
+*property*
+
+```python
+def value(self) -> int
+```

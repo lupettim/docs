@@ -1,0 +1,4645 @@
+---
+title: imfusion.computed_tomography
+---
+
+# `imfusion.computed_tomography`
+
+ImFusion Computed Tomography (CT) Python Bindings
+=================================================
+
+Core Functionality Areas
+------------------------
+
+**Geometry:**
+
+- Cone beam geometry representation and manipulation
+- Parametric geometry generators for scanner configurations
+- Geometry calibration and validation tools
+
+**Simulation:**
+
+- Forward projection and cone beam simulation
+- GPU-accelerated projection operators
+- Synthetic data generation from volumes and meshes
+- Scanner-specific simulation presets
+
+**2D/3D Registration:**
+
+- X-ray to volume registration algorithms
+- Multiple initialization strategies (manual, keypoint, point-direction)
+- GPU-accelerated registration optimization
+
+**Reconstruction:**
+
+- Analytical reconstruction (FDK)
+- Iterative reconstruction (MLEM, SART, SQS, CG)
+- Advanced regularization techniques
+
+Example Usage
+-------------
+
+**Basic cone beam geometry setup:**
+
+&gt;&gt;&gt; import imfusion.computed_tomography as ct
+&gt;&gt;&gt; ct.make_cone_beam_data(projections)
+&gt;&gt;&gt; metadata = ct.ConeBeamMetadata.get(projections)
+&gt;&gt;&gt; metadata.enable_modern_geometry()
+&gt;&gt;&gt; param_gen = ct.ParametricGeometryGenerator()
+&gt;&gt;&gt; param_gen.source_det_distance = 1200.0
+&gt;&gt;&gt; param_gen.source_pat_distance = 800.0
+&gt;&gt;&gt; param_gen.angle_range = 180.0
+&gt;&gt;&gt; metadata.add_generator(param_gen, select=True)
+
+**Forward projection simulation:**
+
+&gt;&gt;&gt; projections = ct.simulate_cone_beam_projections(
+...     volume,
+...     geometry_preset=ct.GeometryPreset.FULL_SCAN,
+...     proj_type=ct.ProjectionType.LOG_CONVERTED_ATTENUATION,
+...     width=1024, height=1024, frames=360,
+...     add_poisson_noise=False
+... )
+
+**2D/3D registration workflow:**
+
+&gt;&gt;&gt; ct.register_2d_3d_xray(
+...     projections, volume,
+...     initialization_mode=ct.InitializationMode.KEYPOINTS,
+...     num_resolution_levels=4,
+...     anatomy_name="spine"
+... )
+
+**Reconstruction with iterative solver:**
+
+&gt;&gt;&gt; volume = ct.reconstruct_cone_beam_ct(
+...     projections,
+...     solver_mode="MLEM",
+...     max_iterations=50,
+...     subset_size=10,
+...     force_positivity=True
+... )
+
+For detailed documentation of specific classes and functions, use Python's
+built-in help() function or access the docstrings directly.
+
+Note: This module requires the ImFusion CT plugin to be properly installed
+and licensed.
+
+## Attributes
+
+### `CANCELLED`
+
+```python
+CANCELLED: CTStatus
+```
+
+### `ERROR`
+
+```python
+ERROR: CTStatus
+```
+
+### `ILL_FORMED_INPUT`
+
+```python
+ILL_FORMED_INPUT: CTStatus
+```
+
+### `NOT_IMPLEMENTED`
+
+```python
+NOT_IMPLEMENTED: CTStatus
+```
+
+### `SUCCESS`
+
+```python
+SUCCESS: CTStatus
+```
+
+## Functions
+
+### `apply_full_geometry_representation`
+
+```python
+def apply_full_geometry_representation(projections: imfusion.SharedImageSet, geometry: FullGeometryRepresentation, frame: int) -> None
+```
+
+Apply geometry representation to a single frame.
+
+Args:
+    projections: SharedImageSet to modify
+    geometry: FullGeometryRepresentation to apply
+    frame: Frame index to apply geometry to
+
+### `apply_full_geometry_representation`
+
+```python
+def apply_full_geometry_representation(projections: imfusion.SharedImageSet, geometry_list: list[FullGeometryRepresentation]) -> None
+```
+
+Apply geometry representations to all frames.
+
+Args:
+    projections: SharedImageSet to modify
+    geometry_list: List of FullGeometryRepresentation for each frame
+
+### `backproject`
+
+```python
+def backproject(cone_beam_data: imfusion.SharedImageSet, frame: int, points_2d: list[numpy.ndarray[numpy.float64[2, 1]]], coordinate_type_2d: imfusion.imagemath.CoordinateType = imfusion.imagemath.CoordinateType.TEXTURE) -> list[tuple[numpy.ndarray[numpy.float64[3, 1]], numpy.ndarray[numpy.float64[3, 1]]]]
+```
+
+Compute rays from source through detector points.
+
+Args:
+    cone_beam_data: SharedImageSet with cone beam data
+    frame: Frame index for backprojection
+    points_2d: List of 2D points on detector
+    coordinate_type_2d: Input coordinate system
+    
+Returns:
+    List of ray line segments from source through detector points
+    
+Computes the 3D rays in world coordinates from the X-ray source
+through the specified detector points.
+
+### `convert_cone_beam_geometry_to_per_frame_geometry`
+
+```python
+def convert_cone_beam_geometry_to_per_frame_geometry(geometry: ConeBeamGeometry, num_frames: int) -> list[FullGeometryRepresentation]
+```
+
+Convert legacy ConeBeamGeometry to modern per-frame geometry.
+
+Args:
+    geometry: Legacy ConeBeamGeometry object
+    num_frames: Number of projection frames
+    
+Returns:
+    List of FullGeometryRepresentation objects for each frame
+
+### `frame_geometry_from_opencv_matrix`
+
+```python
+def frame_geometry_from_opencv_matrix(matrix: numpy.ndarray[numpy.float64[3, 4]], detector_width_px: int, detector_height_px: int, pixel_spacing: numpy.ndarray[numpy.float64[2, 1]]) -> FullGeometryRepresentation
+```
+
+Create geometry representation from OpenCV projection matrix.
+
+Args:
+    matrix: OpenCV projection matrix P = K*[R|t] (3x4)
+    detector_width_px: Detector width in pixels
+    detector_height_px: Detector height in pixels
+    pixel_spacing: Pixel size in mm (x_spacing, y_spacing)
+    
+Returns:
+    FullGeometryRepresentation with computed geometry parameters
+
+### `frame_geometry_from_opengl_matrix`
+
+```python
+def frame_geometry_from_opengl_matrix(matrix: numpy.ndarray[numpy.float64[4, 4]], detector_size: numpy.ndarray[numpy.float64[2, 1]]) -> FullGeometryRepresentation
+```
+
+Create geometry representation from OpenGL projection matrix and detector size.
+
+Args:
+    matrix: OpenGL projection matrix (4x4)
+    detector_size: Physical detector size in mm (width, height)
+    
+Returns:
+    FullGeometryRepresentation with computed geometry parameters
+
+### `frame_geometry_from_opengl_matrix`
+
+```python
+def frame_geometry_from_opengl_matrix(matrix: numpy.ndarray[numpy.float64[4, 4]], detector_width_px: int, detector_height_px: int, pixel_spacing: numpy.ndarray[numpy.float64[2, 1]]) -> FullGeometryRepresentation
+```
+
+Create geometry representation from OpenGL matrix with pixel information.
+
+Args:
+    matrix: OpenGL projection matrix (4x4)
+    detector_width_px: Detector width in pixels
+    detector_height_px: Detector height in pixels
+    pixel_spacing: Pixel size in mm (x_spacing, y_spacing)
+    
+Returns:
+    FullGeometryRepresentation with proper image descriptor
+
+### `get_detector_scaling`
+
+```python
+def get_detector_scaling(projection_matrix: numpy.ndarray[numpy.float64[4, 4]], geometry: ConeBeamGeometry) -> typing.Any
+```
+
+Get detector width and source-detector distance from projection matrix.
+
+Args:
+    projection_matrix: 4x4 projection matrix
+    geometry: ConeBeamGeometry object
+    
+Returns:
+    Named tuple with fields (detector_width, source_detector_distance)
+
+### `is_cone_beam_data`
+
+```python
+def is_cone_beam_data(shared_image_set: imfusion.SharedImageSet) -> bool
+```
+
+Check if SharedImageSet fulfills the ConeBeamData concept.
+
+Args:
+    shared_image_set: SharedImageSet to check
+    
+Returns:
+    True if the SharedImageSet has ConeBeamMetadata, topDown=true,
+    and modality=XRAY, making it valid cone beam data.
+
+### `make_cone_beam_data`
+
+```python
+def make_cone_beam_data(shared_image_set: imfusion.SharedImageSet) -> None
+```
+
+Make an existing SharedImageSet fulfill the ConeBeamData concept.
+
+Args:
+    shared_image_set: SharedImageSet to modify
+    
+Modifies the SharedImageSet in-place to add ConeBeamMetadata
+and set proper configuration for cone beam data usage.
+
+### `matrix_components_gl`
+
+```python
+def matrix_components_gl(geometry: FullGeometryRepresentation) -> typing.Any
+```
+
+Get OpenGL projection and modelview matrix components.
+
+Args:
+    geometry: FullGeometryRepresentation
+    
+Returns:
+    Named tuple with fields (PM, MV) where:
+    - PM: 4x4 OpenGL projection matrix
+    - MV: 4x4 OpenGL modelview matrix
+
+### `matrix_components_gl`
+
+```python
+def matrix_components_gl(projections: imfusion.SharedImageSet, frame: int) -> typing.Any
+```
+
+Get OpenGL matrix components from SharedImageSet frame.
+
+Args:
+    projections: SharedImageSet with cone beam data
+    frame: Frame index
+    
+Returns:
+    Named tuple with fields (PM, MV) OpenGL matrices
+
+### `matrix_components_opencv_to_image`
+
+```python
+def matrix_components_opencv_to_image(geometry: FullGeometryRepresentation) -> typing.Any
+```
+
+Get OpenCV camera matrix components in image coordinates.
+
+Args:
+    geometry: FullGeometryRepresentation
+    
+Returns:
+    Named tuple with fields (K, R, t) where:
+    - K: 3x3 intrinsic camera matrix (mm coordinates, origin at center)
+    - R: 3x3 rotation matrix  
+    - t: 3D translation vector
+
+### `matrix_components_opencv_to_image`
+
+```python
+def matrix_components_opencv_to_image(projections: imfusion.SharedImageSet, frame: int) -> typing.Any
+```
+
+Get OpenCV camera matrix components from SharedImageSet frame.
+
+Args:
+    projections: SharedImageSet with cone beam data
+    frame: Frame index
+    
+Returns:
+    Named tuple with fields (K, R, t) in image coordinates
+
+### `matrix_components_opencv_to_pixel`
+
+```python
+def matrix_components_opencv_to_pixel(geometry: FullGeometryRepresentation) -> typing.Any
+```
+
+Get OpenCV camera matrix components in pixel coordinates.
+
+Args:
+    geometry: FullGeometryRepresentation
+    
+Returns:
+    Named tuple with fields (K, R, t) where:
+    - K: 3x3 intrinsic camera matrix (pixel coordinates, origin at top-left)
+    - R: 3x3 rotation matrix
+    - t: 3D translation vector
+
+### `matrix_components_opencv_to_pixel`
+
+```python
+def matrix_components_opencv_to_pixel(projections: imfusion.SharedImageSet, frame: int) -> typing.Any
+```
+
+Get OpenCV camera matrix components from SharedImageSet frame.
+
+Args:
+    projections: SharedImageSet with cone beam data
+    frame: Frame index
+    
+Returns:
+    Named tuple with fields (K, R, t) in pixel coordinates
+
+### `matrix_from_image_to_world`
+
+```python
+def matrix_from_image_to_world(geometry: FullGeometryRepresentation) -> numpy.ndarray[numpy.float64[4, 4]]
+```
+
+Get transformation matrix from image to world coordinates.
+
+Args:
+    geometry: FullGeometryRepresentation
+    
+Returns:
+    4x4 transformation matrix (image -&gt; world)
+
+### `matrix_from_image_to_world`
+
+```python
+def matrix_from_image_to_world(projections: imfusion.SharedImageSet, frame: int) -> numpy.ndarray[numpy.float64[4, 4]]
+```
+
+Get image-to-world transformation from SharedImageSet frame.
+
+Args:
+    projections: SharedImageSet with cone beam data
+    frame: Frame index
+    
+Returns:
+    4x4 transformation matrix (image -&gt; world)
+
+### `matrix_from_world_to_image`
+
+```python
+def matrix_from_world_to_image(geometry: FullGeometryRepresentation) -> numpy.ndarray[numpy.float64[4, 4]]
+```
+
+Get projective transformation matrix from world to image coordinates.
+
+Args:
+    geometry: FullGeometryRepresentation
+    
+Returns:
+    4x4 transformation matrix (world -&gt; image)
+
+### `matrix_from_world_to_image`
+
+```python
+def matrix_from_world_to_image(projections: imfusion.SharedImageSet, frame: int) -> numpy.ndarray[numpy.float64[4, 4]]
+```
+
+Get projective world-to-image transformation from SharedImageSet frame.
+
+Args:
+    projections: SharedImageSet with cone beam data
+    frame: Frame index
+    
+Returns:
+    4x4 transformation matrix (world -&gt; image)
+
+### `matrix_gl_to_image`
+
+```python
+def matrix_gl_to_image(geometry: FullGeometryRepresentation) -> numpy.ndarray[numpy.float64[4, 4]]
+```
+
+Get full OpenGL projection matrix (PM * MV).
+
+Args:
+    geometry: FullGeometryRepresentation
+    
+Returns:
+    4x4 OpenGL projection matrix
+
+### `matrix_gl_to_image`
+
+```python
+def matrix_gl_to_image(projections: imfusion.SharedImageSet, frame: int) -> numpy.ndarray[numpy.float64[4, 4]]
+```
+
+Get OpenGL projection matrix from SharedImageSet frame.
+
+Args:
+    projections: SharedImageSet with cone beam data
+    frame: Frame index
+    
+Returns:
+    4x4 OpenGL projection matrix (supports legacy geometry)
+
+### `matrix_gl_to_image_top_left`
+
+```python
+def matrix_gl_to_image_top_left(geometry: FullGeometryRepresentation) -> numpy.ndarray[numpy.float64[4, 4]]
+```
+
+Get OpenGL projection matrix with y-axis flipped for top-left origin.
+
+Args:
+    geometry: FullGeometryRepresentation
+    
+Returns:
+    4x4 OpenGL projection matrix with flipped y-axis for image coordinates
+
+### `matrix_gl_to_image_top_left`
+
+```python
+def matrix_gl_to_image_top_left(projections: imfusion.SharedImageSet, frame: int) -> numpy.ndarray[numpy.float64[4, 4]]
+```
+
+Get OpenGL projection matrix with y-axis flip from SharedImageSet.
+
+Args:
+    projections: SharedImageSet with cone beam data
+    frame: Frame index
+    
+Returns:
+    4x4 OpenGL projection matrix with flipped y-axis (supports legacy geometry)
+
+### `matrix_opencv_to_image`
+
+```python
+def matrix_opencv_to_image(geometry: FullGeometryRepresentation) -> numpy.ndarray[numpy.float64[3, 4]]
+```
+
+Get OpenCV projection matrix P = K * [R|t] in image coordinates.
+
+Args:
+    geometry: FullGeometryRepresentation
+    
+Returns:
+    3x4 projection matrix in image coordinates (mm, origin at center)
+
+### `matrix_opencv_to_image`
+
+```python
+def matrix_opencv_to_image(projections: imfusion.SharedImageSet, frame: int) -> numpy.ndarray[numpy.float64[3, 4]]
+```
+
+Get OpenCV projection matrix from SharedImageSet frame.
+
+Args:
+    projections: SharedImageSet with cone beam data
+    frame: Frame index
+    
+Returns:
+    3x4 projection matrix in image coordinates
+
+### `matrix_opencv_to_pixel`
+
+```python
+def matrix_opencv_to_pixel(geometry: FullGeometryRepresentation) -> numpy.ndarray[numpy.float64[3, 4]]
+```
+
+Get OpenCV projection matrix P = K * [R|t] in pixel coordinates.
+
+Args:
+    geometry: FullGeometryRepresentation
+    
+Returns:
+    3x4 projection matrix in pixel coordinates (origin at top-left)
+
+### `matrix_opencv_to_pixel`
+
+```python
+def matrix_opencv_to_pixel(projections: imfusion.SharedImageSet, frame: int) -> numpy.ndarray[numpy.float64[3, 4]]
+```
+
+Get OpenCV projection matrix from SharedImageSet frame.
+
+Args:
+    projections: SharedImageSet with cone beam data
+    frame: Frame index
+    
+Returns:
+    3x4 projection matrix in pixel coordinates
+
+### `per_frame_geometry`
+
+```python
+def per_frame_geometry(projections: imfusion.SharedImageSet) -> list[FullGeometryRepresentation]
+```
+
+Collect the per-frame geometry for all frames in a SharedImageSet.
+
+Args:
+    projections: SharedImageSet with cone beam data
+    
+Returns:
+    List of FullGeometryRepresentation objects, one per frame
+
+### `project`
+
+```python
+def project(cone_beam_data: imfusion.SharedImageSet, frame: int, points_3d: list[numpy.ndarray[numpy.float64[3, 1]]], coordinate_type_2d: imfusion.imagemath.CoordinateType = imfusion.imagemath.CoordinateType.TEXTURE) -> list[numpy.ndarray[numpy.float64[2, 1]]]
+```
+
+Project 3D points onto 2D detector plane.
+
+Args:
+    cone_beam_data: SharedImageSet with cone beam data
+    frame: Frame index for projection
+    points_3d: List of 3D points to project
+    coordinate_type_2d: Output coordinate system (Texture, Image, World, or Pixel)
+    
+Returns:
+    List of 2D points on detector plane
+    
+Projects 3D world coordinates to 2D detector coordinates using
+the geometry information stored in the cone beam data.
+
+### `reset_persistent_index_and_range`
+
+```python
+def reset_persistent_index_and_range(projections: imfusion.SharedImageSet) -> None
+```
+
+Reset persistent index and range for a SharedImageSet.
+
+Args:
+    projections: SharedImageSet to reset indices for
+
+### `source_position_world`
+
+```python
+def source_position_world(geometry: FullGeometryRepresentation) -> numpy.ndarray[numpy.float64[3, 1]]
+```
+
+Get X-ray source position in world coordinates.
+
+Args:
+    geometry: FullGeometryRepresentation
+    
+Returns:
+    3D position of X-ray source in world coordinates
+
+### `source_position_world`
+
+```python
+def source_position_world(projections: imfusion.SharedImageSet, frame: int) -> numpy.ndarray[numpy.float64[3, 1]]
+```
+
+Get source position from SharedImageSet frame.
+
+Args:
+    projections: SharedImageSet with cone beam data
+    frame: Frame index
+    
+Returns:
+    3D position of X-ray source in world coordinates
+
+### `source_to_detector_distance`
+
+```python
+def source_to_detector_distance(geometry: FullGeometryRepresentation) -> float
+```
+
+Calculate source-to-detector distance.
+
+Args:
+    geometry: FullGeometryRepresentation
+    
+Returns:
+    Source-to-detector distance in mm
+
+### `source_to_detector_distance`
+
+```python
+def source_to_detector_distance(projections: imfusion.SharedImageSet, frame: int) -> float
+```
+
+Calculate source-to-detector distance from SharedImageSet frame.
+
+Args:
+    projections: SharedImageSet with cone beam data
+    frame: Frame index
+    
+Returns:
+    Source-to-detector distance in mm
+
+## Classes
+
+### `CBCTProjector`
+
+```python
+class CBCTProjector(LinearOperator)
+```
+
+Base class for Cone Beam CT projectors.
+
+Provides the interface for forward projection (volume to projections)
+and backprojection (projections to volume) operations that are
+fundamental to CT reconstruction.
+
+#### Methods
+
+##### `use_mask_input_apply`
+
+*property*
+
+```python
+def use_mask_input_apply(self) -> bool
+```
+
+Apply input masking during forward projection.
+
+##### `use_mask_input_apply`
+
+```python
+def use_mask_input_apply(self, arg1: bool) -> None
+```
+
+##### `use_mask_input_apply_adjoint`
+
+*property*
+
+```python
+def use_mask_input_apply_adjoint(self) -> bool
+```
+
+Apply input masking during backprojection (adjoint operation).
+
+##### `use_mask_input_apply_adjoint`
+
+```python
+def use_mask_input_apply_adjoint(self, arg1: bool) -> None
+```
+
+##### `use_mask_output_apply`
+
+*property*
+
+```python
+def use_mask_output_apply(self) -> bool
+```
+
+Apply output masking during forward projection.
+
+##### `use_mask_output_apply`
+
+```python
+def use_mask_output_apply(self, arg1: bool) -> None
+```
+
+##### `use_mask_output_apply_adjoint`
+
+*property*
+
+```python
+def use_mask_output_apply_adjoint(self) -> bool
+```
+
+Apply output masking during backprojection (adjoint operation).
+
+##### `use_mask_output_apply_adjoint`
+
+```python
+def use_mask_output_apply_adjoint(self, arg1: bool) -> None
+```
+
+### `ConeBeamGeometry`
+
+```python
+class ConeBeamGeometry(imfusion.Configurable)
+```
+
+Legacy cone beam geometry representation.
+
+This class provides the traditional parametric representation of cone beam
+CT geometry using intrinsic and extrinsic parameters. It defines the 
+geometric relationship between X-ray source, detector, and reconstruction
+volume for cone beam acquisition systems.
+
+Key Features:
+
+- Source-detector distance and source-patient distance
+- Detector size, offset, rotation, and shear parameters
+- Reconstruction volume size and positioning
+- Support for circular
+- Matrix serialization in multiple formats
+
+Example:
+        Create and configure a cone beam geometry:
+        
+        &gt;&gt;&gt; geometry = ct.ConeBeamGeometry()
+        &gt;&gt;&gt; geometry.source_det_distance = 1200.0  # mm
+        &gt;&gt;&gt; geometry.source_pat_distance = 600.0   # mm
+        &gt;&gt;&gt; geometry.det_size_x = 400.0            # mm
+        &gt;&gt;&gt; geometry.det_size_y = 300.0            # mm
+        &gt;&gt;&gt; geometry.recon_size = 256.0            # mm
+
+#### Methods
+
+##### `__init__`
+
+```python
+def __init__(self, *, source_det_distance: float = 0.0, source_pat_distance: float = 0.0, det_size_x: float = 0.0, det_size_y: float = 0.0, det_offset_x: float = 0.0, det_rotation: float = 0.0, det_shear_x: float = 0.0, det_shear_y: float = 0.0, recon_size: float = 0.0, recon_offset_x: float = 0.0, recon_offset_y: float = 0.0, recon_offset_z: float = 0.0, recon_rot_x: float = 0.0, recon_rot_y: float = 0.0, angle_start: float = 0.0, angle_range: float = 0.0, angle_tilt: float = 0.0, use_matrices: bool = False, enable_frame_pars: bool = False, use_fan_beam: bool = False, jitter: list[float] = [], angles: list[float] = [], offsets: list[numpy.ndarray[numpy.float64[3, 1]]] = [], iso_mat_rot_ctr: numpy.ndarray[numpy.float64[3, 1]] = ...) -> None
+```
+
+Create a ConeBeamGeometry fully configured via parameters.
+
+Args:
+        source_det_distance: Source to detector center distance in mm
+        source_pat_distance: Source to patient distance in mm
+        det_size_x: Detector width in mm
+        det_size_y: Detector height in mm
+        det_offset_x: Horizontal detector offset in mm
+        det_rotation: Detector rotation in degrees
+        det_shear_x: Detector shear in X (mm)
+        det_shear_y: Detector shear in Y (mm)
+        recon_size: Reconstruction volume size in mm (all dimensions)
+        recon_offset_x: Reconstruction X offset in mm
+        recon_offset_y: Reconstruction Y offset in mm
+        recon_offset_z: Reconstruction Z offset in mm
+        recon_rot_x: Reconstruction X rotation in degrees
+        recon_rot_y: Reconstruction Y rotation in degrees
+        angle_start: Rotation angle of first frame in degrees
+        angle_range: Entire rotation range in degrees
+        angle_tilt: Vertical tilt in degrees
+        use_matrices: Use per-frame matrices instead of parametric geometry
+        enable_frame_pars: Consider per-frame motion parameters
+        use_fan_beam: Fan-beam projection along z-direction
+        jitter: Additional per-frame jitter values
+        angles: Individual rotation angles per frame (degrees)
+        offsets: Iso-center offset per frame (vec3, mm)
+        iso_mat_rot_ctr: Rotation center of the global iso-matrix (vec3, mm)
+
+##### `angle_range`
+
+*property*
+
+```python
+def angle_range(self) -> float
+```
+
+float: Entire rotation range in degrees (default is 0.0).
+
+##### `angle_range`
+
+```python
+def angle_range(self, arg0: float) -> None
+```
+
+##### `angle_start`
+
+*property*
+
+```python
+def angle_start(self) -> float
+```
+
+float: Rotation angle of the first frame in degrees (default is 0.0).
+
+##### `angle_start`
+
+```python
+def angle_start(self, arg0: float) -> None
+```
+
+##### `angle_tilt`
+
+*property*
+
+```python
+def angle_tilt(self) -> float
+```
+
+float: Vertical tilt in degrees (default is 0.0).
+
+##### `angle_tilt`
+
+```python
+def angle_tilt(self, arg0: float) -> None
+```
+
+##### `angles`
+
+*property*
+
+```python
+def angles(self) -> list[float]
+```
+
+Individual rotation angles per frame in degrees.
+
+If specified, these override the parametric angle calculation.
+
+##### `angles`
+
+```python
+def angles(self, arg0: list[float]) -> None
+```
+
+##### `det_offset_x`
+
+*property*
+
+```python
+def det_offset_x(self) -> float
+```
+
+float: Horizontal detector offset in mm (default is 0.0).
+
+##### `det_offset_x`
+
+```python
+def det_offset_x(self, arg0: float) -> None
+```
+
+##### `det_rotation`
+
+*property*
+
+```python
+def det_rotation(self) -> float
+```
+
+float: Detector rotation in degrees (default is 0.0).
+
+##### `det_rotation`
+
+```python
+def det_rotation(self, arg0: float) -> None
+```
+
+##### `det_shear_x`
+
+*property*
+
+```python
+def det_shear_x(self) -> float
+```
+
+float: Detector shear in X direction (default is 0.0).
+
+##### `det_shear_x`
+
+```python
+def det_shear_x(self, arg0: float) -> None
+```
+
+##### `det_shear_y`
+
+*property*
+
+```python
+def det_shear_y(self) -> float
+```
+
+float: Detector shear in Y direction (default is 0.0).
+
+##### `det_shear_y`
+
+```python
+def det_shear_y(self, arg0: float) -> None
+```
+
+##### `det_size_x`
+
+*property*
+
+```python
+def det_size_x(self) -> float
+```
+
+float: Width of the detector in mm (default is 0.0).
+
+##### `det_size_x`
+
+```python
+def det_size_x(self, arg0: float) -> None
+```
+
+##### `det_size_y`
+
+*property*
+
+```python
+def det_size_y(self) -> float
+```
+
+float: Height of the detector in mm (default is 0.0).
+
+##### `det_size_y`
+
+```python
+def det_size_y(self, arg0: float) -> None
+```
+
+##### `enable_frame_pars`
+
+*property*
+
+```python
+def enable_frame_pars(self) -> bool
+```
+
+bool: Whether per-frame motion parameters are considered (default is false).
+
+##### `enable_frame_pars`
+
+```python
+def enable_frame_pars(self, arg0: bool) -> None
+```
+
+##### `iso_mat_rot_ctr`
+
+*property*
+
+```python
+def iso_mat_rot_ctr(self) -> numpy.ndarray[numpy.float64[3, 1]]
+```
+
+Optional rotation center of global iso-matrix.
+
+3D point defining the rotation center for iso-matrix transformations.
+
+##### `iso_mat_rot_ctr`
+
+```python
+def iso_mat_rot_ctr(self, arg0: numpy.ndarray[numpy.float64[3, 1]]) -> None
+```
+
+##### `jitter`
+
+*property*
+
+```python
+def jitter(self) -> list[float]
+```
+
+Additional per-frame jitter parameters.
+
+Vector of jitter values applied to individual frames for motion simulation.
+
+##### `jitter`
+
+```python
+def jitter(self, arg0: list[float]) -> None
+```
+
+##### `offsets`
+
+*property*
+
+```python
+def offsets(self) -> list[numpy.ndarray[numpy.float64[3, 1]]]
+```
+
+Individual iso-center offset per frame.
+
+Vector of 3D offsets applied to the iso-center for each frame.
+
+##### `offsets`
+
+```python
+def offsets(self, arg0: list[numpy.ndarray[numpy.float64[3, 1]]]) -> None
+```
+
+##### `recon_offset_x`
+
+*property*
+
+```python
+def recon_offset_x(self) -> float
+```
+
+float: X offset of the reconstruction volume in mm (default is 0.0).
+
+##### `recon_offset_x`
+
+```python
+def recon_offset_x(self, arg0: float) -> None
+```
+
+##### `recon_offset_y`
+
+*property*
+
+```python
+def recon_offset_y(self) -> float
+```
+
+float: Y offset of the reconstruction volume in mm (default is 0.0).
+
+##### `recon_offset_y`
+
+```python
+def recon_offset_y(self, arg0: float) -> None
+```
+
+##### `recon_offset_z`
+
+*property*
+
+```python
+def recon_offset_z(self) -> float
+```
+
+float: Z offset of the reconstruction volume in mm (default is 0.0).
+
+##### `recon_offset_z`
+
+```python
+def recon_offset_z(self, arg0: float) -> None
+```
+
+##### `recon_rot_x`
+
+*property*
+
+```python
+def recon_rot_x(self) -> float
+```
+
+float: X rotation of the reconstruction volume in degrees (default is 0.0).
+
+##### `recon_rot_x`
+
+```python
+def recon_rot_x(self, arg0: float) -> None
+```
+
+##### `recon_rot_y`
+
+*property*
+
+```python
+def recon_rot_y(self) -> float
+```
+
+float: Y rotation of the reconstruction volume in degrees (default is 0.0).
+
+##### `recon_rot_y`
+
+```python
+def recon_rot_y(self, arg0: float) -> None
+```
+
+##### `recon_size`
+
+*property*
+
+```python
+def recon_size(self) -> float
+```
+
+float: Size of the reconstruction volume in mm (default is 0.0).
+
+##### `recon_size`
+
+```python
+def recon_size(self, arg0: float) -> None
+```
+
+##### `source_det_distance`
+
+*property*
+
+```python
+def source_det_distance(self) -> float
+```
+
+float: Source to center of detector distance in mm (default is 0.0).
+
+##### `source_det_distance`
+
+```python
+def source_det_distance(self, arg0: float) -> None
+```
+
+##### `source_pat_distance`
+
+*property*
+
+```python
+def source_pat_distance(self) -> float
+```
+
+float: Source to patient distance in mm (default is 0.0).
+
+##### `source_pat_distance`
+
+```python
+def source_pat_distance(self, arg0: float) -> None
+```
+
+##### `to_per_frame_geometry`
+
+```python
+def to_per_frame_geometry(self, num_frames: int) -> list[FullGeometryRepresentation]
+```
+
+Convert this ConeBeamGeometry to a per-frame geometry.
+
+This function returns a vector of FullGeometryRepresentation instances where all
+parametric geometry is expanded into explicit per-frame matrices
+for the specified number of frames. Useful for algorithms that
+require explicit geometry for each frame.
+
+Args:
+        num_frames: Number of frames to expand the geometry to.
+
+Returns:
+        Vector of FullGeometryRepresentation with computed geometry parameters
+
+##### `use_fan_beam`
+
+*property*
+
+```python
+def use_fan_beam(self) -> bool
+```
+
+bool: Whether this is a fan beam projection along the z-direction (default is false).
+
+.. warning:: Not all methods support fan beam geometry.
+
+##### `use_fan_beam`
+
+```python
+def use_fan_beam(self, arg0: bool) -> None
+```
+
+##### `use_matrices`
+
+*property*
+
+```python
+def use_matrices(self) -> bool
+```
+
+bool: Whether individual matrices shall be used instead of parametric geometry (default is false).
+
+##### `use_matrices`
+
+```python
+def use_matrices(self, arg0: bool) -> None
+```
+
+### `ConeBeamMetadata`
+
+```python
+class ConeBeamMetadata
+```
+
+Container for cone beam projection metadata.
+
+This class stores all the metadata associated with cone beam
+projection data, including geometry information, intensity
+mode, and other acquisition parameters.
+
+#### Methods
+
+##### `__init__`
+
+```python
+def __init__(self) -> None
+```
+
+Create an empty ConeBeamMetadata container.
+
+##### `add_generator`
+
+```python
+def add_generator(self, generator: GeometryGenerator, select: bool, store_current_geometry_in_history: bool = False) -> str
+```
+
+Add a geometry generator with history management.
+
+Args:
+        generator: GeometryGenerator to add (will be cloned)
+        select: Whether to select this generator as active
+        store_current_geometry_in_history: Whether to store current geometry before switching
+        
+Returns:
+        String key of the added generator
+
+##### `clear_generators`
+
+```python
+def clear_generators(self) -> None
+```
+
+Clear all geometry generators.
+
+Removes all generators from the metadata.
+
+##### `disable_modern_geometry`
+
+```python
+def disable_modern_geometry(self) -> None
+```
+
+Disable modern geometry representation.
+
+Switches back to legacy ConeBeamGeometry representation.
+
+##### `enable_modern_geometry`
+
+```python
+def enable_modern_geometry(self) -> None
+```
+
+Enable modern geometry representation.
+
+Switches from legacy ConeBeamGeometry to modern geometry components.
+
+##### `folder`
+
+*property*
+
+```python
+def folder(self) -> str
+```
+
+Legacy parameter storing the folder path.
+
+Path to the folder from which the projection data was loaded.
+
+##### `folder`
+
+```python
+def folder(self, arg1: str) -> None
+```
+
+##### `generator_uses_selection`
+
+*property*
+
+```python
+def generator_uses_selection(self) -> bool
+```
+
+Whether the generator should use frame selection.
+
+Controls if the geometry generator respects frame selection settings.
+
+##### `generator_uses_selection`
+
+```python
+def generator_uses_selection(self, arg1: bool) -> None
+```
+
+##### `geometry`
+
+```python
+def geometry(self) -> ConeBeamGeometry
+```
+
+Access the cone beam geometry parameters.
+
+Returns:
+        Reference to the ConeBeamGeometry object containing all geometric parameters
+
+##### `geometry`
+
+```python
+def geometry(self) -> ConeBeamGeometry
+```
+
+Access the cone beam geometry parameters.
+
+Returns:
+        Const reference to the ConeBeamGeometry object
+
+##### `get`
+
+*staticmethod*
+
+```python
+def get(projections: imfusion.SharedImageSet) -> ConeBeamMetadata
+```
+
+Get ConeBeamMetadata from a SharedImageSet.
+
+Args:
+        projections: SharedImageSet containing the metadata
+        
+Returns:
+        Reference to the ConeBeamMetadata component
+
+##### `get`
+
+*staticmethod*
+
+```python
+def get(projections: imfusion.SharedImageSet) -> ConeBeamMetadata
+```
+
+Get ConeBeamMetadata from a SharedImageSet.
+
+Args:
+        projections: SharedImageSet containing the metadata
+        
+Returns:
+        Reference to the ConeBeamMetadata component
+
+##### `global_scaling`
+
+*property*
+
+```python
+def global_scaling(self) -> float
+```
+
+Legacy global scaling factor for reconstruction.
+
+Multiplicative factor applied to reconstruction values.
+
+##### `global_scaling`
+
+```python
+def global_scaling(self, arg1: float) -> None
+```
+
+##### `i0`
+
+*property*
+
+```python
+def i0(self) -> float
+```
+
+Legacy i0 parameter for intensity mode.
+
+Reference intensity value, typically air intensity.
+
+##### `i0`
+
+```python
+def i0(self, arg1: float) -> None
+```
+
+##### `id`
+
+```python
+def id(self) -> str
+```
+
+Get the data component identifier.
+
+Returns:
+        String identifier for the metadata component
+
+##### `intensity_mode`
+
+*property*
+
+```python
+def intensity_mode(self) -> IntensityMode
+```
+
+Intensity mode for the projection data.
+
+Specifies whether air appears bright (Absorption) or dark (LinearAttenuation).
+
+##### `intensity_mode`
+
+```python
+def intensity_mode(self, arg1: IntensityMode) -> None
+```
+
+##### `num_generators`
+
+*property*
+
+```python
+def num_generators(self) -> int
+```
+
+Get the number of geometry generators.
+
+Returns:
+        Number of available geometry generators
+
+##### `recon_size`
+
+*property*
+
+```python
+def recon_size(self) -> float
+```
+
+Suggested reconstruction size in mm.
+
+Recommended size for the reconstruction volume in all dimensions.
+
+##### `recon_size`
+
+```python
+def recon_size(self, arg1: float) -> None
+```
+
+##### `remove_generator`
+
+```python
+def remove_generator(self, key: str) -> None
+```
+
+Remove a geometry generator by its key.
+
+Args:
+        key: String key of the generator to remove
+
+##### `sync_to_modern_geometry`
+
+```python
+def sync_to_modern_geometry(self) -> None
+```
+
+Synchronize from legacy geometry to modern geometry components.
+
+Converts legacy ConeBeamGeometry parameters to modern SourceDataComponent
+and DetectorDataComponent representations.
+
+##### `using_legacy_geometry`
+
+*property*
+
+```python
+def using_legacy_geometry(self) -> bool
+```
+
+Check if using legacy geometry representation.
+
+Returns:
+        True if using legacy ConeBeamGeometry, False if using modern geometry components
+
+### `ConeBeamSimulation`
+
+```python
+class ConeBeamSimulation(imfusion.BaseAlgorithm)
+```
+
+Cone beam X-ray projection simulation algorithm.
+
+This algorithm simulates cone beam X-ray projections from a 3D volume using
+GPU-accelerated ray casting. It supports various acquisition geometries,
+motion patterns, and realistic noise models for CT simulation studies.
+
+Key Features:
+
+- Multiple geometry presets (half-scan, full-scan, C-arm, etc.)
+- Motion simulation (jitter, patient motion, device motion)
+- Realistic noise modeling with Poisson statistics
+- Physical units support for density-based simulation
+- Reference projection integration
+
+Example:
+        Simulate basic cone beam projections:
+        
+        &gt;&gt;&gt; volume, *_ = imf.load("volume.nii")
+        &gt;&gt;&gt; simulator = ct.ConeBeamSimulation(
+        ...     volume,
+        ...     geometry_preset=ct.GeometryPreset.FULL_SCAN,
+        ...     width=1024,
+        ...     height=1024,
+        ...     frames=360
+        ... )
+        &gt;&gt;&gt; projections = simulator()
+        &gt;&gt;&gt; print(f"Simulated {projections.size()} projections")
+
+#### Methods
+
+##### `__call__`
+
+```python
+def __call__(self) -> imfusion.SharedImageSet
+```
+
+Run simulation and return the result.
+
+Returns:
+        SharedImageSet containing the simulated cone beam projections
+
+##### `__init__`
+
+```python
+def __init__(self, volume: imfusion.SharedImage, *, geometry_preset: GeometryPreset = GeometryPreset.HALF_SCAN, motion_preset: MotionPreset = MotionPreset.NO_MOTION, proj_type: ProjectionType = ProjectionType.PHOTON_COUNT, width: int = 512, height: int = 512, frames: int = 180, data_type: imfusion.PixelType = imfusion.PixelType.FLOAT, i0: float = 1.0, add_poisson_noise: bool = False, scaling: float = 1.0, subtract: bool = False, physical_units: bool = False, stream_proj: bool = False, duration: float = 1.0, continuous_updates: bool = False, reference_projections: imfusion.SharedImageSet = None) -> None
+```
+
+Create cone beam simulation algorithm.
+
+Args:
+        volume: Input volume to simulate projections from
+        geometry_preset: Predefined geometry configuration
+        motion_preset: Motion pattern for simulation
+        proj_type: Type of projection (photon count or log-converted attenuation)
+        width: Width of simulated detector in pixels
+        height: Height of simulated detector in pixels  
+        frames: Number of projection frames to simulate
+        data_type: Data type for simulated projections
+        i0: Incident intensity for transmission projections
+        add_poisson_noise: Add realistic Poisson noise to projections
+        scaling: Scaling factor applied to all projection values
+        subtract: Subtract reference data from simulation
+        physical_units: Use physical units for simulation calculations
+        stream_proj: Sync simulated frames to CPU after simulation
+        duration: Duration of the motion in seconds
+        continuous_updates: Enable continuous updates when volume changes
+        reference_projections: Optional reference projection data
+
+##### `add_poisson_noise`
+
+*property*
+
+```python
+def add_poisson_noise(self) -> bool
+```
+
+Add Poisson noise if photon count projections are simulated.
+
+##### `add_poisson_noise`
+
+```python
+def add_poisson_noise(self, arg1: bool) -> None
+```
+
+##### `compute`
+
+```python
+def compute(self) -> imfusion.SharedImageSet
+```
+
+Run simulation and return the result.
+
+Returns:
+        SharedImageSet containing the simulated cone beam projections
+
+##### `continuous_updates`
+
+*property*
+
+```python
+def continuous_updates(self) -> bool
+```
+
+If set, the last projections created by compute() are updated continuously when the volume/geometry changes.
+
+##### `continuous_updates`
+
+```python
+def continuous_updates(self, arg1: bool) -> None
+```
+
+##### `data_type`
+
+*property*
+
+```python
+def data_type(self) -> imfusion.PixelType
+```
+
+Image data type to use for simulated images.
+
+##### `data_type`
+
+```python
+def data_type(self, arg1: imfusion.PixelType) -> None
+```
+
+##### `duration`
+
+*property*
+
+```python
+def duration(self) -> float
+```
+
+Duration of the motion in seconds.
+
+##### `duration`
+
+```python
+def duration(self, arg1: float) -> None
+```
+
+##### `frames`
+
+*property*
+
+```python
+def frames(self) -> int
+```
+
+Number of frames to be simulated.
+
+##### `frames`
+
+```python
+def frames(self, arg1: int) -> None
+```
+
+##### `geometry`
+
+```python
+def geometry(self) -> ConeBeamGeometry
+```
+
+Access the geometry instance for updating it.
+
+Returns:
+        Reference to the ConeBeamGeometry object
+
+##### `geometry_preset`
+
+*property*
+
+```python
+def geometry_preset(self) -> GeometryPreset
+```
+
+Geometry preset of the projections to be simulated.
+
+##### `geometry_preset`
+
+```python
+def geometry_preset(self, arg1: GeometryPreset) -> None
+```
+
+##### `height`
+
+*property*
+
+```python
+def height(self) -> int
+```
+
+Height of the projections to be simulated.
+
+##### `height`
+
+```python
+def height(self, arg1: int) -> None
+```
+
+##### `i0`
+
+*property*
+
+```python
+def i0(self) -> float
+```
+
+Maximum X-Ray intensity, i.e. air intensity value.
+
+##### `i0`
+
+```python
+def i0(self, arg1: float) -> None
+```
+
+##### `motion_preset`
+
+*property*
+
+```python
+def motion_preset(self) -> MotionPreset
+```
+
+Motion preset of the projections to be simulated.
+
+##### `motion_preset`
+
+```python
+def motion_preset(self, arg1: MotionPreset) -> None
+```
+
+##### `physical_units`
+
+*property*
+
+```python
+def physical_units(self) -> bool
+```
+
+Whether the input volume should be interpreted as a density map in kg/m^3.
+
+##### `physical_units`
+
+```python
+def physical_units(self, arg1: bool) -> None
+```
+
+##### `proj_type`
+
+*property*
+
+```python
+def proj_type(self) -> ProjectionType
+```
+
+Projection type of the projections to be simulated.
+
+##### `proj_type`
+
+```python
+def proj_type(self, arg1: ProjectionType) -> None
+```
+
+##### `scaling`
+
+*property*
+
+```python
+def scaling(self) -> float
+```
+
+Global intensity scaling factor.
+
+##### `scaling`
+
+```python
+def scaling(self, arg1: float) -> None
+```
+
+##### `stream_proj`
+
+*property*
+
+```python
+def stream_proj(self) -> bool
+```
+
+If enabled the simulated frames will always be synced to the CPU after simulation.
+
+##### `stream_proj`
+
+```python
+def stream_proj(self, arg1: bool) -> None
+```
+
+##### `subtract`
+
+*property*
+
+```python
+def subtract(self) -> bool
+```
+
+Subtract reference data from simulation.
+
+##### `subtract`
+
+```python
+def subtract(self, arg1: bool) -> None
+```
+
+##### `width`
+
+*property*
+
+```python
+def width(self) -> int
+```
+
+Width of the projections to be simulated.
+
+##### `width`
+
+```python
+def width(self, arg1: int) -> None
+```
+
+### `DetectorDataComponent`
+
+```python
+class DetectorDataComponent(imfusion.DataComponentBase)
+```
+
+Data component storing detector transformation for a single frame.
+
+This component defines the detector position and orientation in
+world coordinates for cone beam geometry calculations. Used with
+SourceDataComponent to provide complete frame geometry information.
+
+#### Methods
+
+##### `__init__`
+
+```python
+def __init__(self, *, matrix_world_to_detector: numpy.ndarray[numpy.float64[4, 4]] = ..., persistent_index_and_range: numpy.ndarray[numpy.int32[2, 1]] = ...) -> None
+```
+
+Create DetectorDataComponent with world-to-detector transform and persistent index/range.
+
+Args:
+        matrix_world_to_detector: 4x4 transform from world to detector space
+        persistent_index_and_range: vec2i where x=index, y=range for tracking
+
+##### `get`
+
+*staticmethod*
+
+```python
+def get(projections: imfusion.SharedImageSet, frame: int) -> DetectorDataComponent
+```
+
+Get DetectorDataComponent for a specific frame.
+
+Args:
+        projections: SharedImageSet to access
+        frame: Frame index
+
+Returns:
+        Pointer to DetectorDataComponent or None if not found
+
+##### `get`
+
+*staticmethod*
+
+```python
+def get(projections: imfusion.SharedImageSet, frame: int) -> DetectorDataComponent
+```
+
+Get DetectorDataComponent for a specific frame.
+
+Args:
+        projections: SharedImageSet to access
+        frame: Frame index
+
+Returns:
+        Pointer to DetectorDataComponent or None if not found
+
+##### `get_or_create`
+
+*staticmethod*
+
+```python
+def get_or_create(projections: imfusion.SharedImageSet, frame: int) -> DetectorDataComponent
+```
+
+Get or create DetectorDataComponent for a specific frame.
+
+Args:
+        projections: SharedImageSet to access
+        frame: Frame index to get/create component for
+
+Returns:
+        Reference to the DetectorDataComponent
+
+##### `matrix_world_to_detector`
+
+*property*
+
+```python
+def matrix_world_to_detector(self) -> numpy.ndarray[numpy.float64[4, 4]]
+```
+
+Matrix transforming from world to detector space.
+
+4x4 transformation matrix that maps coordinates from world space
+to detector coordinate space. To get to image coordinates, the
+image matrix must be multiplied as well.
+
+##### `matrix_world_to_detector`
+
+```python
+def matrix_world_to_detector(self, arg1: numpy.ndarray[numpy.float64[4, 4]]) -> None
+```
+
+##### `persistent_index_and_range`
+
+*property*
+
+```python
+def persistent_index_and_range(self) -> numpy.ndarray[numpy.int32[2, 1]]
+```
+
+Persistent index and range for geometry tracking.
+
+Stores the original frame index (x component) and range (y component)
+used by geometry generators to track the original location of frames.
+
+##### `persistent_index_and_range`
+
+```python
+def persistent_index_and_range(self, arg1: numpy.ndarray[numpy.int32[2, 1]]) -> None
+```
+
+### `DetectorPropertiesDataComponent`
+
+```python
+class DetectorPropertiesDataComponent
+```
+
+Container for detector properties and calibration information.
+
+This data component stores detector-specific parameters including
+physical dimensions, curvature properties, and calibration data
+required for accurate cone beam CT reconstruction.
+
+Features:
+
+- Detector curvature modeling (flat, cylindrical, fan-flat)
+- Per-frame curved detector offsets
+- Curvature radii configuration
+- Integration with cone beam metadata
+- Automatic creation and retrieval utilities
+
+#### Methods
+
+##### `__init__`
+
+```python
+def __init__(self) -> None
+```
+
+Create an empty DetectorPropertiesDataComponent (default curvature=FLAT).
+
+##### `curvature`
+
+*property*
+
+```python
+def curvature(self) -> DetectorCurvature
+```
+
+enum: Detector curvature type (default is FLAT).
+
+Specifies the physical curvature of the detector:
+- FLAT: Flat panel detector
+- CYLINDRICAL: Curved in x-direction  
+- FANFLAT: Fan beam flat detector
+
+##### `curvature`
+
+```python
+def curvature(self, arg1: DetectorCurvature) -> None
+```
+
+##### `curved_offsets`
+
+*property*
+
+```python
+def curved_offsets(self) -> list[numpy.ndarray[numpy.float64[2, 1]]]
+```
+
+Per-frame offsets (in mm) on the curved detector to the center of the image.
+
+Vector of 2D offsets for each frame, specifying the displacement from
+the geometric center of the curved detector to the actual image center.
+Only relevant for curved detector geometries.
+
+##### `curved_offsets`
+
+```python
+def curved_offsets(self, arg1: list[numpy.ndarray[numpy.float64[2, 1]]]) -> None
+```
+
+##### `get`
+
+*staticmethod*
+
+```python
+def get(projections: imfusion.SharedImageSet) -> DetectorPropertiesDataComponent
+```
+
+Get DetectorPropertiesDataComponent from SharedImageSet.
+
+Args:
+        projections: SharedImageSet containing the component
+        
+Returns:
+        Pointer to DetectorPropertiesDataComponent or None if not found
+
+##### `get`
+
+*staticmethod*
+
+```python
+def get(projections: imfusion.SharedImageSet) -> DetectorPropertiesDataComponent
+```
+
+Get DetectorPropertiesDataComponent from SharedImageSet.
+
+Args:
+        projections: SharedImageSet containing the component
+        
+Returns:
+        Pointer to DetectorPropertiesDataComponent or None if not found
+
+##### `get_or_create`
+
+*staticmethod*
+
+```python
+def get_or_create(projections: imfusion.SharedImageSet) -> DetectorPropertiesDataComponent
+```
+
+Get or create DetectorPropertiesDataComponent from SharedImageSet.
+
+Args:
+        projections: SharedImageSet to get/create component for
+        
+Returns:
+        Reference to the DetectorPropertiesDataComponent
+
+##### `get_or_create`
+
+*staticmethod*
+
+```python
+def get_or_create(projections: imfusion.SharedImageSet) -> DetectorPropertiesDataComponent
+```
+
+Get or create DetectorPropertiesDataComponent from SharedImageSet.
+
+Args:
+        projections: SharedImageSet to get/create component for
+        
+Returns:
+        Reference to the DetectorPropertiesDataComponent
+
+##### `id`
+
+```python
+def id(self) -> str
+```
+
+Get the data component identifier.
+
+Returns:
+        String identifier for the detector properties component
+
+##### `radii`
+
+*property*
+
+```python
+def radii(self) -> list[float] | None
+```
+
+Radii of the curvature per frame (optional).
+
+If not set, the source-detector distance will be used as the radius.
+When specified, provides the radius of curvature for each frame,
+allowing for variable curvature in dynamic acquisitions.
+
+##### `radii`
+
+```python
+def radii(self, arg1: list[float] | None) -> None
+```
+
+### `Eos2D3DRegistration`
+
+```python
+class Eos2D3DRegistration(XRay2D3DRegistration)
+```
+
+Specialized 2D/3D registration algorithm for EOS imaging systems.
+
+This algorithm extends XRay2D3DRegistration with specific
+preprocessing and handling for EOS bi-planar X-ray systems, providing
+optimized registration for clinical EOS workflows.
+
+Features:
+
+- EOS-specific geometry preprocessing
+- Bi-planar projection handling
+- Clinical workflow integration
+- Inherits all XRay2D3DRegistration features
+
+Example:
+        EOS system registration:
+        
+        &gt;&gt;&gt; eos_shots, *_ = imf.load("eos_projections.dcm")
+        &gt;&gt;&gt; volume, *_ = imf.load("patient_ct.nii")
+        &gt;&gt;&gt; reg = ct.Eos2D3DRegistration(
+        ...     eos_shots,
+        ...     volume,
+        ...     anatomy_name="spine"
+        ... )
+        &gt;&gt;&gt; reg.initialize()
+        &gt;&gt;&gt; reg()
+
+#### Methods
+
+##### `__call__`
+
+```python
+def __call__(self) -> None
+```
+
+Run EOS-specific registration algorithm.
+
+This performs EOS-specific preprocessing and then standard 2D/3D registration.
+
+##### `__init__`
+
+```python
+def __init__(self, shots: imfusion.SharedImageSet, volumes: imfusion.SharedImageSet, *, initialization_mode: InitializationMode = InitializationMode.POINT_DIRECTION, anatomy_name: str = 'default', num_resolution_levels: int = 3) -> None
+```
+
+Create EOS-specific 2D/3D registration algorithm.
+
+Args:
+        shots: EOS bi-planar projection shots
+        volumes: 3D volume data to register to the projections
+        initialization_mode: Registration initialization strategy (default: InitializationMode.POINT_DIRECTION — initialization using point and direction information)
+        anatomy_name: Identifier for storing registration matrices
+        num_resolution_levels: Number of multi-resolution levels
+
+##### `compute`
+
+```python
+def compute(self) -> None
+```
+
+Run EOS-specific registration algorithm.
+
+This performs EOS-specific preprocessing and then standard 2D/3D registration.
+
+### `FullGeometryRepresentation`
+
+```python
+class FullGeometryRepresentation
+```
+
+Complete geometry representation for a single frame.
+
+This structure contains all the geometric information needed to
+describe the relationship between source, detector, and world
+coordinates for a single projection frame.
+
+#### Methods
+
+##### `__init__`
+
+```python
+def __init__(self, source_location: numpy.ndarray[numpy.float64[3, 1]] = ..., world_to_detector_matrix: numpy.ndarray[numpy.float64[4, 4]] = ..., persistent_index_and_range: numpy.ndarray[numpy.int32[2, 1]] = ..., image_desc_world: imfusion.ImageDescriptorWorld | None = None) -> None
+```
+
+Create full geometry representation.
+
+Args:
+        source_location: Location of X-ray source in detector coordinates
+        world_to_detector_matrix: Transformation matrix from world to detector
+        persistent_index_and_range: Persistent index and range information
+
+##### `from_opencv_matrix`
+
+*staticmethod*
+
+```python
+def from_opencv_matrix(matrix: numpy.ndarray[numpy.float64[3, 4]], detector_width_px: int, detector_height_px: int, pixel_spacing: numpy.ndarray[numpy.float64[2, 1]]) -> FullGeometryRepresentation
+```
+
+Create full geometry representation from OpenCV matrix.
+
+Args:
+        matrix: OpenCV projection matrix P = K*[R|t] (3x4)
+        detector_width_px: Detector width in pixels
+        detector_height_px: Detector height in pixels
+        pixel_spacing: Pixel size in mm (x_spacing, y_spacing)
+        
+Returns:
+        FullGeometryRepresentation with computed geometry parameters
+
+##### `from_opengl_matrix`
+
+*staticmethod*
+
+```python
+def from_opengl_matrix(matrix: numpy.ndarray[numpy.float64[4, 4]], det_size: numpy.ndarray[numpy.float64[2, 1]]) -> FullGeometryRepresentation
+```
+
+Create full geometry representation from OpenGL matrix.
+
+Args:
+        matrix: OpenGL projection matrix
+        det_size: Size of the detector in mm
+
+Returns:
+        FullGeometryRepresentation instance
+
+##### `from_opengl_matrix`
+
+*staticmethod*
+
+```python
+def from_opengl_matrix(matrix: numpy.ndarray[numpy.float64[4, 4]], detector_width_px: int, detector_height_px: int, pixel_spacing: numpy.ndarray[numpy.float64[2, 1]]) -> FullGeometryRepresentation
+```
+
+Create full geometry representation from OpenGL matrix.
+
+Args:
+        matrix: OpenGL projection matrix
+        detector_width_px: Width of the detector in pixels
+        detector_height_px: Height of the detector in pixels
+        pixel_spacing: Pixel spacing in mm
+
+Returns:
+        FullGeometryRepresentation instance
+
+##### `location_source_in_detector_space`
+
+*property*
+
+```python
+def location_source_in_detector_space(self) -> numpy.ndarray[numpy.float64[3, 1]]
+```
+
+Location of the X-ray source in detector coordinates.
+
+##### `location_source_in_detector_space`
+
+```python
+def location_source_in_detector_space(self, arg0: numpy.ndarray[numpy.float64[3, 1]]) -> None
+```
+
+##### `matrix_world_to_detector`
+
+*property*
+
+```python
+def matrix_world_to_detector(self) -> numpy.ndarray[numpy.float64[4, 4]]
+```
+
+Matrix from world to detector coordinates.
+
+##### `matrix_world_to_detector`
+
+```python
+def matrix_world_to_detector(self, arg0: numpy.ndarray[numpy.float64[4, 4]]) -> None
+```
+
+##### `persistent_index_and_range`
+
+*property*
+
+```python
+def persistent_index_and_range(self) -> numpy.ndarray[numpy.int32[2, 1]]
+```
+
+Persistent index and range for geometry tracking.
+
+##### `persistent_index_and_range`
+
+```python
+def persistent_index_and_range(self, arg0: numpy.ndarray[numpy.int32[2, 1]]) -> None
+```
+
+##### `to_matrix_components_gl`
+
+```python
+def to_matrix_components_gl(self) -> typing.Any
+```
+
+Get OpenGL projection and modelview matrix components.
+
+Returns:
+        Named tuple with fields (PM, MV) where:
+        - PM: 4x4 OpenGL projection matrix
+        - MV: 4x4 OpenGL modelview matrix
+
+##### `to_matrix_components_opencv_image`
+
+```python
+def to_matrix_components_opencv_image(self) -> typing.Any
+```
+
+Get OpenCV camera matrix components in image coordinates.
+
+Returns:
+        Named tuple with fields (K, R, t) where:
+        - K: 3x3 intrinsic camera matrix (mm coordinates, origin at center)
+        - R: 3x3 rotation matrix  
+        - t: 3D translation vector
+
+##### `to_matrix_components_opencv_pixel`
+
+```python
+def to_matrix_components_opencv_pixel(self) -> typing.Any
+```
+
+Get OpenCV camera matrix components in pixel coordinates.
+
+Returns:
+        Named tuple with fields (K, R, t) where:
+        - K: 3x3 intrinsic camera matrix (pixel coordinates, origin at top-left)
+        - R: 3x3 rotation matrix
+        - t: 3D translation vector
+
+##### `to_matrix_gl_image`
+
+```python
+def to_matrix_gl_image(self) -> numpy.ndarray[numpy.float64[4, 4]]
+```
+
+Get full OpenGL projection matrix (PM * MV).
+
+Returns:
+        4x4 OpenGL projection matrix
+
+##### `to_matrix_gl_image_top_left`
+
+```python
+def to_matrix_gl_image_top_left(self) -> numpy.ndarray[numpy.float64[4, 4]]
+```
+
+Get OpenGL projection matrix with y-axis flipped for top-left origin.
+
+Returns:
+        4x4 OpenGL projection matrix with flipped y-axis for image coordinates
+
+##### `to_matrix_image_to_world`
+
+```python
+def to_matrix_image_to_world(self) -> numpy.ndarray[numpy.float64[4, 4]]
+```
+
+Get transformation matrix from image to world coordinates.
+
+Returns:
+        4x4 transformation matrix (image -&gt; world)
+
+##### `to_matrix_opencv_image`
+
+```python
+def to_matrix_opencv_image(self) -> numpy.ndarray[numpy.float64[3, 4]]
+```
+
+Get OpenCV projection matrix P = K * [R|t] in image coordinates.
+
+Returns:
+        3x4 projection matrix in image coordinates (mm, origin at center)
+
+##### `to_matrix_opencv_pixel`
+
+```python
+def to_matrix_opencv_pixel(self) -> numpy.ndarray[numpy.float64[3, 4]]
+```
+
+Get OpenCV projection matrix P = K * [R|t] in pixel coordinates.
+
+Returns:
+        3x4 projection matrix in pixel coordinates (origin at top-left)
+
+##### `to_matrix_world_to_image`
+
+```python
+def to_matrix_world_to_image(self) -> numpy.ndarray[numpy.float64[4, 4]]
+```
+
+Get projective transformation matrix from world to image coordinates.
+
+Returns:
+        4x4 transformation matrix (world -&gt; image)
+
+### `GeometryGenerator`
+
+```python
+class GeometryGenerator
+```
+
+Base class for X-ray geometry generators.
+
+Geometry generators are used to compute and manage the geometric
+configuration of cone beam CT systems. They can generate full
+geometry representations from parametric descriptions or fit
+parametric models to existing geometries.
+
+#### Methods
+
+##### `clone`
+
+```python
+def clone(self) -> GeometryGenerator
+```
+
+Create a copy of this geometry generator.
+
+Returns:
+        Cloned GeometryGenerator
+
+##### `id`
+
+```python
+def id(self) -> str
+```
+
+Get the identifier string for this generator type.
+
+Returns:
+        String identifier for the generator
+
+### `GlCBCTProjector`
+
+```python
+class GlCBCTProjector(CBCTProjector)
+```
+
+GPU-accelerated Cone Beam CT projector using OpenGL compute shaders.
+
+This projector provides high-performance forward projection and backprojection
+operations using GPU acceleration. It's the preferred projector for
+reconstruction when GPU resources are available.
+
+Features:
+
+- GPU-accelerated forward and backprojection
+- Support for complex detector geometries
+- Optimized memory usage with streaming
+- Compatible with all reconstruction solvers
+- Automatic fallback to CPU if needed
+
+Example:
+        Create a GPU projector for reconstruction:
+        
+        &gt;&gt;&gt; projector = ct.GlCBCTProjector(volume_ref, projections_ref)
+        &gt;&gt;&gt; # Used internally by reconstruction algorithms
+
+#### Methods
+
+##### `__init__`
+
+```python
+def __init__(self, domain_ref: imfusion.SharedImageSet, range_ref: imfusion.SharedImageSet) -> None
+```
+
+Create a GPU projector with domain and range references.
+
+Args:
+        domain_ref: Reference SharedImageSet for the volume domain
+        range_ref: Reference SharedImageSet for the projection range
+
+##### `clone`
+
+```python
+def clone(self) -> LinearOperator
+```
+
+Create a copy of this GPU projector.
+
+Returns:
+        Cloned GlCBCTProjector
+
+### `LinearOperator`
+
+```python
+class LinearOperator
+```
+
+Abstract base class for linear operators in CT reconstruction.
+
+Linear operators represent the forward projection and backprojection
+operations that form the core of CT reconstruction algorithms.
+
+#### Methods
+
+##### `apply`
+
+```python
+def apply(self, expr_in: imfusion.imagemath.lazy.Expression, input: imfusion.SharedImageSet, output: imfusion.SharedImageSet, expr_out: imfusion.imagemath.lazy.Expression = None) -> None
+```
+
+Apply the linear operator with input and output expressions.
+
+Computes: expr_out(A * expr_in(input))
+
+Args:
+        expr_in: Input expression to apply to input data
+        input: Input SharedImageSet (reference for domain)
+        output: Output SharedImageSet to store results
+        expr_out: Optional output expression to apply to results
+        
+Raises:
+        AlgorithmExecutionError: If the operation fails
+
+##### `apply`
+
+```python
+def apply(self, input: imfusion.SharedImageSet, output: imfusion.SharedImageSet, expr_out: imfusion.imagemath.lazy.Expression = None) -> None
+```
+
+Apply the linear operator directly to SharedImageSet.
+
+Args:
+        input: Input SharedImageSet
+        output: Output SharedImageSet to store results  
+        expr_out: Optional output expression to apply to results
+        
+Raises:
+        AlgorithmExecutionError: If the operation fails
+
+##### `apply_adjoint`
+
+```python
+def apply_adjoint(self, expr_in: imfusion.imagemath.lazy.Expression, input: imfusion.SharedImageSet, output: imfusion.SharedImageSet, expr_out: imfusion.imagemath.lazy.Expression = None) -> None
+```
+
+Apply the adjoint (transpose) of the linear operator with expressions.
+
+Computes: expr_out(A^T * expr_in(input))
+
+Args:
+        expr_in: Input expression to apply to input data
+        input: Input SharedImageSet (reference for range)
+        output: Output SharedImageSet to store results
+        expr_out: Optional output expression to apply to results
+        
+Raises:
+        AlgorithmExecutionError: If the operation fails
+
+##### `apply_adjoint`
+
+```python
+def apply_adjoint(self, input: imfusion.SharedImageSet, output: imfusion.SharedImageSet, expr_out: imfusion.imagemath.lazy.Expression = None) -> None
+```
+
+Apply the adjoint (transpose) of the linear operator.
+
+Args:
+        input: Input SharedImageSet
+        output: Output SharedImageSet to store results
+        expr_out: Optional output expression to apply to results
+        
+Raises:
+        AlgorithmExecutionError: If the operation fails
+
+##### `clone`
+
+```python
+def clone(self) -> LinearOperator
+```
+
+Create a copy of this linear operator.
+
+Returns:
+        Copy of the linear operator
+
+##### `create_domain_sis`
+
+```python
+def create_domain_sis(self) -> imfusion.SharedImageSet
+```
+
+Create a new SharedImageSet in the operator's domain.
+
+Returns:
+        New SharedImageSet suitable for operator input
+
+##### `create_range_sis`
+
+```python
+def create_range_sis(self) -> imfusion.SharedImageSet
+```
+
+Create a new SharedImageSet in the operator's range.
+
+Returns:
+        New SharedImageSet suitable for operator output
+
+##### `domain_ref`
+
+```python
+def domain_ref(self) -> imfusion.SharedImageSet
+```
+
+Get the domain reference SharedImageSet.
+
+Returns:
+        Reference to domain SharedImageSet or None
+
+##### `range_ref`
+
+```python
+def range_ref(self) -> imfusion.SharedImageSet
+```
+
+Get the range reference SharedImageSet.
+
+Returns:
+        Reference to range SharedImageSet or None
+
+### `Mesh2D3DRegistration`
+
+```python
+class Mesh2D3DRegistration(imfusion.BaseAlgorithm)
+```
+
+2D/3D registration algorithm using mesh-based synthetic CT generation.
+
+This algorithm combines mesh-to-volume conversion with 2D/3D registration,
+allowing registration of X-ray projections to 3D mesh models by first
+generating a synthetic CT volume from the mesh.
+
+Features:
+
+- Automatic synthetic CT generation from mesh
+- Full 2D/3D registration pipeline
+- Support for complex mesh geometries
+- Optimized for anatomical mesh models
+
+Example:
+        Register projections to a mesh model:
+        
+        &gt;&gt;&gt; projections, *_ = imf.load("projections.dcm")
+        &gt;&gt;&gt; mesh, *_ = imf.load("anatomy.obj")
+        &gt;&gt;&gt; reg = ct.Mesh2D3DRegistrationAlgorithm(
+        ...     projections,
+        ...     mesh,
+        ...     num_resolution_levels=3
+        ... )
+        &gt;&gt;&gt; reg()
+
+#### Methods
+
+##### `__call__`
+
+```python
+def __call__(self) -> None
+```
+
+Run mesh-based registration algorithm.
+
+This generates a synthetic CT from the mesh and performs 2D/3D registration.
+
+##### `__init__`
+
+```python
+def __init__(self, projections: imfusion.SharedImageSet, mesh: imfusion.Mesh, *, initialization_mode: InitializationMode = InitializationMode.POINT_DIRECTION, anatomy_name: str = 'default', num_resolution_levels: int = 3) -> None
+```
+
+Create mesh-based 2D/3D registration algorithm.
+
+Args:
+        projections: 2D X-ray projections with cone beam geometry
+        mesh: 3D mesh to register to the projections
+        initialization_mode: Registration initialization strategy (default: InitializationMode.POINT_DIRECTION — initialization using point and direction information)
+        anatomy_name: Identifier for storing registration matrices
+        num_resolution_levels: Number of multi-resolution levels
+
+##### `compute`
+
+```python
+def compute(self) -> None
+```
+
+Run mesh-based registration algorithm.
+
+This generates a synthetic CT from the mesh and performs 2D/3D registration.
+
+##### `reg_alg`
+
+```python
+def reg_alg(self) -> XRay2D3DRegistration
+```
+
+Get the nested XRay2D3DRegistrationAlgorithm.
+
+Returns:
+        Reference to the nested registration algorithm
+
+### `MotionModelGenerator`
+
+```python
+class MotionModelGenerator(GeometryGenerator)
+```
+
+Generator for motion model based on projection data.
+
+This generator creates a motion model based on the projection data.
+It can be used to create a motion model from projection data.
+
+#### Methods
+
+##### `__init__`
+
+```python
+def __init__(self, projections: imfusion.SharedImageSet) -> None
+```
+
+Create motion model generator from projection data.
+
+Args:
+        projections: SharedImageSet to create motion model from
+
+##### `__init__`
+
+```python
+def __init__(self, *, base_generator: GeometryGenerator, transformation_config: RelativeTransformationConfig) -> None
+```
+
+Create MotionModelGenerator from a base generator and transformation configuration.
+
+Args:
+        base_generator: GeometryGenerator to wrap (will be cloned)
+        transformation_config: Transformation configuration and reference handling
+
+### `ParametricGeometryGenerator`
+
+```python
+class ParametricGeometryGenerator(GeometryGenerator)
+```
+
+Parametric geometry generator for regular CBCT acquisition trajectories.
+
+This generator creates cone beam geometries using parametric descriptions
+suitable for standard circular or helical cone beam CT acquisitions.
+It provides a high-level interface for common scanning patterns.
+
+Features:
+
+- Parametric trajectory description
+- Support for circular and helical trajectories
+- Configurable detector and source parameters
+- Automatic geometry computation for all frames
+
+#### Methods
+
+##### `__init__`
+
+```python
+def __init__(self, geometry: ConeBeamGeometry) -> None
+```
+
+Create parametric generator from legacy geometry.
+
+Args:
+        geometry: ConeBeamGeometry to convert to parametric form
+
+##### `__init__`
+
+```python
+def __init__(self, projections: imfusion.SharedImageSet) -> None
+```
+
+Create parametric generator by fitting to projection data.
+
+Args:
+        projections: SharedImageSet with existing geometry to fit
+
+##### `__init__`
+
+```python
+def __init__(self, *, source_det_distance: float = 0.0, source_pat_distance: float = 0.0, angle_range: float = 0.0, det_src_x_shift: float = 0.0, det_rotation: float = 0.0, det_shear: numpy.ndarray[numpy.float64[2, 1]] = ..., transformation_setup: RelativeTransformationSetupWrapper | None = None) -> None
+```
+
+Create ParametricGeometryGenerator and initialize all parameters.
+
+Args:
+        source_det_distance: Source to detector center distance (mm)
+        source_pat_distance: Source to patient distance (mm)
+        angle_range: Entire rotation range in degrees
+        det_src_x_shift: Combined detector and source shift in X (mm)
+        det_rotation: Detector rotation in degrees
+        det_shear: Detector shear (vec2, mm)
+        transformation_setup: Optional additional transformation setup
+
+##### `angle_range`
+
+*property*
+
+```python
+def angle_range(self) -> float
+```
+
+float: Entire rotation range in degrees parameter (default is 0.0).
+
+##### `angle_range`
+
+```python
+def angle_range(self, arg1: float) -> None
+```
+
+##### `get_or_fit_parametric_geometry`
+
+*staticmethod*
+
+```python
+def get_or_fit_parametric_geometry(projections: imfusion.SharedImageSet) -> ParametricGeometryGenerator
+```
+
+Get or fit a parametric geometry from projection data.
+
+Args:
+        projections: SharedImageSet with cone beam data
+        
+Returns:
+        ParametricGeometryGenerator instance
+
+##### `source_det_distance`
+
+*property*
+
+```python
+def source_det_distance(self) -> float
+```
+
+float: Source to center of detector distance parameter (default is 0.0 mm).
+
+##### `source_det_distance`
+
+```python
+def source_det_distance(self, arg1: float) -> None
+```
+
+##### `source_pat_distance`
+
+*property*
+
+```python
+def source_pat_distance(self) -> float
+```
+
+float: Source to patient distance parameter (default is 0.0 mm).
+
+##### `source_pat_distance`
+
+```python
+def source_pat_distance(self, arg1: float) -> None
+```
+
+##### `transformation_setup`
+
+*property*
+
+```python
+def transformation_setup(self) -> RelativeTransformationSetupWrapper
+```
+
+Transformation setup for additional geometric transformations.
+
+Provides access to relative transformation configuration including
+ISO-center parameters and direct transformation matrices.
+This allows applying additional transformations on top of the
+basic parametric geometry.
+
+##### `transformation_setup`
+
+```python
+def transformation_setup(self, arg1: RelativeTransformationSetupWrapper) -> None
+```
+
+### `Reconstruction`
+
+```python
+class Reconstruction(imfusion.BaseAlgorithm)
+```
+
+Cone beam CT reconstruction algorithm.
+
+This algorithm reconstructs a 3D volume from cone beam CT projection data
+using various optimization problems and solvers. It supports both analytical
+(FDK) and iterative reconstruction methods with customizable regularization.
+
+Key Features:
+
+- Multiple reconstruction solvers (FDK, MLEM, SART, CG, SQS)
+- Various optimization problems (Least Squares, Tikhonov, TV regularization)
+- Region of Interest (ROI) reconstruction
+- GPU acceleration support
+- Automatic solver parameter optimization
+
+Example:
+        Basic FDK reconstruction:
+        
+        &gt;&gt;&gt; projections, *_ = imf.load("projections.dcm")
+        &gt;&gt;&gt; reconstructor = ct.Reconstruction(
+        ...     projections,
+        ...     problem_mode="LeastSquaresProblem",
+        ...     solver_mode="FDK"
+        ... )
+        &gt;&gt;&gt; volume = reconstructor()
+        &gt;&gt;&gt; print(f"Reconstructed volume: {volume.get().size()}")
+        
+        Iterative reconstruction:
+        
+        &gt;&gt;&gt; reconstructor = ct.Reconstruction(
+        ...     projections,
+        ...     solver_mode="MLEM",
+        ...     max_iterations=100,
+        ...     force_positivity=True
+        ... )
+        &gt;&gt;&gt; volume = reconstructor()
+
+#### Methods
+
+##### `__call__`
+
+```python
+def __call__(self) -> imfusion.SharedImageSet
+```
+
+Run reconstruction and return the result.
+
+Returns:
+        SharedImageSet containing the reconstructed volume
+
+##### `__init__`
+
+```python
+def __init__(self, projections: imfusion.SharedImageSet, *, problem_mode: str = 'LeastSquaresProblem', solver_mode: str = 'FDK', region_of_interest_enabled: bool = False, shift: float = 0.0, scale: float = 1.0, subset_size: int = -1, nesterov: bool = False, max_iterations: int = 50, crop_fan: bool = False, force_positivity: bool = False, initial_reconstruction: imfusion.SharedImageSet = None) -> None
+```
+
+Args:
+projections: Cone beam projection data with geometry information
+problem_mode: Optimization problem formulation
+solver_mode: Reconstruction solver to use
+region_of_interest_enabled: Enable ROI reconstruction for focused regions
+shift: Calibrated shift parameter
+scale: Calibrated scale parameter
+subset_size: Number of projections per subset for iterative methods (-1 = auto)
+nesterov: Enable Nesterov acceleration for faster convergence
+max_iterations: Maximum number of iterations for iterative solvers
+crop_fan: Apply fan beam cropping to reduce artifacts
+force_positivity: Enforce positivity constraint in reconstruction
+initial_reconstruction: Optional initial volume for iterative methods
+
+##### `compute`
+
+```python
+def compute(self) -> imfusion.SharedImageSet
+```
+
+Run reconstruction and return the result.
+
+Returns:
+        SharedImageSet containing the reconstructed volume
+
+##### `problem_mode`
+
+*property*
+
+```python
+def problem_mode(self) -> str
+```
+
+Optimization problem formulation to use for reconstruction.
+
+##### `problem_mode`
+
+```python
+def problem_mode(self, arg1: str) -> None
+```
+
+##### `region_of_interest_enabled`
+
+*property*
+
+```python
+def region_of_interest_enabled(self) -> bool
+```
+
+Enable ROI reconstruction for focused regions.
+
+##### `region_of_interest_enabled`
+
+```python
+def region_of_interest_enabled(self, arg1: bool) -> None
+```
+
+##### `scale`
+
+*property*
+
+```python
+def scale(self) -> float
+```
+
+Calibrated scale parameter.
+
+##### `scale`
+
+```python
+def scale(self, arg1: float) -> None
+```
+
+##### `shift`
+
+*property*
+
+```python
+def shift(self) -> float
+```
+
+Calibrated shift parameter.
+
+##### `shift`
+
+```python
+def shift(self, arg1: float) -> None
+```
+
+##### `solver_mode`
+
+*property*
+
+```python
+def solver_mode(self) -> str
+```
+
+Reconstruction solver to use.
+
+##### `solver_mode`
+
+```python
+def solver_mode(self, arg1: str) -> None
+```
+
+##### `subset_size`
+
+*property*
+
+```python
+def subset_size(self) -> int
+```
+
+Number of projections per subset for FDK and iterative methods
+
+##### `subset_size`
+
+```python
+def subset_size(self, arg1: int) -> int
+```
+
+### `RelativeGlobalTransformationGenerator`
+
+```python
+class RelativeGlobalTransformationGenerator(GeometryGenerator)
+```
+
+Generator for one relative transformation applied to all frames.
+
+This generator applies a single transformation to all frames of a
+cone beam acquisition relative to an existing geometry. It wraps
+an existing generator and applies the transformation on top.
+
+Features:
+
+- Single transformation for all frames
+- Relative to existing geometry (wraps base generator)
+- Global transformation setup with ISO-center parameters
+- Automatic base generator selection or snapshot creation
+
+#### Methods
+
+##### `__init__`
+
+```python
+def __init__(self, projections: imfusion.SharedImageSet) -> None
+```
+
+Create relative global transformation generator from projection data.
+
+Args:
+        projections: SharedImageSet to create relative transformations for
+
+##### `__init__`
+
+```python
+def __init__(self, *, base_generator: GeometryGenerator, transformation_setup: RelativeTransformationSetupWrapper) -> None
+```
+
+Create RelativeGlobalTransformationGenerator from a base generator and transformation setup.
+
+Args:
+        base_generator: GeometryGenerator to wrap (will be cloned)
+        transformation_setup: Transformation applied to all frames
+
+##### `transformation_setup`
+
+*property*
+
+```python
+def transformation_setup(self) -> RelativeTransformationSetupWrapper
+```
+
+Transformation setup for the global transformation.
+
+Configuration for the transformation applied to all frames,
+including ISO-center parameters and transformation matrix.
+
+##### `transformation_setup`
+
+```python
+def transformation_setup(self, arg1: RelativeTransformationSetupWrapper) -> None
+```
+
+### `RelativeTransformationConfig`
+
+```python
+class RelativeTransformationConfig
+```
+
+Configuration for relative transformations in geometry generators.
+
+This structure defines how transformations are applied relative to
+different coordinate systems and how the source position is handled
+during transformations.
+
+#### Methods
+
+##### `__init__`
+
+```python
+def __init__(self, *, keep_source_fixed_relative_to_detector: bool = True, reference: TransformationReference = TransformationReference.WORLD) -> None
+```
+
+Create RelativeTransformationConfig with explicit settings.
+
+Args:
+        keep_source_fixed_relative_to_detector: If true, source moves with detector
+        reference: Reference coordinate system (WORLD or DETECTOR)
+
+##### `keep_source_fixed_relative_to_detector`
+
+*property*
+
+```python
+def keep_source_fixed_relative_to_detector(self) -> bool
+```
+
+bool: Keep the source fixed relative to the detector (default is True).
+
+When True, the source moves with the detector during transformations.
+When False, the world position of the source stays fixed.
+
+##### `keep_source_fixed_relative_to_detector`
+
+```python
+def keep_source_fixed_relative_to_detector(self, arg1: bool) -> None
+```
+
+##### `reference`
+
+*property*
+
+```python
+def reference(self) -> TransformationReference
+```
+
+enum: Reference coordinate system for the transformation (default is WORLD).
+
+Specifies whether transformations are applied relative to world
+coordinates or detector coordinates.
+
+##### `reference`
+
+```python
+def reference(self, arg1: TransformationReference) -> None
+```
+
+### `RelativeTransformationSetupWrapper`
+
+```python
+class RelativeTransformationSetupWrapper(RelativeTransformationConfig)
+```
+
+Wrapper for relative transformation setup with ISO-center parameters.
+
+This class provides both direct transformation matrix access and
+ISO-center based parametric transformation definition. It handles
+signal connections to automatically update the transformation matrix
+when ISO-center parameters change.
+
+Features:
+
+- Direct transformation matrix specification
+- ISO-center based parametric transformation
+- Automatic matrix computation from ISO parameters
+- Reference coordinate system control
+
+#### Methods
+
+##### `__init__`
+
+```python
+def __init__(self, *, transformation: numpy.ndarray[numpy.float64[4, 4]] = ...) -> None
+```
+
+Create RelativeTransformationSetupWrapper with direct transformation matrix.
+
+Args:
+        transformation: 4x4 transformation matrix
+
+##### `__init__`
+
+```python
+def __init__(self, *, iso_center_offset: numpy.ndarray[numpy.float64[3, 1]] = ..., iso_rotation: numpy.ndarray[numpy.float64[3, 1]] = ..., iso_rotation_center: numpy.ndarray[numpy.float64[3, 1]] = ...) -> None
+```
+
+Create RelativeTransformationSetupWrapper with ISO-center parameters.
+
+Args:
+        iso_center_offset: ISO-center offset in mm (world)
+        iso_rotation: ISO-center rotation Euler angles in degrees
+        iso_rotation_center: Center of ISO rotation in mm (world)
+
+##### `iso_center_offset`
+
+*property*
+
+```python
+def iso_center_offset(self) -> numpy.ndarray[numpy.float64[3, 1]]
+```
+
+ndarray[numpy.float64[3, 1]]: ISO-center offset in mm in world coordinates (default is [0,0,0]).
+
+3D translation offset applied to the ISO-center position.
+Only used when use_iso_center_parameters is True.
+
+##### `iso_center_offset`
+
+```python
+def iso_center_offset(self, arg1: numpy.ndarray[numpy.float64[3, 1]]) -> None
+```
+
+##### `iso_rotation`
+
+*property*
+
+```python
+def iso_rotation(self) -> numpy.ndarray[numpy.float64[3, 1]]
+```
+
+ndarray[numpy.float64[3, 1]]: ISO-center rotation in Euler angles in degrees (default is [0,0,0]).
+
+3D rotation applied around the ISO-center rotation center.
+Only used when use_iso_center_parameters is True.
+
+##### `iso_rotation`
+
+```python
+def iso_rotation(self, arg1: numpy.ndarray[numpy.float64[3, 1]]) -> None
+```
+
+##### `iso_rotation_center`
+
+*property*
+
+```python
+def iso_rotation_center(self) -> numpy.ndarray[numpy.float64[3, 1]]
+```
+
+ndarray[numpy.float64[3, 1]]: Center of ISO-center rotation in mm in world coordinates (default is [0,0,0]).
+
+3D point around which ISO-center rotations are applied.
+Only used when use_iso_center_parameters is True.
+
+##### `iso_rotation_center`
+
+```python
+def iso_rotation_center(self, arg1: numpy.ndarray[numpy.float64[3, 1]]) -> None
+```
+
+##### `transformation`
+
+*property*
+
+```python
+def transformation(self) -> numpy.ndarray[numpy.float64[4, 4]]
+```
+
+ndarray[numpy.float64[4, 4]]: Direct transformation matrix (default is Identity).
+
+4x4 transformation matrix applied to the geometry. This is the primary
+interface - changes to ISO-center parameters are automatically
+propagated to this matrix.
+
+##### `transformation`
+
+```python
+def transformation(self, arg1: numpy.ndarray[numpy.float64[4, 4]]) -> None
+```
+
+##### `use_iso_center_parameters`
+
+*property*
+
+```python
+def use_iso_center_parameters(self) -> bool
+```
+
+bool: Whether to use ISO-center parameters instead of direct transformation matrix (default is False).
+
+When True, the transformation is computed from ISO-center offset, rotation,
+and rotation center. When False, the direct transformation matrix is used.
+Only available when reference is set to WORLD.
+
+##### `use_iso_center_parameters`
+
+```python
+def use_iso_center_parameters(self, arg1: bool) -> None
+```
+
+### `ShotTargetPointsType`
+
+```python
+class ShotTargetPointsType
+```
+
+Parameter type for storing shot target points.
+
+This parameter type is used to store a list of 3D points that represent
+the target points for a shot.
+
+### `SnapshotGenerator`
+
+```python
+class SnapshotGenerator(GeometryGenerator)
+```
+
+Geometry generator that stores snapshots of existing geometries.
+
+This generator captures and stores the complete geometry state
+of a SharedImageSet, allowing exact reproduction of complex
+or irregular geometric configurations.
+
+#### Methods
+
+##### `__init__`
+
+```python
+def __init__(self, projections: imfusion.SharedImageSet) -> None
+```
+
+Create snapshot generator from projection data.
+
+Args:
+        projections: SharedImageSet to capture geometry from
+
+### `SourceDataComponent`
+
+```python
+class SourceDataComponent(imfusion.DataComponentBase)
+```
+
+Data component storing X-ray source position for a single frame.
+
+This component represents the location of the X-ray source in
+detector coordinate space for cone beam geometry calculations.
+Used in conjunction with DetectorDataComponent to define complete
+frame geometry.
+
+#### Methods
+
+##### `__init__`
+
+```python
+def __init__(self, *, location_source_in_detector_space: numpy.ndarray[numpy.float64[3, 1]] = ...) -> None
+```
+
+Create SourceDataComponent with source position for one frame.
+
+Args:
+        location_source_in_detector_space: Position of X-ray source in detector space (z is negative by convention).
+
+##### `get`
+
+*staticmethod*
+
+```python
+def get(projections: imfusion.SharedImageSet, frame: int) -> SourceDataComponent
+```
+
+Get SourceDataComponent for a specific frame.
+
+Args:
+        projections: SharedImageSet to access
+        frame: Frame index
+
+Returns:
+        Pointer to SourceDataComponent or None if not found
+
+##### `get`
+
+*staticmethod*
+
+```python
+def get(projections: imfusion.SharedImageSet, frame: int) -> SourceDataComponent
+```
+
+Get SourceDataComponent for a specific frame.
+
+Args:
+        projections: SharedImageSet to access
+        frame: Frame index
+
+Returns:
+        Pointer to SourceDataComponent or None if not found
+
+##### `get_or_create`
+
+*staticmethod*
+
+```python
+def get_or_create(projections: imfusion.SharedImageSet, frame: int) -> SourceDataComponent
+```
+
+Get or create SourceDataComponent for a specific frame.
+
+Args:
+        projections: SharedImageSet to access
+        frame: Frame index to get/create component for
+
+Returns:
+        Reference to the SourceDataComponent
+
+##### `location_source_in_detector_space`
+
+*property*
+
+```python
+def location_source_in_detector_space(self) -> numpy.ndarray[numpy.float64[3, 1]]
+```
+
+Position of the X-ray source in detector coordinate space.
+
+This position is used for geometric calibration and projection calculations.
+
+##### `location_source_in_detector_space`
+
+```python
+def location_source_in_detector_space(self, arg1: numpy.ndarray[numpy.float64[3, 1]]) -> None
+```
+
+### `SyntheticCTFromMesh`
+
+```python
+class SyntheticCTFromMesh(imfusion.BaseAlgorithm)
+```
+
+Synthetic CT from Mesh algorithm.
+
+This algorithm generates synthetic CT images from a Mesh object. It does so by setting intensity values as a configurable
+function of the (signed) distance function to the mesh.
+
+#### Methods
+
+##### `__init__`
+
+```python
+def __init__(self, mesh: imfusion.Mesh = None, *, spacing: float = 1.0, inside_decay: float = 0.5, first_outside_decay: float = 10.0, first_outside_amplitude: float = 1.0, second_outside_decay: float = 0.2, second_outside_amplitude: float = 0.2) -> None
+```
+
+Create SyntheticCTFromMeshAlgorithm instance.
+Args:
+        mesh: the input Mesh from which to create a synthetic CT.
+        spacing: Spacing of the output volume in mm.
+        inside_decay: Decay of intensity values inside the mesh (rate constant).
+        first_outside_decay: Decay of intensity values outside the mesh for the first component (rate constant).
+        first_outside_amplitude: Amplitude of the first component outside the mesh.
+        second_outside_decay: Decay of intensity values outside the mesh for the second component (rate constant).
+        second_outside_amplitude: Amplitude of the second component outside the mesh.
+
+##### `first_outside_amplitude`
+
+*property*
+
+```python
+def first_outside_amplitude(self) -> float
+```
+
+Amplitude of the first component outside the mesh.
+
+##### `first_outside_amplitude`
+
+```python
+def first_outside_amplitude(self, arg1: float) -> None
+```
+
+##### `first_outside_decay`
+
+*property*
+
+```python
+def first_outside_decay(self) -> float
+```
+
+Decay of intensity values outside the mesh for the first component (rate constant).
+
+##### `first_outside_decay`
+
+```python
+def first_outside_decay(self, arg1: float) -> None
+```
+
+##### `inside_decay`
+
+*property*
+
+```python
+def inside_decay(self) -> float
+```
+
+Decay of intensity values inside the mesh (rate constant).
+
+##### `inside_decay`
+
+```python
+def inside_decay(self, arg1: float) -> None
+```
+
+##### `second_outside_amplitude`
+
+*property*
+
+```python
+def second_outside_amplitude(self) -> float
+```
+
+Amplitude of the second component outside the mesh.
+
+##### `second_outside_amplitude`
+
+```python
+def second_outside_amplitude(self, arg1: float) -> None
+```
+
+##### `second_outside_decay`
+
+*property*
+
+```python
+def second_outside_decay(self) -> float
+```
+
+Decay of intensity values outside the mesh for the second component (rate constant).
+
+##### `second_outside_decay`
+
+```python
+def second_outside_decay(self, arg1: float) -> None
+```
+
+##### `spacing`
+
+*property*
+
+```python
+def spacing(self) -> float
+```
+
+Spacing of the output volume in mm.
+
+##### `spacing`
+
+```python
+def spacing(self, arg1: float) -> None
+```
+
+### `XRay2D3DRegistration`
+
+```python
+class XRay2D3DRegistration(imfusion.BaseAlgorithm)
+```
+
+High-level 2D/3D X-ray registration algorithm for cone beam projections.
+
+This algorithm performs registration between 2D X-ray projections and a 3D volume
+using various initialization strategies and multi-resolution optimization. It acts
+as a wrapper around lower-level registration components providing a convenient
+high-level interface.
+
+Key Features:
+
+- Multiple initialization strategies (point-direction, keypoints, manual)
+- Multi-resolution registration for robustness
+- Support for cone beam and fan beam geometries
+- In-place geometry correction of projections
+- History tracking for debugging and analysis
+
+Example:
+        Basic 2D/3D registration:
+        
+        &gt;&gt;&gt; projections, *_ = imf.load("projections.dcm")
+        &gt;&gt;&gt; volume, *_ = imf.load("volume.nii")
+        &gt;&gt;&gt; reg = ct.XRay2D3DRegistration(
+        ...     projections,
+        ...     volume,
+        ...     initialization_mode=ct.InitializationMode.POINT_DIRECTION,
+        ...     num_resolution_levels=3
+        ... )
+        &gt;&gt;&gt; reg.initialize()
+        &gt;&gt;&gt; reg()
+
+#### Methods
+
+##### `__call__`
+
+```python
+def __call__(self) -> None
+```
+
+Run registration algorithm and modify projections in-place.
+
+Note: This modifies the input projections' geometry directly.
+
+##### `__init__`
+
+```python
+def __init__(self, projections: imfusion.SharedImageSet, volumes: imfusion.SharedImageSet, *, initialization_mode: InitializationMode = InitializationMode.POINT_DIRECTION, anatomy_name: str = 'default', num_resolution_levels: int = 3) -> None
+```
+
+Create 2D/3D X-ray registration algorithm.
+
+Args:
+        projections: 2D X-ray projections with cone beam geometry
+        volumes: 3D volume data to register to the projections
+        initialization_mode: Registration initialization strategy (default: InitializationMode.POINT_DIRECTION — initialization using point and direction information)
+        anatomy_name: Identifier for storing registration matrices
+        num_resolution_levels: Number of multi-resolution levels
+
+##### `anatomy_name`
+
+*property*
+
+```python
+def anatomy_name(self) -> str
+```
+
+Name used for storing registration matrices in volume transformation stash.
+
+##### `anatomy_name`
+
+```python
+def anatomy_name(self, arg1: str) -> None
+```
+
+##### `compute`
+
+```python
+def compute(self) -> None
+```
+
+Run registration algorithm and modify projections in-place.
+
+Note: This modifies the input projections' geometry directly.
+
+##### `current_resolution_level`
+
+*property*
+
+```python
+def current_resolution_level(self) -> int
+```
+
+Current resolution level being processed.
+
+##### `current_resolution_level`
+
+```python
+def current_resolution_level(self, arg1: int) -> None
+```
+
+##### `initialization_mode`
+
+*property*
+
+```python
+def initialization_mode(self) -> InitializationMode
+```
+
+Registration initialization strategy to use.
+
+##### `initialization_mode`
+
+```python
+def initialization_mode(self, arg1: InitializationMode) -> None
+```
+
+##### `num_resolution_levels`
+
+*property*
+
+```python
+def num_resolution_levels(self) -> int
+```
+
+Number of multi-resolution levels for coarse-to-fine optimization.
+
+##### `num_resolution_levels`
+
+```python
+def num_resolution_levels(self, arg1: int) -> None
+```
+
+### `XRay2D3DRegistrationHistoryEntry`
+
+```python
+class XRay2D3DRegistrationHistoryEntry(imfusion.Configurable)
+```
+
+Entry in the 2D/3D registration history.
+
+Tracks the progress and state of registration computations,
+including transformation parameters, similarity values,
+and computation phases.
+
+#### Methods
+
+##### `__init__`
+
+```python
+def __init__(self) -> None
+```
+
+Create an empty XRay2D3DRegistrationHistoryEntry.
+
+##### `comment`
+
+*property*
+
+```python
+def comment(self) -> str
+```
+
+Additional comments or metadata for this history entry.
+
+##### `comment`
+
+```python
+def comment(self, arg1: str) -> None
+```
+
+##### `computation_phase`
+
+*property*
+
+```python
+def computation_phase(self) -> ComputationPhase
+```
+
+Phase of computation when this entry was recorded.
+
+##### `computation_phase`
+
+```python
+def computation_phase(self, arg1: ComputationPhase) -> None
+```
+
+##### `id`
+
+*property*
+
+```python
+def id(self) -> int
+```
+
+Unique identifier for this history entry.
+
+##### `id`
+
+```python
+def id(self, arg1: int) -> None
+```
+
+### `XRay2D3DRegistrationInitialization`
+
+```python
+class XRay2D3DRegistrationInitialization(imfusion.Configurable)
+```
+
+Base class for 2D/3D registration initialization strategies.
+
+This class defines the interface for custom initialization methods
+that can be used to provide initial pose estimates for registration.
+
+#### Methods
+
+##### `can_initialize`
+
+```python
+def can_initialize(self) -> bool
+```
+
+Check if all required parameters are set and the initialization can be performed.
+
+Returns:
+        True if initialization is possible, False otherwise
+
+### `XRay2D3DRegistrationInitializationKeyPoints`
+
+```python
+class XRay2D3DRegistrationInitializationKeyPoints(XRay2D3DRegistrationInitialization)
+```
+
+Keypoint-based initialization for 2D/3D registration.
+
+This initialization method uses arbitrary numbers of keypoint
+correspondences between projections and volumes to compute
+an initial transformation using least-squares optimization.
+
+Features:
+
+- Support for multiple named keypoints
+- Robust optimization using Levenberg-Marquardt
+- Automatic reprojection error minimization
+
+#### Methods
+
+##### `set_shot_keypoint`
+
+```python
+def set_shot_keypoint(self, shot_num: int, key: str, value: numpy.ndarray[numpy.float64[3, 1]]) -> None
+```
+
+Set a keypoint on a specific shot.
+
+Args:
+        shot_num: Shot index (0-based)
+        key: Unique name/identifier for this keypoint
+        value: 3D position of the keypoint on the shot (image coordinates)
+        
+Example:
+        &gt;&gt;&gt; keypoint_init.set_shot_keypoint(0, "landmark1", [100.0, 150.0, 0.0])
+
+##### `set_volume_keypoint`
+
+```python
+def set_volume_keypoint(self, key: str, value: numpy.ndarray[numpy.float64[3, 1]]) -> None
+```
+
+Set a keypoint on the volume.
+
+Args:
+        key: Unique name/identifier for this keypoint (should match shot keypoint)
+        value: 3D position of the keypoint on the volume (world coordinates)
+        
+Example:
+        &gt;&gt;&gt; keypoint_init.set_volume_keypoint("landmark1", [10.5, -5.2, 45.8])
+
+##### `unset_shot_keypoint`
+
+```python
+def unset_shot_keypoint(self, shot_num: int, key: str) -> None
+```
+
+Remove a keypoint from a specific shot.
+
+Args:
+        shot_num: Shot index (0-based)
+        key: Name/identifier of the keypoint to remove
+
+##### `unset_volume_keypoint`
+
+```python
+def unset_volume_keypoint(self, key: str) -> None
+```
+
+Remove a keypoint from the volume.
+
+Args:
+        key: Name/identifier of the keypoint to remove
+
+### `XRay2D3DRegistrationInitializationPointDirection`
+
+```python
+class XRay2D3DRegistrationInitializationPointDirection(XRay2D3DRegistrationInitialization)
+```
+
+Point-direction based initialization for 2D/3D registration.
+
+This initialization method uses user-defined point correspondences
+between the 2D projections and 3D volume to compute an initial
+transformation estimate.
+
+The method requires:
+- Two points on each projection image
+- Two corresponding points on the 3D volume
+- Optional second direction for full pose estimation
+
+#### Methods
+
+##### `shot_target_points`
+
+```python
+def shot_target_points(self, index: int) -> ShotTargetPointsType
+```
+
+Get target points parameter for a specific shot.
+
+Args:
+        index: Shot index (0-based)
+        
+Returns:
+        Parameter object for setting target points on this shot
+        
+Example:
+        &gt;&gt;&gt; init.shot_target_points(0).setValue([point1, point2])
+
+##### `volume_second_direction_points`
+
+*property*
+
+```python
+def volume_second_direction_points(self) -> list[numpy.ndarray[numpy.float64[3, 1]]]
+```
+
+Points on the volume specifying the direction of the first shot.
+
+These points help constrain the rotational degrees of freedom
+by providing directional information for pose estimation.
+
+##### `volume_second_direction_points`
+
+```python
+def volume_second_direction_points(self, arg1: list[numpy.ndarray[numpy.float64[3, 1]]]) -> None
+```
+
+##### `volume_target_points`
+
+*property*
+
+```python
+def volume_target_points(self) -> list[numpy.ndarray[numpy.float64[3, 1]]]
+```
+
+Target points on the 3D volume (in world coordinates).
+
+Usually two points that correspond to points marked on the projections.
+These points define the anatomical landmarks for registration.
+
+##### `volume_target_points`
+
+```python
+def volume_target_points(self, arg1: list[numpy.ndarray[numpy.float64[3, 1]]]) -> None
+```
+
+## Enums
+
+### `CTStatus`
+
+```python
+class CTStatus
+```
+
+Status codes for CT operations.
+
+Members:
+
+  SUCCESS : Operation completed successfully.
+
+  NOT_IMPLEMENTED : Operation not implemented.
+
+  ILL_FORMED_INPUT : Invalid input parameters provided.
+
+  CANCELLED : Operation was cancelled.
+
+  ERROR : General error occurred during operation.
+
+#### Attributes
+
+##### `CANCELLED`
+
+```python
+CANCELLED: typing.ClassVar[CTStatus]
+```
+
+##### `ERROR`
+
+```python
+ERROR: typing.ClassVar[CTStatus]
+```
+
+##### `ILL_FORMED_INPUT`
+
+```python
+ILL_FORMED_INPUT: typing.ClassVar[CTStatus]
+```
+
+##### `NOT_IMPLEMENTED`
+
+```python
+NOT_IMPLEMENTED: typing.ClassVar[CTStatus]
+```
+
+##### `SUCCESS`
+
+```python
+SUCCESS: typing.ClassVar[CTStatus]
+```
+
+#### Methods
+
+##### `__init__`
+
+```python
+def __init__(self, value: int) -> None
+```
+
+##### `name`
+
+*property*
+
+```python
+def name(self) -> str
+```
+
+##### `value`
+
+*property*
+
+```python
+def value(self) -> int
+```
+
+### `ComputationPhase`
+
+```python
+class ComputationPhase
+```
+
+Phases of computation during 2D/3D registration.
+
+Members:
+
+  UNDEF : Undefined phase.
+
+  ORIGINAL : Original geometry.
+
+  INITIALIZATION : Initialization phase.
+
+  OPTIMIZATION : Optimization phase.
+
+#### Attributes
+
+##### `INITIALIZATION`
+
+```python
+INITIALIZATION: typing.ClassVar[ComputationPhase]
+```
+
+##### `OPTIMIZATION`
+
+```python
+OPTIMIZATION: typing.ClassVar[ComputationPhase]
+```
+
+##### `ORIGINAL`
+
+```python
+ORIGINAL: typing.ClassVar[ComputationPhase]
+```
+
+##### `UNDEF`
+
+```python
+UNDEF: typing.ClassVar[ComputationPhase]
+```
+
+#### Methods
+
+##### `__init__`
+
+```python
+def __init__(self, value: int) -> None
+```
+
+##### `name`
+
+*property*
+
+```python
+def name(self) -> str
+```
+
+##### `value`
+
+*property*
+
+```python
+def value(self) -> int
+```
+
+### `DetectorCurvature`
+
+```python
+class DetectorCurvature
+```
+
+Types of detector curvature for cone beam geometry.
+
+Different detector curvatures require specific
+geometric correction algorithms.
+
+Members:
+
+  FLAT : Flat panel detector with no curvature correction.
+
+  CYLINDRICAL : Cylindrical detector curvature model.
+
+  FANFLAT : Fan-beam flat detector geometry.
+
+#### Attributes
+
+##### `CYLINDRICAL`
+
+```python
+CYLINDRICAL: typing.ClassVar[DetectorCurvature]
+```
+
+##### `FANFLAT`
+
+```python
+FANFLAT: typing.ClassVar[DetectorCurvature]
+```
+
+##### `FLAT`
+
+```python
+FLAT: typing.ClassVar[DetectorCurvature]
+```
+
+#### Methods
+
+##### `__init__`
+
+```python
+def __init__(self, value: int) -> None
+```
+
+##### `name`
+
+*property*
+
+```python
+def name(self) -> str
+```
+
+##### `value`
+
+*property*
+
+```python
+def value(self) -> int
+```
+
+### `GeometryPreset`
+
+```python
+class GeometryPreset
+```
+
+Predefined scanner geometry configurations for cone beam simulation.
+
+Members:
+
+  NONE : No specific geometry preset.
+
+  HALF_SCAN : Half-rotation scan mode.
+
+  FULL_SCAN : Full-rotation scan mode.
+
+  SHORT_SCAN : Short scan mode.
+
+  SINGLE_XRAY_SHOT : Single X-ray shot (AP shot at 180 degrees).
+
+  BIPLANAR_SHOT : Biplanar shot (AP and LAT).
+
+  EOS_SCANNER : EOS scanner geometry.
+
+  C_ARM_SCANNER : C-Arm scanner geometry.
+
+  CARDIOVASCULAR_C_ARM : Cardiovascular C-Arm scanner geometry.
+
+#### Attributes
+
+##### `BIPLANAR_SHOT`
+
+```python
+BIPLANAR_SHOT: typing.ClassVar[GeometryPreset]
+```
+
+##### `CARDIOVASCULAR_C_ARM`
+
+```python
+CARDIOVASCULAR_C_ARM: typing.ClassVar[GeometryPreset]
+```
+
+##### `C_ARM_SCANNER`
+
+```python
+C_ARM_SCANNER: typing.ClassVar[GeometryPreset]
+```
+
+##### `EOS_SCANNER`
+
+```python
+EOS_SCANNER: typing.ClassVar[GeometryPreset]
+```
+
+##### `FULL_SCAN`
+
+```python
+FULL_SCAN: typing.ClassVar[GeometryPreset]
+```
+
+##### `HALF_SCAN`
+
+```python
+HALF_SCAN: typing.ClassVar[GeometryPreset]
+```
+
+##### `NONE`
+
+```python
+NONE: typing.ClassVar[GeometryPreset]
+```
+
+##### `SHORT_SCAN`
+
+```python
+SHORT_SCAN: typing.ClassVar[GeometryPreset]
+```
+
+##### `SINGLE_XRAY_SHOT`
+
+```python
+SINGLE_XRAY_SHOT: typing.ClassVar[GeometryPreset]
+```
+
+#### Methods
+
+##### `__init__`
+
+```python
+def __init__(self, value: int) -> None
+```
+
+##### `name`
+
+*property*
+
+```python
+def name(self) -> str
+```
+
+##### `value`
+
+*property*
+
+```python
+def value(self) -> int
+```
+
+### `InitializationMode`
+
+```python
+class InitializationMode
+```
+
+Initialization methods for 2D/3D registration.
+
+Members:
+
+  NOOP : Manual initialization.
+
+  POINT_DIRECTION : Initialization using point and direction information.
+
+  KEYPOINTS : Automatic initialization using keypoint detection.
+
+  CUSTOM : Custom initialization method.
+
+#### Attributes
+
+##### `CUSTOM`
+
+```python
+CUSTOM: typing.ClassVar[InitializationMode]
+```
+
+##### `KEYPOINTS`
+
+```python
+KEYPOINTS: typing.ClassVar[InitializationMode]
+```
+
+##### `NOOP`
+
+```python
+NOOP: typing.ClassVar[InitializationMode]
+```
+
+##### `POINT_DIRECTION`
+
+```python
+POINT_DIRECTION: typing.ClassVar[InitializationMode]
+```
+
+#### Methods
+
+##### `__init__`
+
+```python
+def __init__(self, value: int) -> None
+```
+
+##### `name`
+
+*property*
+
+```python
+def name(self) -> str
+```
+
+##### `value`
+
+*property*
+
+```python
+def value(self) -> int
+```
+
+### `IntensityMode`
+
+```python
+class IntensityMode
+```
+
+Intensity mode for cone beam projections.
+
+Defines how intensity values in cone beam projections should be
+interpreted for visualization and processing purposes.
+
+Members:
+
+  ABSORPTION : Absorption mode - air appears bright
+
+  LINEAR_ATTENUATION : Linear attenuation mode - air appears dark
+
+#### Attributes
+
+##### `ABSORPTION`
+
+```python
+ABSORPTION: typing.ClassVar[IntensityMode]
+```
+
+##### `LINEAR_ATTENUATION`
+
+```python
+LINEAR_ATTENUATION: typing.ClassVar[IntensityMode]
+```
+
+#### Methods
+
+##### `__init__`
+
+```python
+def __init__(self, value: int) -> None
+```
+
+##### `name`
+
+*property*
+
+```python
+def name(self) -> str
+```
+
+##### `value`
+
+*property*
+
+```python
+def value(self) -> int
+```
+
+### `MotionPreset`
+
+```python
+class MotionPreset
+```
+
+Predefined motion patterns for simulation.
+
+Members:
+
+  NONE : No motion preset.
+
+  NO_MOTION : No motion - static acquisition.
+
+  FOLLOWING_DETECTOR : Following detector motion.
+
+  NOD_AFTER_25 : Nod motion after 25%.
+
+  NOD_AFTER_50 : Nod motion after 50%.
+
+  NOD_AFTER_75 : Nod motion after 75%.
+
+  DEVICE_JITTER : Device jitter motion.
+
+  RAMP : Ramp motion.
+
+  ISO_JITTER : Iso-jitter motion.
+
+#### Attributes
+
+##### `DEVICE_JITTER`
+
+```python
+DEVICE_JITTER: typing.ClassVar[MotionPreset]
+```
+
+##### `FOLLOWING_DETECTOR`
+
+```python
+FOLLOWING_DETECTOR: typing.ClassVar[MotionPreset]
+```
+
+##### `ISO_JITTER`
+
+```python
+ISO_JITTER: typing.ClassVar[MotionPreset]
+```
+
+##### `NOD_AFTER_25`
+
+```python
+NOD_AFTER_25: typing.ClassVar[MotionPreset]
+```
+
+##### `NOD_AFTER_50`
+
+```python
+NOD_AFTER_50: typing.ClassVar[MotionPreset]
+```
+
+##### `NOD_AFTER_75`
+
+```python
+NOD_AFTER_75: typing.ClassVar[MotionPreset]
+```
+
+##### `NONE`
+
+```python
+NONE: typing.ClassVar[MotionPreset]
+```
+
+##### `NO_MOTION`
+
+```python
+NO_MOTION: typing.ClassVar[MotionPreset]
+```
+
+##### `RAMP`
+
+```python
+RAMP: typing.ClassVar[MotionPreset]
+```
+
+#### Methods
+
+##### `__init__`
+
+```python
+def __init__(self, value: int) -> None
+```
+
+##### `name`
+
+*property*
+
+```python
+def name(self) -> str
+```
+
+##### `value`
+
+*property*
+
+```python
+def value(self) -> int
+```
+
+### `ProjectionType`
+
+```python
+class ProjectionType
+```
+
+Types of projection computation methods.
+
+Members:
+
+  PHOTON_COUNT : Photon count projection.
+
+  LOG_CONVERTED_ATTENUATION : Log-converted attenuation projection.
+
+#### Attributes
+
+##### `LOG_CONVERTED_ATTENUATION`
+
+```python
+LOG_CONVERTED_ATTENUATION: typing.ClassVar[ProjectionType]
+```
+
+##### `PHOTON_COUNT`
+
+```python
+PHOTON_COUNT: typing.ClassVar[ProjectionType]
+```
+
+#### Methods
+
+##### `__init__`
+
+```python
+def __init__(self, value: int) -> None
+```
+
+##### `name`
+
+*property*
+
+```python
+def name(self) -> str
+```
+
+##### `value`
+
+*property*
+
+```python
+def value(self) -> int
+```
+
+### `TransformationReference`
+
+```python
+class TransformationReference
+```
+
+Reference frame for geometry transformations.
+
+This enum defines the reference frame used for relative transformations
+in cone beam geometry computations.
+
+Members:
+
+  WORLD : Transformation relative to world coordinates
+
+  DETECTOR : Transformation relative to detector coordinates
+
+#### Attributes
+
+##### `DETECTOR`
+
+```python
+DETECTOR: typing.ClassVar[TransformationReference]
+```
+
+##### `WORLD`
+
+```python
+WORLD: typing.ClassVar[TransformationReference]
+```
+
+#### Methods
+
+##### `__init__`
+
+```python
+def __init__(self, value: int) -> None
+```
+
+##### `name`
+
+*property*
+
+```python
+def name(self) -> str
+```
+
+##### `value`
+
+*property*
+
+```python
+def value(self) -> int
+```
