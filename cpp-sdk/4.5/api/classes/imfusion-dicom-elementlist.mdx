@@ -1,0 +1,32 @@
+---
+title: "ImFusion::Dicom::ElementList"
+sidebarTitle: "ElementList"
+description: "Interface for classes that consist of Elements."
+---
+
+`#include <ImFusion/Dicom/DicomElement.h>`
+
+## Overview
+
+Interface for classes that consist of Elements.
+
+## Public Member Functions
+
+- virtual DcmItem & [dataset](#dataset) ()=0 — Dataset (or sub-item of a dataset) that will be used by the [ElementBase](/cpp-sdk/4.5/api/classes/imfusion-dicom-elementbase).
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; ElementBase \* &gt; & **elements** () const — List of all elements.
+
+## Protected Attributes
+
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; ElementBase \* &gt; **m_elements** — List of all elements.
+
+## Member Function Documentation
+
+### dataset
+
+```cpp
+virtual DcmItem & ImFusion::Dicom::ElementList::dataset ()
+```
+
+*pure virtual*
+
+Dataset (or sub-item of a dataset) that will be used by the [ElementBase](/cpp-sdk/4.5/api/classes/imfusion-dicom-elementbase).

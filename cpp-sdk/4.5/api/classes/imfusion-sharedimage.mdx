@@ -1,0 +1,541 @@
+---
+title: "ImFusion::SharedImage"
+sidebarTitle: "SharedImage"
+description: "Image shared on multiple devices."
+---
+
+`#include <ImFusion/GL/SharedImage.h>`
+
+## Overview
+
+[Image](/cpp-sdk/4.5/api/classes/imfusion-image) shared on multiple devices.
+
+This class aids in resource synchronization between CPU and different GPU APIs. It is constructed with a derived image instance either in memory or one of the graphics APIs, an empty base descriptor class is not allowed. In addition to the built-in representations such as [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) and [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) it also supports custom representations provided by plugins through the [CustomImage](/cpp-sdk/4.5/api/classes/imfusion-customimage) interface.
+
+Internally, for each image representation, a shared pointer is held. Synchronization is fully encapsulated and will be performed even on const instances of this class because mere synchronization between devices does not modify the semantic content of an image.
+
+For individual image access, adhere to the following guidelines:
+
+1. Use descriptor() or [img()](#img) to obtain a const image descriptor regardless of the image location.
+2. Use sharedMem(), sharedGl(), and sharedCustom&lt;T&gt;() for getting a shared_ptr to the respective image. If the desired representation is absent or outdated, it will be synchronized, even if the method is called on a const object. Thus, make sure to call these methods only if synchronization is allowed, for instance with a valid [GL](/cpp-sdk/4.5/api/namespaces/imfusion-gl) context when calling sharedGl().
+3. The same holds for methods mem(), gl(), and custom&lt;T&gt;(), which return non-owning raw pointers held by sharedMem(), sharedGl(), and sharedCustom&lt;T&gt;() respectively.
+4. Use hasMem(), hasGl(), hasCustom&lt;T&gt;() to check for an up-to-date representation while making sure that no synchronization is performed. The returned shared_ptr implicitly casts to bool. Furthermore, it allows for working and to work with the potentially available representation in a thread-safe way. If you use [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) in a multi-threaded environment, do not:
+                  if (img.hasGl()) &#123;
+                      auto gl = img.gl(); // wrong, could have been overridden in other thread since hasGl()
+                      ...
+                  &#125;
+               but instead:
+                  if (auto gl = img.hasGl()) &#123; // correct, guaranteed to return either valid image or nullptr
+                      ...
+                  &#125;
+5. If you change the image in one representation, e.g. in memory, make sure to call [setDirtyMem()](#setdirtymem), [setDirtyGl()](#setdirtygl), [setDirtyCustom&lt;T&gt;()](#setdirtycustom), so that all other representations are marked as outdated.
+6. Explicitly call [makeExclusive()](#makeexclusive) to remove all representations except one from this container. This might be useful for memory management, e.g. to free [GL](/cpp-sdk/4.5/api/namespaces/imfusion-gl) textures.
+
+**Warning:** By definition a [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) can not store more than 4 channels (this is a general limitation of OpenGL). [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) will deal with this as follows: When syncing a [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) -&gt; [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage), the [GL](/cpp-sdk/4.5/api/namespaces/imfusion-gl) representation will only contain the first 4 channels, any extra channels will be discarded. Subsequent calls to [setDirtyGl()](#setdirtygl) will *not* have any effect but only issue a warning because the [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) is incomplete, and you would lose data otherwise. If you nevertheless want to sync back to [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage), you need to do this manually to acknowledge that you may lose data. You can do this for instance by using [GlImage::download()](/cpp-sdk/4.5/api/classes/imfusion-glimage) to create a [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) followed by [SharedImage::assign()](#assign) or [SharedImage::update()](#update-1-2).
+
+**See also:** [Using Image Data](/cpp-sdk/4.5/api/guides/image-data-tutorial)
+
+## Classes
+
+- struct [Representation](/cpp-sdk/4.5/api/structs/imfusion-sharedimage-representation)
+
+## Public Types
+
+- enum [CloneOptions](#cloneoptions) &#123; Everything = 0 , NoMask = 1 &lt;&lt; 0 , NoDeformation = 1 &lt;&lt; 1 , ShallowImageCopy = 1 &lt;&lt; 2 &#125; — Bitset enumeration to configure which aspects of a [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) to copy.
+
+## Public Member Functions
+
+- [SharedImage](#sharedimage) ([std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [Image](/cpp-sdk/4.5/api/classes/imfusion-image) &gt; [img](#img)) — Creates a new [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) wrapping the given image.
+- **SharedImage** ([TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; T &gt; &&[img](#img)) — Creates a new [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) by moving the given [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage) in.
+- **SharedImage** ([GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) &&[img](#img)) — Creates a new [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) by moving the given [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) in.
+- **SharedImage** (const [ImageDescriptor](/cpp-sdk/4.5/api/structs/imfusion-imagedescriptor) &descriptor) — Convenience overload to create a new [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) holding a [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) as described by the [ImageDescriptor](/cpp-sdk/4.5/api/structs/imfusion-imagedescriptor).
+- **SharedImage** (const [ImageDescriptorWorld](/cpp-sdk/4.5/api/classes/imfusion-imagedescriptorworld) &descriptorWorld) — Convenience overload to create a new [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) holding a [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) as described by the [ImageDescriptorWorld](/cpp-sdk/4.5/api/classes/imfusion-imagedescriptorworld).
+- **SharedImage** (const SharedImage &otherSharedImage) — Copy constructor performs a deep copy of the underlying image data.
+- **SharedImage** (const SharedImage &otherSharedImage, [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; [CloneOptions](#cloneoptions) &gt; copyOptions) — Copy constructor variant that also allows for partial copies.
+- **SharedImage** (SharedImage &&otherSharedImage) — Move constructor will move all contents from *otherSharedImage*.
+- [SharedImage](#sharedimage) & **operator=** (const [SharedImage](#sharedimage) &otherSharedImage) — Assignment will perform a deep copy of the underlying image data.
+- [SharedImage](#sharedimage) & **operator=** ([SharedImage](#sharedimage) &&otherSharedImage) — Move assignment will move all contents from *otherSharedImage*.
+- virtual [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [SharedImage](#sharedimage) &gt; **clone** ([Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; [CloneOptions](#cloneoptions) &gt; cloneOptions=Everything) const — More flexible version of the copy constructor that also allows for partial copies.
+- virtual [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [SharedImage](#sharedimage) &gt; [cloneWithImage](#clonewithimage) ([std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [Image](/cpp-sdk/4.5/api/classes/imfusion-image) &gt; [img](#img), [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; [CloneOptions](#cloneoptions) &gt; cloneOptions=Everything) const — Same as clone() but uses the given image instead of copying from this.
+- [Image::Location](/cpp-sdk/4.5/api/classes/imfusion-image) **location** () const — Specifies the original location of the image.
+- const [Image](/cpp-sdk/4.5/api/classes/imfusion-image) \* [img](#img) () const — Return the image descriptor of the currently up-to-date location.
+- const [ImageDescriptor](/cpp-sdk/4.5/api/structs/imfusion-imagedescriptor) & **descriptor** () const — Return the image descriptor of the currently up-to-date location.
+- [ImageDescriptorWorld](/cpp-sdk/4.5/api/classes/imfusion-imagedescriptorworld) **descriptorWorld** () const — Return the world image descriptor of the currently up-to-date location.
+- bool [assign](#assign) ([std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [Image](/cpp-sdk/4.5/api/classes/imfusion-image) &gt; [img](#img)) — Set *img* as new main image representation and set the dirty flag accordingly.
+- bool [update](#update-1-2) (const [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) &[img](#img)) — Update the [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) and set the dirty flag so that the next OpenGL access will upload this image.
+- bool [update](#update-2-2) (const [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) &[img](#img)) — Update the [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) and set the dirty flag so that the next CPU access will download this image.
+- void [prepare](#prepare) (bool shiftOnly=false) — Prepare the image in memory for most common scenarios Integral types are converted to unsigned representation if applicable, double-precision will be converted to single-precision float.
+- void **sync** () const — Synchronize both [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) and [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) representations, shorthand for calling both syncMem() and [syncGl()](#syncgl).
+- void **syncMem** () const — Synchronize [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage), creating it if it does not exist.
+- void **syncCustom** () const — Synchronize a custom image type where T must inherit the [CustomImage](/cpp-sdk/4.5/api/classes/imfusion-customimage) interface, creating it if it does not exist.
+- void [syncGl](#syncgl) () const — Synchronize OpenGL image, creating it if it does not exist.
+- void [setDirtyMem](#setdirtymem) () — Manually label [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) as dirty (i.e.
+- bool [setDirtyGl](#setdirtygl) () — Manually label [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) as dirty (i.e.
+- void [setDirtyCustom](#setdirtycustom) () — Manually label custom image type T as dirty (i.e.
+- bool [makeExclusive](#makeexclusive) ([Image::Location](/cpp-sdk/4.5/api/classes/imfusion-image) location) const — Synchronizes the given location and deletes all other representations stored to free memory.
+- bool **makeExclusive** () const
+- [Data::Kind](/cpp-sdk/4.5/api/classes/imfusion-data) **kind** () const — Return the data kind of the base interface.
+- [Geometry::AlignedBox](/cpp-sdk/4.5/api/classes/imfusion-geometry-alignedbox) **bounds** () const — Returns the axis-aligned bounding box of the unmasked and undeformed image in world space.
+
+## Public Attributes
+
+- Signal&lt; const [SharedImage](#sharedimage) \* &gt; [signalChanged](#signalchanged) — Called when the content of a [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) has changed (every time one of the setDirty() methods has been called).
+- Signal&lt; const [SharedImage](#sharedimage) \* &gt; **signalDeformationChanged** — Called when a [Deformation](/cpp-sdk/4.5/api/classes/imfusion-deformation) object is assigned or removed from the [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage).
+- Signal&lt; const [SharedImage](#sharedimage) \* &gt; [signalMaskChanged](#signalmaskchanged) — Called when a [Mask](/cpp-sdk/4.5/api/classes/imfusion-mask) object is assigned or removed from the [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage).
+- Signal&lt; const [SharedImage](#sharedimage) \* &gt; [signalDeleted](#signaldeleted) — Called when this instance is deleted.
+
+## Protected Types
+
+- using **CreateImageFromMemFunction** = [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt;[Image](/cpp-sdk/4.5/api/classes/imfusion-image)&gt; (\*)(const [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt;const [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage)&gt;&)
+
+## Protected Member Functions
+
+- virtual void [cloneMetadata](#clonemetadata) (const [SharedImage](#sharedimage) &metadataSource, [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; [CloneOptions](#cloneoptions) &gt; cloneOptions) — Copies modality, matrix, and optionally mask and deformation from `metadataSource` into this.
+- void **validateMask** () — Removes the mask if it is no longer compatible with the image.
+- bool [checkConsistency](#checkconsistency) () const — Checks the internal state for consistency between all image representations.
+- [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [Image](/cpp-sdk/4.5/api/classes/imfusion-image) &gt; [sharedImageImpl](#sharedimageimpl-1-2) (const [std::type_index](http://en.cppreference.com/w/cpp/types/type_index.html) &imageType, CreateImageFromMemFunction createFromMem) — Returns a shared_ptr to the requested image representation, synchronizing or creating it if needed.
+- [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; const [Image](/cpp-sdk/4.5/api/classes/imfusion-image) &gt; [sharedImageImpl](#sharedimageimpl-2-2) (const [std::type_index](http://en.cppreference.com/w/cpp/types/type_index.html) &imageType, CreateImageFromMemFunction createFromMem) const — Returns a shared_ptr to the requested image representation, synchronizing or creating it if needed.
+- [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [Image](/cpp-sdk/4.5/api/classes/imfusion-image) &gt; **hasImageImpl** (const [std::type_index](http://en.cppreference.com/w/cpp/types/type_index.html) &imageType) — Returns a shared_ptr to the requested image representation if it exists and is up-to-date, without synchronizing.
+- [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; const [Image](/cpp-sdk/4.5/api/classes/imfusion-image) &gt; **hasImageImpl** (const [std::type_index](http://en.cppreference.com/w/cpp/types/type_index.html) &imageType) const — Returns a shared_ptr to the requested image representation if it exists and is up-to-date, without synchronizing.
+- virtual [Representation](/cpp-sdk/4.5/api/structs/imfusion-sharedimage-representation) [syncImpl](#syncimpl) (const [std::type_index](http://en.cppreference.com/w/cpp/types/type_index.html) &imageType, CreateImageFromMemFunction createFromMem) const — Ensures the requested image representation is up-to-date, synchronizing or creating it if necessary.
+- void [setDirtyImpl](#setdirtyimpl) (const [std::type_index](http://en.cppreference.com/w/cpp/types/type_index.html) &imageType) — Marks the requested image representation as the main one and all others as dirty.
+- virtual bool [makeExclusiveImpl](#makeexclusiveimpl) (const [std::type_index](http://en.cppreference.com/w/cpp/types/type_index.html) &imageType, CreateImageFromMemFunction createFromMem) const — Makes the requested image representation the only one stored, removing all others.
+- [Representation](/cpp-sdk/4.5/api/structs/imfusion-sharedimage-representation) [findRepresentation](#findrepresentation) (const [std::type_index](http://en.cppreference.com/w/cpp/types/type_index.html) &imageType) const — Finds the representation for the given image type.
+- virtual [Representation](/cpp-sdk/4.5/api/structs/imfusion-sharedimage-representation) [addOrReplaceRepresentation](#addorreplacerepresentation) (const [std::type_index](http://en.cppreference.com/w/cpp/types/type_index.html) &imageType, [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [Image](/cpp-sdk/4.5/api/classes/imfusion-image) &gt; [img](#img), bool isDirty) const — If the representation for the given image type exists, it is replaced with img, otherwise img is added as new representation.
+- virtual void [representationAccessed](#representationaccessed) (const [std::type_index](http://en.cppreference.com/w/cpp/types/type_index.html) &imageType, const [Representation](/cpp-sdk/4.5/api/structs/imfusion-sharedimage-representation) &representation) const — Internal method to allow observers to track representation accesses.
+- virtual void **rawPointerAccessed** () const — Internal method to allow observers to track raw pointer accesses (mem(), gl(), custom(), etc.). No-op per default.
+
+## Static Protected Member Functions
+
+- static [std::type_index](http://en.cppreference.com/w/cpp/types/type_index.html) **constrainedTypeIndex** (const [Image](/cpp-sdk/4.5/api/classes/imfusion-image) &image)
+
+## Protected Attributes
+
+- [Data::Modality](/cpp-sdk/4.5/api/classes/imfusion-data) **m_modality** = [Data::NA](/cpp-sdk/4.5/api/classes/imfusion-data) — [Image](/cpp-sdk/4.5/api/classes/imfusion-image) modality.
+- mat4 **m_matrix** = mat4::Identity() — The optional image matrix.
+- [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [Deformation](/cpp-sdk/4.5/api/classes/imfusion-deformation) &gt; **m_deformation** — Optional non-linear transformation.
+- [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [Mask](/cpp-sdk/4.5/api/classes/imfusion-mask) &gt; **m_mask** — Optional mask.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Representation](/cpp-sdk/4.5/api/structs/imfusion-sharedimage-representation) &gt; **m_images** — List of [Image](/cpp-sdk/4.5/api/classes/imfusion-image) representations.
+- [Image](/cpp-sdk/4.5/api/classes/imfusion-image) \* **m_mainImage** = nullptr
+- bool [m_glImgHasStrippedChannels](#m-glimghasstrippedchannels) = false — Indicates that the [GL](/cpp-sdk/4.5/api/namespaces/imfusion-gl) representation was created from an image with &gt; 4 channels.
+- [Geometry::AlignedBox](/cpp-sdk/4.5/api/classes/imfusion-geometry-alignedbox) **m_bounds** — Cached version of the axis-aligned bounding box in world space.
+- bool **m_boundsDirty** = true — Flag whether m_bounds needs to be recomputed.
+
+## Access to direct members of SharedImage
+
+- void **setModality** ([Data::Modality](/cpp-sdk/4.5/api/classes/imfusion-data) m) — Set image modality.
+- [Data::Modality](/cpp-sdk/4.5/api/classes/imfusion-data) **modality** () const — Return the modality of this data.
+- void [setMask](#setmask) ([std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [Mask](/cpp-sdk/4.5/api/classes/imfusion-mask) &gt; [mask](#mask)) — Sets a mask for this image.
+- [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [Mask](/cpp-sdk/4.5/api/classes/imfusion-mask) &gt; [mask](#mask) () const — Returns the mask for this image.
+- void **setDeformation** ([std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [Deformation](/cpp-sdk/4.5/api/classes/imfusion-deformation) &gt; def) — Sets a deformation for this image.
+- [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [Deformation](/cpp-sdk/4.5/api/classes/imfusion-deformation) &gt; **deformation** () const — Returns the deformation for this image or nullptr if no deformation is set.
+
+## Query an up-to-date representation.
+
+- [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) &gt; **sharedMem** () — Returns the image in memory.
+- [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; const [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) &gt; **sharedMem** () const
+- [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) &gt; **sharedGl** () — Returns the image as OpenGL texture.
+- [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; const [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) &gt; **sharedGl** () const
+- [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; T &gt; **sharedCustom** () — Returns the image as custom image type, where T must inherit the [CustomImage](/cpp-sdk/4.5/api/classes/imfusion-customimage) interface.
+- [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; const T &gt; **sharedCustom** () const
+- [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) \* **mem** () — Returns the image in memory.
+- const [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) \* **mem** () const
+- [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) \* **gl** () — Returns the image as OpenGL texture.
+- const [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) \* **gl** () const
+- T \* **custom** () — Returns the image as custom image type, where T must inherit the [CustomImage](/cpp-sdk/4.5/api/classes/imfusion-customimage) interface.
+- const T \* **custom** () const
+
+## Query whether an up-to-date representation is present and return it.
+
+- [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; const [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) &gt; **hasMem** () const — Query whether an up-to-date memory image is present.
+- [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) &gt; **hasMem** ()
+- [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; const [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) &gt; **hasGl** () const — Query whether an up-to-date OpenGL image is present.
+- [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) &gt; **hasGl** ()
+- [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; T &gt; **hasCustom** () — Query whether an up-to-date image of the requested type is present, where T must inherit the [CustomImage](/cpp-sdk/4.5/api/classes/imfusion-customimage) interface.
+- [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; const T &gt; **hasCustom** () const
+
+## Image matrix access
+
+- void **setMatrix** (const mat4 &m) — Sets the transformation matrix from world space to image space.
+- const mat4 & **matrix** () const — Returns the transformation matrix from world space to image space.
+- mat4 **matrixToWorld** () const — Returns the transformation matrix from image space to world space.
+- void **setMatrixToWorld** (const mat4 &value) — Sets the transformation matrix from image space to world space.
+- const mat4 & **matrixFromWorld** () const — Returns the transformation matrix from world space to image space.
+- void **setMatrixFromWorld** (const mat4 &value) — Sets the transformation matrix from world space to image space.
+
+## Convenience functions for coordinate transformations of images
+
+- vec3 **pixelToWorld** (const vec3 &pixel) const — Convert a 3D pixel/voxel position to world coordinates taking into account the image matrix.
+- vec3 **worldToPixel** (const vec3 &world) const — Convert 3D world coordinates to pixel/voxel position taking into account the image matrix.
+- mat4 **pixelToWorldMatrix** () const — Returns a 4x4 matrix to transform from image pixel space to world space.
+- mat4 **worldToPixelMatrix** () const — Returns a 4x4 matrix to transform from world space to image pixel space.
+- mat4 **textureToWorldMatrix** () const — Returns a 4x4 matrix to transform from texture space to world space.
+- mat4 **worldToTextureMatrix** () const — Returns a 4x4 matrix to transform from world space to texture space.
+- mat4 **textureToImageMatrix** () const — Returns a 4x4 matrix to transform from texture space to image space.
+- mat4 **imageToTextureMatrix** () const — Returns a 4x4 matrix to transform from image space to texture space.
+
+## Convenience functions to access underlying image descriptor directly
+
+- int **width** () const — Return the width of the base interface.
+- int **height** () const — Return the height of the base interface.
+- int **slices** () const — Return the number of slices of the base interface.
+- int **channels** () const — Return the number of channels of the base interface.
+- vec3 **spacing** () const — Return the image spacing.
+- void **setSpacing** (const vec3 &spacing) — Set the image spacing on all existing image representations.
+- void **setSpacing** (const vec3 &spacing, bool metric) — Set the image spacing on all existing image representations, and whether the spacing is metric.
+- int **dimension** () const — Return the image dimensions.
+- vec3i **dimensions** () const — Return the image dimensions.
+- size_t **size** () const — Return the image size.
+- vec3 **extent** () const — Return the image extent.
+
+## Member Enumeration Documentation
+
+### CloneOptions
+
+```cpp
+enum ImFusion::SharedImage::CloneOptions
+```
+
+Bitset enumeration to configure which aspects of a [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) to copy.
+
+**Enumerator:**
+
+- `Everything` — Perform a deep copy of the image data and shallow copies of the mask and deformation.
+- `NoMask` — Do not copy the attached mask.
+- `NoDeformation` — Do not copy the attached deformation.
+- `ShallowImageCopy` — Do not deep copy the SharedImages but only copy the shared_ptrs.
+
+## Constructor & Destructor Documentation
+
+### SharedImage
+
+```cpp
+ImFusion::SharedImage::SharedImage (std::shared_ptr < Image > img)
+```
+
+*explicit*
+
+Creates a new [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) wrapping the given image.
+
+**Parameters:**
+
+- `img` — Pointer to the image to initialize the [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) with, must not be null.
+
+**Note:** You can also pass any [std::unique_ptr&lt;Image&gt;](http://en.cppreference.com/w/cpp/memory/unique_ptr.html) as it implicitly converts to a [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html) of same type.
+
+## Member Function Documentation
+
+### cloneWithImage
+
+```cpp
+virtual std::unique_ptr < SharedImage > ImFusion::SharedImage::cloneWithImage (std::shared_ptr < Image > img, Flags < CloneOptions > cloneOptions = Everything) const
+```
+
+*virtual*
+
+Same as clone() but uses the given image instead of copying from this.
+
+This can be used to conveniently create a [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) with the output of a computation, while retaining the metadata of the source [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage). Metadata (modality, matrix, mask, deformation) is copied from this according to `cloneOptions`.
+
+### img
+
+```cpp
+const Image * ImFusion::SharedImage::img () const
+```
+
+Return the image descriptor of the currently up-to-date location.
+
+****Deprecated**:** Use descriptor() instead.
+
+### setMask
+
+```cpp
+void ImFusion::SharedImage::setMask (std::shared_ptr < Mask > mask)
+```
+
+Sets a mask for this image.
+
+Only masks that are compatible with the image can be set. Incompatible masks will be ignored. The signalMaskChanged signal is emitted whenever the mask pointer changes.
+
+### mask
+
+```cpp
+std::shared_ptr < Mask > ImFusion::SharedImage::mask () const
+```
+
+Returns the mask for this image.
+
+Returns nullptr if no mask is set or the current mask is not compatible to the image anymore.
+
+### assign
+
+```cpp
+bool ImFusion::SharedImage::assign (std::shared_ptr < Image > img)
+```
+
+Set *img* as new main image representation and set the dirty flag accordingly.
+
+This function will move/sink in the image. Use [update()](#update-1-2) if you want to copy the image data instead.
+
+### update
+
+```cpp
+bool ImFusion::SharedImage::update (const MemImage & img)
+```
+
+Update the [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) and set the dirty flag so that the next OpenGL access will upload this image.
+
+This function will copy the image data into the [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage). Use the [assign()](#assign) if you want to move/sink the image in instead.
+
+### update
+
+```cpp
+bool ImFusion::SharedImage::update (const GlImage & img)
+```
+
+Update the [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) and set the dirty flag so that the next CPU access will download this image.
+
+This function will copy the image data into the [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage). Use the [assign()](#assign) if you want to move/sink the image in instead.
+
+### prepare
+
+```cpp
+void ImFusion::SharedImage::prepare (bool shiftOnly = false)
+```
+
+Prepare the image in memory for most common scenarios Integral types are converted to unsigned representation if applicable, double-precision will be converted to single-precision float.
+
+Furthermore, if *shiftOnly* is false it will rescale the present intensity range to [0..1] for floating point types or to the entire available value range for integral types.
+
+**Note:** Pointers to the underlying image data may be invalidated as a result.
+
+### syncGl
+
+```cpp
+void ImFusion::SharedImage::syncGl () const
+```
+
+Synchronize OpenGL image, creating it if it does not exist.
+
+**Note:** This method throws an exception if OpenGL texture creation fails.
+
+### setDirtyMem
+
+```cpp
+void ImFusion::SharedImage::setDirtyMem ()
+```
+
+Manually label [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) as dirty (i.e.
+
+the other representations must be updated). An implicit synchronization will happen automatically the next time another representation is requested.
+
+### setDirtyGl
+
+```cpp
+bool ImFusion::SharedImage::setDirtyGl ()
+```
+
+Manually label [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) as dirty (i.e.
+
+the other representations must be updated) An implicit synchronization will happen automatically the next time another representation is requested.
+
+**Note:** This function will have no effect if the [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) was originally created from a [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) with more that 4 channels (cf. class documentation above).
+
+### setDirtyCustom
+
+```cpp
+template<typename T> void ImFusion::SharedImage::setDirtyCustom ()
+```
+
+Manually label custom image type T as dirty (i.e.
+
+the other representations must be updated) An implicit synchronization will happen automatically the next time another representation is requested.
+
+### makeExclusive
+
+```cpp
+bool ImFusion::SharedImage::makeExclusive (Image::Location location) const
+```
+
+Synchronizes the given location and deletes all other representations stored to free memory.
+
+**Returns:** True if successful.
+
+**Note:** This function is only implemented for the locations MEMORY, OPENGL.
+
+### cloneMetadata
+
+```cpp
+virtual void ImFusion::SharedImage::cloneMetadata (const SharedImage & metadataSource, Flags < CloneOptions > cloneOptions)
+```
+
+*protected, virtual*
+
+Copies modality, matrix, and optionally mask and deformation from `metadataSource` into this.
+
+**Parameters:**
+
+- `metadataSource` — Source to copy metadata from.
+- `cloneOptions` — Controls whether mask and deformation are copied (Everything, NoMask, NoDeformation), the ShallowImageCopy flag is ignored.
+
+### checkConsistency
+
+```cpp
+bool ImFusion::SharedImage::checkConsistency () const
+```
+
+*nodiscard, protected*
+
+Checks the internal state for consistency between all image representations.
+
+Returns false if representations are out of sync or inconsistent.
+
+### sharedImageImpl
+
+```cpp
+std::shared_ptr < Image > ImFusion::SharedImage::sharedImageImpl (const std::type_index & imageType, CreateImageFromMemFunction createFromMem)
+```
+
+*protected*
+
+Returns a shared_ptr to the requested image representation, synchronizing or creating it if needed.
+
+The createFromMem function is used to create the requested representation from a [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage). Side effect: May trigger synchronization and create new representations (e.g., [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage), [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage), or custom).
+
+### sharedImageImpl
+
+```cpp
+std::shared_ptr < const Image > ImFusion::SharedImage::sharedImageImpl (const std::type_index & imageType, CreateImageFromMemFunction createFromMem) const
+```
+
+*protected*
+
+Returns a shared_ptr to the requested image representation, synchronizing or creating it if needed.
+
+The createFromMem function is used to create the requested representation from a [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage). Side effect: May trigger synchronization and create new representations (e.g., [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage), [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage), or custom).
+
+### syncImpl
+
+```cpp
+virtual Representation ImFusion::SharedImage::syncImpl (const std::type_index & imageType, CreateImageFromMemFunction createFromMem) const
+```
+
+*protected, virtual*
+
+Ensures the requested image representation is up-to-date, synchronizing or creating it if necessary.
+
+The createFromMem function is used to create the requested representation from a [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage). Side effect: May create new representations and update internal state.
+
+**Returns:** The representation on success; check repr.isValid() for failure (e.g. conversion failed).
+
+### setDirtyImpl
+
+```cpp
+void ImFusion::SharedImage::setDirtyImpl (const std::type_index & imageType)
+```
+
+*protected*
+
+Marks the requested image representation as the main one and all others as dirty.
+
+Side effect: Updates m_mainImage, marks other representations as dirty, emits signalChanged, and may update mask/bounds.
+
+### makeExclusiveImpl
+
+```cpp
+virtual bool ImFusion::SharedImage::makeExclusiveImpl (const std::type_index & imageType, CreateImageFromMemFunction createFromMem) const
+```
+
+*protected, virtual*
+
+Makes the requested image representation the only one stored, removing all others.
+
+Creates it if necessary.
+
+If T is void, all representations are removed. This is only used internally to clear m_images, e.g. when moving. In that case, the value of createFromMem is ignored.
+
+The createFromMem function is used to create the requested representation from a [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage). Side effect: Updates m_mainImage, clears other representations, and may update mask/bounds.
+
+### findRepresentation
+
+```cpp
+Representation ImFusion::SharedImage::findRepresentation (const std::type_index & imageType) const
+```
+
+*protected*
+
+Finds the representation for the given image type.
+
+**Returns:** The representation, or an invalid one (repr.isValid() == false) if not found.
+
+### addOrReplaceRepresentation
+
+```cpp
+virtual Representation ImFusion::SharedImage::addOrReplaceRepresentation (const std::type_index & imageType, std::shared_ptr < Image > img, bool isDirty) const
+```
+
+*protected, virtual*
+
+If the representation for the given image type exists, it is replaced with img, otherwise img is added as new representation.
+
+**Returns:** A copy of the stored representation.
+
+### representationAccessed
+
+```cpp
+virtual void ImFusion::SharedImage::representationAccessed (const std::type_index & imageType, const Representation & representation) const
+```
+
+*protected, virtual*
+
+Internal method to allow observers to track representation accesses.
+
+No-op per default.
+
+**Parameters:**
+
+- `representation` — A snapshot (copy) of the representation that was accessed
+
+## Member Data Documentation
+
+### signalChanged
+
+```cpp
+Signal <const SharedImage *> ImFusion::SharedImage::signalChanged
+```
+
+Called when the content of a [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) has changed (every time one of the setDirty() methods has been called).
+
+**Note:** This method may be called frequently during the processing of algorithms. When connecting to this signal, make absolutely sure to *not* include *any* expensive operations! Otherwise you may introduce a performance hit to the entire application. All you should do is setting a dirty flag yourself if needed.
+
+### signalMaskChanged
+
+```cpp
+Signal <const SharedImage *> ImFusion::SharedImage::signalMaskChanged
+```
+
+Called when a [Mask](/cpp-sdk/4.5/api/classes/imfusion-mask) object is assigned or removed from the [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage).
+
+**Note:** Listeners are not immediately notified when a mask becomes incompatible with the image, but only after the first call to [SharedImage::mask()](#mask).
+
+### signalDeleted
+
+```cpp
+Signal <const SharedImage *> ImFusion::SharedImage::signalDeleted
+```
+
+Called when this instance is deleted.
+
+**Warning:** Use with caution, only pointer comparison is allowed! This method is called from a [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) instance in the destructor of the very base class, therefore no type information for dynamic casts or other class attributes are available anymore.
+
+### m_glImgHasStrippedChannels
+
+```cpp
+bool ImFusion::SharedImage::m_glImgHasStrippedChannels = false
+```
+
+*mutable, protected*
+
+Indicates that the [GL](/cpp-sdk/4.5/api/namespaces/imfusion-gl) representation was created from an image with &gt; 4 channels.
+
+Since OpenGL does not support this the [GL](/cpp-sdk/4.5/api/namespaces/imfusion-gl) representation only stores the first 4 channels. A subsequent call to [setDirtyGl()](#setdirtygl) has no effect to avoid data loss.

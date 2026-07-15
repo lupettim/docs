@@ -1,0 +1,170 @@
+---
+title: "ImFusion::GUI::DisplayLayoutConfig"
+sidebarTitle: "DisplayLayoutConfig"
+description: "The DisplayLayoutConfig serves as static 'snapshot' of the view configuration of a DisplayLayout ."
+---
+
+`#include <ImFusion/GUI/DisplayLayoutConfig.h>`
+
+## Overview
+
+The [DisplayLayoutConfig](/cpp-sdk/4.5/api/classes/imfusion-gui-displaylayoutconfig) serves as static "snapshot" of the view configuration of a [DisplayLayout](/cpp-sdk/4.5/api/classes/imfusion-gui-displaylayout).
+
+Instead of using recursive binary subdivision, it uses a table/grid-like representation where a [View](/cpp-sdk/4.5/api/classes/imfusion-gui-view) is assigned to one cell. By default the grid is regular but each row/column can be adjusted in size and views can span multiple cells in either dimension. In a valid configuration each cell is occupied by exactly one view and rows/columns do not overlap each other.
+
+When manually specifying a [DisplayLayout](/cpp-sdk/4.5/api/classes/imfusion-gui-displaylayout) it is often easier/more intuitive to do so in a grid-like fashion and create a temporary [DisplayLayoutConfig](/cpp-sdk/4.5/api/classes/imfusion-gui-displaylayoutconfig), and then assign it via [DisplayLayout::loadConfiguration()](/cpp-sdk/4.5/api/classes/imfusion-gui-displaylayout).
+
+**See also:** [DisplayBase](/cpp-sdk/4.5/api/classes/imfusion-gui-displaybase), [DisplayLayout](/cpp-sdk/4.5/api/classes/imfusion-gui-displaylayout), [DisplayAutoLayouter](/cpp-sdk/4.5/api/classes/imfusion-gui-displayautolayouter)
+
+## Classes
+
+- class [LayoutCell](/cpp-sdk/4.5/api/classes/imfusion-gui-displaylayoutconfig-layoutcell) — The [LayoutCell](/cpp-sdk/4.5/api/classes/imfusion-gui-displaylayoutconfig-layoutcell) class represents one cell in the grid.
+
+## Public Member Functions
+
+- **DisplayLayoutConfig** () — Creates an empty (but valid) configuration.
+- **DisplayLayoutConfig** (int x, int y) — Creates a configuration of x\*y regular grid.
+- **DisplayLayoutConfig** (const [GUI::View](/cpp-sdk/4.5/api/classes/imfusion-gui-view) \*view) — Convenient method to create a configuration with only one view.
+- void **clear** () — Removes all views.
+- bool [addView](#addview) (const [GUI::View](/cpp-sdk/4.5/api/classes/imfusion-gui-view) \*view, int x, int y, int spanX=1, int spanY=1) — Adds a new view at the given coordinates to the configuration.
+- bool [addSubLayout](#addsublayout) (const DisplayLayoutConfig &sublayout, int x, int y, int spanX=1, int spanY=1) — Adds a new sublayout at the given coordinates to the configuration.
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [LayoutCell](/cpp-sdk/4.5/api/classes/imfusion-gui-displaylayoutconfig-layoutcell) &gt; & **views** () const — Returns a list of all views that have been added to the configuration.
+- void [resize](#resize) (int newX, int newY, int offsetX=0, int offsetY=0) — Resizes the grid of the configuration.
+- void [setRowSpacing](#setrowspacing) (int row, float spacing) — Set the spacing of a row.
+- void [setColumnSpacing](#setcolumnspacing) (int col, float spacing) — Set the spacing of a column.
+- float **rowSpacing** (int row) const — Returns the spacing of a row.
+- float **columnSpacing** (int col) const — Returns the spacing of a column.
+- void **resetSpacing** () — Resets the spacing to a regular grid.
+- void [removeColumn](#removecolumn) (int col) — Removes a column.
+- void [removeRow](#removerow) (int row) — Removes a row.
+- void **removeEmptyRows** () — Removes all rows that do not contain any views.
+- void **removeEmptyColumns** () — Removes all columns that do not contain any views.
+- void [spanViewsHorizontal](#spanviewshorizontal) (bool leftToRight) — Extends the column span of all views over empty, neighboring columns.
+- void [spanViewsVertical](#spanviewsvertical) (bool topToBottom) — Extends the row span of all views over empty, neighboring rows.
+- bool **isValid** () const — Returns true if the configuration is valid, false otherwise.
+- int **numColumns** () const — Returns the number of columns.
+- int **numRows** () const — Returns the number of rows.
+- void **prettyPrint** () — Prints the layout as ASCII "art" on the console.
+
+## Protected Member Functions
+
+- const [LayoutCell](/cpp-sdk/4.5/api/classes/imfusion-gui-displaylayoutconfig-layoutcell) \* **_cellAt** (int x, int y) const
+- [LayoutCell](/cpp-sdk/4.5/api/classes/imfusion-gui-displaylayoutconfig-layoutcell) \* **_cellAt** (int x, int y)
+
+## Protected Attributes
+
+- int **m_gridSizeX**
+- int **m_gridSizeY**
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [LayoutCell](/cpp-sdk/4.5/api/classes/imfusion-gui-displaylayoutconfig-layoutcell) &gt; **m_cells**
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; float &gt; **m_rowSplit**
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; float &gt; **m_columnSplit**
+
+## Member Function Documentation
+
+### addView
+
+```cpp
+bool ImFusion::GUI::DisplayLayoutConfig::addView (const GUI::View * view, int x, int y, int spanX = 1, int spanY = 1)
+```
+
+Adds a new view at the given coordinates to the configuration.
+
+**Parameters:**
+
+- `view` — The view to add
+- `x` — column number, must be between 0 and gridX()-1
+- `y` — row number, must be between 0 and gridY()-1
+- `spanX` — spans the view over spanX columns, default is 1. Must be larger than 0.
+- `spanY` — spans the view over spanY rows, default is 1. Must be larger than 0.
+
+**Returns:** false if the view overlaps with another view or the location/span is invalid, true otherwise
+
+### addSubLayout
+
+```cpp
+bool ImFusion::GUI::DisplayLayoutConfig::addSubLayout (const DisplayLayoutConfig & sublayout, int x, int y, int spanX = 1, int spanY = 1)
+```
+
+Adds a new sublayout at the given coordinates to the configuration.
+
+The sublayout must be valid.
+
+**Parameters:**
+
+- `sublayout` — The layout to add
+- `x` — column number, must be between 0 and gridX()-1
+- `y` — row number, must be between 0 and gridY()-1
+- `spanX` — spans the view over spanX columns, default is 1. Must be larger than 0.
+- `spanY` — spans the view over spanY rows, default is 1. Must be larger than 0.
+
+**Returns:** false if the sublayout overlaps with another sublayout/view or the location/span is invalid, true otherwise
+
+### resize
+
+```cpp
+void ImFusion::GUI::DisplayLayoutConfig::resize (int newX, int newY, int offsetX = 0, int offsetY = 0)
+```
+
+Resizes the grid of the configuration.
+
+The grid will take size defined by newX and newY. All views are moved by the offset. WARNING: shrinking the view has not been tested yet
+
+### setRowSpacing
+
+```cpp
+void ImFusion::GUI::DisplayLayoutConfig::setRowSpacing (int row, float spacing)
+```
+
+Set the spacing of a row.
+
+'spacing' is the normalized position of the top border of the row between 0.0 (left border) and 1.0 (right border)
+
+### setColumnSpacing
+
+```cpp
+void ImFusion::GUI::DisplayLayoutConfig::setColumnSpacing (int col, float spacing)
+```
+
+Set the spacing of a column.
+
+'spacing' is the normalized position of the right border of the column between 0.0 (bottom border) and 1.0 (top border)
+
+### removeColumn
+
+```cpp
+void ImFusion::GUI::DisplayLayoutConfig::removeColumn (int col)
+```
+
+Removes a column.
+
+Views that are only in this column will be removed. Views that span over this column will just be reduced in size.
+
+### removeRow
+
+```cpp
+void ImFusion::GUI::DisplayLayoutConfig::removeRow (int row)
+```
+
+Removes a row.
+
+Views that are only in this row will be removed. Views that span over this row will just be reduced in size.
+
+### spanViewsHorizontal
+
+```cpp
+void ImFusion::GUI::DisplayLayoutConfig::spanViewsHorizontal (bool leftToRight)
+```
+
+Extends the column span of all views over empty, neighboring columns.
+
+If leftToRight is true, views will only extend to the right. Otherwise, they will extend to the left.
+
+### spanViewsVertical
+
+```cpp
+void ImFusion::GUI::DisplayLayoutConfig::spanViewsVertical (bool topToBottom)
+```
+
+Extends the row span of all views over empty, neighboring rows.
+
+If topToBottom is true, views will only extend to the bottom. Otherwise, they will extend to the top.

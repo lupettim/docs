@@ -1,0 +1,127 @@
+---
+title: "ImFusion::TrackingInstrumentFiducialsData"
+sidebarTitle: "TrackingInstrumentFiducialsData"
+description: "Data component to store raw fiducial locations from optical tracking sequences."
+---
+
+`#include <ImFusion/Base/TrackingInstrumentFiducialsData.h>`
+
+## Overview
+
+[Data](/cpp-sdk/4.5/api/classes/imfusion-data) component to store raw fiducial locations from optical tracking sequences.
+
+## Public Member Functions
+
+- bool **operator==** (const TrackingInstrumentFiducialsData &other) const
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [id](#id) () const override — Returns a unique string identifier for this type of data component.
+- bool **hasQualities** () const
+- bool [hasInstrumentAssignments](#hasinstrumentassignments) () const
+- bool **hasPixelErrors** () const
+- bool **hasTriangulationErrors** () const
+- bool **hasPixelCounts** () const
+- bool **hasInstrumentIdAssignments** () const
+
+## Public Attributes
+
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; **m_positions** — 3D fiducial position required
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; int32_t &gt; [m_instrumentAssignments](#m-instrumentassignments) — Index of tracking instrument this fiducial belongs to, or -1.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; uint64_t &gt; **m_instrumentIdAssignments** — Hash value of the tracking instrument id this fiducial belongs to, or hash of "".
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; **m_qualities** — Fiducial quality [0,1], optional.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; **m_pixelErrors** — Epipolar pixel error, optional.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; **m_triagErrors** — Triangulation error in mm, optional.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; uint32_t &gt; **m_pixelCountsLeft** — Number of pixels in left image, optional.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; uint32_t &gt; **m_pixelCountsRight** — Number of pixels in right image, optional.
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — \ Name [Configurable](/cpp-sdk/4.5/api/classes/imfusion-configurable) Interface
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+- void **configurationHumanReadable** ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const
+- size_t [saveBufferSize](#savebuffersize) () const override — \ Name [BinarySerializable](/cpp-sdk/4.5/api/classes/imfusion-binaryserializable) Interface
+- void [loadFromBuffer](#loadfrombuffer) (const char \*buffer, size_t len) override — Restores the state of this object from a memory buffer, using maximum `len` bytes.
+- void [saveToBuffer](#savetobuffer) (char \*buffer) const override — Saves the state of this object into a memory buffer, using maximum [saveBufferSize()](#savebuffersize) bytes.
+
+## Member Function Documentation
+
+### id
+
+```cpp
+std::string ImFusion::TrackingInstrumentFiducialsData::id () const
+```
+
+*override, virtual*
+
+Returns a unique string identifier for this type of data component.
+
+**Note:** To avoid conflicts make sure to include potential plugin names into this ID. Due to the modular architecture of the ImFusion library, uniqueness of IDs cannot be checked at compile time. However, [DataComponentFactory](/cpp-sdk/4.5/api/classes/imfusion-datacomponentfactory) will check the uniqueness of the ID during registration.
+
+### configure
+
+```cpp
+void ImFusion::TrackingInstrumentFiducialsData::configure (const Properties * p)
+```
+
+*override, virtual*
+
+\ Name [Configurable](/cpp-sdk/4.5/api/classes/imfusion-configurable) Interface
+
+### configuration
+
+```cpp
+void ImFusion::TrackingInstrumentFiducialsData::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality
+
+### saveBufferSize
+
+```cpp
+size_t ImFusion::TrackingInstrumentFiducialsData::saveBufferSize () const
+```
+
+*override, virtual*
+
+\ Name [BinarySerializable](/cpp-sdk/4.5/api/classes/imfusion-binaryserializable) Interface
+
+### loadFromBuffer
+
+```cpp
+void ImFusion::TrackingInstrumentFiducialsData::loadFromBuffer (const char * buffer, size_t len)
+```
+
+*override, virtual*
+
+Restores the state of this object from a memory buffer, using maximum `len` bytes.
+
+### saveToBuffer
+
+```cpp
+void ImFusion::TrackingInstrumentFiducialsData::saveToBuffer (char * buffer) const
+```
+
+*override, virtual*
+
+Saves the state of this object into a memory buffer, using maximum [saveBufferSize()](#savebuffersize) bytes.
+
+### hasInstrumentAssignments
+
+```cpp
+bool ImFusion::TrackingInstrumentFiducialsData::hasInstrumentAssignments () const
+```
+
+****Deprecated**:** "Instrument assignment by index is deprecated. Use assignment by ID instead"
+
+## Member Data Documentation
+
+### m_instrumentAssignments
+
+```cpp
+std::vector <int32_t> ImFusion::TrackingInstrumentFiducialsData::m_instrumentAssignments
+```
+
+Index of tracking instrument this fiducial belongs to, or -1.
+
+****Deprecated**:** "Instrument assignment by index is deprecated. Use assignment by ID instead"

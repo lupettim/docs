@@ -1,0 +1,70 @@
+---
+title: "ImFusion::GlImageMetric"
+sidebarTitle: "GlImageMetric"
+description: "Computation of standard metrics on a 2D or 3D image."
+---
+
+`#include <ImFusion/GL/GlImageMetric.h>`
+
+## Overview
+
+Computation of standard metrics on a 2D or 3D image.
+
+## Public Types
+
+- enum [Mode](#mode) &#123; **TENENGRAD_SLICEWISE** = 0 , **TENENGRAD_VARIANCE_SLICEWISE** = 1 , **TENENGRAD_3D** = 2 , **TENENGRAD_VARIANCE_3D** = 3 , ENTROPY = 4 &#125; — Definition of possible metrics.
+
+## Public Member Functions
+
+- **GlImageMetric** ([Mode](#mode) mode=TENENGRAD_SLICEWISE) — Constructor, optionally setting the mode.
+- virtual **~GlImageMetric** () — Destructor.
+- virtual void **setMode** ([Mode](#mode) mode) — Set the similarity measure mode.
+- [Mode](#mode) **mode** () const — Return the actual similarity measure mode.
+- void **setSharpnessMinIntensity** (double minIntensity) — Set minimum intensity to consider in sharpness computation.
+- void **setSharpnessMaxIntensity** (double maxIntensity) — Set maximum intensity to consider in sharpness computation.
+- void **setSharpnessBorder** (double border) — Set border to use in sharpness computation in percent (0.0-1.0).
+- void **setEnableThreshold** (bool value) — Enable/disable intensity threshold.
+- double **compute** (const [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) \*img) — Compute the metric on an image.
+- double **result** () const — Return the result of the last computation.
+- [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) \* **imgAux** ()
+
+## Protected Attributes
+
+- [Mode](#mode) [m_mode](#m-mode) — getter for axiliary images used in debug mode
+- double **m_result** = 0.0 — Last result.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [GL::Program](/cpp-sdk/4.5/api/classes/imfusion-gl-program) &gt; **m_prog** — OpenGL shader program for image metric.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [GL::Framebuffer](/cpp-sdk/4.5/api/classes/imfusion-gl-framebuffer) &gt; **m_fbo** — OpenGL framebuffer object.
+- [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) \* **m_imgAux** = nullptr — Auxiliary texture.
+- [GlReduction](/cpp-sdk/4.5/api/classes/imfusion-glreduction) **m_reducer** — Reduction class instance.
+- double **m_minIntensity** = 0.0
+- double **m_maxIntensity** = 1.0
+- double **m_border** = 0.0
+- bool **m_enableThresholds** = true
+
+## Member Enumeration Documentation
+
+### Mode
+
+```cpp
+enum ImFusion::GlImageMetric::Mode
+```
+
+Definition of possible metrics.
+
+**Enumerator:**
+
+- `ENTROPY` — Entropy, i.e. information content.
+
+## Member Data Documentation
+
+### m_mode
+
+```cpp
+Mode ImFusion::GlImageMetric::m_mode
+```
+
+*protected*
+
+getter for axiliary images used in debug mode
+
+Metric mode

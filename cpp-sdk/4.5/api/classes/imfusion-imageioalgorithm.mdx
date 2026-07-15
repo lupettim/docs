@@ -1,0 +1,58 @@
+---
+title: "ImFusion::ImageIoAlgorithm"
+sidebarTitle: "ImageIoAlgorithm"
+description: "Algorithm for reading and writing all supported 2D image formats."
+---
+
+`#include <ImFusion/IO/ImageIoAlgorithm.h>`
+
+## Overview
+
+[Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) for reading and writing all supported 2D image formats.
+
+## Public Member Functions
+
+- **ImageIoAlgorithm** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*img, IoMode [ioMode](/cpp-sdk/4.5/api/classes/imfusion-ioalgorithm))
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; [supportedFileExtensions](#supportedfileextensions) () const override — Return supported file extensions (for file based IO).
+- void [compute](#compute) () override — Execute the algorithm.
+- [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) [takeOutput](#takeoutput) () override — Return any new [Data](/cpp-sdk/4.5/api/classes/imfusion-data) that was created by the [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) during the last call to [compute()](#compute).
+
+## Static Public Member Functions
+
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=0)
+
+## Member Function Documentation
+
+### supportedFileExtensions
+
+```cpp
+std::vector < std::string > ImFusion::ImageIoAlgorithm::supportedFileExtensions () const
+```
+
+*override, virtual*
+
+Return supported file extensions (for file based IO).
+
+### compute
+
+```cpp
+void ImFusion::ImageIoAlgorithm::compute ()
+```
+
+*override, virtual*
+
+Execute the algorithm.
+
+### takeOutput
+
+```cpp
+OwningDataList ImFusion::ImageIoAlgorithm::takeOutput ()
+```
+
+*override, virtual*
+
+Return any new [Data](/cpp-sdk/4.5/api/classes/imfusion-data) that was created by the [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) during the last call to [compute()](#compute).
+
+The default implementation will return an empty list.
+
+**Note:** Since ownership of the data is transferred, you can call this method only once between calls to [compute()](#compute).

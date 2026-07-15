@@ -1,0 +1,54 @@
+---
+title: "ImFusion::MirrorRegistrationAlgorithm"
+sidebarTitle: "MirrorRegistrationAlgorithm"
+description: "Locally Estimate Mirror symmetry of a volume, and use it to estimate the mirror plane."
+---
+
+`#include <ImFusion/Reg/MirrorRegistrationAlgorithm.h>`
+
+## Overview
+
+Locally Estimate Mirror symmetry of a volume, and use it to estimate the mirror plane.
+
+## Public Member Functions
+
+- **MirrorRegistrationAlgorithm** ([SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*img)
+- void **estimate** (vec3 pos, vec3 forward, vec3 up, vec3 worldBoxSize, vec3 resolution)
+- vec3 **forward** ()
+- vec3 **up** ()
+- vec3 **pos** ()
+- void [compute](#compute) () override — Execute the algorithm.
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*) override — Set one or multiple properties.
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*) const override — Retrieve the properties of this object.
+
+## Member Function Documentation
+
+### compute
+
+```cpp
+void ImFusion::MirrorRegistrationAlgorithm::compute ()
+```
+
+*inline, override, virtual*
+
+Execute the algorithm.
+
+### configure
+
+```cpp
+void ImFusion::MirrorRegistrationAlgorithm::configure (const Properties *)
+```
+
+*inline, override, virtual*
+
+Set one or multiple properties.
+
+### configuration
+
+```cpp
+void ImFusion::MirrorRegistrationAlgorithm::configuration (Properties *) const
+```
+
+*inline, override, virtual*
+
+Retrieve the properties of this object.

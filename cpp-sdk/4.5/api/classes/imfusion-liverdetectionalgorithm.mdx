@@ -1,0 +1,54 @@
+---
+title: "ImFusion::LiverDetectionAlgorithm"
+sidebarTitle: "LiverDetectionAlgorithm"
+description: "Automatically segments the liver with a neural network on MR and CT datasets."
+---
+
+`#include <ImFusion/Seg/LiverDetectionAlgorithm.h>`
+
+## Overview
+
+Automatically segments the liver with a neural network on MR and CT datasets.
+
+The modality of the input image must be either [Data::MRI](/cpp-sdk/4.5/api/classes/imfusion-data) or [Data::CT](/cpp-sdk/4.5/api/classes/imfusion-data).
+
+## Public Member Functions
+
+- **LiverDetectionAlgorithm** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*volume)
+- void [compute](#compute) () override — Execute the algorithm.
+- [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) [takeOutput](#takeoutput) () override — Return any new [Data](/cpp-sdk/4.5/api/classes/imfusion-data) that was created by the [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) during the last call to [compute()](#compute).
+
+## Static Public Member Functions
+
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=nullptr)
+
+## Public Attributes
+
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **p_lowModelConfigFile** = &#123;"lowModelConfigFile", "", this&#125;
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **p_highModelConfigFile** = &#123;"highModelConfigFile", "", this&#125;
+
+## Member Function Documentation
+
+### compute
+
+```cpp
+void ImFusion::LiverDetectionAlgorithm::compute ()
+```
+
+*override, virtual*
+
+Execute the algorithm.
+
+### takeOutput
+
+```cpp
+OwningDataList ImFusion::LiverDetectionAlgorithm::takeOutput ()
+```
+
+*override, virtual*
+
+Return any new [Data](/cpp-sdk/4.5/api/classes/imfusion-data) that was created by the [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) during the last call to [compute()](#compute).
+
+The default implementation will return an empty list.
+
+**Note:** Since ownership of the data is transferred, you can call this method only once between calls to [compute()](#compute).

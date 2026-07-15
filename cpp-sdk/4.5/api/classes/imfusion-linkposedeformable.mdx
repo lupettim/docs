@@ -1,0 +1,33 @@
+---
+title: "ImFusion::LinkPoseDeformable"
+sidebarTitle: "LinkPoseDeformable"
+description: "Links the pose of two or more data instances if there is deformation present."
+---
+
+`#include <ImFusion/GL/LinkPoseDeformable.h>`
+
+## Overview
+
+Links the pose of two or more data instances if there is deformation present.
+
+## Public Member Functions
+
+- **LinkPoseDeformable** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &[data](/cpp-sdk/4.5/api/classes/imfusion-linkpose)) — Constructor with data list, pose linking starts right away.
+- **~LinkPoseDeformable** () override — Destructor, stops the linking of the transformation.
+- void **onDeformationChanged** (const [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*img) — Called when the deformation instance of an image has changed.
+- void **onDeformationEvent** (const [DeformationEvent](/cpp-sdk/4.5/api/classes/imfusion-deformationevent) &event) — Called when deformation parameters have changed.
+- [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) **getData** () — List of data instances to link.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Gl3DObject](/cpp-sdk/4.5/api/classes/imfusion-gl3dobject) \* &gt; & **getGlObjectsVector** () — [Vector](/cpp-sdk/4.5/api/classes/imfusion-vector) of GlMeshes and GlPointClouds to be filled by controller.
+- void **setPauseDefUpdating** (bool b) — Turns updates based on the deformation field (expensive!) on or off.
+
+## Static Public Member Functions
+
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &[data](/cpp-sdk/4.5/api/classes/imfusion-linkpose), [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=0) — [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) factory method.
+
+## Protected Attributes
+
+- [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [Deformation](/cpp-sdk/4.5/api/classes/imfusion-deformation) &gt; **m_deformation** — [Deformation](/cpp-sdk/4.5/api/classes/imfusion-deformation) this algorithm listens to.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Gl3DObject](/cpp-sdk/4.5/api/classes/imfusion-gl3dobject) \* &gt; **m_glObjects** — [GlMesh](/cpp-sdk/4.5/api/classes/imfusion-glmesh) and [GlPointCloud](/cpp-sdk/4.5/api/classes/imfusion-glpointcloud) objects set by a controller to allow buffer updates.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) \* &gt; **m_meshCopies** — Copies of original meshes are needed to relate to original vertex positions. Created in constructor.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [PointCloud](/cpp-sdk/4.5/api/classes/imfusion-pointcloud) \* &gt; **m_pointCloudCopies** — Copies of original point clouds are needed to relate to original vertex positions. Created in constructor.
+- bool **m_pauseDefUpdating** — Flag whether deformation (expensive!) should be updated.

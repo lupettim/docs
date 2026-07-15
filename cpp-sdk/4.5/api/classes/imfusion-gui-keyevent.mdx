@@ -1,0 +1,39 @@
+---
+title: "ImFusion::GUI::KeyEvent"
+sidebarTitle: "KeyEvent"
+description: "Key events are triggered when a keyboard key was pressed or released on the GUI."
+---
+
+`#include <ImFusion/GUI/InputEvent.h>`
+
+## Overview
+
+Key events are triggered when a keyboard key was pressed or released on the GUI.
+
+## Public Types
+
+- enum class Type &#123; **Press** , **Release** &#125; — Enumeration of reasons for the event.
+- enum class Key : int32_t &#123; **Escape** = 0x01000000 , **Tab** = 0x01000001 , **Backtab** = 0x01000002 , **Backspace** = 0x01000003 , **Return** = 0x01000004 , **Enter** = 0x01000005 , **Insert** = 0x01000006 , **Delete** = 0x01000007 , **Pause** = 0x01000008 , **Print** = 0x01000009 , **SysReq** = 0x0100000a , **Clear** = 0x0100000b , **Home** = 0x01000010 , **End** = 0x01000011 , **Left** = 0x01000012 , **Up** = 0x01000013 , **Right** = 0x01000014 , **Down** = 0x01000015 , **PageUp** = 0x01000016 , **PageDown** = 0x01000017 , **Shift** = 0x01000020 , **Control** = 0x01000021 , **Meta** = 0x01000022 , **Alt** = 0x01000023 , **CapsLock** = 0x01000024 , **NumLock** = 0x01000025 , **ScrollLock** = 0x01000026 , **F1** = 0x01000030 , **F2** = 0x01000031 , **F3** = 0x01000032 , **F4** = 0x01000033 , **F5** = 0x01000034 , **F6** = 0x01000035 , **F7** = 0x01000036 , **F8** = 0x01000037 , **F9** = 0x01000038 , **F10** = 0x01000039 , **F11** = 0x0100003a , **F12** = 0x0100003b , **F13** = 0x0100003c , **F14** = 0x0100003d , **F15** = 0x0100003e , **F16** = 0x0100003f , **Space** = 0x20 , **Any** = Space , **Exclam** = 0x21 , **QuoteDbl** = 0x22 , **NumberSign** = 0x23 , **Dollar** = 0x24 , **Percent** = 0x25 , **Ampersand** = 0x26 , **Apostrophe** = 0x27 , **ParenLeft** = 0x28 , **ParenRight** = 0x29 , **Asterisk** = 0x2a , **Plus** = 0x2b , **Comma** = 0x2c , **Minus** = 0x2d , **Period** = 0x2e , **Slash** = 0x2f , **Digit0** = 0x30 , **Digit1** = 0x31 , **Digit2** = 0x32 , **Digit3** = 0x33 , **Digit4** = 0x34 , **Digit5** = 0x35 , **Digit6** = 0x36 , **Digit7** = 0x37 , **Digit8** = 0x38 , **Digit9** = 0x39 , **Colon** = 0x3a , **Semicolon** = 0x3b , **Less** = 0x3c , **Equal** = 0x3d , **Greater** = 0x3e , **Question** = 0x3f , **At** = 0x40 , **A** = 0x41 , **B** = 0x42 , **C** = 0x43 , **D** = 0x44 , **E** = 0x45 , **F** = 0x46 , **G** = 0x47 , **H** = 0x48 , **I** = 0x49 , **J** = 0x4a , **K** = 0x4b , **L** = 0x4c , **M** = 0x4d , **N** = 0x4e , **O** = 0x4f , **P** = 0x50 , **Q** = 0x51 , **R** = 0x52 , **S** = 0x53 , **T** = 0x54 , **U** = 0x55 , **V** = 0x56 , **W** = 0x57 , **X** = 0x58 , **Y** = 0x59 , **Z** = 0x5a , **BracketLeft** = 0x5b , **Backslash** = 0x5c , **BracketRight** = 0x5d , **AsciiCircum** = 0x5e , **Underscore** = 0x5f , **QuoteLeft** = 0x60 , **BraceLeft** = 0x7b , **Bar** = 0x7c , **BraceRight** = 0x7d , **AsciiTilde** = 0x7e , **Unknown** = 0x01ffffff &#125; — Enumeration of named keys available on most standard keyboards.
+
+## Public Member Functions
+
+- [KeyEvent](#keyevent) (Type type, Key key, [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; [KeyboardModifier](/cpp-sdk/4.5/api/classes/imfusion-gui-inputevent) &gt; [modifiers](/cpp-sdk/4.5/api/classes/imfusion-gui-inputevent)=[KeyboardModifier::None](/cpp-sdk/4.5/api/classes/imfusion-gui-inputevent), [LocalToGlobalCoordMapping](/cpp-sdk/4.5/api/classes/imfusion-gui-inputevent) mappingFunction=nullptr) — Constructor for a [KeyEvent](/cpp-sdk/4.5/api/classes/imfusion-gui-keyevent).
+- Type **type** () const — Returns whether key() was pressed or released.
+- Key **key** () const — Returns the key that triggered this event.
+
+## Constructor & Destructor Documentation
+
+### KeyEvent
+
+```cpp
+ImFusion::GUI::KeyEvent::KeyEvent (Type type, Key key, Flags < KeyboardModifier > modifiers = KeyboardModifier::None, LocalToGlobalCoordMapping mappingFunction = nullptr)
+```
+
+Constructor for a [KeyEvent](/cpp-sdk/4.5/api/classes/imfusion-gui-keyevent).
+
+**Parameters:**
+
+- `type` — Whether the key was pressed or released.
+- `key` — The key triggering the event.
+- `modifiers` — List of pressed keyboard modifier keys.
+- `mappingFunction` — Optional mapping function used by [mapToGlobalCoord()](/cpp-sdk/4.5/api/classes/imfusion-gui-inputevent) to convert event coordinates to global coordinates if the underlying windowing system supports it; [mapToGlobalCoord()](/cpp-sdk/4.5/api/classes/imfusion-gui-inputevent) will use the identity function if empty.

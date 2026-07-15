@@ -1,0 +1,83 @@
+---
+title: "ImFusion::MeshProcessing"
+sidebarTitle: "MeshProcessing"
+description: "Collection of algorithms for post-processing meshes."
+---
+
+## Overview
+
+Collection of algorithms for post-processing meshes.
+
+## Namespaces
+
+- namespace [Cleaning](/cpp-sdk/4.5/api/namespaces/imfusion-meshprocessing-cleaning) — [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) processing algorithms related to cleaning of the mesh.
+- namespace [ColorsTexturing](/cpp-sdk/4.5/api/namespaces/imfusion-meshprocessing-colorstexturing) — [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) processing algorithms related to mesh colors and texture processing.
+- namespace [ConnectedComponents](/cpp-sdk/4.5/api/namespaces/imfusion-meshprocessing-connectedcomponents) — [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) processing algorithms based on connected component analysis.
+- namespace [Geometry](/cpp-sdk/4.5/api/namespaces/imfusion-meshprocessing-geometry) — [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) processing algorithms related to geometrical operations.
+- namespace [Misc](/cpp-sdk/4.5/api/namespaces/imfusion-meshprocessing-misc) — Miscellaneous mesh processing functions.
+- namespace [Remeshing](/cpp-sdk/4.5/api/namespaces/imfusion-meshprocessing-remeshing) — [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) processing algorithms related to mesh remeshing (smoothing, decimation, subdivision).
+- namespace [Statistics](/cpp-sdk/4.5/api/namespaces/imfusion-meshprocessing-statistics) — Methods for computing statistics on Meshes.
+
+## Classes
+
+- struct [ConnectedComponentData](/cpp-sdk/4.5/api/structs/imfusion-meshprocessing-connectedcomponentdata)
+
+## Functions
+
+- void [reduceToNumberOfComponents](#reducetonumberofcomponents) ([Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) \*mesh, int numComponents, bool leaveOnlyLargestComponentsWithComparibleSizes=false)
+- [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) \* [cleanMesh](#cleanmesh-1-2) (const [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) \*mesh, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; int &gt; &ComponentsToKeep, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; int &gt; &labels)
+- [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) \* [cleanMesh](#cleanmesh-2-2) (const [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) \*mesh, float minConnectedArea, float maxConnectedArea, [ConnectedComponentData](/cpp-sdk/4.5/api/structs/imfusion-meshprocessing-connectedcomponentdata) \*components=nullptr)
+- void [splitConnectedComponents](#splitconnectedcomponents) (const [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) &mesh, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) &gt; &gt; &connectedComponents, double keepComponentsWithRatioToMaxArea=0.)
+- void [labelConnectedComponents](#labelconnectedcomponents) ([Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) \*mesh, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; int &gt; &labels, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; int &gt; &labelsSize, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; float &gt; &labelsArea, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [ImFusion::Geometry::AlignedBox](/cpp-sdk/4.5/api/classes/imfusion-geometry-alignedbox) &gt; \*labelsBoundingBox) — Determines connected components and assigns an id of connected component to each face using an integer "labelProperty" accessible through an underlying [TriMesh](/cpp-sdk/4.5/api/classes/imfusion-trimesh).
+
+## Function Documentation
+
+### reduceToNumberOfComponents
+
+```cpp
+void ImFusion::MeshProcessing::reduceToNumberOfComponents (Mesh * mesh, int numComponents, bool leaveOnlyLargestComponentsWithComparibleSizes = false)
+```
+
+****Deprecated**:** "MeshProcessing::reduceToNumberOfComponents is deprecated, consider using MeshProcessing::ConnectedComponents::reduceToNumberOfLargestComponents API instead"
+
+### cleanMesh
+
+```cpp
+Mesh * ImFusion::MeshProcessing::cleanMesh (const Mesh * mesh, const std::vector < int > & ComponentsToKeep, const std::vector < int > & labels)
+```
+
+****Deprecated**:** "MeshProcessing::cleanMesh is deprecated, consider using MeshProcessing::ConnectedComponents::reduceToComponentsByLabel API instead"
+
+### cleanMesh
+
+```cpp
+Mesh * ImFusion::MeshProcessing::cleanMesh (const Mesh * mesh, float minConnectedArea, float maxConnectedArea, ConnectedComponentData * components = nullptr)
+```
+
+****Deprecated**:** "MeshProcessing::cleanMesh is deprecated, consider using MeshProcessing::ConnectedComponents::reduceToComponentsByArea API instead"
+
+### splitConnectedComponents
+
+```cpp
+void ImFusion::MeshProcessing::splitConnectedComponents (const Mesh & mesh, std::vector < std::unique_ptr < Mesh > > & connectedComponents, double keepComponentsWithRatioToMaxArea = 0.)
+```
+
+****Deprecated**:** "MeshProcessing::splitConnectedComponents is deprecated, consider using MeshProcessing::ConnectedComponents::splitConnectedComponents API instead"
+
+### labelConnectedComponents
+
+```cpp
+void ImFusion::MeshProcessing::labelConnectedComponents (Mesh * mesh, std::vector < int > & labels, std::vector < int > & labelsSize, std::vector < float > & labelsArea, std::vector < ImFusion::Geometry::AlignedBox > * labelsBoundingBox)
+```
+
+Determines connected components and assigns an id of connected component to each face using an integer "labelProperty" accessible through an underlying [TriMesh](/cpp-sdk/4.5/api/classes/imfusion-trimesh).
+
+****Deprecated**:** "MeshProcessing::labelConnectedComponents is deprecated, consider using MeshProcessing::ConnectedComponents::labelConnectedComponents API instead"
+
+**Parameters:**
+
+- `mesh` — [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh)
+- `labels` — mapping from the "labelProperty" to an array index (for the next 3 outputs)
+- `labelsSize` — list of triangle count per connected component, ordered according to area from smallest to largest
+- `labelsArea` — list of area of triangles per connected component, ordered from smallest to largest
+- `labelsBoundingBox` — list of bounding boxes of connected components, ordered according to area from smallest to largest

@@ -1,0 +1,97 @@
+---
+title: "ImFusion::Dicom::ReferencedInstancesComponent"
+sidebarTitle: "ReferencedInstancesComponent"
+description: "DataComponent to store DICOM instances that are referenced by the dataset."
+---
+
+`#include <ImFusion/Dicom/DicomDataComponents.h>`
+
+## Overview
+
+[DataComponent](/cpp-sdk/4.5/api/classes/imfusion-datacomponent) to store DICOM instances that are referenced by the dataset.
+
+A DICOM dataset can reference a number of other DICOM datasets that are somehow related. The references in this component are determined by the ReferencedSeriesSequence.
+
+This component is currently only created for DICOM Segmentation and RTStruct SOPs.
+
+## Classes
+
+- struct [ReferencedInstance](/cpp-sdk/4.5/api/structs/imfusion-dicom-referencedinstancescomponent-referencedinstance)
+
+## Public Types
+
+- using **SeriesInstanceUID** = [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html)
+
+## Public Member Functions
+
+- bool **operator==** (const [ReferencedInstancesComponent](/cpp-sdk/4.5/api/classes/imfusion-dicom-referencedinstancescomponent) &other) const
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [id](#id) () const override — Returns a unique string identifier for this type of data component.
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+- void **setSeries** ([std::map](http://en.cppreference.com/w/cpp/container/map.html)&lt; SeriesInstanceUID, [std::set](http://en.cppreference.com/w/cpp/container/set.html)&lt; [ReferencedInstance](/cpp-sdk/4.5/api/structs/imfusion-dicom-referencedinstancescomponent-referencedinstance) &gt; &gt; series) — Overwrite the current references with the given references.
+- void **addSeries** (const [std::map](http://en.cppreference.com/w/cpp/container/map.html)&lt; SeriesInstanceUID, [std::set](http://en.cppreference.com/w/cpp/container/set.html)&lt; [ReferencedInstance](/cpp-sdk/4.5/api/structs/imfusion-dicom-referencedinstancescomponent-referencedinstance) &gt; &gt; &series) — Add the given references to the existing references.
+- bool [isReferencing](#isreferencing-1-2) (const [SourceInfoComponent](/cpp-sdk/4.5/api/classes/imfusion-dicom-sourceinfocomponent) &sic) const — Returns true if the instances of the given [SourceInfoComponent](/cpp-sdk/4.5/api/classes/imfusion-dicom-sourceinfocomponent) are referenced by this component.
+- bool [isReferencing](#isreferencing-2-2) (const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &sis) const — Convenient method that calls the above method with [SourceInfoComponent](/cpp-sdk/4.5/api/classes/imfusion-dicom-sourceinfocomponent) of sis.
+- const [std::map](http://en.cppreference.com/w/cpp/container/map.html)&lt; SeriesInstanceUID, [std::set](http://en.cppreference.com/w/cpp/container/set.html)&lt; [ReferencedInstance](/cpp-sdk/4.5/api/structs/imfusion-dicom-referencedinstancescomponent-referencedinstance) &gt; &gt; & **series** () const — Returns all referenced series instance UIDs together with the referenced instances.
+
+## Member Function Documentation
+
+### id
+
+```cpp
+std::string ImFusion::Dicom::ReferencedInstancesComponent::id () const
+```
+
+*override, virtual*
+
+Returns a unique string identifier for this type of data component.
+
+**Note:** To avoid conflicts make sure to include potential plugin names into this ID. Due to the modular architecture of the ImFusion library, uniqueness of IDs cannot be checked at compile time. However, [DataComponentFactory](/cpp-sdk/4.5/api/classes/imfusion-datacomponentfactory) will check the uniqueness of the ID during registration.
+
+### configure
+
+```cpp
+void ImFusion::Dicom::ReferencedInstancesComponent::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### configuration
+
+```cpp
+void ImFusion::Dicom::ReferencedInstancesComponent::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality
+
+### isReferencing
+
+```cpp
+bool ImFusion::Dicom::ReferencedInstancesComponent::isReferencing (const SourceInfoComponent & sic) const
+```
+
+Returns true if the instances of the given [SourceInfoComponent](/cpp-sdk/4.5/api/classes/imfusion-dicom-sourceinfocomponent) are referenced by this component.
+
+The instances and references have to only intersect for this to return true. This way, e.g. a segmentation would be considered referencing a CT if it only overlaps in a view slices.
+
+### isReferencing
+
+```cpp
+bool ImFusion::Dicom::ReferencedInstancesComponent::isReferencing (const SharedImageSet & sis) const
+```
+
+Convenient method that calls the above method with [SourceInfoComponent](/cpp-sdk/4.5/api/classes/imfusion-dicom-sourceinfocomponent) of sis.
+
+Only returns true if all elementwise SourceInfoComponents are referenced.

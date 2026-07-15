@@ -1,0 +1,116 @@
+---
+title: "ImFusion::ReplaceValuesAlgorithm"
+sidebarTitle: "ReplaceValuesAlgorithm"
+description: "Replace in-place a set of image values with others values."
+---
+
+`#include <ImFusion/Base/ReplaceValuesAlgorithm.h>`
+
+## Overview
+
+Replace in-place a set of image values with others values.
+
+The input image is expected to have either a UBYTE or USHORT type. The algorithm runs on the GPU unless one of the conditions is met:
+
+- the parameter ForceCPU is set to true,
+- the input has more than four channels or a shift/scale,
+- there is a reference image.
+
+An additional set of compatible reference images may be provided in the constructor; when this is the case, the values will be read from the reference images but replaced in the main ones.
+
+For convenience purposes, a default value can be set, in which case all not explicitly defined non-zero input values will be assigned this value.
+
+**Warning:** Any shift/scale will be burned in the memory buffer, i.e. the output image will have a zero-shift and a unit-scale.
+
+Example:
+
+```cpp
+SharedImageSet inputImage; // example: 1d image with values [0, 0, 0, 1]
+SharedImageSet referenceImage; // example: 1d image with values [1, 1, 2, 3]
+
+ReplaceValuesAlgorithm replaceValuesAlgorithm(&inputImage, &referenceImage);
+replaceValuesAlgorithm.setReplaceValues({1, 3}, {2, 0});  // 1 will be replaced by 2, 3 will be replaced by 0
+replaceValuesAlgorithm.compute();
+// now inputImage = [2, 2, 0, 0]
+```
+ fragment
+
+## Public Member Functions
+
+- **ReplaceValuesAlgorithm** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*img, const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*imgRef=nullptr) — Creates the algorithm instance with an image and optional reference image of the same size and type.
+- void [setReplaceValues](#setreplacevalues) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; uint16_t &gt; &oldValues, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; uint16_t &gt; &newValues) — Define the replacement pattern for value substitution.
+- void **setForceCPU** (bool forceCPU) — Forces the computation to be run on the CPU.
+- void **setUpdateLabelsDataComponent** (bool update) — Replaces the old-values in the LabelsDataComponent with the mapped ones.
+- void **setDefaultValue** ([std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; uint16_t &gt; val) — Replaces the default target value to be used for all values not explicitly specified.
+- void **setInput** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*img, const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*imgRef=nullptr) — Change the image inputs.
+
+## Protected Member Functions
+
+- void **computeGPU** ()
+- void **computeCPU** ()
+- void **replaceValuesCPU** ([TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; T &gt; \*img, const [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; T &gt; \*imgRef)
+
+## Methods implementing the algorithm interface
+
+- void [compute](#compute) () override — Execute the algorithm.
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=0)
+
+## Methods implementing the Configurable interface
+
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+## Member Function Documentation
+
+### setReplaceValues
+
+```cpp
+void ImFusion::ReplaceValuesAlgorithm::setReplaceValues (const std::vector < uint16_t > & oldValues, const std::vector < uint16_t > & newValues)
+```
+
+Define the replacement pattern for value substitution.
+
+All values are in original units.
+
+**Parameters:**
+
+- `oldValues` — List of values that should be replaced
+- `newValues` — List of new values that should be assigned to the corresponding old values.
+
+### compute
+
+```cpp
+void ImFusion::ReplaceValuesAlgorithm::compute ()
+```
+
+*override, virtual*
+
+Execute the algorithm.
+
+### configure
+
+```cpp
+void ImFusion::ReplaceValuesAlgorithm::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### configuration
+
+```cpp
+void ImFusion::ReplaceValuesAlgorithm::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality

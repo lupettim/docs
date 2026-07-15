@@ -1,0 +1,84 @@
+---
+title: "ImFusion::ImageMattingAlgorithm"
+sidebarTitle: "ImageMattingAlgorithm"
+description: "Algorithm for image matting using guided filter."
+---
+
+`#include <ImFusion/Seg/ImageMattingAlgorithm.h>`
+
+## Overview
+
+[Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) for image matting using guided filter.
+
+## Public Member Functions
+
+- **ImageMattingAlgorithm** (const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &imgIn, [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &maskIn) — [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) constructor.
+- **~ImageMattingAlgorithm** () override — Destructor.
+- void **setParameters** (int imageSize, int kernelSize, float eps, int nbIter=1) — Set the parameters for the guided filter.
+- void **setImage** (const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*img) — Set input image.
+- void **setMask** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*mask) — Set input mask.
+- void **setInPlace** (bool inplace) — Set whether the result should be computed in place.
+- void **setUseGPU** (bool useGPU) — Set whether the result should be computed on the GPU or CPU.
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Set one or multiple properties.
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Retrieve the properties of this object.
+- void [compute](#compute) () override — Compute the result.
+- [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) [takeOutput](#takeoutput) () override — If the algorithm creates new image data, it has to be transferred here.
+
+## Static Public Member Functions
+
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a) — If data is compatible with algorithm return true. If a is not zero, create algorithm with input data.
+
+## Protected Attributes
+
+- const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* **m_img** — Input image.
+- [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* **m_mask** — Input mask.
+- [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* **m_output** — Output mask, ownership depending on m_inPlace!
+- bool **m_inPlace** — Flag for in-place computing.
+- bool **m_useGPU** — Flag for GPU computation.
+- int **m_gFilterImageSize** — Target dimension size for working image (no downsampling if 0).
+- int **m_gFilterKernelSize** — Parameters for the guided filter.
+- float **m_gFilterEps** — Parameters for the guided filter.
+- int **m_gFilterIter** — Parameters for the guided filter.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [GlGuidedFilter](/cpp-sdk/4.5/api/classes/imfusion-glguidedfilter) &gt; **m_filter** — filtering algorithm
+
+## Member Function Documentation
+
+### configure
+
+```cpp
+void ImFusion::ImageMattingAlgorithm::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Set one or multiple properties.
+
+### configuration
+
+```cpp
+void ImFusion::ImageMattingAlgorithm::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Retrieve the properties of this object.
+
+### compute
+
+```cpp
+void ImFusion::ImageMattingAlgorithm::compute ()
+```
+
+*override, virtual*
+
+Compute the result.
+
+### takeOutput
+
+```cpp
+OwningDataList ImFusion::ImageMattingAlgorithm::takeOutput ()
+```
+
+*override, virtual*
+
+If the algorithm creates new image data, it has to be transferred here.

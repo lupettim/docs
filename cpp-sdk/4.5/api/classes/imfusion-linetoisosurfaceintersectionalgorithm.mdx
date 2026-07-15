@@ -1,0 +1,127 @@
+---
+title: "ImFusion::LineToIsosurfaceIntersectionAlgorithm"
+sidebarTitle: "LineToIsosurfaceIntersectionAlgorithm"
+description: "Finds the intersection between a ray and the first isosurface."
+---
+
+`#include <ImFusion/Seg/LineToIsosurfaceIntersectionAlgorithm.h>`
+
+## Overview
+
+Finds the intersection between a ray and the first isosurface.
+
+The algorithm finds the first intersection of a line (or more precisely a ray) with the first encountered isoline for the same volume. The volume is examined from the starting point of the line along its direction, up to the image boundary.
+
+For performance reasons, no segmentation or isoline is computed for the whole volume, but the values of the pixels encountered on the path are considered. The first time that the encountered values go below (or above) the given threshold is considered as the result. For robustness, it is possible to specify the number of consecutive voxels below (or above) the given threshold that are required to considered the hit valid.
+
+The line must be set by the controller through the dedicated method (commonly it should be extracted by some point-based annotation in the controller). The output of the algorithm also cannot be passed through the standard output() method, but must be retrieved through the dedicated functionality.
+
+## Classes
+
+- struct [IntersectionCylindricalCoordinates](/cpp-sdk/4.5/api/structs/imfusion-linetoisosurfaceintersectionalgorithm-intersectioncylindricalcoordinates)
+
+## Public Types
+
+- enum class [ThresholdingMode](#thresholdingmode) &#123; AboveThenBelow , BelowThenAbove &#125; — Specifies the direction of the gradient expected at the isosurface.
+
+## Public Member Functions
+
+- **LineToIsosurfaceIntersectionAlgorithm** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &ct)
+- void [setLineInPixelCoordinates](#setlineinpixelcoordinates) (const [Geometry::LineBase](/cpp-sdk/4.5/api/classes/imfusion-geometry-linebase) &l) — Sets the input line.
+- void [setLineInWorldCoordinates](#setlineinworldcoordinates) (const [Geometry::LineBase](/cpp-sdk/4.5/api/classes/imfusion-geometry-linebase) &l) — Sets the input line.
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; vec3 &gt; [getIntersectionInPixelCoordinates](#getintersectioninpixelcoordinates) () — Gets the 3D coordinates of the intersection The result is a point lying on the input line, and within the last voxel (from the starting point to the end of the line) which is above (or below) the specified threshold.
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; vec3 &gt; [getIntersectionInWorldCoordinates](#getintersectioninworldcoordinates) () — Gets the 3D coordinates of the intersection The result is a point lying on the input line, and within the last voxel (from the starting point to the end of the line) which is above (or below) the specified threshold.
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [IntersectionCylindricalCoordinates](/cpp-sdk/4.5/api/structs/imfusion-linetoisosurfaceintersectionalgorithm-intersectioncylindricalcoordinates) &gt; **getIntersectionCylindricalCoordinates** ()
+- void [compute](#compute) () override — Execute the algorithm.
+- [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) & [dataRef](#dataref) () — Reference to the input data.
+
+## Static Public Member Functions
+
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=0)
+
+## Public Attributes
+
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; int &gt; **p_minConsecutiveVoxels** = &#123;"minConsecutiveVoxels", 1, this&#125; — Scalar value used as threshold to find the intersection (default: skin/air barrier in CT).
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; double &gt; **p_threshold** = &#123;"threshold", -950.0, this&#125; — Direction of the gradient required at the intersection.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; [ThresholdingMode](#thresholdingmode) &gt; **p_thresholdingMode** = &#123;"thresholdingMode", ThresholdingMode::AboveThenBelow, this&#125;
+
+## Member Enumeration Documentation
+
+### ThresholdingMode
+
+```cpp
+enum class ImFusion::LineToIsosurfaceIntersectionAlgorithm::ThresholdingMode
+```
+
+*strong*
+
+Specifies the direction of the gradient expected at the isosurface.
+
+**Enumerator:**
+
+- `AboveThenBelow` — The starting region has values higher than those beyond the isosurface.
+- `BelowThenAbove` — The starting region has values lower than those beyond the isosurface.
+
+## Member Function Documentation
+
+### setLineInPixelCoordinates
+
+```cpp
+void ImFusion::LineToIsosurfaceIntersectionAlgorithm::setLineInPixelCoordinates (const Geometry::LineBase & l)
+```
+
+Sets the input line.
+
+The starting point is used as start for the search. If the start lies outside the volume, the first point on the line within the volume is used as starting point. If the line is line segment, the intersection calculation is limited to the line extent, otherwise to the volume extent.
+
+### setLineInWorldCoordinates
+
+```cpp
+void ImFusion::LineToIsosurfaceIntersectionAlgorithm::setLineInWorldCoordinates (const Geometry::LineBase & l)
+```
+
+Sets the input line.
+
+The starting point is used as start for the search. If the start lies outside the volume, the first point on the line within the volume is used as starting point. If the line is line segment, the intersection calculation is limited to the line extent, otherwise to the volume extent.
+
+### getIntersectionInPixelCoordinates
+
+```cpp
+std::optional < vec3 > ImFusion::LineToIsosurfaceIntersectionAlgorithm::getIntersectionInPixelCoordinates ()
+```
+
+Gets the 3D coordinates of the intersection The result is a point lying on the input line, and within the last voxel (from the starting point to the end of the line) which is above (or below) the specified threshold.
+
+Or none, if no intersection with an isosurface of the specified value and gradient was found.
+
+### getIntersectionInWorldCoordinates
+
+```cpp
+std::optional < vec3 > ImFusion::LineToIsosurfaceIntersectionAlgorithm::getIntersectionInWorldCoordinates ()
+```
+
+Gets the 3D coordinates of the intersection The result is a point lying on the input line, and within the last voxel (from the starting point to the end of the line) which is above (or below) the specified threshold.
+
+Or none, if no intersection with an isosurface of the specified value and gradient was found.
+
+### compute
+
+```cpp
+void ImFusion::LineToIsosurfaceIntersectionAlgorithm::compute ()
+```
+
+*override, virtual*
+
+Execute the algorithm.
+
+### dataRef
+
+```cpp
+SharedImageSet & ImFusion::LineToIsosurfaceIntersectionAlgorithm::dataRef ()
+```
+
+*inline*
+
+Reference to the input data.
+
+Number of required consecutive voxels below/above the threshold to consider the hit valid (default: 1)

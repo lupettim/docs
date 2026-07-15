@@ -1,0 +1,238 @@
+---
+title: "ImFusion::BasicImageProcessing"
+sidebarTitle: "BasicImageProcessing"
+description: "Basic image processing such as downsample, flip, rotate or data type change."
+---
+
+`#include <ImFusion/Base/BasicImageProcessing.h>`
+
+## Overview
+
+Basic image processing such as downsample, flip, rotate or data type change.
+
+## Public Types
+
+- enum [Mode](#mode) &#123; DOWNSAMPLE = 0 , RESAMPLE = 1 , FLIP = 2 , ROTATE = 3 , THRESHOLDING = 4 , INVERT = 5 , CROP = 6 , CONVERTGRAY = 7 , NORMALIZE = 8 , SHARPNESS = 9 , REDUCE_BIT_DEPTH = 10 , GRADATION = 11 , EQUALIZE_HISTOGRAM = 12 , RESIZE = 14 , EMBED_ROTATION = 15 , SHIFT_N_SCALE = 16 , CONVERT_TO_FLOAT = 17 , BRIGHTNESS_PRESERVING_HE = 18 , BAYER_PATTERN_TO_COLOR = 19 , **INCREASE_BIT_DEPTH** , **ADD_REMOVE_ALPHA** , NR_MODES &#125; — [Status](/cpp-sdk/4.5/api/classes/imfusion-algorithm) codes.
+
+## Public Member Functions
+
+- **BasicImageProcessing** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*img) — Creates the algorithm instance with an image.
+- void **setMode** ([Mode](#mode) mode) — Specify the processing mode.
+- [Mode](#mode) **mode** () const — Get current mode.
+- void **setSharpnessMeasure** (int measure)
+- int **sharpnessMeasure** () const
+- void **setCreateNew** (bool flag) — Specify whether a new image shall be created.
+- bool **createNew** () const
+- void **setDownsampling** (int dx, int dy, int dz, bool filter=true) — Set the downsampling parameters.
+- void **downsampling** (int &dx, int &dy, int &dz, bool &filter) const
+- void **setResampling** (double resx, double resy, double resz) — Set the resampling parameters.
+- void **resampling** (double &resx, double &resy, double &resz) const
+- void [setFlipAxis](#setflipaxis) (int val) — Set the flip axis.
+- int **flipAxis** () const — Get flip axis.
+- void **setRotationAngle** (int angle) — Set the rotation angle Supported values: -90, 90, -180, 180, -270, 270.
+- int **rotationAngle** () const — Get rotation angle.
+- void [setRotationAxis](#setrotationaxis) (int axis) — Set the rotation axis.
+- int **rotationAxis** () const — Get the rotation axis.
+- void **setIgnoreAlphaChannel** (bool b) — Define if alpha channel should be ignored during grayscale conversion.
+- bool **ignoreAlphaChannel** () const — Returns if the alpha channel will be ignored during grayscale conversion.
+- void [setRangeThresholdParams](#setrangethresholdparams) (bool thresholdInside, double lowerThreshold, double upperThreshold) — Set the parameters for thresholding.
+- void **rangeThresholdParams** (bool &mode, double &lowerThreshold, double &upperThreshold) const — Get threshold parameters.
+- void **setInvertImageRange** (bool flag) — Set whether to use the range of the image intensities for inverting (true) or the range of the image type (false).
+- bool **invertImageRange** () const — Get the parameter for the range of inverted image.
+- void **setCropParams** (const vec3i &lower, const vec3i &upper) — Set the parameters for cropping in pixel coordinates (inclusive).
+- void **cropParams** (vec3i &lowerOut, vec3i &upperOut) const — Get cropping parameters.
+- void **setGradationMode** (int mode) — Set gradation mode (0 = interactive, 1 = log, 2 = square root, 3 = square).
+- int **gradationMode** () const — Get gradation mode.
+- void **setGradationNormalize** (bool normalize) — Set whether to normalize image after gradation.
+- bool **gradationNormalize** () const — Get gradation normalization.
+- void **setGradationMap** (const [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; float &gt; \*gradationMap) — Set gradation map. Output range is [0;1]. Ownership remains with caller.
+- void **shiftScale** (double &shift, double &scale) const
+- void **setShift** (double val)
+- void **setScale** (double val)
+- void **setTargetResolution** (const vec3i &resolution)
+- vec3i **targetResolution** () const
+- void **setInterpolateOnResolutionChange** (bool val)
+- bool **interpolateOnResolutionChange** () const
+- void [setPreserveValuesOnBitReduction](#setpreservevaluesonbitreduction) (bool flag) — If enabled, 16-bit values are clamped to 8-bit during REDUCE_BIT_DEPTH.
+- bool **preserveValuesOnBitReduction** () const
+- void **setBlockListenersSignal** (bool flag) — Set the flag blocking signals to listeners.
+
+## Static Public Member Functions
+
+- static void **downsample** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*sis, int dx, int dy, int dz, bool zeroMask=false, bool interpolate=true) — Convenience function to downsample by binning on the CPU, and adjusting the image matrix afterwards.
+
+## Methods implementing the algorithm interface
+
+- void [setBayerPatternMode](#setbayerpatternmode) (int val) — Set the bayer pattern mode.
+- int **bayerPatternMode** () const — Get Bayer pattern mode.
+- void [compute](#compute) () override — Applies the processing in the offline case.
+- [std::pair](http://en.cppreference.com/w/cpp/utility/pair.html)&lt; [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) &gt;, [DataComponentList](/cpp-sdk/4.5/api/classes/imfusion-datacomponentlist) &gt; [processImage](#processimage) (const [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) &image, const [DataComponentList](/cpp-sdk/4.5/api/classes/imfusion-datacomponentlist) &components) const override — Applies the processing to an individual image, used in stream processing case.
+- const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* **input** () const
+- [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) [takeOutput](#takeoutput) () override — If new data was created, make it available here.
+- static bool [createCompatible](#createcompatible) (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=0)
+
+## Methods implementing the Configurable interface
+
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+## Member Enumeration Documentation
+
+### Mode
+
+```cpp
+enum ImFusion::BasicImageProcessing::Mode
+```
+
+**Enumerator:**
+
+- `DOWNSAMPLE` — Use [ImageResamplingAlgorithm](/cpp-sdk/4.5/api/classes/imfusion-imageresamplingalgorithm) instead.
+- `RESAMPLE` — Use [ImageResamplingAlgorithm](/cpp-sdk/4.5/api/classes/imfusion-imageresamplingalgorithm) instead.
+- `FLIP` — Flip the image along the flipAxis.
+- `ROTATE` — Rotate the image around the rotationAngle.
+- `THRESHOLDING` — Thresholdsthe image according to the rangeThresholdParams.
+- `INVERT` — Invert all intensities in the image.
+- `CROP` — Crop the image dimensions according to the cropParams.
+- `CONVERTGRAY` — Convert a multichannel image to a single channel by averaging.
+- `NORMALIZE` — Convert the image to float by normalizing the value range of the image to [0,1].
+- `SHARPNESS` — Compute the image sharpness and prints it to the console (see [GlImageMetric](/cpp-sdk/4.5/api/classes/imfusion-glimagemetric)).
+- `REDUCE_BIT_DEPTH` — Convert a 16-bit image to a 8-bit one.
+- `GRADATION` — Convert intensities according to the gradationMap.
+- `EQUALIZE_HISTOGRAM` — Perform a standard histogram equalization.
+- `RESIZE` — Use [ImageResamplingAlgorithm](/cpp-sdk/4.5/api/classes/imfusion-imageresamplingalgorithm) instead.
+- `EMBED_ROTATION` — Similar to ROTATE but uses the image matrix. Only works if the rotation in the matrix is a multiple of 90°
+- `SHIFT_N_SCALE` — Set shift and scale of the image.
+- `CONVERT_TO_FLOAT` — Convert the image to float without normalizing it.
+- `BRIGHTNESS_PRESERVING_HE` — Brightness preserving histogram equalization (internal only, use at your own risk!).
+- `BAYER_PATTERN_TO_COLOR` — Convert a bayer pattern images to color coded images.
+- `NR_MODES` — Internal end marker of available modes, don't use directly!
+
+## Member Function Documentation
+
+### setFlipAxis
+
+```cpp
+void ImFusion::BasicImageProcessing::setFlipAxis (int val)
+```
+
+*inline*
+
+Set the flip axis.
+
+0: X-axis 1: Y-axis 2: Z-axis
+
+### setRotationAxis
+
+```cpp
+void ImFusion::BasicImageProcessing::setRotationAxis (int axis)
+```
+
+*inline*
+
+Set the rotation axis.
+
+0: X-axis 1: Y-axis 2: Z-axis
+
+### setRangeThresholdParams
+
+```cpp
+void ImFusion::BasicImageProcessing::setRangeThresholdParams (bool thresholdInside, double lowerThreshold, double upperThreshold)
+```
+
+Set the parameters for thresholding.
+
+**Parameters:**
+
+- `thresholdInside` — Whether the values inside the tresholding range should be assigned the value of 1 (true) or the values outside the range (false)
+
+### setPreserveValuesOnBitReduction
+
+```cpp
+void ImFusion::BasicImageProcessing::setPreserveValuesOnBitReduction (bool flag)
+```
+
+*inline*
+
+If enabled, 16-bit values are clamped to 8-bit during REDUCE_BIT_DEPTH.
+
+Otherwise 16-bit values are bit shifted by 8.
+
+### createCompatible
+
+```cpp
+bool ImFusion::BasicImageProcessing::createCompatible (const DataList & data, Algorithm ** a = 0)
+```
+
+*static*
+
+Factory method to check for applicability or to create the algorithm
+
+### setBayerPatternMode
+
+```cpp
+void ImFusion::BasicImageProcessing::setBayerPatternMode (int val)
+```
+
+*inline*
+
+Set the bayer pattern mode.
+
+0: Bayer RGGB to RGB 1: Bayer GRBG to RGB 2: Bayer BGGR to RGB 3: Bayer GBRG to RGB
+
+### compute
+
+```cpp
+void ImFusion::BasicImageProcessing::compute ()
+```
+
+*override, virtual*
+
+Applies the processing in the offline case.
+
+### processImage
+
+```cpp
+std::pair < std::shared_ptr < SharedImage >, DataComponentList > ImFusion::BasicImageProcessing::processImage (const SharedImage & image, const DataComponentList & components) const
+```
+
+*override, virtual*
+
+Applies the processing to an individual image, used in stream processing case.
+
+### takeOutput
+
+```cpp
+OwningDataList ImFusion::BasicImageProcessing::takeOutput ()
+```
+
+*override, virtual*
+
+If new data was created, make it available here.
+
+### configure
+
+```cpp
+void ImFusion::BasicImageProcessing::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### configuration
+
+```cpp
+void ImFusion::BasicImageProcessing::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality

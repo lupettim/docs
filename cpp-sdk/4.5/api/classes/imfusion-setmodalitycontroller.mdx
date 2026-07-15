@@ -1,0 +1,58 @@
+---
+title: "ImFusion::SetModalityController"
+sidebarTitle: "SetModalityController"
+description: "Controller for setting the modality flag of an image data instance."
+---
+
+`#include <ImFusion/GUI/SetModalityController.h>`
+
+## Overview
+
+[Controller](/cpp-sdk/4.5/api/classes/imfusion-controller) for setting the modality flag of an image data instance.
+
+## Public Slots
+
+- void **run** () — Executes the dialog, triggered by the init method.
+
+## Public Member Functions
+
+- **SetModalityController** ([SetModalityAlgorithm](/cpp-sdk/4.5/api/classes/imfusion-setmodalityalgorithm) \*alg) — Constructor with the algorithm instance.
+- void [init](#init) () override — Initializes the controller.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Location](/cpp-sdk/4.5/api/classes/imfusion-controller) &gt; [supportedLocations](#supportedlocations) () const override — Returns the list of locations in which this controller is allowed to be placed by the parent [MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase).
+- [Location](/cpp-sdk/4.5/api/classes/imfusion-controller) [preferredLocation](#preferredlocation) () const override — Returns the preferred location in which the parent [MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase) should place this controller.
+
+## Member Function Documentation
+
+### init
+
+```cpp
+void ImFusion::SetModalityController::init ()
+```
+
+*override, virtual*
+
+Initializes the controller.
+
+### supportedLocations
+
+```cpp
+std::vector < Location > ImFusion::SetModalityController::supportedLocations () const
+```
+
+*inline, override, virtual*
+
+Returns the list of locations in which this controller is allowed to be placed by the parent [MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase).
+
+If the controller should not be placed/wrapped by the host but stand by itself you should return a list containing only [Location::Naked](/cpp-sdk/4.5/api/classes/imfusion-controller).
+
+### preferredLocation
+
+```cpp
+Location ImFusion::SetModalityController::preferredLocation () const
+```
+
+*inline, override, virtual*
+
+Returns the preferred location in which the parent [MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase) should place this controller.
+
+If the controller should not be placed/wrapped by the host but stand by itself you should return [Location::Naked](/cpp-sdk/4.5/api/classes/imfusion-controller).

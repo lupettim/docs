@@ -1,0 +1,267 @@
+---
+title: "ImFusion::Utils"
+sidebarTitle: "Utils"
+description: "Generic utility classes and helper functions."
+---
+
+## Overview
+
+Generic utility classes and helper functions.
+
+Collection of utility methods not associated with any class.
+
+**See also:** ImFusionCoreUtils
+
+## Namespaces
+
+- namespace [EigenVectorWrapperImpl](/cpp-sdk/4.5/api/namespaces/imfusion-utils-eigenvectorwrapperimpl) — Wrapper classes for using [std::vector&lt;Eigen::Matrix&lt;T,N,1&gt;&gt;](http://en.cppreference.com/w/cpp/container/vector.html) with arbitrary T and N as input of a non-template function.
+
+## Classes
+
+- class [Expected](/cpp-sdk/4.5/api/classes/imfusion-utils-expected) — An [Expected](/cpp-sdk/4.5/api/classes/imfusion-utils-expected)&lt;T, E&gt; object is an object that contains the storage for another object and manages the lifetime of this contained object T.
+- class [Unexpected](/cpp-sdk/4.5/api/classes/imfusion-utils-unexpected)
+- class [bad_expected_access](/cpp-sdk/4.5/api/classes/imfusion-utils-bad-expected-access)
+- class [NotCopyable](/cpp-sdk/4.5/api/classes/imfusion-utils-notcopyable) — Inherit from this class if your class should be neither copy-constructible nor assignable.
+- struct [Overloaded](/cpp-sdk/4.5/api/structs/imfusion-utils-overloaded) — Syntactic sugar for easier implementation of visitors of a [std::variant](http://en.cppreference.com/w/cpp/utility/variant.html) or our [Utils::Variant](/cpp-sdk/4.5/api/structs/imfusion-utils-variant).
+- class [ScopeGuard](/cpp-sdk/4.5/api/classes/imfusion-utils-scopeguard) — Templated proxy class to implement generic scope guards.
+- class [Span](/cpp-sdk/4.5/api/classes/imfusion-utils-span) — Describes a non-owning view into contiguous sequence of elements.
+- struct [Variant](/cpp-sdk/4.5/api/structs/imfusion-utils-variant) — Specialization of [std::variant](http://en.cppreference.com/w/cpp/utility/variant.html) offering additional convenience member functions for functionality that the standard library only provides in the form of free functions.
+- struct [Version](/cpp-sdk/4.5/api/structs/imfusion-utils-version) — Utility class to work with version information following the [SemVer](https://semver.org/) format.
+- struct [EigenVectorWrapper](/cpp-sdk/4.5/api/structs/imfusion-utils-eigenvectorwrapper) — Simple case: non-optional input argument.
+- struct [OutputEigenVectorWrapper](/cpp-sdk/4.5/api/structs/imfusion-utils-outputeigenvectorwrapper) — Non-optional output argument.
+- struct [OptionalEigenVectorWrapper](/cpp-sdk/4.5/api/structs/imfusion-utils-optionaleigenvectorwrapper) — Optional input argument.
+- struct [OptionalOutputEigenVectorWrapper](/cpp-sdk/4.5/api/structs/imfusion-utils-optionaloutputeigenvectorwrapper) — Optional output argument.
+- class [LinearIterator](/cpp-sdk/4.5/api/classes/imfusion-utils-lineariterator) — Typed convenience iterator for quick integration into custom containers, especially if traversal requires on-the-fly evaluations.
+- struct [FileGuard](/cpp-sdk/4.5/api/structs/imfusion-utils-fileguard) — Utility RAII class that deletes the given file when destructed.
+- class [AutoDisconnectSignals](/cpp-sdk/4.5/api/classes/imfusion-utils-autodisconnectsignals)
+
+## Typedefs
+
+- using **BoundingBoxAndLabel** = [std::pair](http://en.cppreference.com/w/cpp/utility/pair.html)&lt;[Geometry::AlignedBox](/cpp-sdk/4.5/api/classes/imfusion-geometry-alignedbox), size_t&gt;
+
+## Functions
+
+- constexpr bool **operator==** (const [Unexpected](/cpp-sdk/4.5/api/classes/imfusion-utils-unexpected)&lt; E &gt; &lhs, const [Unexpected](/cpp-sdk/4.5/api/classes/imfusion-utils-unexpected)&lt; E &gt; &rhs)
+- constexpr bool **operator!=** (const [Unexpected](/cpp-sdk/4.5/api/classes/imfusion-utils-unexpected)&lt; E &gt; &lhs, const [Unexpected](/cpp-sdk/4.5/api/classes/imfusion-utils-unexpected)&lt; E &gt; &rhs)
+- constexpr bool **operator&lt;** (const [Unexpected](/cpp-sdk/4.5/api/classes/imfusion-utils-unexpected)&lt; E &gt; &lhs, const [Unexpected](/cpp-sdk/4.5/api/classes/imfusion-utils-unexpected)&lt; E &gt; &rhs)
+- constexpr bool **operator&lt;=** (const [Unexpected](/cpp-sdk/4.5/api/classes/imfusion-utils-unexpected)&lt; E &gt; &lhs, const [Unexpected](/cpp-sdk/4.5/api/classes/imfusion-utils-unexpected)&lt; E &gt; &rhs)
+- constexpr bool **operator&gt;** (const [Unexpected](/cpp-sdk/4.5/api/classes/imfusion-utils-unexpected)&lt; E &gt; &lhs, const [Unexpected](/cpp-sdk/4.5/api/classes/imfusion-utils-unexpected)&lt; E &gt; &rhs)
+- constexpr bool **operator&gt;=** (const [Unexpected](/cpp-sdk/4.5/api/classes/imfusion-utils-unexpected)&lt; E &gt; &lhs, const [Unexpected](/cpp-sdk/4.5/api/classes/imfusion-utils-unexpected)&lt; E &gt; &rhs)
+- [Unexpected](/cpp-sdk/4.5/api/classes/imfusion-utils-unexpected)&lt; typename [std::decay](http://en.cppreference.com/w/cpp/types/decay.html)&lt; E &gt;::type &gt; **make_unexpected** (E &&e)
+- constexpr bool **operator==** (const [Expected](/cpp-sdk/4.5/api/classes/imfusion-utils-expected)&lt; T, E &gt; &lhs, const [Expected](/cpp-sdk/4.5/api/classes/imfusion-utils-expected)&lt; U, F &gt; &rhs)
+- constexpr bool **operator!=** (const [Expected](/cpp-sdk/4.5/api/classes/imfusion-utils-expected)&lt; T, E &gt; &lhs, const [Expected](/cpp-sdk/4.5/api/classes/imfusion-utils-expected)&lt; U, F &gt; &rhs)
+- constexpr bool **operator==** (const [Expected](/cpp-sdk/4.5/api/classes/imfusion-utils-expected)&lt; void, E &gt; &lhs, const [Expected](/cpp-sdk/4.5/api/classes/imfusion-utils-expected)&lt; void, F &gt; &rhs)
+- constexpr bool **operator!=** (const [Expected](/cpp-sdk/4.5/api/classes/imfusion-utils-expected)&lt; void, E &gt; &lhs, const [Expected](/cpp-sdk/4.5/api/classes/imfusion-utils-expected)&lt; void, F &gt; &rhs)
+- constexpr bool **operator==** (const [Expected](/cpp-sdk/4.5/api/classes/imfusion-utils-expected)&lt; T, E &gt; &x, const U &v)
+- constexpr bool **operator==** (const U &v, const [Expected](/cpp-sdk/4.5/api/classes/imfusion-utils-expected)&lt; T, E &gt; &x)
+- constexpr bool **operator!=** (const [Expected](/cpp-sdk/4.5/api/classes/imfusion-utils-expected)&lt; T, E &gt; &x, const U &v)
+- constexpr bool **operator!=** (const U &v, const [Expected](/cpp-sdk/4.5/api/classes/imfusion-utils-expected)&lt; T, E &gt; &x)
+- constexpr bool **operator==** (const [Expected](/cpp-sdk/4.5/api/classes/imfusion-utils-expected)&lt; T, E &gt; &x, const [Unexpected](/cpp-sdk/4.5/api/classes/imfusion-utils-unexpected)&lt; E &gt; &e)
+- constexpr bool **operator==** (const [Unexpected](/cpp-sdk/4.5/api/classes/imfusion-utils-unexpected)&lt; E &gt; &e, const [Expected](/cpp-sdk/4.5/api/classes/imfusion-utils-expected)&lt; T, E &gt; &x)
+- constexpr bool **operator!=** (const [Expected](/cpp-sdk/4.5/api/classes/imfusion-utils-expected)&lt; T, E &gt; &x, const [Unexpected](/cpp-sdk/4.5/api/classes/imfusion-utils-unexpected)&lt; E &gt; &e)
+- constexpr bool **operator!=** (const [Unexpected](/cpp-sdk/4.5/api/classes/imfusion-utils-unexpected)&lt; E &gt; &e, const [Expected](/cpp-sdk/4.5/api/classes/imfusion-utils-expected)&lt; T, E &gt; &x)
+- void **swap** ([Expected](/cpp-sdk/4.5/api/classes/imfusion-utils-expected)&lt; T, E &gt; &lhs, [Expected](/cpp-sdk/4.5/api/classes/imfusion-utils-expected)&lt; T, E &gt; &rhs) noexcept(noexcept(lhs.swap(rhs)))
+- **Overloaded** (Ts...) -&gt; Overloaded&lt; Ts... &gt;
+- detail::RangeProxy&lt; T &gt; range (T begin, T end) — An iterable wrapper for the half-open interval of integer numbers [begin, end).
+- detail::RangeProxy&lt; T &gt; range (T end) — An iterable wrapper for the half-open interval of integer numbers [0, end).
+- detail::StepRangeProxy&lt; T &gt; range (T begin, T end, T step_size) — An iterable wrapper for the uniformly numbers in the half-open interval [begin, end).
+- detail::ReverseWrapper&lt; T &gt; **reverse** (T &&iterable) — Iterator wrapper to reverse the iteration order.
+- [ScopeGuard](/cpp-sdk/4.5/api/classes/imfusion-utils-scopeguard)&lt; [std::remove_reference_t](http://en.cppreference.com/w/cpp/types/remove_reference.html)&lt; ReleaseFunc &gt; &gt; makeScopeGuard (ReleaseFunc &&f) — Generator function to instantiate a [ScopeGuard](/cpp-sdk/4.5/api/classes/imfusion-utils-scopeguard) without writing out the templates.
+- [ScopeGuard](/cpp-sdk/4.5/api/classes/imfusion-utils-scopeguard)&lt; [std::remove_reference_t](http://en.cppreference.com/w/cpp/types/remove_reference.html)&lt; ReleaseFunc &gt; &gt; makeScopeGuard (AcquisitionFunc &&acquisitionFunc, ReleaseFunc &&releaseFunc) — Generator function to first execute *acquisitionFunc* and then instantiate a [ScopeGuard](/cpp-sdk/4.5/api/classes/imfusion-utils-scopeguard) with *releaseFunc*.
+- **Span** (T(&)[N]) -&gt; Span&lt; T, N &gt;
+- **Span** ([std::array](http://en.cppreference.com/w/cpp/container/array.html)&lt; T, N &gt; &) -&gt; Span&lt; T, N &gt;
+- **Span** (const [std::array](http://en.cppreference.com/w/cpp/container/array.html)&lt; T, N &gt; &) -&gt; Span&lt; const T, N &gt;
+- **Span** ([Container](/cpp-sdk/4.5/api/namespaces/imfusion-container) &) -&gt; Span&lt; typename [std::remove_reference](http://en.cppreference.com/w/cpp/types/remove_reference.html)&lt; decltype(\*[std::data](http://en.cppreference.com/w/cpp/iterator/data.html)([std::declval](http://en.cppreference.com/w/cpp/utility/declval.html)&lt; [Container](/cpp-sdk/4.5/api/namespaces/imfusion-container) & &gt;()))&gt;::type &gt;
+- **Span** (const [Container](/cpp-sdk/4.5/api/namespaces/imfusion-container) &) -&gt; Span&lt; const typename Container::value_type &gt;
+- void **applyMask** (const [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) \*inImg, const [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) \*mask, [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) \*outImg, double outsideValue, bool const thresholdValue, bool const aboveThreshold, bool const elevateInside)
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::array](http://en.cppreference.com/w/cpp/container/array.html)&lt; typename Iter::value_type, R &gt; &gt; [combinations](#combinations) (Iter begin, Iter end) — Return r length subsequences of elements from the input iterable.
+- T [sampleFromSequence](#samplefromsequence) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; &x, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; T &gt; &y, double x0, [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; T(T, T, double)&gt; interpFunc=[](T a, T b, double w) &#123; return static_cast&lt; T &gt;(w \*b+(1.0 - w) \*a);&#125;) — Given a sequence of values y measured at sampling points x, returns the linearly interpolated value for a specific x0.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; T &gt; **resampleSequence** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; T &gt; &vals, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; &tHave, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; &tWant, [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; T(T, T, double)&gt; interpFunc=[](T a, T b, double w) &#123; return w \*b+(1.0 - w) \*a;&#125;) — Resamples a sequence of values val measured at timestamps tHave with the new timestamps tWant.
+- bool **sortByVector** ([std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; T &gt; &toBeSorted, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; U &gt; &valuesToSortBy) — Sorts a vector according to the values in another vector, for cases where you somehow cannot work with structs containing both values.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::tuple](http://en.cppreference.com/w/cpp/utility/tuple.html)&lt; typename ContainerT::const_iterator, typename ContainerT::const_iterator, double &gt; &gt; [kMeans](#kmeans) (const ContainerT &c, int numCluster, int numIter, [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; double(const typename ContainerT::value_type &)&gt; mapTToDouble=[](const typename ContainerT::value_type &elem) -&gt; double &#123; return static_cast&lt; double &gt;(elem);&#125;) — A container-based 1D k-means clustering that checks whether all elements in a container are equal to each other.
+- void [autoWindow](#autowindow) (const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &img, bool applyTo2dDisplayOptions=true, bool applyTo3dDisplayOptions=true, double lowerLimit=0.0, double upperLimit=0.0) — Update window/level of *img* to show the entire intensity range of the image.
+- [Image::Type](/cpp-sdk/4.5/api/classes/imfusion-image) **imageTypeId** ()
+- PixelType **pixelTypeId** ()
+- mat4 [getRenderMatrixToWorld](#getrendermatrixtoworld) (const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &img, int which=-1) — Obtains the matrix to render the given image in 2D, MPR, and 3D views.
+- mat4 [getRenderMatrixFromWorld](#getrendermatrixfromworld) (const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &img, int which=-1) — Obtains the matrix to render the given image in 2D, MPR, and 3D views.
+- bool **operator&gt;** (const [LinearIterator](/cpp-sdk/4.5/api/classes/imfusion-utils-lineariterator)&lt; T &gt; &c1, const [LinearIterator](/cpp-sdk/4.5/api/classes/imfusion-utils-lineariterator)&lt; T &gt; &c2)
+- bool **operator&gt;=** (const [LinearIterator](/cpp-sdk/4.5/api/classes/imfusion-utils-lineariterator)&lt; T &gt; &c1, const [LinearIterator](/cpp-sdk/4.5/api/classes/imfusion-utils-lineariterator)&lt; T &gt; &c2)
+- bool **operator&lt;** (const [LinearIterator](/cpp-sdk/4.5/api/classes/imfusion-utils-lineariterator)&lt; T &gt; &c1, const [LinearIterator](/cpp-sdk/4.5/api/classes/imfusion-utils-lineariterator)&lt; T &gt; &c2)
+- bool **operator&lt;=** (const [LinearIterator](/cpp-sdk/4.5/api/classes/imfusion-utils-lineariterator)&lt; T &gt; &c1, const [LinearIterator](/cpp-sdk/4.5/api/classes/imfusion-utils-lineariterator)&lt; T &gt; &c2)
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [defaultModelsPath](#defaultmodelspath) () — Returns the default path of the machine learning models.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **sdkDocDirectory** () — Returns the absolute directory of the C++ SDK documentation.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **userDocDirectory** () — Returns the absolute directory of the HTML user documentation.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **licenseAgreementDirectory** () — Returns the absolute directory to the License and Acknowledgments files.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **uniqueIdFromUsbPath** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &usbPath) — Tries to get a unique identifier from a USB device path.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **enumerateUsbDevices** ()
+- auto typeSwitch ([Image::Type](/cpp-sdk/4.5/api/classes/imfusion-image) itype, F &&func, Args &&... args) — Function for internally type switching a given lambda function on the [Image::Type](/cpp-sdk/4.5/api/classes/imfusion-image) cases.
+- auto typeSwitch (const [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) &img, F &&func, Args &&... args) — Function for internally type switching a given lambda function on the [Image::Type](/cpp-sdk/4.5/api/classes/imfusion-image) cases.
+- auto typeSwitch (const PixelType &type, F &&func, Args &&... args)
+- int **exitCodeLicenseReset** () — Special app exit code to signal the main loop to exit because the license got reset.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **vecBoolToString** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; bool &gt; &vec)
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; bool &gt; **stringToVecBool** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &str, size_t vecBoolSize)
+- QString **randomString** (int len)
+- QString **generateUniqueID** ()
+- bool **paramToQString** (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) &p, const char \*param, QString &out)
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec4 &gt; & **colors** ()
+- QString **validityToError** (Seg::LabelValidity v)
+- double **computeAccuracyScore** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &result, [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &gt, int nbClasses)
+- void **setWindowLevel** (const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &sis, const [ViewerMetadata](/cpp-sdk/4.5/api/structs/imfusion-viewermetadata) &m)
+- void **setLabelDataComponent** (const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &labelSis, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Project::PixelwiseLabelType](/cpp-sdk/4.5/api/structs/imfusion-project-pixelwiselabeltype) &gt; &labelTypes, bool globalVis2D, bool globalVis3D, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; bool &gt; &visibility=&#123;&#125;)
+- bool **isDemoVersion** ()
+- [Filesystem::Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path) [logFileLocation](#logfilelocation) () — Returns the path to the global log file.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &gt; **runPixelwiseModel** (const QString &path, [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &image, [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &labels, const [RegionOfInterest](/cpp-sdk/4.5/api/structs/imfusion-regionofinterest) &roi)
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &gt; **runWorkspace** (const QString &filename, [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &image, [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &labels, const [RegionOfInterest](/cpp-sdk/4.5/api/structs/imfusion-regionofinterest) &roi, QWidget \*parent=nullptr)
+- void **updateRegionWithinROI** ([TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; unsigned char &gt; &main, const [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; unsigned char &gt; &subRegion, const [RegionOfInterest](/cpp-sdk/4.5/api/structs/imfusion-regionofinterest) &roi)
+- void **runFunctionsROI** ([TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; unsigned char &gt; &labels, const [RegionOfInterest](/cpp-sdk/4.5/api/structs/imfusion-regionofinterest) &roi, [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; void(size_t ind)&gt; fOnlyInside, [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; void(size_t ind)&gt; fOnlyOutside, [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; void(size_t ind)&gt; fEverywhere)
+- void **runFunctionInsideROI** ([TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; unsigned char &gt; &labels, const [RegionOfInterest](/cpp-sdk/4.5/api/structs/imfusion-regionofinterest) &roi, [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; void(size_t ind)&gt; f)
+- void **runFunctionOutsideROI** ([TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; unsigned char &gt; &labels, const [RegionOfInterest](/cpp-sdk/4.5/api/structs/imfusion-regionofinterest) &roi, [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; void(size_t ind)&gt; f)
+- void **applyMorphoOperation** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &labels, MorphologicalOperationsAlgorithm::OperationMode opMode, int opSize)
+- T \* **pickLayer** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; T &gt; &gt; &vec, [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; size_t &gt; first, [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; size_t &gt; second)
+- [std::pair](http://en.cppreference.com/w/cpp/utility/pair.html)&lt; QString, QString &gt; **volumeDisplay** (size_t numPixels, const [ImageDescriptor](/cpp-sdk/4.5/api/structs/imfusion-imagedescriptor) &desc, mat4 imageMat)
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; Project::TypeMapping &gt; **identityLayerMapping** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; LayerType &gt; &gt; &layers)
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; unsigned char &gt; &gt; [boundingBoxesToLabelMap](#boundingboxestolabelmap-1-2) (const [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) &image, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; BoundingBoxAndLabel &gt; &boundingBoxes) — Converts a list of [BoundingBox](/cpp-sdk/4.5/api/namespaces/imfusion) types to a label map for the given reference image.
+- void [boundingBoxesToLabelMap](#boundingboxestolabelmap-2-2) (const [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) &image, [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; unsigned char &gt; &labelmap, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; BoundingBoxAndLabel &gt; &boundingBoxes) — Same as boundingBoxesToLabelMap above, but uses the provided labelmap.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &gt; **convertSignedLabelMap** (const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &labels)
+- QString **elideName** (const QString &name, const int maxNameLen, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &elisionStr=" [...] ") — Shortens name whose length exceeds maxNameLen using elision string elisionStr.
+- [std::unordered_map](http://en.cppreference.com/w/cpp/container/unordered_map.html)&lt; int, [Statistics](/cpp-sdk/4.5/api/structs/imfusion-statistics) &gt; **computeLabelStatisticsFromBoundingBox** (const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*sisImage, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; Utils::BoundingBoxAndLabel &gt; &boundingBoxes, [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; double(double)&gt; intensityMapping, int channel, [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) \*progress) — Calculates statistics per label from bounding boxes.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **modelsLocalDirDefault** ()
+- [Filesystem::Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path) **labelsUserDataPath** ()
+- [Filesystem::Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path) [filenameFromContentDisposition](#filenamefromcontentdisposition) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &contentDisposition) — Parses the filename value from the Content-Disposition header.
+
+## Variables
+
+- PythonInterpreterInterface \* **g_pythonInterpreter** — Pointer to the embedded Python interpreter (if any).
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; LabelsPythonBridgeInterface &gt; **g_pythonBridge** — Pointer to the bridge providing Labels types to the above interpreter.
+
+## Function Documentation
+
+### combinations
+
+```cpp
+template<int R, typename Iter> std::vector < std::array < typename Iter::value_type, R > > ImFusion::Utils::combinations (Iter begin, Iter end)
+```
+
+Return r length subsequences of elements from the input iterable.
+
+Combinations are emitted in lexicographic sort order. So, if the input iterable is sorted, the combination tuples will be produced in sorted order. Elements are treated as unique based on their position, not on their value. So if the input elements are unique, there will be no repeat values in each combination.
+
+```cpp
+std::vector<std::string>> l = {"A", "B", "C", "D"};
+Utils::combinations<2>(l.begin(), l.end());
+```
+ fragment
+Returns &#123;&#123;"A", "B"&#125;, &#123;"A", "C"&#125;, &#123;"A", "D"&#125;, &#123;"B", "C"&#125;, &#123;"B", "D"&#125;, &#123;"C", "D"&#125;&#125;
+
+### sampleFromSequence
+
+```cpp
+template<typename T> T ImFusion::Utils::sampleFromSequence (const std::vector < double > & x, const std::vector < T > & y, double x0, std::function < T(T, T, double)> interpFunc = [](T a, T b, double w) { return static_cast<T>(w * b + (1.0 - w) * a); })
+```
+
+Given a sequence of values y measured at sampling points x, returns the linearly interpolated value for a specific x0.
+
+If the target sampling point is outside the measurement range given by x, it will return the closest valid y. x needs to be monotonically increasing, but does not have to be equidistant.
+
+### kMeans
+
+```cpp
+template<typename ContainerT> std::vector < std::tuple < typename ContainerT::const_iterator, typename ContainerT::const_iterator, double > > ImFusion::Utils::kMeans (const ContainerT & c, int numCluster, int numIter, std::function < double(const typename ContainerT::value_type &)> mapTToDouble = [](const typename ContainerT::value_type& elem) -> double { return static_cast<double>(elem); })
+```
+
+A container-based 1D k-means clustering that checks whether all elements in a container are equal to each other.
+
+**Parameters:**
+
+- `c` — A container of elements. Needs to be sorted in ascending order with respect to mapTToDouble.
+- `numCluster` — [Expected](/cpp-sdk/4.5/api/classes/imfusion-utils-expected) number of clusters.
+- `numIter` — Number of iterations for the k-means.
+- `mapTToDouble` — Mapping of the elements of c to a double value. The same mapping needs to be used for sorting.
+
+**Returns:** A vector of tuples (first, end, mean) with numIter elements. The const iterators first and second give the range of each cluster [first,end) with mean providing the corresponding mean value of the cluster.
+
+### autoWindow
+
+```cpp
+void ImFusion::Utils::autoWindow (const SharedImageSet & img, bool applyTo2dDisplayOptions = true, bool applyTo3dDisplayOptions = true, double lowerLimit = 0.0, double upperLimit = 0.0)
+```
+
+Update window/level of *img* to show the entire intensity range of the image.
+
+**Parameters:**
+
+- `img` — [Image](/cpp-sdk/4.5/api/classes/imfusion-image) to change the windowing for.
+- `applyTo2dDisplayOptions` — Flag whether update the [DisplayOptions2d](/cpp-sdk/4.5/api/classes/imfusion-displayoptions2d) attached to *img*.
+- `applyTo3dDisplayOptions` — Flag whether update the [DisplayOptions3d](/cpp-sdk/4.5/api/classes/imfusion-displayoptions3d) attached to *img*.
+- `lowerLimit` — Ratio of lower values removed by the auto windowing.
+- `upperLimit` — Ratio of upper values removed by the auto windowing.
+
+### getRenderMatrixToWorld
+
+```cpp
+mat4 ImFusion::Utils::getRenderMatrixToWorld (const SharedImageSet & img, int which = -1)
+```
+
+Obtains the matrix to render the given image in 2D, MPR, and 3D views.
+
+The function evaluates to img.matrixToWorld() for standard SharedImageSets, but correctly considers the internal matrix for derived types (CBCT data, TrackedSharedImageSets, etc.)
+
+### getRenderMatrixFromWorld
+
+```cpp
+mat4 ImFusion::Utils::getRenderMatrixFromWorld (const SharedImageSet & img, int which = -1)
+```
+
+Obtains the matrix to render the given image in 2D, MPR, and 3D views.
+
+The function evaluates to img.matrixFromWorld() for standard SharedImageSets, but correctly considers the internal matrix for derived types (CBCT data, TrackedSharedImageSets, etc.)
+
+### defaultModelsPath
+
+```cpp
+std::string ImFusion::Utils::defaultModelsPath ()
+```
+
+Returns the default path of the machine learning models.
+
+Use Settings::defaultFolderMLModels to get a path which can be changed by the user.
+
+### logFileLocation
+
+```cpp
+Filesystem::Path ImFusion::Utils::logFileLocation ()
+```
+
+Returns the path to the global log file.
+
+Assumes that there is only a single FileSink configured.
+
+### boundingBoxesToLabelMap
+
+```cpp
+std::unique_ptr < TypedImage < unsigned char > > ImFusion::Utils::boundingBoxesToLabelMap (const SharedImage & image, const std::vector < BoundingBoxAndLabel > & boundingBoxes)
+```
+
+Converts a list of [BoundingBox](/cpp-sdk/4.5/api/namespaces/imfusion) types to a label map for the given reference image.
+
+The boundingBoxes are a pair of the box and the label value it will get assigned in the labelmap. If boundingBoxes are overlapping, the boundingBoxes in the front of the vector will overwrite the ones in the back. The labelmap is created with the same size as the image. The image is also used to convert the world coordinates of the bounding boxes to pixel coordinates.
+
+### boundingBoxesToLabelMap
+
+```cpp
+void ImFusion::Utils::boundingBoxesToLabelMap (const SharedImage & image, TypedImage < unsigned char > & labelmap, const std::vector < BoundingBoxAndLabel > & boundingBoxes)
+```
+
+Same as boundingBoxesToLabelMap above, but uses the provided labelmap.
+
+The labelmap is not cleared, so values outside any bounding box are unchanged.
+
+### filenameFromContentDisposition
+
+```cpp
+Filesystem::Path ImFusion::Utils::filenameFromContentDisposition (const std::string & contentDisposition)
+```
+
+Parses the filename value from the Content-Disposition header.
+
+E.g. "attachment; filename=image.jpg" -&gt; "image.jpg" If the filename contains a path, it will be stripped away automatically. E.g. "attachment; filename=../image.jpg" -&gt; "image.jpg"

@@ -1,0 +1,341 @@
+---
+title: "ImFusion::Filesystem::Url"
+sidebarTitle: "Url"
+description: "Entity representing a URL (Uniform Resource Locator)."
+---
+
+`#include <ImFusion/Core/Filesystem/Url.h>`
+
+## Overview
+
+Entity representing a URL (Uniform [Resource](/cpp-sdk/4.5/api/namespaces/imfusion-resource) Locator).
+
+Such an object is concerned only with the lexical and syntactic aspects of a URL. The URL does not necessarily point to an existing resource, and is not necessarily valid for the current environment. It can be converted from and to a [Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path), in which case either the path is absolute and the "file" scheme is used, or the path is relative and the scheme is missing.
+
+Technically, a URI with the "file" scheme is not a URL, but it does not matter for the purposes of this class.
+
+A URL consists of a sequence of five components which in turn consist of subcomponents separated by various tokens, called sigils (':', '//', '@', '/', '?', and '#'):  [scheme](#scheme)://authority/path?[query](#query)#[fragment](#fragment)
+
+The authority's syntax is as follows:  [[userinfo](#userinfo)@][host](#host)[:[port](#port)]  where both the userinfo and port are optional. If the host is empty, it resolves to "localhost".
+
+The query and fragment components are always optional.
+
+For an absolute URL, both the scheme and the authority must be present. If the scheme or the authority are absent, the URL is relative, the scheme is "file" by default, and the authority is "localhost" by default. If the authority is present, the path must either be empty or start with a slash '/'. Setting the scheme, the authority, or parts of it may result in an invalid URL if it previously was relative and becomes absolute, or vice versa.
+
+Here is an example of the generic syntax (from [https://en.wikipedia.org/wiki/Uniform_Resource_Identifier#Examples](https://en.wikipedia.org/wiki/Uniform_Resource_Identifier#Examples)):
+
+```cpp
+ userinfo host port
+        ┌──┴───┐ ┌──────┴──────┐ ┌┴┐
+https://john.doe@www.example.com:123/forum/questions/?tag=networking&order=newest#top
+└─┬─┘   └───────────┬──────────────┘└───────┬───────┘ └───────────┬─────────────┘ └┬┘
+scheme authority path query fragment
+```
+ fragment
+The characters ';', '/', '?', ':', '@', '=' and '&' are reserved for special meaning within a scheme. The character '#' is unsafe and the [Url](/cpp-sdk/4.5/api/classes/imfusion-filesystem-url) class treats it as reserved as well.
+
+If the URL becomes invalid (by setting part of it, or from the parsing constructor), no exception is thrown and no error is returned. Instead, isValid() would return false.
+
+Here is an example of what each getter returns with a sample URL:
+
+```cpp
+Url("https://john.doe:123456@www.example.com:80/forum/questions/?tag=networking&order=newest#top")
+.scheme() == "https"
+.authority() == "john.doe:123456@www.example.com:80"
+.userinfo() == "john.doe:123456"
+.username() == "john.doe"
+.password() == "123456"
+.host() == "www.example.com"
+.port() == "80"
+.path() == "/forum/questions/"
+.query() == "tag=networking&order=newest"
+.fragment() == "top"
+```
+ fragment
+The path of a URL may be percent-encoded. For example, hashtags '#' in URL paths are replaced with "%23" (23 being the hexadecimal value of '#' in ASCII). The constructors of [Url](/cpp-sdk/4.5/api/classes/imfusion-filesystem-url) that take in a path separately do encode it. The [Url::setPath](#setpath) method encodes its argument as well. The [Url::path](#path) method decodes it, while the [Url::string](#string) method does not.
+
+**Examples:** [PacsExample.cpp](/cpp-sdk/4.5/api/examples/pacs-8cpp).
+
+## Classes
+
+- struct [Subquery](/cpp-sdk/4.5/api/structs/imfusion-filesystem-url-subquery) — A [Subquery](/cpp-sdk/4.5/api/structs/imfusion-filesystem-url-subquery) represents part of a query delimited by '&' or ';'.
+- struct [RelativeTag](/cpp-sdk/4.5/api/structs/imfusion-filesystem-url-relativetag)
+
+## Public Types
+
+- enum **FormattingOption** : unsigned int &#123; **None** = 0x0 , **NoScheme** = 0x1 , **NoPassword** = 0x2 , **NoUserinfo** = 0x4 | NoPassword , **NoPort** = 0x8 , **NoAuthority** = 0x10 | NoUserinfo | NoPort , **NoPath** = 0x20 , **NoQuery** = 0x40 , **NoFragment** = 0x80 , **DecodePath** = 0x100 &#125;
+- using **FormattingOptions** = [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt;FormattingOption&gt;
+
+## Public Member Functions
+
+- **Url** ()=default — Instantiates an empty URL.
+- **Url** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &url) — Instantiates a URL by parsing a string. The string should include all necessary sigils.
+- **Url** (const char \*url)
+- [Url](#url-1-2) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &[scheme](#scheme), const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &[authority](#authority), const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &[path](#path), const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &[query](#query)=&#123;&#125;, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &[fragment](#fragment)=&#123;&#125;) — Instantiates a URL from its components for convenience.
+- [Url](#url-2-2) ([RelativeTag](/cpp-sdk/4.5/api/structs/imfusion-filesystem-url-relativetag), const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &[scheme](#scheme), const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &[path](#path), const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &[query](#query)=&#123;&#125;, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &[fragment](#fragment)=&#123;&#125;) — Instantiates a URL from its components for convenience, without authority.
+- **Url** (const Url &other)=default
+- Url & **operator=** (const Url &other)=default
+- bool [operator==](#operator) (const Url &other) const — Two URLs are equal when their representing strings are lexically equal.
+- bool **operator==** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &other) const
+- bool **operator!=** (const Url &other) const
+- bool **operator!=** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &other) const
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [string](#string) (FormattingOptions formattingOptions=None) const — Returns the URL as a string in a generic format.
+- void **clear** () — Makes the URL empty.
+- [Filesystem::Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path) **toLocalFile** () const — Returns the path as a [Filesystem::Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path) if the scheme is "file". Otherwise, returns an empty path.
+- void **normalizePath** () — Normalizes the URL path: change all occurrences of '\' in the path to '/', and remove redundant '/' (when there are multiple in a row).
+
+## Static Public Member Functions
+
+- static Url [fromLocalFile](#fromlocalfile) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &[path](#path)) — Constructs a file URL from the path.
+- static Url [relativeTo](#relativeto) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &url, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &basePath) — Constructs a URL where the path is meant to be relative to basePath.
+- static [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [percentEncoded](#percentencoded) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &str, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &encodedChars="!#$%&\*+,;=?@[]") — Returns *str* with percent-encoded reserved characters.
+- static [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **percentDecoded** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &str) — Returns *str* with reserved characters decoded from percent-encoding.
+
+## Static Public Attributes
+
+- static constexpr [RelativeTag](/cpp-sdk/4.5/api/structs/imfusion-filesystem-url-relativetag) **makeRelative** &#123;&#125;
+
+## Url decomposition into components
+
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [scheme](#scheme) () const — Returns the scheme of the URL.
+- void **setScheme** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &[scheme](#scheme)) — Changes the scheme of the URL or adds one to it.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [authority](#authority) () const — Returns the authority of the URL.
+- void **setAuthority** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &[authority](#authority)) — Changes the authority of the URL or adds one to it.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [userinfo](#userinfo) () const — Returns the userinfo of the URL (part of the authority).
+- void **setUserinfo** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &[userinfo](#userinfo)) — Changes the userinfo of the authority or adds a default authority to the URL with that userinfo.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [username](#username) () const — Returns the username of the URL (part of the userinfo).
+- void **setUsername** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &[username](#username)) — Changes the username of the userinfo or adds a default userinfo to the URL with that username.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [password](#password) () const — Returns the password of the URL (part of the userinfo).
+- void **setPassword** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &[password](#password)) — Changes the password of the userinfo or adds a default userinfo to the URL with that password.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [host](#host) () const — Returns the host of the URL (part of the authority).
+- void **setHost** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &[host](#host)) — Changes the host of the authority or adds a default authority to the URL with that host.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [port](#port) () const — Returns the port of the URL (part of the authority).
+- void **setPort** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &[port](#port)) — Changes the port of the authority or adds a default authority to the URL with that port.
+- int [portNumber](#portnumber) () const — Returns the port as an integer, or -1 if it isn't set.
+- void **setPort** (int [port](#port)) — Sets the port from an integer.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [path](#path) () const — Returns the path of the URL, including both leading and trailing slashes if they exist.
+- void [setPath](#setpath) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &[path](#path)) — Changes the path of the URL or add one to it.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [query](#query) () const — Returns the query of the URL.
+- void **setQuery** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &[query](#query)) — Changes the query of the URL or add one to it.
+- [std::size_t](http://en.cppreference.com/w/cpp/types/size_t.html) **subqueryCount** () const — Returns the number of subqueries in the URL.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Subquery](/cpp-sdk/4.5/api/structs/imfusion-filesystem-url-subquery) &gt; **subqueries** () const — Returns all subqueries as a vector.
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [Subquery](/cpp-sdk/4.5/api/structs/imfusion-filesystem-url-subquery) &gt; **subquery** ([std::size_t](http://en.cppreference.com/w/cpp/types/size_t.html) index) const — Returns the subquery corresponding to index (0-based), or nullopt if it doesn't exist.
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [Subquery](/cpp-sdk/4.5/api/structs/imfusion-filesystem-url-subquery) &gt; **findSubquery** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &key) const — Returns the subquery with the key *key*, or nullopt if it doesn't exist.
+- void **replaceSubquery** ([std::size_t](http://en.cppreference.com/w/cpp/types/size_t.html) index, const [Subquery](/cpp-sdk/4.5/api/structs/imfusion-filesystem-url-subquery) &subquery) — Changes the subquery corresponding to index (0-based).
+- void **appendSubquery** (const [Subquery](/cpp-sdk/4.5/api/structs/imfusion-filesystem-url-subquery) &subquery) — Adds the subquery at the end of the query string.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [fragment](#fragment) () const — Returns the fragment of the URL.
+- void **setFragment** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &[fragment](#fragment)) — Changes the fragment of the URL or add one to it.
+
+## Query URL properties
+
+- bool **isRelative** () const
+- bool **isAbsolute** () const
+- bool **hasAuthority** () const — Checks if the URL has an authority component (potentially empty: the URL can contain "///").
+- bool **isEmpty** () const
+- bool **isValid** () const — Checks if the URL can be interpreted as valid.
+
+## Constructor & Destructor Documentation
+
+### Url
+
+```cpp
+ImFusion::Filesystem::Url::Url (const std::string & scheme, const std::string & authority, const std::string & path, const std::string & query = {}, const std::string & fragment = {})
+```
+
+Instantiates a URL from its components for convenience.
+
+In principle, the parameters should not contain the various sigils that separate each component. Encodes reserved characters from the path.
+
+### Url
+
+```cpp
+ImFusion::Filesystem::Url::Url (RelativeTag, const std::string & scheme, const std::string & path, const std::string & query = {}, const std::string & fragment = {})
+```
+
+Instantiates a URL from its components for convenience, without authority.
+
+Use Url::makeRelative as the first argument. In principle, the parameters should not contain the various sigils that separate each component. Encodes reserved characters from the path.
+
+## Member Function Documentation
+
+### operator
+
+```cpp
+bool ImFusion::Filesystem::Url::operator== (const Url & other) const
+```
+
+*inline*
+
+Two URLs are equal when their representing strings are lexically equal.
+
+To determine if two URLs resolve to the same entity use makeCanonical().
+
+### string
+
+```cpp
+std::string ImFusion::Filesystem::Url::string (FormattingOptions formattingOptions = None) const
+```
+
+Returns the URL as a string in a generic format.
+
+If absolute, the path always starts with a slash (even for Windows-style paths). Reserved characters in the path are not decoded.
+
+### scheme
+
+```cpp
+std::string ImFusion::Filesystem::Url::scheme () const
+```
+
+Returns the scheme of the URL.
+
+If this is empty, then the URL is relative (see isRelative()). Example: "https://www.example.com/" -&gt; "https".
+
+### authority
+
+```cpp
+std::string ImFusion::Filesystem::Url::authority () const
+```
+
+Returns the authority of the URL.
+
+If this is empty, then the authority is either empty or nonexistent (see hasAuthority()). Example: "https://john.doe:123456@www.example.com:80" -&gt; john.doe:12345.nosp@m.6@ww.nosp@m.w.exa.nosp@m.mple.nosp@m..com:80".
+
+### userinfo
+
+```cpp
+std::string ImFusion::Filesystem::Url::userinfo () const
+```
+
+Returns the userinfo of the URL (part of the authority).
+
+Example: "//john.doe:123456@www.example.com" -&gt; "john.doe:123456".
+
+### username
+
+```cpp
+std::string ImFusion::Filesystem::Url::username () const
+```
+
+Returns the username of the URL (part of the userinfo).
+
+Example: "//john.doe:123456@www.example.com" -&gt; "john.doe".
+
+### password
+
+```cpp
+std::string ImFusion::Filesystem::Url::password () const
+```
+
+Returns the password of the URL (part of the userinfo).
+
+Example: "//john.doe:123456@www.example.com" -&gt; "123456".
+
+### host
+
+```cpp
+std::string ImFusion::Filesystem::Url::host () const
+```
+
+Returns the host of the URL (part of the authority).
+
+Example: "//john.doe:123456@www.example.com:80" -&gt; "www.example.com".
+
+**Examples:** [PacsExample.cpp](/cpp-sdk/4.5/api/examples/pacs-8cpp).
+
+### port
+
+```cpp
+std::string ImFusion::Filesystem::Url::port () const
+```
+
+Returns the port of the URL (part of the authority).
+
+Example: "//www.example.com:80" -&gt; "80".
+
+**Examples:** [PacsExample.cpp](/cpp-sdk/4.5/api/examples/pacs-8cpp).
+
+### portNumber
+
+```cpp
+int ImFusion::Filesystem::Url::portNumber () const
+```
+
+Returns the port as an integer, or -1 if it isn't set.
+
+Note: ports are technically unsigned 16-bit integers, but using an int is more consistant with the rest of the codebase.
+
+### path
+
+```cpp
+std::string ImFusion::Filesystem::Url::path () const
+```
+
+Returns the path of the URL, including both leading and trailing slashes if they exist.
+
+Reserved characters are decoded (unlike [Url::string](#string)). Example: "https:///forum/questions/?tag=networking" -&gt; "/forum/questions/".
+
+### setPath
+
+```cpp
+void ImFusion::Filesystem::Url::setPath (const std::string & path)
+```
+
+Changes the path of the URL or add one to it.
+
+Encodes reserved characters internally.
+
+### query
+
+```cpp
+std::string ImFusion::Filesystem::Url::query () const
+```
+
+Returns the query of the URL.
+
+Example: "https:/forum/questions/?tag=networking&order=newest#top" -&gt; "tag=networking&order=newest".
+
+### fragment
+
+```cpp
+std::string ImFusion::Filesystem::Url::fragment () const
+```
+
+Returns the fragment of the URL.
+
+Example: "https:/forum/questions/?tag=networking&order=newest#top" -&gt; "top".
+
+### fromLocalFile
+
+```cpp
+Url ImFusion::Filesystem::Url::fromLocalFile (const std::string & path)
+```
+
+*static*
+
+Constructs a file URL from the path.
+
+The input *path* is expected to be a regular filesystem path that can be either relative or absolute. Reserved characters (such as query or fragment sigils) are considered to be part of the path and will be percent-encoded. Do not pass any scheme (such as file:) as this does not make sense and will yield an invalid URL as result.
+
+### relativeTo
+
+```cpp
+Url ImFusion::Filesystem::Url::relativeTo (const std::string & url, const std::string & basePath)
+```
+
+*static*
+
+Constructs a URL where the path is meant to be relative to basePath.
+
+This is useful when working with a relative file URL and a working directory.
+
+### percentEncoded
+
+```cpp
+std::string ImFusion::Filesystem::Url::percentEncoded (const std::string & str, const std::string & encodedChars = "!#$%&*+,;=?@[]")
+```
+
+*static*
+
+Returns *str* with percent-encoded reserved characters.
+
+Not encoding colons ':' because of Windows-style paths. Add/Remove characters from the encodedChars parameter to Add/Remove them from encoding.

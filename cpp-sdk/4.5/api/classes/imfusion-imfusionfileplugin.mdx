@@ -1,0 +1,218 @@
+---
+title: "ImFusion::ImFusionFilePlugin"
+sidebarTitle: "ImFusionFilePlugin"
+description: "Allow loading and saving of custom classes and data within the ImFusion file format."
+---
+
+`#include <ImFusion/Base/ImFusionFilePlugin.h>`
+
+## Overview
+
+Allow loading and saving of custom classes and data within the ImFusion file format.
+
+Multiple data type IDs may be supported by a plugin. The load and save methods do not have to be implemented, for example if a custom image class shall be created for a type but the standard loader for image data is sufficient.
+
+When saving, ImFusionFile iterates all registered plugins and calls [save()](#save-1-2) on each until one returns true. If no plugin returns true, the default image writer handles the data. A plugin may also write non-image content to the stream (e.g. tracking metadata) and return false, so that the default image writer still appends the pixel data afterwards.
+
+## Public Member Functions
+
+- virtual **~ImFusionFilePlugin** ()=default — Destructor.
+- virtual [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \* [loadInstance](#loadinstance) (unsigned int type, unsigned int headerSize=0)=0 — Create specialized instance for a given data type or return null if not supported.
+- virtual unsigned int [saveType](#savetype) (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data)=0 — Return type for saving a given data instance or null if not supported.
+- virtual bool [load](#load) (unsigned int, [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*, [std::istream](http://en.cppreference.com/w/cpp/io/basic_istream.html) &, [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) \*=0) — Load data into given class instance, return true if data is complete (otherwise ImFusionImage loader will be run).
+- virtual bool [save](#save-1-2) ([Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*, [std::ostream](http://en.cppreference.com/w/cpp/io/basic_ostream.html) &, [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) \*=0) — Write this plugin's portion of a [Data](/cpp-sdk/4.5/api/classes/imfusion-data) instance to the output stream.
+- virtual bool [save](#save-2-2) ([Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data, [std::ostream](http://en.cppreference.com/w/cpp/io/basic_ostream.html) &file, [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) \*progress, const [ImFusionFile::CompressionSettings](/cpp-sdk/4.5/api/structs/imfusion-imfusionfile-compressionsettings) &compression) — Write this plugin's portion of a [Data](/cpp-sdk/4.5/api/classes/imfusion-data) instance to the output stream, with compression settings.
+- virtual [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) &gt; **customPropertiesToSave** ([Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*) — Lets plugin save custom properties as part of the global file metadata.
+- virtual bool [loadCustomProperties](#loadcustomproperties) ([Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*, [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*) — Load custom properties as returned previously by customPropertiesToSave().
+- virtual void [applyFlipToEnsureConsistency](#applyfliptoensureconsistency) ([Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*) — Is called after the image content had to be flipped to ensure a consistent coordinate system.
+- virtual bool [beginBlockWrite](#beginblockwrite) ([std::iostream](http://en.cppreference.com/w/cpp/io/basic_iostream.html) &) — Initialize plugin with current file pointer.
+- virtual unsigned long long [endBlockWrite](#endblockwrite) () — Indicate to plugin that the block it is writing needs to be finished.
+- virtual bool [beginBlockRead](#beginblockread) ([std::iostream](http://en.cppreference.com/w/cpp/io/basic_iostream.html) &, unsigned long long) — Initialize plugin with current file pointer.
+- virtual bool [endBlockRead](#endblockread) () — Indicate to plugin that it will lose read access to the file pointer after this call.
+- virtual void [setBlockType](#setblocktype) (unsigned int type) — Set the type of current data block which is being loaded/saved.
+
+## Protected Attributes
+
+- unsigned int [m_blockType](#m-blocktype) = 0 — Keeps the type of currently saving/loading data block.
+
+## Member Function Documentation
+
+### loadInstance
+
+```cpp
+virtual Data * ImFusion::ImFusionFilePlugin::loadInstance (unsigned int type, unsigned int headerSize = 0)
+```
+
+*pure virtual*
+
+Create specialized instance for a given data type or return null if not supported.
+
+### saveType
+
+```cpp
+virtual unsigned int ImFusion::ImFusionFilePlugin::saveType (const Data * data)
+```
+
+*pure virtual*
+
+Return type for saving a given data instance or null if not supported.
+
+### load
+
+```cpp
+virtual bool ImFusion::ImFusionFilePlugin::load (unsigned int, Data *, std::istream &, Progress * = 0)
+```
+
+*virtual*
+
+Load data into given class instance, return true if data is complete (otherwise ImFusionImage loader will be run).
+
+### save
+
+```cpp
+virtual bool ImFusion::ImFusionFilePlugin::save (Data *, std::ostream &, Progress * = 0)
+```
+
+*virtual*
+
+Write this plugin's portion of a [Data](/cpp-sdk/4.5/api/classes/imfusion-data) instance to the output stream.
+
+**Returns:** true if serialization is complete, false if the default image writer should also write to the stream.
+
+****Deprecated**:** Override [save(Data\*, std::ostream&, Progress\*, const ImFusionFile::CompressionSettings&)](#save-2-2) instead.
+
+****Deprecated**:** "Override save(Data\*, std::ostream&, Progress\*, const ImFusionFile::CompressionSettings&) instead."
+
+### save
+
+```cpp
+virtual bool ImFusion::ImFusionFilePlugin::save (Data * data, std::ostream & file, Progress * progress, const ImFusionFile::CompressionSettings & compression)
+```
+
+*virtual*
+
+Write this plugin's portion of a [Data](/cpp-sdk/4.5/api/classes/imfusion-data) instance to the output stream, with compression settings.
+
+Override this method to access compression settings for nested data.
+
+**Parameters:**
+
+- `data` — [Data](/cpp-sdk/4.5/api/classes/imfusion-data) instance to save
+- `file` — Output stream
+- `progress` — Optional progress callback
+- `compression` — [Compression](/cpp-sdk/4.5/api/namespaces/imfusion-compression) settings with default mode and optional per-data overrides
+
+**Returns:** true if serialization is complete, false if the default image writer should also write to the stream.
+
+### loadCustomProperties
+
+```cpp
+virtual bool ImFusion::ImFusionFilePlugin::loadCustomProperties (Data *, Properties *)
+```
+
+*virtual*
+
+Load custom properties as returned previously by customPropertiesToSave().
+
+**Returns:** true if successful, false otherwise
+
+### applyFlipToEnsureConsistency
+
+```cpp
+virtual void ImFusion::ImFusionFilePlugin::applyFlipToEnsureConsistency (Data *)
+```
+
+*inline, virtual*
+
+Is called after the image content had to be flipped to ensure a consistent coordinate system.
+
+This method needs to take care that data consistency is maintained, for instance by also updating all relevant data components and other meta data, e.g. calibration matrices. Background: Previously, mixed image coordinate conventions (origin is either top-left or bottom-left corner) were allowed in the entire framework. The bottom- left (=OpenGL) convention is now being phased out, so for several applications, including ultrasound, and X-ray/CBCT images, images stored with the bottom-left convention are hard-flipped on loading.
+
+### beginBlockWrite
+
+```cpp
+virtual bool ImFusion::ImFusionFilePlugin::beginBlockWrite (std::iostream &)
+```
+
+*virtual*
+
+Initialize plugin with current file pointer.
+
+The pointer points to the position directly after the block header. Until end() is called the plugin can freely append to the file. It may not seek to a position before the position of the stream upon the begin() call.
+
+**Parameters:**
+
+- `io` — file stream which you can write to
+
+**Returns:** true if successful, false otherwise
+
+### endBlockWrite
+
+```cpp
+virtual unsigned long long ImFusion::ImFusionFilePlugin::endBlockWrite ()
+```
+
+*virtual*
+
+Indicate to plugin that the block it is writing needs to be finished.
+
+The plugin must finalize the data it is writing.
+
+**Returns:** number of bytes written to the block
+
+### beginBlockRead
+
+```cpp
+virtual bool ImFusion::ImFusionFilePlugin::beginBlockRead (std::iostream &, unsigned long long)
+```
+
+*virtual*
+
+Initialize plugin with current file pointer.
+
+The pointer points to the position directly after the block header. Until end() is called the plugin can freely read from the file. It may not seek to a position before the position of the stream upon the begin() call.
+
+**Parameters:**
+
+- `io` — file stream which can be read
+- `blockSize` — number of bytes in block starting from current get file pointer
+
+**Returns:** true if successful, false otherwise
+
+### endBlockRead
+
+```cpp
+virtual bool ImFusion::ImFusionFilePlugin::endBlockRead ()
+```
+
+*virtual*
+
+Indicate to plugin that it will lose read access to the file pointer after this call.
+
+**Returns:** true if successful, false otherwise
+
+### setBlockType
+
+```cpp
+virtual void ImFusion::ImFusionFilePlugin::setBlockType (unsigned int type)
+```
+
+*virtual*
+
+Set the type of current data block which is being loaded/saved.
+
+Must be set if the header of the current block is chosen by another plug-in
+
+## Member Data Documentation
+
+### m_blockType
+
+```cpp
+unsigned int ImFusion::ImFusionFilePlugin::m_blockType = 0
+```
+
+*protected*
+
+Keeps the type of currently saving/loading data block.
+
+When a plug-in chooses the type, the same must be set for the ImFusionImage to keep the header and body consistent.

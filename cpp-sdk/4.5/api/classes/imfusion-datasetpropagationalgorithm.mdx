@@ -1,0 +1,48 @@
+---
+title: "ImFusion::DataSetPropagationAlgorithm"
+sidebarTitle: "DataSetPropagationAlgorithm"
+---
+
+## Public Types
+
+- enum class **PropagationAlgorithm** &#123; **ImageTracking** , **Interpolation** , **Both** &#125;
+- enum class **PropagationMode** &#123; **Overwrite** , **ReplaceReference** , **Stop** , **OverwriteBetweenFrames** &#125;
+- enum class **PropagationDirection** &#123; **Forward** , **BackWard** , **Both** &#125; — [Status](/cpp-sdk/4.5/api/classes/imfusion-algorithm) codes.
+
+## Public Member Functions
+
+- **DataSetPropagationAlgorithm** ([DataSet](/cpp-sdk/4.5/api/classes/imfusion-dataset) \*dataSet, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; size_t &gt; &activeLabels, const [std::array](http://en.cppreference.com/w/cpp/container/array.html)&lt; bool, 256 &gt; &lockedLabels, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; unsigned char &gt; &labelValues)
+- void [compute](#compute) () override — Execute the algorithm.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::size_t](http://en.cppreference.com/w/cpp/types/size_t.html) &gt; **affectedFrames** () const
+- void **propagateLabelMap** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*inputMoving, [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*inputFixed)
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::size_t](http://en.cppreference.com/w/cpp/types/size_t.html) &gt; **propagate** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*inputMoving, [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*inputFixed, [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; bool(unsigned int)&gt; hasDataCheck, [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; void(const [GlDenseDeformation](/cpp-sdk/4.5/api/classes/imfusion-gldensedeformation) &, int reference, int current)&gt; callback, int start)
+
+## Public Attributes
+
+- Signal **signalUpdateGui**
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; PropagationAlgorithm &gt; **p_algoType** = &#123;"algorithm", PropagationAlgorithm::Both, this&#125;
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; PropagationDirection &gt; **p_dir** = &#123;"propagationDir", PropagationDirection::Forward, this&#125;
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; PropagationMode &gt; **p_mode** = &#123;"propagationMode", PropagationMode::ReplaceReference, this&#125;
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; int &gt; **p_levels** = &#123;"numLevels", 3, this&#125;
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; int &gt; **p_minLevel** = &#123;"minLevel", 1, this&#125;
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; int &gt; **p_smoothing** = &#123;"halfKernelSize", 3, this&#125;
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; int &gt; **p_maxIterations** = &#123;"maxIterations", 50, this&#125;
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; bool &gt; **p_verbose** = &#123;"verbose", false, this&#125;
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; int &gt; **p_levelsInterp** = &#123;"numLevelsInterpolation", 8, this&#125;
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; int &gt; **p_minLevelInterp** = &#123;"minLevelInterpolation", 1, this&#125;
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; int &gt; **p_smoothingInterp** = &#123;"halfKernelSizeInterpolation", 3, this&#125;
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; int &gt; **p_maxIterationsInterp** = &#123;"maxIterationsInterpolation", 100, this&#125;
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; int &gt; **p_endFrameForwards** = &#123;"endFrameForwards", 0, this&#125;
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; int &gt; **p_endFrameBackwards** = &#123;"endFrameBackwards", 0, this&#125;
+
+## Member Function Documentation
+
+### compute
+
+```cpp
+void ImFusion::DataSetPropagationAlgorithm::compute ()
+```
+
+*override, virtual*
+
+Execute the algorithm.

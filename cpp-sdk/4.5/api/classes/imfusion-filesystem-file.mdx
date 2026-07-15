@@ -1,0 +1,248 @@
+---
+title: "ImFusion::Filesystem::File"
+sidebarTitle: "File"
+description: "Entity representing a file in the filesystem."
+---
+
+`#include <ImFusion/Core/Filesystem/File.h>`
+
+## Overview
+
+Entity representing a file in the filesystem.
+
+The file does not necessarily exist and [File](/cpp-sdk/4.5/api/classes/imfusion-filesystem-file) will not perform any checks whether the given file name represents a valid identifier for the current platform.
+
+The underlying [Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path) will always be absolute: if you construct an instance using a relative path the constructor will make it absolute using the currentWorkingDirectory() and all subsequent calls to member functions will correspond to that absolute path.
+
+**Examples:** [Filesystem.cpp](/cpp-sdk/4.5/api/examples/filesystem-8cpp).
+
+## Public Member Functions
+
+- [File](#file-1-3) (const [Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path) &path) — Create a new [File](/cpp-sdk/4.5/api/classes/imfusion-filesystem-file) instance for the given path.
+- [File](#file-2-3) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &path) — Create a new [File](/cpp-sdk/4.5/api/classes/imfusion-filesystem-file) instance for the given path.
+- [File](#file-3-3) (const char \*path) — Create a new [File](/cpp-sdk/4.5/api/classes/imfusion-filesystem-file) instance for the given path.
+- **operator Path** () const — Allow for implicit conversion to a [Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path).
+
+## Query file properties
+
+- const [Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path) & **path** () const — Gets the path of the file.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **string** () const — Gets the path of the file as string.
+- [Directory](/cpp-sdk/4.5/api/classes/imfusion-filesystem-directory) **parentDirectory** () const — Returns the absolute path to the parent directory, convenience function for [Directory](/cpp-sdk/4.5/api/classes/imfusion-filesystem-directory)(path().parentPath()).
+- [Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path) **parentPath** () const — Returns the absolute path to the parent directory, convenience function for path().parentPath().
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **name** () const — Gets the name of the file including the extension.
+- bool **exists** () const — Checks if the file exists and actually is a file.
+- bool [isExecutable](#isexecutable) () const — Checks if the file is executable (and exists).
+- [ByteSize](/cpp-sdk/4.5/api/classes/imfusion-bytesize) **size** () const — Gets the size of the file in bytes.
+- time_t **lastModified** () const — Gets the time of the last modification to the file.
+
+## Perform filesystem interactions
+
+- bool [copyTo](#copyto) (const [Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path) &destination, [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; CopyOptions &gt; copyOptions=CopyOptions::None) const — Copies this single file to *destination* using the provided copy options.
+- bool [rename](#rename) (const [Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path) &newName) — Renames the file, including extension.
+- bool [remove](#remove) () const — Delete the file.
+- bool [create](#create) () const — Creates the file without any content.
+- bool **createRecursive** () const — Create the file without any content including the parent directory if needed.
+
+## Read/write content from/to the file
+
+- [ByteBuffer](/cpp-sdk/4.5/api/classes/imfusion-bytebuffer) [readBinary](#readbinary) () const — Read the entire content of the file in a binary fashion and return it as buffer.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; [readText](#readtext) () const — Read the entire content of the file in a text-based fashion and return it as vector of lines.
+- bool [writeBinary](#writebinary) (const [ByteBufferView](/cpp-sdk/4.5/api/classes/imfusion-bytebufferview) &data) const — Write the given *data* to the file in a binary fashion.
+- bool [writeText](#writetext) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; &lines) const — Write the given list of strings into the file in a text-based fashion inserting a newline character (\n) after each line.
+- bool [appendBinary](#appendbinary) (const [ByteBufferView](/cpp-sdk/4.5/api/classes/imfusion-bytebufferview) &data) const — Append the given *data* to the file in a binary fashion.
+- bool [appendText](#appendtext) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; &lines) const — Append the given list of strings into the file in a text-based fashion inserting a newline character (\n) after each line.
+- [std::ifstream](http://en.cppreference.com/w/cpp/io/basic_ifstream.html) [openForReading](#openforreading) (std::ios_base::openmode openmode=std::ios_base::in) const — Create an input file stream for reading from the file.
+- [std::ofstream](http://en.cppreference.com/w/cpp/io/basic_ofstream.html) [openForWriting](#openforwriting) (std::ios_base::openmode openmode=std::ios_base::out) const — Create an output file stream for writing to the file.
+
+## Constructor & Destructor Documentation
+
+### File
+
+```cpp
+ImFusion::Filesystem::File::File (const Path & path)
+```
+
+Create a new [File](/cpp-sdk/4.5/api/classes/imfusion-filesystem-file) instance for the given path.
+
+If *path* is relative it will be made absolute wrt. currentWorkingDirectory() and all future calls to member functions will use this absolute path.
+
+**Note:** This will *not* create the file on the filesystem.
+
+### File
+
+```cpp
+ImFusion::Filesystem::File::File (const std::string & path)
+```
+
+*explicit*
+
+Create a new [File](/cpp-sdk/4.5/api/classes/imfusion-filesystem-file) instance for the given path.
+
+If *path* is relative it will be made absolute wrt. currentWorkingDirectory() and all future calls to member functions will use this absolute path.
+
+**Note:** This will *not* create the file on the filesystem.
+
+### File
+
+```cpp
+ImFusion::Filesystem::File::File (const char * path)
+```
+
+*explicit*
+
+Create a new [File](/cpp-sdk/4.5/api/classes/imfusion-filesystem-file) instance for the given path.
+
+If *path* is relative it will be made absolute wrt. currentWorkingDirectory() and all future calls to member functions will use this absolute path.
+
+**Note:** This will *not* create the file on the filesystem.
+
+## Member Function Documentation
+
+### isExecutable
+
+```cpp
+bool ImFusion::Filesystem::File::isExecutable () const
+```
+
+Checks if the file is executable (and exists).
+
+On Windows, the file must be a 32- or 64-bit "Windows-based" application (according to GetBinaryType()) On Unix, the file must grant the executable permission (according to access())
+
+### copyTo
+
+```cpp
+bool ImFusion::Filesystem::File::copyTo (const Path & destination, Flags < CopyOptions > copyOptions = CopyOptions::None) const
+```
+
+Copies this single file to *destination* using the provided copy options.
+
+**Parameters:**
+
+- `destination` — Target file name of the copy. If *destination* describes an existing directory, then behaves as [copyTo](#copyto)(destination / source.filename(), copyOptions).
+- `copyOptions` — Optional flags to control the behavior of this function. [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags) irrelevant to files are ignored and do not report an error.
+
+### rename
+
+```cpp
+bool ImFusion::Filesystem::File::rename (const Path & newName)
+```
+
+Renames the file, including extension.
+
+Returns true upon success.
+
+### remove
+
+```cpp
+bool ImFusion::Filesystem::File::remove () const
+```
+
+Delete the file.
+
+If the path is a symbolic link, it removes only the link. If the file did not exist in the first place, does nothing.
+
+### create
+
+```cpp
+bool ImFusion::Filesystem::File::create () const
+```
+
+Creates the file without any content.
+
+This function will fail if the parent directory does not exist, use createRecursive() for this functionality.
+
+### readBinary
+
+```cpp
+ByteBuffer ImFusion::Filesystem::File::readBinary () const
+```
+
+Read the entire content of the file in a binary fashion and return it as buffer.
+
+**Note:** Please resort to [std::ifstream](http://en.cppreference.com/w/cpp/io/basic_ifstream.html) if you need more advanced functionality such as random access or stream processing.
+
+### readText
+
+```cpp
+std::vector < std::string > ImFusion::Filesystem::File::readText () const
+```
+
+Read the entire content of the file in a text-based fashion and return it as vector of lines.
+
+This function will use [std::ifstream](http://en.cppreference.com/w/cpp/io/basic_ifstream.html) in text mode internally and consume the content using [std::getline()](http://en.cppreference.com/w/cpp/string/basic_string/getline.html) until the end of the file is reached. The newline characters (\n) after each line are removed; no further post-processing is performed. The corresponding platform-dependent behavior of C-style text file I/O applies.
+
+**Note:** Please resort to [std::ifstream](http://en.cppreference.com/w/cpp/io/basic_ifstream.html) if you need more advanced functionality such as random access or stream processing.
+
+### writeBinary
+
+```cpp
+bool ImFusion::Filesystem::File::writeBinary (const ByteBufferView & data) const
+```
+
+Write the given *data* to the file in a binary fashion.
+
+If the file does not exist, it will be created recursively. If the file already exists, all content will be overwritten.
+
+**Note:** Please resort to [std::ofstream](http://en.cppreference.com/w/cpp/io/basic_ofstream.html) if you need more advanced functionality such as random access or text-based processing.
+
+**Examples:** [Filesystem.cpp](/cpp-sdk/4.5/api/examples/filesystem-8cpp).
+
+### writeText
+
+```cpp
+bool ImFusion::Filesystem::File::writeText (const std::vector < std::string > & lines) const
+```
+
+Write the given list of strings into the file in a text-based fashion inserting a newline character (\n) after each line.
+
+If the file already exists, all content will be overwritten. This function will use [std::ofstream](http://en.cppreference.com/w/cpp/io/basic_ofstream.html) in text mode internally, thus the corresponding platform-dependent behavior of C-style text file I/O applies.
+
+### appendBinary
+
+```cpp
+bool ImFusion::Filesystem::File::appendBinary (const ByteBufferView & data) const
+```
+
+Append the given *data* to the file in a binary fashion.
+
+If the file does not exist, it will be created recursively.
+
+**Note:** Please resort to [std::ofstream](http://en.cppreference.com/w/cpp/io/basic_ofstream.html) if you need more advanced functionality such as random access or text-based processing.
+
+### appendText
+
+```cpp
+bool ImFusion::Filesystem::File::appendText (const std::vector < std::string > & lines) const
+```
+
+Append the given list of strings into the file in a text-based fashion inserting a newline character (\n) after each line.
+
+This function will use [std::ofstream](http://en.cppreference.com/w/cpp/io/basic_ofstream.html) in text mode internally, thus the corresponding platform- dependent behavior of C-style text file I/O applies.
+
+### openForReading
+
+```cpp
+std::ifstream ImFusion::Filesystem::File::openForReading (std::ios_base::openmode openmode = std::ios_base::in) const
+```
+
+Create an input file stream for reading from the file.
+
+Convenience function for calling [std::ifstream](http://en.cppreference.com/w/cpp/io/basic_ifstream.html)(Platform::widen(file.path().string(), openmode).
+
+**Parameters:**
+
+- `openmode` — Bitmask defining stream open mode, directly forwarded to [std::ifstream](http://en.cppreference.com/w/cpp/io/basic_ifstream.html) constructor
+
+### openForWriting
+
+```cpp
+std::ofstream ImFusion::Filesystem::File::openForWriting (std::ios_base::openmode openmode = std::ios_base::out) const
+```
+
+Create an output file stream for writing to the file.
+
+Convenience function for calling [std::ofstream](http://en.cppreference.com/w/cpp/io/basic_ofstream.html)(Platform::widen(file.path().string(), openmode).
+
+**Parameters:**
+
+- `openmode` — Bitmask defining stream open mode, directly forwarded to [std::ofstream](http://en.cppreference.com/w/cpp/io/basic_ofstream.html) constructor

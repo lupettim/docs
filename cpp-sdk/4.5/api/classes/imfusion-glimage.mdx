@@ -1,0 +1,236 @@
+---
+title: "ImFusion::GlImage"
+sidebarTitle: "GlImage"
+description: "Image representation stored as OpenGL texture."
+---
+
+`#include <ImFusion/GL/GlImage.h>`
+
+## Overview
+
+[Image](/cpp-sdk/4.5/api/classes/imfusion-image) representation stored as OpenGL texture.
+
+This class is a wrapper around a low-level [GL::Texture](/cpp-sdk/4.5/api/classes/imfusion-gl-texture) that additionally inherits from [Image](/cpp-sdk/4.5/api/classes/imfusion-image) to hold additional metadata in the [ImageDescriptor](/cpp-sdk/4.5/api/structs/imfusion-imagedescriptor) and make it compatible with [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage).
+
+Furthermore, it provides a couple of member functions such as conversion from/to MemImages. However, for the majority of use cases you will likely not need to call any of them directly:
+
+- When doing low-level OpenGL processing the [GL::Texture](/cpp-sdk/4.5/api/classes/imfusion-gl-texture) class and its API is usually sufficient and more explicit.
+- When doing high-level image processing you will use the [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage)[Set] API to implement automatic conversion from/to MemImages or other representations. When receiving a [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) instance from you will rarely need to do more with it than passing it to a [GL::Program](/cpp-sdk/4.5/api/classes/imfusion-gl-program) or assigning it to a different [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage)[Set].
+
+By default, unless explicitly selected during construction, [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) will select the [internal OpenGL texture format](/cpp-sdk/4.5/api/classes/imfusion-gl-internalformat) automatically based on the provided input PixelType:
+
+- Byte and UByte -&gt; R[GBA]8
+- Short and UShort -&gt; R[GBA]16
+- HFloat -&gt; R[GBA]16F
+- Int, UInt, Float, Double -&gt; R[GBA]32F
+
+Platform-specific caveats when using OpenGL ES:
+
+- 3-channel images use the corresponding 4-channel internal format (RGB\* -&gt; RGBA\*) because 3-channel formats are not color-renderable. The padded values are initialized to normalized 1.
+- 16-bit integer textures require an extension and use use R[GBA]16_EXT.
+
+**Warning:** 32-bit integer data in normalized texture formats and double-precision input may lose precision, because not all values are exactly representable as 32-bit float. This limitation is due to OpenGL not supporting such types as normalized texture format.
+
+[GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) performs the following value domain conversions during upload/download: For non-integer (normalized) texture formats, signed integer uploads (Byte, Short, Int) are converted to the corresponding unsigned type by applying a half-range offset ([-2^(N-1) .. 2^(N-1)-1] &lt;-&gt; [0 .. 2^N-1]). This maps to unsigned normalized GPU range [0..1] without collapsing distinct codes. The inverse transform is applied on download. You can use [GlUtils::storageToNormalized()](/cpp-sdk/4.5/api/namespaces/imfusion-glutils) and [GlUtils::normalizedToStorage()](/cpp-sdk/4.5/api/namespaces/imfusion-glutils) to perform the same rescaling on the CPU for any input value.
+
+**Note:** Be advised that OpenGL supports a maximum of 4 channels per element. If you try to create a [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) with more than 4 channels, any additional channel will be discarded and the resulting [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) will have 4 channels (i.e. you lose data). This will also happen implicitly when synchronizing through a [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage).
+
+## Public Member Functions
+
+- [GlImage](#glimage-1-4) (const [ImageDescriptor](/cpp-sdk/4.5/api/structs/imfusion-imagedescriptor) &desc, int internalFormat=0, const void \*data=nullptr) — Creates a new OpenGL image.
+- [GlImage](#glimage-2-4) (PixelType [type](/cpp-sdk/4.5/api/classes/imfusion-image), int [width](/cpp-sdk/4.5/api/classes/imfusion-image), int [height](/cpp-sdk/4.5/api/classes/imfusion-image), int [slices](/cpp-sdk/4.5/api/classes/imfusion-image)=1, int [channels](/cpp-sdk/4.5/api/classes/imfusion-image)=1, int internalFormat=0, const void \*data=nullptr) — Creates a new OpenGL texture.
+- [GlImage](#glimage-3-4) ([Image::Type](/cpp-sdk/4.5/api/classes/imfusion-image) [type](/cpp-sdk/4.5/api/classes/imfusion-image), int [width](/cpp-sdk/4.5/api/classes/imfusion-image), int [height](/cpp-sdk/4.5/api/classes/imfusion-image), int [slices](/cpp-sdk/4.5/api/classes/imfusion-image)=1, int [channels](/cpp-sdk/4.5/api/classes/imfusion-image)=1, int internalFormat=0, const void \*data=nullptr) — Creates a new OpenGL texture.
+- **GlImage** ([std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [GL::Texture](/cpp-sdk/4.5/api/classes/imfusion-gl-texture) &gt; texture) — Creates a [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) object from an existing OpenGL texture.
+- **GlImage** (const [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) &image) — Creates an OpenGL texture from another image in memory, uploading the image data to the generated texture.
+- [GlImage](#glimage-4-4) (const GlImage &image) — Creates a deep copy of the [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage), with a whole new texture containing the same image data as the original.
+- [GlImage](#glimage-1-4) & [operator=](#operator) (const [GlImage](#glimage-1-4) &other) — The assignment operator will copy all aspects of the other image.
+- **GlImage** (GlImage &&other) noexcept
+- [GlImage](#glimage-1-4) & **operator=** ([GlImage](#glimage-1-4) &&other) noexcept
+- **~GlImage** () override — Releases the OpenGL image resource.
+- **operator GL::Texture &** ()
+- **operator const GL::Texture &** () const
+- void **bind** (int unit=0) const — Binds the image to a texture unit.
+- void **unbind** () const — Unbinds the image.
+- bool **resize** (int [width](/cpp-sdk/4.5/api/classes/imfusion-image), int [height](/cpp-sdk/4.5/api/classes/imfusion-image), int [slices](/cpp-sdk/4.5/api/classes/imfusion-image)) — Resize image but keep format and target.
+- bool [update](#update-1-3) (const [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) &image) — Updates the image content from memory.
+- bool **update** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; T &gt; &data) — Updates the image content from a non-image buffer. Passed buffer has to be at least as large as this image.
+- bool **update** (const T \*data) — More generic, less secure version of the buffer update method above.
+- bool [update](#update-2-3) (const [GlImage](#glimage-1-4) &image, [GL::Framebuffer](/cpp-sdk/4.5/api/classes/imfusion-gl-framebuffer) \*fbo=0) — Updates the image content from another [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage).
+- bool [update](#update-3-3) (const [GL::Texture](/cpp-sdk/4.5/api/classes/imfusion-gl-texture) &tex, [GL::Framebuffer](/cpp-sdk/4.5/api/classes/imfusion-gl-framebuffer) \*fbo=0) — Updates the image content from another texture.
+- bool [swapTexID](#swaptexid) ([GlImage](#glimage-1-4) &other) — Swap the texture ID with another image that has the exact same properties, e.g.
+- [GL::Texture](/cpp-sdk/4.5/api/classes/imfusion-gl-texture) & **texture** ()
+- const [GL::Texture](/cpp-sdk/4.5/api/classes/imfusion-gl-texture) & **texture** () const
+- unsigned int **texID** () const — Access to the OpenGL texture ID.
+- unsigned int **target** () const — Returns the OpenGL texture target.
+- int **format** () const — Returns the pixel format.
+- int **internalFormat** () const — Returns the internal OpenGL texture format.
+- [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) \* **download** (unsigned int [type](/cpp-sdk/4.5/api/classes/imfusion-image)=0) const — Downloads the image into memory.
+- void **download** ([MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) &img) const — Downloads the image into memory.
+- [Location](/cpp-sdk/4.5/api/classes/imfusion-image) [location](#location) () const override — Specifies that the image is an OpenGL texture object.
+- bool [makeCompatible](#makecompatible) ([GlImage](#glimage-1-4) \*\*other, unsigned int [type](/cpp-sdk/4.5/api/classes/imfusion-image)=0, bool use2D=false, int [channels](/cpp-sdk/4.5/api/classes/imfusion-image)=-1) const — Creates or updates another image instance to be compatible to this one.
+- bool **makeCompatible** ([SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*\*other, unsigned int [type](/cpp-sdk/4.5/api/classes/imfusion-image)=0, bool use2D=false) const — Same as above for a shared image instance.
+
+## Static Public Member Functions
+
+- static [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [Image](/cpp-sdk/4.5/api/classes/imfusion-image) &gt; **convertFromMem** (const [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; const [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) &gt; &mem) — Conversion function required by [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) for image representation conversion. Users should prefer the explicit constructor from [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage).
+
+## Protected Member Functions
+
+- void **init** (int internalFormat, const void \*data) — Internal initialization of OpenGL texture.
+- bool **update** (const void \*data, size_t N, int format, int [type](/cpp-sdk/4.5/api/classes/imfusion-image)) — Internal function to upload pixel data to the texture.
+
+## Protected Attributes
+
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [GL::Texture](/cpp-sdk/4.5/api/classes/imfusion-gl-texture) &gt; **m_texture**
+- int **m_unit** = 0 — Remembers the texture unit between bind and unbind.
+- int **m_format** = 0 — Original ImFusion image format (might be != OpenGL texture format).
+
+## Constructor & Destructor Documentation
+
+### GlImage
+
+```cpp
+ImFusion::GlImage::GlImage (const ImageDescriptor & desc, int internalFormat = 0, const void * data = nullptr)
+```
+
+*explicit*
+
+Creates a new OpenGL image.
+
+**Parameters:**
+
+- `desc` — [Image](/cpp-sdk/4.5/api/classes/imfusion-image) descriptor, number of channels must be in range [1..4]
+- `internalFormat`
+- `internalFormat` — Internal OpenGL texture format, may be 0 to automatically select a suitable format.
+- `data` — Optional pointer to texture data for initialization, data must match the format in *desc*.
+
+### GlImage
+
+```cpp
+ImFusion::GlImage::GlImage (PixelType type, int width, int height, int slices = 1, int channels = 1, int internalFormat = 0, const void * data = nullptr)
+```
+
+Creates a new OpenGL texture.
+
+**Parameters:**
+
+- `type` — ImFusion image type (not necessarily the internal OpenGL texture format)
+- `width` — width in pixels
+- `height` — height in pixels
+- `slices` — number of slices
+- `channels` — number of channels, must be in [1..4]
+- `internalFormat` — Internal OpenGL texture format, may be 0 to automatically select a suitable format.
+- `data` — Optional pointer to texture data for initialization, data must match the format in *type*.
+
+### GlImage
+
+```cpp
+ImFusion::GlImage::GlImage (Image::Type type, int width, int height, int slices = 1, int channels = 1, int internalFormat = 0, const void * data = nullptr)
+```
+
+Creates a new OpenGL texture.
+
+**Parameters:**
+
+- `type` — ImFusion image type (not necessarily the internal OpenGL texture format)
+- `width` — width in pixels
+- `height` — height in pixels
+- `slices` — number of slices
+- `channels` — number of channels, must be in [1..4]
+- `internalFormat` — Internal OpenGL texture format, may be 0 to automatically select a suitable format.
+- `data` — Optional pointer to texture data for initialization, data must match the format in *type*.
+
+### GlImage
+
+```cpp
+ImFusion::GlImage::GlImage (const GlImage & image)
+```
+
+*explicit*
+
+Creates a deep copy of the [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage), with a whole new texture containing the same image data as the original.
+
+Note that the copy constructor is explicit, so you cannot call it implicitly. For example, [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) original&#123;...&#125;; [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) copy1 = original // does not compile [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) copy2 = [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage)&#123;original&#125;; // compiles [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) copy3&#123;original&#125;; // compiles
+
+## Member Function Documentation
+
+### operator
+
+```cpp
+GlImage & ImFusion::GlImage::operator= (const GlImage & other)
+```
+
+The assignment operator will copy all aspects of the other image.
+
+However, the internal OpenGl texture ID will be different as this is a handle to a different resource.
+
+### update
+
+```cpp
+bool ImFusion::GlImage::update (const MemImage & image)
+```
+
+Updates the image content from memory.
+
+If the new image is not compatible with the current one the texture is reinitialized with the new image.
+
+### update
+
+```cpp
+bool ImFusion::GlImage::update (const GlImage & image, GL::Framebuffer * fbo = 0)
+```
+
+Updates the image content from another [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage).
+
+An optional FBO may be supplied for fast repeated execution.
+
+**Note:** Will adapt neither texture dimensions nor shift/scale. If the source texture size is different resampling is performed implicitly. Use the assignment operator to copy all aspects of the [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage).
+
+### update
+
+```cpp
+bool ImFusion::GlImage::update (const GL::Texture & tex, GL::Framebuffer * fbo = 0)
+```
+
+Updates the image content from another texture.
+
+An optional FBO may be supplied for fast repeated execution.
+
+**Note:** Will adapt neither texture dimensions nor shift/scale. If the source texture size is different resampling is performed implicitly.
+
+### swapTexID
+
+```cpp
+bool ImFusion::GlImage::swapTexID (GlImage & other)
+```
+
+Swap the texture ID with another image that has the exact same properties, e.g.
+
+for ping-pong operations Returns true if the images are compatible and the texture IDs have been swapped.
+
+### location
+
+```cpp
+Location ImFusion::GlImage::location () const
+```
+
+*inline, override, virtual*
+
+Specifies that the image is an OpenGL texture object.
+
+### makeCompatible
+
+```cpp
+bool ImFusion::GlImage::makeCompatible (GlImage ** other, unsigned int type = 0, bool use2D = false, int channels = -1) const
+```
+
+Creates or updates another image instance to be compatible to this one.
+
+**Parameters:**
+
+- `other` — Pointer location where the compatible image should be created or updated.
+- `type` — If specified, the other image will be created with that type. The type is accordingly not compared to the current image's type.
+- `use2D` — If set to true only a slice image will be created.
+- `channels` — If the value is bigger or equal zero the resulting image will be created with this number of channels instead of the one of the current image. The number of channels is accordingly not compared to the current image's number of channels.
+
+**Returns:** true if an image was (re-)created at the specified pointer location.

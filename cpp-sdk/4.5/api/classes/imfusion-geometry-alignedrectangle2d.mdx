@@ -1,0 +1,66 @@
+---
+title: "ImFusion::Geometry::AlignedRectangle2D"
+sidebarTitle: "AlignedRectangle2D"
+description: "Class representing an axis aligned rectangle in 2D space."
+---
+
+`#include <ImFusion/Core/Geometry/Rectangle.h>`
+
+## Overview
+
+Class representing an axis aligned rectangle in 2D space.
+
+The coordinate convention for this class is bottom &lt;= top and left &lt;= right, both of which are enforced in the constructor. Unless stated otherwise, all operations that involve comparisons use the same tolerance epsilon as vec3::isApprox (which is 1e-12).
+
+**See also:** Intersections between geometry primitives can be computed using the sets of free functions Geometry::intersection() and Geometry::intersects().
+
+## Public Member Functions
+
+- **AlignedRectangle2D** (const vec2 &lowerLeft, const vec2 &upperRight)
+- **AlignedRectangle2D** (const AlignedRectangle2D &)=default
+- AlignedRectangle2D & **operator=** (const AlignedRectangle2D &)=default
+- bool **operator==** (const AlignedRectangle2D &) const
+- bool **operator!=** (const AlignedRectangle2D &) const
+- bool **isApprox** (const AlignedRectangle2D &) const
+- bool **includesPoint** (const vec2 &point) const
+- vec2 **closestPoint** (const vec2 &point) const
+- double **distanceToPoint** (const vec2 &point) const
+- [Utils::Variant](/cpp-sdk/4.5/api/structs/imfusion-utils-variant)&lt; [std::pair](http://en.cppreference.com/w/cpp/utility/pair.html)&lt; double, double &gt;, double, [std::nullptr_t](http://en.cppreference.com/w/cpp/types/nullptr_t.html) &gt; [lineSegmentIntersection](#linesegmentintersection) (const vec2 &lineStart, const vec2 &lineEnd, bool extentToInfiniteLine=false) const — Finds the intersection with a 2D line segment defined by its end points.
+- bool [intersectsDisk](#intersectsdisk) (const vec2 &center, double radius) const — Checks if the rectangle overlaps with a given disk.
+- const vec2 & **lowerLeft** () const
+- const vec2 & **upperRight** () const
+- double **left** () const
+- double **right** () const
+- double **top** () const
+- double **bottom** () const
+- double **width** () const
+- double **height** () const
+- vec2 **center** () const
+- vec2 **extent** () const
+
+## Static Public Member Functions
+
+- static AlignedRectangle2D **fromXYWidthHeight** (double x, double y, double width, double height) — Create a rectangle by providing the x and y coordintes of the lower-left corner and a width and height.
+- static AlignedRectangle2D **fromCenterExtent** (vec2 center, vec2 extent) — Create a rectangle by providing the point in the center and an extent (i.e. width and height).
+
+## Member Function Documentation
+
+### lineSegmentIntersection
+
+```cpp
+Utils::Variant < std::pair < double, double >, double, std::nullptr_t > ImFusion::Geometry::AlignedRectangle2D::lineSegmentIntersection (const vec2 & lineStart, const vec2 & lineEnd, bool extentToInfiniteLine = false) const
+```
+
+Finds the intersection with a 2D line segment defined by its end points.
+
+Objects involving NAN will never intersect. Returns one or more lambda values (such that p = lineStart + lambda \* (lineEnd - lineStart)) for the start and end of the intersection, or nullptr in case of no intersection
+
+### intersectsDisk
+
+```cpp
+bool ImFusion::Geometry::AlignedRectangle2D::intersectsDisk (const vec2 & center, double radius) const
+```
+
+Checks if the rectangle overlaps with a given disk.
+
+Note that negative radius causes undefined behaviour.

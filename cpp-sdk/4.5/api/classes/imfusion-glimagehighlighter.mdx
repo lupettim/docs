@@ -1,0 +1,57 @@
+---
+title: "ImFusion::GlImageHighlighter"
+sidebarTitle: "GlImageHighlighter"
+description: "GlObject that highlights an image by drawing a colored layer on top of it."
+---
+
+`#include <ImFusion/GL/GlImageHighlighter.h>`
+
+## Overview
+
+[GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) that highlights an image by drawing a colored layer on top of it.
+
+The intensity of the color layer is multiplied by the intensity of the image in the corresponding shader. SharedImageSets can be added to/removed from this class via the addImage/removeImage methods.
+
+## Public Member Functions
+
+- void [draw](#draw) (const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &view) override — Draw the object in 3D space.
+- [Geometry::AlignedBox](/cpp-sdk/4.5/api/classes/imfusion-geometry-alignedbox) [bounds](#bounds) () const override — Returns empty bounds, use bounds of images if needed.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [typeName](#typename) () const override — Return unique identifier for this object class used for serialization.
+- void **setColor** (const vec4 &color) — Sets the color and the opacity of the highlighter.
+- vec4 **color** ()
+- void **addImage** (const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*toAddImage) — Adds a [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) to the vector of images to be highlighted.
+- void **removeImage** (const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*toRemoveImage) — Removes a [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) from the vector of images to be highlighted.
+- void **setImages** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* &gt; &images) — Sets the list of images to be highlighted.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* &gt; **images** () const — Returns the vector of pointers to the image sets that are currently highlighted.
+
+## Member Function Documentation
+
+### draw
+
+```cpp
+void ImFusion::GlImageHighlighter::draw (const GlView & view)
+```
+
+*override, virtual*
+
+Draw the object in 3D space.
+
+### bounds
+
+```cpp
+Geometry::AlignedBox ImFusion::GlImageHighlighter::bounds () const
+```
+
+*override, virtual*
+
+Returns empty bounds, use bounds of images if needed.
+
+### typeName
+
+```cpp
+std::string ImFusion::GlImageHighlighter::typeName () const
+```
+
+*override, virtual*
+
+Return unique identifier for this object class used for serialization.

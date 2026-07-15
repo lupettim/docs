@@ -1,0 +1,267 @@
+---
+title: "ImFusion::VolumeBasedMeshRegistrationAlgorithm"
+sidebarTitle: "VolumeBasedMeshRegistrationAlgorithm"
+description: "Calculates a deformable registration between two meshes by calculating a deformable registration between distance volumes."
+---
+
+`#include <ImFusion/Reg/VolumeBasedMeshRegistration.h>`
+
+## Overview
+
+Calculates a deformable registration between two meshes by calculating a deformable registration between distance volumes.
+
+Internally, an instance of the [DemonsImageRegistration](/cpp-sdk/4.5/api/classes/imfusion-demonsimageregistration) algorithm is used to register the "fixed" distance volume to the "moving" distance volume. As this registration computes the *inverse* of the mapping from the fixed to the moving volume, this directly yields a registration of the "moving" [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) to the "fixed" [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh).
+
+## Public Types
+
+- enum class [InitializationMode](#initializationmode) &#123; ScaledRigid = 0 , Affine = 1 , FFD = 2 , **None** = 3 &#125; — [Status](/cpp-sdk/4.5/api/classes/imfusion-algorithm) codes.
+
+## Public Member Functions
+
+- **VolumeBasedMeshRegistrationAlgorithm** () — Constructor that initializes parameter attributes, algorithm actions. Use this together with setFixed/setMoving.
+- [VolumeBasedMeshRegistrationAlgorithm](#volumebasedmeshregistrationalgorithm) ([Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) &meshFixed, [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) &meshMoving, [PointCloud](/cpp-sdk/4.5/api/classes/imfusion-pointcloud) \*movingPoints=nullptr) — Constructor with two [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) arguments.
+- void [compute](#compute) () override — Computes the deformable registration from meshMoving to meshFixed.
+- void **setMoving** ([Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) &movingMesh) — Set moving mesh. [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) expects this object to remain valid during its lifetime.
+- void **setFixed** (const [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) &fixedMesh) — Set fixed mesh. [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) expects this object to remain valid during its lifetime.
+- [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) \* **movingMesh** () — Getter for the reference (template) mesh if it exists.
+- const [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) \* **fixedMesh** () — Getter for the fixed mesh if it exitss.
+- const [PointCloud](/cpp-sdk/4.5/api/classes/imfusion-pointcloud) \* **pointCloud** () — Point-cloud on the reference mesh.
+- void **setMovingLandmarks** ([PointCloud](/cpp-sdk/4.5/api/classes/imfusion-pointcloud) \*p) — Setter for point-cloud.
+- [Status](/cpp-sdk/4.5/api/classes/imfusion-algorithm) [initialize](#initialize) () — Initializes the registration by rescaling and preforming a linear registration.
+- [Status](/cpp-sdk/4.5/api/classes/imfusion-algorithm) **runImageBasedDeformableRegistration** () — Performs a image based deformable registration (without initialization).
+- [Status](/cpp-sdk/4.5/api/classes/imfusion-algorithm) [resetDeformation](#resetdeformation) () — Resets the internally stored deformable registration This also loads original (i.e.
+- [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) **takeDebugVolumes** () — Gives up ownership of internally used distance/label volumes.
+- virtual double [meshError](#mesherror) () — Return an error measure between the segmentation mesh and the deformed reference mesh.
+- bool **isStateValid** () — Returns true if the algorithm is in a valid state, i.e. meshes exist and distance and label maps etc have been initialized correctly.
+- const [DemonsImageRegistration](/cpp-sdk/4.5/api/classes/imfusion-demonsimageregistration) \* [demonsRegistration](#demonsregistration) () — Getter for m_demonsRegistration.
+
+## Static Public Member Functions
+
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a) — Used to create the algorithm from the ImFusionSuite.
+
+## Public Attributes
+
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; bool &gt; **p_debugMode** = &#123;"debugMode", false, this&#125; — Whether to export debug output, this is used only by the controller.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; double &gt; **p_distCutOff** = &#123;"distCutOff", 4.0, this&#125; — Signed distances are clamped to this value in [initialize()](#initialize).
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; bool &gt; [p_subVoxelPrecision](#p-subvoxelprecision) = &#123;"subVoxelPrecision", true, \*this&#125; — Whether to use sub-voxel precision for distance-volumes.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; double &gt; **p_resolution** = &#123;"resolution", 1.0, \*this&#125; — Resolution (i.e. spacing) of textures used internally. This does only affects textures obtained from [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) objects.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; size_t &gt; &gt; [p_memoryLimitMB](#p-memorylimitmb) = &#123;"memoryLimitMB", std::nullopt, this&#125; — Memory limit that aborts creation of internal helper objects (e.g.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; [InitializationMode](#initializationmode) &gt; **p_initializationMode** = &#123;"initMode", InitializationMode::Affine, this&#125; — Which method to use to initialize the transformation.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; double &gt; **p_maximumStretching** = &#123;"maximumStretching", 5, this&#125; — If volume of fixed mesh relative to moving mesh (or vice versa) exceeds the cube of this value, abort.
+
+## Protected Member Functions
+
+- bool [initializeScaling](#initializescaling) () — Rescales the distance volume, label map, and (if applicable) mesh of the reference image so that the total volume of the volume defined by the label map matches that of the segmentation.
+- void [saveWithoutDeformationIfEmpty](#savewithoutdeformationifempty) () — If such a copy does not exist: save a copy of the meshes/pointclouds without displacement values in this class, cf.
+- void **setupDemonsRegistration** () — Setup the internal [DemonsImageRegistration](/cpp-sdk/4.5/api/classes/imfusion-demonsimageregistration) instance.
+- bool **checkOutOfMemory** ([std::size_t](http://en.cppreference.com/w/cpp/types/size_t.html) increaseBytes) — Increments the counter of memory used by the given amount, and check whether this goes beyond memory limit.
+- [Status](/cpp-sdk/4.5/api/classes/imfusion-algorithm) **createEmptyDeformation** ()
+- void **applyDeformationToMeshAndLandmarks** ()
+
+## Protected Attributes
+
+- const [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) \* **m_fixedMesh** = nullptr
+- [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) \* **m_movingMesh** = nullptr
+- [PointCloud](/cpp-sdk/4.5/api/classes/imfusion-pointcloud) \* **m_movingLandmarks** = nullptr
+- [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* **m_fixedLabelMap** = nullptr
+- [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* **m_movingLabelMap** = nullptr
+- [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* **m_fixedDist** = nullptr
+- [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* **m_movingDist** = nullptr
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &gt; **m_fixedDistOwned**
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &gt; **m_movingDistOwned**
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &gt; **m_fixedLabelMapOwned**
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &gt; **m_movingLabelMapOwned**
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [DemonsImageRegistration](/cpp-sdk/4.5/api/classes/imfusion-demonsimageregistration) &gt; **m_demonsRegistration**
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) &gt; &gt; [m_movingMeshWithoutDeformation](#m-movingmeshwithoutdeformation) — The algorithm uses the displacement values from an (inverse) deformation to update the moving mesh and landmarks.
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [PointCloud](/cpp-sdk/4.5/api/classes/imfusion-pointcloud) &gt; &gt; **m_movingLandmarksWithoutDeformation**
+- size_t [m_totMemoryUsedBytes](#m-totmemoryusedbytes) = 0 — Counter for the amount of memory (in bytes) allocated by this algorithm during its lifetime.
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — [Configurable](/cpp-sdk/4.5/api/classes/imfusion-configurable) interface.
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+## Member Enumeration Documentation
+
+### InitializationMode
+
+```cpp
+enum class ImFusion::VolumeBasedMeshRegistrationAlgorithm::InitializationMode
+```
+
+*strong*
+
+**Enumerator:**
+
+- `ScaledRigid` — Initialization is performed by adjusting scaling and a rigid transformation.
+- `Affine` — Initialization is performed by a full affine registration.
+- `FFD` — Initialization is performed by first registering a 2x2x2 FFD deformation on a downsampled volume.
+
+## Constructor & Destructor Documentation
+
+### VolumeBasedMeshRegistrationAlgorithm
+
+```cpp
+ImFusion::VolumeBasedMeshRegistrationAlgorithm::VolumeBasedMeshRegistrationAlgorithm (Mesh & meshFixed, Mesh & meshMoving, PointCloud * movingPoints = nullptr)
+```
+
+Constructor with two [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) arguments.
+
+**Parameters:**
+
+- `meshFixed` — is the fixed [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) to which the moving [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) is registered.
+- `meshMoving` — is a [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) of the moving mesh. The vertices of this [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) are modified by this algorithm.
+- `movingPoints` — optionally points to a [PointCloud](/cpp-sdk/4.5/api/classes/imfusion-pointcloud) that is deformed in the same way as the moving mesh is. [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) expects both the fixed and moving meshes to remain valid during its lifetime.
+
+## Member Function Documentation
+
+### compute
+
+```cpp
+void ImFusion::VolumeBasedMeshRegistrationAlgorithm::compute ()
+```
+
+*override, virtual*
+
+Computes the deformable registration from meshMoving to meshFixed.
+
+If a moving mesh has been provided, the result of this deformation is applied to the "moving" mesh in place. If a [PointCloud](/cpp-sdk/4.5/api/classes/imfusion-pointcloud) on the "moving" mesh was provided, this is also deformed in-place. The registration comprises a scaling and rigid initialization, followed by an image-based deformable registration.
+
+### initialize
+
+```cpp
+Status ImFusion::VolumeBasedMeshRegistrationAlgorithm::initialize ()
+```
+
+Initializes the registration by rescaling and preforming a linear registration.
+
+This function will in general affect both the pose and truncation of the distance volumes, thus running this more than once is not recommended as state is not restored between calls.
+
+### resetDeformation
+
+```cpp
+Status ImFusion::VolumeBasedMeshRegistrationAlgorithm::resetDeformation ()
+```
+
+Resets the internally stored deformable registration This also loads original (i.e.
+
+after initialization, but before deformable registration) meshes/pointclouds if applicable
+
+### configure
+
+```cpp
+void ImFusion::VolumeBasedMeshRegistrationAlgorithm::configure (const Properties * p)
+```
+
+*override, virtual*
+
+[Configurable](/cpp-sdk/4.5/api/classes/imfusion-configurable) interface.
+
+### configuration
+
+```cpp
+void ImFusion::VolumeBasedMeshRegistrationAlgorithm::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality
+
+### meshError
+
+```cpp
+virtual double ImFusion::VolumeBasedMeshRegistrationAlgorithm::meshError ()
+```
+
+*virtual*
+
+Return an error measure between the segmentation mesh and the deformed reference mesh.
+
+This measure is given (in mm) by the maximum displacement of the projections of the vertices of the moving mesh onto the fixed mesh This is only possible if two meshes were provided at construction, [std::numeric_limits&lt;double&gt;::max()](http://en.cppreference.com/w/cpp/types/numeric_limits/max.html) is returned otherwise.
+
+### demonsRegistration
+
+```cpp
+const DemonsImageRegistration * ImFusion::VolumeBasedMeshRegistrationAlgorithm::demonsRegistration ()
+```
+
+*inline*
+
+Getter for m_demonsRegistration.
+
+**Warning:** pointer may become invalidated e.g. when setFixed/setMoving is called, so do not store it.
+
+### initializeScaling
+
+```cpp
+bool ImFusion::VolumeBasedMeshRegistrationAlgorithm::initializeScaling ()
+```
+
+*protected*
+
+Rescales the distance volume, label map, and (if applicable) mesh of the reference image so that the total volume of the volume defined by the label map matches that of the segmentation.
+
+Also truncates the distance volume based on p_distCutOff
+
+### saveWithoutDeformationIfEmpty
+
+```cpp
+void ImFusion::VolumeBasedMeshRegistrationAlgorithm::saveWithoutDeformationIfEmpty ()
+```
+
+*protected*
+
+If such a copy does not exist: save a copy of the meshes/pointclouds without displacement values in this class, cf.
+
+m_movingMeshWithoutDeformation Only a single copy is stored by the algorithm.
+
+## Member Data Documentation
+
+### p_subVoxelPrecision
+
+```cpp
+Parameter <bool> ImFusion::VolumeBasedMeshRegistrationAlgorithm::p_subVoxelPrecision = {"subVoxelPrecision", true, *this}
+```
+
+Whether to use sub-voxel precision for distance-volumes.
+
+This is slow on systems where the computation cannot be performed on the GPU (i.e. if OpenGl 4.3 is not available)
+
+### p_memoryLimitMB
+
+```cpp
+Parameter < std::optional <size_t> > ImFusion::VolumeBasedMeshRegistrationAlgorithm::p_memoryLimitMB = {"memoryLimitMB", std::nullopt, this}
+```
+
+Memory limit that aborts creation of internal helper objects (e.g.
+
+distance volume, label map) if they cumulatively surpass this limit.
+
+**Warning:** This algorithm keeps an internal counter of the amount of memory allocated during its lifetime. All allocations made by the algorithm (including those made before the limit was set) are accounted for, and the counter is decremented when the corresponding deformations are released.
+
+**Warning:** Only the GPU paths are reliably compatible with this, e.g. setting p_subVoxelPrecision=false may result in larger volumes being allocated.
+
+### m_movingMeshWithoutDeformation
+
+```cpp
+std::optional < std::unique_ptr < Mesh > > ImFusion::VolumeBasedMeshRegistrationAlgorithm::m_movingMeshWithoutDeformation
+```
+
+*protected*
+
+The algorithm uses the displacement values from an (inverse) deformation to update the moving mesh and landmarks.
+
+We store the meshes/landmarks without the added displacement values here in order to be able to update the moving mesh/landmarks appropriately.
+
+### m_totMemoryUsedBytes
+
+```cpp
+size_t ImFusion::VolumeBasedMeshRegistrationAlgorithm::m_totMemoryUsedBytes = 0
+```
+
+*protected*
+
+Counter for the amount of memory (in bytes) allocated by this algorithm during its lifetime.
+
+Tracked unconditionally so that pre-existing allocations are accounted for if the limit is set later.

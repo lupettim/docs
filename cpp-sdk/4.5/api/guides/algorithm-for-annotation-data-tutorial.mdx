@@ -1,0 +1,75 @@
+---
+title: "Writing Algorithms for Annotation Data"
+description: "Specific kinds of Data can have corresponding Interactive Annotations used for visualizing the Data and interacting with it (we will refer to these kinds of ann"
+---
+
+**See also:** [Writing Algorithms](/cpp-sdk/4.5/api/guides/algorithm-tutorial)
+
+Specific kinds of [Data](/cpp-sdk/4.5/api/classes/imfusion-data) can have corresponding [Interactive Annotations](/cpp-sdk/4.5/api/classes/imfusion-interactiveannotation) used for visualizing the [Data](/cpp-sdk/4.5/api/classes/imfusion-data) and interacting with it (we will refer to these kinds of annotations as "Data Annotations"). Examples of such [Data](/cpp-sdk/4.5/api/classes/imfusion-data) types are: [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh), [PointCloud](/cpp-sdk/4.5/api/classes/imfusion-pointcloud), [PointTree](/cpp-sdk/4.5/api/classes/imfusion-pointtree) and [TrackingSequence](/cpp-sdk/4.5/api/classes/imfusion-trackingsequence). In the remainder of this tutorial we will refer to these data types as "Annotation Data". To query whether a [Data](/cpp-sdk/4.5/api/classes/imfusion-data) object is "Annotation Data", the method [isAnnotationType](/cpp-sdk/4.5/api/classes/imfusion-data) can be used. Since an [InteractiveAnnotation](/cpp-sdk/4.5/api/classes/imfusion-interactiveannotation) requires a [GlAnnotation](/cpp-sdk/4.5/api/classes/imfusion-glannotation) object for its construction, each of the "Annotation Data" types has its own compatible [GlAnnotation](/cpp-sdk/4.5/api/classes/imfusion-glannotation) : [GlMesh](/cpp-sdk/4.5/api/classes/imfusion-glmesh) for [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh), [GlPointCloud](/cpp-sdk/4.5/api/classes/imfusion-glpointcloud) for [PointCloud](/cpp-sdk/4.5/api/classes/imfusion-pointcloud), [GlPointTree](/cpp-sdk/4.5/api/classes/imfusion-glpointtree) for [Tree](/cpp-sdk/4.5/api/classes/imfusion-tree), and [GlTrackingSequence](/cpp-sdk/4.5/api/classes/imfusion-gltrackingsequence) for [TrackingSequence](/cpp-sdk/4.5/api/classes/imfusion-trackingsequence).
+
+To get a list of compatible annotations for a specific [Data](/cpp-sdk/4.5/api/classes/imfusion-data) type, the [compatibleDataAnnotations](/cpp-sdk/4.5/api/classes/imfusion-factoryregistry) method can be used. It will return a list of strings containing the names of the compatible [GlAnnotation](/cpp-sdk/4.5/api/classes/imfusion-glannotation) types.
+
+```cpp
+Mesh mesh;
+std::vector<std::string> comp = FactoryRegistry::get().compatibleDataAnnotations(mesh);
+```
+ fragment
+In order to create an annotation for the data, the [createDataAnnotation](/cpp-sdk/4.5/api/classes/imfusion-factoryregistry) method can be used.
+
+```cpp
+Mesh mesh;
+InteractiveObject* interAnnot = FactoryRegistry::get().createDataAnnotation("ImFusion::GlMesh", mesh);
+```
+ fragment
+In order to add a new type of compatible "Data Annotation" ([GlAnnotation](/cpp-sdk/4.5/api/classes/imfusion-glannotation)) to the [FactoryRegistry](/cpp-sdk/4.5/api/classes/imfusion-factoryregistry), it is necessary to create a custom [DataAnnotationFactory](/cpp-sdk/4.5/api/classes/imfusion-dataannotationfactory), and override [getDataAnnotationFactory](/cpp-sdk/4.5/api/classes/imfusion-imfusionplugin) in a plugin. This way, a custom annotation for a particular data type will be known to the [FactoryRegistry](/cpp-sdk/4.5/api/classes/imfusion-factoryregistry).
+
+As with any other data, the "Annotation Data" can be added to the Data Model. And as with any other annotation, in order for the "Data Annotation" to be rendered, it has to be added to the [AnnotationModel](/cpp-sdk/4.5/api/classes/imfusion-annotationmodel). A "Data Annotation" can be added to the [AnnotationModel](/cpp-sdk/4.5/api/classes/imfusion-annotationmodel) under a parent [Data](/cpp-sdk/4.5/api/classes/imfusion-data). For example, a "Data Annotation" for [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) can have a parent dataset of type [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset). If an algorithm has a [Default Controller](/cpp-sdk/4.5/api/classes/imfusion-defaultalgorithmcontroller), this controller already takes care of adding the algorithm output data to the Data Model, creating compatible "Data Annotations" and adding them to the [AnnotationModel](/cpp-sdk/4.5/api/classes/imfusion-annotationmodel) (see [Using DefaultAlgorithmController](/cpp-sdk/4.5/api/guides/algorithm-tutorial)).
+
+Algorithms using "Annotation Data" are not any different from the algorithms using regular [Data](/cpp-sdk/4.5/api/classes/imfusion-data) (see [Writing Algorithms](/cpp-sdk/4.5/api/guides/algorithm-tutorial)). One special feature of the "Annotation Data" is that it might have parent data as mentioned earlier. This information is stored in the [AnnotationModel](/cpp-sdk/4.5/api/classes/imfusion-annotationmodel). In order to check whether a [Data](/cpp-sdk/4.5/api/classes/imfusion-data) object has a parent, the method [AnnotationModel::getParentDataset](/cpp-sdk/4.5/api/classes/imfusion-annotationmodel) can be used. In case "Annotation Data" does have a parent, the [Algorithm::createCompatible](/cpp-sdk/4.5/api/classes/imfusion-algorithm) method will receive both as input, the selected "Data Annotation" and its parent [Data](/cpp-sdk/4.5/api/classes/imfusion-data).
+
+The following image shows the case when a [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) object has a parent [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) object. Thus, if a user right-clicks on the mesh in the "Annotations" widget, the [Algorithm::createCompatible](/cpp-sdk/4.5/api/classes/imfusion-algorithm) method will get the [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) and the [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) objects in the input data list. However, when a user right-clicks on the image set in the "Data" widget, the [Algorithm::createCompatible](/cpp-sdk/4.5/api/classes/imfusion-algorithm) method will get only the [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) object.
+
+![](/images/cpp-api/MeshWithParentSharedImageSet.png)
+
+*Mesh with a parent SharedImageSet.*
+
+If you want to create an algorithm that needs more inputs than this mechanism can provide, e.g. a mesh and multiple images, a common workaround is to have createCompatible accept just the non-Annotation [Data](/cpp-sdk/4.5/api/classes/imfusion-data). Then, you can use a custom [AlgorithmController](/cpp-sdk/4.5/api/classes/imfusion-algorithmcontroller) which, as part of [AlgorithmController::init()](/cpp-sdk/4.5/api/classes/imfusion-controller), accesses the [AnnotationModel](/cpp-sdk/4.5/api/classes/imfusion-annotationmodel) via [Controller::m_main](/cpp-sdk/4.5/api/classes/imfusion-controller) and fetches the missing Annotation [Data](/cpp-sdk/4.5/api/classes/imfusion-data) from there.
+
+The following is an example of a [Algorithm::createCompatible](/cpp-sdk/4.5/api/classes/imfusion-algorithm) method of an [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) taking a [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) as input. The mesh can also be attached to a parent object of type [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset):
+
+```cpp
+ bool ExampleMeshAlgorithm::createCompatible(const DataList& data, Algorithm** a)
+    {
+ // extract all meshes from the datalist
+ auto meshes = data.getSurfaces();
+
+ // algorithm needs exactly one Mesh to work with
+ if (meshes.size() == 1)
+        {
+ // Note that if mesh annotation has a parent data (for example of type SharedImageSet, Image Stream or other),
+ // this parent data will also end up in the data passed to createCompatible.
+ // In this example we will create an algorithm only if the parent data is of type SharedImageSet
+ if (data.size() == 1 || (data.size() == 2 && dynamic_cast<SharedImageSet*>(data[1])))
+            {
+ // if pointer is provided, create a new instance
+ if (a)
+                    *a = new ExampleMeshAlgorithm(meshes[0]);
+ return true;
+            }
+        }
+ //as a fallback this algorithm tries to load a mesh itself at a later point if given _no_ input
+ if (data.size() == 0)
+        {
+ // if pointer is provided, create a new instance
+ if (a)
+                *a = new ExampleMeshAlgorithm();
+ return true;
+        }
+ return false;
+    }
+```
+ fragment
+Files:
+
+- [ExampleMeshAlgorithm.h](/cpp-sdk/4.5/api/examples/example-mesh-algorithm-8h)
+- [ExampleMeshAlgorithm.cpp](/cpp-sdk/4.5/api/examples/example-mesh-algorithm-8cpp)

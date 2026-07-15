@@ -1,0 +1,73 @@
+---
+title: "ImFusion::GraphLaplacianAlgorithm"
+sidebarTitle: "GraphLaplacianAlgorithm"
+description: "Image segmentation in 2D or 3D using graph-based segmentation to solve a Laplacian problem."
+---
+
+`#include <ImFusion/Seg/GraphLaplacianAlgorithm.h>`
+
+## Overview
+
+[Image](/cpp-sdk/4.5/api/classes/imfusion-image) segmentation in 2D or 3D using graph-based segmentation to solve a Laplacian problem.
+
+## Public Types
+
+- enum GraphLaplacianType &#123; **IMAGE** = 0 , **SUPERPIXELS** = 1 , **ATTENUATION** = 2 , **SUPERPIXELS_ATTENUATION** = 3 &#125; — Enum for the graph types.
+
+## Public Member Functions
+
+- **GraphLaplacianAlgorithm** ([SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) &image, [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) &labels, [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*prior=nullptr) — Main constructor.
+- **~GraphLaplacianAlgorithm** () override — Destructor.
+- void [compute](#compute) () override — Execute the algorithm.
+- [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) [takeOutput](#takeoutput) () override — Output of the algorithm.
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Set one or multiple properties.
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Retrieve the properties of this object.
+- void **updateLabels** ([SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) &labels) — Update the label map.
+- void **reset** () — Reset the algorithm (in particular current solution).
+- size_t **memoryEstimation** (int minLevel) — Returns an estimation of the required memory with the current configuration.
+
+## Static Public Member Functions
+
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=0) — If data is compatible with algorithm return true. If a is not zero, create algorithm with input data.
+
+## Member Function Documentation
+
+### compute
+
+```cpp
+void ImFusion::GraphLaplacianAlgorithm::compute ()
+```
+
+*override, virtual*
+
+Execute the algorithm.
+
+### takeOutput
+
+```cpp
+OwningDataList ImFusion::GraphLaplacianAlgorithm::takeOutput ()
+```
+
+*override, virtual*
+
+Output of the algorithm.
+
+### configure
+
+```cpp
+void ImFusion::GraphLaplacianAlgorithm::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Set one or multiple properties.
+
+### configuration
+
+```cpp
+void ImFusion::GraphLaplacianAlgorithm::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Retrieve the properties of this object.

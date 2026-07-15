@@ -1,0 +1,23 @@
+---
+title: "ImFusion::TransferFunctionTissue::KeyPoint"
+sidebarTitle: "KeyPoint"
+description: "Describes a single key point of a tissue."
+---
+
+`#include <ImFusion/GL/TransferFunctionTissue.h>`
+
+## Overview
+
+Describes a single key point of a tissue.
+
+**Note:** Please mind that when change a key point's position, you have to call [sortKeyPoints()](/cpp-sdk/4.5/api/classes/imfusion-transferfunctiontissue) on the parent tissue to ensure the correct sorting of key points. Alternatively, you can also call [TransferFunctionTissue::moveKeyPoint()](/cpp-sdk/4.5/api/classes/imfusion-transferfunctiontissue), which does that automatically.
+
+## Public Member Functions
+
+- [ID](/cpp-sdk/4.5/api/classes/imfusion-transferfunctiontissue) **id** () const — Returns the [ID](/cpp-sdk/4.5/api/classes/imfusion-transferfunctiontissue) of the [KeyPoint](/cpp-sdk/4.5/api/structs/imfusion-transferfunctiontissue-keypoint) to uniquely identify it within a [TransferFunctionTissue](/cpp-sdk/4.5/api/classes/imfusion-transferfunctiontissue).
+- bool **operator==** (const KeyPoint &other) const
+
+## Public Attributes
+
+- double **position** — absolute position of the key point in TF space
+- vec4 **color** — color of this key point

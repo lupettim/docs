@@ -1,0 +1,186 @@
+---
+title: "ImFusion::CurvedViewPrimitive"
+sidebarTitle: "CurvedViewPrimitive"
+description: "Interface for curved view primitives."
+---
+
+`#include <ImFusion/GL/CurvedViewPrimitive.h>`
+
+## Overview
+
+Interface for curved view primitives.
+
+Annotations which want to support rendering a curved MPR view of themselves must implement this interface. It provides generic methods which allow the panorama view to define the curved MPR trajectory inside a volume regardless of the details of the underlying annotation.
+
+## Public Member Functions
+
+- virtual void [evaluate](#evaluate) (double t, vec3 &res) const =0 — Return a point on the primitive.
+- virtual void [evaluateNormal](#evaluatenormal) (double t, vec3 &res) const =0 — Evaluates primitive normal direction.
+- virtual void [evaluateTangent](#evaluatetangent) (double t, vec3 &res) const =0 — Evaluates primitive tangent direction.
+- vec3 [yDir](#ydir) () const — Get the y-direction of the primitive The y-direction is defined as the normal of the plane in which the primitive is located.
+- virtual void [updateYDir](#updateydir) ()=0 — Update the normal of the primitive.
+- void **overrideCurvedSliceYDir** (const vec3 &[yDir](#ydir), bool forcedYDir=true)
+- bool **forcedYDir** (vec3 &yDirOut) const
+- void **updateCurveHeight** (const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*imgSet) — Update height of the primitive.
+- virtual double [getCurveLength](#getcurvelength) () const =0 — Get the length of the primitive.
+- virtual double **coordToArcLength** (double t) const =0
+- virtual double **arcLengthToCoord** (double length) const =0
+- virtual void [getUniformSamples](#getuniformsamples) ([std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::pair](http://en.cppreference.com/w/cpp/utility/pair.html)&lt; double, vec3 &gt; &gt; &samples, int n) const =0 — Get the sample points of the primitive.
+- virtual double [calculateNearestPointCoord](#calculatenearestpointcoord) (const vec3 &pos) const =0 — Calculates the curve parameter t of the point nearest to pos.
+- virtual bool [isClosed](#isclosed) () const =0 — Returns true if the curve is closed (i.e. first point is at the same position as the last point).
+- double **curveHeight** () const
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Set one or multiple properties.
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Retrieve the properties of this object.
+
+## Public Attributes
+
+- Signal **signalGeometryChanged**
+
+## Protected Member Functions
+
+- [Geometry::AlignedBox](/cpp-sdk/4.5/api/classes/imfusion-geometry-alignedbox) **extendBounds** (const [Geometry::AlignedBox](/cpp-sdk/4.5/api/classes/imfusion-geometry-alignedbox) &b) const
+
+## Protected Attributes
+
+- vec3 **m_yDir** = vec3(0, 0, 1)
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; vec3 &gt; **m_forcedYDir**
+- double **m_curveHeight** = 0.0
+
+## Member Function Documentation
+
+### evaluate
+
+```cpp
+virtual void ImFusion::CurvedViewPrimitive::evaluate (double t, vec3 & res) const
+```
+
+*pure virtual*
+
+Return a point on the primitive.
+
+The primitive is parametrized in the range t = [0;1] which linearly maps to the entire length of the primitive.
+
+**Parameters:**
+
+- `t` — curve parameter
+- `res` — position at t (output parameter)
+
+### evaluateNormal
+
+```cpp
+virtual void ImFusion::CurvedViewPrimitive::evaluateNormal (double t, vec3 & res) const
+```
+
+*pure virtual*
+
+Evaluates primitive normal direction.
+
+The curve is parametrized in the range t = [0;1]
+
+**Parameters:**
+
+- `t` — curve parameter
+- `res` — normalized normal direction at t (output parameter)
+
+### evaluateTangent
+
+```cpp
+virtual void ImFusion::CurvedViewPrimitive::evaluateTangent (double t, vec3 & res) const
+```
+
+*pure virtual*
+
+Evaluates primitive tangent direction.
+
+The curve is parametrized in the range t = [0;1]
+
+**Parameters:**
+
+- `t` — curve parameter
+- `res` — normalized tangent direction at t (output parameter)
+
+### yDir
+
+```cpp
+vec3 ImFusion::CurvedViewPrimitive::yDir () const
+```
+
+Get the y-direction of the primitive The y-direction is defined as the normal of the plane in which the primitive is located.
+
+**Warning:** : this will in general correspond to the y-coordinate in the curved view, not the normal to the curved view.
+
+### updateYDir
+
+```cpp
+virtual void ImFusion::CurvedViewPrimitive::updateYDir ()
+```
+
+*pure virtual*
+
+Update the normal of the primitive.
+
+### getCurveLength
+
+```cpp
+virtual double ImFusion::CurvedViewPrimitive::getCurveLength () const
+```
+
+*pure virtual*
+
+Get the length of the primitive.
+
+### getUniformSamples
+
+```cpp
+virtual void ImFusion::CurvedViewPrimitive::getUniformSamples (std::vector < std::pair < double, vec3 > > & samples, int n) const
+```
+
+*pure virtual*
+
+Get the sample points of the primitive.
+
+### calculateNearestPointCoord
+
+```cpp
+virtual double ImFusion::CurvedViewPrimitive::calculateNearestPointCoord (const vec3 & pos) const
+```
+
+*pure virtual*
+
+Calculates the curve parameter t of the point nearest to pos.
+
+First the nearest point to pos on the curve is determined and the parameter t from the start of the curve to this point returned.
+
+**Parameters:**
+
+- `pos` — worldspace position of a point on the view
+
+### isClosed
+
+```cpp
+virtual bool ImFusion::CurvedViewPrimitive::isClosed () const
+```
+
+*pure virtual*
+
+Returns true if the curve is closed (i.e. first point is at the same position as the last point).
+
+### configure
+
+```cpp
+void ImFusion::CurvedViewPrimitive::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Set one or multiple properties.
+
+### configuration
+
+```cpp
+void ImFusion::CurvedViewPrimitive::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Retrieve the properties of this object.

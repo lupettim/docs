@@ -1,0 +1,32 @@
+---
+title: "ImFusion::GL::Viewport"
+sidebarTitle: "Viewport"
+description: "Structure describing an OpenGL viewport."
+---
+
+`#include <ImFusion/Core/GL/Types.h>`
+
+## Overview
+
+Structure describing an OpenGL viewport.
+
+**See also:** [https://www.khronos.org/opengl/wiki/GLAPI/glViewport](https://www.khronos.org/opengl/wiki/GLAPI/glViewport)
+
+## Public Member Functions
+
+- **Viewport** (int x, int y, int width, int height)
+- vec2i **offset** () const — Return the offset of the viewport as vec2i.
+- vec2i **size** () const — Return the dimensions of the viewport as vec2i.
+- vec2i **center** () const — Returns the center of the viewport as rounded vec2i.
+- bool **includesPoint** (const vec2i &point) const — Returns if *point* is inside the viewport.
+- void **retrieve** () — Retrieve the current viewport setting from the OpenGL state.
+- void **set** () const — Set the OpenGL viewport to this instance's settings.
+- bool **operator==** (const Viewport &rhs) const
+- bool **operator!=** (const Viewport &rhs) const
+
+## Public Attributes
+
+- int **x** = 0 — X coordinate of the lower-left corner of the viewport rectangle.
+- int **y** = 0 — Y coordinate of the lower-left corner of the viewport rectangle.
+- int **width** = 0 — Width of the viewport rectangle in pixels.
+- int **height** = 0 — Height of the viewport rectangle in pixels.

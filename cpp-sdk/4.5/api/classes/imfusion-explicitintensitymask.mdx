@@ -1,0 +1,244 @@
+---
+title: "ImFusion::ExplicitIntensityMask"
+sidebarTitle: "ExplicitIntensityMask"
+description: "An ExplicitIntensityMask is a combination of an ExplicitMask and an IntensityMask ."
+---
+
+`#include <ImFusion/GL/ExplicitIntensityMask.h>`
+
+## Overview
+
+An [ExplicitIntensityMask](/cpp-sdk/4.5/api/classes/imfusion-explicitintensitymask) is a combination of an [ExplicitMask](/cpp-sdk/4.5/api/classes/imfusion-explicitmask) and an [IntensityMask](/cpp-sdk/4.5/api/classes/imfusion-intensitymask).
+
+It is created with a "reference image" and a "mask image". The reference image defines the pixel grid used for the pixel coordinate provided during mask value query. This location is then transformed to the mask image where the actual mask pixel value lookup takes place. Finally, that value is compared against the configured intensity range yielding whether the queried pixel is inside or outside the mask. In other words: it uses the [ImageDescriptorWorld](/cpp-sdk/4.5/api/classes/imfusion-imagedescriptorworld) of the reference image and the pixel data of the mask image.
+
+In contrast to Explicit mask, the mask-defining image can be of arbitrary type. Furthermore, this mask also supports non-pixel-direct mapping (i.e. the reference image and the mask image do not need to be of the same size necessarily). In this case, [ExplicitIntensityMask](/cpp-sdk/4.5/api/classes/imfusion-explicitintensitymask) will transform between the two pixel coordinate systems. However, be aware that this will decrease the performance of [maskValue()](#maskvalue)!
+
+The default intensity range of this mask will be [1..MAX] for integral type images and [0..1] for floating point type images.
+
+**Note:** The range of allowed pixel values specified in [setIntensityRange()](#setintensityrange) refers to the storage pixel values in the mask image without applying shift/scale.
+
+## Public Member Functions
+
+- [ExplicitIntensityMask](#explicitintensitymask) (const [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) &referenceImage, [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) &gt; maskImage) — Creates a new [ExplicitIntensityMask](/cpp-sdk/4.5/api/classes/imfusion-explicitintensitymask) for the given image.
+- const [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \* **maskImage** () const — Returns the internal image representing the mask.
+- const vec2f & [intensityRange](#intensityrange) () const — Returns the range of allowed pixel values.
+- void [setIntensityRange](#setintensityrange) (const vec2f &range) — Sets the range of allowed pixel values.
+- [InterpolationMode](/cpp-sdk/4.5/api/namespaces/imfusion) **interpolationMode** () const — Returns the interpolation/filtering mode to use during pixel lookup of the reference image.
+- void **setInterpolationMode** ([InterpolationMode](/cpp-sdk/4.5/api/namespaces/imfusion) value) — Sets the interpolation/filtering mode to use during pixel lookup of the reference image.
+- void [setBorderClamp](#setborderclamp) (bool isClampToBorder)
+- bool **borderClamp** () const — If true, set sampler wrapping mode to ClampToBorder (default). If false, set to ClampToEdge.
+- void [setBorderColor](#setbordercolor) (float color)
+- float [borderColor](#bordercolor) () const
+- const vec2f & **intensityRangeGl** () const — Returns the intensity ranges for GLmask.
+
+## Implementation of base interfaces
+
+- uint8_t [maskValue](#maskvalue) (const vec3i &coord, const vec4f &color) const override — Returns 0 if the given pixel is outside the mask (i.e.
+- bool [isCompatible](#iscompatible) (const [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*image) const override — Returns true if the mask can be used with the given image or false otherwise.
+- bool [requiresPixelValue](#requirespixelvalue) () const override — Returns true if the [maskValue()](#maskvalue) rely on the pixel value.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; uint8_t &gt; &gt; [createExplicitMask](#createexplicitmask) (const [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) &image, [CreateOption](/cpp-sdk/4.5/api/classes/imfusion-mask) createOption=[CreateOption::DeepCopy](/cpp-sdk/4.5/api/classes/imfusion-mask)) const override — Creates an explicit mask representation of this mask for a given image.
+- int [setIncludeArguments](#setincludearguments) ([GL::Program](/cpp-sdk/4.5/api/classes/imfusion-gl-program) &p, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &prefix="mask") const override — Called by users of [GlMask](/cpp-sdk/4.5/api/classes/imfusion-glmask) in order to correctly setup the mask shader.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) &gt; [createExplicitMaskGl](#createexplicitmaskgl) (const [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) &image, bool normalized=false) override — Creates an explicit mask representation of this mask when applied to the given image.
+- [GlMask](/cpp-sdk/4.5/api/classes/imfusion-glmask) \* [glMask](#glmask) () override — Returns the OpenGL-based implementation of the mask interface if available.
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+## Constructor & Destructor Documentation
+
+### ExplicitIntensityMask
+
+```cpp
+ImFusion::ExplicitIntensityMask::ExplicitIntensityMask (const SharedImage & referenceImage, std::unique_ptr < SharedImage > maskImage)
+```
+
+Creates a new [ExplicitIntensityMask](/cpp-sdk/4.5/api/classes/imfusion-explicitintensitymask) for the given image.
+
+**Parameters:**
+
+- `referenceImage` — [Image](/cpp-sdk/4.5/api/classes/imfusion-image) the mask is applied to
+- `maskImage` — Source image for the mask, must not be null
+
+## Member Function Documentation
+
+### intensityRange
+
+```cpp
+const vec2f & ImFusion::ExplicitIntensityMask::intensityRange () const
+```
+
+Returns the range of allowed pixel values.
+
+Values outside this range will be masked.
+
+**Note:** The intensity range refers to the storage pixel values in the mask image without applying shift/scale.
+
+### setIntensityRange
+
+```cpp
+void ImFusion::ExplicitIntensityMask::setIntensityRange (const vec2f & range)
+```
+
+Sets the range of allowed pixel values.
+
+Values outside this range will be masked.
+
+**Note:** The intensity range refers to the storage pixel values in the mask image without applying shift/scale.
+
+### setBorderClamp
+
+```cpp
+void ImFusion::ExplicitIntensityMask::setBorderClamp (bool isClampToBorder)
+```
+
+**Parameters:**
+
+- `isClampToBorder` — If true, set sampler wrapping mode to ClampToBorder (default). If false, set to ClampToEdge.
+
+### setBorderColor
+
+```cpp
+void ImFusion::ExplicitIntensityMask::setBorderColor (float color)
+```
+
+**Parameters:**
+
+- `color` — normalized for integer images, set borderColor if wrapping mode is ClampToBorder
+
+### borderColor
+
+```cpp
+float ImFusion::ExplicitIntensityMask::borderColor () const
+```
+
+**Parameters:**
+
+- `color` — normalized for integer images, set borderColor if wrapping mode is ClampToBorder
+
+### maskValue
+
+```cpp
+uint8_t ImFusion::ExplicitIntensityMask::maskValue (const vec3i & coord, const vec4f & color) const
+```
+
+*override, virtual*
+
+Returns 0 if the given pixel is outside the mask (i.e.
+
+invisible/to be ignored) or a non-zero value if it is inside the mask (i.e. visible/to be considered).
+
+This function takes both the pixel coordinate and pixel value as input. Concrete implementations of the [Mask](/cpp-sdk/4.5/api/classes/imfusion-mask) interface are free to use only either input for their decision if it makes sense. Also, it is up to the implementation whether it supports multi-channel images or not. Subclasses only supporting grayscale images should only use the first channel.
+
+**Parameters:**
+
+- `coord` — Pixel coordinate to be tested against the mask, can be outside of the image.
+- `color` — Pixel value (not normalized) to be tested against the mask. This parameter is only needed if [requiresPixelValue()](#requirespixelvalue) returns true, which can allow for optimizations where pixel lookup is expensive.
+
+### isCompatible
+
+```cpp
+bool ImFusion::ExplicitIntensityMask::isCompatible (const SharedImage * image) const
+```
+
+*override, virtual*
+
+Returns true if the mask can be used with the given image or false otherwise.
+
+### requiresPixelValue
+
+```cpp
+bool ImFusion::ExplicitIntensityMask::requiresPixelValue () const
+```
+
+*override, virtual*
+
+Returns true if the [maskValue()](#maskvalue) rely on the pixel value.
+
+If this method returns false, the [maskValue()](#maskvalue) method can be safely used with only the coordinate. This is useful to avoid an otherwise unnecessary and expensive pixel lookup.
+
+### createExplicitMask
+
+```cpp
+std::unique_ptr < TypedImage < uint8_t > > ImFusion::ExplicitIntensityMask::createExplicitMask (const SharedImage & image, CreateOption createOption = CreateOption::DeepCopy) const
+```
+
+*override, virtual*
+
+Creates an explicit mask representation of this mask for a given image.
+
+**Parameters:**
+
+- `image` — Reference image for which to create the mask, must be compatible.
+- `createOption` — Subclasses that already store an explicit representation of the mask can optionally return a non-owning [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage) (shallow copy). If the returned [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage) will outlive the source [Mask](/cpp-sdk/4.5/api/classes/imfusion-mask), make sure to use [CreateOption::DeepCopy](/cpp-sdk/4.5/api/classes/imfusion-mask).
+
+### setIncludeArguments
+
+```cpp
+int ImFusion::ExplicitIntensityMask::setIncludeArguments (GL::Program & p, const std::string & prefix = "mask") const
+```
+
+*override, virtual*
+
+Called by users of [GlMask](/cpp-sdk/4.5/api/classes/imfusion-glmask) in order to correctly setup the mask shader.
+
+Subclasses should implement this function so that it correctly sets all needed uniforms and input textures to be used by the OpenGL shader instance. Make sure to use the given *prefix* argument instead of a hardcoded "mask" when defining uniform names to support multi-includes where the prefixes have been replaced with unique alternatives. Example:
+
+```cpp
+p.setArgument(prefix + "UseRange", m_useRange);
+```
+ fragment
+
+### createExplicitMaskGl
+
+```cpp
+std::unique_ptr < GlImage > ImFusion::ExplicitIntensityMask::createExplicitMaskGl (const GlImage & inputImage, bool normalized = false)
+```
+
+*override, virtual*
+
+Creates an explicit mask representation of this mask when applied to the given image.
+
+**Parameters:**
+
+- `inputImage` — [Image](/cpp-sdk/4.5/api/classes/imfusion-image) to which the mask should be applied for each pixel in order to generate the explicit mask image. Must be compatible with the mask.
+- `normalized` — If the this parameter is true the resulting binary mask value will be created as CPU uint8_t values 0 and 255 (corresponding to 0 and 1 on the GPU), instead of 0 and 1 (0 and 1/255 on the GPU).
+
+### glMask
+
+```cpp
+GlMask * ImFusion::ExplicitIntensityMask::glMask ()
+```
+
+*override, virtual*
+
+Returns the OpenGL-based implementation of the mask interface if available.
+
+This function may return nullptr if this is not implemented (default).
+
+### configure
+
+```cpp
+void ImFusion::ExplicitIntensityMask::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### configuration
+
+```cpp
+void ImFusion::ExplicitIntensityMask::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality

@@ -1,0 +1,144 @@
+---
+title: "ImFusion::GlReduction"
+sidebarTitle: "GlReduction"
+description: "High-performance implementation of a reduction of 2D and 3D images using OpenGL."
+---
+
+`#include <ImFusion/GL/GlReduction.h>`
+
+## Overview
+
+High-performance implementation of a reduction of 2D and 3D images using OpenGL.
+
+This class provides a set of reduction operators that can be applied to either a [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) or alternatively an ImageMath::GlExpr. Furthermore, you can apply the reduction to only a subregion of the image or alternatively optionally provide a [GlMask](/cpp-sdk/4.5/api/classes/imfusion-glmask) to dynamically exclude individual pixels/regions from the reduction.
+
+Usage example:
+
+```cpp
+GlImage* img = ...;
+GlReduction reduction(GlReduction::MIN);
+std::vector<double> mins = reduction.reduce(*img);
+// `mins` will contain the minimum pixel value in `img` for each channel
+```
+ fragment
+
+**Note:** Due to the needed shaders and buffers, the instantiation of a [GlReduction](/cpp-sdk/4.5/api/classes/imfusion-glreduction) instance is rather expensive. You should cache it if possible. Alternatively, you can use the [GlMinReduction](/cpp-sdk/4.5/api/classes/imfusion-glminreduction), [GlMaxReduction](/cpp-sdk/4.5/api/classes/imfusion-glmaxreduction), [GlSumReduction](/cpp-sdk/4.5/api/classes/imfusion-glsumreduction), [GlProductReduction](/cpp-sdk/4.5/api/classes/imfusion-glproductreduction), or [GlAverageReduction](/cpp-sdk/4.5/api/classes/imfusion-glaveragereduction) specializations that implement the [GL::InstanceManager](/cpp-sdk/4.5/api/classes/imfusion-gl-instancemanager) interface for caching.
+
+## Public Types
+
+- enum [ReductionOperator](#reductionoperator) &#123; MIN , MAX , SUM , PRODUCT , AVERAGE , AVERAGE_ABSOLUTE &#125; — Operation to be performed by reduction.
+
+## Public Member Functions
+
+- [GlReduction](#glreduction) ([ReductionOperator](#reductionoperator) reductionOperator) — Creates a new [GlReduction](/cpp-sdk/4.5/api/classes/imfusion-glreduction) instance using the given reduction oparator in [reduce()](#reduce-1-2).
+- **GlReduction** (GlReduction &&other) noexcept
+- [GlReduction](#glreduction) & **operator=** ([GlReduction](#glreduction) &&) noexcept
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; [reduce](#reduce-1-2) (const [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) &img, const [GlMask](/cpp-sdk/4.5/api/classes/imfusion-glmask) \*mask=nullptr, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3i &gt; \*outArgMinMax=nullptr) — Reduces the given input image and returns the reduction result for each channel.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; [reduce](#reduce-2-2) (const ImageMath::GlExpr &expr, const [ImageDescriptor](/cpp-sdk/4.5/api/structs/imfusion-imagedescriptor) &desc, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3i &gt; \*outArgMinMax=nullptr) — Reduces the given input image and returns the reduction result for each channel.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; [reduceSubregion](#reducesubregion) (const [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) &img, const vec3i &subregion, const [GlMask](/cpp-sdk/4.5/api/classes/imfusion-glmask) \*mask=nullptr, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3i &gt; \*outArgMinMax=nullptr) — Reduces the given subregion of the input image and returns the reduction result for each channel.
+
+## Member Enumeration Documentation
+
+### ReductionOperator
+
+```cpp
+enum ImFusion::GlReduction::ReductionOperator
+```
+
+Operation to be performed by reduction.
+
+**Enumerator:**
+
+- `MIN` — Find the minimum element.
+- `MAX` — Find the maximum element.
+- `SUM` — Compute the sum of all elements.
+- `PRODUCT` — Compute the product of all elements.
+- `AVERAGE` — Compute the average of all elements.
+- `AVERAGE_ABSOLUTE` — Compute the average of the absolute values of all elements.
+
+## Constructor & Destructor Documentation
+
+### GlReduction
+
+```cpp
+ImFusion::GlReduction::GlReduction (ReductionOperator reductionOperator)
+```
+
+*explicit*
+
+Creates a new [GlReduction](/cpp-sdk/4.5/api/classes/imfusion-glreduction) instance using the given reduction oparator in [reduce()](#reduce-1-2).
+
+**Exceptions:**
+
+- `std::runtime_error` — if initialization of the OpenGL resources fails.
+
+## Member Function Documentation
+
+### reduce
+
+```cpp
+std::vector < double > ImFusion::GlReduction::reduce (const GlImage & img, const GlMask * mask = nullptr, std::vector < vec3i > * outArgMinMax = nullptr)
+```
+
+Reduces the given input image and returns the reduction result for each channel.
+
+Result values are normalized intensities as they reside on GPU memory. If you want the original intensity domain convert the result using [GlUtils::normalizedToStorage()](/cpp-sdk/4.5/api/namespaces/imfusion-glutils).
+
+**Parameters:**
+
+- `img` — The input image for the reduction.
+- `mask` — Optional image mask. Only image values under locations with nonzero mask values will be considered for the reduction.
+- `outArgMinMax` — Optional output parameter for returning the argmin/argmax result. If this is a minimum/maximum reduction you will find the channel-wise pixel coordinates of a min/max value. It is undefined which coordinate is returned in case the argmin/argmax is not unique.
+
+**Exceptions:**
+
+- `std::runtime_error` — if initialization of the OpenGL resources fails.
+
+### reduce
+
+```cpp
+std::vector < double > ImFusion::GlReduction::reduce (const ImageMath::GlExpr & expr, const ImageDescriptor & desc, std::vector < vec3i > * outArgMinMax = nullptr)
+```
+
+Reduces the given input image and returns the reduction result for each channel.
+
+Returns the original values as provided by *expr*.
+
+```cpp
+namespace IM = ImageMath;
+SharedImage img(...);
+auto res = GlReduction(GlReduction::MIN).reduce(IM::GlExpr((IM::makeArray(img) + 3).abs()), img.descriptor());
+```
+ fragment
+
+**Note:** Reduction of GlExprs can only be used with the minimum, maximum, sum, or product reduction operator. Using this overload with average or average-of-absolutes mode will yield undefined behavior!
+
+**Parameters:**
+
+- `expr` — A ImageMath::GlExpr representing any arithmetic expression on images.
+- `outArgMinMax` — Optional output parameter for returning the argmin/argmax result. If this is a minimum/maximum reduction you will find the channel-wise pixel coordinates of a min/max value. It is undefined which coordinate is returned in case the argmin/argmax is not unique.
+
+**Exceptions:**
+
+- `std::runtime_error` — if initialization of the OpenGL resources fails.
+
+### reduceSubregion
+
+```cpp
+std::vector < double > ImFusion::GlReduction::reduceSubregion (const GlImage & img, const vec3i & subregion, const GlMask * mask = nullptr, std::vector < vec3i > * outArgMinMax = nullptr)
+```
+
+Reduces the given subregion of the input image and returns the reduction result for each channel.
+
+Result values are normalized intensities as they reside on GPU memory. If you want the original intensity domain convert the result using [GlUtils::normalizedToStorage()](/cpp-sdk/4.5/api/namespaces/imfusion-glutils).
+
+**Parameters:**
+
+- `img` — The input image for the reduction.
+- `subregion` — Size of the subregion for which to perform the reduction. It is not possible to define an offset: subregion and image will always share the same origin.
+- `mask` — Optional image mask. Only image values under locations with nonzero mask values will be considered for the reduction.
+- `outArgMinMax` — Optional output parameter for returning the argmin/argmax result. If this is a minimum/maximum reduction you will find the channel-wise pixel coordinates of a min/max value. It is undefined which coordinate is returned in case the argmin/argmax is not unique.
+
+**Exceptions:**
+
+- `std::runtime_error` — if initialization of the OpenGL resources fails.

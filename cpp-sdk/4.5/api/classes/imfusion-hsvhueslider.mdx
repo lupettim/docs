@@ -1,0 +1,37 @@
+---
+title: "ImFusion::HsvHueSlider"
+sidebarTitle: "HsvHueSlider"
+description: "Specialized version of a CompositeSlider that renders the HSV hue color map as background."
+---
+
+`#include <ImFusion/GUI/CoreWidgets/HsvColorPicker.h>`
+
+## Overview
+
+Specialized version of a [CompositeSlider](/cpp-sdk/4.5/api/classes/imfusion-compositeslider) that renders the HSV hue color map as background.
+
+Default value range is 0..359 representing the hue angle in the HSV color space.
+
+**See also:** [HsvColorPicker2d](/cpp-sdk/4.5/api/classes/imfusion-hsvcolorpicker2d), [ColorPickerWidget](/cpp-sdk/4.5/api/classes/imfusion-colorpickerwidget), [ColorButton](/cpp-sdk/4.5/api/classes/imfusion-colorbutton)
+
+## Public Member Functions
+
+- **HsvHueSlider** (Qt::Orientation orientation, QWidget \*parent=nullptr) — Create a new [HsvHueSlider](/cpp-sdk/4.5/api/classes/imfusion-hsvhueslider) in the given orientation.
+
+## Protected Member Functions
+
+- void [paintBackground](#paintbackground) (QPainter &painter) override
+
+## Protected Attributes
+
+- QLinearGradient **m_background**
+
+## Member Function Documentation
+
+### paintBackground
+
+```cpp
+void ImFusion::HsvHueSlider::paintBackground (QPainter & painter)
+```
+
+*override, protected, virtual*

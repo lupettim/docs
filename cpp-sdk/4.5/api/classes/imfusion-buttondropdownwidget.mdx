@@ -1,0 +1,81 @@
+---
+title: "ImFusion::ButtonDropdownWidget"
+sidebarTitle: "ButtonDropdownWidget"
+description: "Push button and a dropdown menu together as a single widget."
+---
+
+`#include <ImFusion/GUI/CoreWidgets/ButtonDropdownWidget.h>`
+
+## Overview
+
+Push button and a dropdown menu together as a single widget.
+
+This widget supports three operation modes In FixedButton mode, when a menu entry is selected, the main button will not change
+
+In UpdateButton mode, when a menu entry is selected, the main button will change to the selected entry.
+
+In PersistentUpdateButton mode, when a menu entry is selected, the main button will change to the selected entry. The main button will keep this value between restarts. For this mode, the storageId has to be set to a unique value.
+
+```
+Examples:
+auto fixedWidget = new ButtonDropdownWidget(fixedButtonAction, parent);
+fixedWidget->addActions({menu0Action,menu1Action,menu2Action});
+
+auto updateWidget = new ButtonDropdownWidget(updateButtonAction, parent, ButtonDropdownWidget::Mode::UpdateButton);
+updateWidget->addActions({menu0Action,menu1Action,menu2Action});
+
+auto persistWidget = new ButtonDropdownWidget(persistButtonAction, parent, ButtonDropdownWidget::Mode::PersistentUpdateButton, "persist");
+persistWidget->addActions({menu0Action,menu1Action,menu2Action});
+```
+
+## Public Types
+
+- enum class [Mode](#mode) &#123; FixedButton , UpdateButton , PersistentUpdateButton &#125;
+
+## Public Member Functions
+
+- [ButtonDropdownWidget](#buttondropdownwidget) (QAction \*button, QWidget \*parent=nullptr, [Mode](#mode) mode=Mode::FixedButton, const QString &storageId="") — Creates a push button and a dropdown menu.
+- bool [addAction](#addaction) (QAction \*action) — Adds an action to the dropdown menu.
+- bool **addActions** (const QList&lt; QAction \* &gt; &actions)
+
+## Member Enumeration Documentation
+
+### Mode
+
+```cpp
+enum class ImFusion::ButtonDropdownWidget::Mode
+```
+
+*strong*
+
+**Enumerator:**
+
+- `FixedButton` — Default button will not change when selecting dropdown actions.
+- `UpdateButton` — Default button will update when selecting dropdown actions.
+- `PersistentUpdateButton` — Default button will update when selecting dropdown actions, and will store the selected value.
+
+## Constructor & Destructor Documentation
+
+### ButtonDropdownWidget
+
+```cpp
+ImFusion::ButtonDropdownWidget::ButtonDropdownWidget (QAction * button, QWidget * parent = nullptr, Mode mode = Mode::FixedButton, const QString & storageId = "")
+```
+
+*explicit*
+
+Creates a push button and a dropdown menu.
+
+Can choose if the main button is updated when selecting, and if storageId is provided, it will store the latest selection
+
+## Member Function Documentation
+
+### addAction
+
+```cpp
+bool ImFusion::ButtonDropdownWidget::addAction (QAction * action)
+```
+
+Adds an action to the dropdown menu.
+
+If storage is used and matches the action, it will be set in the button. Returns true if action was added correctly, returns false if action with same text already exists

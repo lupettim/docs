@@ -1,0 +1,35 @@
+---
+title: "ImFusion::GUI::SliceIndicator"
+sidebarTitle: "SliceIndicator"
+description: "Interactive renderer to show and manipulate the position/extent of SliceView instances in context of other Views."
+---
+
+`#include <ImFusion/GUI/SliceIndicator.h>`
+
+## Overview
+
+[Interactive](/cpp-sdk/4.5/api/classes/imfusion-interactive) renderer to show and manipulate the position/extent of [SliceView](/cpp-sdk/4.5/api/classes/imfusion-gui-sliceview) instances in context of other Views.
+
+This class wraps a [GlSliceIndicator](/cpp-sdk/4.5/api/classes/imfusion-glsliceindicator) to visualize existing SliceViews in other SliceViews and VolumeViews and combines it with input event handling code so that you can change the position and orientation of a slice by dragging its intersection line.
+
+## Public Member Functions
+
+- **SliceIndicator** ([std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [SliceView](/cpp-sdk/4.5/api/classes/imfusion-gui-sliceview) \* &gt; sliceViews)
+- [GlSliceIndicator](/cpp-sdk/4.5/api/classes/imfusion-glsliceindicator) & **glObject** ()
+- const [GlSliceIndicator](/cpp-sdk/4.5/api/classes/imfusion-glsliceindicator) & **glObject** () const
+- bool **rotatesAll** () const — Returns whether rotation should be applied to other slices after interaction finishes.
+- void **setRotateAll** (bool flag) — Set whether rotation should be applied to other slices after interaction finishes.
+- [EventResult](/cpp-sdk/4.5/api/structs/imfusion-gui-eventresult) [handleInputEvent](#handleinputevent) (const [InputEvent](/cpp-sdk/4.5/api/classes/imfusion-gui-inputevent) &event, const [View](/cpp-sdk/4.5/api/classes/imfusion-gui-view) &view) override — Modify the slice based on the mouse events.
+- bool **isRotating** () const — Return whether active mode is rotation.
+
+## Member Function Documentation
+
+### handleInputEvent
+
+```cpp
+EventResult ImFusion::GUI::SliceIndicator::handleInputEvent (const InputEvent & event, const View & view)
+```
+
+*override, virtual*
+
+Modify the slice based on the mouse events.

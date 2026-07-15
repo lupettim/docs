@@ -1,0 +1,37 @@
+---
+title: "ImFusion::OpacitySlider"
+sidebarTitle: "OpacitySlider"
+description: "Specialized version of a CompositeSlider that renders a checkerboard blended with the given color as background."
+---
+
+`#include <ImFusion/GUI/CoreWidgets/HsvColorPicker.h>`
+
+## Overview
+
+Specialized version of a [CompositeSlider](/cpp-sdk/4.5/api/classes/imfusion-compositeslider) that renders a checkerboard blended with the given color as background.
+
+**See also:** [HsvColorPicker2d](/cpp-sdk/4.5/api/classes/imfusion-hsvcolorpicker2d), [ColorPickerWidget](/cpp-sdk/4.5/api/classes/imfusion-colorpickerwidget), [ColorButton](/cpp-sdk/4.5/api/classes/imfusion-colorbutton)
+
+## Public Member Functions
+
+- **OpacitySlider** (Qt::Orientation orientation, QWidget \*parent=nullptr)
+- void **setBackgroundColor** (QColor col)
+
+## Protected Member Functions
+
+- void [paintBackground](#paintbackground) (QPainter &painter) override
+
+## Protected Attributes
+
+- QLinearGradient **m_background**
+- QColor **m_backgroundColor**
+
+## Member Function Documentation
+
+### paintBackground
+
+```cpp
+void ImFusion::OpacitySlider::paintBackground (QPainter & painter)
+```
+
+*override, protected, virtual*

@@ -1,0 +1,161 @@
+---
+title: "ImFusion::HessianAlgorithm"
+sidebarTitle: "HessianAlgorithm"
+description: "Numerically compute the Hessian (and optionally the gradient) of a single-channel image."
+---
+
+`#include <ImFusion/GL/HessianAlgorithm.h>`
+
+## Overview
+
+Numerically compute the Hessian (and optionally the gradient) of a single-channel image.
+
+The output always contains at least one [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) for the Hessian. For 3D images, the Hessian [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) contains two SharedImages:
+
+- get(0): diagonal entries (Hxx, Hyy, Hzz) as 3-channel image
+- get(1): upper off-diagonal entries (Hxy, Hxz, Hyz) as 3-channel image For 2D images:
+- get(0): diagonal entries (Hxx, Hyy) as 2-channel image
+- get(1): off-diagonal entry (Hxy) as 1-channel image
+
+If p_computeGradient is enabled, an additional [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) is appended to the output containing the gradient as a single [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) with dim channels (dx, dy[, dz]).
+
+If p_computeEigenvalues is enabled, an additional [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) is appended containing the eigenvalues of the Hessian sorted in ascending order (lambda0 &lt;= lambda1 [&lt;= lambda2]) as a single [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) with dim channels.
+
+Derivatives can be computed in pixel, image (mm), or world coordinates (see p_coordinates). For small p_sigmaSmooth (sigmaSmooth/spacing &lt;= 1), central finite differences are used directly. For larger p_sigmaSmooth, properly normalized Gaussian derivative kernels are used.
+
+## Public Types
+
+- enum class [Coordinates](#coordinates) &#123; Pixel = 0 , Image , World &#125; — Coordinate system in which derivatives are computed.
+
+## Public Member Functions
+
+- **HessianAlgorithm** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &input) — Constructor. Input must contain exactly one single-channel image.
+- void [compute](#compute) () override — Execute the algorithm.
+- [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) [takeOutput](#takeoutput) () override — Return any new [Data](/cpp-sdk/4.5/api/classes/imfusion-data) that was created by the [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) during the last call to [compute()](#compute).
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &gt; [takeHessian](#takehessian) () — Take individual output components (available after [compute()](#compute)).
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &gt; **takeGradient** ()
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &gt; **takeEigenvalues** ()
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &gt; [computeEigenvalues](#computeeigenvalues) ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &hessianSis) — Compute eigenvalues of a symmetric matrix stored as a two-frame [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) (first frame: diagonal entries, second: upper off-diagonal entries).
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &gt; [computeShapeOperator](#computeshapeoperator) ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &hessianSis, [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &gradientSis) — Compute the shape operator S = -(1/||g||) \* P \* H \* P of the level sets of f, where g = grad(f), H = D^2(f), n = g/||g||, and P = I - n\*n^T.
+
+## Static Public Member Functions
+
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &dl, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*alg)
+- static [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; float &gt; &gt; [createGaussdFilter](#creategaussdfilter) (double sigma, double spacing, int order, bool physicalDerivativeScale=true, double finiteDiffThreshold=1.0, bool correctKernelSum=true) — Create a 1D Gaussian derivative kernel.
+
+## Public Attributes
+
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; [Coordinates](#coordinates) &gt; **p_coordinates** = &#123;"coordinates", Coordinates::Pixel, this&#125; — Coordinate system for the computed derivatives.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; double &gt; [p_sigmaSmooth](#p-sigmasmooth) = &#123;"sigmaSmooth", 0.0, this&#125; — Standard deviation for Gaussian pre-smoothing to stabilize derivatives.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; bool &gt; **p_computeGradient** = &#123;"computeGradient", false, this&#125; — If true, compute and output the gradient in addition to the Hessian.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; bool &gt; **p_computeEigenvalues** = &#123;"computeEigenvalues", false, this&#125; — If true, compute and output the eigenvalues of the Hessian (sorted ascending).
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; bool &gt; **p_splitChannels** = &#123;"splitChannels", false, this&#125; — If true, split all multi-channel output images into separate single-channel images.
+
+## Member Enumeration Documentation
+
+### Coordinates
+
+```cpp
+enum class ImFusion::HessianAlgorithm::Coordinates
+```
+
+*strong*
+
+Coordinate system in which derivatives are computed.
+
+**Enumerator:**
+
+- `Pixel` — Derivatives w.r.t. pixel/voxel indices (spacing = 1).
+- `Image` — Derivatives w.r.t. image coordinates (using descriptor spacing, in mm).
+- `World` — Derivatives w.r.t. world coordinates (accounting for image pose).
+
+## Member Function Documentation
+
+### createGaussdFilter
+
+```cpp
+std::unique_ptr < TypedImage < float > > ImFusion::HessianAlgorithm::createGaussdFilter (double sigma, double spacing, int order, bool physicalDerivativeScale = true, double finiteDiffThreshold = 1.0, bool correctKernelSum = true)
+```
+
+*static*
+
+Create a 1D Gaussian derivative kernel.
+
+**Parameters:**
+
+- `sigma` — Standard deviation of the Gaussian in physical units (same units as *spacing*). Must be non-negative; zero or small values (sigma/spacing &lt;= finiteDiffThreshold) fall back to central finite differences directly.
+- `spacing` — Pixel spacing along this axis.
+- `order` — Derivative order (0 = smoothing, 1 = first derivative, 2 = second derivative).
+- `physicalDerivativeScale` — If true (default), the kernel is scaled to produce derivatives in physical units. If false, the kernel operates in pixel units (used by legacy callers).
+- `finiteDiffThreshold` — Pixel-space sigma below which a central finite difference stencil is used instead of a Gaussian kernel. Pass 0.0 to always use the Gaussian kernel.
+- `correctKernelSum` — If true (default), derivative kernels are corrected so they sum to exactly zero, compensating for Gaussian tail truncation.
+
+### compute
+
+```cpp
+void ImFusion::HessianAlgorithm::compute ()
+```
+
+*override, virtual*
+
+Execute the algorithm.
+
+### takeOutput
+
+```cpp
+OwningDataList ImFusion::HessianAlgorithm::takeOutput ()
+```
+
+*override, virtual*
+
+Return any new [Data](/cpp-sdk/4.5/api/classes/imfusion-data) that was created by the [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) during the last call to [compute()](#compute).
+
+The default implementation will return an empty list.
+
+**Note:** Since ownership of the data is transferred, you can call this method only once between calls to [compute()](#compute).
+
+### takeHessian
+
+```cpp
+std::unique_ptr < SharedImageSet > ImFusion::HessianAlgorithm::takeHessian ()
+```
+
+*inline*
+
+Take individual output components (available after [compute()](#compute)).
+
+These move ownership — each can only be called once.
+
+### computeEigenvalues
+
+```cpp
+std::unique_ptr < SharedImageSet > ImFusion::HessianAlgorithm::computeEigenvalues (SharedImageSet & hessianSis)
+```
+
+Compute eigenvalues of a symmetric matrix stored as a two-frame [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) (first frame: diagonal entries, second: upper off-diagonal entries).
+
+Returns a [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) with a single image containing sorted eigenvalues (ascending) as channels.
+
+### computeShapeOperator
+
+```cpp
+std::unique_ptr < SharedImageSet > ImFusion::HessianAlgorithm::computeShapeOperator (SharedImageSet & hessianSis, SharedImageSet & gradientSis)
+```
+
+Compute the shape operator S = -(1/||g||) \* P \* H \* P of the level sets of f, where g = grad(f), H = D^2(f), n = g/||g||, and P = I - n\*n^T.
+
+Both inputs must be in split-channel format (p_splitChannels = true): hessianSis: [Hxx, Hyy, Hzz, Hxy, Hxz, Hyz] (3D) or [Hxx, Hyy, Hxy] (2D) gradientSis: [gx, gy, gz] (3D) or [gx, gy] (2D)
+
+Returns a [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) in multi-channel format compatible with [computeEigenvalues()](#computeeigenvalues): get(0): diagonal entries (Sxx, Syy[, Szz]) as multi-channel image get(1): off-diagonal entries (Sxy[, Sxz, Syz]) as multi-channel image
+
+## Member Data Documentation
+
+### p_sigmaSmooth
+
+```cpp
+Parameter <double> ImFusion::HessianAlgorithm::p_sigmaSmooth = {"sigmaSmooth", 0.0, this}
+```
+
+Standard deviation for Gaussian pre-smoothing to stabilize derivatives.
+
+Units depend on p_coordinates: pixels for Pixel mode, mm for Image/World mode. A value of 0 disables smoothing (pure central differences). Must not be negative.

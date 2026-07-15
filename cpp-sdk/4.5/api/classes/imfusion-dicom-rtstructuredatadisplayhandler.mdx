@@ -1,0 +1,73 @@
+---
+title: "ImFusion::Dicom::RTStructureDataDisplayHandler"
+sidebarTitle: "RTStructureDataDisplayHandler"
+description: "DataDisplayHandler for PointClouds that represent DICOM RT Structs."
+---
+
+`#include <ImFusion/Dicom/RTStructureDataDisplayHandler.h>`
+
+## Overview
+
+[DataDisplayHandler](/cpp-sdk/4.5/api/classes/imfusion-datadisplayhandler) for PointClouds that represent DICOM RT Structs.
+
+A [PointCloud](/cpp-sdk/4.5/api/classes/imfusion-pointcloud) is considered an RT Struct if it has a [RTStructureDataComponent](/cpp-sdk/4.5/api/classes/imfusion-dicom-rtstructuredatacomponent).
+
+## Public Member Functions
+
+- bool [handlesType](#handlestype) (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data) const override — Returns true if data is a [PointCloud](/cpp-sdk/4.5/api/classes/imfusion-pointcloud) with a [RTStructureDataComponent](/cpp-sdk/4.5/api/classes/imfusion-dicom-rtstructuredatacomponent).
+- bool [canBeShownInView](#canbeshowninview) (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data, const [GUI::View](/cpp-sdk/4.5/api/classes/imfusion-gui-view) &view) const override — Only supports [ImageView2D](/cpp-sdk/4.5/api/classes/imfusion-imageview2d) and [ImageView3D](/cpp-sdk/4.5/api/classes/imfusion-imageview3d).
+- void [show](#show) ([Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data, [GUI::View](/cpp-sdk/4.5/api/classes/imfusion-gui-view) &view) override — Adds RTStructureAnnotations to [ImageView2D](/cpp-sdk/4.5/api/classes/imfusion-imageview2d) and [ImageView3D](/cpp-sdk/4.5/api/classes/imfusion-imageview3d).
+- void [hide](#hide) ([Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data, [GUI::View](/cpp-sdk/4.5/api/classes/imfusion-gui-view) &view) override — Removes the [RTStructureAnnotation](/cpp-sdk/4.5/api/classes/imfusion-rtstructureannotation) from the view.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; QWidget &gt; [createDisplayOptionsWidget](#createdisplayoptionswidget) ([Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data, [GUI::DisplayBase](/cpp-sdk/4.5/api/classes/imfusion-gui-displaybase) &display, [GUI::View](/cpp-sdk/4.5/api/classes/imfusion-gui-view) &view) const override — Creates a widget to modify the parameters of [RTStructureAnnotation](/cpp-sdk/4.5/api/classes/imfusion-rtstructureannotation).
+
+## Member Function Documentation
+
+### handlesType
+
+```cpp
+bool ImFusion::Dicom::RTStructureDataDisplayHandler::handlesType (const Data * data) const
+```
+
+*override, virtual*
+
+Returns true if data is a [PointCloud](/cpp-sdk/4.5/api/classes/imfusion-pointcloud) with a [RTStructureDataComponent](/cpp-sdk/4.5/api/classes/imfusion-dicom-rtstructuredatacomponent).
+
+### canBeShownInView
+
+```cpp
+bool ImFusion::Dicom::RTStructureDataDisplayHandler::canBeShownInView (const Data * data, const GUI::View & view) const
+```
+
+*override, virtual*
+
+Only supports [ImageView2D](/cpp-sdk/4.5/api/classes/imfusion-imageview2d) and [ImageView3D](/cpp-sdk/4.5/api/classes/imfusion-imageview3d).
+
+### show
+
+```cpp
+void ImFusion::Dicom::RTStructureDataDisplayHandler::show (Data * data, GUI::View & view)
+```
+
+*override, virtual*
+
+Adds RTStructureAnnotations to [ImageView2D](/cpp-sdk/4.5/api/classes/imfusion-imageview2d) and [ImageView3D](/cpp-sdk/4.5/api/classes/imfusion-imageview3d).
+
+### hide
+
+```cpp
+void ImFusion::Dicom::RTStructureDataDisplayHandler::hide (Data * data, GUI::View & view)
+```
+
+*override, virtual*
+
+Removes the [RTStructureAnnotation](/cpp-sdk/4.5/api/classes/imfusion-rtstructureannotation) from the view.
+
+### createDisplayOptionsWidget
+
+```cpp
+std::unique_ptr < QWidget > ImFusion::Dicom::RTStructureDataDisplayHandler::createDisplayOptionsWidget (Data * data, GUI::DisplayBase & display, GUI::View & view) const
+```
+
+*override, virtual*
+
+Creates a widget to modify the parameters of [RTStructureAnnotation](/cpp-sdk/4.5/api/classes/imfusion-rtstructureannotation).

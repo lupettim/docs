@@ -1,0 +1,76 @@
+---
+title: "ImFusion::GlIsolineRenderer"
+sidebarTitle: "GlIsolineRenderer"
+description: "GlObject to render a label map into a GlSliceView using isolines."
+---
+
+`#include <ImFusion/Seg/GlIsolineRenderer.h>`
+
+## Overview
+
+[GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) to render a label map into a [GlSliceView](/cpp-sdk/4.5/api/classes/imfusion-glsliceview) using isolines.
+
+The current implementation only supports label maps of unsigned byte type.
+
+**Note:** This class trades performance for accuracy and will only render an approximation of the isolines. If you need pixel-perfect isolines, you will need to run marching squares yourself and render the resulting geometry as lines.
+
+## Public Member Functions
+
+- **GlIsolineRenderer** (const [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*labelImg) — Creates a new label renderer for the given label image (may be 0).
+- const [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \* **labelMap** () const — Returns the label image (may be 0 if rendering is disabled).
+- void **setLabelMap** (const [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*labelImg) — Sets the label image (may be 0 to disable rendering).
+- bool **isMatrixIgnored** () const — Returns whether the label map matrix is being ignored.
+- void **setIgnoreMatrix** (bool ignore) — Sets whether to ignore the label map matrix (render as if it were identity).
+- const [LabelDataComponent](/cpp-sdk/4.5/api/classes/imfusion-labeldatacomponent) \* **labelDataComponent** () const — Returns the optional [LabelDataComponent](/cpp-sdk/4.5/api/classes/imfusion-labeldatacomponent) to pull color configuration from.
+- void **setLabelDataComponent** (const [LabelDataComponent](/cpp-sdk/4.5/api/classes/imfusion-labeldatacomponent) \*value) — Sets the optional [LabelDataComponent](/cpp-sdk/4.5/api/classes/imfusion-labeldatacomponent) to pull color configuration from.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec4f &gt; **colors** () const — Returns the color map to use for label rendering.
+- void [setColors](#setcolors) ([std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec4f &gt; colorMap) — Sets the color map to use for label rendering.
+- double **thicknessPx** () const — Returns the isoline thickness in pixels.
+- void **setThicknessPx** (double value) — Sets the isoline thickness in pixels.
+- void [draw](#draw) (const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &view) override — Draw the object in 3D space.
+- [Geometry::AlignedBox](/cpp-sdk/4.5/api/classes/imfusion-geometry-alignedbox) [bounds](#bounds) () const override — Get the axis-aligned bounding box of this [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) in world space.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [typeName](#typename) () const override — Return unique identifier for this object class used for serialization.
+
+## Member Function Documentation
+
+### setColors
+
+```cpp
+void ImFusion::GlIsolineRenderer::setColors (std::vector < vec4f > colorMap)
+```
+
+Sets the color map to use for label rendering.
+
+**Note:** To maintain backward-compatibility, the *colorMap* will apply to the value range of [1 .. colorMap.size()], i.e. a label map value of 0 will always be fully transparent when using this function.
+
+### draw
+
+```cpp
+void ImFusion::GlIsolineRenderer::draw (const GlView & view)
+```
+
+*override, virtual*
+
+Draw the object in 3D space.
+
+### bounds
+
+```cpp
+Geometry::AlignedBox ImFusion::GlIsolineRenderer::bounds () const
+```
+
+*override, virtual*
+
+Get the axis-aligned bounding box of this [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) in world space.
+
+Return an empty (default-constructed) AlignedBox object if the [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) does not reside in world space.
+
+### typeName
+
+```cpp
+std::string ImFusion::GlIsolineRenderer::typeName () const
+```
+
+*override, virtual*
+
+Return unique identifier for this object class used for serialization.

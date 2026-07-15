@@ -1,0 +1,135 @@
+---
+title: "ImFusion::FeatureMapsRegistrationAlgorithm"
+sidebarTitle: "FeatureMapsRegistrationAlgorithm"
+description: "Algorithm for registering feature maps volumes."
+---
+
+`#include <ImFusion/Reg/FeatureMapsRegistrationAlgorithm.h>`
+
+## Overview
+
+[Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) for registering feature maps volumes.
+
+## Classes
+
+- struct [OptimizationParameter](/cpp-sdk/4.5/api/structs/imfusion-featuremapsregistrationalgorithm-optimizationparameter) — Encapsulates the name and range (min, max) of a parameter.
+
+## Public Types
+
+- enum class [Similarity](#similarity) &#123; Dot = 0 , SSD = 1 &#125;
+- enum class **Transformation** &#123; **Rigid** = 0 , **Affine** = 1 &#125; — [Status](/cpp-sdk/4.5/api/classes/imfusion-algorithm) codes.
+
+## Public Member Functions
+
+- **FeatureMapsRegistrationAlgorithm** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &fixed, [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &moving, [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*weightMoving=nullptr)
+- void [compute](#compute) () override — Execute the algorithm.
+- double [evaluate](#evaluate) (int n, const double \*x, double \*dx) override — Evaluates the objective function using parameters x. This algorithm supports gradients.
+- Eigen::VectorXd **eval** (const Eigen::VectorXd &params) — Evaluates the objective function, returns a vector containing [value, gradient...].
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; Eigen::VectorXd &gt; **batchEval** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; Eigen::VectorXd &gt; &params) — Batched implementation of eval. Thanks to GPU parallelism it is much faster than calling eval multiple times.
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [std::pair](http://en.cppreference.com/w/cpp/utility/pair.html)&lt; Eigen::VectorXd, double &gt; &gt; **localSearch** (Eigen::VectorXd startingParams) — Executes local search of the optimal parameters starting from startingParams. Returns a pair (parameters, score).
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [std::pair](http://en.cppreference.com/w/cpp/utility/pair.html)&lt; Eigen::VectorXd, double &gt; &gt; **localSearch** () — Executes local search of the optimal parameters starting from the current parameters. Returns a pair (parameters, score).
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::pair](http://en.cppreference.com/w/cpp/utility/pair.html)&lt; Eigen::VectorXd, double &gt; &gt; [globalSearch](#globalsearch-1-2) (const Eigen::VectorXd &lowerBound, const Eigen::VectorXd &upperBound, int populationSize) — Executes global search of the optimal parameters within the given bounds.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::pair](http://en.cppreference.com/w/cpp/utility/pair.html)&lt; Eigen::VectorXd, double &gt; &gt; [globalSearch](#globalsearch-2-2) () — Runs global search using the parameters specified in p_rotationRange, p_translationRange, p_searchTrials.
+- mat4 **registrationMatrix** (const Eigen::VectorXd &params) const — Converts parameters to a matrix.
+- void **applyRegistration** (const Eigen::VectorXd &params) — Applies the registration to the moving image.
+- void **resetPose** () — Reset the pose of the moving image.
+- void **acceptCurrentParameters** () — Set the initial pose of the moving image as the one specified by the current parameters, retest the current parameters to zero.
+- void **setDeformation** ([std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [ClDeformation](/cpp-sdk/4.5/api/classes/imfusion-cldeformation) &gt; deformation) — Adds a deformation to the registration problem.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [OptimizationParameter](/cpp-sdk/4.5/api/structs/imfusion-featuremapsregistrationalgorithm-optimizationparameter) &gt; **parameters** () const — List of parameters of the objective function.
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+- int **numEvals** () const — Total number of evaluations of the objective function.
+- double **bestVal** () const — Best value obtained by the optimizer.
+- void **setMovingFeatures** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &moving, [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*weight=nullptr) — Replaces the moving features and their weight.
+- void **setMovingWeight** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*weight=nullptr)
+- const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* **moving** () const
+- const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* **fixed** () const
+- const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* **weight** () const
+- void **setRotationCenter** (const vec3 &centerWorld) — Sets the rotation center. By default, it is the center of the moving image.
+- void **setPointCorrespondencesPenalty** (const [PointCorrespondences](/cpp-sdk/4.5/api/classes/imfusion-pointcorrespondences) \*pointCorr, double radius=10.0, double weight=1.0) — Sets the [PointCorrespondences](/cpp-sdk/4.5/api/classes/imfusion-pointcorrespondences) used as a penalty In the point correspondences the first point set is assumed to be on the moving volume, and the second on the fixed volume.
+
+## Static Public Member Functions
+
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=nullptr)
+
+## Public Attributes
+
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; [Similarity](#similarity) &gt; **p_similarity** = &#123;"similarity", Similarity::Dot, this&#125;
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; Transformation &gt; **p_transformation** = &#123;"transformation", Transformation::Rigid, this&#125;
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; bool &gt; **p_quantize** = &#123;"quantize", false, this&#125;
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; bool &gt; **p_relativeWeight** = &#123;"relativeWeight", false, this&#125;
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; double &gt; **p_rotationRange** = &#123;"rotationRange", 40.0, this&#125;
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; double &gt; **p_translationRange** = &#123;"translationRange", 80.0, this&#125;
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; int &gt; **p_searchTrials** = &#123;"searchTrials", 256, this&#125;
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; int &gt; **p_blockSize** = &#123;"blockSize", 128, this&#125;
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; double &gt; **p_weightThreshold** = &#123;"weightThreshold", 1e-3, this&#125;
+
+## Member Enumeration Documentation
+
+### Similarity
+
+```cpp
+enum class ImFusion::FeatureMapsRegistrationAlgorithm::Similarity
+```
+
+*strong*
+
+**Enumerator:**
+
+- `Dot` — Dot product similarity.
+- `SSD` — Sum of squared differences.
+
+## Member Function Documentation
+
+### compute
+
+```cpp
+void ImFusion::FeatureMapsRegistrationAlgorithm::compute ()
+```
+
+*override, virtual*
+
+Execute the algorithm.
+
+### evaluate
+
+```cpp
+double ImFusion::FeatureMapsRegistrationAlgorithm::evaluate (int n, const double * x, double * dx)
+```
+
+*override, virtual*
+
+Evaluates the objective function using parameters x. This algorithm supports gradients.
+
+### globalSearch
+
+```cpp
+std::vector < std::pair < Eigen::VectorXd, double > > ImFusion::FeatureMapsRegistrationAlgorithm::globalSearch (const Eigen::VectorXd & lowerBound, const Eigen::VectorXd & upperBound, int populationSize)
+```
+
+Executes global search of the optimal parameters within the given bounds.
+
+Returns a vector of pairs &#123;(parameters, score), ...&#125; sorted from best to worst
+
+### globalSearch
+
+```cpp
+std::vector < std::pair < Eigen::VectorXd, double > > ImFusion::FeatureMapsRegistrationAlgorithm::globalSearch ()
+```
+
+Runs global search using the parameters specified in p_rotationRange, p_translationRange, p_searchTrials.
+
+Returns a vector of pairs &#123;(parameters, score), ...&#125; sorted from best to worst
+
+### configuration
+
+```cpp
+void ImFusion::FeatureMapsRegistrationAlgorithm::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](/cpp-sdk/4.5/api/classes/imfusion-optimizingalgorithm) for the inverse functionality

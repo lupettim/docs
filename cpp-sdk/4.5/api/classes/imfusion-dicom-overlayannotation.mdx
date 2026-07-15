@@ -1,0 +1,56 @@
+---
+title: "ImFusion::Dicom::OverlayAnnotation"
+sidebarTitle: "OverlayAnnotation"
+description: "The OverlayAnnotation displays any DICOM overlay stored in a OverlayDataComponent ."
+---
+
+`#include <ImFusion/Dicom/DicomOverlayAnnotation.h>`
+
+## Overview
+
+The [OverlayAnnotation](/cpp-sdk/4.5/api/classes/imfusion-dicom-overlayannotation) displays any DICOM overlay stored in a [OverlayDataComponent](/cpp-sdk/4.5/api/classes/imfusion-dicom-overlaydatacomponent).
+
+The Annotation currently only supports single images and image sets. Only supports changing the color but no other properties of [GlAnnotation](/cpp-sdk/4.5/api/classes/imfusion-glannotation) (such as label or editable).
+
+**See also:** [OverlayDataComponent](/cpp-sdk/4.5/api/classes/imfusion-dicom-overlaydatacomponent), OverlayAnnotationDataController ,
+
+## Public Member Functions
+
+- **OverlayAnnotation** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*sis)
+- void [draw](#draw) (const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &[view](/cpp-sdk/4.5/api/classes/imfusion-glannotation)) override — Draw the object in 3D space.
+- [Geometry::AlignedBox](/cpp-sdk/4.5/api/classes/imfusion-geometry-alignedbox) [bounds](#bounds) () const override — Get the axis-aligned bounding box of this [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) in world space.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [typeName](#typename) () const override — Return unique identifier for this object class used for serialization.
+
+## Member Function Documentation
+
+### draw
+
+```cpp
+void ImFusion::Dicom::OverlayAnnotation::draw (const GlView & view)
+```
+
+*override, virtual*
+
+Draw the object in 3D space.
+
+### bounds
+
+```cpp
+Geometry::AlignedBox ImFusion::Dicom::OverlayAnnotation::bounds () const
+```
+
+*override, virtual*
+
+Get the axis-aligned bounding box of this [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) in world space.
+
+Return an empty (default-constructed) AlignedBox object if the [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) does not reside in world space.
+
+### typeName
+
+```cpp
+std::string ImFusion::Dicom::OverlayAnnotation::typeName () const
+```
+
+*override, virtual*
+
+Return unique identifier for this object class used for serialization.

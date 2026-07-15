@@ -1,0 +1,87 @@
+---
+title: "ImFusion::SettingsDialog"
+sidebarTitle: "SettingsDialog"
+description: "Presents a GUI dialog to configure the global settings."
+---
+
+`#include <ImFusion/GUI/SettingsDialog.h>`
+
+## Overview
+
+Presents a [GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui) dialog to configure the global settings.
+
+This class inherently handles the settings in the ImFusion::Settings class, as well as [ViewInteraction](/cpp-sdk/4.5/api/classes/imfusion-viewinteraction) settings. You can configure this to also handle custom settings using the [addCustomSettings()](#addcustomsettings-1-2) functions. By default these will be presented with an auto-generated [PropertiesWidget](/cpp-sdk/4.5/api/classes/imfusion-propertieswidget), but you may also register a custom widget with [addCustomSettingsWidget()](#addcustomsettingswidget).
+
+## Classes
+
+- class [CustomSettingsWidget](/cpp-sdk/4.5/api/classes/imfusion-settingsdialog-customsettingswidget) — [Base](/cpp-sdk/4.5/api/structs/imfusion-dicom-base) class for custom settings widgets.
+
+## Public Member Functions
+
+- **SettingsDialog** (QWidget \*parent=nullptr)
+- void **accept** () override
+- void **onButtonBoxClicked** (QAbstractButton \*button)
+- void **onButtonImportClicked** ()
+- void **onButtonExportClicked** ()
+- void **onToggleAnimation** (bool flag)
+- void **onSaveInteractionMapperClicked** ()
+- void **onDefaultInteractionMapperClicked** ()
+- void **onBrowseLogFileButtonClicked** ()
+- void **onInteractionLodComboBoxIndexChanged** (int index)
+- void **onCurrentItemChanged** (QTreeWidgetItem \*current, QTreeWidgetItem \*previous)
+- void **onChangeLicenseKeyClicked** ()
+- void **resetControllerLocations** ()
+
+## Static Public Member Functions
+
+- static void [addCustomSettings](#addcustomsettings-1-2) () — Add a [Configurable](/cpp-sdk/4.5/api/classes/imfusion-configurable) type *T* to the settings dialog.
+- static void [addCustomSettings](#addcustomsettings-2-2) ([std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) &gt; p) — Add a custom settings object to the dialog.
+- static void [addCustomSettingsWidget](#addcustomsettingswidget) () — Add a custom settings widget *W* for configurable type *T*.
+
+## Public Attributes
+
+- Signal **signalSettingsChanged** — Emitted when the settings have been changed.
+
+## Member Function Documentation
+
+### addCustomSettings
+
+```cpp
+template<typename T> void ImFusion::SettingsDialog::addCustomSettings ()
+```
+
+*inline, static*
+
+Add a [Configurable](/cpp-sdk/4.5/api/classes/imfusion-configurable) type *T* to the settings dialog.
+
+**Note:** Only the parameters returned by T.configuration() within this call will be displayed by the [SettingsDialog](/cpp-sdk/4.5/api/classes/imfusion-settingsdialog).
+
+**Note:** T.configuration() can set the "label" attribute to set the displayed name of the settings.
+
+### addCustomSettings
+
+```cpp
+void ImFusion::SettingsDialog::addCustomSettings (std::unique_ptr < Properties > p)
+```
+
+*static*
+
+Add a custom settings object to the dialog.
+
+\warn p-&gt;name() is used as the name of the settings, as such you must take care that the other accesses to the settings are consistent. If you're not sure of this, you probably need the other overload.
+
+**Note:** Only the parameters within *p* will be displayed by the [SettingsDialog](/cpp-sdk/4.5/api/classes/imfusion-settingsdialog) for the settings under p-&gt;name().
+
+**Note:** Use the "label" attribute to set the displayed name of the settings.
+
+### addCustomSettingsWidget
+
+```cpp
+template<typename T, typename W> void ImFusion::SettingsDialog::addCustomSettingsWidget ()
+```
+
+*inline, static*
+
+Add a custom settings widget *W* for configurable type *T*.
+
+The settings themselves should be separately added through [addCustomSettings&lt;T&gt;()](#addcustomsettings-1-2).

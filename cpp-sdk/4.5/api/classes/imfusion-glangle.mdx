@@ -1,0 +1,54 @@
+---
+title: "ImFusion::GlAngle"
+sidebarTitle: "GlAngle"
+description: "Angle annotation."
+---
+
+`#include <ImFusion/GL/GlAngle.h>`
+
+## Overview
+
+Angle annotation.
+
+## Public Member Functions
+
+- void [draw](#draw) (const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &[view](/cpp-sdk/4.5/api/classes/imfusion-glannotation)) override — Draw the object in 3D space.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [typeName](#typename) () const override — Return unique identifier for this object class used for serialization.
+
+## Protected Member Functions
+
+- void [updatePoints](#updatepoints) () override — Update the internal point structure.
+
+## Member Function Documentation
+
+### draw
+
+```cpp
+void ImFusion::GlAngle::draw (const GlView & view)
+```
+
+*override, virtual*
+
+Draw the object in 3D space.
+
+### typeName
+
+```cpp
+std::string ImFusion::GlAngle::typeName () const
+```
+
+*inline, override, virtual*
+
+Return unique identifier for this object class used for serialization.
+
+### updatePoints
+
+```cpp
+void ImFusion::GlAngle::updatePoints ()
+```
+
+*override, protected, virtual*
+
+Update the internal point structure.
+
+Should be implemented by subtypes which have custom data depending on the point data. Derived implementation needs to call base class implementation.

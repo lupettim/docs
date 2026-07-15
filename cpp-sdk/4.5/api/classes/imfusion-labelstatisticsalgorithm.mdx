@@ -1,0 +1,89 @@
+---
+title: "ImFusion::LabelStatisticsAlgorithm"
+sidebarTitle: "LabelStatisticsAlgorithm"
+description: "The LabelStatisticsAlgorithm computes image statistics depending on several label maps."
+---
+
+`#include <ImFusion/Seg/LabelStatisticsAlgorithm.h>`
+
+## Overview
+
+The [LabelStatisticsAlgorithm](/cpp-sdk/4.5/api/classes/imfusion-labelstatisticsalgorithm) computes image statistics depending on several label maps.
+
+For each labelmap, the algorithm computes statistics on the image intensities depending on the labels in the labelmap. The algorithm computes the following statistics:
+
+- Minimum
+- Maximum
+- Mean
+- Standard Deviation
+- Area/Volume
+- Number of Pixels [Statistics](/cpp-sdk/4.5/api/structs/imfusion-statistics) are printed on the console or optionally saved to a CSV file.
+
+## Public Member Functions
+
+- void [compute](#compute) () override — Execute the algorithm.
+- [Statistics](/cpp-sdk/4.5/api/structs/imfusion-statistics) [statistics](#statistics) (int labelMap, int label) const — Returns the statistics for the given label in the given labelMap.
+- const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) & **csvData** () const — After calling [compute()](#compute) returns the statistics in CSV representation.
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+## Static Public Member Functions
+
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=nullptr) — Expects one image and one or more label maps.
+
+## Public Attributes
+
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **p_csvPath** = &#123;"csvPath", "", this&#125; — Optional path to CSV output file.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; int &gt; **p_floatPrecision** = &#123;"floatPrecision", 6, this&#125; — Precision of float to string conversion.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; int &gt; **p_floatFormatting** = &#123;"floatFormatting", 0, this&#125; — Float string format (0: default, 1: fixed, 2: scientific).
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; bool &gt; **p_useGpu** = &#123;"useGpu", false, this&#125; — Whether to perform the calculations on the GPU or CPU.
+
+## Member Function Documentation
+
+### compute
+
+```cpp
+void ImFusion::LabelStatisticsAlgorithm::compute ()
+```
+
+*override, virtual*
+
+Execute the algorithm.
+
+### statistics
+
+```cpp
+Statistics ImFusion::LabelStatisticsAlgorithm::statistics (int labelMap, int label) const
+```
+
+Returns the statistics for the given label in the given labelMap.
+
+The labelMap index depends on the order in which the were passed to the algorithm, e.g. the first label has index 1. The labelMap with index 0 returns the statistics on the complete image. If the combination of labelMap and label does not exists, a default constructed [Statistics](/cpp-sdk/4.5/api/structs/imfusion-statistics) object is returned.
+
+### configure
+
+```cpp
+void ImFusion::LabelStatisticsAlgorithm::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### configuration
+
+```cpp
+void ImFusion::LabelStatisticsAlgorithm::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality

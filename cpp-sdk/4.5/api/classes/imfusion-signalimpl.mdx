@@ -1,0 +1,188 @@
+---
+title: "ImFusion::SignalImpl< UseMutex, ArgTypes >"
+sidebarTitle: "SignalImpl< UseMutex, ArgTypes >"
+description: "Implementation for a specific signal with the given signature."
+---
+
+`#include <ImFusion/Core/Signal.h>`
+
+## Overview
+
+template&lt;bool UseMutex, typename... ArgTypes&gt;
+
+class ImFusion::SignalImpl&lt; UseMutex, ArgTypes &gt;
+Implementation for a specific signal with the given signature.
+
+You can connect an arbitrary amount of slots (i.e. function pointers) to this signal which will be called on [emitSignal()](#emitsignal). If you connect slots to member functions of classes inheriting from [SignalReceiver](/cpp-sdk/4.5/api/classes/imfusion-signalreceiver), [SignalImpl](/cpp-sdk/4.5/api/classes/imfusion-signalimpl) will track the lifetime of the object and automatically disconnect the slot if the object is deleted. Thus, in this case the order of destruction of signal and slot does not matter.
+
+Based on the first template parameter the signal will be thread-safe or not. If you set UseMutex to false concurrent access will not be safe. Setting UseMutex to true will increase the signal's memory footprint by a mutex in order to make this class thread-safe. You can use the aliases Signal and ProtectedSignal to choose between the reentrant and thread-safe implementation.
+
+By default, if a recursive emission of the same signal is detected, observers will not be notified and an assertion will be raised — unless the connection that initiated the recursion is blocked. This design was chosen since such situations usually indicate an accidental signal loop due to bidirectional dependencies which should be avoided. However, you can explicitly disable these checks by calling [allowOneRecursion()](#allowonerecursion) if you expect a recursion to occur.
+
+Furthermore, it is safe to connect or disconnect a to/from signal while it is currently emitting: disconnecting will have immediate effect while new connections will only become active after emitting has completed.
+
+**Template Parameters:** | UseMutex | Flag whether to protect access to the signal by a mutex. |
+| --- | --- |
+| ArgTypes | Signature of the signal/function to call. |
+
+**Note:** Similar to Qt signals, we deem (dis)connecting to/from ImFusion signals to not change the logic/semantic state of an object. Thus, the [connect()](#connect-1-3) and [disconnect()](#disconnect-1-2) overloads are const member functions and can be called on a const Signal object (or any const object having a Signal as member).
+
+**Note:** [SignalImpl](/cpp-sdk/4.5/api/classes/imfusion-signalimpl) is assignable and copyable. However, it will not assign/copy any connections!
+
+**Warning:** Be aware that [SignalImpl](/cpp-sdk/4.5/api/classes/imfusion-signalimpl) does not implement any duplicate detection. Thus, if you connect the same slot (e.g. member function) multiple times to the same signal, that function will be called as many times as there are connections.
+
+**See also:** Signals and Slots, [SignalReceiver](/cpp-sdk/4.5/api/classes/imfusion-signalreceiver), Signal, ProtectedSignal, [SignalConnection](/cpp-sdk/4.5/api/classes/imfusion-signalconnection), [DeprecatedSignal](/cpp-sdk/4.5/api/classes/imfusion-deprecatedsignal)
+
+## Public Types
+
+- using **FunctionType** = [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt;void(ArgTypes...)&gt; — Typedef for a [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html) matching ths signal type.
+- using **ArgumentTuple** = [std::tuple](http://en.cppreference.com/w/cpp/utility/tuple.html)&lt;ArgTypes...&gt;
+
+## Public Member Functions
+
+- **SignalImpl** () — Default constructor.
+- **SignalImpl** (const SignalImpl&lt; UseMutex, ArgTypes... &gt; &other) — Copy constructor, will not copy any connections..
+- SignalImpl&lt; UseMutex, ArgTypes... &gt; & **operator=** (const SignalImpl&lt; UseMutex, ArgTypes... &gt; &rhs) — Assignment operator, disconnects all existing connections but does *not* transfer the connections of *rhs*.
+- **~SignalImpl** () override — Virtual destructor, deletes all connections and thereby also disconnects from all connected slots.
+- [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [SignalConnection](/cpp-sdk/4.5/api/classes/imfusion-signalconnection) &gt; [connect](#connect-1-3) (const T \*object, void(T::\*methodptr)(ArgTypes...)) const — Connects the given method pointer as slot to this signal.
+- [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [SignalConnection](/cpp-sdk/4.5/api/classes/imfusion-signalconnection) &gt; [connect](#connect-2-3) (const [SignalReceiver](/cpp-sdk/4.5/api/classes/imfusion-signalreceiver) \*object, FunctionType func) const — Connects the given free function as slot to this signal using *object* as lifetime tracker.
+- [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [SignalConnection](/cpp-sdk/4.5/api/classes/imfusion-signalconnection) &gt; [connect](#connect-3-3) (FunctionType func) const — Connects the given free function as slot to this signal.
+- bool [disconnect](#disconnect-1-2) ([SignalConnection](/cpp-sdk/4.5/api/classes/imfusion-signalconnection) \*connection) const override — Removes the given connection.
+- int [disconnect](#disconnect-2-2) (const [SignalReceiver](/cpp-sdk/4.5/api/classes/imfusion-signalreceiver) \*object) const — Disconnects all slots of the given object from this signal.
+- int [disconnectAll](#disconnectall) () const — Disconnects all slots from this signal.
+- void [emitSignal](#emitsignal) (ArgTypes... args) const — Calls all connected slots with the given arguments.
+- void [allowOneRecursion](#allowonerecursion) () const — Allows a single recursive emitting of this signal if called while the signal is emitting.
+- bool [setBlocked](#setblocked) (bool muteSignal) override — Set the flag whether to block notifications of observers for this signal.
+- bool **isBlocked** () const — Returns whether notifications of observers for this signal are currently blocked.
+- int **numConnections** () const — Returns the current number of connections.
+- bool **isConnectedTo** (const [SignalReceiver](/cpp-sdk/4.5/api/classes/imfusion-signalreceiver) \*receiver) const — Returns whether this signal is connected to *receiver*.
+
+## Member Function Documentation
+
+### connect
+
+```cpp
+template<bool UseMutex, typename... ArgTypes> template<typename T> std::shared_ptr < SignalConnection > ImFusion::SignalImpl < UseMutex, ArgTypes >::connect (const T * object, void(T::* methodptr)(ArgTypes...)) const
+```
+
+Connects the given method pointer as slot to this signal.
+
+**Parameters:**
+
+- `object` — Pointer to the receiver object holding the method. Must derive from [SignalReceiver](/cpp-sdk/4.5/api/classes/imfusion-signalreceiver). Must not be 0.
+- `methodptr` — Pointer to method to call on [emitSignal()](#emitsignal).
+
+**Returns:** [SignalConnection](/cpp-sdk/4.5/api/classes/imfusion-signalconnection) object for identifying the established signal-slot connection. You can use this to disconnect from the signal at any time.
+
+**Note:** [SignalImpl](/cpp-sdk/4.5/api/classes/imfusion-signalimpl) will track the lifetime of *object* and automatically disconnect the slot if *object* is deleted during the lifetime of this signal.
+
+### connect
+
+```cpp
+template<bool UseMutex, typename... ArgTypes> std::shared_ptr < SignalConnection > ImFusion::SignalImpl < UseMutex, ArgTypes >::connect (const SignalReceiver * object, FunctionType func) const
+```
+
+Connects the given free function as slot to this signal using *object* as lifetime tracker.
+
+**Parameters:**
+
+- `object` — [SignalReceiver](/cpp-sdk/4.5/api/classes/imfusion-signalreceiver) to be used for lifetime tracking. If not null the connection will be disconnected automatically when the receiver is deleted.
+- `func` — Function to call on [emitSignal()](#emitsignal).
+
+**Returns:** [SignalConnection](/cpp-sdk/4.5/api/classes/imfusion-signalconnection) object for identifying the established signal-slot connection. You can use this to disconnect from the signal at any time.
+
+**Note:** [SignalImpl](/cpp-sdk/4.5/api/classes/imfusion-signalimpl) will track the lifetime of *object* and automatically disconnect the slot if *object* is deleted during the lifetime of this signal.
+
+### connect
+
+```cpp
+template<bool UseMutex, typename... ArgTypes> std::shared_ptr < SignalConnection > ImFusion::SignalImpl < UseMutex, ArgTypes >::connect (FunctionType func) const
+```
+
+Connects the given free function as slot to this signal.
+
+**Parameters:**
+
+- `func` — Function to call on [emitSignal()](#emitsignal).
+
+**Returns:** [SignalConnection](/cpp-sdk/4.5/api/classes/imfusion-signalconnection) object for identifying the established signal-slot connection. You can use this to disconnect from the signal at any time.
+
+**Warning:** This overload is potentially dangerous, since there is no way for this signal to track the lifetime of *func*. Thus, you have to ensure that func will remain valid for the entire lifetime of this signal or use [disconnect()](#disconnect-1-2) on the returned [SignalConnection](/cpp-sdk/4.5/api/classes/imfusion-signalconnection) object when needed.
+
+### disconnect
+
+```cpp
+template<bool UseMutex, typename... ArgTypes> bool ImFusion::SignalImpl < UseMutex, ArgTypes >::disconnect (SignalConnection * connection) const
+```
+
+*override, virtual*
+
+Removes the given connection.
+
+**Parameters:**
+
+- `connection` — Pointer to the [SignalConnection](/cpp-sdk/4.5/api/classes/imfusion-signalconnection) object returned during [connect()](#connect-1-3).
+
+**Returns:** True if a slot was found and deleted, false otherwise.
+
+### disconnect
+
+```cpp
+template<bool UseMutex, typename... ArgTypes> int ImFusion::SignalImpl < UseMutex, ArgTypes >::disconnect (const SignalReceiver * object) const
+```
+
+Disconnects all slots of the given object from this signal.
+
+**Parameters:**
+
+- `object` — Pointer to the object holding the slot. If the pointer is 0 all connections to free functions are disconnected.
+
+**Returns:** The number of connections that were found and disconnected.
+
+### disconnectAll
+
+```cpp
+template<bool UseMutex, typename... ArgTypes> int ImFusion::SignalImpl < UseMutex, ArgTypes >::disconnectAll () const
+```
+
+Disconnects all slots from this signal.
+
+**Returns:** The number of connections that were found and disconnected.
+
+### emitSignal
+
+```cpp
+template<bool UseMutex, typename... ArgTypes> void ImFusion::SignalImpl < UseMutex, ArgTypes >::emitSignal (ArgTypes... args) const
+```
+
+Calls all connected slots with the given arguments.
+
+**Note:** This function will *not* allow for recursive emitting of the same signal and nested emits will be discarded. Use [allowOneRecursion()](#allowonerecursion) to explicitly opt-in for recursive signal emitting support.
+
+### allowOneRecursion
+
+```cpp
+template<bool UseMutex, typename... ArgTypes> void ImFusion::SignalImpl < UseMutex, ArgTypes >::allowOneRecursion () const
+```
+
+Allows a single recursive emitting of this signal if called while the signal is emitting.
+
+Otherwise does nothing.
+
+**Note:** Call this within your slot function if you need to re-emit the same signal. If you use a signalBlocker to avoid infinite recursion in your slot function, the signal will detect and allow the recursion without the need for calling this function.
+
+### setBlocked
+
+```cpp
+template<bool UseMutex, typename... ArgTypes> bool ImFusion::SignalImpl < UseMutex, ArgTypes >::setBlocked (bool muteSignal)
+```
+
+*override, virtual*
+
+Set the flag whether to block notifications of observers for this signal.
+
+If *muteSignal* is true, any subsequent call to emitSignal will do nothing. The caller is responsible to reset the blocked state to its original value when appropriate.
+
+**Returns:** Previous value of isBlocked().
+
+**See also:** [SignalBlocker](/cpp-sdk/4.5/api/classes/imfusion-signalblocker) for a more convenient and exception-safe interface to temporarily block a signal.

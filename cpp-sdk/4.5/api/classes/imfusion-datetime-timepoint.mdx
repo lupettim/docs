@@ -1,0 +1,78 @@
+---
+title: "ImFusion::DateTime::TimePoint"
+sidebarTitle: "TimePoint"
+description: "Class representing a point in time, keeping track of UTC offsets and time zone name, if available."
+---
+
+`#include <ImFusion/Core/DateTime.h>`
+
+## Overview
+
+Class representing a point in time, keeping track of UTC offsets and time zone name, if available.
+
+It can be used to convert to and from different supported representations (see docs of [TimePoint](/cpp-sdk/4.5/api/classes/imfusion-datetime-timepoint) constructor with date/time strings), and comes with utility functions to format it nicely for UI elements.
+
+If fully initialized, formatDateDisplayX() and formatTimeDisplayX() methods may provide either the timestamp in the original local zone or the UTC timestamp. Otherwise, if no time offset may be derived from the inputs, both local and UTC timestamps will be identical, and they will not bear a time zone indication.
+
+## Public Member Functions
+
+- **TimePoint** () — Constructor with current time, initializes both local and UTC time correctly.
+- **TimePoint** (std::chrono::system_clock::time_point tp_upc) — Constructor with given UTC-based time, initializes also local time using the current time zone.
+- [TimePoint](#timepoint) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &datestr, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &timestr="", const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &timezoneabbr="") — Constructor with a given date/time string in DICOM format (i.e.
+- **TimePoint** (const TimePoint &other)
+- TimePoint & **operator=** (const TimePoint &other)
+- void [convertToPurelyLocal](#converttopurelylocal) () — Converts a fully specified time point to a purely local one, i.e.
+- std::chrono::system_clock::time_point **utcTime** () const — Returns UTC timestamp.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **formatDateDisplayLocal** () const — Generates YYYY-MM-DD string using the local time.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [formatTimeDisplayLocal](#formattimedisplaylocal) () const — Generates HH:mm:ss [(time zone)] string using the local time.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **formatDateDisplayUTC** () const — Generates YYYY-MM-DD string using UTC time.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [formatTimeDisplayUTC](#formattimedisplayutc) () const — Generates HH:mm:ss [(UTC)] string using UTC time.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **formatDateDicom** () const — Generates YYYYMMDD string using local time.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **formatTimeDicom** () const — Generates HHmmss[&ZZXX] string using local time, with the optional suffix providing the offset to UTC, if available.
+- const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) & **timezone** () const — Returns the time zone abbreviation, e.g. CET, if available.
+- bool **isValid** () const — Returns true if valid date (with optional time) is known.
+- bool **hasTime** () const — Returns true if in addition to a valid date, a valid time is known.
+
+## Constructor & Destructor Documentation
+
+### TimePoint
+
+```cpp
+ImFusion::DateTime::TimePoint::TimePoint (const std::string & datestr, const std::string & timestr = "", const std::string & timezoneabbr = "")
+```
+
+Constructor with a given date/time string in DICOM format (i.e.
+
+YYYYMMDD without separator) or our Display format (i.e. YYYY-MM-DD), and an optional time zone name. Supported date formats: YYYYMMDD, YYYY-MM-DD Supported time format: HHmm[ss][&ZZXX], HH:mm[:ss]. Seconds are optional if the time offset suffix is also not provided. The optional time zone suffix indicates that the timestamp is local, & is either - or +, and ZZXX are hours and minutes offset to UTC. The time zone abbreviation (e.g. CET) is optional as well. It is used for an attempt to infer the time offset to UTC if that is not provided. Other than that, it's purely cosmetic in that it will be added by formatTimeDisplay() to indicate where the timestamp was local.
+
+## Member Function Documentation
+
+### convertToPurelyLocal
+
+```cpp
+void ImFusion::DateTime::TimePoint::convertToPurelyLocal ()
+```
+
+Converts a fully specified time point to a purely local one, i.e.
+
+removes any available time zone offset and abbreviation. From this point onward, any string output methods will only return local timestamps without any time zone information.
+
+### formatTimeDisplayLocal
+
+```cpp
+std::string ImFusion::DateTime::TimePoint::formatTimeDisplayLocal () const
+```
+
+Generates HH:mm:ss [(time zone)] string using the local time.
+
+Time zone is not provided if the time offset to UTC is not specified.
+
+### formatTimeDisplayUTC
+
+```cpp
+std::string ImFusion::DateTime::TimePoint::formatTimeDisplayUTC () const
+```
+
+Generates HH:mm:ss [(UTC)] string using UTC time.
+
+"UTC" is not provided if the time offset to UTC is not specified.

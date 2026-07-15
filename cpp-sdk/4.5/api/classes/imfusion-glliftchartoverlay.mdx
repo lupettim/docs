@@ -1,0 +1,45 @@
+---
+title: "ImFusion::GlLiftChartOverlay"
+sidebarTitle: "GlLiftChartOverlay"
+description: "Overlay displaying a LIFT chart."
+---
+
+`#include <ImFusion/GL/GlLiftChartOverlay.h>`
+
+## Overview
+
+Overlay displaying a LIFT chart.
+
+A LIFT chart consists of a frame representing the whole dataset, and of a set of bars inside this frame, each representing an object (typically, annotations). The top of the frame corresponds to the farthest point of the dataset (as seen from the view that contains this overlay), while the bottom corresponds to the closest. The ends of each bar correspond to the closest and farthest points of the corresponding objects, relative to the frame. Additionally, a horizontal line marks the current slice shown in the view, also relative to the frame. The number next to this line is the frame number as computed by [GlSlice::currentSlice](/cpp-sdk/4.5/api/classes/imfusion-glslice). See [LiftChartOverlayController](/cpp-sdk/4.5/api/classes/imfusion-liftchartoverlaycontroller) for a usage example (with InteractiveLiftChartOverlay).
+
+## Public Member Functions
+
+- void **setView** ([GlSliceView](/cpp-sdk/4.5/api/classes/imfusion-glsliceview) \*view)
+- [GlSliceView](/cpp-sdk/4.5/api/classes/imfusion-glsliceview) \* **view** () const
+- void **addBar** (const [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) \*object, const vec3 &color) — Adds a bar corresponding to *object* to the overlay (it will be rendered with *color*).
+- void **removeBar** (const [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) \*object) — Removes the bar corresponding to *object* from the overlay.
+- void [changeBarColor](#changebarcolor) (const [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) \*object, const vec3 &color) — Changes the rendering color of the bar corresponding to *object*.
+- void **clear** () — Removes all bars from the overlay.
+- void [render](#render) (const [GL::Viewport](/cpp-sdk/4.5/api/structs/imfusion-gl-viewport) &viewport) override — render the overlay with the given width and height
+
+## Member Function Documentation
+
+### changeBarColor
+
+```cpp
+void ImFusion::GlLiftChartOverlay::changeBarColor (const GlObject * object, const vec3 & color)
+```
+
+Changes the rendering color of the bar corresponding to *object*.
+
+Does nothing if the overlay does not contain such a bar.
+
+### render
+
+```cpp
+void ImFusion::GlLiftChartOverlay::render (const GL::Viewport & viewport)
+```
+
+*override, virtual*
+
+render the overlay with the given width and height

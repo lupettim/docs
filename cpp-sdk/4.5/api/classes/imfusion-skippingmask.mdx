@@ -1,0 +1,151 @@
+---
+title: "ImFusion::SkippingMask"
+sidebarTitle: "SkippingMask"
+description: "Basic mask where only every N-th pixel is considered inside."
+---
+
+`#include <ImFusion/GL/SkippingMask.h>`
+
+## Overview
+
+Basic mask where only every N-th pixel is considered inside.
+
+This is configured through the skip parameter. Only those pixels are considered inside where for each dimension the following holds true: pixelCoord % (skip + 1) == 0.
+
+## Public Member Functions
+
+- [SkippingMask](#skippingmask) (const vec3i &imageDimensions, const vec3i &skip) — Construct the mask with image pixel dimensions.
+- void [setSkip](#setskip) (const vec3i &skip) — Sets which pixels should be inside.
+- vec3i **skip** () const
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+- uint8_t [maskValue](#maskvalue) (const vec3i &coord, const vec4f &color) const override — Returns 0 if the given pixel is outside the mask (i.e.
+- bool [isCompatible](#iscompatible) (const [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*image) const override — Returns true if the mask can be used with the given image or false otherwise.
+- bool [requiresPixelValue](#requirespixelvalue) () const override — Returns true if the [maskValue()](#maskvalue) rely on the pixel value.
+- int [setIncludeArguments](#setincludearguments) ([GL::Program](/cpp-sdk/4.5/api/classes/imfusion-gl-program) &p, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &prefix="mask") const override — Called by users of [GlMask](/cpp-sdk/4.5/api/classes/imfusion-glmask) in order to correctly setup the mask shader.
+- [GlMask](/cpp-sdk/4.5/api/classes/imfusion-glmask) \* [glMask](#glmask) () override — Returns the OpenGL-based implementation of the mask interface if available.
+
+## Constructor & Destructor Documentation
+
+### SkippingMask
+
+```cpp
+ImFusion::SkippingMask::SkippingMask (const vec3i & imageDimensions, const vec3i & skip)
+```
+
+Construct the mask with image pixel dimensions.
+
+**Parameters:**
+
+- `imageDimensions` — Number of pixels of the mask pixel grid
+- `skip` — Number of pixels that should be skipped in each direction.
+
+## Member Function Documentation
+
+### setSkip
+
+```cpp
+void ImFusion::SkippingMask::setSkip (const vec3i & skip)
+```
+
+Sets which pixels should be inside.
+
+Only those pixels are considered inside where for each dimension the following holds true: pixelCoord % (skip + 1) == 0.
+
+### configure
+
+```cpp
+void ImFusion::SkippingMask::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### configuration
+
+```cpp
+void ImFusion::SkippingMask::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality
+
+### maskValue
+
+```cpp
+uint8_t ImFusion::SkippingMask::maskValue (const vec3i & coord, const vec4f & color) const
+```
+
+*override, virtual*
+
+Returns 0 if the given pixel is outside the mask (i.e.
+
+invisible/to be ignored) or a non-zero value if it is inside the mask (i.e. visible/to be considered).
+
+This function takes both the pixel coordinate and pixel value as input. Concrete implementations of the [Mask](/cpp-sdk/4.5/api/classes/imfusion-mask) interface are free to use only either input for their decision if it makes sense. Also, it is up to the implementation whether it supports multi-channel images or not. Subclasses only supporting grayscale images should only use the first channel.
+
+**Parameters:**
+
+- `coord` — Pixel coordinate to be tested against the mask, can be outside of the image.
+- `color` — Pixel value (not normalized) to be tested against the mask. This parameter is only needed if [requiresPixelValue()](#requirespixelvalue) returns true, which can allow for optimizations where pixel lookup is expensive.
+
+### isCompatible
+
+```cpp
+bool ImFusion::SkippingMask::isCompatible (const SharedImage * image) const
+```
+
+*override, virtual*
+
+Returns true if the mask can be used with the given image or false otherwise.
+
+### requiresPixelValue
+
+```cpp
+bool ImFusion::SkippingMask::requiresPixelValue () const
+```
+
+*override, virtual*
+
+Returns true if the [maskValue()](#maskvalue) rely on the pixel value.
+
+If this method returns false, the [maskValue()](#maskvalue) method can be safely used with only the coordinate. This is useful to avoid an otherwise unnecessary and expensive pixel lookup.
+
+### setIncludeArguments
+
+```cpp
+int ImFusion::SkippingMask::setIncludeArguments (GL::Program & p, const std::string & prefix = "mask") const
+```
+
+*override, virtual*
+
+Called by users of [GlMask](/cpp-sdk/4.5/api/classes/imfusion-glmask) in order to correctly setup the mask shader.
+
+Subclasses should implement this function so that it correctly sets all needed uniforms and input textures to be used by the OpenGL shader instance. Make sure to use the given *prefix* argument instead of a hardcoded "mask" when defining uniform names to support multi-includes where the prefixes have been replaced with unique alternatives. Example:
+
+```cpp
+p.setArgument(prefix + "UseRange", m_useRange);
+```
+ fragment
+
+### glMask
+
+```cpp
+GlMask * ImFusion::SkippingMask::glMask ()
+```
+
+*override, virtual*
+
+Returns the OpenGL-based implementation of the mask interface if available.
+
+This function may return nullptr if this is not implemented (default).

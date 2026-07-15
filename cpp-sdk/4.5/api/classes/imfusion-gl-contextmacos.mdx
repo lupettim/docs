@@ -1,0 +1,70 @@
+---
+title: "ImFusion::GL::ContextMacOS"
+sidebarTitle: "ContextMacOS"
+description: "OpenGL context using NSOpenGLContext as backend."
+---
+
+`#include <ImFusion/Core/GL/ContextMacOS.h>`
+
+## Overview
+
+OpenGL context using NSOpenGLContext as backend.
+
+## Public Member Functions
+
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; Context &gt; [clone](#clone) () override — Instantiates a new OpenGL context that is shared with this one.
+- bool [makeCurrent](#makecurrent) () const override — Make context current.
+- bool [doneCurrent](#donecurrent) () const override — Disable context.
+- void \* [internalHandle](#internalhandle) () const override — Returns the native handle (CGLContextObj) of this OpenGL context.
+
+## Static Public Member Functions
+
+- static [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; ContextMacOS &gt; **create** ([CreateInfo](/cpp-sdk/4.5/api/structs/imfusion-gl-context-createinfo) createInfo) — Factory function for creating a new NSOpenGLContext-based OpenGL context.
+- static bool **hasCurrent** () — Returns whether the calling thread has a current OpenGL context.
+- static void \* **current** () — Returns the native handle (CGLContextObj) representing the OpenGL context current in the calling thread.
+
+## Member Function Documentation
+
+### clone
+
+```cpp
+std::unique_ptr < Context > ImFusion::GL::ContextMacOS::clone ()
+```
+
+*override, virtual*
+
+Instantiates a new OpenGL context that is shared with this one.
+
+The freshly created context will be made current. This method will throw if the context could not be initialized.
+
+**Note:** If you plan to use this context in a different thread, you will need to call [moveToCurrentThread()](/cpp-sdk/4.5/api/classes/imfusion-gl-context) on the returned context before.
+
+### makeCurrent
+
+```cpp
+bool ImFusion::GL::ContextMacOS::makeCurrent () const
+```
+
+*override, virtual*
+
+Make context current.
+
+### doneCurrent
+
+```cpp
+bool ImFusion::GL::ContextMacOS::doneCurrent () const
+```
+
+*override, virtual*
+
+Disable context.
+
+### internalHandle
+
+```cpp
+void * ImFusion::GL::ContextMacOS::internalHandle () const
+```
+
+*override, virtual*
+
+Returns the native handle (CGLContextObj) of this OpenGL context.

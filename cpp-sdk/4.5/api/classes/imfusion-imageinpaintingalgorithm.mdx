@@ -1,0 +1,78 @@
+---
+title: "ImFusion::ImageInpaintingAlgorithm"
+sidebarTitle: "ImageInpaintingAlgorithm"
+description: "Algorithm that inpaints a masked area of an image."
+---
+
+`#include <ImFusion/Base/ImageInpaintingAlgorithm.h>`
+
+## Overview
+
+[Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) that inpaints a masked area of an image.
+
+By default the algorithm will inpaint the areas with mask value == 0, if the parameter p_invertMask is true then the algorithm will inpaint the areas with mask value != 0. The algorithm uses normalized convolutions for inpainting, that means that given an image x, a mask m and a convolution function c() the output of the algorithm is c(x) / (c(m) + eps) where m == 0 and x everywhere else. The convolution filter could be a Gaussian (supported on both CPU and GPU), a box filter or a sum of Gaussians. The "sum of Gaussians" filter is constructed by summing different Gaussians filters with sigma parameters going from 1 to p_kernelSizePix / 3. The idea is that such filter will give more importance to nearby pixels, resulting in less pronounced edges between the image and the inpainted area.
+
+## Public Types
+
+- enum [InpaintingMethod](#inpaintingmethod) &#123; NORMALIZED_CONVOLUTION = 0 , NORMALIZED_CONVOLUTION_GAUSSIAN = 0 , NORMALIZED_CONVOLUTION_BOX = 1 , NORMALIZED_CONVOLUTION_GAUSSIAN_GPU = 2 , NORMALIZED_CONVOLUTION_GAUSSIAN_SUM_GPU = 3 , **NR_METHODS** = 4 &#125; — Enum for inpainting method.
+
+## Public Member Functions
+
+- **ImageInpaintingAlgorithm** ([SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) &imgIn, [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*mask=nullptr)
+- **ImageInpaintingAlgorithm** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &img, [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*mask=nullptr)
+- **ImageInpaintingAlgorithm** ([std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \* &gt; images, [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*mask=nullptr)
+- void **setKernelSize** (int kernelSizePix) — Set the Gaussian kernel size.
+- void **setInPlace** (bool inplace) — Set whether the result should be computed in place.
+- void [compute](#compute) () override — Compute the result.
+- [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) [takeOutput](#takeoutput) () override — If the algorithm creates new image data, it has to be transferred here.
+
+## Static Public Member Functions
+
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a) — If data is compatible with algorithm return true. If a is not zero, create algorithm with input data.
+
+## Public Attributes
+
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; [InpaintingMethod](#inpaintingmethod) &gt; **p_method** = &#123;"method", NORMALIZED_CONVOLUTION_GAUSSIAN, this&#125;
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; int &gt; **p_kernelSizePix** = &#123;"kernelSizePix", 31, this&#125;
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; bool &gt; **p_createNew** = &#123;"createNew", true, this&#125;
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; bool &gt; **p_invertMask** = &#123;"invertMask", false, this&#125;
+
+## Member Enumeration Documentation
+
+### InpaintingMethod
+
+```cpp
+enum ImFusion::ImageInpaintingAlgorithm::InpaintingMethod
+```
+
+Enum for inpainting method.
+
+**Enumerator:**
+
+- `NORMALIZED_CONVOLUTION` — deprecated, use `NORMALIZED_CONVOLUTION_GAUSSIAN` instead
+- `NORMALIZED_CONVOLUTION_GAUSSIAN` — apply normalized convolution with Gaussian filter
+- `NORMALIZED_CONVOLUTION_BOX` — apply normalized convolution with box filter
+- `NORMALIZED_CONVOLUTION_GAUSSIAN_GPU` — apply normalized convolution with Gaussian filter using the GPU
+- `NORMALIZED_CONVOLUTION_GAUSSIAN_SUM_GPU` — apply normalized convolution with a sum of Gaussian filters with different sigmas on the GPU
+
+## Member Function Documentation
+
+### compute
+
+```cpp
+void ImFusion::ImageInpaintingAlgorithm::compute ()
+```
+
+*override, virtual*
+
+Compute the result.
+
+### takeOutput
+
+```cpp
+OwningDataList ImFusion::ImageInpaintingAlgorithm::takeOutput ()
+```
+
+*override, virtual*
+
+If the algorithm creates new image data, it has to be transferred here.

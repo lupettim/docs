@@ -1,0 +1,21 @@
+---
+title: "ImFusion::GL::Debug::OpenGlException"
+sidebarTitle: "OpenGlException"
+description: "Specialization of std::runtime_error that also stores the original OpenGL error code."
+---
+
+`#include <ImFusion/Core/GL/Debug.h>`
+
+## Overview
+
+Specialization of [std::runtime_error](http://en.cppreference.com/w/cpp/error/runtime_error.html) that also stores the original OpenGL error code.
+
+## Public Member Functions
+
+- **OpenGlException** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &message, Error glErrorCode) — Constructs a new [OpenGlException](/cpp-sdk/4.5/api/classes/imfusion-gl-debug-openglexception) with the given message and OpenGL error code.
+- bool **isCritical** () const — Returns true if glErrorCode is either Error::StackUnderflow or Error::StackOverflow.
+- bool **isFatal** () const — Returns true if glErrorCode is Error::OutOfMemory.
+
+## Public Attributes
+
+- Error **glErrorCode** — original OpenGL error code

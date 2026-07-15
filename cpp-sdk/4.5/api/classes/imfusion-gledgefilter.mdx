@@ -1,0 +1,47 @@
+---
+title: "ImFusion::GlEdgeFilter"
+sidebarTitle: "GlEdgeFilter"
+description: "3x3 Sobel edge filter for 2D images"
+---
+
+`#include <ImFusion/GL/GlEdgeFilter.h>`
+
+## Overview
+
+3x3 Sobel edge filter for 2D images
+
+**See also:** use [GlEdgeFilter3D](/cpp-sdk/4.5/api/classes/imfusion-gledgefilter3d) for 3D images
+
+## Public Member Functions
+
+- **GlEdgeFilter** ([GL::Framebuffer](/cpp-sdk/4.5/api/classes/imfusion-gl-framebuffer) \*fbo=0)
+- void [compute](#compute) (const [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) &imgIn, [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) &imgOut) override — Execute the filter on the image.
+- bool [good](#good) () const override — Return true if the filter can be used, in particular if the shaders are available.
+
+## Protected Attributes
+
+- [GL::ImageProgram](/cpp-sdk/4.5/api/classes/imfusion-gl-imageprogram) \* **m_program**
+- [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) \* **m_kernelX**
+- [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) \* **m_kernelY**
+
+## Member Function Documentation
+
+### compute
+
+```cpp
+void ImFusion::GlEdgeFilter::compute (const GlImage & imgIn, GlImage & imgOut)
+```
+
+*override, virtual*
+
+Execute the filter on the image.
+
+### good
+
+```cpp
+bool ImFusion::GlEdgeFilter::good () const
+```
+
+*override, virtual*
+
+Return true if the filter can be used, in particular if the shaders are available.

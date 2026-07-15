@@ -1,0 +1,294 @@
+---
+title: "ImFusion::Data"
+sidebarTitle: "Data"
+description: "Virtual base class for representing data from which all concrete data class such as images need to derive."
+---
+
+`#include <ImFusion/Base/Data.h>`
+
+## Overview
+
+Virtual base class for representing data from which all concrete data class such as images need to derive.
+
+## Public Types
+
+- enum [Kind](#kind) &#123; UNKNOWN = 0 , IMAGE = 1 , VOLUME = 2 , IMAGESET = 3 , VOLUMESET = 4 , IMAGESTREAM = 5 , VOLUMESTREAM = 6 , POINTSET = 7 , SURFACE = 8 , TRACKINGSTREAM = 9 , **LIVETRACKINGSTREAM** = TRACKINGSTREAM , TRACKINGDATA = 10 , TREE = 11 , TENSOR = 12 , POLYDATASTREAM = 13 , STEREOIMAGESET = 14 , STEREOIMAGESTREAM = 15 , VOLUMETRICMESH = 16 &#125; — [Kind](#kind) of data.
+- enum [Modality](#modality) &#123; NA = 0 , XRAY = 1 , CT = 2 , MRI = 3 , ULTRASOUND = 4 , VIDEO = 5 , NM = 6 , OCT = 7 , LABEL = 8 , DISTANCE = 9 &#125; — [Image](/cpp-sdk/4.5/api/classes/imfusion-image) modality of the data.
+
+## Public Member Functions
+
+- **Data** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name="")
+- **Data** (const Data &other)
+- Data & **operator=** (const Data &other)
+- virtual **~Data** () — Mandatory virtual destructor.
+- virtual [Kind](#kind) [kind](#kind) () const =0 — Return the kind of this data.
+- virtual [Modality](#modality) [modality](#modality) () const — Return the modality of this data.
+- const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) & **name** () const — Return the name of this data.
+- void [setName](#setname) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name) — Sets the name of this data.
+- virtual bool [isAnnotationType](#isannotationtype) () const — Return whether this data type is visualized through an annotation (e.g. mesh).
+- virtual [Geometry::AlignedBox](/cpp-sdk/4.5/api/classes/imfusion-geometry-alignedbox) [bounds](#bounds) () const =0 — Returns the axis-aligned bounding box of this data in world space.
+- const [DataComponentList](/cpp-sdk/4.5/api/classes/imfusion-datacomponentlist) & **components** () const — Returns the list of DataComponents for this data.
+- [DataComponentList](/cpp-sdk/4.5/api/classes/imfusion-datacomponentlist) & **components** ()
+- virtual [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [describe](#describe) () const — Human readable description of the data for showing in the info bar.
+
+## Static Public Member Functions
+
+- static [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **modalityString** ([Data::Modality](#modality) m) — Return the name of an image modality.
+- static [Data::Modality](#modality) **stringToModality** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &s) — Returns the modality corresponding to a modality string or NA if nothing matches.
+
+## Public Attributes
+
+- Signal&lt; const Data \* &gt; [signalDeleted](#signaldeleted) — Signal emitted when this instance is deleted.
+- Signal&lt; const Data \* &gt; **signalMatrixChanged** — Signal emitted when the transformation of this [Data](/cpp-sdk/4.5/api/classes/imfusion-data) has changed.
+- Signal&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **signalNameChanged** — Signal emitted when the name changed.
+
+## Protected Member Functions
+
+- void **swapWith** (Data &other) — Swaps the data and emits a matrix and name changed signal for both.
+
+## Protected Attributes
+
+- mat4 [m_matrix](#m-matrix) — Transformation matrix.
+- [std::recursive_mutex](http://en.cppreference.com/w/cpp/thread/recursive_mutex.html) \* **m_matrixMutex** — Used to internally synchronize access to the matrix of data.
+- [DataComponentList](/cpp-sdk/4.5/api/classes/imfusion-datacomponentlist) **m_dataComponentList** — The list of DataComponents for this data.
+
+## Image matrix access
+
+- virtual [Pose::TransformationConvention](/cpp-sdk/4.5/api/namespaces/imfusion-pose) [matrixConvention](#matrixconvention) () const =0 — Defines whether the internally stored matrices in derived classes map from or to the world coordinate system.
+- virtual void [setMatrixFromWorld](#setmatrixfromworld) (const mat4 &m) — Set matrix mapping from the world coordinate system to the data coordinate system.
+- virtual void [setMatrixToWorld](#setmatrixtoworld) (const mat4 &m) — Set matrix mapping from the data coordinate system to the world coordinate system.
+- virtual mat4 [matrixFromWorld](#matrixfromworld) () const — Get matrix mapping from the world coordinate system to the data coordinate system.
+- virtual mat4 [matrixToWorld](#matrixtoworld) () const — Get matrix mapping from the data coordinate system to the world coordinate system.
+- virtual mat4 [matrix](#matrix) () const — Return the transformation matrix.
+- virtual void [setMatrix](#setmatrix) (const mat4 &m) — Set the transformation matrix.
+
+## Member Enumeration Documentation
+
+### Kind
+
+```cpp
+enum ImFusion::Data::Kind
+```
+
+[Kind](#kind) of data.
+
+**Enumerator:**
+
+- `UNKNOWN` — Unknown or unspecified.
+- `IMAGE` — 2D image
+- `VOLUME` — 3D volume
+- `IMAGESET` — Set of 2D images.
+- `VOLUMESET` — Set of 3D volumes, i.e. 3D+t or 4D data.
+- `IMAGESTREAM` — Stream of 2D images.
+- `VOLUMESTREAM` — Stream of 3D volumes.
+- `POINTSET` — Set of points.
+- `SURFACE` — Surface / mesh data.
+- `TRACKINGSTREAM` — Stream of tracking data.
+- `TRACKINGDATA` — Instance of [TrackingSequence](/cpp-sdk/4.5/api/classes/imfusion-trackingsequence) class.
+- `TREE` — Instance of [Tree](/cpp-sdk/4.5/api/classes/imfusion-tree) class.
+- `TENSOR` — An arbitrary-dimensional array of floating point data.
+- `POLYDATASTREAM` — Stream of point clouds or meshes.
+- `STEREOIMAGESET` — Set of paired stereo images.
+- `STEREOIMAGESTREAM` — Stream of paired stereo images.
+- `VOLUMETRICMESH` — Volumetric unstructured grid / tetrahedral mesh.
+
+### Modality
+
+```cpp
+enum ImFusion::Data::Modality
+```
+
+[Image](/cpp-sdk/4.5/api/classes/imfusion-image) modality of the data.
+
+**Enumerator:**
+
+- `NA` — Not applicable.
+- `XRAY` — 2D X-Ray based data
+- `CT` — X-Ray Computed Tomography.
+- `MRI` — Magnetic Resonance Imaging (MRI).
+- `ULTRASOUND` — Ultrasound image data.
+- `VIDEO` — Video / optical image data.
+- `NM` — Nuclear Medicine (SPECT or PET).
+- `OCT` — Optical Coherence Tomography.
+- `LABEL` — Labeling data/label map.
+- `DISTANCE` — Distance map.
+
+## Member Function Documentation
+
+### kind
+
+```cpp
+virtual Kind ImFusion::Data::kind () const
+```
+
+*pure virtual*
+
+Return the kind of this data.
+
+### modality
+
+```cpp
+virtual Modality ImFusion::Data::modality () const
+```
+
+*virtual*
+
+Return the modality of this data.
+
+The default implementation will always return NA, sub classes may override this method.
+
+### setName
+
+```cpp
+void ImFusion::Data::setName (const std::string & name)
+```
+
+Sets the name of this data.
+
+Be aware that if the [Data](/cpp-sdk/4.5/api/classes/imfusion-data) is part of a [DataModel](/cpp-sdk/4.5/api/classes/imfusion-datamodel), the name might change to something else if it is not unique (usually a number is appended).
+
+### matrixConvention
+
+```cpp
+virtual Pose::TransformationConvention ImFusion::Data::matrixConvention () const
+```
+
+*pure virtual*
+
+Defines whether the internally stored matrices in derived classes map from or to the world coordinate system.
+
+Changes the behavior of the default implementations of [matrixToWorld](#matrixtoworld) and [matrixFromWorld](#matrixfromworld).
+
+### setMatrixFromWorld
+
+```cpp
+virtual void ImFusion::Data::setMatrixFromWorld (const mat4 & m)
+```
+
+*virtual*
+
+Set matrix mapping from the world coordinate system to the data coordinate system.
+
+**Note:** Depending on how matrices are internally stored in concrete derived classes, `m` might be inverted before it is saved. The default implementation checks [matrixConvention](#matrixconvention) and accordingly calls [setMatrix](#setmatrix) with either `m` or its inverse.
+
+### setMatrixToWorld
+
+```cpp
+virtual void ImFusion::Data::setMatrixToWorld (const mat4 & m)
+```
+
+*virtual*
+
+Set matrix mapping from the data coordinate system to the world coordinate system.
+
+**Note:** Depending on how matrices are internally stored in concrete derived classes, `m` might be inverted before it is saved. The default implementation checks [matrixConvention](#matrixconvention) and accordingly calls [setMatrix](#setmatrix) with either `m` or its inverse.
+
+### matrixFromWorld
+
+```cpp
+virtual mat4 ImFusion::Data::matrixFromWorld () const
+```
+
+*virtual*
+
+Get matrix mapping from the world coordinate system to the data coordinate system.
+
+Inverse of [matrixToWorld](#matrixtoworld).
+
+**Note:** Depending on how matrices are internally stored in concrete derived classes, a matrix inversion might be necessary to obtain this mapping. The default implementation checks [matrixConvention](#matrixconvention) and accordingly returns [matrix](#matrix) or its inverse.
+
+### matrixToWorld
+
+```cpp
+virtual mat4 ImFusion::Data::matrixToWorld () const
+```
+
+*virtual*
+
+Get matrix mapping from the data coordinate system to the world coordinate system.
+
+Inverse of [matrixFromWorld](#matrixfromworld).
+
+**Note:** Depending on how matrices are internally stored in concrete derived classes, a matrix inversion might be necessary to obtain this mapping. The default implementation checks [matrixConvention](#matrixconvention) and accordingly returns [matrix](#matrix) or its inverse.
+
+### matrix
+
+```cpp
+virtual mat4 ImFusion::Data::matrix () const
+```
+
+*virtual*
+
+Return the transformation matrix.
+
+**Note:** Depending on the concrete derived class implementation, this transformation might be mapping either to or from the world coordinate system. Only use if convention is explicitly known. Use methods [matrixToWorld](#matrixtoworld) or [matrixFromWorld](#matrixfromworld) to avoid inconsistencies. The default implementation returns [m_matrix](#m-matrix).
+
+### setMatrix
+
+```cpp
+virtual void ImFusion::Data::setMatrix (const mat4 & m)
+```
+
+*virtual*
+
+Set the transformation matrix.
+
+**Note:** The matrix convention expected for `m` depends on the concrete derived class implementation, with either a matrix mapping to or from the world coordinate system being expected. Only use if convention is explicitly known. Use methods [setMatrixFromWorld](#setmatrixfromworld) or [setMatrixToWorld](#setmatrixtoworld) to avoid inconsistencies. The default implementation sets [m_matrix](#m-matrix).
+
+### isAnnotationType
+
+```cpp
+virtual bool ImFusion::Data::isAnnotationType () const
+```
+
+*virtual*
+
+Return whether this data type is visualized through an annotation (e.g. mesh).
+
+### bounds
+
+```cpp
+virtual Geometry::AlignedBox ImFusion::Data::bounds () const
+```
+
+*pure virtual*
+
+Returns the axis-aligned bounding box of this data in world space.
+
+**Warning:** Depending on the underlying data type this calling function may be computationally expensive! Do not call this method more often than needed, unless it is known that the caching behavior is implemented.
+
+### describe
+
+```cpp
+virtual std::string ImFusion::Data::describe () const
+```
+
+*inline, virtual*
+
+Human readable description of the data for showing in the info bar.
+
+## Member Data Documentation
+
+### signalDeleted
+
+```cpp
+Signal <const Data*> ImFusion::Data::signalDeleted
+```
+
+Signal emitted when this instance is deleted.
+
+**Note:** This method is called from a [Data](/cpp-sdk/4.5/api/classes/imfusion-data) instance in the destructor of the very base class, therefore no type information for dynamic casts or other class attributes are available anymore.
+
+**Warning:** Use with caution, only pointer comparison is allowed!
+
+### m_matrix
+
+```cpp
+mat4 ImFusion::Data::m_matrix
+```
+
+*protected*
+
+Transformation matrix.
+
+Derived class responsible for defining convention (mapping from or to world coordinate system), see [matrix](#matrix). Derived classes must lock matrix mutex before accessing the matrix.

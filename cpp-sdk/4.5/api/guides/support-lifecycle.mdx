@@ -1,0 +1,42 @@
+---
+title: "Releases and Support Lifecycle"
+description: "The versioning scheme for the ImFusion SDK is mostly based on the Semantic Versioning standard with some small adjustments."
+---
+
+The versioning scheme for the ImFusion SDK is mostly based on the [Semantic Versioning](https://semver.org/) standard with some small adjustments. Version numbers use the format &lt;major&gt;.&lt;minor&gt;.&lt;patch&gt;[-&lt;suffix&gt;].
+
+- The &lt;major&gt; version is incremented when fundamental features have been changed and/or other large API-breaking changes are implemented.
+- The &lt;minor&gt; version is incremented regularly based on our release cycle. New minor versions can include both new features *and* changes to existing functionality. We try to implement changes in a backward-compatible fashion, however in contrast to classic SemVer we do not guarantee this. There may be small adjustments/migrations necessary between minor versions.
+- The &lt;patch&gt; version is incremented for bugfix/hotfix releases. They do not break API and should not add new functionality.
+- The &lt;suffix&gt; part is optional and similar to the *pre-release* label of SemVer. If present it encodes additional metadata about the particular build
+  - A dev suffix indicates a rolling-release build that was built from latest master at the time.
+  - A rc suffix indicates a release candidate for an upcoming official general release.
+  - Other suffixes can be used to denote releases that include customer/project-specific specializations.
+
+We aim to publish a new general minor release at least twice a year.
+
+For general releases we use the following scheme regarting support of OS and compiler versions:
+
+- **Windows / MSVC:** 6 months after a next-next Visual Studio version has been released.
+
+   Recently, Microsoft [announced](https://devblogs.microsoft.com/cppblog/new-release-cadence-and-support-lifecycle-for-msvc-build-tools/) a restructuring of their release cadence and support lifecycle. As a result we might switch to a "6 months after end of official LTS support" scheme for MSVC in the future.
+- **Ubuntu / GCC:** only LTS versions, support ends 6 months after end of [official support](https://ubuntu.com/about/release-cycle) by Canonical.
+- **macOS / Apple Clang:** support for macOS is limited generally and some features (e.g. advanced rendering capabilities) are not available on this platform due to hardware/driver limitations. Our platform support ends 6 months after end of official support by Apple.
+
+Support Matrix:
+
+| Platform | Support Status | Notes |
+| --- | --- | --- |
+| Windows/VS 2026 | supported | 6 months after the successor of successor of VS 2026 has been released |
+| Windows/VS 2022 | supported | 6 months after the successor of VS 2026 has been released |
+| Windows/VS 2019 | supported until June 2026 | VS 2026 was released in November 2025 |
+| Windows/VS 2017 | discontinued since June 2023 | VS 2022 was released in November 2022 |
+|  |  |  |
+| Ubuntu 24.04/GCC 13.3 | supported until November 2029 | official support by Canonical ends April 2029 |
+| Ubuntu 22.04/GCC 11.4 | supported until November 2027 | official support by Canonical ends April 2027 |
+| Ubuntu 20.04/GCC 9.4 | discontinued since December 2025 | official support by Canonical ended May 2025 |
+|  |  |  |
+| macOS 26 (Tahoe) | supported | 6 month after end support by Apple |
+| macOS 15 (Sequoia) | supported | 6 month after end support by Apple |
+| macOS 14 (Sonoma) | supported | 6 month after end support by Apple |
+| macOS 13 (Ventura) | supported until April 2026 | Apple support ended Sep 2025 |

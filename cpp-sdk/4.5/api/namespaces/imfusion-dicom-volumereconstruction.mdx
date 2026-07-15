@@ -1,0 +1,89 @@
+---
+title: "ImFusion::Dicom::VolumeReconstruction"
+sidebarTitle: "VolumeReconstruction"
+description: "Namespace containing helper functions to reconstruct potential volumes from a set of individual DICOM frames."
+---
+
+## Overview
+
+Namespace containing helper functions to reconstruct potential volumes from a set of individual DICOM frames.
+
+## Functions
+
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [FrameDescriptorSet](/cpp-sdk/4.5/api/namespaces/imfusion-dicom) &gt; **groupVolumes** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [FrameDescriptor](/cpp-sdk/4.5/api/structs/imfusion-dicom-framedescriptor) &gt; &frames, const [ErrorRecorder](/cpp-sdk/4.5/api/classes/imfusion-dicom-errorrecorder) \*recorder) — Tries to group individual frames into volumes depending on their position and orientation An [ErrorRecorder](/cpp-sdk/4.5/api/classes/imfusion-dicom-errorrecorder) can be optionally passed to retrieve potential errors.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [FrameDescriptorSet](/cpp-sdk/4.5/api/namespaces/imfusion-dicom) &gt; [group4DVolumes](#group4dvolumes) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [FrameDescriptor](/cpp-sdk/4.5/api/structs/imfusion-dicom-framedescriptor) &gt; &frames) — Tries to group the frames as a list of 3D volumes (e.g.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [FrameDescriptor](/cpp-sdk/4.5/api/structs/imfusion-dicom-framedescriptor) &gt; &gt; [partitionFramesByTag](#partitionframesbytag) ([std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; const [Dicom::Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element)&lt; int &gt; &([Dicom::IOD](/cpp-sdk/4.5/api/classes/imfusion-dicom-iod) \*)&gt; getElement, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [FrameDescriptor](/cpp-sdk/4.5/api/structs/imfusion-dicom-framedescriptor) &gt; &sortedFrames) — Partitions the frames into subgroups according to the given element.
+- void [sortFramesByPosition](#sortframesbyposition) ([std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [FrameDescriptor](/cpp-sdk/4.5/api/structs/imfusion-dicom-framedescriptor) &gt; &frames) — Sorts the frames according to their position relative to normal of the first frame.
+- int [maxTransformationDigits](#maxtransformationdigits) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [FrameDescriptor](/cpp-sdk/4.5/api/structs/imfusion-dicom-framedescriptor) &gt; &frames) — Returns the maximum number of decimal digits that was used to store the transformation in the DICOM.
+- int **maxTransformationDigits** (const [Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element)&lt; [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; &gt; &imagePositionPatient)
+- double **sliceVarianceThreshold** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [FrameDescriptor](/cpp-sdk/4.5/api/structs/imfusion-dicom-framedescriptor) &gt; &frames) — Returns the maximum allowed variance between slice spacings for the given set of frames.
+- double **maxAllowedGantryTilt** () — Returns the maximum allowed gantry tilt in degrees for loading a 3D volume (currently set to 0.1 plus epsilon).
+- double [computeSliceSpacing](#computeslicespacing) (const [FrameDescriptorSet](/cpp-sdk/4.5/api/namespaces/imfusion-dicom) &frames) — Computes the average slice spacing of all frames.
+
+## Function Documentation
+
+### group4DVolumes
+
+```cpp
+std::vector < FrameDescriptorSet > ImFusion::Dicom::VolumeReconstruction::group4DVolumes (const std::vector < FrameDescriptor > & frames)
+```
+
+Tries to group the frames as a list of 3D volumes (e.g.
+
+perfusion acquisitions). All volumes are expected to have the same size and the same matrix. Returns an empty list if the frames cannot be grouped in this way. This is also called internally by groupVolumes.
+
+### partitionFramesByTag
+
+```cpp
+std::vector < std::vector < FrameDescriptor > > ImFusion::Dicom::VolumeReconstruction::partitionFramesByTag (std::function < const Dicom::Element < int > &(Dicom::IOD *)> getElement, const std::vector < FrameDescriptor > & sortedFrames)
+```
+
+Partitions the frames into subgroups according to the given element.
+
+Some DICOMs have an additional sub-level beneath series which depend on certain tags. E.g. some MR series contain two acquisitions at different times which can be split according to AcquisitionNumber. This method will parition the given list of frames into sub-groups of frames that share the same element value. E.g. consider the following list of frames with their AcquisitionNumber:
+
+- Frame 1 / AcquisitionNumber 1
+- Frame 2 / AcquisitionNumber 2
+- Frame 3 / AcquisitionNumber 2
+- Frame 4 / AcquisitionNumber 1
+- Frame 5 / AcquisitionNumber 2
+
+It would be split into two list: List 1:
+
+- Frame 1 / AcquisitionNumber 1
+- Frame 4 / AcquisitionNumber 1 List 2:
+- Frame 2 / AcquisitionNumber 2
+- Frame 3 / AcquisitionNumber 2
+- Frame 5 / AcquisitionNumber 2
+
+The initial sorting of the frames is preserved. The frames are only partitioned if all frames have the requested element and the element is considered valid. Otherwise this function returns the unmodified original list of frames as only item.
+
+### sortFramesByPosition
+
+```cpp
+void ImFusion::Dicom::VolumeReconstruction::sortFramesByPosition (std::vector < FrameDescriptor > & frames)
+```
+
+Sorts the frames according to their position relative to normal of the first frame.
+
+The sorting is stable, i.e. frames with the same position will retain their sorting.
+
+### maxTransformationDigits
+
+```cpp
+int ImFusion::Dicom::VolumeReconstruction::maxTransformationDigits (const std::vector < FrameDescriptor > & frames)
+```
+
+Returns the maximum number of decimal digits that was used to store the transformation in the DICOM.
+
+Returns 0 if the number could not be determined.
+
+### computeSliceSpacing
+
+```cpp
+double ImFusion::Dicom::VolumeReconstruction::computeSliceSpacing (const FrameDescriptorSet & frames)
+```
+
+Computes the average slice spacing of all frames.
+
+Only use with parallel frames! If the frames contain SpacingBetweenSlices and the value is close enough to the computed slice spacing, it will be returned instead.

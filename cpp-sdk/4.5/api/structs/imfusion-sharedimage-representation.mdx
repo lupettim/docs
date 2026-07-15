@@ -1,0 +1,16 @@
+---
+title: "ImFusion::SharedImage::Representation"
+sidebarTitle: "Representation"
+---
+
+## Public Member Functions
+
+- **Representation** () — Default construction yields an invalid representation (e.g. "not found"). Check isValid() before use.
+- **Representation** (const [std::type_index](http://en.cppreference.com/w/cpp/types/type_index.html) &type, [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [Image](/cpp-sdk/4.5/api/classes/imfusion-image) &gt; [img](/cpp-sdk/4.5/api/classes/imfusion-sharedimage), bool dirty)
+- bool **isValid** () const — True if this representation refers to an image. False for "not found" / failure (e.g. default-constructed).
+
+## Public Attributes
+
+- [std::type_index](http://en.cppreference.com/w/cpp/types/type_index.html) **imageType**
+- [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [Image](/cpp-sdk/4.5/api/classes/imfusion-image) &gt; **image**
+- bool **isDirty** = true

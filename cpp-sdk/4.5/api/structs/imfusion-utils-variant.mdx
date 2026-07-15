@@ -1,0 +1,154 @@
+---
+title: "ImFusion::Utils::Variant< Types >"
+sidebarTitle: "Variant< Types >"
+description: "Specialization of std::variant offering additional convenience member functions for functionality that the standard library only provides in the form of free fu"
+---
+
+`#include <ImFusion/Core/Utils/Variant.h>`
+
+## Overview
+
+template&lt;typename... Types&gt;
+
+struct ImFusion::Utils::Variant&lt; Types &gt;
+Specialization of [std::variant](http://en.cppreference.com/w/cpp/utility/variant.html) offering additional convenience member functions for functionality that the standard library only provides in the form of free functions.
+
+Due to design decisions of the C++ committee interaction with a [std::variant](http://en.cppreference.com/w/cpp/utility/variant.html) requires extensive usage of free functions such as [std::get_if&lt;T&gt;()](http://en.cppreference.com/w/cpp/utility/variant/get_if.html) or [std::holds_alternative&lt;T&gt;()](http://en.cppreference.com/w/cpp/utility/variant/holds_alternative.html), which may be disliked for stylistic reasons by some people and also be more difficult to find for people unfamiliar with the interface.
+
+Example:
+
+```cpp
+Utils::Variant<int, std::string, float> var;
+if (var.holds<int>())
+ std::cout << "variant holds an int\n";
+else if (var.equals(42.f))
+ std::cout << "variant holds a float with value 42.f\n";
+else if (std::string* s = var.getIf<std::string>())
+ std::cout << "variant holds the following string: " << *s << '\n';
+
+var.visit([](auto&& val) { std::cout << "variant holds: " << val << '\n'; });
+```
+ fragment
+Obviously, [Utils::Variant](/cpp-sdk/4.5/api/structs/imfusion-utils-variant) behaves exactly like the underlying [std::variant](http://en.cppreference.com/w/cpp/utility/variant.html) and you can still apply the standard library's free functions directly on it.
+
+**Note:** Prior to C++23 an under-specification of the standard did not require [std::visit()](http://en.cppreference.com/w/cpp/utility/variant/visit.html) to work with classes such as our [Utils::Variant](/cpp-sdk/4.5/api/structs/imfusion-utils-variant). Fortunately, this was fixed with P2162. We tested our implementations for all our target platforms:
+- MSVC versions 19.20 (VS 2019) and newer
+- GCC's libstdc++ versions 7 and newer
+- Clang's libc++ versions 5 and newer
+
+**See also:** - [Utils::Overloaded](/cpp-sdk/4.5/api/structs/imfusion-utils-overloaded)
+- [std::variant](http://en.cppreference.com/w/cpp/utility/variant.html)
+
+## Public Member Functions
+
+- **Variant** (const [std::variant](http://en.cppreference.com/w/cpp/utility/variant.html)&lt; Types... &gt; &rhs)
+- constexpr bool [holds](#holds) () const noexcept — Checks if the variant holds a value of type T.
+- constexpr bool [equals](#equals) (const T &value) const noexcept — Checks if the variant holds a value of type T that equals *value*.
+- constexpr T \* [getIf](#getif-1-2) () noexcept — Attempts to retrieve the held value of type T as pointer or returns nullptr otherwise.
+- constexpr const T \* [getIf](#getif-2-2) () const noexcept — Attempts to retrieve the held value of type T as pointer or returns nullptr otherwise.
+- constexpr auto [visit](#visit-1-2) (Visitor &&visitor) — Applies the set of functions in *visitor* to this variant, picking the overload matching the current alternative.
+- constexpr auto [visit](#visit-2-2) (Visitor &&visitor) const — Applies the set of functions in *visitor* to this variant, picking the overload matching the current alternative.
+
+## Member Function Documentation
+
+### holds
+
+```cpp
+template<typename... Types> template<typename T> bool ImFusion::Utils::Variant < Types >::holds () const
+```
+
+*inline, constexpr, noexcept*
+
+Checks if the variant holds a value of type T.
+
+T must appear exactly once in Types.
+
+**See also:** [std::holds_alternative()](http://en.cppreference.com/w/cpp/utility/variant/holds_alternative.html)
+
+### equals
+
+```cpp
+template<typename... Types> template<typename T> bool ImFusion::Utils::Variant < Types >::equals (const T & value) const
+```
+
+*inline, constexpr, noexcept*
+
+Checks if the variant holds a value of type T that equals *value*.
+
+This is a convenience function for v.holds&lt;T&gt;() && \*v.[getIf](#getif-1-2)&lt;T&gt;() == value. T must appear exactly once in Types.
+
+### getIf
+
+```cpp
+template<typename... Types> template<typename T> T * ImFusion::Utils::Variant < Types >::getIf ()
+```
+
+*inline, constexpr, noexcept*
+
+Attempts to retrieve the held value of type T as pointer or returns nullptr otherwise.
+
+T must appear exactly once in Types.
+
+**See also:** [std::get_if&lt;T&gt;()](http://en.cppreference.com/w/cpp/utility/variant/get_if.html)
+
+### getIf
+
+```cpp
+template<typename... Types> template<typename T> const T * ImFusion::Utils::Variant < Types >::getIf () const
+```
+
+*inline, constexpr, noexcept*
+
+Attempts to retrieve the held value of type T as pointer or returns nullptr otherwise.
+
+T must appear exactly once in Types.
+
+**See also:** [std::get_if&lt;T&gt;()](http://en.cppreference.com/w/cpp/utility/variant/get_if.html)
+
+### visit
+
+```cpp
+template<typename... Types> template<class Visitor> auto ImFusion::Utils::Variant < Types >::visit (Visitor && visitor)
+```
+
+*inline, constexpr*
+
+Applies the set of functions in *visitor* to this variant, picking the overload matching the current alternative.
+
+The visitor must accept every possible Type in Types. Example:
+
+```cpp
+Utils::Variant<int, std::string> var;
+var.visit(Utils::Overloaded{
+    [](int i) { std::cout << "variant contains an int: "; },
+    [](const std::string& s) { "variant contains a string: "; },
+});
+var.visit([](auto&& value) { std::cout << value << '\n'; });
+```
+ fragment
+
+**See also:** [Utils::Overloaded](/cpp-sdk/4.5/api/structs/imfusion-utils-overloaded), [std::visit()](http://en.cppreference.com/w/cpp/utility/variant/visit.html)
+
+### visit
+
+```cpp
+template<typename... Types> template<class Visitor> auto ImFusion::Utils::Variant < Types >::visit (Visitor && visitor) const
+```
+
+*inline, constexpr*
+
+Applies the set of functions in *visitor* to this variant, picking the overload matching the current alternative.
+
+The visitor must accept every possible Type in Types. Example:
+
+```cpp
+Utils::Variant<int, std::string> var;
+var.visit(Utils::Overloaded{
+    [](int i) { std::cout << "variant contains an int: "; },
+    [](const std::string& s) { "variant contains a string: "; },
+});
+var.visit([](auto&& value) { std::cout << value << '\n'; });
+```
+ fragment
+
+**See also:** [Utils::Overloaded](/cpp-sdk/4.5/api/structs/imfusion-utils-overloaded), [std::visit()](http://en.cppreference.com/w/cpp/utility/variant/visit.html)

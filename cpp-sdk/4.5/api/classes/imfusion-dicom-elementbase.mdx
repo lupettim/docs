@@ -1,0 +1,102 @@
+---
+title: "ImFusion::Dicom::ElementBase"
+sidebarTitle: "ElementBase"
+description: "Abstract base class for DICOM Elements."
+---
+
+`#include <ImFusion/Dicom/DicomElement.h>`
+
+## Overview
+
+Abstract base class for DICOM Elements.
+
+Elements serve as wrapper to access individual DICOM tags, which serve as most fundamental building block of a DICOM file. Every [Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element) is uniquely identified by its DICOM Tag that can only occur once per dataset (aside from sequences). During construction of an [Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element) you define whether it should be considered as `Mandatory`. If an [Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element) is defined as `Conditional`, you can optionally provide a predicate function to determine whether it has to be present or not.
+
+**See also:** [Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element)
+
+## Public Types
+
+- enum [Type](#type) &#123; Mandatory , Conditional &#125; — Conditionality of an [Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element).
+
+## Public Member Functions
+
+- **ElementBase** ([ElementList](/cpp-sdk/4.5/api/classes/imfusion-dicom-elementlist) &parent, DcmTag tag, [Type](#type) type=Conditional, bool searchIntoSubs=false)
+- **ElementBase** (DcmItem &item, DcmTag tag, [Type](#type) type=Conditional, bool searchIntoSubs=false)
+- void [setCondition](#setcondition) ([std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; bool()&gt; predicate) — Sets a callback function that determines if a conditional element is mandatory.
+- virtual DcmTag **tag** () const — DICOM tag wrapped by this [Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element).
+- virtual bool **isMandatory** () const — Evaluates whether this element is mandatory (based on the specified type and optionally condition).
+- virtual bool **exists** () const — Returns true if the elements exists in the dataset.
+- virtual bool [isValid](#isvalid) () const =0 — Returns true if the element exists and is in a valid range.
+- void [remove](#remove) () — Removes the element from the dataset.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **valueString** () const — Returns the value of the element as a string.
+- void [setTargetSequence](#settargetsequence) (DcmItem \*sequence) — Sets an optional sequence item where this elements will write its value.
+
+## Protected Attributes
+
+- DcmItem & **m_dataset** — DICOM data set/base element to retrieve element data from.
+- DcmItem \* **m_targetSeq** — Optional sequence to write element data to; only used for setValue().
+- DcmTag **m_tag** — DICOM tag the [Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element) refers to.
+- [Type](#type) **m_type** — Conditionality of the [Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element).
+- bool **m_searchIntoSubs** — Flag whether to search into sub sequences or not.
+- [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; bool()&gt; **m_typeCondition** — Optional predicate function to evaluate conditionality.
+
+## Member Enumeration Documentation
+
+### Type
+
+```cpp
+enum ImFusion::Dicom::ElementBase::Type
+```
+
+Conditionality of an [Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element).
+
+**Enumerator:**
+
+- `Mandatory` — [Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element) is mandatory.
+- `Conditional` — [Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element) is optional. If a condition is met (see setCondition), it has to satisfy that.
+
+## Member Function Documentation
+
+### setCondition
+
+```cpp
+void ImFusion::Dicom::ElementBase::setCondition (std::function < bool()> predicate)
+```
+
+Sets a callback function that determines if a conditional element is mandatory.
+
+It is ignored if the type is set to `Mandatory`.
+
+**Parameters:**
+
+- `predicate` — Predicate callback function to determine whether the element has to be present or not. If set to nullptr, the condition is always false (i.e. never mandatory). The default value is nullptr (correlates to DICOM's 'User Option' type).
+
+### isValid
+
+```cpp
+virtual bool ImFusion::Dicom::ElementBase::isValid () const
+```
+
+*pure virtual*
+
+Returns true if the element exists and is in a valid range.
+
+### remove
+
+```cpp
+void ImFusion::Dicom::ElementBase::remove ()
+```
+
+Removes the element from the dataset.
+
+If the element was created with searchIntoSubs=true, all instances of the tag are removed.
+
+### setTargetSequence
+
+```cpp
+void ImFusion::Dicom::ElementBase::setTargetSequence (DcmItem * sequence)
+```
+
+Sets an optional sequence item where this elements will write its value.
+
+This sequence is only used for setValue and has not effect when retrieving a value.

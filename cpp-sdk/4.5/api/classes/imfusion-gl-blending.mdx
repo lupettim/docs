@@ -1,0 +1,124 @@
+---
+title: "ImFusion::GL::Blending"
+sidebarTitle: "Blending"
+description: "Helper class to configure the OpenGL blending stage."
+---
+
+`#include <ImFusion/Core/GL/Blending.h>`
+
+## Overview
+
+Helper class to configure the OpenGL blending stage.
+
+The OpenGL blending stage defines how a new pixel ("source") is combined with an already existing pixel in the framebuffer ("destination") in order to yield the final pixel value. OpenGL splits this configuration in multiple parts:
+
+- The blending [Equation](#equation) defines the mathematical function how source and destination are combined.
+- The blending [Function](#function) allows to define how each the source and destination components are derived from the input data. If you choose a constant color/alpha value as input that value is specified through setBlendColor().
+
+**Warning:** This class modifies global OpenGL state! Therefore, it implements state guard semantics, which means that it restores the original blending state on destruction of its instance.
+
+Usage Example:
+
+```cpp
+{
+ // render a quad with alpha blending
+ GL::Blending blendingGuard(GL::Blending::Preset::AlphaBlending);
+    renderQuad();
+
+ // disable blending and render a triangle on top
+    blendingGuard.setBlendingEnabled(false);
+    renderTriangle();
+
+} // leaving the scope will destroy the blending guard and restore the original OpenGL blending state
+```
+ fragment
+
+**See also:** [https://www.khronos.org/opengl/wiki/Blending](https://www.khronos.org/opengl/wiki/Blending)
+
+## Public Types
+
+- enum class [Preset](#preset) &#123; Disabled , AlphaBlending &#125; — Enumeration of commonly used blending modes.
+- enum class [Equation](#equation) &#123; FuncAdd = 0x8006 , FuncSubstract = 0x800A , FuncReverseSubstract = 0x800B , Min = 0x8007 , Max = 0x8008 &#125; — Enumeration to define how source and destination blending component are combined to yield the output pixel value.
+- enum class [Function](#function) &#123; Zero = 0 , One = 1 , SrcColor = 0x0300 , OneMinusSrcColor = 0x0301 , SrcAlpha = 0x0302 , OneMinusSrcAlpha = 0x0303 , DstColor = 0x0306 , OneMinusDstColor = 0x0307 , DstAlpha = 0x0304 , OneMinusDstAlpha = 0x0305 , ConstantColor = 0x8001 , OneMinusConstantColor = 0x8002 , ConstantAlpha = 0x8003 , OneMinusConstantAlpha = 0x8004 &#125; — Enumeration to define how a blending component (source/destination) should be computed.
+
+## Public Member Functions
+
+- **Blending** ([Preset](#preset) preset) — Sets up OpenGL blending based on the given preset.
+- **Blending** ([Function](#function) sourceFunc, [Function](#function) destinationFunc) — Enables OpenGL blending and sets the blend function as defined.
+- **Blending** ([Function](#function) sourceFuncRGB, [Function](#function) destinationFuncRGB, [Function](#function) sourceAlpha, [Function](#function) destinationAlpha) — Enables OpenGL blending and sets the blend function as defined.
+- **Blending** (Blending &&rhs) noexcept
+- Blending & **operator=** (Blending &&rhs) noexcept
+- **~Blending** () — Restores the original OpenGL blending state of when this instance was created.
+- void **setBlendingEnabled** (bool isEnabled) — Enables or disables the OpenGL blending stage.
+- void **setPreset** ([Preset](#preset) preset) — Sets up OpenGL blending based on the given preset.
+- void **setFunction** ([Function](#function) sourceFunc, [Function](#function) destinationFunc) — Defines the arithmetic how source and destination blending factors are computed uniformly for all RGBA channels.
+- void **setFunction** ([Function](#function) sourceFuncRGB, [Function](#function) destinationFuncRGB, [Function](#function) sourceAlpha, [Function](#function) destinationAlpha) — Defines the arithmetic how source and destination blending factors are computed and allows for different functions for color and alpha channels.
+- void **setEquation** ([Equation](#equation) blendEquation) — Defines how the new pixel is combined with the pixel already in the framebuffer, uniformly for all RGBA channels.
+- void **setEquation** ([Equation](#equation) blendEquationRGB, [Equation](#equation) blendEquationAlpha) — Defines how the new pixel is combined with the pixel already in the framebuffer, allowing for different equations for color and alpha channels.
+- void **setBlendColor** (vec4f blendColor) — Defines the reference color used when choosing one of the Constant blend functions.
+
+## Member Enumeration Documentation
+
+### Preset
+
+```cpp
+enum class ImFusion::GL::Blending::Preset
+```
+
+*strong*
+
+Enumeration of commonly used blending modes.
+
+**Enumerator:**
+
+- `Disabled` — Disables blending, new pixels will completely replace/overwrite existing pixels.
+- `AlphaBlending` — Enables blending and sets (Function::SrcAlpha, Function::OneMinusSrcAlpha, Function::One, Function::OneMinusSrcAlpha) as blend function.
+
+### Equation
+
+```cpp
+enum class ImFusion::GL::Blending::Equation
+```
+
+*strong*
+
+Enumeration to define how source and destination blending component are combined to yield the output pixel value.
+
+**See also:** [https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glBlendEquationSeparate.xhtml](https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glBlendEquationSeparate.xhtml)
+
+**Enumerator:**
+
+- `FuncAdd` — The source and destination colors are added to each other.
+- `FuncSubstract` — Subtracts the destination from the source.
+- `FuncReverseSubstract` — Subtracts the source from the destination.
+- `Min` — The output color is the component-wise minimum value of the source and dest colors.
+- `Max` — The output color is the component-wise maximum value of the source and dest colors.
+
+### Function
+
+```cpp
+enum class ImFusion::GL::Blending::Function
+```
+
+*strong*
+
+Enumeration to define how a blending component (source/destination) should be computed.
+
+**See also:** [https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glBlendFuncSeparate.xhtml](https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glBlendFuncSeparate.xhtml)
+
+**Enumerator:**
+
+- `Zero` — Use all zeros as blending input.
+- `One` — Use all ones as blending input.
+- `SrcColor` — Use the source color as input.
+- `OneMinusSrcColor` — Use (1 - source color) as input.
+- `SrcAlpha` — Use the source alpha value as input.
+- `OneMinusSrcAlpha` — Use (1 - source alpha) as input.
+- `DstColor` — Use the destination color as input.
+- `OneMinusDstColor` — Use (1 - destination color) as input.
+- `DstAlpha` — Use the destination alpha as input.
+- `OneMinusDstAlpha` — Use (1 - destination alpha) as input.
+- `ConstantColor` — Use the blending color as input.
+- `OneMinusConstantColor` — Use (1 - blend color) as input.
+- `ConstantAlpha` — Use the blending color's alpha value as input.
+- `OneMinusConstantAlpha` — Use (1 - blend color alpha) as input.

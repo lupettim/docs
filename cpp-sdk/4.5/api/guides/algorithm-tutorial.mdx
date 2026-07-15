@@ -1,0 +1,133 @@
+---
+title: "Writing Algorithms"
+description: "Algorithms are the most basic element of the ImFusion SDK and offer a generic way to process and modify Data ."
+---
+
+[Algorithms](/cpp-sdk/4.5/api/guides/algorithms) are the most basic element of the ImFusion SDK and offer a generic way to process and modify [Data](/cpp-sdk/4.5/api/classes/imfusion-data).
+
+Each algorithm derives from the [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) abstract base class. A subclass is only required to implement the [compute](/cpp-sdk/4.5/api/classes/imfusion-algorithm) method. As the name suggests, compute should execute the algorithm, e.g. process the input data.
+
+In order to use a new [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) with the rest of the [Framework](/cpp-sdk/4.5/api/namespaces/imfusion-framework) (e.g. inside ImFusion Suite), the algorithm needs to be registered in an [AlgorithmFactory](/cpp-sdk/4.5/api/classes/imfusion-algorithmfactory). The factory determines which algorithm can be used with which data and will create the actual instance. Only algorithms that provide the [createCompatible](/cpp-sdk/4.5/api/classes/imfusion-algorithm) static method can be registered to a factory. In [createCompatible](/cpp-sdk/4.5/api/classes/imfusion-algorithm), the algorithm gets a list of [datasets](/cpp-sdk/4.5/api/classes/imfusion-data) and an optional pointer to create an instance. If the data in the list can be used to create an algorithm, [ImFusion::Algorithm::createCompatible](/cpp-sdk/4.5/api/classes/imfusion-algorithm) should return true, otherwise false. The matching should be exact, e.g. if an algorithm only supports one input dataset and the list contains two, false should be returned. If an [Algorithm\*](/cpp-sdk/4.5/api/classes/imfusion-algorithm) pointer is provided, the algorithm should create an instance of itself and store it in the pointer.
+
+For example the [createCompatible](/cpp-sdk/4.5/api/classes/imfusion-algorithm) method of an [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) taking exactly one 2D image as input:
+
+```cpp
+bool ExampleAlgorithm::createCompatible(const DataList& data, Algorithm** a)
+{
+ // Algorithm only supports 1 input
+ if (data.size() == 1)
+    {
+ // Check if the data is a 2D image
+ if (data[0]->kind() == Data::IMAGE)
+        {
+ // All 2D images are SharedImageSet objects
+ SharedImageSet* img = dynamic_cast<SharedImageSet*>(data[0]);
+ if (img)    // Only allow valid 2D images
+            {
+ // If pointer is provided, create a new instance
+ if (a)
+                    *a = new ExampleAlgorithm(img);
+ return true;
+            }
+        }
+    }
+ return false;
+}
+```
+ fragment
+Instead of checking the kind and performing the dynamic_cast explicitly, the [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) class features some helper methods to search and retrieve certain data types, e.g. the previous example could also use:
+
+```cpp
+SharedImage* img = data.getImage(Data::IMAGE);
+```
+ fragment
+To make the new algorithm available in the framework, add the following line to the constructor of an [AlgorithmFactory](/cpp-sdk/4.5/api/classes/imfusion-algorithmfactory). A [AlgorithmFactory](/cpp-sdk/4.5/api/classes/imfusion-algorithmfactory) is provided by a plugin, see Plugin Architecture for more information.
+
+```cpp
+registerAlgorithm<Example>("Example Algorithm");
+```
+ fragment
+The string argument will be used as a name for the algorithm and must be unique in all factories.
+
+Algorithms that generate output data which should be available to the rest of the framework, can override the [ImFusion::Algorithm::takeOutput](/cpp-sdk/4.5/api/classes/imfusion-algorithm) method. This method returns an [ImFusion::OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) where all output data should be added. The ownership of the data is transferred to the list. The following example shows a common approach to handle the ownership of output data.
+
+```cpp
+OwningDataList ExampleAlgorithm::takeOutput()
+{
+ // Transfer the algorithm output to the caller
+ OwningDataList result;
+    result.add(std::move(m_output));
+ return result;
+}
+```
+ fragment
+```cpp
+private:
+    std::unique_ptr<SharedImageSet> m_output;
+```
+ fragment
+Most algorithms will consist of a set of parameters that modify the behaviour of the computation. The [Configurable](/cpp-sdk/4.5/api/classes/imfusion-configurable) interface provides two methods to store, retrieve and serialize a generic set of parameters: [configuration](/cpp-sdk/4.5/api/classes/imfusion-configurable) and [configure](/cpp-sdk/4.5/api/classes/imfusion-configurable), which can be overridden by an algorithm. Both methods receive a [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object that handles generic parameters. The [configuration](/cpp-sdk/4.5/api/classes/imfusion-configurable) method will be called to retrieve the current parameters of the algorithm and the [configure](/cpp-sdk/4.5/api/classes/imfusion-configurable) method to restore saved parameters.
+
+The example algorithm contains three parameters: a double, a 2-component vector and a list of integers.
+
+```cpp
+void ExampleAlgorithm::configure(const Properties* p)
+{
+ if (!p)
+ return;
+ // Make sure Configuration::configure is called so all members of type Parameter are
+ // automatically deserialized.
+ Algorithm::configure(p);
+
+ // Parameters can have any name and can be accessed in any order
+    p->param("paramVec", m_paramVec);
+    p->param("firstParameter", m_paramDouble);
+
+ // Only update the parameters but try to keep additional computation to a minimum
+}
+
+void ExampleAlgorithm::configuration(Properties* p) const
+{
+ if (!p)
+ return;
+ // Make sure Configuration::configuration is called so all members of type Parameter are
+ // automatically serialized.
+ Algorithm::configuration(p);
+
+ // Use the same names in both configure and configuration
+    p->setParam("firstParameter", m_paramDouble);
+ // Parameters can have default values
+    p->setParam("paramVec", m_paramVec, vec2(1, 0));
+
+ // Don't save Data, e.g. m_image, in the configuration
+}
+```
+ fragment
+```cpp
+public:
+ // Use the Parameter class for convenience to save some boilerplate code for
+ // (de)serialization. Define the name and initial (and default) value here, and register
+ // the Parameter with the parent Configurable interface.
+    Parameter<int> p_paramInt = {"paramInt", 0, this};
+
+private:
+ // Alternatively, you can do the (de)serialization of members manually.
+ double m_paramDouble;
+    vec2 m_paramVec;
+```
+ fragment
+Algorithms that export their parameters through the [Configurable](/cpp-sdk/4.5/api/classes/imfusion-configurable) interface can be easily exposed in the UI by the [ImFusion::DefaultAlgorithmController](/cpp-sdk/4.5/api/classes/imfusion-defaultalgorithmcontroller). It will automatically generate UI controls for all parameters and offer a "Compute" button that will execute the algorithm. Additionally it will also automatically retrieve the output and add it the Data Model. The appearance and properties of the UI controls can be influence by the [type](/cpp-sdk/4.5/api/classes/imfusion-properties) and [attributes](/cpp-sdk/4.5/api/classes/imfusion-properties) of each parameter.
+
+The controller has to be registered in a [AlgorithmControllerFactory](/cpp-sdk/4.5/api/classes/imfusion-algorithmcontrollerfactory) for each algorithm. Otherwise the algorithm will be instantly executed without showning a controller (also depends on your settings). Like the [AlgorithmFactory](/cpp-sdk/4.5/api/classes/imfusion-algorithmfactory), a [AlgorithmControllerFactory](/cpp-sdk/4.5/api/classes/imfusion-algorithmcontrollerfactory) is part of a plugin. A new controller can be registered by adding the following lines to the [AlgorithmControllerFactory::create](/cpp-sdk/4.5/api/classes/imfusion-algorithmcontrollerfactory) method:
+
+```cpp
+if (Example* ex = dynamic_cast<Example*>(a))
+ return new DefaultAlgorithmController(ex);
+```
+ fragment
+If your algorithm requires a more sophisticated user interface, you can also derive your own [AlgorithmController](/cpp-sdk/4.5/api/classes/imfusion-algorithmcontroller) . See [Defining the Algorithm Controller](/cpp-sdk/4.5/api/guides/algorithms) for more details.
+
+Files:
+
+- [ExampleAlgorithm.h](/cpp-sdk/4.5/api/examples/example-algorithm-8h)
+- [ExampleAlgorithm.cpp](/cpp-sdk/4.5/api/examples/example-algorithm-8cpp)

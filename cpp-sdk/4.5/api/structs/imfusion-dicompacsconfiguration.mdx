@@ -1,0 +1,111 @@
+---
+title: "ImFusion::DicomPacsConfiguration"
+sidebarTitle: "DicomPacsConfiguration"
+description: "Structure encapsulating all information needed to connect to a PACS instance."
+---
+
+`#include <ImFusion/Dicom/DicomPacsCommunication.h>`
+
+## Overview
+
+Structure encapsulating all information needed to connect to a PACS instance.
+
+Also provides some utility methods to read/write the configuration from/to the global settings and generate/parse distinct URI describing series/images on the PACS.
+
+**Examples:** [DicomWorklist.cpp](/cpp-sdk/4.5/api/examples/dicom-worklist-8cpp), and [PacsExample.cpp](/cpp-sdk/4.5/api/examples/pacs-8cpp).
+
+## Public Types
+
+- using **Url** = [Filesystem::Url](/cpp-sdk/4.5/api/classes/imfusion-filesystem-url)
+
+## Public Member Functions
+
+- [DicomPacsConfiguration](#dicompacsconfiguration) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &serverHostname, int serverPort, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &serverAeTitle, bool useCGet=false) — Creates a new PacsConfiguration struct with the given server information.
+- **DicomPacsConfiguration** () — Default constructor, creates invalid (empty) configuration.
+- bool [isValid](#isvalid) () const — Returns true if the configuration is valid, e.g.
+- Url [generateUri](#generateuri) (const [Dicom::Utils::UrlQueries](/cpp-sdk/4.5/api/structs/imfusion-dicom-utils-urlqueries) &queries) const — Converts a DICOM image located on a PACS server to a distinct URI in the form "pacs://&lt;Hostname&gt;:&lt;Port&gt;/&lt;HostAE&gt;?series=&lt;seriesUID&gt;&study=&lt;studyUID&gt;#&lt;sopInstanceUID&gt;".
+- Url **generateUri** (DcmDataset &dataset) const — Convenient method that extracts the required UIDs and calls the generateUri above.
+- bool **operator==** (const [DicomPacsConfiguration](#dicompacsconfiguration) &rhs) const
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **toString** (bool includeClientConfig=false) const — Returns a string representation that can be used for logging.
+
+## Static Public Member Functions
+
+- static [DicomPacsConfiguration](#dicompacsconfiguration) [fromUri](#fromuri) (const Url &uri) — Converts a URI to a DICOM image located on a PACS server into its separate parts.
+
+## Public Attributes
+
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **serverHostname** — Hostname/IP of the PACS server.
+- unsigned int **serverPort** — Port of the PACS server.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **serverAETitle** — Application Entity of the PACS server.
+- unsigned int **clientPort** — Port to use by the DICOM SCP server for receiving images.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **clientAETitle** — Application Entity to use by the DICOM SCP server for receiving images.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **cfgFilePath** — Path to a association config file to be used by the DICOM SCP server. May be empty for default configuration. See [https://support.dcmtk.org/docs/file_asconfig.html](https://support.dcmtk.org/docs/file_asconfig.html) for details.
+- int **connectionTimeout** — Connection Timeout (seconds).
+- Dicom::AnonymizationProfile **anonymisePatients** — Anonymise patient information on receive.
+- bool [useCGetForRetrieval](#usecgetforretrieval) — Whether to use C-GET instead of C-MOVE. This setting is not directly used by [DicomPacsCommunication](/cpp-sdk/4.5/api/classes/imfusion-dicompacscommunication), but should be used to call the correct method of [DicomPacsCommunication](/cpp-sdk/4.5/api/classes/imfusion-dicompacscommunication).
+
+## Constructor & Destructor Documentation
+
+### DicomPacsConfiguration
+
+```cpp
+ImFusion::DicomPacsConfiguration::DicomPacsConfiguration (const std::string & serverHostname, int serverPort, const std::string & serverAeTitle, bool useCGet = false)
+```
+
+Creates a new PacsConfiguration struct with the given server information.
+
+Client information is taken from the global settings (DicomIOAlgorithm's user options).
+
+## Member Function Documentation
+
+### fromUri
+
+```cpp
+DicomPacsConfiguration ImFusion::DicomPacsConfiguration::fromUri (const Url & uri)
+```
+
+*static*
+
+Converts a URI to a DICOM image located on a PACS server into its separate parts.
+
+URI must be of the form "pacs://&lt;Hostname&gt;:&lt;Port&gt;/&lt;HostAE&gt;?&lt;seriesUID&gt;#&lt;sopInstanceUID&gt;". If the optional cget-retrieve is a non-zero integer, useCGet will be set to true.
+
+**See also:** [generateUri()](#generateuri)
+
+### isValid
+
+```cpp
+bool ImFusion::DicomPacsConfiguration::isValid () const
+```
+
+Returns true if the configuration is valid, e.g.
+
+if the hostname and AE are not empty. Does NOT check if the hostname exists or a connection can be established.
+
+**Examples:** [PacsExample.cpp](/cpp-sdk/4.5/api/examples/pacs-8cpp).
+
+### generateUri
+
+```cpp
+Url ImFusion::DicomPacsConfiguration::generateUri (const Dicom::Utils::UrlQueries & queries) const
+```
+
+Converts a DICOM image located on a PACS server to a distinct URI in the form "pacs://&lt;Hostname&gt;:&lt;Port&gt;/&lt;HostAE&gt;?series=&lt;seriesUID&gt;&study=&lt;studyUID&gt;#&lt;sopInstanceUID&gt;".
+
+**See also:** parseUri()
+
+## Member Data Documentation
+
+### useCGetForRetrieval
+
+```cpp
+bool ImFusion::DicomPacsConfiguration::useCGetForRetrieval
+```
+
+**Initial value:**
+```cpp
+             =
+false
+```
+ fragment
+Whether to use C-GET instead of C-MOVE. This setting is not directly used by [DicomPacsCommunication](/cpp-sdk/4.5/api/classes/imfusion-dicompacscommunication), but should be used to call the correct method of [DicomPacsCommunication](/cpp-sdk/4.5/api/classes/imfusion-dicompacscommunication).

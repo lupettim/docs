@@ -1,0 +1,89 @@
+---
+title: "ImFusion::LazyInstantiatedDataComponent< ComponentType, DataType >"
+sidebarTitle: "LazyInstantiatedDataComponent< ComponentType, DataType >"
+description: "Extended interface for DataComponents that support lazy instantiation / lazy retrieval."
+---
+
+`#include <ImFusion/Base/LazyInstantiatedDataComponent.h>`
+
+## Overview
+
+template&lt;typename ComponentType, typename DataType = Data&gt;
+
+class ImFusion::LazyInstantiatedDataComponent&lt; ComponentType, DataType &gt;
+Extended interface for DataComponents that support lazy instantiation / lazy retrieval.
+
+Usually, a [DataComponent](/cpp-sdk/4.5/api/classes/imfusion-datacomponent) has to be explicitly instantiated first and then added to its corresponding [Data](/cpp-sdk/4.5/api/classes/imfusion-data) object. However, for certain use cases of DataComponents (e.g. display options) it may be handy to always create a default instance when you're trying to retrieve it from a [Data](/cpp-sdk/4.5/api/classes/imfusion-data) object, which does not yet have a component of such type. This class allows for such lazy instantiation of through its static [get()](#get-1-2) method.
+
+In order to implement your own data-specific options class, inherit from this class directly using your class type as template parameter (this pattern is commonly known as the CRTP pattern). Furthermore, make sure to implement to needed constructor taking a const Data\* as argument.
+
+Example:
+
+```cpp
+// Define your DataComponent to be lazy-instantiable
+class YourComponentType : public DataComponent, public LazyInstantiatedDataComponent<YourComponentType, SharedImageSet>
+{
+public:
+ // Constructor signature needed by LazyInstantiatedDataComponent<T>
+ explicit YourComponentType(const SharedImageSet* data)
+
+    [...]
+}
+
+[...]
+
+// Lazy-instantiate/request your DataComponent for a given Data instance.
+// LazyInstantiatedDataComponent::get() will always return a valid reference.
+SharedImageSet& sis = [...];
+auto& yourComponent = YourComponentType::get(sis);
+```
+ fragment
+
+**Warning:** Due to the invariant of [get()](#get-1-2) that a returned reference remains valid for the lifetime of the parent object, LazyInstantiatedDataComponents put particular burden onto the managing [DataComponentList](/cpp-sdk/4.5/api/classes/imfusion-datacomponentlist) as it must never delete them. Therefore, you should not 'by default' inherit from [LazyInstantiatedDataComponent](/cpp-sdk/4.5/api/classes/imfusion-lazyinstantiateddatacomponent) but only if you really deem this necessary. [DataComponentList::getOrCreate&lt;T&gt;()](/cpp-sdk/4.5/api/classes/imfusion-datacomponentlist) may provide a nicer and lighter mean for working with default-instantiated DataComponents.
+
+**Template Parameters:** | ComponentType | Specific type of the inheriting class (CRTP pattern). |
+| --- | --- |
+| DataType | Type of the constructor that ComponentType requires. Must inherit from [Data](/cpp-sdk/4.5/api/classes/imfusion-data), allows to restrict a [DataComponent](/cpp-sdk/4.5/api/classes/imfusion-datacomponent) to certain data types. |
+
+## Static Public Member Functions
+
+- static ComponentType & [get](#get-1-2) (const DataType &data) — Returns the specific options of type T that are associated with the given data.
+- static ComponentType \* [get](#get-2-2) (const DataType \*data) — Returns the specific options of type T that are associated with the given data.
+
+## Member Function Documentation
+
+### DataType
+
+```cpp
+template<typename ComponentType, typename DataType = Data> ComponentType & ImFusion::LazyInstantiatedDataComponent < ComponentType, DataType >::get (const DataType & data)
+```
+
+*inline, static*
+
+Returns the specific options of type T that are associated with the given data.
+
+All data-specific options are lazily instantiated. Thus, this method always returns a valid reference, which will remain valid as long as the corresponding [Data](/cpp-sdk/4.5/api/classes/imfusion-data) object exists.
+
+**Note:** Given a single [Data](/cpp-sdk/4.5/api/classes/imfusion-data) instance, the returned reference will always be the same. Thus, it can be considered safe to store the returned reference on client side for direct manipulation.
+
+**Parameters:**
+
+- `data` — Reference to the data for which to return the data-specific options.
+
+### DataType
+
+```cpp
+template<typename ComponentType, typename DataType = Data> ComponentType * ImFusion::LazyInstantiatedDataComponent < ComponentType, DataType >::get (const DataType * data)
+```
+
+*inline, static*
+
+Returns the specific options of type T that are associated with the given data.
+
+All data-specific options are lazily instantiated. Thus, this method always returns a valid reference, which will remain valid as long as the corresponding [Data](/cpp-sdk/4.5/api/classes/imfusion-data) object exists.
+
+**Note:** Given a single [Data](/cpp-sdk/4.5/api/classes/imfusion-data) instance, the returned reference will always be the same. Thus, it can be considered safe to store the returned reference on client side for direct manipulation.
+
+**Parameters:**
+
+- `data` — Reference to the data for which to return the data-specific options.

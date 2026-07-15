@@ -1,0 +1,90 @@
+---
+title: "ImFusion::MeshInterpolation"
+sidebarTitle: "MeshInterpolation"
+description: "Functions for interpolating scalar functions on mesh surfaces."
+---
+
+## Overview
+
+Functions for interpolating scalar functions on mesh surfaces.
+
+## Enumerations
+
+- enum class [LaplaceInterpolationMethod](#laplaceinterpolationmethod) &#123; ZeroLaplaceAtUnknownPoints , MinimizeLaplaceAtAllPoints &#125; — Interpolation methods described in: [1] [https://doi.org/10.1016/0021-9991(89)90103-4](https://doi.org/10.1016/0021-9991(89)90103-4).
+
+## Functions
+
+- Eigen::MatrixXd [laplaceInterpolation](#laplaceinterpolation) (const Eigen::SparseMatrix&lt; double &gt; &laplacian, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; int &gt; &idsKnown, const Eigen::MatrixXd &valuesKnown, [LaplaceInterpolationMethod](#laplaceinterpolationmethod) method) — Interpolates values from the vertices with idsKnown to all vertices using one of the two methods described in [https://doi.org/10.1016/0021-9991(89)90103-4](https://doi.org/10.1016/0021-9991(89)90103-4).
+- Eigen::SparseMatrix&lt; double &gt; [laplaceInterpolationMatrix](#laplaceinterpolationmatrix) (const Eigen::SparseMatrix&lt; double &gt; &laplacian, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; int &gt; &idsKnown, [LaplaceInterpolationMethod](#laplaceinterpolationmethod) method) — Returns a sparse matrix that interpolates values from the vertices with idsKnown to all vertices using one of the two methods described in [https://doi.org/10.1016/0021-9991(89)90103-4](https://doi.org/10.1016/0021-9991(89)90103-4).
+
+## Enumeration Type Documentation
+
+### LaplaceInterpolationMethod
+
+```cpp
+enum class ImFusion::MeshInterpolation::LaplaceInterpolationMethod
+```
+
+*strong*
+
+Interpolation methods described in: [1] [https://doi.org/10.1016/0021-9991(89)90103-4](https://doi.org/10.1016/0021-9991(89)90103-4).
+
+**Enumerator:**
+
+- `ZeroLaplaceAtUnknownPoints` — Method A in [1].
+- `MinimizeLaplaceAtAllPoints` — Method B in [1].
+
+## Function Documentation
+
+### laplaceInterpolation
+
+```cpp
+Eigen::MatrixXd ImFusion::MeshInterpolation::laplaceInterpolation (const Eigen::SparseMatrix< double > & laplacian, const std::vector < int > & idsKnown, const Eigen::MatrixXd & valuesKnown, LaplaceInterpolationMethod method)
+```
+
+Interpolates values from the vertices with idsKnown to all vertices using one of the two methods described in [https://doi.org/10.1016/0021-9991(89)90103-4](https://doi.org/10.1016/0021-9991(89)90103-4).
+
+laplacian must be the mesh's discrete Laplace operator. Returns an empty matrix on failure. This example shows how to use this function to interpolate vertex positions from known to all other vertices:
+
+```cpp
+Mesh& mesh = ...;
+std::vector<int> idsKnown = ...;
+auto laplacian = MeshLaplacian(mesh).getLaplacian();
+matX3 values = Eigen::Map<const mat3X>(mesh.verticesPointer()->data(), 3, mesh.numberOfVertices()).transpose();
+matX3 valuesKnown = vertices(Eigen::Map<vecXi>(idsKnown.data(), idsKnown.size()), Eigen::all);
+matX3 valuesInterp = laplaceInterpolation(laplacian, idsKnown, valuesKnown,
+ LaplaceInterpolationMethod::ZeroLaplaceAtUnknownPoints);
+mesh.beginUpdate();
+for (int i = 0; i < valuesInterp.rows(); ++i)
+    mesh.setVertex(i, valuesInterp.row(i));
+mesh.computeVertexNormals();
+mesh.endUpdate();
+```
+ fragment
+
+### laplaceInterpolationMatrix
+
+```cpp
+Eigen::SparseMatrix< double > ImFusion::MeshInterpolation::laplaceInterpolationMatrix (const Eigen::SparseMatrix< double > & laplacian, const std::vector < int > & idsKnown, LaplaceInterpolationMethod method)
+```
+
+Returns a sparse matrix that interpolates values from the vertices with idsKnown to all vertices using one of the two methods described in [https://doi.org/10.1016/0021-9991(89)90103-4](https://doi.org/10.1016/0021-9991(89)90103-4).
+
+laplacian must be the mesh's discrete Laplace operator. Returns an empty matrix on failure. This example shows how to use this function to interpolate vertex positions from known to all other vertices:
+
+```cpp
+Mesh& mesh = ...;
+std::vector<int> idsKnown = ...;
+auto laplacian = MeshLaplacian(mesh).getLaplacian();
+matX3 values = Eigen::Map<const mat3X>(mesh.verticesPointer()->data(), 3, mesh.numberOfVertices()).transpose();
+matX3 valuesKnown = vertices(Eigen::Map<vecXi>(idsKnown.data(), idsKnown.size()), Eigen::all);
+auto interpMat = laplaceInterpolationMatrix(laplacian, idsKnown,
+ LaplaceInterpolationMethod::ZeroLaplaceAtUnknownPoints);
+matX3 valuesInterp = interpMat * valuesKnown;
+mesh.beginUpdate();
+for (int i = 0; i < valuesInterp.rows(); ++i)
+    mesh.setVertex(i, valuesInterp.row(i));
+mesh.computeVertexNormals();
+mesh.endUpdate();
+```
+ fragment

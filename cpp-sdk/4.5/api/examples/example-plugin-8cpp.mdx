@@ -1,0 +1,63 @@
+---
+title: "ExamplePlugin.cpp"
+---
+
+```cpp
+#include <ImFusion/Core/Log.h>
+#include <ImFusion/Core/Plugin.h>
+#include <ImFusion/Core/PluginManager.h>
+
+using namespace ImFusion;
+
+// Subclass PluginBase in order to create a new plugin.
+class ExamplePlugin : public PluginBase
+{
+public:
+ // Define this static member function that returns a unique identifier for your plugin.
+ static const char* id() { return "MyInstitutionName.ExamplePlugin"; }
+
+ // Name of the author of the plugin for informative purposes.
+ std::string author() const override { return "Institution Name"; }
+
+ // Description of the plugin purpose/functionality for informative purposes.
+ std::string description() const override { return "Examplary implementation of an ImFusion plugin"; }
+
+ // Optional list of plugin IDs on which this plugin depends.
+ // Initialization of this plugin will fail if any of the plugins in this list can not be loaded or initialized.
+ std::vector<std::string> dependencies() const override { return {}; }
+
+protected:
+ // Perform plugin initialization, for instance by populating factories and registering custom types with the host application.
+ // It is critical that all non-trivial initialization happens in this function and not in the class constructor.
+    Status init() override
+ {
+ LOG_DEBUG("MyInstitutionName.ExamplePlugin", "Initializing plugin...");
+        SomeFactory::get().registerType(...);
+        SomeOtherFactory::get().register(...);
+ return Status::Success;
+    }
+};
+
+// Call the helper macro to define and export all necessary symbols, so that the host application can use the plugin.
+// The second argument is the version number of the plugin for informative purposes (can be different of the version of the host application).
+// The version is optional and can be omitted.
+// This macro must be placed in a cpp file and *not* in a header file!
+IMFUSION_REGISTER_PLUGIN(ExamplePlugin, "1.0");
+
+void applicationInit()
+{
+ PluginManager::get().scanForPlugins({pathToPluginDirectory});
+ for (const auto& [pluginId, status] : PluginManager::get().initAllRegisteredPlugins())
+    {
+ if (status != PluginManager::Status::Success)
+ LOG_ERROR("Could not initialized plugin " << pluginId);
+    }
+}
+
+void applicationInit()
+{
+ // Convenience function to register and initialize all plugins found in the default plugin search paths.
+ PluginManager::get().loadPlugins();
+}
+```
+ fragment

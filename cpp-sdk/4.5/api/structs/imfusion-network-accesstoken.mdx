@@ -1,0 +1,98 @@
+---
+title: "ImFusion::Network::AccessToken"
+sidebarTitle: "AccessToken"
+description: "Represents an access token for a HTTP server."
+---
+
+`#include <ImFusion/Base/AccessToken.h>`
+
+## Overview
+
+Represents an access token for a HTTP server.
+
+Also holds all information to refresh the token.
+
+## Static Public Member Functions
+
+- static [AccessToken](/cpp-sdk/4.5/api/structs/imfusion-network-accesstoken) [fromUsernameAndPassword](#fromusernameandpassword) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &[username](#username), const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &password) — Generates an [AccessToken](/cpp-sdk/4.5/api/structs/imfusion-network-accesstoken) from a username and password according to HTTP Basic Auth.
+- static [Utils::Expected](/cpp-sdk/4.5/api/classes/imfusion-utils-expected)&lt; [AccessToken](/cpp-sdk/4.5/api/structs/imfusion-network-accesstoken), [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; [fromOAuth2](#fromoauth2) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &json, const [Filesystem::Url](/cpp-sdk/4.5/api/classes/imfusion-filesystem-url) &[tokenEndpoint](#tokenendpoint), const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &clientId, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &oldRefreshToken="") — Parses an [AccessToken](/cpp-sdk/4.5/api/structs/imfusion-network-accesstoken) from an OAuth2 JSON response.
+
+## Public Attributes
+
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **accessToken** — The actual access token for the API.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [refreshToken](#refreshtoken) — A token that can be used to obtain a new access token.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **scheme** — Auth scheme of the token, e.g. "Basic" or "Bearer".
+- [std::chrono::time_point](http://en.cppreference.com/w/cpp/chrono/time_point.html)&lt; [std::chrono::system_clock](http://en.cppreference.com/w/cpp/chrono/system_clock.html) &gt; [expiresAfter](#expiresafter) — Timepoint after which the accessToken is no longer valid.
+- [std::chrono::time_point](http://en.cppreference.com/w/cpp/chrono/time_point.html)&lt; [std::chrono::system_clock](http://en.cppreference.com/w/cpp/chrono/system_clock.html) &gt; **refreshExpiresAfter** — Same as expiresAfter but for the refreshToken.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [username](#username) — without a refresh token, the username and password can be used to get a new token.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **password**
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [tokenEndpoint](#tokenendpoint) — The url from where the token was requested.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **clientId** — The oauth client_id that was used to get the token.
+
+## Member Function Documentation
+
+### fromUsernameAndPassword
+
+```cpp
+AccessToken ImFusion::Network::AccessToken::fromUsernameAndPassword (const std::string & username, const std::string & password)
+```
+
+*static*
+
+Generates an [AccessToken](/cpp-sdk/4.5/api/structs/imfusion-network-accesstoken) from a username and password according to HTTP Basic Auth.
+
+This will only fill the accessToken, username and password fields. All other fields will remain empty.
+
+### fromOAuth2
+
+```cpp
+Utils::Expected < AccessToken, std::string > ImFusion::Network::AccessToken::fromOAuth2 (const std::string & json, const Filesystem::Url & tokenEndpoint, const std::string & clientId, const std::string & oldRefreshToken = "")
+```
+
+*static*
+
+Parses an [AccessToken](/cpp-sdk/4.5/api/structs/imfusion-network-accesstoken) from an OAuth2 JSON response.
+
+Fills all fields that are present in the JSON, except username and password. Optionally, the oldRefreshToken will be used if the refreshToken is absent in the response.
+
+## Member Data Documentation
+
+### refreshToken
+
+```cpp
+std::string ImFusion::Network::AccessToken::refreshToken
+```
+
+A token that can be used to obtain a new access token.
+
+Might be empty if no refresh token is available.
+
+### expiresAfter
+
+```cpp
+std::chrono::time_point < std::chrono::system_clock > ImFusion::Network::AccessToken::expiresAfter
+```
+
+Timepoint after which the accessToken is no longer valid.
+
+Note that this is not entirely accurate and the token might actually expire a few seconds earlier.
+
+### username
+
+```cpp
+std::string ImFusion::Network::AccessToken::username
+```
+
+without a refresh token, the username and password can be used to get a new token.
+
+Will be empty if the user didn't login with username and password.
+
+### tokenEndpoint
+
+```cpp
+std::string ImFusion::Network::AccessToken::tokenEndpoint
+```
+
+The url from where the token was requested.
+
+Can also be used to request a refresh token.

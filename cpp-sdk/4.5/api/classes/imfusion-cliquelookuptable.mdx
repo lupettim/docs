@@ -1,0 +1,58 @@
+---
+title: "ImFusion::CliqueLookupTable"
+sidebarTitle: "CliqueLookupTable"
+description: "Compute a clique lookup table to identify point constellations in bigger pointclouds."
+---
+
+`#include <ImFusion/Base/CliqueLookupTable.h>`
+
+## Overview
+
+Compute a clique lookup table to identify point constellations in bigger pointclouds.
+
+This class computes lookup table based on the pair-wise distances of points in a reference point constellation (`m_refPts`)
+
+## Public Member Functions
+
+- **CliqueLookupTable** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; &refPts)
+- MatchingResult [findMaxClique](#findmaxclique) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; &pts) — Searches for a constellation similar to `m_refPts` in `pts`.
+
+## Public Attributes
+
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; double &gt; [p_thresholdFactor](#p-thresholdfactor) = &#123;"thresholdFactor", 0.5, this&#125; — Points will be rejected if, w.r.t.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; double &gt; [p_distanceThreshold](#p-distancethreshold) = &#123;"distanceThreshold", 0.1, this&#125; — Distance threshold in mm.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; int &gt; **p_distanceThresholdBins** = &#123;"numBins", 12, this&#125; — Each bin will have a size `p_distanceThreshold` / `p_sigmaBins` mm.
+
+## Member Function Documentation
+
+### findMaxClique
+
+```cpp
+MatchingResult ImFusion::CliqueLookupTable::findMaxClique (const std::vector < vec3 > & pts)
+```
+
+Searches for a constellation similar to `m_refPts` in `pts`.
+
+**Returns:** The points of `pts` which got matched
+
+## Member Data Documentation
+
+### p_thresholdFactor
+
+```cpp
+Parameter <double> ImFusion::CliqueLookupTable::p_thresholdFactor = {"thresholdFactor", 0.5, this}
+```
+
+Points will be rejected if, w.r.t.
+
+the clt, we find less than p_thresholdFactor \* (double)(m_refPts.size() - 1) connection counts [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) need to be &lt;= 1.0 and &gt; 0
+
+### p_distanceThreshold
+
+```cpp
+Parameter <double> ImFusion::CliqueLookupTable::p_distanceThreshold = {"distanceThreshold", 0.1, this}
+```
+
+Distance threshold in mm.
+
+The algorithm will build a lookup table for all pair-wise distances. This parameter defines how much tolerance is allowed w.r.t. the distances

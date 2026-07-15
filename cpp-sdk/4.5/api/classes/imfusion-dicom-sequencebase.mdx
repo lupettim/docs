@@ -1,0 +1,33 @@
+---
+title: "ImFusion::Dicom::SequenceBase"
+sidebarTitle: "SequenceBase"
+description: "Abstract base class for a sequence of elements."
+---
+
+`#include <ImFusion/Dicom/DicomSequence.h>`
+
+## Overview
+
+Abstract base class for a sequence of elements.
+
+**See also:** [Sequence](/cpp-sdk/4.5/api/classes/imfusion-dicom-sequence)
+
+## Public Member Functions
+
+- **SequenceBase** ([ElementList](/cpp-sdk/4.5/api/classes/imfusion-dicom-elementlist) &parent, DcmTag [tag](/cpp-sdk/4.5/api/classes/imfusion-dicom-elementbase), [ElementBase::Type](/cpp-sdk/4.5/api/classes/imfusion-dicom-elementbase) type)
+- **SequenceBase** (DcmItem &item, DcmTag [tag](/cpp-sdk/4.5/api/classes/imfusion-dicom-elementbase), [ElementBase::Type](/cpp-sdk/4.5/api/classes/imfusion-dicom-elementbase) type)
+- virtual void [checkErrors](#checkerrors) (bool ignoreMandatory=false) const =0 — Checks the sequence for errors.
+
+## Member Function Documentation
+
+### checkErrors
+
+```cpp
+virtual void ImFusion::Dicom::SequenceBase::checkErrors (bool ignoreMandatory = false) const
+```
+
+*pure virtual*
+
+Checks the sequence for errors.
+
+This assures that all mandatory and conditional elements are present and that all existing elements have a valid value. If ignoreMandatory is true, missing mandatory elements are not counted as errors (e.g. useful when the sequence itself is optional).

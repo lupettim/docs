@@ -1,0 +1,61 @@
+---
+title: "ImFusion::DataSourceComponent::DataSourceInfo"
+sidebarTitle: "DataSourceInfo"
+description: "Simple struct for storing the original filename of a data, how it has been loaded and the history of its sources."
+---
+
+`#include <ImFusion/Base/DataSourceComponent.h>`
+
+## Overview
+
+Simple struct for storing the original filename of a data, how it has been loaded and the history of its sources.
+
+The [DataSourceComponent](/cpp-sdk/4.5/api/classes/imfusion-datasourcecomponent) will store a vector of such structures, typically one per frame of an image set. This might seem unnecessary because most multi-frame datasets have the same origin but this is useful in the context of machine learning pipelines, where we assemble batches of multiple images, each one coming from a different source and its own history.
+
+## Public Member Functions
+
+- **DataSourceInfo** ([std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) filename, [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) ioAlgorithmName, [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) ioAlgorithmConfiguration, int indexInFile, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; DataSourceInfo &gt; history=&#123;&#125;)
+- bool **operator==** (const DataSourceInfo &other) const
+- bool **operator!=** (const DataSourceInfo &other) const
+- void **update** (const DataSourceInfo &other) — Update current data info with other and move the current one in history.
+- bool **isEqualTo** (const DataSourceInfo &other, bool ignoreHistory=false) const — Another equality comparator (but configurable).
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+## Public Attributes
+
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **filename** — Path to original file.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **ioAlgorithmName** — Name of the IO algorithm used to load the data.
+- [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) **ioAlgorithmConfig** — Parameters of the IO algorithm.
+- int **indexInFile** = 0 — Index of the data in its original file.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; DataSourceInfo &gt; **history** — Previous source infos (for traceability).
+
+## Member Function Documentation
+
+### configure
+
+```cpp
+void ImFusion::DataSourceComponent::DataSourceInfo::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### configuration
+
+```cpp
+void ImFusion::DataSourceComponent::DataSourceInfo::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality

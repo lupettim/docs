@@ -1,0 +1,32 @@
+---
+title: "ImFusion::SignalReceiver"
+sidebarTitle: "SignalReceiver"
+description: "Base class for classes that can contain slots (i.e."
+---
+
+`#include <ImFusion/Core/Signal.h>`
+
+## Overview
+
+[Base](/cpp-sdk/4.5/api/structs/imfusion-dicom-base) class for classes that can contain slots (i.e.
+
+can act as target for signals).
+
+[SignalReceiver](/cpp-sdk/4.5/api/classes/imfusion-signalreceiver) keeps track of its connections so that it can disconnect from the signals if the class gets deleted.
+
+**Note:** [SignalReceiver](/cpp-sdk/4.5/api/classes/imfusion-signalreceiver) is assignable and copyable. However, it will not assign/copy any connections!
+
+**See also:** Signals and Slots, [SignalImpl](/cpp-sdk/4.5/api/classes/imfusion-signalimpl), Signal, ProtectedSignal, [SignalConnection](/cpp-sdk/4.5/api/classes/imfusion-signalconnection), [SignalBlocker](/cpp-sdk/4.5/api/classes/imfusion-signalblocker)
+
+**Examples:** [SignalSlot.cpp](/cpp-sdk/4.5/api/examples/signal-slot-8cpp).
+
+## Public Member Functions
+
+- **SignalReceiver** ()=default — Default constructor.
+- **SignalReceiver** (const SignalReceiver &other) — Copy constructor, does not copy any existing signal connections from *other*.
+- SignalReceiver & **operator=** (SignalReceiver rhs) — Assignment operator, disconnects all existing connections, does not copy any existing signal connections from *rhs*.
+- virtual **~SignalReceiver** () — Virtual destructor disconnects from all connected signals.
+
+## Protected Member Functions
+
+- void **disconnectAll** () — Disconnects all existing connections.

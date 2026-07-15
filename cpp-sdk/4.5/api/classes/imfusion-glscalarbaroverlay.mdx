@@ -1,0 +1,94 @@
+---
+title: "ImFusion::GlScalarBarOverlay"
+sidebarTitle: "GlScalarBarOverlay"
+description: "Overlay for displaying one or multiple named scalar values represented as colored bars."
+---
+
+`#include <ImFusion/GL/GlScalarBarOverlay.h>`
+
+## Overview
+
+Overlay for displaying one or multiple named scalar values represented as colored bars.
+
+Displays the given title and scalar value in the form of
+
+```cpp
+<Title Bar 1> [bar describing value by width and color] <Value Bar 1>
+<Title Bar 2> [bar describing value by width and color] <Value Bar 2>
+```
+ fragment
+
+## Public Types
+
+- enum class [RenderMode](#rendermode) &#123; All = 0 , MainOnly = 1 , Auto = 2 , EllipsisPoints = 3 , None = 4 &#125;
+
+## Public Member Functions
+
+- **GlScalarBarOverlay** () — Construct text overlay.
+- **~GlScalarBarOverlay** () override — Destructor.
+- int **numBars** () const — Returns the number of bars to show.
+- void **setNumBars** (int value) — Sets the number of bars to show.
+- [RenderMode](#rendermode) **renderMode** () const — Returns the visibility mode of the quality bars.
+- void **setRenderMode** ([RenderMode](#rendermode) mode) — Sets the visibility mode of the quality bars.
+- void [setBarValue](#setbarvalue) (int index, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &title, double value, vec2 range, bool active=true) — Sets the configuration of the bar with their given index.
+- void **setTimeoutInterval** (int intervalMs) — Sets the timeout inteval in milliseconds after which the values are considered to be outdated and set inactive If intervalMs is zero, no timeout is considered.
+- int [timeoutInterval](#timeoutinterval) () const — Returns the timeout interval for active bar values.
+- bool **showsNormalizedValue** () const — Whether to normalize the input value to its range in the text label.
+- void **setShowsNormalizedValue** (bool newVal)
+- void [render](#render) (const [GL::Viewport](/cpp-sdk/4.5/api/structs/imfusion-gl-viewport) &viewport) override — Render quality overlay.
+
+## Member Enumeration Documentation
+
+### RenderMode
+
+```cpp
+enum class ImFusion::GlScalarBarOverlay::RenderMode
+```
+
+*strong*
+
+**Enumerator:**
+
+- `All` — show all quality bars
+- `MainOnly` — show only main tracking quality (or first)
+- `Auto` — show all until 3 tracking sequence, collapse to 1 otherwise
+- `EllipsisPoints` — hide bars and show ellipsis points
+- `None` — show no tracking quality bar and no interaction
+
+## Member Function Documentation
+
+### setBarValue
+
+```cpp
+void ImFusion::GlScalarBarOverlay::setBarValue (int index, const std::string & title, double value, vec2 range, bool active = true)
+```
+
+Sets the configuration of the bar with their given index.
+
+**Parameters:**
+
+- `index` — Index of the bar to configure
+- `title` — Title of the bar.
+- `value` — Scalar value of the bar to represent.
+- `range` — Value range of *value*.
+- `active` — Flag if values are considered active (color rendering) or inactive (grayed out bars)
+
+### timeoutInterval
+
+```cpp
+int ImFusion::GlScalarBarOverlay::timeoutInterval () const
+```
+
+Returns the timeout interval for active bar values.
+
+Whether to normalize the input value to its range in the text label
+
+### render
+
+```cpp
+void ImFusion::GlScalarBarOverlay::render (const GL::Viewport & viewport)
+```
+
+*override, virtual*
+
+Render quality overlay.

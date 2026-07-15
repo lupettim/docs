@@ -1,0 +1,135 @@
+---
+title: "ImFusion::DataGroup"
+sidebarTitle: "DataGroup"
+description: "Data element that groups multiple Data instances together in a hierarchical fashion."
+---
+
+`#include <ImFusion/Base/DataGroup.h>`
+
+## Overview
+
+[Data](/cpp-sdk/4.5/api/classes/imfusion-data) element that groups multiple [Data](/cpp-sdk/4.5/api/classes/imfusion-data) instances together in a hierarchical fashion.
+
+A [DataGroup](/cpp-sdk/4.5/api/classes/imfusion-datagroup) consists of a mutable set of other [Data](/cpp-sdk/4.5/api/classes/imfusion-data) instances forming its children that can be added, removed or moved around at any time after construction. Furthermore, you can define an optional proxy child, which is one item of the list of children that may serve as representative dataset for the group. Clients may use or refer to the proxy child instead of the entire [DataGroup](/cpp-sdk/4.5/api/classes/imfusion-datagroup) in some situations. For instance, if a proxy child is defined the [DataWidget](/cpp-sdk/4.5/api/classes/imfusion-datawidget) may show the dataset in the place of the [DataGroup](/cpp-sdk/4.5/api/classes/imfusion-datagroup) instead of listing it as a child.
+
+**Note:** This class serves mainly as hierarchical container type to be used by [DataModel](/cpp-sdk/4.5/api/classes/imfusion-datamodel). It is discouraged to derive from [DataGroup](/cpp-sdk/4.5/api/classes/imfusion-datagroup) in order to create your own hierarchical [Data](/cpp-sdk/4.5/api/classes/imfusion-data) type. Use the [CompoundData](/cpp-sdk/4.5/api/classes/imfusion-compounddata) interface instead which gives you more flexibility, for instance wrt. to ownership semantics.
+
+## Public Member Functions
+
+- **DataGroup** ([OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) &&[children](#children)=&#123;&#125;, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &[name](/cpp-sdk/4.5/api/classes/imfusion-data)="") — Creates a new empty [DataGroup](/cpp-sdk/4.5/api/classes/imfusion-datagroup) with optional children and the given name.
+- **DataGroup** ([std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; Data &gt; proxyChild, [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) &&[children](#children), const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &[name](/cpp-sdk/4.5/api/classes/imfusion-data)="") — Convenience constructor to create a new [DataGroup](/cpp-sdk/4.5/api/classes/imfusion-datagroup) with a proxy child and a list of children Due to ownership semantics, *children* must not contain *proxyChild* during construction, however after construction this will be the case (*proxyChild* will be the first element in [children()](#children)).
+
+## Protected Attributes
+
+- [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) **m_children** — contains all sub-data in this group including other groups
+- Data \* **m_proxyChild** = nullptr — Optional pointer to child that should act as representative element for this group.
+
+## Access to the list of direct children
+
+- Signal [signalProxyChildChanged](#signalproxychildchanged) — &lt; Signal emitted when a [Data](/cpp-sdk/4.5/api/classes/imfusion-data) instance has changed its position in [children()](#children)
+- Signal&lt; Data \* &gt; **signalChildAboutToBeRemoved** — Signal emitted when a [Data](/cpp-sdk/4.5/api/classes/imfusion-data) instance is about to be removed or taken from [children()](#children).
+- Signal&lt; Data \* &gt; **signalChildAdded** — &lt; Signal emitted when a [Data](/cpp-sdk/4.5/api/classes/imfusion-data) instance is about to be removed or taken from [children()](#children)
+- Signal&lt; Data \* &gt; **signalChildMoved** — &lt; Signal emitted when a new [Data](/cpp-sdk/4.5/api/classes/imfusion-data) instance has been added to [children()](#children)
+- void **add** ([std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; Data &gt; data, int position=-1) — Inserts the given [Data](/cpp-sdk/4.5/api/classes/imfusion-data) instance into the list of children at the given position or at the end if *position* is negative.
+- bool **move** (Data \*data, int position) — Moves *data* within the list of children to the given position.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; Data &gt; [remove](#remove) (Data \*data) — Removes *data* from the list of children and returns its ownership to the caller.
+- void **clear** () — Removes all children from this group.
+- [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) [children](#children) () const override — Returns the list of direct children of this group.
+- [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) **childrenRecursive** () const — Returns the flat list of children of this group and of all recursive subgroups in a depth-first order.
+- Data \* **proxyChild** () const — Returns an optional item from [children()](#children) that shall act as representative [Data](/cpp-sdk/4.5/api/classes/imfusion-data) instance for this group.
+- bool [setProxyChild](#setproxychild) (Data \*data) — Sets an optional item from [children()](#children) that shall act as representative [Data](/cpp-sdk/4.5/api/classes/imfusion-data) instance for this group.
+
+## Implementation of Data interface
+
+- [Kind](/cpp-sdk/4.5/api/classes/imfusion-data) [kind](#kind) () const override — Return the kind of this data.
+- [Geometry::AlignedBox](/cpp-sdk/4.5/api/classes/imfusion-geometry-alignedbox) [bounds](#bounds) () const override — Returns the axis-aligned bounding box of this data in world space.
+- [Pose::TransformationConvention](/cpp-sdk/4.5/api/namespaces/imfusion-pose) [matrixConvention](#matrixconvention) () const override — Defines whether the internally stored matrices in derived classes map from or to the world coordinate system.
+- void [setMatrix](#setmatrix) (const mat4 &m) override — Set the transformation matrix and updates all child matrices with the relative matrix between the old and new one.
+
+## Member Function Documentation
+
+### remove
+
+```cpp
+std::unique_ptr < Data > ImFusion::DataGroup::remove (Data * data)
+```
+
+Removes *data* from the list of children and returns its ownership to the caller.
+
+If *data* is the same as proxyChild() the proxy child will be set to nullptr. Returns a nullptr in case of failure.
+
+### children
+
+```cpp
+DataList ImFusion::DataGroup::children () const
+```
+
+*override, virtual*
+
+Returns the list of direct children of this group.
+
+### setProxyChild
+
+```cpp
+bool ImFusion::DataGroup::setProxyChild (Data * data)
+```
+
+Sets an optional item from [children()](#children) that shall act as representative [Data](/cpp-sdk/4.5/api/classes/imfusion-data) instance for this group.
+
+The proxy child must be a single dataset/must not be a [DataGroup](/cpp-sdk/4.5/api/classes/imfusion-datagroup).
+
+### kind
+
+```cpp
+Kind ImFusion::DataGroup::kind () const
+```
+
+*inline, override, virtual*
+
+Return the kind of this data.
+
+### bounds
+
+```cpp
+Geometry::AlignedBox ImFusion::DataGroup::bounds () const
+```
+
+*override, virtual*
+
+Returns the axis-aligned bounding box of this data in world space.
+
+**Warning:** Depending on the underlying data type this calling function may be computationally expensive! Do not call this method more often than needed, unless it is known that the caching behavior is implemented.
+
+### matrixConvention
+
+```cpp
+Pose::TransformationConvention ImFusion::DataGroup::matrixConvention () const
+```
+
+*inline, override, virtual*
+
+Defines whether the internally stored matrices in derived classes map from or to the world coordinate system.
+
+Changes the behavior of the default implementations of [matrixToWorld](/cpp-sdk/4.5/api/classes/imfusion-data) and [matrixFromWorld](/cpp-sdk/4.5/api/classes/imfusion-data).
+
+### setMatrix
+
+```cpp
+void ImFusion::DataGroup::setMatrix (const mat4 & m)
+```
+
+*override, virtual*
+
+Set the transformation matrix and updates all child matrices with the relative matrix between the old and new one.
+
+## Member Data Documentation
+
+### signalProxyChildChanged
+
+```cpp
+Signal ImFusion::DataGroup::signalProxyChildChanged
+```
+
+&lt; Signal emitted when a [Data](/cpp-sdk/4.5/api/classes/imfusion-data) instance has changed its position in [children()](#children)
+
+Signal emitted when the proxyChild() has changed

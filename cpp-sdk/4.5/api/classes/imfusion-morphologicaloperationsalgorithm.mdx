@@ -1,0 +1,137 @@
+---
+title: "ImFusion::MorphologicalOperationsAlgorithm"
+sidebarTitle: "MorphologicalOperationsAlgorithm"
+description: "Algorithm for performing morphological operations on images."
+---
+
+`#include <ImFusion/Base/MorphologicalOperationsAlgorithm.h>`
+
+## Overview
+
+[Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) for performing morphological operations on images.
+
+Supported operations are:
+
+- Dilation, on binary images it enlarges the regions of foreground pixels
+- Erosion, on binary images it shrinks the regions of foreground pixels
+- Opening, is the successive application of erosion and dilation, used for removing small non-connected regions
+- Closing, is the successive application of dilation and erosion, used for filling small holes
+- [Skeletonization](/cpp-sdk/4.5/api/classes/imfusion-skeletonization), reduces foreground regions to a thinner shape that is equidistant from its boundaries while preserving its connectivity
+
+For further reference, see [https://homepages.inf.ed.ac.uk/rbf/HIPR2/morops.htm](https://homepages.inf.ed.ac.uk/rbf/HIPR2/morops.htm)
+
+## Public Types
+
+- enum class **OperationMode** &#123; **DILATION** = 0 , **EROSION** = 1 , **OPENING** = 2 , **CLOSING** = 3 , **SKELETONIZATION** = 4 &#125;
+- enum class **Distance** &#123; **L1** = 0 , **L2** = 1 &#125; — [Status](/cpp-sdk/4.5/api/classes/imfusion-algorithm) codes.
+
+## Public Member Functions
+
+- **MorphologicalOperationsAlgorithm** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &img) — Creates a [MorphologicalOperationsAlgorithm](/cpp-sdk/4.5/api/classes/imfusion-morphologicaloperationsalgorithm) instance that will be working on the given [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset).
+- [MorphologicalOperationsAlgorithm](#morphologicaloperationsalgorithm) () — Creates a [MorphologicalOperationsAlgorithm](/cpp-sdk/4.5/api/classes/imfusion-morphologicaloperationsalgorithm) instance without input data.
+- **~MorphologicalOperationsAlgorithm** () override — Destroy the output.
+- void [compute](#compute) () override — Compute the result.
+- [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) [takeOutput](#takeoutput) () override — If the algorithm creates new image data, it has to be transferred here.
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+- [std::pair](http://en.cppreference.com/w/cpp/utility/pair.html)&lt; [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) &gt;, [DataComponentList](/cpp-sdk/4.5/api/classes/imfusion-datacomponentlist) &gt; [processImage](#processimage) (const [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) &image, const [DataComponentList](/cpp-sdk/4.5/api/classes/imfusion-datacomponentlist) &components) const override — [SequentialImageProcessor](/cpp-sdk/4.5/api/classes/imfusion-sequentialimageprocessor) interface method.
+- bool **inPlace** () const — Returns the in-place computation flag.
+- void **setInPlace** (bool value) — Sets the in-place computation flag.
+- OperationMode **opMode** () const — Returns the operation mode.
+- void **setOpMode** (OperationMode value) — Sets the operation mode.
+- int **opSize** () const — Returns the kernel size of the morphological operation.
+- void **setOpSize** (int value) — Sets the kernel size of the morphological operation.
+- Distance **distance** () const — Returns whether the algorithm should use the L1 or L2 distance.
+- void **setDistance** (Distance distance) — Sets whether the algorithm should use the L1 or L2 distance.
+- bool **useCPU** () const — Returns the flag to force CPU computation.
+- void **setUseCPU** (bool value) — Sets the flag to force computation on the CPU.
+- bool **padding** () const — Returns the flag to use padding.
+- void **setPadding** (bool value) — Sets the flag to use padding.
+- int **paddingSize** () const — Returns the padding size in a single direction.
+- void **setPaddingSize** (int value) — Sets the padding size in a single direction.
+- [PaddingMode](/cpp-sdk/4.5/api/namespaces/imfusion) **paddingMode** () const — Returns the padding mode.
+- void **setPaddingMode** ([PaddingMode](/cpp-sdk/4.5/api/namespaces/imfusion) value) — Sets the padding mode.
+- bool **avoidsGlDriverTimeout** () const — Returns the flag whether to avoid a OpenGL driver timeout when using large kernels.
+- void **setAvoidGlDriverTimeout** (bool value) — Sets the flag whether to avoid a OpenGL driver timeout when using large kernels.
+- void **processImage** (const [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; T &gt; \*imgIn, [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; T &gt; \*imgOut) const — Computes the morphological operation using the CPU according to the current configuration on *imgIn* and stores the result in *imgOut*.
+- void **processImage** (const [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) \*imgIn, [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) \*imgOut) const — Computes the morphological operation using the GPU according to the current configuration on *imgIn* and stores the result in *imgOut*.
+- void **setInput** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*sis) — Update input image.
+
+## Static Public Member Functions
+
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a) — If data is compatible with algorithm return true. If a is not zero, create algorithm with input data.
+
+## Protected Attributes
+
+- [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* **m_img** = nullptr
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &gt; **m_output**
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; bool &gt; **m_inPlace** = &#123;"inPlace", false, this&#125;
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; OperationMode &gt; **m_opMode** = &#123;"opMode", OperationMode::DILATION, this&#125;
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; int &gt; **m_opSize** = &#123;"opSize", 3, this&#125;
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; Distance &gt; **m_distance** = &#123;"distance", Distance::L1, this&#125;
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; bool &gt; **m_useCPU** = &#123;"useCPU", false, this&#125;
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; bool &gt; **m_padding** = &#123;"padding", false, this&#125;
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; int &gt; **m_paddingSize** = &#123;"paddingSize", 1, this&#125; — Padding size in a single direction.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; [PaddingMode](/cpp-sdk/4.5/api/namespaces/imfusion) &gt; **m_paddingMode** = &#123;"paddingMode", [PaddingMode::Zero](/cpp-sdk/4.5/api/namespaces/imfusion), this&#125; — Padding mode.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; bool &gt; **m_avoidGlDriverTimeout** = &#123;"avoidGlDriverTimeout", false, this&#125;
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [GL::ImageProgram](/cpp-sdk/4.5/api/classes/imfusion-gl-imageprogram) &gt; **m_program** — Main program.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [GL::ImageProgram](/cpp-sdk/4.5/api/classes/imfusion-gl-imageprogram) &gt; **m_programSecondPass** — Secondary program for opening and closing.
+
+## Constructor & Destructor Documentation
+
+### MorphologicalOperationsAlgorithm
+
+```cpp
+ImFusion::MorphologicalOperationsAlgorithm::MorphologicalOperationsAlgorithm ()
+```
+
+Creates a [MorphologicalOperationsAlgorithm](/cpp-sdk/4.5/api/classes/imfusion-morphologicaloperationsalgorithm) instance without input data.
+
+Thus, [compute()](#compute) won't do anything. However, you can still configure the instance and call [processImage()](#processimage) directly.
+
+## Member Function Documentation
+
+### compute
+
+```cpp
+void ImFusion::MorphologicalOperationsAlgorithm::compute ()
+```
+
+*override, virtual*
+
+Compute the result.
+
+### takeOutput
+
+```cpp
+OwningDataList ImFusion::MorphologicalOperationsAlgorithm::takeOutput ()
+```
+
+*override, virtual*
+
+If the algorithm creates new image data, it has to be transferred here.
+
+### configuration
+
+```cpp
+void ImFusion::MorphologicalOperationsAlgorithm::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](/cpp-sdk/4.5/api/classes/imfusion-configurable) for the inverse functionality
+
+### processImage
+
+```cpp
+std::pair < std::shared_ptr < SharedImage >, DataComponentList > ImFusion::MorphologicalOperationsAlgorithm::processImage (const SharedImage & image, const DataComponentList & components) const
+```
+
+*override, virtual*
+
+[SequentialImageProcessor](/cpp-sdk/4.5/api/classes/imfusion-sequentialimageprocessor) interface method.
+
+Processes an image without modifying the algorithm's status Warning: Not to be confused with the processImage functions below!

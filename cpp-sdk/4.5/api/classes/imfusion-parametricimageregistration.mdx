@@ -1,0 +1,253 @@
+---
+title: "ImFusion::ParametricImageRegistration"
+sidebarTitle: "ParametricImageRegistration"
+description: "Base class for parametric image registration algorithms."
+---
+
+`#include <ImFusion/Reg/ParametricImageRegistration.h>`
+
+## Overview
+
+[Base](/cpp-sdk/4.5/api/structs/imfusion-dicom-base) class for parametric image registration algorithms.
+
+This class provides all the basics of a parametric optimization such as a similarity measure and an optimizer. The registration is always performed on two images. Derived classes need to specify the number of parameters to be optimizer and override the evaluate method.
+
+## Public Member Functions
+
+- [ParametricImageRegistration](#parametricimageregistration) ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*image1, [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*image2, int [numberOfParameters](#numberofparameters)) — Creates a registration that keeps image1 fixed and moves image2.
+- void [compute](#compute) () override — Starts the registration.
+- double [evaluate](#evaluate) (int n, const double \*x, double \*dx=0) override=0 — Assembles the parameters and returns similarity of images.
+- virtual void [setProgress](#setprogress) ([Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) \*[progress](/cpp-sdk/4.5/api/classes/imfusion-algorithm)) override — Sets a [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) interface the algorithm can use to notify observers about its computing progress.
+- virtual int [numberOfParameters](#numberofparameters) () const =0 — Returns the number of parameters representing the transformation.
+- virtual void **setOptimizer** ([std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [Optimizer](/cpp-sdk/4.5/api/classes/imfusion-optimizer) &gt; opt) — Sets an optimizer.
+- virtual [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [Optimizer](/cpp-sdk/4.5/api/classes/imfusion-optimizer) &gt; **optimizer** ()
+- virtual bool [setReference](#setreference) ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*img) — Specifies which of the two images will be used as a reference in the similarity measure.
+- [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* [reference](#reference) () const override — Returns the image that will be iterated during the registration.
+- virtual [SimilarityMeasureFactory](/cpp-sdk/4.5/api/classes/imfusion-similaritymeasurefactory) & **similarityMeasureFactory** () — Returns the factory that creates the [SimilarityMeasureImpl](/cpp-sdk/4.5/api/classes/imfusion-similaritymeasureimpl) instance during the registration.
+- virtual const [SimilarityMeasureFactory](/cpp-sdk/4.5/api/classes/imfusion-similaritymeasurefactory) & **similarityMeasureFactory** () const
+- PreProcessingFilter [requiredPreprocessingFilter](#requiredpreprocessingfilter) () const override — Returns LC2_GradientMagnitude if the similarity measure is [LC2](/cpp-sdk/4.5/api/classes/imfusion-lc2) or None otherwise.
+- virtual void [setPreApplyTransformation](#setpreapplytransformation) (bool enable) — If set the transformation will be pre-applied before computing the similarity.
+- virtual bool **preApplyTransformation** () const
+- void **setSimilarityMeasure** ([SimilarityMeasureFactory::Mode](/cpp-sdk/4.5/api/classes/imfusion-similaritymeasurefactory) mode) — Convenient method to set the similarity measure.
+- [SimilarityMeasureFactory::Mode](/cpp-sdk/4.5/api/classes/imfusion-similaritymeasurefactory) **similarityMeasure** () const
+- void **setPointCorrespondences** ([PointCorr](/cpp-sdk/4.5/api/classes/imfusion-pointcorr) \*pc) — Set a point correspondences class instance to use as error function or clear it (ownership not transferred).
+- void **setReInitialize** (bool flag) — Specify whether similarity measure and transformation shaders shall be re-initialized every time compute is called (on by default).
+- void **setRelativeToWorld** (bool flag) — Sets whether the relative transformation is applied in world or image coordinates.
+- bool **isRelativeToWorld** () const — Returns whether the relative transformation is applied in world (true) or image coordinates (false).
+- bool **isAffine** () const — Returns true if the optimizer uses affine parameters or false otherwise.
+- void **setAffine** (bool affine)
+- void **setReferenceCoordinateSystem** (const mat4 &mat) — Set a reference coordinate system to use with the linear transformation.
+- void **setWeights** (const [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*weights1, const [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*weights2) — Set optional weight images which will be passed on to the similarity measure class.
+- void **setErrorFunction** ([ErrorFunction](/cpp-sdk/4.5/api/classes/imfusion-errorfunction) \*ef) — Set an optional error function that is also used to penalize the image similarity during registration.
+- int **numberOfLinearParameters** () const — Return the number of parameters for the linear transformation model.
+- double **overlap** () const — Return the last overlap computed by the similarity measure (0..1), i.e. the fraction of used pixels/voxels wrt. the fixed image.
+- virtual double [bestSimilarityValue](#bestsimilarityvalue) () const override — Returns the best value of the similarity measure after optimization (may return NaN if algorithm is not intialized).
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configures the registration.
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Gets the configuration of the registration.
+- void **setDefaultOptimizer** () — Sets the optimizer to the optimizer created by createDefaultOptimizer.
+
+## Protected Member Functions
+
+- [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [Optimizer](/cpp-sdk/4.5/api/classes/imfusion-optimizer) &gt; **createDefaultOptimizer** (int numParameters) const — Returns a default optimizer with the given number if parameters.
+- mat4 **updateLinearTransform** (int n, const double \*x) — Compute the linear homogenous moving image transformation from optimization parameters.
+
+## Protected Attributes
+
+- [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [Optimizer](/cpp-sdk/4.5/api/classes/imfusion-optimizer) &gt; [m_opt](#m-opt) — NOTE: A default optimizer will be created by configure if no instance is already set.
+- [SimilarityMeasureFactory](/cpp-sdk/4.5/api/classes/imfusion-similaritymeasurefactory) **m_smFactory**
+- [SimilarityMeasureImpl](/cpp-sdk/4.5/api/classes/imfusion-similaritymeasureimpl) \* **m_sm** — Actual similarity measure instance, only set during compute.
+- bool **m_smIterate1**
+- bool **m_preApplyTransformation**
+- bool **m_reInit** — Re-initialize transformation and similarity measure every time compute is called.
+- double **m_overlap**
+- const [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \* **m_weights1**
+- const [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \* **m_weights2**
+- [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \* **m_resampled** — the moving image with pre-applied transformation, only set during compute and if m_preApplyTransformation is true
+- [ImageTransformer](/cpp-sdk/4.5/api/classes/imfusion-imagetransformer) \* **m_transformer** — capsulates the transformation, only set during compute
+- [PointCorr](/cpp-sdk/4.5/api/classes/imfusion-pointcorr) \* **m_pointCorr** — Point correspondences instance if available.
+- [ErrorFunction](/cpp-sdk/4.5/api/classes/imfusion-errorfunction) \* **m_errorFunc** — Optional error function also used to penalize similarity.
+- mat4 **m_initMat** — Initial registration matrix for linear transformation model.
+- mat4 **m_resetMat** — Unmodified matrix of the moving image for reseting.
+- mat4 **m_refCoord** — Reference coordinate system to use with linear transformation.
+- bool **m_relWorld** — Apply relative transformation wrt. world coordinates for linear model.
+- int **m_affine** — 0=rigid, 1=affine, 2=rigid then affine (2 only supported through configurable interface)
+
+## Constructor & Destructor Documentation
+
+### ParametricImageRegistration
+
+```cpp
+ImFusion::ParametricImageRegistration::ParametricImageRegistration (SharedImageSet * image1, SharedImageSet * image2, int numberOfParameters)
+```
+
+Creates a registration that keeps image1 fixed and moves image2.
+
+The numberOfParameters is required to create a default optimizer.
+
+## Member Function Documentation
+
+### compute
+
+```cpp
+void ImFusion::ParametricImageRegistration::compute ()
+```
+
+*override, virtual*
+
+Starts the registration.
+
+Returns instantly if no optimizer is set.
+
+### evaluate
+
+```cpp
+double ImFusion::ParametricImageRegistration::evaluate (int n, const double * x, double * dx = 0)
+```
+
+*override, pure virtual*
+
+Assembles the parameters and returns similarity of images.
+
+This method is mainly called during the optimization by the optimizer. n specifies the number of parameters in the arrays x and dx. x[i] contains the relative change to parameter i. Derived classes overriding this method must be able to apply these parameters to their transformation model. Since the parameters are only relative changes to the initial value, it is sometimes required to store the initial transformation in [compute()](#compute) before the optimization is started. The parameters will be optimized to maximize the return value of this method. If dx is not 0, derived classes can output the derivative of parameter i to each dx[i]. However, derived classes are not required to provide such a value.
+
+Example:
+
+```cpp
+double evaluate(int n, const double* x, out double* dx = 0) {
+ if (n != 6)
+ return 0.0;
+ else {
+        mat4 relativeMatrix = Pose::eulerToMat(x);
+ m_image2->setMatrix(m_initialMatrix * relativeMatrix); // move image to new location
+ return return m_sm->compute(m_transformer); // automatically picks up the new transformation of image2
+    }
+}
+```
+ fragment
+
+### setProgress
+
+```cpp
+virtual void ImFusion::ParametricImageRegistration::setProgress (Progress * progress)
+```
+
+*override, virtual*
+
+Sets a [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) interface the algorithm can use to notify observers about its computing progress.
+
+### numberOfParameters
+
+```cpp
+virtual int ImFusion::ParametricImageRegistration::numberOfParameters () const
+```
+
+*pure virtual*
+
+Returns the number of parameters representing the transformation.
+
+### setReference
+
+```cpp
+virtual bool ImFusion::ParametricImageRegistration::setReference (SharedImageSet * img)
+```
+
+*virtual*
+
+Specifies which of the two images will be used as a reference in the similarity measure.
+
+The reference has no influence on which image will be moving (this is always image2!) but it specifies which image will be iterated in the similarity measure. The similarity measure is computed by iterating all pixels of the reference image and comparing them to the corresponding pixels in the other image. If the images differ in dimensions, the performance can sometimes be improved by iterating the smaller of both images. The default reference is image1.
+
+### reference
+
+```cpp
+SharedImageSet * ImFusion::ParametricImageRegistration::reference () const
+```
+
+*override, virtual*
+
+Returns the image that will be iterated during the registration.
+
+### requiredPreprocessingFilter
+
+```cpp
+PreProcessingFilter ImFusion::ParametricImageRegistration::requiredPreprocessingFilter () const
+```
+
+*override, virtual*
+
+Returns LC2_GradientMagnitude if the similarity measure is [LC2](/cpp-sdk/4.5/api/classes/imfusion-lc2) or None otherwise.
+
+### setPreApplyTransformation
+
+```cpp
+virtual void ImFusion::ParametricImageRegistration::setPreApplyTransformation (bool enable)
+```
+
+*virtual*
+
+If set the transformation will be pre-applied before computing the similarity.
+
+Pre-applying the transformation creates a new image of the size of image1. image2 is then rendered into this image with the current transformation of each iteration. This avoids any multiple interpolations during the computation of the similarity measure and can lead to higher overall performance in some cases. Derived classes that support this, need to pass to call ImageTransformer::resampleMoving before calling the similarity measure without passing the [ImageTransformer](/cpp-sdk/4.5/api/classes/imfusion-imagetransformer).
+
+```
+Example:
+\code
+double evaluate(int n, const double* x, double* dx = 0) {
+    \\ ...
+    if(m_resampled) {
+        m_transformer->resampleMoving(m_resampled, 0);
+        return m_sm->compute(0);
+    } else {
+        return m_sm->compute(m_transformer);
+    }
+}
+\endcode
+```
+
+### bestSimilarityValue
+
+```cpp
+virtual double ImFusion::ParametricImageRegistration::bestSimilarityValue () const
+```
+
+*override, virtual*
+
+Returns the best value of the similarity measure after optimization (may return NaN if algorithm is not intialized).
+
+### configure
+
+```cpp
+void ImFusion::ParametricImageRegistration::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configures the registration.
+
+A sub-property named "Optimizer" can be used to create and initialize an optimizer. If no optimizer is currently set, a default BOBYQA optimizer with a dimension of [numberOfParameters](#numberofparameters). The dimension of an existing optimizer will be adjusted by numberOfParameters. The sub-property "SimilarityMeasure" can be used to set the configuration for the SimilarityMeasure
+
+### configuration
+
+```cpp
+void ImFusion::ParametricImageRegistration::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Gets the configuration of the registration.
+
+If an optimizer is set, the sub-property "Optimizer" contains its configuration. The sub-property "SimilarityMeasure" contains the properties of the SimilarityMeasure
+
+## Member Data Documentation
+
+### m_opt
+
+```cpp
+std::shared_ptr < Optimizer > ImFusion::ParametricImageRegistration::m_opt
+```
+
+*protected*
+
+NOTE: A default optimizer will be created by configure if no instance is already set.
+
+Subclasses can adjust the optimizer parameters in the constructor after calling [configureDefaults()](/cpp-sdk/4.5/api/classes/imfusion-configurable). Otherwise subclasses should expect that the instance of the optimizer will change frequently because it's re-created by the OptimizerDialog. [Optimizer](/cpp-sdk/4.5/api/classes/imfusion-optimizer) instance

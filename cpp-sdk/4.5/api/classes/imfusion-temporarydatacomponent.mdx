@@ -1,0 +1,102 @@
+---
+title: "ImFusion::TemporaryDataComponent"
+sidebarTitle: "TemporaryDataComponent"
+description: "Specialization of DataComponentBase that disables serialization, copying and assignment."
+---
+
+`#include <ImFusion/Base/DataComponent.h>`
+
+## Overview
+
+Specialization of [DataComponentBase](/cpp-sdk/4.5/api/classes/imfusion-datacomponentbase) that disables serialization, copying and assignment.
+
+Use this interface for temporary data that is not supposed to be serialized, copied or assigned.
+
+## Public Member Functions
+
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [id](#id) () const override — Returns a unique string identifier for this type of data component.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; DataComponentBase &gt; [clone](#clone) () const override — Creates a clone of this data component.
+- bool [assign](#assign) (const DataComponentBase &) override — Assigns the content of *other* to this data component.
+- bool [equals](#equals) (const DataComponentBase &) const override — Compares this data component to *other* for equality.
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+## Member Function Documentation
+
+### id
+
+```cpp
+std::string ImFusion::TemporaryDataComponent::id () const
+```
+
+*inline, override, virtual*
+
+Returns a unique string identifier for this type of data component.
+
+**Note:** To avoid conflicts make sure to include potential plugin names into this ID. Due to the modular architecture of the ImFusion library, uniqueness of IDs cannot be checked at compile time. However, [DataComponentFactory](/cpp-sdk/4.5/api/classes/imfusion-datacomponentfactory) will check the uniqueness of the ID during registration.
+
+### clone
+
+```cpp
+std::unique_ptr < DataComponentBase > ImFusion::TemporaryDataComponent::clone () const
+```
+
+*inline, override, virtual*
+
+Creates a clone of this data component.
+
+### assign
+
+```cpp
+bool ImFusion::TemporaryDataComponent::assign (const DataComponentBase & other)
+```
+
+*inline, override, virtual*
+
+Assigns the content of *other* to this data component.
+
+**Parameters:**
+
+- `other` — Source data component for assignment.
+
+### equals
+
+```cpp
+bool ImFusion::TemporaryDataComponent::equals (const DataComponentBase & other) const
+```
+
+*inline, override, virtual*
+
+Compares this data component to *other* for equality.
+
+**Parameters:**
+
+- `other` — Other data component to compare this one to.
+
+### configure
+
+```cpp
+void ImFusion::TemporaryDataComponent::configure (const Properties * p)
+```
+
+*inline, override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### configuration
+
+```cpp
+void ImFusion::TemporaryDataComponent::configuration (Properties * p) const
+```
+
+*inline, override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality

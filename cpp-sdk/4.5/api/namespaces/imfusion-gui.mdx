@@ -1,0 +1,68 @@
+---
+title: "ImFusion::GUI"
+sidebarTitle: "GUI"
+description: "Generic Abstraction Layer for Visualization and User Input Events."
+---
+
+## Overview
+
+Generic Abstraction Layer for Visualization and User Input Events.
+
+## Namespaces
+
+- namespace [InputEventHelpers](/cpp-sdk/4.5/api/namespaces/imfusion-gui-inputeventhelpers) — Free helper functions to work with InputEvents.
+
+## Classes
+
+- class [BoxAnnotationEventHandler](/cpp-sdk/4.5/api/classes/imfusion-gui-boxannotationeventhandler) — Event handler for creating and editing [Box annotations](/cpp-sdk/4.5/api/classes/imfusion-glbox).
+- class [ButtonOverlay](/cpp-sdk/4.5/api/classes/imfusion-gui-buttonoverlay) — [ViewOverlay](/cpp-sdk/4.5/api/classes/imfusion-gui-viewoverlay) representing a clickable button.
+- class [ColorBarOverlay](/cpp-sdk/4.5/api/classes/imfusion-gui-colorbaroverlay)
+- class [DisplayBase](/cpp-sdk/4.5/api/classes/imfusion-gui-displaybase) — Common base class interface of [GUI::Display](/cpp-sdk/4.5/api/classes/imfusion-gui-display) and [DisplayWidget](/cpp-sdk/4.5/api/classes/imfusion-displaywidget) enabling other parts of the framework to access the most basic functionality in a general fashion.
+- class [Display](/cpp-sdk/4.5/api/classes/imfusion-gui-display) — Basic version of a display surface hosting a set of [Views](/cpp-sdk/4.5/api/classes/imfusion-gui-view), rendering them, and distributing input events to them.
+- class [DisplayAutoLayouter](/cpp-sdk/4.5/api/classes/imfusion-gui-displayautolayouter) — This class facilitates the layouting of Views inside a [Display](/cpp-sdk/4.5/api/classes/imfusion-gui-display) by encapsulating logic to generate layouts for dynamic view configurations based on a customizable set of layouting algorithms.
+- class [DisplayLayoutConfig](/cpp-sdk/4.5/api/classes/imfusion-gui-displaylayoutconfig) — The [DisplayLayoutConfig](/cpp-sdk/4.5/api/classes/imfusion-gui-displaylayoutconfig) serves as static "snapshot" of the view configuration of a [DisplayLayout](/cpp-sdk/4.5/api/classes/imfusion-gui-displaylayout).
+- class [DisplayLayout](/cpp-sdk/4.5/api/classes/imfusion-gui-displaylayout) — Tiling-based layouting class for arranging Views inside a [Display](/cpp-sdk/4.5/api/classes/imfusion-gui-display) in a non-overlapping fashion.
+- struct [EventResult](/cpp-sdk/4.5/api/structs/imfusion-gui-eventresult) — Simple record intended to be used as return value of the a handleInputEvent() function to indicate how to proceed.
+- class [HistogramOverlay](/cpp-sdk/4.5/api/classes/imfusion-gui-histogramoverlay) — [ViewOverlay](/cpp-sdk/4.5/api/classes/imfusion-gui-viewoverlay) to show an intensity histogram of the first shown image in a [SliceView](/cpp-sdk/4.5/api/classes/imfusion-gui-sliceview).
+- class [InfoOverlay](/cpp-sdk/4.5/api/classes/imfusion-gui-infooverlay) — Interface for a [ViewOverlay](/cpp-sdk/4.5/api/classes/imfusion-gui-viewoverlay) to show textual information depending on the mouse cursor position (for instance: pixel information of an image, face/vertex info of a mesh).
+- class [InputEvent](/cpp-sdk/4.5/api/classes/imfusion-gui-inputevent) — [Base](/cpp-sdk/4.5/api/structs/imfusion-dicom-base) class for user input events in a graphical user interface (GUI).
+- class [KeyEvent](/cpp-sdk/4.5/api/classes/imfusion-gui-keyevent) — [Key](/cpp-sdk/4.5/api/classes/imfusion-gui-keyevent) events are triggered when a keyboard key was pressed or released on the GUI.
+- class [MouseEvent](/cpp-sdk/4.5/api/classes/imfusion-gui-mouseevent) — Mouse events are triggered whenever the status of the mouse has changed wrt.
+- class [TouchEvent](/cpp-sdk/4.5/api/classes/imfusion-gui-touchevent) — Touch events occur when pressing, releasing, or moving one ore multiple touch points on a touch device.
+- class [ContextMenuEvent](/cpp-sdk/4.5/api/classes/imfusion-gui-contextmenuevent) — A [ContextMenuEvent](/cpp-sdk/4.5/api/classes/imfusion-gui-contextmenuevent) signals that a context-sensitive popup menu was requested by the user, for instance by a click with the right mouse button.
+- class [InputEventMapperBase](/cpp-sdk/4.5/api/classes/imfusion-gui-inputeventmapperbase) — Helper class to maintain a map of mouse/keyboard combinations to an enumeration of actions.
+- class [InputEventMapper](/cpp-sdk/4.5/api/classes/imfusion-gui-inputeventmapper) — Specialization of [InputEventMapperBase](/cpp-sdk/4.5/api/classes/imfusion-gui-inputeventmapperbase) with a templated action enumeration type to increase type safety.
+- class [LiftChartOverlay](/cpp-sdk/4.5/api/classes/imfusion-gui-liftchartoverlay) — Wrapper of a [GlLiftChartOverlay](/cpp-sdk/4.5/api/classes/imfusion-glliftchartoverlay) implementing the [ViewOverlay](/cpp-sdk/4.5/api/classes/imfusion-gui-viewoverlay) interface so that it can be hosted inside a [GUI::View](/cpp-sdk/4.5/api/classes/imfusion-gui-view).
+- class [Menu](/cpp-sdk/4.5/api/classes/imfusion-gui-menu) — Represents a hierarchical menu of actions used to describe menu bars, context menus, or popup menus.
+- class [OffscreenIndicatorsOverlay](/cpp-sdk/4.5/api/classes/imfusion-gui-offscreenindicatorsoverlay) — The OffscreenIndicatorOverlay provides indicators to data that is outside of the current view area.
+- class [OrientationMeshOverlay](/cpp-sdk/4.5/api/classes/imfusion-gui-orientationmeshoverlay) — The [OrientationMeshOverlay](/cpp-sdk/4.5/api/classes/imfusion-gui-orientationmeshoverlay) class wraps a [GlOrientationMeshOverlay](/cpp-sdk/4.5/api/classes/imfusion-glorientationmeshoverlay) and does not provide any interactions.
+- class [PixelInfoOverlay](/cpp-sdk/4.5/api/classes/imfusion-gui-pixelinfooverlay) — [InfoOverlay](/cpp-sdk/4.5/api/classes/imfusion-gui-infooverlay) to show information about the pixel currently underneath the mouse cursor.
+- class [PointBasedAnnotationEventHandler](/cpp-sdk/4.5/api/classes/imfusion-gui-pointbasedannotationeventhandler) — Event handler for creating and editing [point-based annotations](/cpp-sdk/4.5/api/classes/imfusion-glpointbasedannotation).
+- class [QtDisplayWidget](/cpp-sdk/4.5/api/classes/imfusion-gui-qtdisplaywidget) — Specialization of a QOpenGLWidget that allows for rendering the contents of a [Display](/cpp-sdk/4.5/api/classes/imfusion-gui-display) into a QtWidget-based application.
+- class [QtDisplayWindow](/cpp-sdk/4.5/api/classes/imfusion-gui-qtdisplaywindow) — Specialization of a QWindow that allows for rendering the contents of a [Display](/cpp-sdk/4.5/api/classes/imfusion-gui-display) directly into the window framebuffer.
+- class [QtDisplayWrapperBase](/cpp-sdk/4.5/api/classes/imfusion-gui-qtdisplaywrapperbase) — Abstract base interface for wrappers of a [Display](/cpp-sdk/4.5/api/classes/imfusion-gui-display) that embed them in a Qt-based [GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui) application.
+- class [QualityBarOverlay](/cpp-sdk/4.5/api/classes/imfusion-gui-qualitybaroverlay) — Wraps a GlQualityBarOverlay object in an [InteractiveOverlay](/cpp-sdk/4.5/api/classes/imfusion-interactiveoverlay).
+- class [RadiologyDisplay](/cpp-sdk/4.5/api/classes/imfusion-gui-radiologydisplay) — Specialization of a [Display](/cpp-sdk/4.5/api/classes/imfusion-gui-display) that provides an off-the-shelf setup typically present in radiology workstations.
+- class [RadiologyViewGroup](/cpp-sdk/4.5/api/classes/imfusion-gui-radiologyviewgroup) — Convenience class to setup a set of views typically available in radiology workstations.
+- class [RadiologyViewOverlays](/cpp-sdk/4.5/api/classes/imfusion-gui-radiologyviewoverlays) — Helper class to create and manage ViewOverlays commonly shown in radiology workstations.
+- class [ScaleOverlay](/cpp-sdk/4.5/api/classes/imfusion-gui-scaleoverlay) — Wraps a GlScaleOverlay into a [ViewOverlay](/cpp-sdk/4.5/api/classes/imfusion-gui-viewoverlay) so that it can be added to a [GUI::View](/cpp-sdk/4.5/api/classes/imfusion-gui-view).
+- class [SliceIndicator](/cpp-sdk/4.5/api/classes/imfusion-gui-sliceindicator) — [Interactive](/cpp-sdk/4.5/api/classes/imfusion-interactive) renderer to show and manipulate the position/extent of [SliceView](/cpp-sdk/4.5/api/classes/imfusion-gui-sliceview) instances in context of other Views.
+- class [SliceView](/cpp-sdk/4.5/api/classes/imfusion-gui-sliceview) — 2D renderer for SharedImageSets that can be hosted inside a [Display](/cpp-sdk/4.5/api/classes/imfusion-gui-display).
+- class [SliceViewDefaultEventHandler](/cpp-sdk/4.5/api/classes/imfusion-gui-sliceviewdefaulteventhandler) — Implementation of an input event handler providing standard mouse, touch, and keyboard interaction with a [SliceView](/cpp-sdk/4.5/api/classes/imfusion-gui-sliceview).
+- class [SpinboxMatrixWidget](/cpp-sdk/4.5/api/classes/imfusion-gui-spinboxmatrixwidget) — QWidget that allows editing the elements of a matrix (vector) via QDoubleSpinBoxes. Used by EigenMatrixParamControls.
+- class [SpinboxMatrixDialog](/cpp-sdk/4.5/api/classes/imfusion-gui-spinboxmatrixdialog) — QDialog that simply wraps the SpinBoxMatrixWidget inside a dialog window. Used by EigenMatrixParamControls.
+- class [View](/cpp-sdk/4.5/api/classes/imfusion-gui-view) — [Base](/cpp-sdk/4.5/api/structs/imfusion-dicom-base) interface for a rendering view (e.g.
+- class [ViewObject](/cpp-sdk/4.5/api/classes/imfusion-gui-viewobject) — Wraps a [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) pairing it with an optional [EventHandler](/cpp-sdk/4.5/api/classes/imfusion-gui-viewobject-eventhandler) in order to attach it to a [View](/cpp-sdk/4.5/api/classes/imfusion-gui-view).
+- class [TypedViewObject](/cpp-sdk/4.5/api/classes/imfusion-gui-typedviewobject) — Specialization of a [ViewObject](/cpp-sdk/4.5/api/classes/imfusion-gui-viewobject) where the concrete types of the underlying [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) and [EventHandler](/cpp-sdk/4.5/api/classes/imfusion-gui-viewobject-eventhandler) are defined by the template parameters.
+- class [ViewOverlay](/cpp-sdk/4.5/api/classes/imfusion-gui-viewoverlay) — Wraps a [GlOverlay](/cpp-sdk/4.5/api/classes/imfusion-gloverlay) in order to display it at specific positions inside a [View](/cpp-sdk/4.5/api/classes/imfusion-gui-view) and handle input events.
+- class [VolumeView](/cpp-sdk/4.5/api/classes/imfusion-gui-volumeview) — Volumetric 3D renderer for SharedImageSets that can be hosted inside a [Display](/cpp-sdk/4.5/api/classes/imfusion-gui-display).
+- class [VolumeViewDefaultEventHandler](/cpp-sdk/4.5/api/classes/imfusion-gui-volumeviewdefaulteventhandler) — Implementation of an input event handler providing standard mouse, touch, and keyboard interaction with a [VolumeView](/cpp-sdk/4.5/api/classes/imfusion-gui-volumeview).
+
+## Enumerations
+
+- enum class MouseCursorShape &#123; MouseCursorShape::Default , MouseCursorShape::PointingHand , MouseCursorShape::Crosshair , MouseCursorShape::Help , MouseCursorShape::Busy , MouseCursorShape::Wait , MouseCursorShape::OpenHand , MouseCursorShape::ClosedHand , MouseCursorShape::SizeVertical , MouseCursorShape::SizeHorizontal , MouseCursorShape::SizeDiagonalBLTR , MouseCursorShape::SizeDiagonalTLBR , MouseCursorShape::SizeAll , MouseCursorShape::SplitVertical , MouseCursorShape::SplitHorizontal , MouseCursorShape::TextInput , MouseCursorShape::Forbidden , MouseCursorShape::Blank , MouseCursorShape::Custom = 100 &#125; — Enumeration of cursor shapes that are usually available on all platforms.
+
+## Functions
+
+- constexpr [InputEvent::KeyboardModifier](/cpp-sdk/4.5/api/classes/imfusion-gui-inputevent) **operator|** ([InputEvent::KeyboardModifier](/cpp-sdk/4.5/api/classes/imfusion-gui-inputevent) lhs, [InputEvent::KeyboardModifier](/cpp-sdk/4.5/api/classes/imfusion-gui-inputevent) rhs)
+- constexpr [MouseEvent::Button](/cpp-sdk/4.5/api/classes/imfusion-gui-mouseevent) **operator|** ([MouseEvent::Button](/cpp-sdk/4.5/api/classes/imfusion-gui-mouseevent) lhs, [MouseEvent::Button](/cpp-sdk/4.5/api/classes/imfusion-gui-mouseevent) rhs)

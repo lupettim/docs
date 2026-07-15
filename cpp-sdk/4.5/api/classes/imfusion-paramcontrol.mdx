@@ -1,0 +1,63 @@
+---
+title: "ImFusion::ParamControl"
+sidebarTitle: "ParamControl"
+description: "Base class for parameter controls."
+---
+
+`#include <ImFusion/GUI/PropertiesWidgetParamControls.h>`
+
+## Overview
+
+[Base](/cpp-sdk/4.5/api/structs/imfusion-dicom-base) class for parameter controls.
+
+## Signals
+
+- void **valueChanged** () — Emitted when the parameter value was changed by the user.
+
+## Public Member Functions
+
+- **ParamControl** (Properties::ParamType t, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &n) — Each control can only be used for a fixed type and parameter.
+- **~ParamControl** () override=default — Subclasses are expected to delete their widget.
+- virtual void [updateValue](#updatevalue) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &value, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; Properties::Attribute &gt; &attributes)=0 — Updates the current value and adjusts the attributes.
+- virtual void [retrieveValue](#retrievevalue) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const =0 — Retrieves the value from the widget and writes it into the properties.
+- virtual QWidget \* [widget](#widget) () const =0 — Returns the widget for this control.
+
+## Public Attributes
+
+- const Properties::ParamType **type**
+- const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **name**
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; Properties::Attribute &gt; **attributes**
+
+## Member Function Documentation
+
+### updateValue
+
+```cpp
+virtual void ImFusion::ParamControl::updateValue (const std::string & value, const std::vector < Properties::Attribute > & attributes)
+```
+
+*pure virtual*
+
+Updates the current value and adjusts the attributes.
+
+### retrieveValue
+
+```cpp
+virtual void ImFusion::ParamControl::retrieveValue (Properties * p) const
+```
+
+*pure virtual*
+
+Retrieves the value from the widget and writes it into the properties.
+
+### widget
+
+```cpp
+virtual QWidget * ImFusion::ParamControl::widget () const
+```
+
+*pure virtual*
+
+Returns the widget for this control.
+
+The [ParamControl](/cpp-sdk/4.5/api/classes/imfusion-paramcontrol) does not own this widget, e.g. it must be re-parented to some other QWidget or deleted manually.

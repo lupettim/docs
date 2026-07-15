@@ -1,0 +1,39 @@
+---
+title: "ImFusion::DisplayRecorderAlgorithm"
+sidebarTitle: "DisplayRecorderAlgorithm"
+---
+
+## Public Types
+
+- enum class **InitializeResult** &#123; **Valid** , **DisplayNotSet** , **UnknownView** , **ViewNotVisible** , **EncoderFailed** , **InvalidPath** , **BackgroundRecorderFailed** &#125; — [Status](/cpp-sdk/4.5/api/classes/imfusion-algorithm) codes.
+
+## Public Member Functions
+
+- void [compute](#compute) () override — Execute the algorithm.
+- InitializeResult **initialize** ()
+- void **finalize** ()
+- void **setDisplayWidget** ([DisplayWidgetMulti](/cpp-sdk/4.5/api/classes/imfusion-displaywidgetmulti) \*disp)
+
+## Static Public Member Functions
+
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=0)
+
+## Public Attributes
+
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **p_path** = &#123;"Output Path", "", \*this&#125;
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **p_codec** = &#123;"Codec", "h264_nvenc", \*this&#125;
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; int &gt; **p_fps** = &#123;"FPS", 30, \*this&#125;
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; bool &gt; **p_yuv444p** = &#123;"YUV444P", false, \*this&#125;
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; int &gt; **p_viewIndex** = &#123;"View Index", -1, \*this&#125;
+
+## Member Function Documentation
+
+### compute
+
+```cpp
+void ImFusion::DisplayRecorderAlgorithm::compute ()
+```
+
+*override, virtual*
+
+Execute the algorithm.

@@ -1,0 +1,229 @@
+---
+title: "ImFusion::GlObject"
+sidebarTitle: "GlObject"
+description: "Abstract base class for an renderable OpenGL object that can be hosted in a GlView ."
+---
+
+`#include <ImFusion/GL/GlObject.h>`
+
+## Overview
+
+Abstract base class for an renderable OpenGL object that can be hosted in a [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview).
+
+In contrast to a [GlOverlay](/cpp-sdk/4.5/api/classes/imfusion-gloverlay), a [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) reside in world space and is rendered as part of the scene of the hosting [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview). If you do not require user interaction with the [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject), you can add it directly to a [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview). Alternatively, you can wrap it in an [InteractiveObject](/cpp-sdk/4.5/api/classes/imfusion-interactiveobject) pairing it with a [Manipulator](/cpp-sdk/4.5/api/classes/imfusion-manipulator) and then add it to the corresponding [InteractiveView](/cpp-sdk/4.5/api/classes/imfusion-interactiveview).
+
+**See also:** [InteractiveObject](/cpp-sdk/4.5/api/classes/imfusion-interactiveobject)
+
+**Examples:** [MyCustomGlObject.h](/cpp-sdk/4.5/api/examples/my-custom-gl-object-8h).
+
+## Public Types
+
+- enum [RenderingOrderGroup](#renderingordergroup) &#123; RenderingGroupRest , RenderingGroupMesh , RenderingGroupManipulator &#125; — Enumeration to determine rendering order of GlObjects in [GlSliceView](/cpp-sdk/4.5/api/classes/imfusion-glsliceview) and [GlVolumeView](/cpp-sdk/4.5/api/classes/imfusion-glvolumeview).
+
+## Public Member Functions
+
+- virtual void [draw](#draw) (const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &view)=0 — Draw the object in 3D space.
+- virtual [Geometry::AlignedBox](/cpp-sdk/4.5/api/classes/imfusion-geometry-alignedbox) [bounds](#bounds) () const =0 — Get the axis-aligned bounding box of this [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) in world space.
+- virtual [Geometry::AlignedBox](/cpp-sdk/4.5/api/classes/imfusion-geometry-alignedbox) [boundsSpherical](#boundsspherical) () const — Get the spherical bounds of this [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) in world space.
+- virtual void [setMatrix](#setmatrix) (const mat4 &m) — Set the modelview matrix of this object.
+- virtual const mat4 & [matrix](#matrix) () const — Return the modelview matrix.
+- virtual void [setVisible](#setvisible) (bool visible) — Set object visibility.
+- virtual bool **visible** () const — Return object visibility.
+- virtual void [setAlwaysVisible](#setalwaysvisible) (bool alwaysVisible) — Set if object is always visible.
+- virtual bool **alwaysVisible** () const — Return if object is always visible.
+- virtual [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [typeName](#typename) () const =0 — Return unique identifier for this object class used for serialization.
+- [RenderingOrderGroup](#renderingordergroup) **renderingOrder** () const — Return current rendering order value for this [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject).
+- void **setRenderingOrder** ([RenderingOrderGroup](#renderingordergroup) group) — Set rendering order value for this [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject).
+- void **setDraw3DIn2DView** (bool draw3DIn2DView)
+- virtual [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [Geometry::Plane](/cpp-sdk/4.5/api/classes/imfusion-geometry-plane) &gt; [clipPlane](#clipplane) () const — Returns the optional clip plane used during 3D rendering.
+- virtual bool [setClipPlane](#setclipplane) ([std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [Geometry::Plane](/cpp-sdk/4.5/api/classes/imfusion-geometry-plane) &gt;) — Sets an optional clip plane so that parts on the back (opposite the normal) are clipped.
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+## Protected Attributes
+
+- mat4 **m_matrix** = mat4::Identity() — Modelview transformation matrix of this object.
+- bool **m_visible** = true — Object visibility.
+- bool **m_alwaysVisible** = false — Object always visible.
+- bool [m_draw3DIn2DView](#m-draw3din2dview) — Draw 3D objects in 2D views. This is to render 3D objects in projective 2D views. Property is not serialized.
+- [RenderingOrderGroup](#renderingordergroup) **m_renderingOrder** = RenderingGroupRest
+
+## Member Enumeration Documentation
+
+### RenderingOrderGroup
+
+```cpp
+enum ImFusion::GlObject::RenderingOrderGroup
+```
+
+Enumeration to determine rendering order of GlObjects in [GlSliceView](/cpp-sdk/4.5/api/classes/imfusion-glsliceview) and [GlVolumeView](/cpp-sdk/4.5/api/classes/imfusion-glvolumeview).
+
+Objects are to be rendered in ascending order according to their group.
+
+**Enumerator:**
+
+- `RenderingGroupRest` — This group will be rendered first.
+- `RenderingGroupMesh` — This group will be rendered after the rest since meshes might be transparent.
+- `RenderingGroupManipulator` — This group will be rendered last since to avoid manipulators to be hidden by other objects.
+
+## Member Function Documentation
+
+### draw
+
+```cpp
+virtual void ImFusion::GlObject::draw (const GlView & view)
+```
+
+*pure virtual*
+
+Draw the object in 3D space.
+
+**Examples:** [MyCustomGlObject.h](/cpp-sdk/4.5/api/examples/my-custom-gl-object-8h).
+
+### bounds
+
+```cpp
+virtual Geometry::AlignedBox ImFusion::GlObject::bounds () const
+```
+
+*pure virtual*
+
+Get the axis-aligned bounding box of this [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) in world space.
+
+Return an empty (default-constructed) AlignedBox object if the [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) does not reside in world space.
+
+**Examples:** [MyCustomGlObject.h](/cpp-sdk/4.5/api/examples/my-custom-gl-object-8h).
+
+### boundsSpherical
+
+```cpp
+virtual Geometry::AlignedBox ImFusion::GlObject::boundsSpherical () const
+```
+
+*virtual*
+
+Get the spherical bounds of this [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) in world space.
+
+Return an empty (default-constructed) [Geometry::AlignedBox](/cpp-sdk/4.5/api/classes/imfusion-geometry-alignedbox) object if the [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) does not reside in world space. This may be cheaper to compute than the axis-aligned bounding box for a moving object.
+
+### setMatrix
+
+```cpp
+virtual void ImFusion::GlObject::setMatrix (const mat4 & m)
+```
+
+*virtual*
+
+Set the modelview matrix of this object.
+
+### matrix
+
+```cpp
+virtual const mat4 & ImFusion::GlObject::matrix () const
+```
+
+*virtual*
+
+Return the modelview matrix.
+
+### setVisible
+
+```cpp
+virtual void ImFusion::GlObject::setVisible (bool visible)
+```
+
+*virtual*
+
+Set object visibility.
+
+### setAlwaysVisible
+
+```cpp
+virtual void ImFusion::GlObject::setAlwaysVisible (bool alwaysVisible)
+```
+
+*virtual*
+
+Set if object is always visible.
+
+### typeName
+
+```cpp
+virtual std::string ImFusion::GlObject::typeName () const
+```
+
+*pure virtual*
+
+Return unique identifier for this object class used for serialization.
+
+**Examples:** [MyCustomGlObject.h](/cpp-sdk/4.5/api/examples/my-custom-gl-object-8h).
+
+### clipPlane
+
+```cpp
+virtual std::optional < Geometry::Plane > ImFusion::GlObject::clipPlane () const
+```
+
+*inline, virtual*
+
+Returns the optional clip plane used during 3D rendering.
+
+The default implementation returns std::nullopt; subclasses may override.
+
+### setClipPlane
+
+```cpp
+virtual bool ImFusion::GlObject::setClipPlane (std::optional < Geometry::Plane >)
+```
+
+*inline, virtual*
+
+Sets an optional clip plane so that parts on the back (opposite the normal) are clipped.
+
+**Returns:** true if the object supports clip planes, false otherwise.
+
+### configure
+
+```cpp
+void ImFusion::GlObject::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### configuration
+
+```cpp
+void ImFusion::GlObject::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality
+
+## Member Data Documentation
+
+### m_draw3DIn2DView
+
+```cpp
+bool ImFusion::GlObject::m_draw3DIn2DView
+```
+
+*protected*
+
+**Initial value:**
+```cpp
+          =
+false
+```
+ fragment
+Draw 3D objects in 2D views. This is to render 3D objects in projective 2D views. Property is not serialized.

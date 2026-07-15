@@ -1,0 +1,56 @@
+---
+title: "ImFusion::MeshCreatorAlgorithm"
+sidebarTitle: "MeshCreatorAlgorithm"
+description: "Algorithm for creating common mesh primitives."
+---
+
+`#include <ImFusion/Mesh/MeshCreatorAlgorithm.h>`
+
+## Overview
+
+[Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) for creating common mesh primitives.
+
+## Public Types
+
+- enum class **Primitive** &#123; **Sphere** = 0 , **Cylinder** , **Pyramid** , **Cube** , **IcosahedronSphere** , **Cone** , **Grid** &#125; — [Status](/cpp-sdk/4.5/api/classes/imfusion-algorithm) codes.
+
+## Public Member Functions
+
+- void [compute](#compute) () override — Execute the algorithm.
+- [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) [takeOutput](#takeoutput) () override — Retrieve algorithm output.
+
+## Static Public Member Functions
+
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=0) — If data is compatible with algorithm return true. If a is not zero, create algorithm with input data.
+
+## Protected Attributes
+
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) &gt; **m_mesh**
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; MeshCreatorAlgorithm::Primitive &gt; **m_primitive** = [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt;MeshCreatorAlgorithm::Primitive&gt;("Primitive", MeshCreatorAlgorithm::Primitive::Sphere, this)
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; double &gt; **m_radiusOrSize** = [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt;double&gt;("Radius or Size", 1.0, this) — Radius for round primitives (sphere, cylinder), side length/size for other primitives.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; double &gt; **m_height** = [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt;double&gt;("Height", 1.0, this) — Height for cylinder, pyramid and cone.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; int &gt; **m_samples** = [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt;int&gt;("Samples", 32, this) — Samples for sphere, cylinder and cone.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; int &gt; **m_subdivisions** = [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt;int&gt;("Subdivisions", 1, this) — Subdivisions for icosahedron.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; bool &gt; **m_smoothIcosphere** = [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt;bool&gt;("Smooth Icosphere", false, this) — Enable smoothed appearance of the icosahedron. If on, only the vertex normals will be set, which are parallel to the line going from center to the vertex. If off, also the halfedge normals will be set to corresponding face normals.
+
+## Member Function Documentation
+
+### compute
+
+```cpp
+void ImFusion::MeshCreatorAlgorithm::compute ()
+```
+
+*override, virtual*
+
+Execute the algorithm.
+
+### takeOutput
+
+```cpp
+OwningDataList ImFusion::MeshCreatorAlgorithm::takeOutput ()
+```
+
+*override, virtual*
+
+Retrieve algorithm output.

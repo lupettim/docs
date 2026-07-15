@@ -1,0 +1,41 @@
+---
+title: "ImFusion::LabelDataComponent::LabelConfig"
+sidebarTitle: "LabelConfig"
+description: "Helper struct encapsulating the metadata of a label value."
+---
+
+`#include <ImFusion/Base/LabelDataComponent.h>`
+
+## Overview
+
+Helper struct encapsulating the metadata of a label value.
+
+## Public Member Functions
+
+- bool **operator==** (const [LabelConfig](/cpp-sdk/4.5/api/structs/imfusion-labeldatacomponent-labelconfig) &rhs) const
+- bool **operator!=** (const [LabelConfig](/cpp-sdk/4.5/api/structs/imfusion-labeldatacomponent-labelconfig) &rhs) const
+
+## Public Attributes
+
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **name** — High-level name of the label.
+- vec4 **color** = vec4::Zero() — RGBA color to use for rendering the label.
+- bool **isVisible2d** = true — Flag whether label shall be visible in 2D/MPR views.
+- bool **isVisible3d** = true — Flag whether label shall be visible in 3D views.
+- [SegmentationAlgorithmType](/cpp-sdk/4.5/api/classes/imfusion-labeldatacomponent) **segmentationAlgorithmType** = [SegmentationAlgorithmType::Unknown](/cpp-sdk/4.5/api/classes/imfusion-labeldatacomponent)
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **segmentationAlgorithmName** — Name of algorithm used to generate the segment.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [snomedCategoryCodeValue](#snomedcategorycodevalue) — SNOMED CT codes that describe the anatomical context.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **snomedCategoryCodeMeaning** — Human readable meaning of the above code.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **snomedTypeCodeValue** — SNOMED CT code for the type this label is representing.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **snomedTypeCodeMeaning** — Human readable meaning of the above code.
+
+## Member Data Documentation
+
+### snomedCategoryCodeValue
+
+```cpp
+std::string ImFusion::LabelDataComponent::LabelConfig::snomedCategoryCodeValue
+```
+
+SNOMED CT codes that describe the anatomical context.
+
+See [https://dicom.nema.org/medical/dicom/current/output/chtml/part16/sect_CID_7150.html](https://dicom.nema.org/medical/dicom/current/output/chtml/part16/sect_CID_7150.html) If empty, it's assumed unknown and will be exported as 261665006 in DICOMSEG. SNOMED CT code for the category this label is representing.

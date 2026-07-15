@@ -1,0 +1,195 @@
+---
+title: "ImFusion::AdjusterWidgetBase< T >"
+sidebarTitle: "AdjusterWidgetBase< T >"
+description: "Base class for widgets providing two ways of adjusting numeric values."
+---
+
+`#include <ImFusion/GUI/CoreWidgets/AdjusterWidget.h>`
+
+## Overview
+
+template&lt;typename T&gt;
+
+class ImFusion::AdjusterWidgetBase&lt; T &gt;
+[Base](/cpp-sdk/4.5/api/structs/imfusion-dicom-base) class for widgets providing two ways of adjusting numeric values.
+
+AbstractAdjusterWidget consists of a slider, which can be used to quickly change numeric values, and a spin box, which is better suited for precise adjustments. Slider and spin box can have different value ranges, which may be helpful for certain applications.
+
+## Public Member Functions
+
+- [AdjusterWidgetBase](#adjusterwidgetbase) (QWidget \*parent=nullptr) — Creates a new AbstractAdjusterWidget.
+- T **value** () const — Return the adjuster's current value.
+- void [setValue](#setvalue) (T value) — Change the adjuster's current value.
+- T **minimum** () const — Return the adjuster's spin box minimum value.
+- void [setMinimum](#setminimum) (T minimum) — Change both the adjuster's spin box and slider minimum value.
+- T **maximum** () const — Return the adjuster's spin box maximum value.
+- void [setMaximum](#setmaximum) (T maximum) — Change both the adjuster's spin box and slider maximum value.
+- T **sliderMinimum** () const — Return the adjuster's slider minimum value.
+- void [setSliderMinimum](#setsliderminimum) (T minimum) — Change the adjuster's slider minimum value.
+- T **sliderMaximum** () const — Return the adjuster's slider maximum value.
+- void [setSliderMaximum](#setslidermaximum) (T maximum) — Change the adjuster's slider maximum value.
+- void **setRightToLeft** (bool righToLeft) — Change the adjuster's slider to go from right-to-left, instead of left-to-right.
+- T **spinboxMinimum** () const — Return the adjuster's spin box minimum value.
+- void [setSpinboxMinimum](#setspinboxminimum) (T minimum) — Change the adjuster's spin box minimum value.
+- T **spinboxMaximum** () const — Return the adjuster's spin box maximum value.
+- void [setSpinboxMaximum](#setspinboxmaximum) (T maximum) — Change the adjuster's spin box maximum value.
+- T **singleStep** () const — Return the adjuster's single step value.
+- void [setSingleStep](#setsinglestep) (T value) — Change the adjuster's single step value.
+- virtual bool **blockSignals** (bool value) — Sets Qt's blockSignals setting of both the slider and the spin box.
+- AdjusterWidgetTraits&lt; T &gt;::SpinBoxType \* **spinBox** () — Returns the pointer to the spin box that is used internally.
+
+## Protected Member Functions
+
+- void **onSpinBoxValueChangedImpl** (T value) — Slot getting called when the spin box's value changes.
+- T [onSliderValueChangedImpl](#onslidervaluechangedimpl) (T value) — Slot getting called when the slider's value changes.
+- virtual void **setSliderValue** (T value) — Virtual method to update the slider's value. To be overridden in sub classes.
+- virtual void [setSliderProperties](#setsliderproperties) (T stepValue, T minValue, T maxValue) — Update the slider's properties based on the provided step, minimum, and maximum value of the adjuster.
+
+## Protected Attributes
+
+- QSlider \* **m_slider** — Slider allowing the user to quickly change the value.
+- AdjusterWidgetTraits&lt; T &gt;::SpinBoxType \* **m_spinBox** — Spin box displaying the current value.
+- T **m_sliderMin** — Minimum value used for the slider.
+- T **m_sliderMax** — Maximum value used for the slider.
+
+## Constructor & Destructor Documentation
+
+### AdjusterWidgetBase
+
+```cpp
+template<typename T> ImFusion::AdjusterWidgetBase < T >::AdjusterWidgetBase (QWidget * parent = nullptr)
+```
+
+*explicit*
+
+Creates a new AbstractAdjusterWidget.
+
+**Parameters:**
+
+- `parent` — parent Qt widget
+
+## Member Function Documentation
+
+### setValue
+
+```cpp
+template<typename T> void ImFusion::AdjusterWidgetBase < T >::setValue (T value)
+```
+
+Change the adjuster's current value.
+
+**Parameters:**
+
+- `value` — new value for the adjuster
+
+### setMinimum
+
+```cpp
+template<typename T> void ImFusion::AdjusterWidgetBase < T >::setMinimum (T minimum)
+```
+
+Change both the adjuster's spin box and slider minimum value.
+
+**Parameters:**
+
+- `minimum` — new minimum value for the adjuster
+
+### setMaximum
+
+```cpp
+template<typename T> void ImFusion::AdjusterWidgetBase < T >::setMaximum (T maximum)
+```
+
+Change both the adjuster's spin box and slider maximum value.
+
+**Parameters:**
+
+- `maximum` — new maximum value for the adjuster
+
+### setSliderMinimum
+
+```cpp
+template<typename T> void ImFusion::AdjusterWidgetBase < T >::setSliderMinimum (T minimum)
+```
+
+Change the adjuster's slider minimum value.
+
+**Parameters:**
+
+- `minimum` — new minimum value for the adjuster
+
+### setSliderMaximum
+
+```cpp
+template<typename T> void ImFusion::AdjusterWidgetBase < T >::setSliderMaximum (T maximum)
+```
+
+Change the adjuster's slider maximum value.
+
+**Parameters:**
+
+- `maximum` — new maximum value for the adjuster
+
+### setSpinboxMinimum
+
+```cpp
+template<typename T> void ImFusion::AdjusterWidgetBase < T >::setSpinboxMinimum (T minimum)
+```
+
+Change the adjuster's spin box minimum value.
+
+**Parameters:**
+
+- `minimum` — new minimum value for the adjuster
+
+### setSpinboxMaximum
+
+```cpp
+template<typename T> void ImFusion::AdjusterWidgetBase < T >::setSpinboxMaximum (T maximum)
+```
+
+Change the adjuster's spin box maximum value.
+
+**Parameters:**
+
+- `maximum` — new maximum value for the adjuster
+
+### setSingleStep
+
+```cpp
+template<typename T> void ImFusion::AdjusterWidgetBase < T >::setSingleStep (T value)
+```
+
+Change the adjuster's single step value.
+
+**Parameters:**
+
+- `value` — new single step value for the adjuster
+
+### onSliderValueChangedImpl
+
+```cpp
+template<typename T> T ImFusion::AdjusterWidgetBase < T >::onSliderValueChangedImpl (T value)
+```
+
+*protected*
+
+Slot getting called when the slider's value changes.
+
+It should adjust the vale to the slider's range and the widgets singleStep() and return the adjusted value.
+
+### setSliderProperties
+
+```cpp
+template<typename T> void ImFusion::AdjusterWidgetBase < T >::setSliderProperties (T stepValue, T minValue, T maxValue)
+```
+
+*protected, virtual*
+
+Update the slider's properties based on the provided step, minimum, and maximum value of the adjuster.
+
+**Parameters:**
+
+- `stepValue` — the adjuster's step value
+- `minValue` — the adjuster's minimum value
+- `maxValue` — the adjuster's maximum value

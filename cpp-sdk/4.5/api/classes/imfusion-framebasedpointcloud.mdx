@@ -1,0 +1,125 @@
+---
+title: "ImFusion::FrameBasedPointCloud"
+sidebarTitle: "FrameBasedPointCloud"
+description: "Data structure for point clouds with frame-dependent point data."
+---
+
+`#include <ImFusion/Base/FrameBasedPointCloud.h>`
+
+## Overview
+
+[Data](/cpp-sdk/4.5/api/classes/imfusion-data) structure for point clouds with frame-dependent point data.
+
+In this point cloud, all points are stored in raw form per frame, i.e. in local frame coordinates, so that when the matrix of the frame is changed, the world coordinates of the points can be easily recomputed. This is particularly useful if the points are derived from ultrasound sweeps and the calibration matrix is optimized after some segmentation.
+
+**Note:** There is no mechanism to ensure that the dependent TrackedSharedImageSets are not deleted. If a TrackedSharedImageSets is removed from the data model, the associated points are removed as well.
+
+## Public Member Functions
+
+- [FrameBasedPointCloud](#framebasedpointcloud-1-3) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [TrackedSharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-trackedsharedimageset) \* &gt; &tsiss, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; size_t &gt; frameIndices, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; [points](/cpp-sdk/4.5/api/classes/imfusion-pointcloud), [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; [normals](/cpp-sdk/4.5/api/classes/imfusion-pointcloud), [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; [colors](/cpp-sdk/4.5/api/classes/imfusion-pointcloud), const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &[name](/cpp-sdk/4.5/api/classes/imfusion-data)="") — Constructs a new point cloud using the given TrackedSharedImageSets.
+- [FrameBasedPointCloud](#framebasedpointcloud-2-3) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [TrackedSharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-trackedsharedimageset) \* &gt; &tsiss, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; size_t &gt; frameIndices, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; [points](/cpp-sdk/4.5/api/classes/imfusion-pointcloud), [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; [normals](/cpp-sdk/4.5/api/classes/imfusion-pointcloud), const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &[name](/cpp-sdk/4.5/api/classes/imfusion-data)="") — Constructs a new point cloud using the given TrackedSharedImageSets.
+- [FrameBasedPointCloud](#framebasedpointcloud-3-3) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [TrackedSharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-trackedsharedimageset) \* &gt; &tsiss, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; size_t &gt; frameIndices, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; [points](/cpp-sdk/4.5/api/classes/imfusion-pointcloud), const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &[name](/cpp-sdk/4.5/api/classes/imfusion-data)="") — Constructs a new point cloud using the given TrackedSharedImageSets.
+- **FrameBasedPointCloud** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &[name](/cpp-sdk/4.5/api/classes/imfusion-data)="") — Constructs an empty frame based point cloud.
+- **FrameBasedPointCloud** (const FrameBasedPointCloud &other) — Copy constructor with another frame-based point cloud instance.
+- **FrameBasedPointCloud** (FrameBasedPointCloud &&other) noexcept — Move constructor with another point cloud instance.
+- [FrameBasedPointCloud](#framebasedpointcloud-1-3) & **operator=** ([FrameBasedPointCloud](#framebasedpointcloud-1-3)) noexcept — Copy/Move assignment operator.
+- bool [setAdditionalCalibration](#setadditionalcalibration) (const mat4 &mat, double temp) — Sets additional spatial and temporal calibrations to consider, without modifying the calibration of m_tsiss.
+- void [applyAdditionalCalibration](#applyadditionalcalibration) () — Applies m_calibMat and m_calibTemp to all TrackedSharedImageSets and sets them to zero.
+- int [removePoints](#removepoints) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; int &gt; &indices) override — Remove the points with the specified indices while keeping the point cloud consistent.
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; size_t &gt; & **frameIndices** () const — Returns the input frame indices.
+- const [std::map](http://en.cppreference.com/w/cpp/container/map.html)&lt; size_t, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; uint32_t &gt; &gt; & **framePoints** () const — Returns the points corresponding to their frames.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; **rawPoints** () const — Returns the raw points in local frame coordinates.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; **rawNormals** () const — Returns the raw normals in local frame coordinates.
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [TrackedSharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-trackedsharedimageset) \* &gt; & **trackedSharedImageSets** () const — Returns the input TrackedSharedImageSets.
+- void **swapWith** ([FrameBasedPointCloud](#framebasedpointcloud-1-3) &other) — Swaps the data of with other point cloud and emits a changed signal for both.
+
+## Protected Types
+
+- typedef [std::pair](http://en.cppreference.com/w/cpp/utility/pair.html)&lt; [TrackedSharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-trackedsharedimageset) \*, int &gt; **FrameId**
+
+## Protected Member Functions
+
+- void **initialize** (bool computePixelCoordinates=true) — Called in constructor. Sets up signals and runs the first point computation.
+- void **trackingSequenceUpdated** () — Recomputes points if not suspended and emits point cloud changed signal.
+- void **recomputePoints** () — Recomputes the point cloud representation using the frame matrices in m_tsiss, taking m_calibMat and m_calibTemp into account.
+- void **deleteFramePoints** ([TrackedSharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-trackedsharedimageset) \*tsis, int frameIdx) — Delete points of specified frame index. All points are deleted if frame index is -1.
+
+## Protected Attributes
+
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; size_t &gt; **m_frameIndices** — Index assigning each point to a [TrackedSharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-trackedsharedimageset) (4th byte) and a frame therein (bytes 1-3).
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; **m_rawPoints** — Points in local frame coordinates (internally stored in pixel coordinates).
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; **m_rawNormals** — Normals in local frame coordinates (internally stored in pixel coordinates).
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [TrackedSharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-trackedsharedimageset) \* &gt; **m_tsiss** — TrackedSharedImageSets containing the frames m_frameIndices map to.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; SignalConnection &gt; &gt; **m_trackingChangedSignalConnections** — Connections to signal when used tracking changed.
+- [std::unordered_map](http://en.cppreference.com/w/cpp/container/unordered_map.html)&lt; const [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*, FrameId &gt; **m_imageToFrameId** — Look-up table to associate deletion signal of a [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) to the [TrackedSharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-trackedsharedimageset) and the frame index therein.
+- [std::map](http://en.cppreference.com/w/cpp/container/map.html)&lt; size_t, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; uint32_t &gt; &gt; **m_frameToPointsIndices**
+
+## Constructor & Destructor Documentation
+
+### FrameBasedPointCloud
+
+```cpp
+ImFusion::FrameBasedPointCloud::FrameBasedPointCloud (const std::vector < TrackedSharedImageSet * > & tsiss, std::vector < size_t > frameIndices, std::vector < vec3 > points, std::vector < vec3 > normals, std::vector < vec3 > colors, const std::string & name = "")
+```
+
+Constructs a new point cloud using the given TrackedSharedImageSets.
+
+Provide points and normals untransformed, i.e. in local frame coordinates. The transformation will be applied automatically.
+
+**Note:** The frame indices encode the index of the frame within a [TrackedSharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-trackedsharedimageset) (bytes 1-3) and the [TrackedSharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-trackedsharedimageset) itself (1 byte representing the position in the vector).
+
+Example: A frame index of 0x010000ff refers to the image at position 255 of the [TrackedSharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-trackedsharedimageset) at position 1 in the vector tsiss.
+
+### FrameBasedPointCloud
+
+```cpp
+ImFusion::FrameBasedPointCloud::FrameBasedPointCloud (const std::vector < TrackedSharedImageSet * > & tsiss, std::vector < size_t > frameIndices, std::vector < vec3 > points, std::vector < vec3 > normals, const std::string & name = "")
+```
+
+Constructs a new point cloud using the given TrackedSharedImageSets.
+
+Provide points and normals untransformed, i.e. in local frame coordinates. The transformation will be applied automatically.
+
+### FrameBasedPointCloud
+
+```cpp
+ImFusion::FrameBasedPointCloud::FrameBasedPointCloud (const std::vector < TrackedSharedImageSet * > & tsiss, std::vector < size_t > frameIndices, std::vector < vec3 > points, const std::string & name = "")
+```
+
+Constructs a new point cloud using the given TrackedSharedImageSets.
+
+Provide points untransformed, i.e. in local frame coordinates. The transformation will be applied automatically.
+
+## Member Function Documentation
+
+### setAdditionalCalibration
+
+```cpp
+bool ImFusion::FrameBasedPointCloud::setAdditionalCalibration (const mat4 & mat, double temp)
+```
+
+Sets additional spatial and temporal calibrations to consider, without modifying the calibration of m_tsiss.
+
+A standard use case would be the optimization of the calibration matrix, where only the optimal calibration should be applied at the end. Will call recomputePoints if any of the two has changed.
+
+**Returns:** True if points were recomputed.
+
+### applyAdditionalCalibration
+
+```cpp
+void ImFusion::FrameBasedPointCloud::applyAdditionalCalibration ()
+```
+
+Applies m_calibMat and m_calibTemp to all TrackedSharedImageSets and sets them to zero.
+
+Because this operation does not cause any point to move its position, recomputePoints is not called.
+
+### removePoints
+
+```cpp
+int ImFusion::FrameBasedPointCloud::removePoints (const std::vector < int > & indices)
+```
+
+*override, virtual*
+
+Remove the points with the specified indices while keeping the point cloud consistent.

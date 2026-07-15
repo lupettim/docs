@@ -1,0 +1,77 @@
+---
+title: "ImFusion::SimilarityMeasureMI_GL"
+sidebarTitle: "SimilarityMeasureMI_GL"
+description: "GPU implementation of Mutual Information using modern OpenGL."
+---
+
+`#include <ImFusion/Reg/SimilarityMeasureMI.h>`
+
+## Overview
+
+GPU implementation of Mutual Information using modern OpenGL.
+
+This implementation uses the ARB_shader_image_load_store and ARB_compute_shader OpenGL extensions, which is part of the core implementation since OpenGL 4.3. Before using this class, make sure your hardware supports the needed features (i.e. by calling [supportedByHardware()](#supportedbyhardware)).
+
+## Public Member Functions
+
+- [SimilarityMeasureMI_GL](#similaritymeasuremi-gl) ([SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*img1, [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*img2) — Creates a new instance for the two given images.
+- double [compute](#compute) (const [ImageTransformer](/cpp-sdk/4.5/api/classes/imfusion-imagetransformer) \*t, size_t \*overlap=nullptr) override — Computes and returns the similarity measure.
+
+## Static Public Member Functions
+
+- static bool [supportedByHardware](#supportedbyhardware) () — Checks whether the necessary OpenGL features are supported by the current hardware.
+
+## Protected Member Functions
+
+- void [updateHistogramSize](#updatehistogramsize) () override
+- void **clearHistograms** ()
+
+## Constructor & Destructor Documentation
+
+### SimilarityMeasureMI_GL
+
+```cpp
+ImFusion::SimilarityMeasureMI_GL::SimilarityMeasureMI_GL (SharedImage * img1, SharedImage * img2)
+```
+
+Creates a new instance for the two given images.
+
+Both images must be of the same dimensionality.
+
+**Note:** The constructor may throw in case that the needed OpenGL features are not available.
+
+**See also:** [supportedByHardware()](#supportedbyhardware)
+
+## Member Function Documentation
+
+### supportedByHardware
+
+```cpp
+bool ImFusion::SimilarityMeasureMI_GL::supportedByHardware ()
+```
+
+*static*
+
+Checks whether the necessary OpenGL features are supported by the current hardware.
+
+Make sure this is the case before relying on this class.
+
+### compute
+
+```cpp
+double ImFusion::SimilarityMeasureMI_GL::compute (const ImageTransformer * t, size_t * overlap = nullptr)
+```
+
+*override, virtual*
+
+Computes and returns the similarity measure.
+
+The higher the value the higher the similarity between the two images. The returned value does not need to be normalized, therefore values from different similarity measures should not be compared directly. The computation always iterates each pixel of img1 and compares it to the related pixel of img2. If no [ImageTransformer](/cpp-sdk/4.5/api/classes/imfusion-imagetransformer) is supplied, the image coordinates of a pixel in img1 are used directly to lookup the value in img2, no transformation is assumed. In this case it's usually advisable that img1 and img2 have the same dimensions, but this is not enforced. If an [ImageTransformer](/cpp-sdk/4.5/api/classes/imfusion-imagetransformer) is given, it will be used to transfer from img1 pixel coordinates to img2 pixel coordinates including any world transformations. In this case the dimensions of the two images can be unrelated. The optional argument overlap contains the overlap of the two images in pixels.
+
+### updateHistogramSize
+
+```cpp
+void ImFusion::SimilarityMeasureMI_GL::updateHistogramSize ()
+```
+
+*override, protected, virtual*

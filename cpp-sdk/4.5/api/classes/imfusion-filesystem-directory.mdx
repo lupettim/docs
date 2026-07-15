@@ -1,0 +1,233 @@
+---
+title: "ImFusion::Filesystem::Directory"
+sidebarTitle: "Directory"
+description: "Entity representing a Directory in the filesystem."
+---
+
+`#include <ImFusion/Core/Filesystem/Directory.h>`
+
+## Overview
+
+Entity representing a [Directory](/cpp-sdk/4.5/api/classes/imfusion-filesystem-directory) in the filesystem.
+
+The file does not necessarily exist and [Directory](/cpp-sdk/4.5/api/classes/imfusion-filesystem-directory) will not perform any checks whether the given file name represents a valid identifier for the current platform.
+
+The underlying [Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path) will always be absolute and without trailing slash: if you construct an instance using a relative path or with a trailing slash the constructor will make it absolute using the currentWorkingDirectory() and remove trailing slashes with removeTrailingSlash(). All subsequent calls to member functions will correspond to the resulting path.
+
+**Examples:** [Filesystem.cpp](/cpp-sdk/4.5/api/examples/filesystem-8cpp).
+
+## Public Types
+
+- enum class [SortOption](#sortoption) &#123; **Unsorted** = 0x0 , **Name** = 0x1 , **Extension** = 0x2 , Size = 0x4 , Time = 0x8 , IgnoreCase = 0x10 , DirsFirst = 0x20 , DirsLast = 0x40 , Reversed = 0x80 &#125; — Sorting options for paths inside a directory One of the first 5 options (Unsorted, Name, [Extension](/cpp-sdk/4.5/api/classes/imfusion-dicom-extension), Size, Time) might be or-combined with one or multiple of the following options.
+- using **SortOptions** = [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt;[SortOption](#sortoption)&gt;
+
+## Public Member Functions
+
+- [Directory](#directory-1-3) (const [Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path) &path) — Create a new [Directory](/cpp-sdk/4.5/api/classes/imfusion-filesystem-directory) instance for the given path.
+- [Directory](#directory-2-3) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &path) — Create a new [Directory](/cpp-sdk/4.5/api/classes/imfusion-filesystem-directory) instance for the given path.
+- [Directory](#directory-3-3) (const char \*path) — Create a new [Directory](/cpp-sdk/4.5/api/classes/imfusion-filesystem-directory) instance for the given path.
+- **operator Path** () const — Allow for implicit conversion to a [Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path).
+
+## Query directory properties
+
+- [Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path) **path** () const — Gets the path of the directory.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **string** () const — Gets the path of the directory as string.
+- [Directory](#directory-1-3) **parentDirectory** () const — Returns the absolute path to the parent directory, convenience function for [Directory](/cpp-sdk/4.5/api/classes/imfusion-filesystem-directory)(path().parentPath()).
+- [Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path) **parentPath** () const — Returns the absolute path to the parent directory, convenience function for path().parentPath().
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **name** () const — Gets the name of the directory, convenience function for path().fileName().
+- bool **exists** () const — Check if the directory exists and is actually a directory.
+- bool **isEmpty** () const — Check if the directory is empty.
+- bool **isWritable** () const — Checks if the directory exists and is writable, in other words if a file can be created in it.
+- bool **contains** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &filename) const — Check if the directory contains a file or subdirectory named *filename*.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path) &gt; [scan](#scan) (const [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; bool(const [Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path) &)&gt; &filter=nullptr, SortOptions options=SortOption::Name) const — Scans the directory and collects the paths inside that pass the (optional) lambda filter.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path) &gt; [scanRecursive](#scanrecursive) (const [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; bool(const [Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path) &)&gt; &filter=nullptr) const — Recursively scans the directory and collects the paths inside that pass the (optional) lambda filter.
+
+## Perform filesystem interactions
+
+- bool [copyTo](#copyto) (const [Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path) &destination, [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; CopyOptions &gt; copyOptions=CopyOptions::None, [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; bool(const [Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path) &sourcePath)&gt; filter=nullptr) const — Copies this directory and its contents to *destination* based on the provided options and optional filter.
+- bool [rename](#rename) (const [Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path) &newName) — Renames the directory.
+- bool [remove](#remove) () const — Delete the directory if it's empty.
+- bool [removeRecursive](#removerecursive) () const — Delete the directory and all of its contents.
+- bool [removeContents](#removecontents) () const — Delete all the contents of the directory without deleting the directory itself.
+- bool [create](#create) () const — Creates the directory on the filesystem (the parent directory must already exist).
+- bool [createRecursive](#createrecursive) () const — Recursively create the directory (including parent directories if needed).
+
+## Member Enumeration Documentation
+
+### SortOption
+
+```cpp
+enum class ImFusion::Filesystem::Directory::SortOption
+```
+
+*strong*
+
+Sorting options for paths inside a directory One of the first 5 options (Unsorted, Name, [Extension](/cpp-sdk/4.5/api/classes/imfusion-dicom-extension), Size, Time) might be or-combined with one or multiple of the following options.
+
+**See also:** [scan()](#scan)
+
+**Enumerator:**
+
+- `Size` — by file extension
+- `Time` — by file-size: directories are not sorted and returned at the beginning of the output
+- `IgnoreCase` — by last-modified time
+- `DirsFirst` — case-insensitive sorting by name or extension
+- `DirsLast` — directories are sorted first
+- `Reversed` — directories are sorted last
+
+## Constructor & Destructor Documentation
+
+### Directory
+
+```cpp
+ImFusion::Filesystem::Directory::Directory (const Path & path)
+```
+
+Create a new [Directory](/cpp-sdk/4.5/api/classes/imfusion-filesystem-directory) instance for the given path.
+
+If *path* is relative it will be made absolute wrt. currentWorkingDirectory() and all future calls to member functions will use this absolute path.
+
+**Note:** This will *not* create the directory on the filesystem.
+
+### Directory
+
+```cpp
+ImFusion::Filesystem::Directory::Directory (const std::string & path)
+```
+
+*explicit*
+
+Create a new [Directory](/cpp-sdk/4.5/api/classes/imfusion-filesystem-directory) instance for the given path.
+
+If *path* is relative it will be made absolute wrt. currentWorkingDirectory() and all future calls to member functions will use this absolute path.
+
+**Note:** This will *not* create the directory on the filesystem.
+
+### Directory
+
+```cpp
+ImFusion::Filesystem::Directory::Directory (const char * path)
+```
+
+*explicit*
+
+Create a new [Directory](/cpp-sdk/4.5/api/classes/imfusion-filesystem-directory) instance for the given path.
+
+If *path* is relative it will be made absolute wrt. currentWorkingDirectory() and all future calls to member functions will use this absolute path.
+
+**Note:** This will *not* create the directory on the filesystem.
+
+## Member Function Documentation
+
+### scan
+
+```cpp
+std::vector < Path > ImFusion::Filesystem::Directory::scan (const std::function < bool(const Path &)> & filter = nullptr, SortOptions options = SortOption::Name) const
+```
+
+Scans the directory and collects the paths inside that pass the (optional) lambda filter.
+
+If no filter is applied, it returns all the paths. SortOptions can be specified for the result
+
+**Parameters:**
+
+- `filter` — Optional filter function (e.g. check for pattern, extension, type). Provides the absolute path as argument, [scan()](#scan) will only list elements where this function returns true.
+- `options` — Optional options specifying how to sort the resulting vector of paths (default is sorting by filename)
+
+**Examples:** [Filesystem.cpp](/cpp-sdk/4.5/api/examples/filesystem-8cpp).
+
+### scanRecursive
+
+```cpp
+std::vector < Path > ImFusion::Filesystem::Directory::scanRecursive (const std::function < bool(const Path &)> & filter = nullptr) const
+```
+
+Recursively scans the directory and collects the paths inside that pass the (optional) lambda filter.
+
+If no filter is applied, it returns all the paths.
+
+**Parameters:**
+
+- `filter` — Optional filter function (e.g. check for pattern, extension, type). Provides the absolute path as argument, [scanRecursive()](#scanrecursive) will only list elements where this function returns true. However, even if you reject a directory through a filter it will still be scanned recursively.
+
+**Examples:** [Filesystem.cpp](/cpp-sdk/4.5/api/examples/filesystem-8cpp).
+
+### copyTo
+
+```cpp
+bool ImFusion::Filesystem::Directory::copyTo (const Path & destination, Flags < CopyOptions > copyOptions = CopyOptions::None, std::function < bool(const Path &sourcePath)> filter = nullptr) const
+```
+
+Copies this directory and its contents to *destination* based on the provided options and optional filter.
+
+**Parameters:**
+
+- `destination` — Target directory name of copy. Must be a directory if already existing.
+- `copyOptions` — Optional flags to control the behavior of this function.
+- `filter` — Optional filter function, if provided will copy only those elements where it returns true. This function is forwarded to [scan()](#scan) in order to determine the directory contents to copy.
+
+### rename
+
+```cpp
+bool ImFusion::Filesystem::Directory::rename (const Path & newName)
+```
+
+Renames the directory.
+
+Returns true upon success.
+
+**Parameters:**
+
+- `newName` — The new name
+
+### remove
+
+```cpp
+bool ImFusion::Filesystem::Directory::remove () const
+```
+
+Delete the directory if it's empty.
+
+If the path is a symbolic link, it removes only the link. If the directory did not exist in the first place, does nothing and returns true.
+
+### removeRecursive
+
+```cpp
+bool ImFusion::Filesystem::Directory::removeRecursive () const
+```
+
+Delete the directory and all of its contents.
+
+If the path is a symbolic link, it removes only the link. If the directory did not exist in the first place, does nothing and returns true.
+
+### removeContents
+
+```cpp
+bool ImFusion::Filesystem::Directory::removeContents () const
+```
+
+Delete all the contents of the directory without deleting the directory itself.
+
+If the directory did not exist and/or was empty in the first place, does nothing and returns true.
+
+### create
+
+```cpp
+bool ImFusion::Filesystem::Directory::create () const
+```
+
+Creates the directory on the filesystem (the parent directory must already exist).
+
+Fails if the parent directory does not yet exist. If this instance resolves to an already existing directory, no error is reported.
+
+### createRecursive
+
+```cpp
+bool ImFusion::Filesystem::Directory::createRecursive () const
+```
+
+Recursively create the directory (including parent directories if needed).
+
+If this instance resolves to an already existing directory, no error is reported.
+
+**Examples:** [Filesystem.cpp](/cpp-sdk/4.5/api/examples/filesystem-8cpp).

@@ -1,0 +1,26 @@
+var struct_im_fusion_1_1_poisson_reconstruction_1_1_poisson_params =
+[
+    [ "depth", "struct_im_fusion_1_1_poisson_reconstruction_1_1_poisson_params.html#a0812e92527993fdfda4af16d8b3452fa", null ],
+    [ "iters", "struct_im_fusion_1_1_poisson_reconstruction_1_1_poisson_params.html#a8341ceab0d18ab0b12513af6328854cf", null ],
+    [ "boundaryType", "struct_im_fusion_1_1_poisson_reconstruction_1_1_poisson_params.html#a2d3e2afb34a780ec162b4db3ccb7fc4b", null ],
+    [ "samplesPerNode", "struct_im_fusion_1_1_poisson_reconstruction_1_1_poisson_params.html#ae9d25a54222ede3c632eb3ed5fd06f25", null ],
+    [ "scale", "struct_im_fusion_1_1_poisson_reconstruction_1_1_poisson_params.html#a5dece600c83d396aae494c7d7af3f643", null ],
+    [ "solverAccuracy", "struct_im_fusion_1_1_poisson_reconstruction_1_1_poisson_params.html#aafa73171570957450ad7a50e59aee2c4", null ],
+    [ "pointWeight", "struct_im_fusion_1_1_poisson_reconstruction_1_1_poisson_params.html#a476b57c4649e256890fd8977b8876bde", null ],
+    [ "confidence", "struct_im_fusion_1_1_poisson_reconstruction_1_1_poisson_params.html#aff0804ce862a4cf8b93a4c1018440a41", null ],
+    [ "density", "struct_im_fusion_1_1_poisson_reconstruction_1_1_poisson_params.html#ab40533fab2d474b53aaa5442f474dec6", null ],
+    [ "verbose", "struct_im_fusion_1_1_poisson_reconstruction_1_1_poisson_params.html#a42e65da7d4018c383618b019c62eee2d", null ],
+    [ "width", "struct_im_fusion_1_1_poisson_reconstruction_1_1_poisson_params.html#a8174835d15715138458a0245a66b8ccb", null ],
+    [ "confidenceBias", "struct_im_fusion_1_1_poisson_reconstruction_1_1_poisson_params.html#a57d109388115cfe0a3f79b1a7a485b3d", null ],
+    [ "dataX", "struct_im_fusion_1_1_poisson_reconstruction_1_1_poisson_params.html#aadd7322274a210018eb80529afcb80f4", null ],
+    [ "colors", "struct_im_fusion_1_1_poisson_reconstruction_1_1_poisson_params.html#acead24aa3c55e454f4a2e1ed2f1aa4c7", null ],
+    [ "normals", "struct_im_fusion_1_1_poisson_reconstruction_1_1_poisson_params.html#ae4fa63bdf6f1dc36e746066676ccdd6c", null ],
+    [ "baseDepth", "struct_im_fusion_1_1_poisson_reconstruction_1_1_poisson_params.html#ac7df29543b7f1a0cbb30827a5d54552b", null ],
+    [ "baseVCycles", "struct_im_fusion_1_1_poisson_reconstruction_1_1_poisson_params.html#abf11f9d1d5727c2f018258c27d04ce1a", null ],
+    [ "linearFit", "struct_im_fusion_1_1_poisson_reconstruction_1_1_poisson_params.html#a32de3c931fe4e58f0bb6481f0a6d1559", null ],
+    [ "degree", "struct_im_fusion_1_1_poisson_reconstruction_1_1_poisson_params.html#ac078fd7349b332ac205cbc5833dad5f5", null ],
+    [ "maxMemoryGB", "struct_im_fusion_1_1_poisson_reconstruction_1_1_poisson_params.html#a10ea4bbb364a8cba6d7f3a059f154f46", null ],
+    [ "densityThresholdMode", "struct_im_fusion_1_1_poisson_reconstruction_1_1_poisson_params.html#a89c5b45226894adf762c8a5d478af512", null ],
+    [ "densityThreshold", "struct_im_fusion_1_1_poisson_reconstruction_1_1_poisson_params.html#a202fa29e681a9e0f3bc9475b2440a61b", null ],
+    [ "useDensityToColor", "struct_im_fusion_1_1_poisson_reconstruction_1_1_poisson_params.html#a5d08100da7fdaa958c7a02762746ec7d", null ]
+];

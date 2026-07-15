@@ -1,0 +1,66 @@
+---
+title: "ImFusion::ImageTemplateDataComponent"
+sidebarTitle: "ImageTemplateDataComponent"
+description: "Data component for storing a ImageTemplate in a SharedImageSet ."
+---
+
+`#include <ImFusion/Base/ImageTemplateDataComponent.h>`
+
+## Overview
+
+[Data](/cpp-sdk/4.5/api/classes/imfusion-data) component for storing a [ImageTemplate](/cpp-sdk/4.5/api/classes/imfusion-imagetemplate) in a [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset).
+
+## Public Member Functions
+
+- **ImageTemplateDataComponent** (const ImageTemplateDataComponent &other)
+- ImageTemplateDataComponent & **operator=** (const ImageTemplateDataComponent &other)
+- bool **operator==** (const ImageTemplateDataComponent &other) const
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [id](#id) () const override — Returns a unique string identifier for this type of data component.
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+## Public Attributes
+
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [ImageTemplate](/cpp-sdk/4.5/api/classes/imfusion-imagetemplate) &gt; **imageTemplate** = nullptr
+
+## Member Function Documentation
+
+### id
+
+```cpp
+std::string ImFusion::ImageTemplateDataComponent::id () const
+```
+
+*inline, override, virtual*
+
+Returns a unique string identifier for this type of data component.
+
+**Note:** To avoid conflicts make sure to include potential plugin names into this ID. Due to the modular architecture of the ImFusion library, uniqueness of IDs cannot be checked at compile time. However, [DataComponentFactory](/cpp-sdk/4.5/api/classes/imfusion-datacomponentfactory) will check the uniqueness of the ID during registration.
+
+### configure
+
+```cpp
+void ImFusion::ImageTemplateDataComponent::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### configuration
+
+```cpp
+void ImFusion::ImageTemplateDataComponent::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality

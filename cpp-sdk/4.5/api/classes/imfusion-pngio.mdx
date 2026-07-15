@@ -1,0 +1,86 @@
+---
+title: "ImFusion::PngIO"
+sidebarTitle: "PngIO"
+---
+
+## Static Public Member Functions
+
+- static [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) &gt; [readImage](#readimage-1-2) (const [Filesystem::Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path) &filename, [std::map](http://en.cppreference.com/w/cpp/container/map.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html), [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; \*outTextChunks=nullptr) — Load a PNG image from the filesystem.
+- static [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) &gt; [readImage](#readimage-2-2) ([ByteBufferView](/cpp-sdk/4.5/api/classes/imfusion-bytebufferview) buffer, [std::map](http://en.cppreference.com/w/cpp/container/map.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html), [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; \*outTextChunks=nullptr) — Load a PNG image from a [ByteBuffer](/cpp-sdk/4.5/api/classes/imfusion-bytebuffer).
+- static bool [writeImage](#writeimage-1-2) (const [Filesystem::Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path) &filename, const [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) &image, int compression=3) — Save a PNG image to the filesystem.
+- static [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [ByteBuffer](/cpp-sdk/4.5/api/classes/imfusion-bytebuffer) &gt; [writeImage](#writeimage-2-2) (const [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) &image, int compression=3) — Save a PNG image to a [ByteBuffer](/cpp-sdk/4.5/api/classes/imfusion-bytebuffer).
+
+## Member Function Documentation
+
+### readImage
+
+```cpp
+std::unique_ptr < MemImage > ImFusion::PngIO::readImage (const Filesystem::Path & filename, std::map < std::string, std::string > * outTextChunks = nullptr)
+```
+
+*static*
+
+Load a PNG image from the filesystem.
+
+Will return a nullptr on error.
+
+**Parameters:**
+
+- `filename` — Path to the PNG file on the local filesystem to load from.
+- `outTextChunks` — Optional output parameter to store key-value text chunks present in the PNG file.
+
+### readImage
+
+```cpp
+std::unique_ptr < MemImage > ImFusion::PngIO::readImage (ByteBufferView buffer, std::map < std::string, std::string > * outTextChunks = nullptr)
+```
+
+*static*
+
+Load a PNG image from a [ByteBuffer](/cpp-sdk/4.5/api/classes/imfusion-bytebuffer).
+
+Will return a nullptr on error.
+
+**Parameters:**
+
+- `buffer` — Memory buffer containing a valid PNG file structure to load from.
+- `outTextChunks` — Optional output parameter to store key-value text chunks present in the PNG file.
+
+### writeImage
+
+```cpp
+bool ImFusion::PngIO::writeImage (const Filesystem::Path & filename, const MemImage & image, int compression = 3)
+```
+
+*static*
+
+Save a PNG image to the filesystem.
+
+Note: If the type of *image* is Image::FLOAT or image.shift() != 0.0 or its image.scale() != 1.0, *image* will be normalized using [ImageProcessing::Normalization::ValueRange](/cpp-sdk/4.5/api/namespaces/imfusion-imageprocessing) before it is converted to PNG. Otherwise, no normalization is performed.
+
+**Parameters:**
+
+- `filename` — Path to the PNG file on the local filesystem to be created.
+- `image` — [Image](/cpp-sdk/4.5/api/classes/imfusion-image) to save
+- `compression` — [Compression](/cpp-sdk/4.5/api/namespaces/imfusion-compression) level. Valid values range from 0-9, corresponding directly to the zlib compression levels (0 - no compression, 9 - "maximal" compression).
+
+**Returns:** Whether the operation was successful
+
+### writeImage
+
+```cpp
+std::unique_ptr < ByteBuffer > ImFusion::PngIO::writeImage (const MemImage & image, int compression = 3)
+```
+
+*static*
+
+Save a PNG image to a [ByteBuffer](/cpp-sdk/4.5/api/classes/imfusion-bytebuffer).
+
+Note: If the type of *image* is Image::FLOAT or image.shift()!=0.0 or its image.scale()!=1.0, *image* will be normalized using [ImageProcessing::Normalization::ValueRange](/cpp-sdk/4.5/api/namespaces/imfusion-imageprocessing) before it is converted to PNG. Otherwise, no normalization is performed.
+
+**Parameters:**
+
+- `image` — [Image](/cpp-sdk/4.5/api/classes/imfusion-image) to save
+- `compression` — [Compression](/cpp-sdk/4.5/api/namespaces/imfusion-compression) level. Valid values range from 0-9, corresponding directly to the zlib compression levels (0 - no compression, 9 - "maximal" compression).
+
+**Returns:** nullptr on error

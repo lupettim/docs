@@ -1,0 +1,104 @@
+---
+title: "ImFusion::GlMedianFilter"
+sidebarTitle: "GlMedianFilter"
+description: "Median Filter."
+---
+
+`#include <ImFusion/GL/GlMedianFilter.h>`
+
+## Overview
+
+Median Filter.
+
+**Note:** The median filter performs a sorting of the pixel neighborhood and assigns the median pixel value to the center pixel.
+
+**Note:** In this implementation, an additional threshold can be defined and only pixels with a value below or above will be median filtered.
+
+**Note:** Adapted from [http://graphics.cs.williams.edu/papers/MedianShaderX6/median.pix](http://graphics.cs.williams.edu/papers/MedianShaderX6/median.pix) and [http://graphics.cs.williams.edu/papers/MedianShaderX6/median5.pix](http://graphics.cs.williams.edu/papers/MedianShaderX6/median5.pix)
+
+## Public Types
+
+- enum [Submode](#submode) &#123; FILTER_PEPPER , FILTER_SALT , **FILTER_SALT_PEPPER** , FILTER_ALL , **NR_SUBMODES** &#125; — Filter submode.
+
+## Public Member Functions
+
+- **GlMedianFilter** ([GL::Framebuffer](/cpp-sdk/4.5/api/classes/imfusion-gl-framebuffer) \*fbo=0)
+- bool [setKernelSize](#setkernelsize) (int size, double k) override
+- void **setSubmode** (int mode) — Set the filter submode.
+- void [compute](#compute) (const [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) &imgIn, [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) &imgOut) override — Execute the filter on the image.
+- bool [good](#good) () const override — Return true if the filter can be used, in particular if the shaders are available.
+
+## Protected Attributes
+
+- [GL::ImageProgram](/cpp-sdk/4.5/api/classes/imfusion-gl-imageprogram) \* **m_program**
+- int [m_kernelSize](#m-kernelsize) — Kernel size in pixels.
+- double **m_threshold** — Discard pixels above/below the threshold and replace with mean of neighborhood.
+- int **m_submode** — Filter submode.
+
+## Member Enumeration Documentation
+
+### Submode
+
+```cpp
+enum ImFusion::GlMedianFilter::Submode
+```
+
+Filter submode.
+
+**Enumerator:**
+
+- `FILTER_PEPPER` — Apply the filter only to dark pixels that lie beneath the threshold. E.g. for removal of 'dead' pixels.
+- `FILTER_SALT` — Apply the filter only to bright pixels that lie above the threshold. E.g. for removal of overdriven pixels.
+- `FILTER_ALL` — Apply the filter only to pixels when the absolute intensity difference to the neighborhood median pixel lies above the threshold.
+The threshold value is multiplied by a factor of 0.1 in the shader. Apply the filter to entire image. Doesn't take threshold into account.
+
+## Member Function Documentation
+
+### setKernelSize
+
+```cpp
+bool ImFusion::GlMedianFilter::setKernelSize (int size, double k)
+```
+
+*override, virtual*
+
+**Parameters:**
+
+- `size` — Size of quadratic kernel. Currently supported sizes are 3 and 5.
+- `k` — Threshold value. Note that this is the slider value multiplied by 0.01
+
+**Warning:** Filtering a 3D image using the 5x5x5 kernel is costly. Computation time is about 1min for a 512^3 image.
+
+### compute
+
+```cpp
+void ImFusion::GlMedianFilter::compute (const GlImage & imgIn, GlImage & imgOut)
+```
+
+*override, virtual*
+
+Execute the filter on the image.
+
+### good
+
+```cpp
+bool ImFusion::GlMedianFilter::good () const
+```
+
+*override, virtual*
+
+Return true if the filter can be used, in particular if the shaders are available.
+
+## Member Data Documentation
+
+### m_kernelSize
+
+```cpp
+int ImFusion::GlMedianFilter::m_kernelSize
+```
+
+*protected*
+
+Kernel size in pixels.
+
+**Note:** Default values for [GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui) elements representing these member variables are set in GlFilterSet::initParamInfo().

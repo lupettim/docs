@@ -1,0 +1,129 @@
+---
+title: "ImFusion::GlFilter"
+sidebarTitle: "GlFilter"
+description: "Base class for filters."
+---
+
+`#include <ImFusion/GL/GlFilter.h>`
+
+## Overview
+
+[Base](/cpp-sdk/4.5/api/structs/imfusion-dicom-base) class for filters.
+
+## Public Member Functions
+
+- **GlFilter** ([GL::Framebuffer](/cpp-sdk/4.5/api/classes/imfusion-gl-framebuffer) \*fbo=0) — Constructor with optional FBO to use. If no FBO is specified a private FBO is created.
+- **~GlFilter** () override — Destructor.
+- void [compute](#compute-1-3) () override — [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) interface.
+- virtual bool [setKernelSize](#setkernelsize-1-2) (int, double) — Common interface to set filter kernel size and parameter.
+- virtual bool [setKernelSize](#setkernelsize-2-2) (double, vec3, double) — Common interface to set filter kernel size in mm and parameter.
+- virtual void [compute](#compute-2-3) (const [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) &imgIn, [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) &imgOut)=0 — Execute the filter on the image.
+- virtual void **compute** ([SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) &imgIn, [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) &imgOut)
+- virtual void [compute](#compute-3-3) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) \* &gt; &imgIn, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) \* &gt; &imgOut) — Convenience function for executing filter on multiple images.
+- virtual void [prepareForMasking](#prepareformasking) ([Mask](/cpp-sdk/4.5/api/classes/imfusion-mask) \*) — Prepare the filter's GlProgram(s) for masking.
+- virtual bool [good](#good) () const =0 — Return true if the filter can be used, in particular if the shaders are available.
+- virtual bool [supportsMetricMode](#supportsmetricmode) () const — Return true if the filter supports anisotropic spacing, i.e. metric.
+- void [setMetricMode](#setmetricmode) (bool value) — If the [GlFilter](/cpp-sdk/4.5/api/classes/imfusion-glfilter) supports metric, i.e.
+- bool **metricMode** () const — Getter for m_metricMode.
+
+## Protected Attributes
+
+- [GL::Framebuffer](/cpp-sdk/4.5/api/classes/imfusion-gl-framebuffer) \* **m_fbo**
+- bool **m_ownFbo**
+- bool **m_metricMode** — If set to true the [GlFilter](/cpp-sdk/4.5/api/classes/imfusion-glfilter) result will be computed taking the spacing into account.
+
+## Member Function Documentation
+
+### compute
+
+```cpp
+void ImFusion::GlFilter::compute ()
+```
+
+*inline, override, virtual*
+
+[Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) interface.
+
+### setKernelSize
+
+```cpp
+virtual bool ImFusion::GlFilter::setKernelSize (int, double)
+```
+
+*inline, virtual*
+
+Common interface to set filter kernel size and parameter.
+
+### setKernelSize
+
+```cpp
+virtual bool ImFusion::GlFilter::setKernelSize (double, vec3, double)
+```
+
+*inline, virtual*
+
+Common interface to set filter kernel size in mm and parameter.
+
+### compute
+
+```cpp
+virtual void ImFusion::GlFilter::compute (const GlImage & imgIn, GlImage & imgOut)
+```
+
+*pure virtual*
+
+Execute the filter on the image.
+
+### compute
+
+```cpp
+virtual void ImFusion::GlFilter::compute (const std::vector < GlImage * > & imgIn, std::vector < GlImage * > & imgOut)
+```
+
+*virtual*
+
+Convenience function for executing filter on multiple images.
+
+**Note:** This is not adjusted in order to handle masks of SharedImages.
+
+### prepareForMasking
+
+```cpp
+virtual void ImFusion::GlFilter::prepareForMasking (Mask *)
+```
+
+*inline, virtual*
+
+Prepare the filter's GlProgram(s) for masking.
+
+**Note:** Reimplement this in derived filter classes if they are supposed to support masking.
+
+### good
+
+```cpp
+virtual bool ImFusion::GlFilter::good () const
+```
+
+*pure virtual*
+
+Return true if the filter can be used, in particular if the shaders are available.
+
+### supportsMetricMode
+
+```cpp
+virtual bool ImFusion::GlFilter::supportsMetricMode () const
+```
+
+*virtual*
+
+Return true if the filter supports anisotropic spacing, i.e. metric.
+
+### setMetricMode
+
+```cpp
+void ImFusion::GlFilter::setMetricMode (bool value)
+```
+
+If the [GlFilter](/cpp-sdk/4.5/api/classes/imfusion-glfilter) supports metric, i.e.
+
+[supportsMetricMode()](#supportsmetricmode) return true, the metric mode will be enabled or disabled based on the argument `value`.

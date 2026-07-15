@@ -1,0 +1,116 @@
+---
+title: "ImFusion::Slice"
+sidebarTitle: "Slice"
+description: "Represents a planar bounded slice in 3D space."
+---
+
+`#include <ImFusion/Base/Slice.h>`
+
+## Overview
+
+Represents a planar bounded slice in 3D space.
+
+## Classes
+
+- struct [Corners](/cpp-sdk/4.5/api/structs/imfusion-slice-corners)
+
+## Public Types
+
+- enum class [AnatomicalPlane](#anatomicalplane) &#123; Undefined = -1 , Axial = 0 , Sagittal = 1 , Coronal = 2 &#125; — Enumeration of standard anatomical planes for slice-based visualization.
+- enum [Corner](#corner) &#123; BottomLeft = 0 , BottomRight = 1 , TopRight = 2 , TopLeft = 3 &#125; — Readable names for defining the four corners of a slice.
+
+## Public Member Functions
+
+- **Slice** ([AnatomicalPlane](#anatomicalplane) plane=AnatomicalPlane::Axial) — Default constructor, optionally defining a standard plane.
+- **Slice** (const mat4 &m, double x, double y) — Constructor with transformation matrix and size.
+- [Slice](#slice) (const [Corners](/cpp-sdk/4.5/api/structs/imfusion-slice-corners) &corners) — Create a slice from its four corners.
+- **Slice** (const [Corners](/cpp-sdk/4.5/api/structs/imfusion-slice-corners) &corners, const vec3 &direction) — Create a slice from its four corners and its direction.
+- vec3 [corner](#corner) (int which) const — Return one of the corners of the slice.
+- int **axisClosest** () const — Returns the unit axis to which the normal of this slice is closest.
+- bool [intersect](#intersect) (const Slice &other, vec3 &point1, vec3 &point2, bool finite=false) const — Returns true if an intersection with another slice exists, providing the points then.
+- bool **intersect** (const vec3 &point1, const vec3 &point2, vec3 &pointOut, double &posOut) const — Returns true if an intersection with a line segment given by two points exists.
+
+## Public Attributes
+
+- mat4 **mat** — Transformation matrix of the slice.
+- double **sx** — Half of the slice's extent in X direction.
+- double **sy** — Half of the slice's extent in Y direction.
+
+## Matrix access methods for improved readability
+
+- vec3 **axis1** () const
+- vec3 **axis2** () const
+- vec3 **normal** () const
+- vec3 **position** () const
+
+## Member Enumeration Documentation
+
+### AnatomicalPlane
+
+```cpp
+enum class ImFusion::Slice::AnatomicalPlane
+```
+
+*strong*
+
+Enumeration of standard anatomical planes for slice-based visualization.
+
+**Enumerator:**
+
+- `Undefined` — unspecified plane.
+- `Axial` — horizontal/transverse plane dividing the body into cranial and caudal portions.
+- `Sagittal` — lateral/longitudinal plane dividing the body into left and right.
+- `Coronal` — frontal/vertical plane dividing the body into posterior and anterior portions.
+
+### Corner
+
+```cpp
+enum ImFusion::Slice::Corner
+```
+
+Readable names for defining the four corners of a slice.
+
+**Enumerator:**
+
+- `BottomLeft` — [Corner](#corner) at (-sx, -sy).
+- `BottomRight` — [Corner](#corner) at ( sx, -sy).
+- `TopRight` — [Corner](#corner) at ( sx, sy).
+- `TopLeft` — [Corner](#corner) at (-sx, sy).
+
+## Constructor & Destructor Documentation
+
+### Slice
+
+```cpp
+ImFusion::Slice::Slice (const Corners & corners)
+```
+
+*explicit*
+
+Create a slice from its four corners.
+
+The direction is determined from the cross product of the x-axis (left-to-right) and the y-axis (top-to-bottom).
+
+## Member Function Documentation
+
+### corner
+
+```cpp
+vec3 ImFusion::Slice::corner (int which) const
+```
+
+Return one of the corners of the slice.
+
+**Parameters:**
+
+- `which` — Index of the corner to return (cf. [Slice::Corner](#corner) enumeration)
+
+### intersect
+
+```cpp
+bool ImFusion::Slice::intersect (const Slice & other, vec3 & point1, vec3 & point2, bool finite = false) const
+```
+
+Returns true if an intersection with another slice exists, providing the points then.
+
+If the parameter finite is set to true, the method returns false in case the limited slice extent does not overlap. Output points are returned in all cases though.

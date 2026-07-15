@@ -1,0 +1,148 @@
+---
+title: "ImFusion::IoAlgorithm"
+sidebarTitle: "IoAlgorithm"
+description: "Interface for describing IO algorithms."
+---
+
+`#include <ImFusion/Base/IoAlgorithm.h>`
+
+## Overview
+
+Interface for describing IO algorithms.
+
+IO algorithms constructed with an empty [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) in [createCompatible()](/cpp-sdk/4.5/api/classes/imfusion-algorithm) will read data. IO algorithms constructed with a data set matching the IO algorithm capabilities will write data. If the data does not match the capabilities of the IO algorithm the creation will fail. Images are loaded and saved using the [compute()](/cpp-sdk/4.5/api/classes/imfusion-algorithm) method. Before calling compute the IO location has to be set using the setLocation() method. If the algorithm is a reader the loaded data will be available from the [takeOutput()](/cpp-sdk/4.5/api/classes/imfusion-algorithm) method. To find out whether the IO operation succeeded call [status()](#status). The supported file extensions (in case of a file-based IO algorithm) can be queried from the [supportedFileExtensions()](#supportedfileextensions) method. When implementing your algorithm you should not limit the locations to the ones with the correct extension. The extensions are only intended as help when displaying the file IO dialog.
+
+## Public Types
+
+- enum **IoMode** &#123; **Read** = 0 , **Write** = 1 &#125;
+- enum **LocationType** &#123; **File** = 1 , **Folder** = 2 , **URI** = 4 , **OpenIGTLink** = 8 , **Device** = 16 &#125; — [Status](/cpp-sdk/4.5/api/classes/imfusion-algorithm) codes.
+
+## Public Member Functions
+
+- **IoAlgorithm** (IoMode ioMode, int locationType) — Constructor for initializing IO algorithm.
+- virtual IoMode **ioMode** () const — Return IO mode.
+- virtual [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; [supportedFileExtensions](#supportedfileextensions) () const — Return supported file extensions (for file based IO).
+- virtual [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **suggestedSaveFileName** () const — Return a file name suggestion typically used by [IoController](/cpp-sdk/4.5/api/classes/imfusion-iocontroller) to prefill the file name in the save file dialog (for file based write).
+- virtual bool [canLoad](#canload) (const [Filesystem::Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path) &filepath) const — Returns whether the algorithm is suitable for loading the indicated file.
+- virtual bool [fail](#fail) (int \*errorCode=nullptr) const
+- int [status](#status) () const override — Indicates the status of the last call to [compute()](/cpp-sdk/4.5/api/classes/imfusion-algorithm).
+- virtual int [supportedLocations](#supportedlocations) () const — Return combination of supported location types from LocationType enum.
+- virtual void **setLocation** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &location) — Set location for subsequent loading/saving.
+- virtual [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **location** () const — Get location for loading/saving.
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Set one or multiple properties.
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Retrieve the properties of this object.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) &gt; [userOptions](#useroptions) (bool includeReadOptions, bool includeWriteOptions) const — Convenience method to retrieve all properties from this [IoAlgorithm](/cpp-sdk/4.5/api/classes/imfusion-ioalgorithm) that are tagged as user options to be configured during load/save.
+- void **configureFromGlobalSettings** () — Convenience method to configure the algorithm's user options with the values stored in the global settings.
+
+## Static Public Member Functions
+
+- static [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; IoAlgorithm &gt; **createFromLastDataSource** (const [DataSourceComponent](/cpp-sdk/4.5/api/classes/imfusion-datasourcecomponent) &dsc) — Virtual constructor that creates the [IoAlgorithm](/cpp-sdk/4.5/api/classes/imfusion-ioalgorithm) recorded last in the [DataSourceComponent](/cpp-sdk/4.5/api/classes/imfusion-datasourcecomponent).
+
+## Protected Member Functions
+
+- void [recordToDataSourceComponent](#recordtodatasourcecomponent) ([Data](/cpp-sdk/4.5/api/classes/imfusion-data) &data, int indexInFile) — Append the current configuration of the [IoAlgorithm](/cpp-sdk/4.5/api/classes/imfusion-ioalgorithm) to the [DataSourceComponent](/cpp-sdk/4.5/api/classes/imfusion-datasourcecomponent) of a data.
+
+## Protected Attributes
+
+- bool **m_forceCannotLoad** = false — Used to disable the [IoAlgorithm](/cpp-sdk/4.5/api/classes/imfusion-ioalgorithm) in the global settings by forcing [canLoad()](#canload) to return false.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **m_location**
+- IoMode **m_ioMode**
+- int **m_locationType**
+
+## Member Function Documentation
+
+### supportedFileExtensions
+
+```cpp
+virtual std::vector < std::string > ImFusion::IoAlgorithm::supportedFileExtensions () const
+```
+
+*virtual*
+
+Return supported file extensions (for file based IO).
+
+### canLoad
+
+```cpp
+virtual bool ImFusion::IoAlgorithm::canLoad (const Filesystem::Path & filepath) const
+```
+
+*virtual*
+
+Returns whether the algorithm is suitable for loading the indicated file.
+
+Default implementation simply compares the file extension. If m_forceCannotLoad is true, it returns false, which allows disabling the [IoAlgorithm](/cpp-sdk/4.5/api/classes/imfusion-ioalgorithm) in the global settings.
+
+### fail
+
+```cpp
+virtual bool ImFusion::IoAlgorithm::fail (int * errorCode = nullptr) const
+```
+
+*virtual*
+
+****Deprecated**:** "Use status() instead to check for success or obtain custom error codes (values &gt;= Status::Custom, see Algorithm::Status)"
+
+### status
+
+```cpp
+int ImFusion::IoAlgorithm::status () const
+```
+
+*override, virtual*
+
+Indicates the status of the last call to [compute()](/cpp-sdk/4.5/api/classes/imfusion-algorithm).
+
+Returns a predefined [Algorithm::Status](/cpp-sdk/4.5/api/classes/imfusion-algorithm) constant or custom algorithm-specific error codes (values &gt;= Status::Custom).
+
+### supportedLocations
+
+```cpp
+virtual int ImFusion::IoAlgorithm::supportedLocations () const
+```
+
+*virtual*
+
+Return combination of supported location types from LocationType enum.
+
+### configure
+
+```cpp
+void ImFusion::IoAlgorithm::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Set one or multiple properties.
+
+### configuration
+
+```cpp
+void ImFusion::IoAlgorithm::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Retrieve the properties of this object.
+
+### userOptions
+
+```cpp
+std::unique_ptr < Properties > ImFusion::IoAlgorithm::userOptions (bool includeReadOptions, bool includeWriteOptions) const
+```
+
+Convenience method to retrieve all properties from this [IoAlgorithm](/cpp-sdk/4.5/api/classes/imfusion-ioalgorithm) that are tagged as user options to be configured during load/save.
+
+Retrieves the configuration of this algorithms and filters only those parameters that have the 'useroption' attribute set according to *includeReadOptions* and *includeWriteOptions*. If such parameters are present (i.e. set in [configure()](#configure)) they will be shown during the load/save dialog of the default [IoController](/cpp-sdk/4.5/api/classes/imfusion-iocontroller), as well as in the global settings dialog.
+
+### recordToDataSourceComponent
+
+```cpp
+void ImFusion::IoAlgorithm::recordToDataSourceComponent (Data & data, int indexInFile)
+```
+
+*protected*
+
+Append the current configuration of the [IoAlgorithm](/cpp-sdk/4.5/api/classes/imfusion-ioalgorithm) to the [DataSourceComponent](/cpp-sdk/4.5/api/classes/imfusion-datasourcecomponent) of a data.
+
+If it does not exist already, the [DataSourceComponent](/cpp-sdk/4.5/api/classes/imfusion-datasourcecomponent) will be created.

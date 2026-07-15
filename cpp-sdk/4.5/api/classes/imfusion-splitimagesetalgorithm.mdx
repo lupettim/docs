@@ -1,0 +1,48 @@
+---
+title: "ImFusion::SplitImageSetAlgorithm"
+sidebarTitle: "SplitImageSetAlgorithm"
+description: "Algorithm to split an image set into multiple single images."
+---
+
+`#include <ImFusion/Base/SplitImageSetAlgorithm.h>`
+
+## Overview
+
+[Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) to split an image set into multiple single images.
+
+## Public Member Functions
+
+- **SplitImageSetAlgorithm** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*imageSet) — Constructor.
+- **~SplitImageSetAlgorithm** () override — Destructor.
+- void [compute](#compute) () override — Execute the algorithm.
+- [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) [takeOutput](#takeoutput) () override — Returns the output of the algorithm.
+
+## Static Public Member Functions
+
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=nullptr) — If data is compatible with algorithm return true. If a is not zero, create algorithm with input data.
+
+## Public Attributes
+
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; bool &gt; **p_makeCopy** = &#123;"Make copy", true, \*this&#125;
+
+## Member Function Documentation
+
+### compute
+
+```cpp
+void ImFusion::SplitImageSetAlgorithm::compute ()
+```
+
+*override, virtual*
+
+Execute the algorithm.
+
+### takeOutput
+
+```cpp
+OwningDataList ImFusion::SplitImageSetAlgorithm::takeOutput ()
+```
+
+*override, virtual*
+
+Returns the output of the algorithm.

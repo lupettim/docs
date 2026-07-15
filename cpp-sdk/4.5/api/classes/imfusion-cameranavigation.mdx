@@ -1,0 +1,56 @@
+---
+title: "ImFusion::CameraNavigation"
+sidebarTitle: "CameraNavigation"
+description: "Helper class to manipulate a 3D Camera using classic metaphors such as zoom, pan, etc."
+---
+
+`#include <ImFusion/GUI/CameraNavigation.h>`
+
+## Overview
+
+Helper class to manipulate a 3D [Camera](/cpp-sdk/4.5/api/classes/imfusion-camera) using classic metaphors such as zoom, pan, etc.
+
+For instance InputEventHandlers for 3D views can leverage this class to reduce their implementation complexity. At the beginning of an interaction you call reset() with a reference state. Then you call any number of member functions to configure the camera movement. Finally, you can query the resulting camera state using camera().
+
+## Public Member Functions
+
+- **CameraNavigation** (const [Camera](/cpp-sdk/4.5/api/classes/imfusion-camera) &referenceCam, double viewportHeight) — Creates a new [CameraNavigation](/cpp-sdk/4.5/api/classes/imfusion-cameranavigation) object calling reset() with the given parameters.
+- void **reset** (const [Camera](/cpp-sdk/4.5/api/classes/imfusion-camera) &referenceCam, double viewportHeight) — Resets the internal state to the given reference camera and viewport height.
+- const [Camera](/cpp-sdk/4.5/api/classes/imfusion-camera) & **referenceCamera** () const — Returns the reference camera state as passed during the last call to reset().
+- [Camera](/cpp-sdk/4.5/api/classes/imfusion-camera) **newCamera** () const — Returns the resulting camera setup after applying pan, zoom, and rotation to the reference camera passed during reset().
+- void **addPan** (const vec2 &translationPx) — Accumulates in-plane panning to apply to the camera.
+- void **setPan** (const vec2 &translationPx) — Sets the in-plane panning to apply to the camera removing any previously accumulated panning.
+- void [addZoom](#addzoom) (double distance, bool adaptive=true) — Accumulates zooming to apply to the camera.
+- void [setZoom](#setzoom) (double distance, bool adaptive=true) — Sets the zooming to apply to the camera removing any previously accumulated zoom.
+- void **setRotationCenter** (const vec3 &position) — Sets the rotation center in world space around which the camera will be rotated.
+- const vec3 & **rotationCenter** () const — Returns the rotation center in world space around which the camera will be rotated.
+- void **addRotation** (const vec3 &degreesXYZ) — Accumulates a rotation around the rotation center in terms of degrees around the camera's XYZ axes.
+- void **setRotation** (const vec3 &degreesXYZ) — Sets the rotation around the rotation center in terms of degrees around the camera's XYZ axes.
+
+## Member Function Documentation
+
+### addZoom
+
+```cpp
+void ImFusion::CameraNavigation::addZoom (double distance, bool adaptive = true)
+```
+
+Accumulates zooming to apply to the camera.
+
+**Parameters:**
+
+- `distance` — Unit-less zoom amount, loosely relating to the camera movement in look direction for perspective projections, or a frustum height adjustment if similar scale for orthographic projections.
+- `adaptive` — If true, *distance* will be linearly scaled based on the current distance between camera and rotation center
+
+### setZoom
+
+```cpp
+void ImFusion::CameraNavigation::setZoom (double distance, bool adaptive = true)
+```
+
+Sets the zooming to apply to the camera removing any previously accumulated zoom.
+
+**Parameters:**
+
+- `distance` — Unit-less zoom amount, loosely relating to the camera movement in look direction for perspective projections, or a frustum height adjustment if similar scale for orthographic projections.
+- `adaptive` — If true, *distance* will be linearly scaled based on the current distance between camera and rotation center

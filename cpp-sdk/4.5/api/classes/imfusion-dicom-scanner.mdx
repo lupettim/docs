@@ -1,0 +1,242 @@
+---
+title: "ImFusion::Dicom::Scanner"
+sidebarTitle: "Scanner"
+description: "Scan different locations for DICOM files."
+---
+
+`#include <ImFusion/Dicom/GUI/Scanner.h>`
+
+## Overview
+
+Scan different locations for DICOM files.
+
+Currently supports scanning of folder, DICOMDIRs and PACS.
+
+Each found DICOM file is automatically split into a [Patient](/cpp-sdk/4.5/api/structs/imfusion-dicom-patient) -&gt; [Study](/cpp-sdk/4.5/api/structs/imfusion-dicom-study) -&gt; [Series](/cpp-sdk/4.5/api/structs/imfusion-dicom-series) -&gt; [Image](/cpp-sdk/4.5/api/structs/imfusion-dicom-image) hierarchy. When a new DICOM file is found, it will be merged into the existing hierarchy. E.g. two series of the same patient will result in a single [Patient](/cpp-sdk/4.5/api/structs/imfusion-dicom-patient) object containing two [Series](/cpp-sdk/4.5/api/structs/imfusion-dicom-series) objects. Patients are merged if their id and name are identical, Studies and [Series](/cpp-sdk/4.5/api/structs/imfusion-dicom-series) are merged when their instanceUIDs are identical. Be aware that empty ids do not receive any special treatment. This means that all DICOMs without valid patient information will be merged into one patient.
+
+This class is limited thread-safe: the scan methods can be called from one thread while takePatients or cancel are called from another. Calling multiple scan methods simultaneously from different threads is not supported! The scan methods already try to parallelize their work as best as possible. To run a scan in the background, [std::async](http://en.cppreference.com/w/cpp/thread/async.html) can be used:
+
+```cpp
+auto cache = std::make_shared<Dicom::DatasetCache>();
+Dicom::Scanner scanner(cache);
+std::future<std::vector<Patient*>> patients = std::async(std::launch::async, [&scanner]() {
+    scanner.scanDirectory("/some/dir", true, false, true);
+ return scanner.takePatients();
+});
+```
+ fragment
+Internally the [Scanner](/cpp-sdk/4.5/api/classes/imfusion-dicom-scanner) uses [Dicom::DatasetCache](/cpp-sdk/4.5/api/classes/imfusion-dicom-datasetcache) for loading DICOMs.
+
+## Public Member Functions
+
+- **Scanner** (Dicom::SharedDatasetCache cache)
+- void **setPacs** ([DicomPacsCommunication](/cpp-sdk/4.5/api/classes/imfusion-dicompacscommunication) \*pacs) — Sets the PACS instance to use for scanning.
+- void **setDatasetCache** (Dicom::SharedDatasetCache cache)
+- Dicom::SharedDatasetCache **datasetCache** () const
+- void [setNumberOfThreads](#setnumberofthreads) (int threads) — Sets the number of threads used internally.
+- int **numberOfThreads** () const
+- void [scanDirectory](#scandirectory) (const QString &directory, bool recursive, bool useDicomdirOnly, bool checkDicomHeader) — Scan a directory for [Dicom](/cpp-sdk/4.5/api/namespaces/imfusion-dicom) files.
+- void [scanDicomDir](#scandicomdir) (const QString &dicomDirFile) — Scan a DICOMDIR file.
+- void [scanPacs](#scanpacs-1-2) (const DcmDataset &requestedTags) — Retrieve patients from a PACS with a C-FIND.
+- void [scanPacs](#scanpacs-2-2) (const QString &patientNameFilter, const QString &studyFilter) — Retrieve patients from a PACS by requesting the default tags.
+- void [scanPacsSeries](#scanpacsseries) ([PacsSeriesProxy](/cpp-sdk/4.5/api/structs/imfusion-dicom-pacsseriesproxy) \*psp) — Retrieve a series from a PACS with a C-MOVE.
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [Network::HttpError](/cpp-sdk/4.5/api/structs/imfusion-network-httperror) &gt; [scanWeb](#scanweb) (const [Filesystem::Url](/cpp-sdk/4.5/api/classes/imfusion-filesystem-url) &url) — Scans a DICOMweb server for patients.
+- void [cancel](#cancel) () — Cancel any scanning.
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Patient](/cpp-sdk/4.5/api/structs/imfusion-dicom-patient) \* &gt; & [patients](#patients) () const — Return the patients found by the last scan.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [Patient](/cpp-sdk/4.5/api/structs/imfusion-dicom-patient) &gt; &gt; [takePatients](#takepatients) () — Retrieve the patients found by the last scan.
+
+## Protected Member Functions
+
+- virtual void [addPatient](#addpatient) ([Patient](/cpp-sdk/4.5/api/structs/imfusion-dicom-patient) \*patient) — Add a new patient to the scan results.
+- virtual void [removePacsProxy](#removepacsproxy) ([PacsSeriesProxy](/cpp-sdk/4.5/api/structs/imfusion-dicom-pacsseriesproxy) \*psp) — Remove a series proxy from the scan results.
+- virtual void [updateProgress](#updateprogress) (int val, int max) — Called by the scan methods to report the current progress.
+- virtual void [updateProgressText](#updateprogresstext) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &text) — Called by the scan methods to report the current progress.
+- void **scanDicomDirImpl** (const QString &dicomDirFile, bool callUpdateProgress)
+- QFileInfoList **retrieveFileList** (const QDir &directory, bool recursive, bool dicomdirOnly, int depth)
+
+## Protected Attributes
+
+- Dicom::SharedDatasetCache **m_cache**
+- [DicomPacsCommunication](/cpp-sdk/4.5/api/classes/imfusion-dicompacscommunication) \* **m_pacs**
+- [std::atomic](http://en.cppreference.com/w/cpp/atomic/atomic.html)&lt; bool &gt; **m_wasCancelled**
+- int **m_numThreads** — Number of threads used internally by scanDirectory.
+- [std::mutex](http://en.cppreference.com/w/cpp/thread/mutex.html) **m_patientsLock**
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Patient](/cpp-sdk/4.5/api/structs/imfusion-dicom-patient) \* &gt; **m_patients**
+
+## Member Function Documentation
+
+### setNumberOfThreads
+
+```cpp
+void ImFusion::Dicom::Scanner::setNumberOfThreads (int threads)
+```
+
+Sets the number of threads used internally.
+
+By default omp_get_max_threads() \* 3 / 4 threads are used. Currently only used by scanDirectory. Using multiple threads usually speeds up scanning large folders on HDDs and SSDs, but might have the opposite effect on slow USB or CD-ROM drives.
+
+### scanDirectory
+
+```cpp
+void ImFusion::Dicom::Scanner::scanDirectory (const QString & directory, bool recursive, bool useDicomdirOnly, bool checkDicomHeader)
+```
+
+Scan a directory for [Dicom](/cpp-sdk/4.5/api/namespaces/imfusion-dicom) files.
+
+This method is blocking.
+
+**Parameters:**
+
+- `recursive` — Specifies whether to recursively scan sub-directories as well
+- `useDicomdirOnly` — Only load a DICOMDIR contained in this folder or load nothing.
+- `checkDicomHeader` — Specifies whether to only load files containing a valid DICOM header.
+
+### scanDicomDir
+
+```cpp
+void ImFusion::Dicom::Scanner::scanDicomDir (const QString & dicomDirFile)
+```
+
+Scan a DICOMDIR file.
+
+This method is blocking.
+
+### scanPacs
+
+```cpp
+void ImFusion::Dicom::Scanner::scanPacs (const DcmDataset & requestedTags)
+```
+
+Retrieve patients from a PACS with a C-FIND.
+
+This requires a valid [DicomPacsCommunication](/cpp-sdk/4.5/api/classes/imfusion-dicompacscommunication) being set with setPacs. Contrary to the other scan method, the scan result will only contain Patients and Studies but no concrete [Series](/cpp-sdk/4.5/api/structs/imfusion-dicom-series).
+
+Downloading each series from the PACS directly would be too time consuming in general, so instead of [Series](/cpp-sdk/4.5/api/structs/imfusion-dicom-series) each [Study](/cpp-sdk/4.5/api/structs/imfusion-dicom-study) only contains a [PacsSeriesProxy](/cpp-sdk/4.5/api/structs/imfusion-dicom-pacsseriesproxy) that needs to be resolved into a real [Series](/cpp-sdk/4.5/api/structs/imfusion-dicom-series) by calling [scanPacsSeries](#scanpacsseries).
+
+The patients found by this method, will only contain the tags that are also present in the given DcmDataset. See scanPacs(QString, QString) for tags that should be contained in this DcmDataset. If the tags contain a value, the value will be used for filtering the result on the server. For example a PatientID of "510\*" would match all patients with an ID starting with "510".
+
+This method is blocking.
+
+### scanPacs
+
+```cpp
+void ImFusion::Dicom::Scanner::scanPacs (const QString & patientNameFilter, const QString & studyFilter)
+```
+
+Retrieve patients from a PACS by requesting the default tags.
+
+The default tags are:
+
+- StudyInstanceUID
+- StudyID
+- StudyTime
+- StudyDate
+- StudyDescription
+- PatientID
+- PatientName
+- PatientSex
+- PatientBirthDate
+- PatientComments
+
+**Parameters:**
+
+- `patientNameFilter` — Only retrieve patients with a matching PatientName. An empty string retrieves all patients.
+- `studyFilter` — Only retrieve studies with a matching StudyDescription. An empty string retrieves all studies.
+
+### scanPacsSeries
+
+```cpp
+void ImFusion::Dicom::Scanner::scanPacsSeries (PacsSeriesProxy * psp)
+```
+
+Retrieve a series from a PACS with a C-MOVE.
+
+This transfers the complete DICOM for a series proxy from the PACS. Note that a single series proxy can lead to multiple series to be downloaded.
+
+### scanWeb
+
+```cpp
+std::optional < Network::HttpError > ImFusion::Dicom::Scanner::scanWeb (const Filesystem::Url & url)
+```
+
+Scans a DICOMweb server for patients.
+
+The server must implement QIDO-RS. The URL must be to the DICOMweb endpoint of the server (e.g. [https://example.com/dicom-web](https://example.com/dicom-web)). and can contain query parameters. The query parameters are passed to the initial /studies request. If authentication is required, it can be set through [Dicom::DatasetCache::setAuthorizationProvider](/cpp-sdk/4.5/api/classes/imfusion-dicom-datasetcache). If an error occurs it is returned. The scan is not cancelled after an error.
+
+### cancel
+
+```cpp
+void ImFusion::Dicom::Scanner::cancel ()
+```
+
+Cancel any scanning.
+
+This method is thread-safe.
+
+### patients
+
+```cpp
+const std::vector < Patient * > & ImFusion::Dicom::Scanner::patients () const
+```
+
+Return the patients found by the last scan.
+
+No ownership is transfered. Triggering a new scan will delete the patients. This method is *not* thread-safe.
+
+### takePatients
+
+```cpp
+std::vector < std::unique_ptr < Patient > > ImFusion::Dicom::Scanner::takePatients ()
+```
+
+Retrieve the patients found by the last scan.
+
+Ownership is transfered of the patients to the caller. After calling this method [patients](#patients) will return an empty list. This method is thread-safe.
+
+### addPatient
+
+```cpp
+virtual void ImFusion::Dicom::Scanner::addPatient (Patient * patient)
+```
+
+*protected, virtual*
+
+Add a new patient to the scan results.
+
+The given patient is automatically merged with the existing patients. All scan methods call this method internally. This method is thread-safe and derived method must be thread-safe as well.
+
+### removePacsProxy
+
+```cpp
+virtual void ImFusion::Dicom::Scanner::removePacsProxy (PacsSeriesProxy * psp)
+```
+
+*protected, virtual*
+
+Remove a series proxy from the scan results.
+
+It is called by [scanPacsSeries](#scanpacsseries) once all series of a [PacsSeriesProxy](/cpp-sdk/4.5/api/structs/imfusion-dicom-pacsseriesproxy) were received. This method is thread-safe and derived method must be thread-safe as well.
+
+### updateProgress
+
+```cpp
+virtual void ImFusion::Dicom::Scanner::updateProgress (int val, int max)
+```
+
+*protected, virtual*
+
+Called by the scan methods to report the current progress.
+
+The default implementation doesn't do anything. This method is thread-safe and derived method must be thread-safe as well.
+
+### updateProgressText
+
+```cpp
+virtual void ImFusion::Dicom::Scanner::updateProgressText (const std::string & text)
+```
+
+*protected, virtual*
+
+Called by the scan methods to report the current progress.
+
+The default implementation doesn't do anything. This method is thread-safe and derived method must be thread-safe as well.

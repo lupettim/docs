@@ -1,0 +1,353 @@
+---
+title: "ImFusion::TypedImage< T >"
+sidebarTitle: "TypedImage< T >"
+description: "Concrete implementation of a MemImage for a given pixel type."
+---
+
+`#include <ImFusion/Base/TypedImage.h>`
+
+## Overview
+
+template&lt;typename T&gt;
+
+class ImFusion::TypedImage&lt; T &gt;
+Concrete implementation of a [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) for a given pixel type.
+
+A [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage) is movable but not copyable. Use clone() in order to perform a deep copy.
+
+**See also:** [Using Image Data](/cpp-sdk/4.5/api/guides/image-data-tutorial), [ImageProcessing](/cpp-sdk/4.5/api/namespaces/imfusion-imageprocessing)
+
+## Public Types
+
+- using **value_type** = T — Enumeration to describe image data pointer ownership.
+
+## Public Member Functions
+
+- [TypedImage](#typedimage-1-2) (const [ImageDescriptor](/cpp-sdk/4.5/api/structs/imfusion-imagedescriptor) &[descriptor](/cpp-sdk/4.5/api/classes/imfusion-image), T \*[data](#data-1-2)=nullptr, [Ownership](/cpp-sdk/4.5/api/classes/imfusion-memimage) own=[Ownership::NotOwning](/cpp-sdk/4.5/api/classes/imfusion-memimage)) — Create a new [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage) from an [ImageDescriptor](/cpp-sdk/4.5/api/structs/imfusion-imagedescriptor).
+- [TypedImage](#typedimage-2-2) (const vec3i &[dimensions](/cpp-sdk/4.5/api/classes/imfusion-image), int numChannels=1, T \*[data](#data-1-2)=nullptr, [Ownership](/cpp-sdk/4.5/api/classes/imfusion-memimage) own=[Ownership::NotOwning](/cpp-sdk/4.5/api/classes/imfusion-memimage)) — Create a new [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage) with given dimensions and channels.
+- **TypedImage** (const TypedImage &)=delete
+- [TypedImage](#typedimage-1-2) & **operator=** (const [TypedImage](#typedimage-1-2) &)=delete
+- **TypedImage** (TypedImage &&other) noexcept
+- [TypedImage](#typedimage-1-2) & **operator=** ([TypedImage](#typedimage-1-2) &&other) noexcept
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [TypedImage](#typedimage-1-2)&lt; T &gt; &gt; **clone** () const — Create a deep copy of the image.
+- bool **update** (const [TypedImage](#typedimage-1-2)&lt; T &gt; &other) — Update image data pointed to by this object. If the other image is not compatible with the current one the image is resized.
+- bool [update](#update) (const MemImage &other) override — Update image data pointed to by this object.
+- bool **update** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; T &gt; &[data](#data-1-2)) — Update image data using non-image buffer. [Data](/cpp-sdk/4.5/api/classes/imfusion-data) arrangement in this buffer is assumed to match the target image.
+- bool **update** (const T \*[data](#data-1-2)) — More generic and somewhat less secure version of the above method.
+- void **fill** (T [value](#value)) — Fill image with the given constant value for all channels and pixels.
+- void [fill](#fill) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; T &gt; &channelValues) — Fill image with the given channel values for all pixels.
+- void [fillDouble](#filldouble-1-2) (double [value](#value)) override — Fill image with the given *double* value for all channels and pixels.
+- void [fillDouble](#filldouble-2-2) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; &channelValues) override — Fill image with the given *double* channel values for all pixels.
+- const T \* **pointer** () const — Returns a typed pointer to the underlying raw pixel buffer of the image.
+- T \* **pointer** ()
+- const void \* [data](#data-1-2) () const override — Returns a void pointer to the underlying raw pixel buffer of the image.
+- void \* [data](#data-2-2) () override
+- T [value](#value) (int x, int y, int z=0, int c=0) const — Return the pixel intensity at the coordinate without interpolation.
+- T **value** (size_t [index](/cpp-sdk/4.5/api/classes/imfusion-image)) const — Return the pixel intensity at the index without interpolation.
+- double [valueDouble](#valuedouble-1-3) (size_t [index](/cpp-sdk/4.5/api/classes/imfusion-image)) const override — Return the pixel intensity at the given index without interpolation casted to double.
+- double [valueDouble](#valuedouble-2-3) (int x, int y, int z=0, int c=0) const override — Return the pixel intensity at the coordinate without interpolation casted to double.
+- double [valueDouble](#valuedouble-3-3) (double x, double y, double z=0, int c=0, bool clamp=true, bool \*valid=nullptr) const override — Return the pixel intensity at the given coordinate using linear interpolation casted to double.
+- void [setValue](#setvalue) (T [value](#value), int x, int y, int z=0, int c=0) — Set the pixel intensity at the given coordinate to *value*.
+- void [setValueDouble](#setvaluedouble-1-2) (double [value](#value), size_t [index](/cpp-sdk/4.5/api/classes/imfusion-image)) const override — Set the pixel intensity at the given index to *value* casted to the underlying type without any clamping or normalization.
+- void [setValueDouble](#setvaluedouble-2-2) (double [value](#value), int x, int y, int z=0, int c=0) const override — Set the pixel intensity at the given coordinate to *value* casted to the underlying type without any clamping or normalization.
+- [std::pair](http://en.cppreference.com/w/cpp/utility/pair.html)&lt; T, T &gt; **getRange** () const — Computes the minimum and maximum image intensity of the entire image.
+- void **getRange** (T &minVal, T &maxVal) const
+- void [getRangeDouble](#getrangedouble) (double &minVal, double &maxVal) const override — Computes the minimum and maximum image intensity of the entire image casted to double.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [TypedImage](#typedimage-1-2)&lt; T &gt; &gt; [getSliceView](#getsliceview) (int slice) const — Extract a [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) representing a view onto the specified *slice* of this image.
+- [std::pair](http://en.cppreference.com/w/cpp/utility/pair.html)&lt; double, double &gt; **getRangeDouble** () const — Computes the minimum and maximum image intensity of the entire image casted to double.
+
+## Static Public Member Functions
+
+- static [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [TypedImage](#typedimage-1-2)&lt; T &gt; &gt; [create](#create-1-2) (const [ImageDescriptor](/cpp-sdk/4.5/api/structs/imfusion-imagedescriptor) &[descriptor](/cpp-sdk/4.5/api/classes/imfusion-image), T \*[data](#data-1-2)=nullptr, [Ownership](/cpp-sdk/4.5/api/classes/imfusion-memimage) own=[Ownership::NotOwning](/cpp-sdk/4.5/api/classes/imfusion-memimage)) — Factory method to create a new [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage) from an [ImageDescriptor](/cpp-sdk/4.5/api/structs/imfusion-imagedescriptor).
+- static [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [TypedImage](#typedimage-1-2)&lt; T &gt; &gt; [create](#create-2-2) (const vec3i &[dimensions](/cpp-sdk/4.5/api/classes/imfusion-image), int numChannels=1, T \*[data](#data-1-2)=nullptr, [Ownership](/cpp-sdk/4.5/api/classes/imfusion-memimage) own=[Ownership::NotOwning](/cpp-sdk/4.5/api/classes/imfusion-memimage)) — Factory method to create a new [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage) of given dimensions and number of channels.
+- static [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [TypedImage](#typedimage-1-2)&lt; T &gt; &gt; **zeros** (const [ImageDescriptor](/cpp-sdk/4.5/api/structs/imfusion-imagedescriptor) &[descriptor](/cpp-sdk/4.5/api/classes/imfusion-image)) — Factory method to create a zero-initialized image, pixel type in *descriptor* is ignored.
+- static [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [TypedImage](#typedimage-1-2)&lt; T &gt; &gt; **zeros** (const vec3i &[dimensions](/cpp-sdk/4.5/api/classes/imfusion-image), int numChannels=1) — Factory method to create a zero-initialized image of given dimensions and number of channels.
+
+## Protected Member Functions
+
+- [TypedImage](#typedimage-1-2)&lt; T &gt; \* [cloneImpl](#cloneimpl) () const override
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; MemImage &gt; [getSliceViewImpl](#getsliceviewimpl) (int slice) const override
+
+## Protected Attributes
+
+- T \* **m_data** — Pointer to the actual image data.
+- [Ownership](/cpp-sdk/4.5/api/classes/imfusion-memimage) **m_own** — Do we own the data (i.e. container mode if false).
+
+## Deprecated Interface
+
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; MemImage &gt; [prepare](#prepare) (bool msb=false, bool shiftOnly=false) override — Optimal rescaling and conversion to unsigned data type if applicable.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; MemImage &gt; [unscaled](#unscaled) () const override — Return copy of this image with intensity scale and shift undone, if necessary.
+
+## Constructor & Destructor Documentation
+
+### TypedImage
+
+```cpp
+template<typename T> ImFusion::TypedImage < T >::TypedImage (const ImageDescriptor & descriptor, T * data = nullptr, Ownership own = Ownership::NotOwning)
+```
+
+Create a new [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage) from an [ImageDescriptor](/cpp-sdk/4.5/api/structs/imfusion-imagedescriptor).
+
+**Parameters:**
+
+- `descriptor` — [ImageDescriptor](/cpp-sdk/4.5/api/structs/imfusion-imagedescriptor) of the new image, pixel type is ignored
+- `data` — Optional pointer to image data, must match the descriptor layout if not null.
+- `own` — Flag whether the newly created image shall take ownership of *data*.
+
+### TypedImage
+
+```cpp
+template<typename T> ImFusion::TypedImage < T >::TypedImage (const vec3i & dimensions, int numChannels = 1, T * data = nullptr, Ownership own = Ownership::NotOwning)
+```
+
+Create a new [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage) with given dimensions and channels.
+
+**Parameters:**
+
+- `dimensions` — [Image](/cpp-sdk/4.5/api/classes/imfusion-image) width, height, and slices
+- `numChannels` — Number of channels
+- `data` — Optional pointer to image data, must match the descriptor layout if not null.
+- `own` — Flag whether the newly created image shall take ownership of *data*.
+
+## Member Function Documentation
+
+### create
+
+```cpp
+template<typename T> std::unique_ptr < TypedImage < T > > ImFusion::TypedImage < T >::create (const ImageDescriptor & descriptor, T * data = nullptr, Ownership own = Ownership::NotOwning)
+```
+
+*static*
+
+Factory method to create a new [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage) from an [ImageDescriptor](/cpp-sdk/4.5/api/structs/imfusion-imagedescriptor).
+
+**Note:** If the [data](#data-1-2) buffer is not passed as argument, the data buffer of [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage) is uninitialized
+
+**Parameters:**
+
+- `descriptor` — [ImageDescriptor](/cpp-sdk/4.5/api/structs/imfusion-imagedescriptor) of the new image, pixel type is ignored
+- `data` — Optional pointer to image data, must match the descriptor layout if not null.
+- `own` — Flag whether the newly created image shall take ownership of *data*.
+
+### create
+
+```cpp
+template<typename T> std::unique_ptr < TypedImage < T > > ImFusion::TypedImage < T >::create (const vec3i & dimensions, int numChannels = 1, T * data = nullptr, Ownership own = Ownership::NotOwning)
+```
+
+*static*
+
+Factory method to create a new [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage) of given dimensions and number of channels.
+
+**Note:** If the [data](#data-1-2) buffer is not passed as argument, the data buffer of [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage) is uninitialized
+
+**Parameters:**
+
+- `dimensions` — [Image](/cpp-sdk/4.5/api/classes/imfusion-image) width, height, and slices
+- `numChannels` — Number of channels
+- `data` — Optional pointer to image data, must match the descriptor layout if not null.
+- `own` — Flag whether the newly created image shall take ownership of *data*.
+
+### update
+
+```cpp
+template<typename T> bool ImFusion::TypedImage < T >::update (const MemImage & other)
+```
+
+*override, virtual*
+
+Update image data pointed to by this object.
+
+If the other image is not compatible with the current one the image is resized. If the other image has a different type this method does nothing.
+
+### fill
+
+```cpp
+template<typename T> void ImFusion::TypedImage < T >::fill (const std::vector < T > & channelValues)
+```
+
+Fill image with the given channel values for all pixels.
+
+The number of elements in *channelValues* must match the number of channels of this image.
+
+### fillDouble
+
+```cpp
+template<typename T> void ImFusion::TypedImage < T >::fillDouble (double value)
+```
+
+*override, virtual*
+
+Fill image with the given *double* value for all channels and pixels.
+
+**Note:** The passed value will be casted to the underlying type of the image.
+
+### fillDouble
+
+```cpp
+template<typename T> void ImFusion::TypedImage < T >::fillDouble (const std::vector < double > & channelValues)
+```
+
+*override, virtual*
+
+Fill image with the given *double* channel values for all pixels.
+
+**Note:** The passed value will be casted to the underlying type of the image. The number of elements in *channelValues* must match the number of channels of this image.
+
+### data
+
+```cpp
+template<typename T> const void * ImFusion::TypedImage < T >::data () const
+```
+
+*override, virtual*
+
+Returns a void pointer to the underlying raw pixel buffer of the image.
+
+**Note:** The [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt;T&gt; specialization provides pointer() as type-safe alternative.
+
+### data
+
+```cpp
+template<typename T> void * ImFusion::TypedImage < T >::data ()
+```
+
+*override, virtual*
+
+### value
+
+```cpp
+template<typename T> T ImFusion::TypedImage < T >::value (int x, int y, int z = 0, int c = 0) const
+```
+
+Return the pixel intensity at the coordinate without interpolation.
+
+**Note:** Try to avoid calling this function repeatedly because the coordinate-to-index computation is slow. When accessing entire regions of the image prefer use the index-based overload incrementing the index by a suitable stride after each function call instead of always fully recomputing the index.
+
+### valueDouble
+
+```cpp
+template<typename T> double ImFusion::TypedImage < T >::valueDouble (size_t index) const
+```
+
+*override, virtual*
+
+Return the pixel intensity at the given index without interpolation casted to double.
+
+### valueDouble
+
+```cpp
+template<typename T> double ImFusion::TypedImage < T >::valueDouble (int x, int y, int z = 0, int c = 0) const
+```
+
+*override, virtual*
+
+Return the pixel intensity at the coordinate without interpolation casted to double.
+
+**Note:** Try to avoid calling this function repeatedly because the coordinate-to-index computation is slow. When accessing entire regions of the image prefer use the index-based overload incrementing the index by a suitable stride after each function call instead of always fully recomputing the index.
+
+### valueDouble
+
+```cpp
+template<typename T> double ImFusion::TypedImage < T >::valueDouble (double x, double y, double z = 0, int c = 0, bool clamp = true, bool * valid = nullptr) const
+```
+
+*override, virtual*
+
+Return the pixel intensity at the given coordinate using linear interpolation casted to double.
+
+**Note:** Be aware that this function is rather slow, use it only if you really need interpolation. Consider using the set of free functions in [Math::Interpolation](/cpp-sdk/4.5/api/namespaces/imfusion-math-interpolation) as they provide more control on the interpolation behavior.
+
+### setValue
+
+```cpp
+template<typename T> void ImFusion::TypedImage < T >::setValue (T value, int x, int y, int z = 0, int c = 0)
+```
+
+Set the pixel intensity at the given coordinate to *value*.
+
+**Note:** Try to avoid calling this function repeatedly because the coordinate-to-index computation is slow. When accessing entire regions of the image prefer use the index-based overload incrementing the index by a suitable stride after each function call instead of always fully recomputing the index.
+
+### setValueDouble
+
+```cpp
+template<typename T> void ImFusion::TypedImage < T >::setValueDouble (double value, size_t index) const
+```
+
+*override, virtual*
+
+Set the pixel intensity at the given index to *value* casted to the underlying type without any clamping or normalization.
+
+### setValueDouble
+
+```cpp
+template<typename T> void ImFusion::TypedImage < T >::setValueDouble (double value, int x, int y, int z = 0, int c = 0) const
+```
+
+*override, virtual*
+
+Set the pixel intensity at the given coordinate to *value* casted to the underlying type without any clamping or normalization.
+
+**Note:** Try to avoid calling this function repeatedly because the coordinate-to-index computation is slow. When accessing entire regions of the image prefer use the index-based overload incrementing the index by a suitable stride after each function call instead of always fully recomputing the index.
+
+### getRangeDouble
+
+```cpp
+template<typename T> void ImFusion::TypedImage < T >::getRangeDouble (double & minVal, double & maxVal) const
+```
+
+*override, virtual*
+
+Computes the minimum and maximum image intensity of the entire image casted to double.
+
+### getSliceView
+
+```cpp
+template<typename T> std::unique_ptr < TypedImage < T > > ImFusion::TypedImage < T >::getSliceView (int slice) const
+```
+
+Extract a [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) representing a view onto the specified *slice* of this image.
+
+The returned image only points to the data and does not own it. It is therefore only valid as long this image is valid. Returns nullptr if slice is out of range.
+
+### prepare
+
+```cpp
+template<typename T> std::unique_ptr < MemImage > ImFusion::TypedImage < T >::prepare (bool msb = false, bool shiftOnly = false)
+```
+
+*override, virtual*
+
+Optimal rescaling and conversion to unsigned data type if applicable.
+
+****Deprecated**:** "Use ImageProcessing::createConverted() and/or ImageProcessing::swapEndianness() instead."
+
+### unscaled
+
+```cpp
+template<typename T> std::unique_ptr < MemImage > ImFusion::TypedImage < T >::unscaled () const
+```
+
+*override, virtual*
+
+Return copy of this image with intensity scale and shift undone, if necessary.
+
+The method returns a zero pointer if there is no scale and shift and if the image has a floating-point data type.
+
+****Deprecated**:** "Use ImageProcessing::createConverted() instead."
+
+### cloneImpl
+
+```cpp
+template<typename T> TypedImage < T > * ImFusion::TypedImage < T >::cloneImpl () const
+```
+
+*override, protected, virtual*
+
+### getSliceViewImpl
+
+```cpp
+template<typename T> std::unique_ptr < MemImage > ImFusion::TypedImage < T >::getSliceViewImpl (int slice) const
+```
+
+*override, protected, virtual*

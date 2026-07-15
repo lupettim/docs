@@ -1,0 +1,124 @@
+---
+title: "ImFusion::PointCloudPickingManipulator"
+sidebarTitle: "PointCloudPickingManipulator"
+description: "Point cloud picking manipulator The PointCloudPickingManipulator can return the list of selected vertices The supported manipulation is alt + mouse key press wi"
+---
+
+`#include <ImFusion/GUI/PointCloudPickingManipulator.h>`
+
+## Overview
+
+Point cloud picking manipulator The [PointCloudPickingManipulator](/cpp-sdk/4.5/api/classes/imfusion-pointcloudpickingmanipulator) can return the list of selected vertices The supported manipulation is alt + mouse key press with optional dragging.
+
+alt + mouse wheel changes the size of selection area For proper use the [PointCloudPickingManipulator](/cpp-sdk/4.5/api/classes/imfusion-pointcloudpickingmanipulator) object must be added to a view as point cloud manipulator and the outer object should subscribe to its signals e.g.
+
+```cpp
+GlPointCloud* glPointCloud = ...;
+PointCloudPickingManipulator* manip = new PointCloudPickingManipulator(glPointCloud, *m_disp->view3D()->view());
+manip->setSelectionMode(PointCloudPickingManipulator::SelectionMode::Vertex);
+manip->signalSelectedVertexIndices.connect(this, &ExampleController::onSelectedVertexIndices);
+auto pointCloudPickingManipulator = new Interactive<GlPointCloud, PointCloudPickingManipulator>(glPointCloud, manip, true);
+m_disp->view3D()->addObject(pointCloudPickingManipulator.get());
+```
+ fragment
+The manipulator must be removed from the view before deleting!
+
+## Public Types
+
+- enum class [SelectionMode](#selectionmode) &#123; None = 0 , Vertex &#125; — Enumeration to determine rendering order of GlObjects in [GlSliceView](/cpp-sdk/4.5/api/classes/imfusion-glsliceview) and [GlVolumeView](/cpp-sdk/4.5/api/classes/imfusion-glvolumeview).
+
+## Public Member Functions
+
+- **PointCloudPickingManipulator** ([GlPointCloud](/cpp-sdk/4.5/api/classes/imfusion-glpointcloud) \*glPointCloud, [GlVolumeView](/cpp-sdk/4.5/api/classes/imfusion-glvolumeview) &[view](/cpp-sdk/4.5/api/classes/imfusion-glannotation))
+- void **setSelectionMode** ([SelectionMode](#selectionmode) m)
+- [SelectionMode](#selectionmode) **selectionMode** () const
+- void **setSelectionSize** (double size) — Set the size of the selection area.
+- void **setSelectionDepth** (double depth) — Set the depth of the selection area (only points that are within this distance from the closest to the viewer selected point will be selected).
+- void **setAllowDragging** (bool v) — Allow/forbid dragging.
+- void [setHighlightClosestVertex](#sethighlightclosestvertex) (bool v) — Sets whether the closest vertex should be highlighted.
+- bool [sceneEvent](#sceneevent) (QEvent \*event, const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &[view](/cpp-sdk/4.5/api/classes/imfusion-glannotation)) override
+- void [draw](#draw) (const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &[view](/cpp-sdk/4.5/api/classes/imfusion-glannotation)) override — Draw the object in 3D space.
+
+## Public Attributes
+
+- Signal&lt; const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; int &gt; & &gt; **signalSelectedVertexIndices**
+- Signal&lt; int &gt; **signalClosestVertexIndexChanged**
+- Signal&lt; double &gt; **signalChangedSelectionSize**
+
+## Protected Member Functions
+
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; int &gt; **findSelectedVertexIndices** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec2i &gt; &positions, int radius, const [GlVolumeView](/cpp-sdk/4.5/api/classes/imfusion-glvolumeview) \*view3D)
+
+## Protected Attributes
+
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [GlVolumeView::PickingToken](/cpp-sdk/4.5/api/classes/imfusion-glvolumeview-pickingtoken) &gt; **m_pickingToken**
+- [GlPointCloud](/cpp-sdk/4.5/api/classes/imfusion-glpointcloud) \* **m_glPointCloud** = nullptr
+- [GlVolumeView](/cpp-sdk/4.5/api/classes/imfusion-glvolumeview) & **m_view**
+- [SelectionMode](#selectionmode) **m_selectionMode** = SelectionMode::None
+- bool **m_highlightClosestVertex** = false
+- double **m_size** = 1
+- double **m_depth** = 0.01
+- bool **m_mouseDragging** = false
+- bool **m_allowDragging** = true
+- vec2i **m_storedPoint** = vec2i::Zero()
+- int **m_storedClosestVertex** = -1
+
+## Member Enumeration Documentation
+
+### SelectionMode
+
+```cpp
+enum class ImFusion::PointCloudPickingManipulator::SelectionMode
+```
+
+*strong*
+
+**Enumerator:**
+
+- `None` — No signals will be emitted.
+- `Vertex` — signalSelectedVertexIndices will be emitted when pointcloud vertex/vertices are selected
+
+## Member Function Documentation
+
+### setHighlightClosestVertex
+
+```cpp
+void ImFusion::PointCloudPickingManipulator::setHighlightClosestVertex (bool v)
+```
+
+*inline*
+
+Sets whether the closest vertex should be highlighted.
+
+When enabled (true):
+
+- The closest vertex to the cursor will be visually highlighted.
+- signalClosestVertexIndexChanged will be emitted whenever the highlighted vertex changes.
+- The selection area will remain fixed in size when using the mouse wheel, and signalChangedSelectionSize will **not** be emitted.
+
+When disabled (false):
+
+- No closest-vertex highlighting is performed.
+- Selection-size adjustments and related signals behave normally.
+
+**Parameters:**
+
+- `v` — true to enable closest-vertex highlighting, false to disable it.
+
+### sceneEvent
+
+```cpp
+bool ImFusion::PointCloudPickingManipulator::sceneEvent (QEvent * event, const GlView & view)
+```
+
+*override, virtual*
+
+### draw
+
+```cpp
+void ImFusion::PointCloudPickingManipulator::draw (const GlView & view)
+```
+
+*override, virtual*
+
+Draw the object in 3D space.

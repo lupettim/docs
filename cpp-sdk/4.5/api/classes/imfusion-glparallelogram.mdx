@@ -1,0 +1,99 @@
+---
+title: "ImFusion::GlParallelogram"
+sidebarTitle: "GlParallelogram"
+description: "Parallelogram annotation."
+---
+
+`#include <ImFusion/GL/GlParallelogram.h>`
+
+## Overview
+
+Parallelogram annotation.
+
+## Public Member Functions
+
+- **GlParallelogram** (double fixedWidth=-1, double fixedHeight=-1, double fixedAngle=0)
+- void [draw](#draw) (const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &[view](/cpp-sdk/4.5/api/classes/imfusion-glannotation)) override — Draw the object in 3D space.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; **corners** () const
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [typeName](#typename) () const override — Return unique identifier for this object class used for serialization.
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Set one or multiple properties.
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Retrieve the properties of this object.
+- [Geometry::AlignedBox](/cpp-sdk/4.5/api/classes/imfusion-geometry-alignedbox) [bounds](#bounds) () const override — Get the axis-aligned bounding box of this [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) in world space.
+
+## Protected Member Functions
+
+- void [updatePoints](#updatepoints) () override — Update the internal point structure.
+
+## Protected Attributes
+
+- double **m_fixedWidth**
+- double **m_fixedHeight**
+- double **m_fixedAngle**
+- bool **m_init**
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; **m_parPoints**
+
+## Member Function Documentation
+
+### draw
+
+```cpp
+void ImFusion::GlParallelogram::draw (const GlView & view)
+```
+
+*override, virtual*
+
+Draw the object in 3D space.
+
+### typeName
+
+```cpp
+std::string ImFusion::GlParallelogram::typeName () const
+```
+
+*inline, override, virtual*
+
+Return unique identifier for this object class used for serialization.
+
+### configure
+
+```cpp
+void ImFusion::GlParallelogram::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Set one or multiple properties.
+
+### configuration
+
+```cpp
+void ImFusion::GlParallelogram::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Retrieve the properties of this object.
+
+### bounds
+
+```cpp
+Geometry::AlignedBox ImFusion::GlParallelogram::bounds () const
+```
+
+*override, virtual*
+
+Get the axis-aligned bounding box of this [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) in world space.
+
+Return an empty (default-constructed) AlignedBox object if the [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) does not reside in world space.
+
+### updatePoints
+
+```cpp
+void ImFusion::GlParallelogram::updatePoints ()
+```
+
+*override, protected, virtual*
+
+Update the internal point structure.
+
+Should be implemented by subtypes which have custom data depending on the point data. Derived implementation needs to call base class implementation.

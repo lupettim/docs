@@ -1,0 +1,128 @@
+---
+title: "ImFusion::DeformationEditor"
+sidebarTitle: "DeformationEditor"
+description: "The DeformationEditor algorithm modifiers the deformation property of a SharedImageSet ."
+---
+
+`#include <ImFusion/GL/DeformationEditor.h>`
+
+## Overview
+
+The [DeformationEditor](/cpp-sdk/4.5/api/classes/imfusion-deformationeditor) algorithm modifiers the deformation property of a [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset).
+
+It can add a specific deformation model or remove all deformations. If the input [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) contains multiple images, the deformation is expected to have the same properties on all images (e.g. same model and same grid size but not necessarly the same deformation).
+
+## Public Types
+
+- enum [DeformationModel](#deformationmodel) &#123; None , FFD , TPS , Dense , Parametric &#125; — Enumeration of supported deformation types.
+
+## Public Member Functions
+
+- **DeformationEditor** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*image) — Creates a [DeformationEditor](/cpp-sdk/4.5/api/classes/imfusion-deformationeditor) that modifies the deformation object of the given input image.
+- const [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [Deformation](/cpp-sdk/4.5/api/classes/imfusion-deformation) &gt; **deformation** (int which=-1) const — Retrieve the deformation of the image.
+- const [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [FreeFormDeformation](/cpp-sdk/4.5/api/classes/imfusion-freeformdeformation) &gt; **deformationFFD** (int which=-1) const — Convenience method to retrieve the deformation of the image and cast it to [FreeFormDeformation](/cpp-sdk/4.5/api/classes/imfusion-freeformdeformation).
+- const [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [GlTPSDeformation](/cpp-sdk/4.5/api/classes/imfusion-gltpsdeformation) &gt; **deformationTPS** (int which=-1) const — Convenience method to retrieve the deformation of the image and cast it to [GlTPSDeformation](/cpp-sdk/4.5/api/classes/imfusion-gltpsdeformation).
+- const [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [GlDenseDeformation](/cpp-sdk/4.5/api/classes/imfusion-gldensedeformation) &gt; **deformationDense** (int which=-1) const — Convenience method to retrieve the deformation of the image and cast it to [GlDenseDeformation](/cpp-sdk/4.5/api/classes/imfusion-gldensedeformation).
+- const [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [ParametricDeformation](/cpp-sdk/4.5/api/classes/imfusion-parametricdeformation) &gt; **deformationParametric** (int which=-1) const — Convenience method to retrieve the deformation of the image and cast it to [ParametricDeformation](/cpp-sdk/4.5/api/classes/imfusion-parametricdeformation).
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [Deformation](/cpp-sdk/4.5/api/classes/imfusion-deformation) &gt; &gt; [deformations](#deformations) () const — Returns all deformations of the [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset).
+- [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* **image** () const — Returns the input image.
+- void [setDeformationModel](#setdeformationmodel) ([DeformationModel](#deformationmodel) model) — Sets the deformation model for the specified frame.
+- [DeformationModel](#deformationmodel) **deformationModel** () const
+- void **setSubdivisions** (const vec3i &sub) — Sets the number of subdivisions for FFDs or does nothing if deformation model is not FFD.
+- void **setTransformation** (const mat4 &m) — Sets the world transformation of the FFD grid or does nothing if deformation model is not FFD.
+- void **setRegularizationWeight** (double w) — Sets the regularization weight of the TPS.
+- void **setUseLocalModel** (bool use) — Sets wether to use the local model of the TPS.
+- void **updateFromDeformation** () — Updates all parameters from the currently set deformation.
+- void [compute](#compute) () override — Creates or deletes the deformation accordings to the current model and updates the properties of the deformation.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **toString** ([DeformationModel](#deformationmodel) model) const — Converts a [DeformationModel](#deformationmodel) to a string.
+- [DeformationModel](#deformationmodel) [fromString](#fromstring) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) str) const — Converts a string to a [DeformationModel](#deformationmodel).
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configures the algorithm and may create a deformation object for the input data depending on the properties.
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+## Static Public Member Functions
+
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=nullptr) — Only created for single images that have no deformation or a [FreeFormDeformation](/cpp-sdk/4.5/api/classes/imfusion-freeformdeformation).
+
+## Member Enumeration Documentation
+
+### DeformationModel
+
+```cpp
+enum ImFusion::DeformationEditor::DeformationModel
+```
+
+Enumeration of supported deformation types.
+
+**Enumerator:**
+
+- `None` — No deformation model (also used to remove other models).
+- `FFD` — Free-Form deformations.
+- `TPS` — Thin Plate [Spline](/cpp-sdk/4.5/api/classes/imfusion-spline) deformations.
+- `Dense` — Dense deformation field.
+- `Parametric` — Other parametric deformation model not known by the controller.
+
+## Member Function Documentation
+
+### deformations
+
+```cpp
+std::vector < std::shared_ptr < Deformation > > ImFusion::DeformationEditor::deformations () const
+```
+
+Returns all deformations of the [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset).
+
+Never contains nullptr. Not guaranteed that the order is the same as the in the [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset).
+
+### setDeformationModel
+
+```cpp
+void ImFusion::DeformationEditor::setDeformationModel (DeformationModel model)
+```
+
+Sets the deformation model for the specified frame.
+
+If the current deformation model differs, a new deformation object is created and the old object is replaced. To remove an exist deformation use DeformationModel::None.
+
+### compute
+
+```cpp
+void ImFusion::DeformationEditor::compute ()
+```
+
+*override, virtual*
+
+Creates or deletes the deformation accordings to the current model and updates the properties of the deformation.
+
+### fromString
+
+```cpp
+DeformationModel ImFusion::DeformationEditor::fromString (const std::string str) const
+```
+
+Converts a string to a [DeformationModel](#deformationmodel).
+
+If the string is not a string generated by toString, returns None
+
+### configure
+
+```cpp
+void ImFusion::DeformationEditor::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configures the algorithm and may create a deformation object for the input data depending on the properties.
+
+### configuration
+
+```cpp
+void ImFusion::DeformationEditor::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality

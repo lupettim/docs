@@ -1,0 +1,35 @@
+---
+title: "ImFusion::GlMeshRendererSurface::DisplayOptions::Material"
+sidebarTitle: "Material"
+---
+
+## Public Types
+
+- enum class [Mode](#mode) &#123; Uniform = 0 , Color = 1 , Texture = 2 , FaceLabel = 4 , VertexLabel = 5 &#125;
+
+## Public Attributes
+
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; bool &gt; **p_lightingEnabled** = &#123;"lightingEnabled", true, this&#125;
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; vec3 &gt; **p_ambientColor** = &#123;"ambientColor", vec3(1.0, 1.0, 1.0), this&#125;
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; vec3 &gt; **p_diffuseColor** = &#123;"diffuseColor", vec3(1.0, 1.0, 1.0), this&#125;
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; vec3 &gt; **p_specularColor** = &#123;"specularColor", vec3(0.1, 0.1, 0.1), this&#125;
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; double &gt; **p_shininess** = &#123;"shininess", 50.0, this&#125;
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; [Mode](#mode) &gt; **p_mode** = &#123;"mode", Mode::Uniform, this&#125;
+
+## Member Enumeration Documentation
+
+### Mode
+
+```cpp
+enum class ImFusion::GlMeshRendererSurface::DisplayOptions::Material::Mode
+```
+
+*strong*
+
+**Enumerator:**
+
+- `Uniform` — uses the colors from setMaterial
+- `Color` — uses the colors from setColor or (if m_colors are empty) mesh vertex colors for ambient, diffuse and specular
+- `Texture` — uses the mesh vertex texture for ambient, diffuse and specular
+- `FaceLabel` — uses the labels of faces
+- `VertexLabel` — uses the labels of vertices

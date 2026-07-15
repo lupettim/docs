@@ -1,0 +1,63 @@
+---
+title: "ImFusion::Seg::ThresholdTool"
+sidebarTitle: "ThresholdTool"
+description: "Simple class to set values of a labelMap by doing thresholding on its corresponding image."
+---
+
+`#include <ImFusion/Seg/ThresholdTool.h>`
+
+## Overview
+
+Simple class to set values of a labelMap by doing thresholding on its corresponding image.
+
+## Public Member Functions
+
+- **ThresholdTool** ([DisplayWidgetMultiAdapter](/cpp-sdk/4.5/api/classes/imfusion-displaywidgetmultiadapter) disp=&#123;&#125;)
+- **~ThresholdTool** () — On destruction, disable() is called automatically if necessary.
+- void **enable** () — Activates the preview overlay.
+- void **disable** () — De-activates the preview overlay.
+- void [setMask](#setmask) ([GlMask](/cpp-sdk/4.5/api/classes/imfusion-glmask) \*mask) — Explicitly sets a mask.
+- void [setTargetLabelMap](#settargetlabelmap) (const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*image, [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*labelMap) — Set the image and the labelMap on which the thresholding operation is applied Either both or none of the parameters must be set.
+- void **setActiveLabel** (uint8_t labelIndex) — Set the label value that will be assigned by the thresholding operation 1 by default.
+- void **setPreserveLabel** (uint8_t labelIndex, bool preserve) — Set locked labels, to ensure that the thesholding will not overwrite their current value.
+- void **setRangeOriginal** (double low, double high) — Sets the range of the thresholding in original pixel value domain.
+- void **setRangeStorage** (double low, double high) — Sets the range of the thresholding in storage pixel value domain.
+- void **updatePreview** () — Updates the preview overlay indicating which pixels will be affected this function is automatically called whenever any of the input is changed.
+- void [apply](#apply) (int frame=-1) — Sets the value in the labelMap according to the thresholding parameters.
+
+## Member Function Documentation
+
+### setMask
+
+```cpp
+void ImFusion::Seg::ThresholdTool::setMask (GlMask * mask)
+```
+
+Explicitly sets a mask.
+
+Masked pixels will not be affected by the thresholding. If no mask is set, but there is one attached to the image itself, the image mask will be used
+
+### setTargetLabelMap
+
+```cpp
+void ImFusion::Seg::ThresholdTool::setTargetLabelMap (const SharedImageSet * image, SharedImageSet * labelMap)
+```
+
+Set the image and the labelMap on which the thresholding operation is applied Either both or none of the parameters must be set.
+
+**Parameters:**
+
+- `image` — the image that is sampled for the thresholding operation
+- `labelMap` — the label map to which the value is assigned
+
+### apply
+
+```cpp
+void ImFusion::Seg::ThresholdTool::apply (int frame = -1)
+```
+
+Sets the value in the labelMap according to the thresholding parameters.
+
+**Parameters:**
+
+- `frame` — Which frame the thresholding should be applied to (focused frame by default)

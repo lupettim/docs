@@ -1,0 +1,78 @@
+---
+title: "SqrtAlgorithm.cpp"
+---
+
+```cpp
+#include "SqrtAlgorithm.h"
+
+#include <ImFusion/Base/MemImage.h>
+
+using namespace ImFusion;
+
+SqrtAlgorithm::SqrtAlgorithm(SharedImageSet* image)
+    : m_image(image)
+{
+    configureDefaults();    // initializes the algorithm with default values in configuration
+}
+
+SqrtAlgorithm::~SqrtAlgorithm() {}
+
+bool SqrtAlgorithm::createCompatible(const DataList& data, Algorithm** a)
+{
+ // algorithm only supports 1 input
+ if (data.size() == 1)
+    {
+ // either one 2D image ..
+ SharedImageSet* img = data.getImage(Data::IMAGE);
+ if (!img)
+ // .. or one 3D volume
+            img = data.getImage(Data::VOLUME);
+ if (img)
+        {
+ if (a)
+                *a = new SqrtAlgorithm(img);
+ return true;
+        }
+    }
+ return false;
+}
+
+void SqrtAlgorithm::compute()
+{
+ if (!m_image)
+ return;
+
+ // Get the currently focused MemImage from the input image
+ MemImage* mem = m_image->mem();
+
+ for (int z = 0; z < mem->slices(); ++z)
+    {
+ for (int y = 0; y < mem->height(); ++y)
+        {
+ for (int x = 0; x < mem->width(); ++x)
+            {
+ double val = mem->valueDouble(x, y, z);
+                val = std::sqrt(val) * m_multiplier;
+                mem->setValueDouble(val, x, y, z);
+            }
+        }
+    }
+
+    m_image->get()->setDirtyMem();
+}
+
+void SqrtAlgorithm::configure(const Properties* p)
+{
+ if (!p)
+ return;
+    p->param("multiplier", m_multiplier);
+}
+
+void SqrtAlgorithm::configuration(Properties* p) const
+{
+ if (!p)
+ return;
+    p->setParam("multiplier", m_multiplier, 2.0);
+}
+```
+ fragment

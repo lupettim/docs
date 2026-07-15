@@ -1,0 +1,104 @@
+---
+title: "ImFusion::GL::OrderIndependentTransparency"
+sidebarTitle: "OrderIndependentTransparency"
+description: "Helper class to consolidate functionality for implementing order-independent transparency of rendered geometry."
+---
+
+`#include <ImFusion/Core/GL/OrderIndependentTransparency.h>`
+
+## Overview
+
+Helper class to consolidate functionality for implementing order-independent transparency of rendered geometry.
+
+Instances of this class hold all OpenGL entities needed for storing a per-pixel lists of semi-transparent fragments that can be correctly blended in a second stage. Multiple actors collaborate in order to implement the functionality:
+
+1. An entity that hosts and manages the [OrderIndependentTransparency](/cpp-sdk/4.5/api/classes/imfusion-gl-orderindependenttransparency) instance. At the beginning of the render loop this entity should reset/initialize the data structures by calling [reset()](#reset).
+2. Every entity that renders semi-transparent geometry shall not render its fragments directly but instead add every semi-transparent fragment to the OIT data structures. Therefore, in your GLSL fragment shader must first include the OIT shader include and then call oit_addFragment():
+  ```cpp
+  #pragma include "ImFusionGL/OrderIndependentTransparency.glh"
+
+  [perform regular shading computing output color...]
+
+  if (out_Color.a < 1.0)
+  {
+   // fully opaque fragments will be written normally so that they participate in the Z test
+   // semi-transparent fragments will be discarded after being added to the OIT fragment list
+   if (oit_addFragment(out_Color, gl_FragCoord.z))
+          discard;
+  }
+  ```
+   fragment  On the client side, you must setup your shader so that it has access to the OIT data structures. Therefore, call [setIncludeArguments()](#setincludearguments) after enabling your shader and before rendering any geometry.
+3. After all geometry has been rendered you need to blend all fragments written to the OIT buffer. You can either do this manually in your own shader after including the OIT shader include or by simply calling [renderBlendedFragments()](#renderblendedfragments). The OIT shader include provides the following functions for this:
+  ```cpp
+  // Resolve all fragments for the current pixel up to the given depth,
+  // sort them and return the number of fragments.
+  uint oit_sortFragments(in float maxDepth);
+
+  // Blend all fragments resolved in the previous step and return the final color
+  // and depth in the output parameters.
+  void oit_blendFragments(out vec4 outColor, out float outDepth);
+  ```
+   fragment
+
+In the ImFusion view framework, Steps 1 and 3 will be implemented by a [GlVolumeView](/cpp-sdk/4.5/api/classes/imfusion-glvolumeview). Step 2 is implemented by selected GlObjects. Since the hosting [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) is passed to [GlObject::draw()](/cpp-sdk/4.5/api/classes/imfusion-globject) it can access the view's [OrderIndependentTransparency](/cpp-sdk/4.5/api/classes/imfusion-gl-orderindependenttransparency) object in order to support order-independent transparency.
+
+**Note:** [OrderIndependentTransparency](/cpp-sdk/4.5/api/classes/imfusion-gl-orderindependenttransparency) requires OpenGL 4.4.
+
+**See also:** [GlVolumeView](/cpp-sdk/4.5/api/classes/imfusion-glvolumeview)
+
+## Public Member Functions
+
+- [OrderIndependentTransparency](#orderindependenttransparency) () — Instantiate a new [OrderIndependentTransparency](/cpp-sdk/4.5/api/classes/imfusion-gl-orderindependenttransparency) instance.
+- void [reset](#reset) (const vec2i &viewportSize, bool shrinkToFit=false) — Initializes and resets all OIT data structures for the given viewport size.
+- void [setIncludeArguments](#setincludearguments) ([Program](/cpp-sdk/4.5/api/classes/imfusion-gl-program) &program) const — Bind all OIT data structures to the given shader so that you can use the OIT shader include.
+- void [renderBlendedFragments](#renderblendedfragments) (const [Texture](/cpp-sdk/4.5/api/classes/imfusion-gl-texture) &backgroundColor, const [Texture](/cpp-sdk/4.5/api/classes/imfusion-gl-texture) &backgroundDepth) — Render the correctly blended fragments to the currently attached framebuffer.
+
+## Static Public Member Functions
+
+- static bool **isSupported** () — Checks whether the current platform supports OIT.
+
+## Constructor & Destructor Documentation
+
+### OrderIndependentTransparency
+
+```cpp
+ImFusion::GL::OrderIndependentTransparency::OrderIndependentTransparency ()
+```
+
+Instantiate a new [OrderIndependentTransparency](/cpp-sdk/4.5/api/classes/imfusion-gl-orderindependenttransparency) instance.
+
+**Exceptions:**
+
+- `std::runtime_error` — if no OpenGL 4.4 is available
+
+## Member Function Documentation
+
+### reset
+
+```cpp
+void ImFusion::GL::OrderIndependentTransparency::reset (const vec2i & viewportSize, bool shrinkToFit = false)
+```
+
+Initializes and resets all OIT data structures for the given viewport size.
+
+This function must be called every time at the beginning of the render loop. To avoid expensive reallocation the internal textures and buffers are only recreated if needed (i.e. *viewportSize* has increased compared to before). If *shrinkToFit* is true memory will also be reallocated if the viewport size has decreased.
+
+### setIncludeArguments
+
+```cpp
+void ImFusion::GL::OrderIndependentTransparency::setIncludeArguments (Program & program) const
+```
+
+Bind all OIT data structures to the given shader so that you can use the OIT shader include.
+
+**Note:** This function will bind both images and buffers to *program*. Therefore, you should call [Program::unbindImages()](/cpp-sdk/4.5/api/classes/imfusion-gl-program) and [Program::unbindBuffers()](/cpp-sdk/4.5/api/classes/imfusion-gl-program) after rendering.
+
+### renderBlendedFragments
+
+```cpp
+void ImFusion::GL::OrderIndependentTransparency::renderBlendedFragments (const Texture & backgroundColor, const Texture & backgroundDepth)
+```
+
+Render the correctly blended fragments to the currently attached framebuffer.
+
+The pixel data stored in *backgroundColor* and *backgroundDepth* will be integrated into the scene. Their size is expected to match the viewport size passed during clear().

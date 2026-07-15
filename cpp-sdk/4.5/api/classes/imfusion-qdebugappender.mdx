@@ -1,0 +1,40 @@
+---
+title: "ImFusion::QDebugAppender"
+sidebarTitle: "QDebugAppender"
+---
+
+## Public Member Functions
+
+- void [flush](#flush) () override — Ensure that all log captures are fully committed/written.
+
+## Protected Member Functions
+
+- void [logImpl](#logimpl) (const [LogCapture](/cpp-sdk/4.5/api/structs/imfusion-log-sink-logcapture) &capture) override — Performs the actual logging of the given message.
+
+## Member Function Documentation
+
+### flush
+
+```cpp
+void ImFusion::QDebugAppender::flush ()
+```
+
+*override, virtual*
+
+Ensure that all log captures are fully committed/written.
+
+### logImpl
+
+```cpp
+void ImFusion::QDebugAppender::logImpl (const LogCapture & capture)
+```
+
+*override, protected, virtual*
+
+Performs the actual logging of the given message.
+
+Called by [log()](/cpp-sdk/4.5/api/classes/imfusion-log-sink) after filtering.
+
+**Parameters:**
+
+- `capture` — [Log](/cpp-sdk/4.5/api/namespaces/imfusion-log) capture

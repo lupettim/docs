@@ -1,0 +1,281 @@
+---
+title: "Using Image Data"
+description: "All kinds of image data available to Algorithms , including 3D volumes, are provided as a SharedImageSet ."
+---
+
+**See also:** - Data Model
+- Images
+- [Algorithm/Image API Migration Guide](/cpp-sdk/4.5/api/guides/algorithm-image-api-migration)
+
+![](/images/cpp-api/architecture-image.png)
+
+*Overview class diagram of the ImFusion image data API.*
+
+All kinds of image data available to [Algorithms](http://en.cppreference.com/w/cpp/header/algorithm.html), including 3D volumes, are provided as a [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset). A [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) can contain multiple images, however, in most cases it will only consist of a single one (i.e. a list with a single item). Because of this common case, all access methods can also be used without an explicit index by implicitly using the focus frame of the [Selection](/cpp-sdk/4.5/api/classes/imfusion-selection) object assigned to each [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset).
+
+[SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) models *shared* ownership of its images inside, which means they are stored in a [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html) internally. This enables you need to reference an image inside a [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) from another [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset), for instance to run an [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) on a subset of your image data. For such use cases, use [SharedImageSet::getShared()](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) or [SharedImageSet::images()](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) to access them. However, be aware that if multiple algorithms run on the same image data, their side effects affect each other.
+
+### Selection
+
+The [Selection](/cpp-sdk/4.5/api/classes/imfusion-selection) allows to restrict the number of images that are used by an algorithm. Not all algorithms are required to support [SharedImageSets](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) with multiple images and complex selections. Instead algorithms are allowed to treat a set of multiple images as a single image by only using the focus frame of the [Selection](/cpp-sdk/4.5/api/classes/imfusion-selection). This way, algorithms designed for single images can still be used on sets of multiple images by changing the selection and calling the single-image algorithm multiple times.
+
+To simplify the extraction of the selected images in a set, you can call [SharedImageSet::selectedImages()](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset). Selections are not enforced by the framework, i.e. algorithms can ignore the selection altogether and retrieve any image in the set. Ignoring the selection (apart from only using the focus) will lead to inconsistent user experience and should be avoided.
+
+### Usage examples
+
+The default constructor will create an empty [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset). You can add any number of images by using one of the overloads of [SharedImageSet::add()](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) taking an [Image](/cpp-sdk/4.5/api/classes/imfusion-image) or a [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage). For convenience, constructor overloads are available to directly initialize the [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) with an image.
+
+```cpp
+SharedImageSet sis; // default-constructed, will be empty
+sis.add(std::make_shared<SharedImage>(...));
+
+// a std::unique_ptr implicitly converts to a std::shared_ptr that is expected by SharedImageSet
+std::unique_ptr<MemImage> mem = MemImage::create(...);
+sis.add(mem);
+
+// you can also easily add several images at the same time
+SharedImageSet otherSis;
+otherSis.add(sis.selectedImages());
+```
+ fragment
+There are different ways to access the image data of a [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset):
+
+```cpp
+SharedImage* si = sis.get(i);  // retrieve image with index `i`
+std::shared_ptr<SharedImage> = sis.getShared(i);  // retrieve a shared_ptr to ensure keeping it alive
+
+// iterate over all selected images:
+for (std::shared_ptr<SharedImage>& si : sis.selectedImages()) {
+    ...
+}
+```
+ fragment
+For convenience the [SharedImageSet::mem()](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) and [SharedImageSet::gl()](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) methods enable you to directly retrieve the [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) or [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage), respectively:
+
+```cpp
+MemImage* mem = sis.mem(i);  // shortcut for sis.get(i)->mem() with error checking
+GlImage* gl = sis.gl(i);     // shortcut for sis.get(i)->gl() with error checking
+```
+ fragment
+The [SharedImageSet::CloneOptions](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) enable you to define which aspects of a [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) you want to copy and which not. For instance, in situations where you want to copy the structure and all metadata (matrices, DataComponents, ...) of the input [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset), but use different pixel data, the following pattern is useful:
+
+```cpp
+const SharedImageSet* input = ...;
+
+// The ShallowImageCopy flag will perform a deep copy of all information/metadata of the
+// SharedImageSet except for the actual pixel data (the Image inside the SharedImages).
+std::unique_ptr<SharedImageSet> output = input->clone(SharedImageSet::CloneOptions::ShallowImageCopy);
+
+// Such a copy is cheap because no pixel data is copied. However, the images in `input` and
+// `output` point to the *same* pixel buffers (i.e. changing individual pixel values
+// in one of the two images will change them in both). In order to fully disconnect them
+// we use SharedImage::assign() on `output`'s images:
+for (std::shared_ptr<SharedImage> outputSI : output->images()) {
+ // Run a thresholding on the original image (which is currently still referenced  by `output`)
+ std::unique_ptr<MemImage> newImg = ImageProcessing::createThresholded(*outputSI->mem(), ...);
+
+ // Assigning `newImg` to the SharedImage will replace the MemImage inside `outputSI`.
+ // As a result `input` and `output` are now disconnected and use individual pixel buffers.
+    outputSI->assign(std::move(newImg));
+}
+```
+ fragment
+The items of a [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) are of type [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage). A [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) wraps the actual image data which can reside in different memory locations, e.g. the main memory (RAM) or the local memory of a GPU (VRAM). Similar to [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset), [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) also uses [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html) to model ownership of the image data inside. In addition to wrapping the [Image](/cpp-sdk/4.5/api/classes/imfusion-image), [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) allows to attach additional information to an image, namely the [image modality](/cpp-sdk/4.5/api/classes/imfusion-data), a transformation matrix describing the pose of the image in the world coordinate system, as well as an optional Mask and [Deformation](/cpp-sdk/4.5/api/classes/imfusion-deformation).
+
+### Synchronization between representations
+
+[SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) can hold multiple different image representations at the same time, for instance standard CPU RAM ([MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) / [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)) and OpenGL textures ([GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage)). It will automatically take care of synchronization between them whenever you request a representation that is not available yet or marked dirty.
+
+**Note:** When changing an [Image](/cpp-sdk/4.5/api/classes/imfusion-image) (e.g. pixel data) that is part of a [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage), you must manually mark the corresponding representation as *dirty* to ensure that changes are propagated to other representations of the [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage).
+
+Since synchronization between image representations may invalidate their pointers, you should never keep persistent pointers (e.g. as member variables) to them.
+
+### Usage Examples
+
+A [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) must never be empty. Therefore, you must construct it from an existing image:
+
+```cpp
+// construct from a unique_ptr or a shared_ptr
+std::unique_ptr<MemImage> mem1 = MemImage::create(...);
+SharedImage si1(std::move(mem1));
+
+// alternatively you can also move in instances of concrete representations
+TypedImage<unsigned char> typedImg = ...;
+SharedImage si2(std::move(typedImg));
+```
+ fragment
+Use the available member functions to retrieve any representation:
+
+```cpp
+// SharedImage will transparently take care of their synchronization if needed
+GlImage* gl = si1.gl();
+std::shared_ptr<GlImage> = si1.sharedGl();
+
+// if you change the image (e.g. image processing) you must mark it dirty so that SharedImage knows
+si1.setDirtyGl();
+MemImage* mem = si1.mem();  // this call will automatically sync GL->Mem
+
+// use the following pattern to retrieve a representation only if it is up-to-date
+if (std::shared_ptr<MemImage> mem = si1.hasMem()) {
+ // if clause will only succeed if no sync to Mem is required
+    ...
+}
+
+// in certain situations it may be useful to remove unneeded representations (e.g. save memory)
+si1.makeExclusive(Image::MEMORY);
+```
+ fragment
+All image representations of a [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) derive from the [Image](/cpp-sdk/4.5/api/classes/imfusion-image) class. This class does not hold any actual image data but only contains an [ImageDescriptor](/cpp-sdk/4.5/api/structs/imfusion-imagedescriptor) and offers a couple of convenience functions to the user. Concrete image data (i.e. pixel data) is stored in the child classes.
+
+### The ImageDescriptor class
+
+The [ImageDescriptor](/cpp-sdk/4.5/api/structs/imfusion-imagedescriptor) class serves basic storage entity for the essential properties of an image. It does not store any image pixel data but only its meta data such as pixel type, dimensions, etc. Furthermore, it provides a set of convenience functions such as conversion between image coordinates and indices.
+
+**Note:** Older iterations of the SDK did not yet have the dedicated [ImageDescriptor](/cpp-sdk/4.5/api/structs/imfusion-imagedescriptor) class and were therefore using instances of the [Image](/cpp-sdk/4.5/api/classes/imfusion-image) class as descriptor. New code should refrain from this and use [ImageDescriptor](/cpp-sdk/4.5/api/structs/imfusion-imagedescriptor) directly to avoid confusing semantics of function signatures.
+
+### MemImage/TypedImage
+
+Images where the pixel data is stored in main memory (RAM) are modeled by the [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) and [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage) classes. A [TypedImage&lt;T&gt;](/cpp-sdk/4.5/api/classes/imfusion-typedimage) wraps a buffer holding the image data, where the template type determines the pointer type of the buffer. It derives from the abstract [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) interface, which hides the template type and only provides access to a generic void pointer. Since [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) itself does not have a template type, it will return MemImages.
+
+#### Memory Layout
+
+The pixel data is stored in a fashion where the x axis is the fastest moving component. In other words: the image data is saved in the order width -&gt; height -&gt; slices. Channels are saved interleaved, e.g. the first 4 pixels in a 3-channel buffer would look like rgbrgbrgbrgb.
+
+#### Usage examples
+
+There are several methods to create a [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) instance (in the example below, a 3-channel 128x128 2D image of type float):
+
+```cpp
+// Use the TypedImage constructor directly:
+auto image = std::make_unique<TypedImage<float>>(vec3i(128, 128, 1), 3);
+
+// Use the MemImage::create factory method using an ImageDescriptor:
+// First, create the descriptor without any data
+ImageDescriptor desc(PixelType::Float, 128, 128, 1, 3)
+// Then, create the actual MemImage instance
+std::unique_ptr<MemImage> memImageFromDesc = MemImage::create(desc);
+```
+ fragment
+The following code illustrates access to the image data:
+
+```cpp
+TypedImage<unsigned char> typedImage = ...
+
+// You can access the raw image data through the TypedImage::pointer() method.
+unsigned char* pixelBuffer = typedImage.pointer();
+
+// Directly access individual pixels:
+unsigned char value = typedImage.value(x, y, z, channel);
+typedImage.setValue(value + 1, x, y, z, channel);
+```
+ fragment
+To access the image data from a [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage), one can either cast the [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) to the corresponding [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage) or cast the void pointer to the correct pointer type.
+
+```cpp
+std::unique_ptr<MemImage> image = MemImage::create(ImageDescriptor(PixelType::Float, 128, 128, 1, 3));
+if (image->type() == Image::FLOAT) {
+ // Convenience function to do a dynamic_cast:
+    TypedImage<float>* typed = image->typed<float>();
+ // Alternative:
+ float* data = static_cast<float*>(mem->data());
+}
+```
+ fragment
+Alternatively, the [MemImage::asVariant()](/cpp-sdk/4.5/api/classes/imfusion-memimage) method returns a Variant holding a pointer to the typed image.
+
+```cpp
+MemImage* mem = ...
+std::visit([](auto* typedImage) {
+ auto pixelvalue = typedImage->value(x,y,z,channel);
+ // Process data...
+}, mem->asVariant());
+```
+ fragment
+
+### GlImage
+
+A [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) wraps an OpenGL texture and handles all calls to the OpenGL API. The texture format is automatically determined based on the type and the number of channels. If the [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) is created from a [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage), the data of the [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) will be automatically uploaded to the GPU memory. A [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) needs to be [bound](/cpp-sdk/4.5/api/classes/imfusion-glimage) to a texture unit before it can be used with any OpenGL operations.
+
+To get a better understanding of how to use the different image containers, the following example will create a very simple [Algorithm](http://en.cppreference.com/w/cpp/header/algorithm.html) that takes the square root of each pixel times a parameter and writes it back to the image.
+
+ The algorithm will work on any 2D image or 3D volume.
+
+```cpp
+bool SqrtAlgorithm::createCompatible(const DataList& data, Algorithm** a)
+{
+ // algorithm only supports 1 input
+ if (data.size() == 1)
+    {
+ // either one 2D image ..
+ SharedImageSet* img = data.getImage(Data::IMAGE);
+ if (!img)
+ // .. or one 3D volume
+            img = data.getImage(Data::VOLUME);
+ if (img)
+        {
+ if (a)
+                *a = new SqrtAlgorithm(img);
+ return true;
+        }
+    }
+ return false;
+}
+```
+ fragment
+Additionally the algorithm supports a multiplier as [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter).
+
+```cpp
+void SqrtAlgorithm::configure(const Properties* p)
+{
+ if (!p)
+ return;
+    p->param("multiplier", m_multiplier);
+}
+
+void SqrtAlgorithm::configuration(Properties* p) const
+{
+ if (!p)
+ return;
+    p->setParam("multiplier", m_multiplier, 2.0);
+}
+```
+ fragment
+In the compute method we first have to retrieve the image data we want to modify. For now, we only want to create a CPU based implementation, therefore we need a [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage):
+
+```cpp
+ MemImage* mem = m_image->mem();
+```
+ fragment
+The input data *m_image* is a [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) which could potentially consist of multiple images. Our algorithm, however, will ignore that and only work on the focus image. The previous code is therefore just a short version of:
+
+```cpp
+m_image->get(m_image->focus())->mem();
+```
+ fragment
+The [mem](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) method will automatically synchronize the image data if it is currently not available.
+
+Using the [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage), we can iterate over each pixel, retrieve its value, modify it and write it back to the image.
+
+```cpp
+ for (int z = 0; z < mem->slices(); ++z)
+    {
+ for (int y = 0; y < mem->height(); ++y)
+        {
+ for (int x = 0; x < mem->width(); ++x)
+            {
+ double val = mem->valueDouble(x, y, z);
+                val = std::sqrt(val) * m_multiplier;
+                mem->setValueDouble(val, x, y, z);
+            }
+        }
+    }
+```
+ fragment
+The [valueDouble](/cpp-sdk/4.5/api/classes/imfusion-memimage) method returns the pixel value as an unnormalized double independent of the actual image type. This means, that for an image of type unsigned char, valueDouble(...) returns values between 0.0 and 255.0. For an image of type unsigned short, on the other hand, it would return values between 0.0 and 65535.0. The same holds for [setValueDouble](/cpp-sdk/4.5/api/classes/imfusion-memimage), which expects an unnormalized value of type double. The given value is directly cast to double, i.e. the value will not be clamped to a valid range and may overflow if it is to large/small. Note that both methods will not check if the passed indices are valid, the caller should perform the check before calling those methods!
+
+Last but not least we need to tell the [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) that we just modified the [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) data:
+
+```cpp
+    m_image->get()->setDirtyMem();
+```
+ fragment

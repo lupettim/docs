@@ -1,0 +1,186 @@
+---
+title: "ImFusion::GUI::Display"
+sidebarTitle: "Display"
+description: "Basic version of a display surface hosting a set of Views , rendering them, and distributing input events to them."
+---
+
+`#include <ImFusion/GUI/Display.h>`
+
+## Overview
+
+Basic version of a display surface hosting a set of [Views](/cpp-sdk/4.5/api/classes/imfusion-gui-view), rendering them, and distributing input events to them.
+
+A [Display](/cpp-sdk/4.5/api/classes/imfusion-gui-display) represents a rectangular viewport in OpenGL space into which it will render the views. The arrangement of the views inside the viewport is determined by the [DisplayLayout](/cpp-sdk/4.5/api/classes/imfusion-gui-displaylayout) member. The default implementation will simply arrange all views horizontally next to each other while subclasses can customize this behavior. Furthermore, you can always override the layouting from the outside.
+
+[Display](/cpp-sdk/4.5/api/classes/imfusion-gui-display) provides the [handleInputEvent()](#handleinputevent) function to handle keyboard/mouse/touch events from the user. Those events are forwarded to the views according their current layouting position.
+
+In order to bring the [Display](/cpp-sdk/4.5/api/classes/imfusion-gui-display) into your application you will usually need to wrap it inside an OpenGL-capable container widget corresponding to the used [GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui) toolkit/windowing platform. That wrapper must take care of setting the viewport correctly and calling [render()](#render) from the correct OpenGL context. Furthermore, it needs to convert the platform-specific user input events to the corresponding [ImFusion InputEvents](/cpp-sdk/4.5/api/classes/imfusion-gui-inputevent) and pass them to [handleInputEvent()](#handleinputevent). The resulting generic [GUI::EventResult](/cpp-sdk/4.5/api/structs/imfusion-gui-eventresult) can then be used to yield the intended platform-specific effects. [QtDisplayWidget](/cpp-sdk/4.5/api/classes/imfusion-gui-qtdisplaywidget) provides a ready-to-use implementation for a QtWidgets-based application.
+
+## Public Member Functions
+
+- virtual void [addView](#addview) ([std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [View](/cpp-sdk/4.5/api/classes/imfusion-gui-view) &gt; view) — Adds the given *view* to this display surface.
+- virtual [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [View](/cpp-sdk/4.5/api/classes/imfusion-gui-view) &gt; [removeView](#removeview) ([View](/cpp-sdk/4.5/api/classes/imfusion-gui-view) \*view) — Remove *view* from this display surface again.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [View](/cpp-sdk/4.5/api/classes/imfusion-gui-view) \* &gt; [views](#views) () const override — Returns all views hosted by this display.
+- [DisplayLayout](/cpp-sdk/4.5/api/classes/imfusion-gui-displaylayout) & [layout](#layout) () override — Returns the [DisplayLayout](/cpp-sdk/4.5/api/classes/imfusion-gui-displaylayout) determining how views are distributed within the viewport.
+- [GL::Viewport](/cpp-sdk/4.5/api/structs/imfusion-gl-viewport) [viewport](#viewport) () const override — Returns the viewport of this display surface in OpenGL coordinates (origin in lower-left corner).
+- virtual void **setViewport** (const [GL::Viewport](/cpp-sdk/4.5/api/structs/imfusion-gl-viewport) &[viewport](#viewport)) — Sets the viewport size of this display surface in OpenGL coordinates (origin in lower-left corner) and re-layouts the [layout()](#layout) if applicable.
+- const [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; vec3 &gt; & **backgroundColor** () const — Returns the optional background color of the rendering area.
+- void **setBackgroundColor** (const [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; vec3 &gt; &value) — Sets the optional background color of the rendering area.
+- void **setWatermark** (const [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) &image) — Sets a watermark image to be rendered on top of the display.
+- virtual void [render](#render) ([std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) \*outCriticalGlErrorMessage=nullptr) const — Perform OpenGL-based rendering of the [Display](/cpp-sdk/4.5/api/classes/imfusion-gui-display) and all its Views.
+- [EventResult](/cpp-sdk/4.5/api/structs/imfusion-gui-eventresult) [handleInputEvent](#handleinputevent) (const [InputEvent](/cpp-sdk/4.5/api/classes/imfusion-gui-inputevent) &event) — Entry point for the dispatching of input events from users.
+- void [hideData](#hidedata) (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*dataset) — Convenience function to remove *dataset* from all views, particularly useful to avoid dangling pointers when deleting *dataset*.
+- void [removeObject](#removeobject-1-2) (const [ViewObject](/cpp-sdk/4.5/api/classes/imfusion-gui-viewobject) \*object) — Convenience function to remove *object* from all views, particularly useful to avoid dangling pointers when deleting *object*.
+- void [removeObject](#removeobject-2-2) (const [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) \*object) — Convenience function to remove *object* from all views, particularly useful to avoid dangling pointers when deleting *object*.
+- void [requestUpdate](#requestupdate) () override — [Request](/cpp-sdk/4.5/api/classes/imfusion-request) an update of the rendered display content.
+
+## Public Attributes
+
+- Signal&lt; [View](/cpp-sdk/4.5/api/classes/imfusion-gui-view) \* &gt; **signalViewAdded** — Signal emitted when a [View](/cpp-sdk/4.5/api/classes/imfusion-gui-view) was added.
+- Signal&lt; [View](/cpp-sdk/4.5/api/classes/imfusion-gui-view) \* &gt; **signalViewRemoved** — Signal emitted when a [View](/cpp-sdk/4.5/api/classes/imfusion-gui-view) was removed.
+- Signal **signalUpdateRequested** — Signal emitted when scene has changed and a re-render is requested.
+
+## Protected Member Functions
+
+- virtual [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [DisplayLayoutConfig](/cpp-sdk/4.5/api/classes/imfusion-gui-displaylayoutconfig) &gt; **defaultLayoutConfig** () const
+- virtual [EventResult](/cpp-sdk/4.5/api/structs/imfusion-gui-eventresult) **handleKeyEvent** (const [KeyEvent](/cpp-sdk/4.5/api/classes/imfusion-gui-keyevent) &event)
+- virtual [EventResult](/cpp-sdk/4.5/api/structs/imfusion-gui-eventresult) **handleMouseEvent** (const [MouseEvent](/cpp-sdk/4.5/api/classes/imfusion-gui-mouseevent) &event)
+- virtual [EventResult](/cpp-sdk/4.5/api/structs/imfusion-gui-eventresult) **handleTouchEvent** (const [TouchEvent](/cpp-sdk/4.5/api/classes/imfusion-gui-touchevent) &event)
+- virtual [EventResult](/cpp-sdk/4.5/api/structs/imfusion-gui-eventresult) **handleContextMenuEvent** (const [ContextMenuEvent](/cpp-sdk/4.5/api/classes/imfusion-gui-contextmenuevent) &event)
+
+## Protected Attributes
+
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [View](/cpp-sdk/4.5/api/classes/imfusion-gui-view) &gt; &gt; **m_views**
+- [DisplayLayout](/cpp-sdk/4.5/api/classes/imfusion-gui-displaylayout) **m_layout**
+- [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; DataDisplayDispatcher &gt; **m_dataDisplayDispatcher**
+- [GL::Viewport](/cpp-sdk/4.5/api/structs/imfusion-gl-viewport) **m_viewport**
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; vec3 &gt; **m_backgroundColor** = vec3::Zero()
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [GL::VertexBuffer](/cpp-sdk/4.5/api/classes/imfusion-gl-vertexbuffer) &gt; **m_vbo**
+- [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; const [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) &gt; **m_watermark**
+- [View](/cpp-sdk/4.5/api/classes/imfusion-gui-view) \* **m_mouseEventReceiver** = nullptr — [View](/cpp-sdk/4.5/api/classes/imfusion-gui-view) where the mouse was pressed and that therefore has the mouse focus.
+- [View](/cpp-sdk/4.5/api/classes/imfusion-gui-view) \* **m_touchEventReceiver** = nullptr — [View](/cpp-sdk/4.5/api/classes/imfusion-gui-view) where a touch event was pressed and that therefore has the touch focus.
+- [View](/cpp-sdk/4.5/api/classes/imfusion-gui-view) \* **m_lastEnteredView** = nullptr — [View](/cpp-sdk/4.5/api/classes/imfusion-gui-view) that where the last mouse enter event was posted to.
+
+## Member Function Documentation
+
+### addView
+
+```cpp
+virtual void ImFusion::GUI::Display::addView (std::unique_ptr < View > view)
+```
+
+*virtual*
+
+Adds the given *view* to this display surface.
+
+The default implementation will reset the [DisplayLayout](/cpp-sdk/4.5/api/classes/imfusion-gui-displaylayout) with the return value of defaultLayoutConfig() if valid.
+
+### removeView
+
+```cpp
+virtual std::unique_ptr < View > ImFusion::GUI::Display::removeView (View * view)
+```
+
+*virtual*
+
+Remove *view* from this display surface again.
+
+The default implementation will reset the [DisplayLayout](/cpp-sdk/4.5/api/classes/imfusion-gui-displaylayout) with the return value of defaultLayoutConfig() if valid.
+
+### views
+
+```cpp
+std::vector < View * > ImFusion::GUI::Display::views () const
+```
+
+*override, virtual*
+
+Returns all views hosted by this display.
+
+### layout
+
+```cpp
+DisplayLayout & ImFusion::GUI::Display::layout ()
+```
+
+*inline, override, virtual*
+
+Returns the [DisplayLayout](/cpp-sdk/4.5/api/classes/imfusion-gui-displaylayout) determining how views are distributed within the viewport.
+
+### viewport
+
+```cpp
+GL::Viewport ImFusion::GUI::Display::viewport () const
+```
+
+*inline, override, virtual*
+
+Returns the viewport of this display surface in OpenGL coordinates (origin in lower-left corner).
+
+### render
+
+```cpp
+virtual void ImFusion::GUI::Display::render (std::string * outCriticalGlErrorMessage = nullptr) const
+```
+
+*virtual*
+
+Perform OpenGL-based rendering of the [Display](/cpp-sdk/4.5/api/classes/imfusion-gui-display) and all its Views.
+
+Call this function from the correct OpenGL context and your framebuffer [object] setup correctly. If a background color is set it will clear the framebuffer with it. Then it will call [View::render()](/cpp-sdk/4.5/api/classes/imfusion-gui-view) for each view.
+
+At the end of the rendering the function will check the OpenGL error flag. After the third frame where a critical error occurred (e.g. out-of-memory) the [Display](/cpp-sdk/4.5/api/classes/imfusion-gui-display) will disable all rendering to avoid further corruption of the system. This shall give the application the opportunity to at least perform a graceful shutdown. Callers can be notified about this by passing a pointer-to-string to the optional *outCriticalGlErrorMessage* parameter.
+
+### handleInputEvent
+
+```cpp
+EventResult ImFusion::GUI::Display::handleInputEvent (const InputEvent & event)
+```
+
+Entry point for the dispatching of input events from users.
+
+Usually, this function is called by the platform-specific wrapper class of the [Display](/cpp-sdk/4.5/api/classes/imfusion-gui-display) (e.g. [QtDisplayWidget](/cpp-sdk/4.5/api/classes/imfusion-gui-qtdisplaywidget)) after converting the platform-specific event to the generic [InputEvent](/cpp-sdk/4.5/api/classes/imfusion-gui-inputevent) type. It will forward the event to the [DisplayLayout](/cpp-sdk/4.5/api/classes/imfusion-gui-displaylayout) and all Views and return an [EventResult](/cpp-sdk/4.5/api/structs/imfusion-gui-eventresult) instance, which the wrapper class shall handle accordingly.
+
+The default implementation will switch on the type of *event* and forward to either handleKeyEvent(), handleMouseEvent(), handleTouchEvent(), or handleContextMenuEvent(). Thus, if you need to implement custom logic you should override those member functions.
+
+### hideData
+
+```cpp
+void ImFusion::GUI::Display::hideData (const Data * dataset)
+```
+
+Convenience function to remove *dataset* from all views, particularly useful to avoid dangling pointers when deleting *dataset*.
+
+**See also:** [GUI::View::hideData()](/cpp-sdk/4.5/api/classes/imfusion-gui-view)
+
+### removeObject
+
+```cpp
+void ImFusion::GUI::Display::removeObject (const ViewObject * object)
+```
+
+Convenience function to remove *object* from all views, particularly useful to avoid dangling pointers when deleting *object*.
+
+**See also:** [GUI::View::removeObject()](/cpp-sdk/4.5/api/classes/imfusion-gui-view)
+
+### removeObject
+
+```cpp
+void ImFusion::GUI::Display::removeObject (const GlObject * object)
+```
+
+Convenience function to remove *object* from all views, particularly useful to avoid dangling pointers when deleting *object*.
+
+**See also:** [GlView::removeObject()](/cpp-sdk/4.5/api/classes/imfusion-glview)
+
+### requestUpdate
+
+```cpp
+void ImFusion::GUI::Display::requestUpdate ()
+```
+
+*override, virtual*
+
+[Request](/cpp-sdk/4.5/api/classes/imfusion-request) an update of the rendered display content.
+
+Subclasses are not required to perform the update immediately but may postpone it to a later point in time (e.g. by using the application's event loop) in order to collect and combine multiple update requests into one.

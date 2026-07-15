@@ -1,0 +1,25 @@
+---
+title: "ImFusion::Dicom::EnhancedMultiFrameImageIOD::FunctionalGroupMacro::FrameContentSequenceItem"
+sidebarTitle: "FrameContentSequenceItem"
+---
+
+## Public Member Functions
+
+- **FrameContentSequenceItem** (DcmItem &item, bool createSequence=false)
+
+## Public Attributes
+
+- [Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **frameAcquisitionDateTime**
+- [Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element)&lt; [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; int &gt; &gt; [dimensionIndexValues](#dimensionindexvalues) — DimensionIndexSequence indices of the frame.
+
+## Member Data Documentation
+
+### dimensionIndexValues
+
+```cpp
+Element < std::vector <int> > ImFusion::Dicom::EnhancedMultiFrameImageIOD::FunctionalGroupMacro::FrameContentSequenceItem::dimensionIndexValues
+```
+
+DimensionIndexSequence indices of the frame.
+
+These means that frames with the same number in a slot are equivalent in what this [DimensionIndexSequenceItem](/cpp-sdk/4.5/api/classes/imfusion-dicom-enhancedmultiframeimageiod-dimensionindexsequenceitem) represents, e.g. they show the same segmentation label if that [DimensionIndexSequenceItem](/cpp-sdk/4.5/api/classes/imfusion-dicom-enhancedmultiframeimageiod-dimensionindexsequenceitem) points to ReferencedSegmentNumber. First number in this vector corresponds to the first element in DimensionIndexSequence and so on. The values for each "dimension" are starting at 1 and consecutive.

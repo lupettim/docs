@@ -1,0 +1,26 @@
+---
+title: "ImFusion::Hashing::EigenHasher< T >"
+sidebarTitle: "EigenHasher< T >"
+description: "STL-compatible hasher for dense Eigen types (matrices, vectors, arrays)."
+---
+
+`#include <ImFusion/Core/Hashing.h>`
+
+## Overview
+
+template&lt;typename T&gt;
+
+struct ImFusion::Hashing::EigenHasher&lt; T &gt;
+STL-compatible hasher for dense Eigen types (matrices, vectors, arrays).
+
+Internally computes murmur64() on the storage buffer yielding excellent distribution characteristics. Usage example:
+
+```cpp
+std::unordered_map<vec3, int, Hashing::EigenHasher<vec3>> hashMap;
+hashMap.insert({vec3(1, 2, 3), 42});
+```
+ fragment
+
+## Public Member Functions
+
+- [std::size_t](http://en.cppreference.com/w/cpp/types/size_t.html) **operator()** (const T &mat) const

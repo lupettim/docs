@@ -1,0 +1,39 @@
+---
+title: "ImFusion::RecentItemsTableWidget"
+sidebarTitle: "RecentItemsTableWidget"
+description: "This widget is a table showing a list of items recently used."
+---
+
+`#include <ImFusion/GUI/CoreWidgets/RecentItemsTableWidget.h>`
+
+## Overview
+
+This widget is a table showing a list of items recently used.
+
+New items can be pushed to the top of the list. The list is persistent and stored via QSettings, which is why the constructor requires an application/organization name. Each entry has a display name and a unique ID. Display names might be not unique, but UID are. Example: this widget can be used to store and display a list of recently selected files; in this case the display name can be the name of the file, while the UID could be the full path.
+
+## Public Member Functions
+
+- [RecentItemsTableWidget](#recentitemstablewidget) (const QString &settingName, const QString &applicationName="ImFusion Suite", const QString &organizationName="ImFusion") — Creates a QTableWidget that displays the list of recent items.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::pair](http://en.cppreference.com/w/cpp/utility/pair.html)&lt; QString, QString &gt; &gt; **recentItems** () — Returns the list of all recent items as pairs of name/UID.
+- void **pushRecentItem** (const QString &displayName, const QString &uid) — Push a file to the top of the recent items list.
+- void **removeRecentItem** (const QString &uid) — Remove a file from the recent items list.
+- void **clearRecentItems** () — Deletes all recent items.
+- void **updateTableContents** () — Update the content of the table.
+
+## Public Attributes
+
+- Signal&lt; QString &gt; **recentItemSelected** — When the user selects an item (e.g. clicks on it), this signal provides the UID.
+- Signal&lt; QString &gt; **recentItemDoubleClicked** — When the user double-clicks on an item, this signal provides the UID.
+
+## Constructor & Destructor Documentation
+
+### RecentItemsTableWidget
+
+```cpp
+ImFusion::RecentItemsTableWidget::RecentItemsTableWidget (const QString & settingName, const QString & applicationName = "ImFusion Suite", const QString & organizationName = "ImFusion")
+```
+
+Creates a QTableWidget that displays the list of recent items.
+
+The setting name is used as a key to store the list in the registry and should indicate what this widget actually stores.

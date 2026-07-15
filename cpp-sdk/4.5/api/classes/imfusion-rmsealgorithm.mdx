@@ -1,0 +1,46 @@
+---
+title: "ImFusion::RmseAlgorithm"
+sidebarTitle: "RmseAlgorithm"
+description: "Computation of Root Mean Square Error of two SharedImageSets."
+---
+
+`#include <ImFusion/Base/RmseAlgorithm.h>`
+
+## Overview
+
+Computation of Root Mean Square Error of two SharedImageSets.
+
+## Public Member Functions
+
+- **RmseAlgorithm** (const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*guide, const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*raw, bool newSis=false)
+- **~RmseAlgorithm** () override — Delete raw [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) if created from set of SharedImages.
+- void [compute](#compute) () override — Perform the computation (on CPU).
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; **rmseValues** () const — Access to the compute RMSE values.
+
+## Static Public Member Functions
+
+- static bool [createCompatible](#createcompatible) (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=0) — Evaluate if data is compatible with the algorithm requirements and create and algorithm instance, resp.
+
+## Member Function Documentation
+
+### createCompatible
+
+```cpp
+bool ImFusion::RmseAlgorithm::createCompatible (const DataList & data, Algorithm ** a = 0)
+```
+
+*static*
+
+Evaluate if data is compatible with the algorithm requirements and create and algorithm instance, resp.
+
+Possible scenarios: a) Input are two compatible SharedImageSets of equal size. The RMSE is computed pairwise. b) Input is a [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) of size 1 and another, compatible [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset). The RMSE of each image in the second SIS is computed w.r.t. the single ("guide") image. c) Input are several compatible SharedImageSets of size 1. The first one is treated as "guide" image. A [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) is created from all other images, the computation is continued like in b). Note that the "raw" SIS needs to be deleted in the end.
+
+### compute
+
+```cpp
+void ImFusion::RmseAlgorithm::compute ()
+```
+
+*override, virtual*
+
+Perform the computation (on CPU).

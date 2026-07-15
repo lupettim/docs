@@ -1,0 +1,85 @@
+---
+title: "ImFusion::TrackerID"
+sidebarTitle: "TrackerID"
+description: "Class identifying a tracker via a unique ID."
+---
+
+`#include <ImFusion/Base/TrackingInstrument.h>`
+
+## Overview
+
+Class identifying a tracker via a unique ID.
+
+This ID can be set via the constructor and should uniquely identify this tracking instrument. Model number and name of the tracking instrument shall also be set via the same constructor. For legacy reasons two deprecated constructor are provided.
+
+**Note:** ID, Name, and Model Number **cannot** contain the character |, since this is used as separator in the member functions TrackerID::fromIDModelNameString and [TrackerID::string](#string).
+
+## Public Member Functions
+
+- **TrackerID** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &ID, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &modelNumber, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name) — Creates a [TrackerID](/cpp-sdk/4.5/api/classes/imfusion-trackerid) from a **unique** ID (cannot be empty), a model-number, and a name.
+- [TrackerID](#trackerid-1-2) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &modelNumber, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name) — Creates a [TrackerID](/cpp-sdk/4.5/api/classes/imfusion-trackerid) from only model number and name. Intended for backward compatibility only, as it cannot guarantee uniqueness of the ID.
+- [TrackerID](#trackerid-2-2) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name) — Creates a [TrackerID](/cpp-sdk/4.5/api/classes/imfusion-trackerid) from instrument-name only. Intended for backward compatibility only, as it cannot guarantee uniqueness of the ID.
+- **TrackerID** () — Default Ctor.
+- void **setID** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &id) — Sets the ID string.
+- void **setName** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name) — Sets the tracker name string.
+- void **setModelNumber** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &modelNumber) — Sets the model number string.
+- const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) & **ID** () const — ID of the tracking instrument. Needs to be set **uniquely** by the input TrackingStream.
+- const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) & **modelNumber** () const — Model number of the tracking instrument.
+- const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) & **name** () const — Name of the tracking instrument, used for display purposes.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [toIDModelNameString](#toidmodelnamestring) (bool skipEmptyFields=false) const — Converts the [TrackerID](/cpp-sdk/4.5/api/classes/imfusion-trackerid) to a string of the form "id|modelNumber|name".
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [string](#string) () const — Converts the [TrackerID](/cpp-sdk/4.5/api/classes/imfusion-trackerid) to a string of the form "id|modelNumber|name", "id|name" (if model number is empty), "id|modelNumber" (if name is empty), or "id" (if both are empty) Note: This method is not fully compatible with fromIDModelNameString when "mode number" or "name" is empty.
+- bool **empty** () const — Return true if ID, model-number and name are all empty.
+
+## Static Public Member Functions
+
+- static TrackerID **fromIDModelNameString** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &id_ModelNumber_Name_String) — Creates a [TrackerID](/cpp-sdk/4.5/api/classes/imfusion-trackerid) from a string of the form "id|modelNumber|name". Strings of different kind are rejected.
+
+## Constructor & Destructor Documentation
+
+### TrackerID
+
+```cpp
+ImFusion::TrackerID::TrackerID (const std::string & modelNumber, const std::string & name)
+```
+
+*explicit*
+
+Creates a [TrackerID](/cpp-sdk/4.5/api/classes/imfusion-trackerid) from only model number and name. Intended for backward compatibility only, as it cannot guarantee uniqueness of the ID.
+
+****Deprecated**:** "Should not be used, use the constructor with ID arguments instead. Only intended for backward compatibility."
+
+### TrackerID
+
+```cpp
+ImFusion::TrackerID::TrackerID (const std::string & name)
+```
+
+*explicit*
+
+Creates a [TrackerID](/cpp-sdk/4.5/api/classes/imfusion-trackerid) from instrument-name only. Intended for backward compatibility only, as it cannot guarantee uniqueness of the ID.
+
+****Deprecated**:** "Should not be used, use the constructor with ID arguments instead. Only intended for backward compatibility."
+
+## Member Function Documentation
+
+### toIDModelNameString
+
+```cpp
+std::string ImFusion::TrackerID::toIDModelNameString (bool skipEmptyFields = false) const
+```
+
+Converts the [TrackerID](/cpp-sdk/4.5/api/classes/imfusion-trackerid) to a string of the form "id|modelNumber|name".
+
+If skipEmptyFields is true, preceding separators of empty fields are omitted: "id|name" (if model number is empty), "id|modelNumber" (if name is empty), or "id" (if both are empty). Otherwise, the empty field is filled with a placeholder "&lt;empty&gt;"
+
+### string
+
+```cpp
+std::string ImFusion::TrackerID::string () const
+```
+
+Converts the [TrackerID](/cpp-sdk/4.5/api/classes/imfusion-trackerid) to a string of the form "id|modelNumber|name", "id|name" (if model number is empty), "id|modelNumber" (if name is empty), or "id" (if both are empty) Note: This method is not fully compatible with fromIDModelNameString when "mode number" or "name" is empty.
+
+Use toIDModelNameString instead.
+
+****Deprecated**:** "Should not be used due to missing compatibility with fromIDModelName. Use toIDModelNameString instead."

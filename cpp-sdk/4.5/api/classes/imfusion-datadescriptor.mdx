@@ -1,0 +1,169 @@
+---
+title: "ImFusion::DataDescriptor"
+sidebarTitle: "DataDescriptor"
+---
+
+## Classes
+
+- class [TypeSpecificData](/cpp-sdk/4.5/api/classes/imfusion-datadescriptor-typespecificdata)
+- class [GeometricAnnotationData](/cpp-sdk/4.5/api/classes/imfusion-datadescriptor-geometricannotationdata)
+- class [PixelwiseData](/cpp-sdk/4.5/api/classes/imfusion-datadescriptor-pixelwisedata)
+- struct [RelatedData](/cpp-sdk/4.5/api/structs/imfusion-datadescriptor-relateddata)
+
+## Public Member Functions
+
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*prop) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*prop) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+- void **configureFromRemote** (const QJsonObject &obj)
+- const QString & **identifier** () const
+- const QString & **name** () const
+- bool **ownCopy** () const
+- uint64_t **importTime** () const
+- uint64_t **latestEditTime** () const
+- const QString & **comments** () const
+- bool **makeOwning** ()
+- const [TagValues](/cpp-sdk/4.5/api/classes/imfusion-tagvalues) & **tagValues** () const
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [TagValue](/cpp-sdk/4.5/api/unions/imfusion-tagvalue) &gt; & **tags** () const
+- bool **areTagValuesDefault** () const
+- bool **requestNameChange** (const QString &name)
+- bool **requestCommentsChange** (const QString &comments)
+- bool **requestTagChange** (size_t i, [TagValue](/cpp-sdk/4.5/api/unions/imfusion-tagvalue) v)
+- bool **requestGroupingChange** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; &grouping)
+- bool **requestReadOnlyChange** (bool readOnly)
+- const QString & **originalDataPath** () const
+- const [DataSource](/cpp-sdk/4.5/api/structs/imfusion-datasource) & **dataSource** () const
+- const [Filesystem::Url](/cpp-sdk/4.5/api/classes/imfusion-filesystem-url) [absoluteDataSourcePath](#absolutedatasourcepath) () const — Returns the final location where the [DataSource](/cpp-sdk/4.5/api/structs/imfusion-datasource) can be (down)loaded.
+- bool **isLocked** () const
+- bool [isReadOnly](#isreadonly) () const — Returns whether this [DataDescriptor](/cpp-sdk/4.5/api/classes/imfusion-datadescriptor) can be changed.
+- QString **thumbnailPath** () const
+- bool **saveThumbnail** (const QImage &thumb)
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &gt; **loadImage** ([Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) \*p=nullptr) const
+- bool **saveImage** (const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &image, [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) \*p=nullptr) const
+- bool [saveViewerMetadataRemote](#saveviewermetadataremote) () const — Saves the viewer metadata.
+- void **setDatasetLicenseId** (const QString &id)
+- const QString & **datasetLicenseId** () const
+- const [DatasetLicenseSystem::DatasetLicense](/cpp-sdk/4.5/api/structs/imfusion-datasetlicensesystem-datasetlicense) \* **datasetLicense** () const
+- const [ImageMetadata](/cpp-sdk/4.5/api/structs/imfusion-imagemetadata) & **imageMetadata** () const
+- const [ViewerMetadata](/cpp-sdk/4.5/api/structs/imfusion-viewermetadata) & **viewerMetadata** () const
+- void [setViewerMetadata](#setviewermetadata) (const [ViewerMetadata](/cpp-sdk/4.5/api/structs/imfusion-viewermetadata) &metadata) — Sets the metadata used by viewers.
+- bool **isWindowingInitialized** () const
+- const [RegionOfInterest](/cpp-sdk/4.5/api/structs/imfusion-regionofinterest) & **regionOfInterest** () const
+- void **setRegionOfInterest** (const [RegionOfInterest](/cpp-sdk/4.5/api/structs/imfusion-regionofinterest) &roi)
+- void **considerFrameAnnotated** (size_t frame, bool annotated)
+- bool **isConsideredAnnotated** ([std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; size_t &gt; frame=&#123;&#125;) const
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; bool &gt; & **framesConsideredAnnotated** () const
+- bool [importPixelwiseLayers](#importpixelwiselayers) ([std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* &gt; layers, Project::LayersToModify layersToModify, [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) \*progress=nullptr) — Import the given pixelwise layers.
+- [PixelwiseData](/cpp-sdk/4.5/api/classes/imfusion-datadescriptor-pixelwisedata) \* **pixelwise** ([std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; size_t &gt;=&#123;&#125;)
+- const [PixelwiseData](/cpp-sdk/4.5/api/classes/imfusion-datadescriptor-pixelwisedata) \* **pixelwise** ([std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; size_t &gt;=&#123;&#125;) const
+- [GeometricAnnotationData](/cpp-sdk/4.5/api/classes/imfusion-datadescriptor-geometricannotationdata) \* **geometricAnnotations** ([std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; size_t &gt;=&#123;&#125;)
+- const [GeometricAnnotationData](/cpp-sdk/4.5/api/classes/imfusion-datadescriptor-geometricannotationdata) \* **geometricAnnotations** ([std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; size_t &gt;=&#123;&#125;) const
+- bool **hasData** () const
+- const Project & **project** () const
+- bool **isRelatedDimensionCompatible** ()
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [RelatedData](/cpp-sdk/4.5/api/structs/imfusion-datadescriptor-relateddata) &gt; & **relatedData** () const
+- bool **addRelatedData** ([RelatedData](/cpp-sdk/4.5/api/structs/imfusion-datadescriptor-relateddata) related)
+- bool **removeRelatedData** (const QString &ID)
+- [RelatedData](/cpp-sdk/4.5/api/structs/imfusion-datadescriptor-relateddata) \* **selectedRelatedData** ()
+- DataDescriptor \* **selectedRelatedDataDescriptor** ()
+- int **selectedRelatedDataIndex** () const
+- void **setSelectedRelatedDataIndex** (int idx)
+
+## Static Public Member Functions
+
+- static [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; DataDescriptor &gt; **create** (const Project &p, const QString &name, const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &sis, [DataSource](/cpp-sdk/4.5/api/structs/imfusion-datasource) dataSource)
+- static [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; DataDescriptor &gt; **create** (const Project &p, const QString &name, const [ImageMetadata](/cpp-sdk/4.5/api/structs/imfusion-imagemetadata) &sis, [DataSource](/cpp-sdk/4.5/api/structs/imfusion-datasource) dataSource)
+- static [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; DataDescriptor &gt; **fromRemoteDesc** (const Project &p, const QString &identifier)
+- static [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; DataDescriptor &gt; **load** (const Project &p, const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) &prop, const [std::set](http://en.cppreference.com/w/cpp/container/set.html)&lt; QString &gt; &labels)
+
+## Public Attributes
+
+- Signal&lt; DataDescriptor \* &gt; **signalAboutToBeDeleted**
+- Signal **signalRelatedDataChanged**
+
+## Member Function Documentation
+
+### configure
+
+```cpp
+void ImFusion::DataDescriptor::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### configuration
+
+```cpp
+void ImFusion::DataDescriptor::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality
+
+### absoluteDataSourcePath
+
+```cpp
+const Filesystem::Url ImFusion::DataDescriptor::absoluteDataSourcePath () const
+```
+
+Returns the final location where the [DataSource](/cpp-sdk/4.5/api/structs/imfusion-datasource) can be (down)loaded.
+
+This might be a file on the local filesystem (i.e. file: scheme), a download link of the remote project server or a link to some external storage. Remote projects will never return a file: url. Local projects might return something else than file: urls (e.g. http for DICOMweb).
+
+### isReadOnly
+
+```cpp
+bool ImFusion::DataDescriptor::isReadOnly () const
+```
+
+*inline*
+
+Returns whether this [DataDescriptor](/cpp-sdk/4.5/api/classes/imfusion-datadescriptor) can be changed.
+
+In a read-only [DataDescriptor](/cpp-sdk/4.5/api/classes/imfusion-datadescriptor) name, comments, tags and annotations cannot be edited.
+
+### saveViewerMetadataRemote
+
+```cpp
+bool ImFusion::DataDescriptor::saveViewerMetadataRemote () const
+```
+
+Saves the viewer metadata.
+
+This currently only works for remote projects! Local projects save the viewer metadata when the project is saved.
+
+### setViewerMetadata
+
+```cpp
+void ImFusion::DataDescriptor::setViewerMetadata (const ViewerMetadata & metadata)
+```
+
+*inline*
+
+Sets the metadata used by viewers.
+
+This does *not* change any settings derived from the metadata, e.g. it does *not* update the DisplayOptions2D.
+
+### importPixelwiseLayers
+
+```cpp
+bool ImFusion::DataDescriptor::importPixelwiseLayers (std::vector < SharedImageSet * > layers, Project::LayersToModify layersToModify, Progress * progress = nullptr)
+```
+
+Import the given pixelwise layers.
+
+The given layers don't need to match the pixelwise layers of this dataset, only the entries in the [LabelDataComponent](/cpp-sdk/4.5/api/classes/imfusion-labeldatacomponent) must match the names of the labels. E.g. if the [LabelDataComponent](/cpp-sdk/4.5/api/classes/imfusion-labeldatacomponent) of a given layer contains a label with the name "Left Kidney", this label will be assigned to the "Left Kidney" label as defined in the project. It does not matter in which layer this label is defined, it will be automatically mapped to the corresponding layer. If a label has a matching name but the value is not matching, then the value will be mapped to the value defined in the project. Basically the given layers can contain the labels in arbitary order and with arbitary values. As long as the names can be matched, the layers will be imported according to the project definition.
+
+Labels that are not referenced by the [LabelDataComponent](/cpp-sdk/4.5/api/classes/imfusion-labeldatacomponent) are left unmodified. Therefore it's possible to only update specific labels. Labels that are referenced by the [LabelDataComponent](/cpp-sdk/4.5/api/classes/imfusion-labeldatacomponent) but are not present in the project, are ignored.
+
+Returns true if all layers could be imported. If any of the layers is incompatible to the dataset (e.g. wrong dimension or spacing) or if not all labels can be matched to a project label, no pixelwise layer of this dataset is modified and false is returned.

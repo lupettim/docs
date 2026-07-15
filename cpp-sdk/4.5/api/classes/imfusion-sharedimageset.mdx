@@ -1,0 +1,569 @@
+---
+title: "ImFusion::SharedImageSet"
+sidebarTitle: "SharedImageSet"
+description: "Set of images independent of their storage location."
+---
+
+`#include <ImFusion/GL/SharedImageSet.h>`
+
+## Overview
+
+Set of images independent of their storage location.
+
+This class is the main high-level container for image data consisting of one or multiple images or volumes, and should be used both in algorithms and visualization classes. Both a single focus and multiple selection is featured, as well as providing transformation matrices and timestamps for each image.
+
+[SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) uses shared_ptr internally to store the SharedImages. This enables you to easily create a container [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) that temporarily wraps existing images (e.g. to pass them to a separate [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm)) without taking exclusive ownership.
+
+**See also:** [Using Image Data](/cpp-sdk/4.5/api/guides/image-data-tutorial) ,
+
+**Examples:** [DicomExtensionExample2.cpp](/cpp-sdk/4.5/api/examples/dicom-extension2-8cpp), [ExampleAlgorithm.cpp](/cpp-sdk/4.5/api/examples/example-algorithm-8cpp), [ExampleAlgorithm.h](/cpp-sdk/4.5/api/examples/example-algorithm-8h), [SqrtAlgorithm.cpp](/cpp-sdk/4.5/api/examples/sqrt-algorithm-8cpp), and [SqrtAlgorithm.h](/cpp-sdk/4.5/api/examples/sqrt-algorithm-8h).
+
+## Public Types
+
+- enum [CloneOptions](#cloneoptions) &#123; Everything = 0 , NoImageData = 1 &lt;&lt; 0 , NoDataComponents = 1 &lt;&lt; 1 , ShallowImageCopy = 1 &lt;&lt; 2 , NoSelection = 1 &lt;&lt; 3 , NoTracking = 1 &lt;&lt; 4 &#125; — Bitset enumeration to configure which aspects of a [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) to copy.
+
+## Public Member Functions
+
+- [SharedImageSet](#sharedimageset-1-2) ([std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [Image](/cpp-sdk/4.5/api/classes/imfusion-image) &gt; img) — Construct from a single [Image](/cpp-sdk/4.5/api/classes/imfusion-image).
+- [SharedImageSet](#sharedimageset-2-2) ([std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) &gt; img) — Construct from a single [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage).
+- **SharedImageSet** () — Construct an empty [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset).
+- [SharedImageSet](#sharedimageset-1-2) & **operator=** (const [SharedImageSet](#sharedimageset-1-2) &)=delete
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [SharedImageSet](#sharedimageset-1-2) &gt; **clone** ([Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; [CloneOptions](#cloneoptions) &gt; cloneOptions=Everything) const — Create a copy of this [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) instance.
+- void **add** ([std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [Image](/cpp-sdk/4.5/api/classes/imfusion-image) &gt; img) — Add a single image to the data set.
+- void **add** ([std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [Image](/cpp-sdk/4.5/api/classes/imfusion-image) &gt; img, const mat4 &m) — Add a single image with its transformation matrix.
+- virtual void [add](#add) ([std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) &gt; img) — Add a shared image to the data set.
+- void **add** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) &gt; &gt; &[images](#images)) — Add a list of shared images.
+- bool **replace** (int pos, [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) &gt; img) — Replace a particular shared image entry, will not do anything if no image of that index exist yet.
+- virtual void [remove](#remove-1-2) (int pos, int count=1) — Removes images at the specified locations and deletes them if owned.
+- void [remove](#remove-2-2) (const [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*img) — Removes a specific image and deletes it if owned.
+- virtual void [clear](#clear) () — Clear all data and delete it if owned.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [describe](#describe) () const override — Short description of the image set.
+- void [setModalityOverride](#setmodalityoverride) ([std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [Data::Modality](/cpp-sdk/4.5/api/classes/imfusion-data) &gt; modalityOverride) — Set a modalityOverride.
+- virtual void **setModality** ([Modality](/cpp-sdk/4.5/api/classes/imfusion-data) m) — Set image modality for all frames.
+- [Modality](/cpp-sdk/4.5/api/classes/imfusion-data) [modality](#modality) () const override — Return the modality of this data.
+- virtual bool **isMultiModal** () const — Return true if set contains images of different modalities, false otherwise.
+- virtual void [prepare](#prepare) (bool shiftOnly=false) — Prepare the image in memory for most common scenarios Integral types are converted to unsigned representation if applicable, double-precision will be converted to single-precision float.
+- virtual void [uploadGl](#uploadgl) () const — Upload all images as OpenGL textures.
+- bool **hasMem** (int which=-1) const — Query whether an up-to-date memory image is present. If not, a sync is required.
+- bool **hasGl** (int which=-1) const — Query whether an up-to-date OpenGL image is present. If not, a sync is required.
+- const [DataComponentList](/cpp-sdk/4.5/api/classes/imfusion-datacomponentlist) & **components** () const — Returns the list of DataComponents for this data.
+- [DataComponentList](/cpp-sdk/4.5/api/classes/imfusion-datacomponentlist) & **components** ()
+- const [DataComponentList](/cpp-sdk/4.5/api/classes/imfusion-datacomponentlist) & **components** (int i) const — Returns the DataComponents associated to the element with that index.
+
+## Protected Member Functions
+
+- virtual [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; const [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) &gt; **getSharedImpl** (int which) const — Implements getShared(int) const for subclass customization.
+- virtual [SharedImageSet](#sharedimageset-1-2) \* [createCloneContainer](#createclonecontainer) () const — Internal method for creating the container object holding the clone.
+- virtual void [cloneInternal](#cloneinternal) ([SharedImageSet](#sharedimageset-1-2) &other, [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; [CloneOptions](#cloneoptions) &gt; cloneOptions) const — Internal method for cloning which should be called from derived container classes.
+- virtual void **swapWith** ([SharedImageSet](#sharedimageset-1-2) &other) — Internal method for swapping the contents of this container with `other`.
+
+## Protected Attributes
+
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) &gt; &gt; **m_images** — [Vector](/cpp-sdk/4.5/api/classes/imfusion-vector) of shared image pointers.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; **m_timestamps** — Optional timestamps of the image frames.
+- [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) **m_properties** — Auxiliary information properties.
+- [Geometry::AlignedBox](/cpp-sdk/4.5/api/classes/imfusion-geometry-alignedbox) **m_bounds** — Axis-aligned bounding box of all images in world space.
+- bool **m_updateBounds** = true — Flag specifying whether the bounds should be re-computed.
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [Data::Modality](/cpp-sdk/4.5/api/classes/imfusion-data) &gt; **m_modalityOverride** — Overrides the modality of the containing SharedImages. This is used e.g. for the ConeBeamData concept in CT.
+
+## Image access
+
+- [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \* **get** (int which=-1) — Get specific or selected shared image.
+- [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) &gt; **getShared** (int which=-1) — Get specific or selected shared image.
+- [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) \* [mem](#mem-1-2) (int which=-1) — Get specific or selected image in memory If required image will be synchronized.
+- [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) \* [gl](#gl-1-2) (int which=-1) — Get specific or selected OpenGL image If required image will be synchronized.
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) &gt; &gt; & [images](#images) () — Return entire vector of images.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) &gt; &gt; **selectedImages** ([Selection::NonePolicy](/cpp-sdk/4.5/api/classes/imfusion-selection) noneSelectionHandling) — Return vector of all selected images.
+
+## Const image access
+
+- const [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \* **get** (int which=-1) const — Get specific or selected shared image.
+- [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; const [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) &gt; **getShared** (int which=-1) const — Get specific or selected shared image.
+- const [Image](/cpp-sdk/4.5/api/classes/imfusion-image) \* **img** (int which=-1) const — Get specific or selected image descriptor.
+- const [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) \* [mem](#mem-2-2) (int which=-1) const — Get specific or selected image in memory If required image will be synchronized.
+- const [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) \* [gl](#gl-2-2) (int which=-1) const — Get specific or selected OpenGL image If required image will be synchronized.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; const [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) &gt; &gt; **images** () const — Return entire vector of images.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; const [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) &gt; &gt; **selectedImages** ([Selection::NonePolicy](/cpp-sdk/4.5/api/classes/imfusion-selection) noneSelectionHandling) const — Return vector of all selected images.
+
+## Image matrix access
+
+- [Pose::TransformationConvention](/cpp-sdk/4.5/api/namespaces/imfusion-pose) [matrixConvention](#matrixconvention) () const override — Matrices of images map from the world coordinate system.
+- virtual void [setMatrix](#setmatrix-1-2) (const mat4 &m, int which, bool updateAll=false) — Set specific (`which` &gt;=0) or focused (`which` ==-1) image matrix.
+- virtual mat4 [matrix](#matrix-1-2) (int which) const — Get specific (`which` &gt;=0) or focused (`which` ==-1) image matrix.
+- void [setMatrix](#setmatrix-2-2) (const mat4 &m) override — Set focused image matrix.
+- mat4 [matrix](#matrix-2-2) () const override — Get focused image matrix.
+- virtual void [setMatrixFromWorld](#setmatrixfromworld-1-2) (const mat4 &m, int which, bool updateAll=false) — Set specific (`which` &gt;=0) or focused (`which` ==-1) image matrix mapping from the world coordinate system.
+- virtual void [setMatrixToWorld](#setmatrixtoworld-1-2) (const mat4 &m, int which, bool updateAll=false) — Set specific (`which` &gt;=0) or focused (`which` ==-1) image matrix mapping to the world coordinate system.
+- virtual mat4 [matrixFromWorld](#matrixfromworld-1-2) (int which) const — Get specific (`which` &gt;=0) or focused (`which` ==-1) image matrix mapping from the world coordinate system.
+- virtual mat4 [matrixToWorld](#matrixtoworld-1-2) (int which) const — Get specific (`which` &gt;=0) or focused (`which` ==-1) image matrix mapping to the world coordinate system.
+- virtual bool [hasTransformations](#hastransformations) () const — Return true if at least one image in the set has a matrix transformation unequal identity.
+- virtual void **setDeformation** ([std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [Deformation](/cpp-sdk/4.5/api/classes/imfusion-deformation) &gt; def, int which=-1) — Sets a deformation for specified or focus image.
+- virtual [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [Deformation](/cpp-sdk/4.5/api/classes/imfusion-deformation) &gt; **deformation** (int which=-1) const — Returns the deformation for the specified or focused image, or 0 if not deformation is set.
+- virtual void **setMask** ([std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [Mask](/cpp-sdk/4.5/api/classes/imfusion-mask) &gt; mask, int which=-1) — Sets a mask for specified or focus image.
+- virtual [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [Mask](/cpp-sdk/4.5/api/classes/imfusion-mask) &gt; **mask** (int which=-1) const — Returns the mask for the specified or focused image, or 0 if not mask is set.
+- virtual [ImageDescriptor](/cpp-sdk/4.5/api/structs/imfusion-imagedescriptor) **descriptor** (int which=-1) const — Returns the descriptor for the specified or focused image, returns an empty descriptor if there are no images present.
+- virtual mat4 [matrixFromWorld](#matrixfromworld-2-2) () const — Get matrix mapping from the world coordinate system to the data coordinate system.
+- virtual mat4 [matrixToWorld](#matrixtoworld-2-2) () const — Get matrix mapping from the data coordinate system to the world coordinate system.
+- virtual void [setMatrixFromWorld](#setmatrixfromworld-2-2) (const mat4 &m) — Set matrix mapping from the world coordinate system to the data coordinate system.
+- virtual void [setMatrixToWorld](#setmatrixtoworld-2-2) (const mat4 &m) — Set matrix mapping from the data coordinate system to the world coordinate system.
+
+## Timestamp access
+
+- virtual void [setTimestamp](#settimestamp) (double time, int which=-1) — Set specific or focused timestamp in seconds.
+- double **timestamp** (int which=-1) const — Get specific or focused timestamp in seconds.
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; **timestamps** () const — Get the timestamps sequence.
+- bool **hasTimestamps** () const — Return if all image frames have timestamps.
+
+## Miscellaneous const access methods
+
+- int [size](#size) () const override — Return the size of the image set.
+- bool **allEqual** () const — Return if all image descriptors are the same.
+- [Kind](/cpp-sdk/4.5/api/classes/imfusion-data) [kind](#kind) () const override — Return the kind of data contained here.
+- [Geometry::AlignedBox](/cpp-sdk/4.5/api/classes/imfusion-geometry-alignedbox) [bounds](#bounds) () const override — Returns the axis-aligned bounding box of all images in world space.
+- [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \* [properties](#properties-1-2) () — Return auxiliary data structures stored in [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \* [properties](#properties-2-2) () const — Return auxiliary data structures stored in [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+## Member Enumeration Documentation
+
+### CloneOptions
+
+```cpp
+enum ImFusion::SharedImageSet::CloneOptions
+```
+
+Bitset enumeration to configure which aspects of a [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) to copy.
+
+**Enumerator:**
+
+- `Everything` — Perform a deep copy of all data contained by the [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset).
+- `NoImageData` — Do not clone any image data.
+- `NoDataComponents` — Do not clone any DataComponents.
+- `ShallowImageCopy` — Clone SharedImages with [SharedImage::ShallowImageCopy](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) flag (do not deep copy the underlying Images).
+- `NoSelection` — Do not copy over the [Selection](/cpp-sdk/4.5/api/classes/imfusion-selection).
+- `NoTracking` — Do not copy over any TrackingSequences (only relevant for [TrackedSharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-trackedsharedimageset) derived classes).
+
+## Constructor & Destructor Documentation
+
+### SharedImageSet
+
+```cpp
+ImFusion::SharedImageSet::SharedImageSet (std::shared_ptr < Image > img)
+```
+
+*explicit*
+
+Construct from a single [Image](/cpp-sdk/4.5/api/classes/imfusion-image).
+
+Note that any [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html) implicitly converts to a [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html) of same type.
+
+### SharedImageSet
+
+```cpp
+ImFusion::SharedImageSet::SharedImageSet (std::shared_ptr < SharedImage > img)
+```
+
+*explicit*
+
+Construct from a single [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage).
+
+Note that any [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html) implicitly converts to a [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html) of same type.
+
+## Member Function Documentation
+
+### add
+
+```cpp
+virtual void ImFusion::SharedImageSet::add (std::shared_ptr < SharedImage > img)
+```
+
+*virtual*
+
+Add a shared image to the data set.
+
+### remove
+
+```cpp
+virtual void ImFusion::SharedImageSet::remove (int pos, int count = 1)
+```
+
+*virtual*
+
+Removes images at the specified locations and deletes them if owned.
+
+**Note:** Will notify any attached ElementwiseDataComponent about the removal.
+
+### remove
+
+```cpp
+void ImFusion::SharedImageSet::remove (const SharedImage * img)
+```
+
+Removes a specific image and deletes it if owned.
+
+**Note:** Will notify any attached ElementwiseDataComponent about the removal.
+
+### clear
+
+```cpp
+virtual void ImFusion::SharedImageSet::clear ()
+```
+
+*virtual*
+
+Clear all data and delete it if owned.
+
+### describe
+
+```cpp
+std::string ImFusion::SharedImageSet::describe () const
+```
+
+*override, virtual*
+
+Short description of the image set.
+
+### setModalityOverride
+
+```cpp
+void ImFusion::SharedImageSet::setModalityOverride (std::optional < Data::Modality > modalityOverride)
+```
+
+Set a modalityOverride.
+
+See [SharedImageSet::modality()](#modality) for more details on how the modality of the [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) is determined in case of an active modalityOverride.
+
+**Parameters:**
+
+- `modalityOverride` — Pass a [Data::Modality](/cpp-sdk/4.5/api/classes/imfusion-data) to set a modalityOverride. In order to remove an override you can pass std::nullopt as argument.
+
+### modality
+
+```cpp
+Modality ImFusion::SharedImageSet::modality () const
+```
+
+*override, virtual*
+
+Return the modality of this data.
+
+The modality will be determined like this:
+
+- If a modalityOverride is set its value will be returned.
+- Otherwise, if all images have the same modality this modality will be returned.
+- In any other case, including an empty [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset), [Data::NA](/cpp-sdk/4.5/api/classes/imfusion-data) will be returned.
+
+### prepare
+
+```cpp
+virtual void ImFusion::SharedImageSet::prepare (bool shiftOnly = false)
+```
+
+*virtual*
+
+Prepare the image in memory for most common scenarios Integral types are converted to unsigned representation if applicable, double-precision will be converted to single-precision float.
+
+Furthermore, if *shiftOnly* is false it will rescale the present intensity range to [0..1] for floating point types or to the entire available value range for integral types. For image sets that contain more than one image *shiftOnly* will always be forced to true. Derived classes may do more modality specific processing here.
+
+**Note:** Pointers to the underlying image data may be invalidated as a result.
+
+### uploadGl
+
+```cpp
+virtual void ImFusion::SharedImageSet::uploadGl () const
+```
+
+*virtual*
+
+Upload all images as OpenGL textures.
+
+This method throws an exception if the OpenGL texture creation fails.
+
+### mem
+
+```cpp
+MemImage * ImFusion::SharedImageSet::mem (int which = -1)
+```
+
+Get specific or selected image in memory If required image will be synchronized.
+
+Use hasMem() to check if synchronization is required.
+
+### gl
+
+```cpp
+GlImage * ImFusion::SharedImageSet::gl (int which = -1)
+```
+
+Get specific or selected OpenGL image If required image will be synchronized.
+
+Use hasGl() to check if synchronization is required.
+
+### images
+
+```cpp
+const std::vector < std::shared_ptr < SharedImage > > & ImFusion::SharedImageSet::images ()
+```
+
+*inline*
+
+Return entire vector of images.
+
+This method is non-const since the images themselves may be manipulated.
+
+### mem
+
+```cpp
+const MemImage * ImFusion::SharedImageSet::mem (int which = -1) const
+```
+
+Get specific or selected image in memory If required image will be synchronized.
+
+Use hasMem() to check if synchronization is required.
+
+### gl
+
+```cpp
+const GlImage * ImFusion::SharedImageSet::gl (int which = -1) const
+```
+
+Get specific or selected OpenGL image If required image will be synchronized.
+
+Use hasGl() to check if synchronization is required.
+
+### matrixConvention
+
+```cpp
+Pose::TransformationConvention ImFusion::SharedImageSet::matrixConvention () const
+```
+
+*inline, override, virtual*
+
+Matrices of images map from the world coordinate system.
+
+### setMatrix
+
+```cpp
+virtual void ImFusion::SharedImageSet::setMatrix (const mat4 & m, int which, bool updateAll = false)
+```
+
+*virtual*
+
+Set specific (`which` &gt;=0) or focused (`which` ==-1) image matrix.
+
+If `updateAll` is set, the matrices of all images are updated relative to `which`.
+
+### matrix
+
+```cpp
+virtual mat4 ImFusion::SharedImageSet::matrix (int which) const
+```
+
+*virtual*
+
+Get specific (`which` &gt;=0) or focused (`which` ==-1) image matrix.
+
+### setMatrix
+
+```cpp
+void ImFusion::SharedImageSet::setMatrix (const mat4 & m)
+```
+
+*override, virtual*
+
+Set focused image matrix.
+
+### matrix
+
+```cpp
+mat4 ImFusion::SharedImageSet::matrix () const
+```
+
+*override, virtual*
+
+Get focused image matrix.
+
+### setMatrixFromWorld
+
+```cpp
+virtual void ImFusion::SharedImageSet::setMatrixFromWorld (const mat4 & m, int which, bool updateAll = false)
+```
+
+*virtual*
+
+Set specific (`which` &gt;=0) or focused (`which` ==-1) image matrix mapping from the world coordinate system.
+
+If `updateAll` is set, the matrices of all images are updated relative to `which`.
+
+### setMatrixToWorld
+
+```cpp
+virtual void ImFusion::SharedImageSet::setMatrixToWorld (const mat4 & m, int which, bool updateAll = false)
+```
+
+*virtual*
+
+Set specific (`which` &gt;=0) or focused (`which` ==-1) image matrix mapping to the world coordinate system.
+
+If `updateAll` is set, the matrices of all images are updated relative to `which`.
+
+### matrixFromWorld
+
+```cpp
+virtual mat4 ImFusion::SharedImageSet::matrixFromWorld (int which) const
+```
+
+*virtual*
+
+Get specific (`which` &gt;=0) or focused (`which` ==-1) image matrix mapping from the world coordinate system.
+
+### matrixToWorld
+
+```cpp
+virtual mat4 ImFusion::SharedImageSet::matrixToWorld (int which) const
+```
+
+*virtual*
+
+Get specific (`which` &gt;=0) or focused (`which` ==-1) image matrix mapping to the world coordinate system.
+
+### hasTransformations
+
+```cpp
+virtual bool ImFusion::SharedImageSet::hasTransformations () const
+```
+
+*virtual*
+
+Return true if at least one image in the set has a matrix transformation unequal identity.
+
+### setTimestamp
+
+```cpp
+virtual void ImFusion::SharedImageSet::setTimestamp (double time, int which = -1)
+```
+
+*virtual*
+
+Set specific or focused timestamp in seconds.
+
+### size
+
+```cpp
+int ImFusion::SharedImageSet::size () const
+```
+
+*override, virtual*
+
+Return the size of the image set.
+
+### kind
+
+```cpp
+Kind ImFusion::SharedImageSet::kind () const
+```
+
+*override, virtual*
+
+Return the kind of data contained here.
+
+### bounds
+
+```cpp
+Geometry::AlignedBox ImFusion::SharedImageSet::bounds () const
+```
+
+*override, virtual*
+
+Returns the axis-aligned bounding box of all images in world space.
+
+### properties
+
+```cpp
+Properties * ImFusion::SharedImageSet::properties ()
+```
+
+Return auxiliary data structures stored in [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+**Note:** Prefer using DataComponents as type-safe alternative if possible.
+
+### properties
+
+```cpp
+const Properties * ImFusion::SharedImageSet::properties () const
+```
+
+Return auxiliary data structures stored in [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+**Note:** Prefer using DataComponents as type-safe alternative if possible.
+
+### createCloneContainer
+
+```cpp
+virtual SharedImageSet * ImFusion::SharedImageSet::createCloneContainer () const
+```
+
+*protected, virtual*
+
+Internal method for creating the container object holding the clone.
+
+### cloneInternal
+
+```cpp
+virtual void ImFusion::SharedImageSet::cloneInternal (SharedImageSet & other, Flags < CloneOptions > cloneOptions) const
+```
+
+*protected, virtual*
+
+Internal method for cloning which should be called from derived container classes.
+
+### matrixFromWorld
+
+```cpp
+virtual mat4 ImFusion::Data::matrixFromWorld () const
+```
+
+*virtual*
+
+Get matrix mapping from the world coordinate system to the data coordinate system.
+
+Inverse of [matrixToWorld](#matrixtoworld-1-2).
+
+**Note:** Depending on how matrices are internally stored in concrete derived classes, a matrix inversion might be necessary to obtain this mapping. The default implementation checks [matrixConvention](#matrixconvention) and accordingly returns [matrix](#matrix-1-2) or its inverse.
+
+### matrixToWorld
+
+```cpp
+virtual mat4 ImFusion::Data::matrixToWorld () const
+```
+
+*virtual*
+
+Get matrix mapping from the data coordinate system to the world coordinate system.
+
+Inverse of [matrixFromWorld](#matrixfromworld-1-2).
+
+**Note:** Depending on how matrices are internally stored in concrete derived classes, a matrix inversion might be necessary to obtain this mapping. The default implementation checks [matrixConvention](#matrixconvention) and accordingly returns [matrix](#matrix-1-2) or its inverse.
+
+### setMatrixFromWorld
+
+```cpp
+virtual void ImFusion::Data::setMatrixFromWorld (const mat4 & m)
+```
+
+*virtual*
+
+Set matrix mapping from the world coordinate system to the data coordinate system.
+
+**Note:** Depending on how matrices are internally stored in concrete derived classes, `m` might be inverted before it is saved. The default implementation checks [matrixConvention](#matrixconvention) and accordingly calls [setMatrix](#setmatrix-1-2) with either `m` or its inverse.
+
+### setMatrixToWorld
+
+```cpp
+virtual void ImFusion::Data::setMatrixToWorld (const mat4 & m)
+```
+
+*virtual*
+
+Set matrix mapping from the data coordinate system to the world coordinate system.
+
+**Note:** Depending on how matrices are internally stored in concrete derived classes, `m` might be inverted before it is saved. The default implementation checks [matrixConvention](#matrixconvention) and accordingly calls [setMatrix](#setmatrix-1-2) with either `m` or its inverse.

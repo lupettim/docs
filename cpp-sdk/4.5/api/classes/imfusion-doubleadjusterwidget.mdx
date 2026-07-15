@@ -1,0 +1,69 @@
+---
+title: "ImFusion::DoubleAdjusterWidget"
+sidebarTitle: "DoubleAdjusterWidget"
+description: "Widget combining a slider with a spin box for configuring integer values."
+---
+
+`#include <ImFusion/GUI/CoreWidgets/AdjusterWidget.h>`
+
+## Overview
+
+Widget combining a slider with a spin box for configuring integer values.
+
+## Signals
+
+- void [valueChanged](#valuechanged) (double [value](/cpp-sdk/4.5/api/classes/imfusion-adjusterwidgetbase)) — This signal is emitted whenever the adjuster's value is changed.
+
+## Public Member Functions
+
+- [DoubleAdjusterWidget](#doubleadjusterwidget) (double [minimum](/cpp-sdk/4.5/api/classes/imfusion-adjusterwidgetbase), double [maximum](/cpp-sdk/4.5/api/classes/imfusion-adjusterwidgetbase), double [singleStep](/cpp-sdk/4.5/api/classes/imfusion-adjusterwidgetbase)=0.1, QWidget \*parent=nullptr) — Creates a new [IntAdjusterWidget](/cpp-sdk/4.5/api/classes/imfusion-intadjusterwidget).
+- **DoubleAdjusterWidget** (QWidget \*parent=nullptr) — Creates a new [DoubleAdjusterWidget](/cpp-sdk/4.5/api/classes/imfusion-doubleadjusterwidget) with minimum of 0.0, maximum of 1.0 and singleStep of 0.1.
+- int **decimals** () const — Returns how many decimals the adjuster will use for displaying doubles.
+- void [setDecimals](#setdecimals) (int decimals) — Set how many decimals the adjuster will use for displaying doubles.
+
+## Protected Slots
+
+- void **onSpinBoxValueChanged** (double [value](/cpp-sdk/4.5/api/classes/imfusion-adjusterwidgetbase)) — Slot getting called when the spin box's value changes.
+- void **onSliderValueChanged** (int [value](/cpp-sdk/4.5/api/classes/imfusion-adjusterwidgetbase)) — Slot getting called when the slider's value changes.
+
+## Constructor & Destructor Documentation
+
+### DoubleAdjusterWidget
+
+```cpp
+ImFusion::DoubleAdjusterWidget::DoubleAdjusterWidget (double minimum, double maximum, double singleStep = 0.1, QWidget * parent = nullptr)
+```
+
+Creates a new [IntAdjusterWidget](/cpp-sdk/4.5/api/classes/imfusion-intadjusterwidget).
+
+**Parameters:**
+
+- `parent` — Parent Qt widget
+
+## Member Function Documentation
+
+### setDecimals
+
+```cpp
+void ImFusion::DoubleAdjusterWidget::setDecimals (int decimals)
+```
+
+Set how many decimals the adjuster will use for displaying doubles.
+
+**Parameters:**
+
+- `decimals` — Number of decimals the adjuster will use.
+
+### valueChanged
+
+```cpp
+void ImFusion::DoubleAdjusterWidget::valueChanged (double value)
+```
+
+*signal*
+
+This signal is emitted whenever the adjuster's value is changed.
+
+**Parameters:**
+
+- `value` — New value of the adjuster

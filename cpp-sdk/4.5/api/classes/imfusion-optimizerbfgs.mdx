@@ -1,0 +1,40 @@
+---
+title: "ImFusion::OptimizerBFGS"
+sidebarTitle: "OptimizerBFGS"
+description: "Implementation of the Broyden–Fletcher–Goldfarb–Shanno (BFGS) optimizer."
+---
+
+`#include <ImFusion/Base/OptimizerBFGS.h>`
+
+## Overview
+
+Implementation of the Broyden–Fletcher–Goldfarb–Shanno (BFGS) optimizer.
+
+This optimizer uses derivatives and keeps an approximation of the (inverse) Hessian matrix of the objective function. Internally it uses line search with Armijio and weak Wolfe conditions.
+
+## Classes
+
+- struct [State](/cpp-sdk/4.5/api/structs/imfusion-optimizerbfgs-state)
+
+## Public Member Functions
+
+- **OptimizerBFGS** (int n, [CostFunction](/cpp-sdk/4.5/api/classes/imfusion-costfunction) \*cf=nullptr, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; &paramNames=&#123;&#125;)
+- void [abort](#abort) () override — [Request](/cpp-sdk/4.5/api/classes/imfusion-request) to abort the optimization.
+- [State](/cpp-sdk/4.5/api/structs/imfusion-optimizerbfgs-state) **initialState** () — Methods for asynchronous optimization.
+- bool **step** ([State](/cpp-sdk/4.5/api/structs/imfusion-optimizerbfgs-state) &state, Eigen::VectorXd &point, double value, Eigen::VectorXd gradient) const
+
+## Public Attributes
+
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; double &gt; **p_exponentialStep** = &#123;"exponentialStep", 2.0, this&#125; — Growth factor of the step size in the line search procedure.
+
+## Member Function Documentation
+
+### abort
+
+```cpp
+void ImFusion::OptimizerBFGS::abort ()
+```
+
+*override, virtual*
+
+[Request](/cpp-sdk/4.5/api/classes/imfusion-request) to abort the optimization.

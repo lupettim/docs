@@ -1,0 +1,29 @@
+---
+title: "ImFusion::SettingsDialog::CustomSettingsWidget"
+sidebarTitle: "CustomSettingsWidget"
+description: "Base class for custom settings widgets."
+---
+
+`#include <ImFusion/GUI/SettingsDialog.h>`
+
+## Overview
+
+[Base](/cpp-sdk/4.5/api/structs/imfusion-dicom-base) class for custom settings widgets.
+
+## Public Member Functions
+
+- virtual bool [updateWidget](#updatewidget) () — Update the widget in the [Settings](/cpp-sdk/4.5/api/classes/imfusion-settings) Dialog.
+
+## Member Function Documentation
+
+### updateWidget
+
+```cpp
+virtual bool ImFusion::SettingsDialog::CustomSettingsWidget::updateWidget ()
+```
+
+*inline, virtual*
+
+Update the widget in the [Settings](/cpp-sdk/4.5/api/classes/imfusion-settings) Dialog.
+
+By default the settings fields of the custom settings will not change after they were registered with [SettingsDialog](/cpp-sdk/4.5/api/classes/imfusion-settingsdialog). However if you need to update the fields of your settings widget by adding or removing sub-properties and parameters, have this function return true to indicate that.

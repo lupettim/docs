@@ -1,0 +1,77 @@
+---
+title: "ImFusion::DataSource"
+sidebarTitle: "DataSource"
+description: "Holds information about where and how data can be loaded."
+---
+
+`#include <ImFusionLabels/lib/include/ImFusion/Labels/Core/DataSource.h>`
+
+## Overview
+
+Holds information about where and how data can be loaded.
+
+## Public Member Functions
+
+- bool [isOwnedByProject](#isownedbyproject) (const [Project](/cpp-sdk/4.5/api/classes/imfusion-project) &p) const — Returns whether this [DataSource](/cpp-sdk/4.5/api/structs/imfusion-datasource) is stored directly in the project.
+- void **configure** (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) &p)
+- void **configuration** ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) &p) const
+
+## Static Public Member Functions
+
+- static [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [DataSource](/cpp-sdk/4.5/api/structs/imfusion-datasource) &gt; **fromJson** (const QJsonObject &json)
+- static [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [DataSource](/cpp-sdk/4.5/api/structs/imfusion-datasource) &gt; [fromImage](#fromimage) (const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &sis, bool storedInProject) — Generates a [DataSource](/cpp-sdk/4.5/api/structs/imfusion-datasource) from the [DataSourceComponent](/cpp-sdk/4.5/api/classes/imfusion-datasourcecomponent) of the given image.
+
+## Public Attributes
+
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; int &gt; **m_externalId** — Whether the data is stored on some external server (remote project only at the moment).
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [m_path](#m-path) — Specifies *where* the data can be (down)loaded from.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [m_loader](#m-loader) — Specifies *how* the data can be *loaded* into an image (i.e.
+- [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) **m_loaderOptions** — Additional options for the loader (i.e. the configuration of the [IoAlgorithm](/cpp-sdk/4.5/api/classes/imfusion-ioalgorithm)).
+- size_t **m_imageIndex** = 0 — The index of the image in case loading the path results in multiple images.
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; uint64_t &gt; **m_hash** — Expected Murmur64 hash of the file.
+
+## Member Function Documentation
+
+### isOwnedByProject
+
+```cpp
+bool ImFusion::DataSource::isOwnedByProject (const Project & p) const
+```
+
+Returns whether this [DataSource](/cpp-sdk/4.5/api/structs/imfusion-datasource) is stored directly in the project.
+
+For local projects that means the file is part of the project directory. For remote projects the file can be directly downloaded from the Labels server.
+
+### fromImage
+
+```cpp
+std::optional < DataSource > ImFusion::DataSource::fromImage (const SharedImageSet & sis, bool storedInProject)
+```
+
+*static*
+
+Generates a [DataSource](/cpp-sdk/4.5/api/structs/imfusion-datasource) from the [DataSourceComponent](/cpp-sdk/4.5/api/classes/imfusion-datasourcecomponent) of the given image.
+
+If storedInProject is true and [DataSourceComponent](/cpp-sdk/4.5/api/classes/imfusion-datasourcecomponent) is missing (e.g. when the image was not loaded from a file) a default [DataSource](/cpp-sdk/4.5/api/structs/imfusion-datasource) for an ImFusionFile is returned.
+
+## Member Data Documentation
+
+### m_path
+
+```cpp
+std::string ImFusion::DataSource::m_path
+```
+
+Specifies *where* the data can be (down)loaded from.
+
+If empty, the file can be downloaded directly from the server or loaded directly from the filesystem inside the project path. Use [DataDescriptor::absoluteDataSourcePath](/cpp-sdk/4.5/api/classes/imfusion-datadescriptor) to get the final path. The path can also be a URL.
+
+### m_loader
+
+```cpp
+std::string ImFusion::DataSource::m_loader
+```
+
+Specifies *how* the data can be *loaded* into an image (i.e.
+
+the id of the [IoAlgorithm](/cpp-sdk/4.5/api/classes/imfusion-ioalgorithm)) If empty, loading will guess which [IoAlgorithm](/cpp-sdk/4.5/api/classes/imfusion-ioalgorithm) to use which is not recommended because the same data might be loaded differently depending on the available plugins.

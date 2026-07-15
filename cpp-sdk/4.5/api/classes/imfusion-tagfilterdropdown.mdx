@@ -1,0 +1,58 @@
+---
+title: "ImFusion::TagFilterDropDown"
+sidebarTitle: "TagFilterDropDown"
+---
+
+## Signals
+
+- void **filtersChanged** ()
+
+## Public Member Functions
+
+- **TagFilterDropDown** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [TagType](/cpp-sdk/4.5/api/structs/imfusion-tagtype) &gt; &tags, QString textWhenClosed, QWidget \*parent=nullptr)
+- void **refresh** ()
+- void **uncheckAll** ()
+- bool **empty** () const — returns true f there are no tags to be displayed
+- bool **hasFilter** () const — returns true if there is a current active filter
+- void **setBoolFilter** (size_t tagIndex, TagFilterState::BoolFilter state)
+- void **setEnumFilter** (size_t tagIndex, [std::set](http://en.cppreference.com/w/cpp/container/set.html)&lt; size_t &gt; enumIndices)
+- void **setFloatFilter** (size_t tagIndex, const QString &filterString)
+- void **setInvert** (bool invert)
+- void **setMatchAll** ()
+- void **setMatchAny** ()
+- const [TagFilterState](/cpp-sdk/4.5/api/classes/imfusion-tagfilterstate) & **state** () const
+- void **setState** ([TagFilterState](/cpp-sdk/4.5/api/classes/imfusion-tagfilterstate) filter)
+- [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; bool(const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [TagValue](/cpp-sdk/4.5/api/unions/imfusion-tagvalue) &gt; &)&gt; **matchFunction** () const
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [TagType](/cpp-sdk/4.5/api/structs/imfusion-tagtype) &gt; & **types** () const
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+## Member Function Documentation
+
+### configuration
+
+```cpp
+void ImFusion::TagFilterDropDown::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality
+
+### configure
+
+```cpp
+void ImFusion::TagFilterDropDown::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality

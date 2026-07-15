@@ -1,0 +1,150 @@
+---
+title: "ImFusion::Log::Sink"
+sidebarTitle: "Sink"
+description: "Interface for a logger sink that can receive individual log events."
+---
+
+`#include <ImFusion/Core/Log/Sink.h>`
+
+## Overview
+
+Interface for a logger sink that can receive individual log events.
+
+## Classes
+
+- struct [LogCapture](/cpp-sdk/4.5/api/structs/imfusion-log-sink-logcapture) — Structure storing a single log event.
+- struct [Filter](/cpp-sdk/4.5/api/structs/imfusion-log-sink-filter) — Structure storing a filter.
+
+## Public Types
+
+- using [DateTimeFormatFunction](#datetimeformatfunction) = [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt;[std::string](http://en.cppreference.com/w/cpp/string/basic_string.html)(const std::chrono::system_clock::time_point& time)&gt; — Signature of the callback function used by [Sink](/cpp-sdk/4.5/api/classes/imfusion-log-sink) to format date and time.
+
+## Public Member Functions
+
+- void [log](#log) (const [LogCapture](/cpp-sdk/4.5/api/structs/imfusion-log-sink-logcapture) &capture) — Logs the given message.
+- virtual void [flush](#flush) ()=0 — Ensure that all log captures are fully committed/written.
+- bool [isAccepted](#isaccepted) (Level level, const char \*category) noexcept — Checks whether a log message of given level and category is accepted (i.e.
+- void [addWhitelistFilter](#addwhitelistfilter) (Log::Level minLevel, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &category) — Adds a whitelist filter for this logger: both conditions of the filter must be met to accept a message.
+- void [addBlacklistFilter](#addblacklistfilter) (Log::Level maxLevel, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &category) — Adds a blacklist filter for this logger: both conditions of the filter must be met to reject a message.
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Filter](/cpp-sdk/4.5/api/structs/imfusion-log-sink-filter) &gt; & **whitelistFilters** () const — Return the set of whitelist filters.
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Filter](/cpp-sdk/4.5/api/structs/imfusion-log-sink-filter) &gt; & **blacklistFilters** () const — Return the set of blacklist filters.
+- void **removeFilters** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &category) — Removes all filters matching `category`.
+- void **clearFilters** () — Clear all filters.
+- bool **isEnabled** () const — Returns the flag whether this logger is enabled.
+- void **setEnabled** (bool value) — Sets the flag whether this logger is enabled.
+- bool [setDateTimeFormatFunction](#setdatetimeformatfunction) (const [DateTimeFormatFunction](#datetimeformatfunction) &fcn) — Set a callback function for formatting date and time.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **defaultDateTimeFormatFunction** (const std::chrono::system_clock::time_point &time) — Get a string representing date and time.
+
+## Protected Member Functions
+
+- virtual void [logImpl](#logimpl) (const [LogCapture](/cpp-sdk/4.5/api/structs/imfusion-log-sink-logcapture) &capture)=0 — Performs the actual logging of the given message.
+
+## Protected Attributes
+
+- [DateTimeFormatFunction](#datetimeformatfunction) **m_dateTimeFormatFunction**
+
+## Member Typedef Documentation
+
+### DateTimeFormatFunction
+
+```cpp
+using ImFusion::Log::Sink::DateTimeFormatFunction = std::function < std::string (const std::chrono::system_clock::time_point& time)>
+```
+
+Signature of the callback function used by [Sink](/cpp-sdk/4.5/api/classes/imfusion-log-sink) to format date and time.
+
+The `time` provides the time point to be converted to string. Returns the formatted string
+
+## Member Function Documentation
+
+### log
+
+```cpp
+void ImFusion::Log::Sink::log (const LogCapture & capture)
+```
+
+Logs the given message.
+
+Calls [logImpl()](#logimpl) if the message passes all registered filters.
+
+**Parameters:**
+
+- `capture` — [Log](/cpp-sdk/4.5/api/namespaces/imfusion-log) capture
+
+### flush
+
+```cpp
+virtual void ImFusion::Log::Sink::flush ()
+```
+
+*pure virtual*
+
+Ensure that all log captures are fully committed/written.
+
+### isAccepted
+
+```cpp
+bool ImFusion::Log::Sink::isAccepted (Level level, const char * category)
+```
+
+*noexcept*
+
+Checks whether a log message of given level and category is accepted (i.e.
+
+consumed) by this [Sink](/cpp-sdk/4.5/api/classes/imfusion-log-sink). A message is accepted in case it does not match any blacklist filter or if it matches at least one whitelist filter. If there are no filters defined all messages are accepted.
+
+### addWhitelistFilter
+
+```cpp
+void ImFusion::Log::Sink::addWhitelistFilter (Log::Level minLevel, const std::string & category)
+```
+
+Adds a whitelist filter for this logger: both conditions of the filter must be met to accept a message.
+
+In case of multiple whitelist filters, messages matching at least one filter will be logged, even if they also match a blacklist filter. If there are no filters defined, all messages are accepted.
+
+**Parameters:**
+
+- `minLevel` — Minimum log level, messages of this level or higher will be logged.
+- `category` — Category filter, messages where the category contains *category* will be logged. Leave empty to accept all categories.
+
+### addBlacklistFilter
+
+```cpp
+void ImFusion::Log::Sink::addBlacklistFilter (Log::Level maxLevel, const std::string & category)
+```
+
+Adds a blacklist filter for this logger: both conditions of the filter must be met to reject a message.
+
+Only messages matching a whitelist filter or not matching any blacklist filter will be logged (i.e. whitelist filters take precedence over blacklist filters). If there are no filters defined all messages are accepted.
+
+**Parameters:**
+
+- `maxLevel` — Maximum log level, messages of this level or lower will not be logged.
+- `category` — Category filter, messages where the category contains *category* will not be logged. Leave empty to reject all categories.
+
+### setDateTimeFormatFunction
+
+```cpp
+bool ImFusion::Log::Sink::setDateTimeFormatFunction (const DateTimeFormatFunction & fcn)
+```
+
+Set a callback function for formatting date and time.
+
+Function checks whether fcn is empty and whether its execution with a current time throws an exception (including fmt::format_error). If this is the case, the function will return false and the [Sink](/cpp-sdk/4.5/api/classes/imfusion-log-sink) will continue using a previously set formatting function. If no above issues have occured the function will return true.
+
+### logImpl
+
+```cpp
+virtual void ImFusion::Log::Sink::logImpl (const LogCapture & capture)
+```
+
+*protected, pure virtual*
+
+Performs the actual logging of the given message.
+
+Called by [log()](#log) after filtering.
+
+**Parameters:**
+
+- `capture` — [Log](/cpp-sdk/4.5/api/namespaces/imfusion-log) capture

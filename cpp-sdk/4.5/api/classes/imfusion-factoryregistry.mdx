@@ -1,0 +1,288 @@
+---
+title: "ImFusion::FactoryRegistry"
+sidebarTitle: "FactoryRegistry"
+description: "Registry for object factories."
+---
+
+`#include <ImFusion/Base/FactoryRegistry.h>`
+
+## Overview
+
+Registry for object factories.
+
+[Singleton](/cpp-sdk/4.5/api/classes/imfusion-singleton).
+
+**See also:** ImFusionPlugin
+
+## Public Member Functions
+
+- bool [registerAlgorithmFactory](#registeralgorithmfactory) (const [AlgorithmFactory](/cpp-sdk/4.5/api/classes/imfusion-algorithmfactory) \*factory) — Register algorithm factory.
+- bool [unregisterAlgorithmFactory](#unregisteralgorithmfactory) (const [AlgorithmFactory](/cpp-sdk/4.5/api/classes/imfusion-algorithmfactory) \*factory) — Unregister algorithm factory.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; const [AlgorithmFactory](/cpp-sdk/4.5/api/classes/imfusion-algorithmfactory) \* &gt; [getAlgorithmFactories](#getalgorithmfactories) () const — Return all algorithm factories including default factory.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; T &gt; [instantiateAlgorithm](#instantiatealgorithm-1-2) (const [ImFusion::DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data) const — Create an instance of the algorithm with the given type *T*.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) &gt; [instantiateAlgorithm](#instantiatealgorithm-2-2) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &id, const [ImFusion::DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data) const — Create an instance of the algorithm with the given *id*.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [IoAlgorithm](/cpp-sdk/4.5/api/classes/imfusion-ioalgorithm) &gt; [instantiateIoAlgorithm](#instantiateioalgorithm) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &id, const [ImFusion::DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data) const — Convenience function to create an instance of an IO algorithm with the given *id*.
+- [AlgorithmFactory::Descriptor](/cpp-sdk/4.5/api/structs/imfusion-algorithmfactory-descriptor) **algorithmDescriptor** () const — Returns the descriptions of the algorithm type *T*. If multiple algorithms of type *T* are registered, the first one is returned.
+- [AlgorithmFactory::Descriptor](/cpp-sdk/4.5/api/structs/imfusion-algorithmfactory-descriptor) [algorithmDescriptor](#algorithmdescriptor) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &id, bool matchGuiName=false) const — Returns the descriptions of the algorithm with the given *id*.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [AlgorithmFactory::Descriptor](/cpp-sdk/4.5/api/structs/imfusion-algorithmfactory-descriptor) &gt; **compatibleDescriptors** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data) const — Returns the descriptions of algorithms registered with all factories registered which are compatible with *data*.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [AlgorithmFactory::Descriptor](/cpp-sdk/4.5/api/structs/imfusion-algorithmfactory-descriptor) &gt; **compatibleIoDescriptors** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data) const — Returns the descriptions of I/O algorithms registered with all factories registered which are compatible with *data*.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [AlgorithmFactory::Descriptor](/cpp-sdk/4.5/api/structs/imfusion-algorithmfactory-descriptor) &gt; **compatibleIoDescriptors** (const [Filesystem::Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path) &path) const — Returns the descriptions of algorithms registered with this factory which can load the given file path.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [AlgorithmFactory::Descriptor](/cpp-sdk/4.5/api/structs/imfusion-algorithmfactory-descriptor) &gt; **algorithmDescriptors** () const — Returns the descriptions of all algorithms registered with all factories registered.
+- [DataController](/cpp-sdk/4.5/api/classes/imfusion-datacontroller) \* [createDataController](#createdatacontroller) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &id, const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data) const — Create data controller.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **compatibleDataControllers** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data) const — Return list of data controllers compatible with input data (unique identifier and name).
+- bool [registerAlgorithmControllerFactory](#registeralgorithmcontrollerfactory) (const [AlgorithmControllerFactory](/cpp-sdk/4.5/api/classes/imfusion-algorithmcontrollerfactory) \*factory) — Register algorithm controller factory.
+- bool [unregisterAlgorithmControllerFactory](#unregisteralgorithmcontrollerfactory) (const [AlgorithmControllerFactory](/cpp-sdk/4.5/api/classes/imfusion-algorithmcontrollerfactory) \*factory) — Unregister algorithm controller factory.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; const [AlgorithmControllerFactory](/cpp-sdk/4.5/api/classes/imfusion-algorithmcontrollerfactory) \* &gt; [getAlgorithmControllerFactories](#getalgorithmcontrollerfactories) () const — Return all algorithm controller factories including default factory.
+- [AlgorithmController](/cpp-sdk/4.5/api/classes/imfusion-algorithmcontroller) \* [createAlgorithmController](#createalgorithmcontroller) ([Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*a) const — Create algorithm.
+- bool [registerDataAnnotationFactory](#registerdataannotationfactory) (const [DataAnnotationFactory](/cpp-sdk/4.5/api/classes/imfusion-dataannotationfactory) \*factory) — Register data [GL](/cpp-sdk/4.5/api/namespaces/imfusion-gl) annotation factory.
+- bool [unregisterDataAnnotationFactory](#unregisterdataannotationfactory) (const [DataAnnotationFactory](/cpp-sdk/4.5/api/classes/imfusion-dataannotationfactory) \*factory) — Unregister data [GL](/cpp-sdk/4.5/api/namespaces/imfusion-gl) annotation factory.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; const [DataAnnotationFactory](/cpp-sdk/4.5/api/classes/imfusion-dataannotationfactory) \* &gt; [getDataAnnotationFactories](#getdataannotationfactories) () const — Return all data [GL](/cpp-sdk/4.5/api/namespaces/imfusion-gl) annotation factories.
+- [InteractiveObject](/cpp-sdk/4.5/api/classes/imfusion-interactiveobject) \* [createDataAnnotation](#createdataannotation) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name, [Data](/cpp-sdk/4.5/api/classes/imfusion-data) &data) const — Create DataAnnotation.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **compatibleDataAnnotations** ([Data](/cpp-sdk/4.5/api/classes/imfusion-data) &data) const — Return list of [GL](/cpp-sdk/4.5/api/namespaces/imfusion-gl) annotation names compatible with input data.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [Data](/cpp-sdk/4.5/api/classes/imfusion-data) &gt; [cloneData](#clonedata) (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) &data) const — Attempt to clone [Data](/cpp-sdk/4.5/api/classes/imfusion-data) instance.
+
+## Static Public Member Functions
+
+- static FactoryRegistry & [get](#get) () — Get pointer to instance.
+
+## Protected Attributes
+
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; const [AlgorithmFactory](/cpp-sdk/4.5/api/classes/imfusion-algorithmfactory) \* &gt; **m_algorithmFactories**
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; const [AlgorithmControllerFactory](/cpp-sdk/4.5/api/classes/imfusion-algorithmcontrollerfactory) \* &gt; **m_algorithmControllerFactories**
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; const [DataAnnotationFactory](/cpp-sdk/4.5/api/classes/imfusion-dataannotationfactory) \* &gt; **m_dataAnnotationFactories**
+
+## Member Function Documentation
+
+### get
+
+```cpp
+FactoryRegistry & ImFusion::FactoryRegistry::get ()
+```
+
+*static*
+
+Get pointer to instance.
+
+**Returns:** instance
+
+### registerAlgorithmFactory
+
+```cpp
+bool ImFusion::FactoryRegistry::registerAlgorithmFactory (const AlgorithmFactory * factory)
+```
+
+Register algorithm factory.
+
+If registered successfully, it takes ownership of the factory.
+
+**Parameters:**
+
+- `factory` — factory
+
+**Returns:** true if successful
+
+### unregisterAlgorithmFactory
+
+```cpp
+bool ImFusion::FactoryRegistry::unregisterAlgorithmFactory (const AlgorithmFactory * factory)
+```
+
+Unregister algorithm factory.
+
+If unregistered successfully, ownership of the factory is transferred to the caller.
+
+**Parameters:**
+
+- `factory` — factory
+
+**Returns:** true if successful
+
+### getAlgorithmFactories
+
+```cpp
+std::vector < const AlgorithmFactory * > ImFusion::FactoryRegistry::getAlgorithmFactories () const
+```
+
+Return all algorithm factories including default factory.
+
+**Returns:** algorithm factories
+
+### instantiateAlgorithm
+
+```cpp
+template<typename T> std::unique_ptr < T > ImFusion::FactoryRegistry::instantiateAlgorithm (const ImFusion::DataList & data) const
+```
+
+Create an instance of the algorithm with the given type *T*.
+
+Will return nullptr if no such algorithm is registered, or if the algorithm creation fails.
+
+### instantiateAlgorithm
+
+```cpp
+std::unique_ptr < Algorithm > ImFusion::FactoryRegistry::instantiateAlgorithm (const std::string & id, const ImFusion::DataList & data) const
+```
+
+Create an instance of the algorithm with the given *id*.
+
+Will return nullptr if no such algorithm is registered, or if the algorithm creation fails.
+
+### instantiateIoAlgorithm
+
+```cpp
+std::unique_ptr < IoAlgorithm > ImFusion::FactoryRegistry::instantiateIoAlgorithm (const std::string & id, const ImFusion::DataList & data) const
+```
+
+Convenience function to create an instance of an IO algorithm with the given *id*.
+
+Will return nullptr if no such algorithm is registered, or if the algorithm is not an [IoAlgorithm](/cpp-sdk/4.5/api/classes/imfusion-ioalgorithm), or the algorithm creation fails.
+
+### algorithmDescriptor
+
+```cpp
+AlgorithmFactory::Descriptor ImFusion::FactoryRegistry::algorithmDescriptor (const std::string & id, bool matchGuiName = false) const
+```
+
+Returns the descriptions of the algorithm with the given *id*.
+
+**Parameters:**
+
+- `matchGuiName` — If true, tries to find algorithms with matching [GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui) names if no algorithm with the given id is found. Returns a default constructed Descriptor if no matching algorithm is found.
+
+### createDataController
+
+```cpp
+DataController * ImFusion::FactoryRegistry::createDataController (const std::string & id, const DataList & data) const
+```
+
+Create data controller.
+
+**Parameters:**
+
+- `id` — data controller unique identifier
+- `data` — input data
+
+**Returns:** pointer to generated data controller if successful, zero otherwise
+
+### registerAlgorithmControllerFactory
+
+```cpp
+bool ImFusion::FactoryRegistry::registerAlgorithmControllerFactory (const AlgorithmControllerFactory * factory)
+```
+
+Register algorithm controller factory.
+
+If registered successfully, it takes ownership of the factory.
+
+**Parameters:**
+
+- `factory` — factory
+
+**Returns:** true if successful
+
+### unregisterAlgorithmControllerFactory
+
+```cpp
+bool ImFusion::FactoryRegistry::unregisterAlgorithmControllerFactory (const AlgorithmControllerFactory * factory)
+```
+
+Unregister algorithm controller factory.
+
+If unregistered successfully, ownership of the factory is transferred to the caller.
+
+**Parameters:**
+
+- `factory` — factory
+
+**Returns:** true if successful
+
+### getAlgorithmControllerFactories
+
+```cpp
+std::vector < const AlgorithmControllerFactory * > ImFusion::FactoryRegistry::getAlgorithmControllerFactories () const
+```
+
+Return all algorithm controller factories including default factory.
+
+**Returns:** algorithm factories
+
+### createAlgorithmController
+
+```cpp
+AlgorithmController * ImFusion::FactoryRegistry::createAlgorithmController (Algorithm * a) const
+```
+
+Create algorithm.
+
+**Parameters:**
+
+- `a` — associated algorithm
+
+**Returns:** pointer to generated algorithm controller if successful, zero otherwise
+
+### registerDataAnnotationFactory
+
+```cpp
+bool ImFusion::FactoryRegistry::registerDataAnnotationFactory (const DataAnnotationFactory * factory)
+```
+
+Register data [GL](/cpp-sdk/4.5/api/namespaces/imfusion-gl) annotation factory.
+
+If registered successfully, it takes ownership of the factory.
+
+**Parameters:**
+
+- `factory` — factory
+
+**Returns:** true if successful
+
+### unregisterDataAnnotationFactory
+
+```cpp
+bool ImFusion::FactoryRegistry::unregisterDataAnnotationFactory (const DataAnnotationFactory * factory)
+```
+
+Unregister data [GL](/cpp-sdk/4.5/api/namespaces/imfusion-gl) annotation factory.
+
+If unregistered successfully, ownership of the factory is transferred to the caller.
+
+**Parameters:**
+
+- `factory` — factory
+
+**Returns:** true if successful
+
+### getDataAnnotationFactories
+
+```cpp
+std::vector < const DataAnnotationFactory * > ImFusion::FactoryRegistry::getDataAnnotationFactories () const
+```
+
+Return all data [GL](/cpp-sdk/4.5/api/namespaces/imfusion-gl) annotation factories.
+
+**Returns:** data [GL](/cpp-sdk/4.5/api/namespaces/imfusion-gl) annotation factories
+
+### createDataAnnotation
+
+```cpp
+InteractiveObject * ImFusion::FactoryRegistry::createDataAnnotation (const std::string & name, Data & data) const
+```
+
+Create DataAnnotation.
+
+**Parameters:**
+
+- `id` — data [GL](/cpp-sdk/4.5/api/namespaces/imfusion-gl) annotation unique identifier
+- `data` — input data
+
+**Returns:** pointer to generated [GL](/cpp-sdk/4.5/api/namespaces/imfusion-gl) annotation if successful, zero otherwise
+
+### cloneData
+
+```cpp
+std::unique_ptr < Data > ImFusion::FactoryRegistry::cloneData (const Data & data) const
+```
+
+Attempt to clone [Data](/cpp-sdk/4.5/api/classes/imfusion-data) instance.
+
+If successful, return a unique_ptr to the clone. Otherwise, return nullptr.

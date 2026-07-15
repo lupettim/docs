@@ -1,0 +1,421 @@
+---
+title: "ImFusion::GUI::View"
+sidebarTitle: "View"
+description: "Base interface for a rendering view (e.g."
+---
+
+`#include <ImFusion/GUI/View.h>`
+
+## Overview
+
+[Base](/cpp-sdk/4.5/api/structs/imfusion-dicom-base) interface for a rendering view (e.g.
+
+single anatomical plane) that can be hosted inside a [Display](/cpp-sdk/4.5/api/classes/imfusion-gui-display).
+
+A [View](/cpp-sdk/4.5/api/classes/imfusion-gui-view) takes care of rendering a scene consisting of any number of compatible datasets, scene objects and overlays, and of receiving and dispatching incoming input events to the individual elements. This is achieved by combining the following interfaces:
+
+- It wraps one [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) that implements the actual rendering of the datasets using OpenGL.
+- Any number of [ViewObject](/cpp-sdk/4.5/api/classes/imfusion-gui-viewobject) instances that describe additional objects of the rendered scene. In contrast to the plain [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) that can be attached directly to the [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview), the [ViewObject](/cpp-sdk/4.5/api/classes/imfusion-gui-viewobject) supports attaching input event handlers so that the user can interact with the scene object.
+- Any number of [ViewOverlay](/cpp-sdk/4.5/api/classes/imfusion-gui-viewoverlay) instances that are rendered on top of the scene. They reside in viewport space and are automatically layouted wrt. to their assigned anchor in a fashion that they don't overlap.
+
+The generic interface to display datasets inside a [View](/cpp-sdk/4.5/api/classes/imfusion-gui-view) is [setVisibleData()](#setvisibledata). The default implementation will use the [DataDisplayHandler](/cpp-sdk/4.5/api/classes/imfusion-datadisplayhandler) interface to determine if and how dataset can be is visualized in a concrete view type. A [DataDisplayHandler](/cpp-sdk/4.5/api/classes/imfusion-datadisplayhandler) will then usually forward to member functions of the concrete [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) or create a suitable [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) renderer instance and register it with the view.
+
+Usually, the viewport() size of a [View](/cpp-sdk/4.5/api/classes/imfusion-gui-view) is automatically determined by the layouting algorithm of the parent [Display](/cpp-sdk/4.5/api/classes/imfusion-gui-display) from which it also receives the input events. Incoming input events are dispatched in the following logic until one [EventResult](/cpp-sdk/4.5/api/structs/imfusion-gui-eventresult) indicates to stop propagation:
+
+1. all registered overlays() in reverse order
+2. all registered [objects()](#objects) in reverse order
+3. all registered eventHandlers() in original order
+
+You can optionally define a background color, as well as a rectangular border that should be rendered around the content.
+
+## Classes
+
+- class [EventHandler](/cpp-sdk/4.5/api/classes/imfusion-gui-view-eventhandler) — Interface to be used as base class for event handlers of Views.
+- struct [BorderConfig](/cpp-sdk/4.5/api/structs/imfusion-gui-view-borderconfig) — Record for specifying if and how to render a border frame surrounding the view.
+
+## Public Member Functions
+
+- **View** ([std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &gt; glView) — Instantiate a new [View](/cpp-sdk/4.5/api/classes/imfusion-gui-view) using the given [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) as renderer; *glView* must not be null.
+- virtual void [render](#render) () — Will render the view into the viewport() of the current framebuffer by drawing the optional background color, the optional border, the underlying [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview), and finally all overlays().
+- const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) & **glView** () const — Returns the underlying [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview).
+- [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) & **glView** () — Returns the underlying [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview).
+- virtual void [setViewport](#setviewport) (const [GL::Viewport](/cpp-sdk/4.5/api/structs/imfusion-gl-viewport) &rect) — Sets the area where this view is drawn in [render()](#render) wrt. the attached framebuffer.
+- const [GL::Viewport](/cpp-sdk/4.5/api/structs/imfusion-gl-viewport) & **viewport** () const — Returns the area where this view is drawn in [render()](#render) wrt. the attached framebuffer.
+- bool **isVisible** () const — Returns whether this view has a non-zero viewport and can therefore be considered visible.
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; vec3 &gt; **backgroundColor** () const — Returns the optional background color used to clear the viewport before rendering anything.
+- void **setBackgroundColor** ([std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; vec3 &gt; value) — Sets the optional background color used to clear the viewport before rendering anything.
+- const [BorderConfig](/cpp-sdk/4.5/api/structs/imfusion-gui-view-borderconfig) & **borderConfig** () const — Returns the [BorderConfig](/cpp-sdk/4.5/api/structs/imfusion-gui-view-borderconfig) struct defining if and how to render a border frame surrounding the view.
+- virtual void [setBorderConfig](#setborderconfig) (const [BorderConfig](/cpp-sdk/4.5/api/structs/imfusion-gui-view-borderconfig) &value) — Sets the [BorderConfig](/cpp-sdk/4.5/api/structs/imfusion-gui-view-borderconfig) struct defining if and how to render a border frame surrounding the view.
+- bool **showsOverlays** () const — Returns the flag whether to show overlays or not.
+- void **setShowOverlays** (bool value) — Sets the flag whether to show overlays or not.
+- void **setWatermark** (const [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) &image) — Sets a watermark image to be rendered on top of the view.
+- virtual [EventResult](/cpp-sdk/4.5/api/structs/imfusion-gui-eventresult) [handleInputEvent](#handleinputevent) (const [InputEvent](/cpp-sdk/4.5/api/classes/imfusion-gui-inputevent) &event) — Called by the parent [Display](/cpp-sdk/4.5/api/classes/imfusion-gui-display) if a user input event has happened on this view.
+- void [setDataDisplayDispatcher](#setdatadisplaydispatcher) ([std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; DataDisplayDispatcher &gt; ddd) — Sets a common DataDisplayDispatcher so that it can be shared across views.
+- const DataDisplayDispatcher \* **dataDisplayDispatcher** () const — Returns the DataDisplayDispatcher used by this view.
+
+## Public Attributes
+
+- Signal **signalUpdateRequested** — Emitted when this view or one of its overlays has become outdated and needs to be re-rendered.
+- Signal&lt; const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &, const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) & &gt; **signalVisibleDataChanged** — Emitted when [visibleData()](#visibledata) has changed.
+
+## Protected Member Functions
+
+- virtual [EventResult](/cpp-sdk/4.5/api/structs/imfusion-gui-eventresult) [dispatchToViewOverlays](#dispatchtoviewoverlays) (const [InputEvent](/cpp-sdk/4.5/api/classes/imfusion-gui-inputevent) &event) — Dispatch *event* to all known ViewOverlays considering m_mouseEventFocusObject and m_touchEventFocusObject.
+- virtual [EventResult](/cpp-sdk/4.5/api/structs/imfusion-gui-eventresult) [dispatchToViewObjects](#dispatchtoviewobjects) (const [InputEvent](/cpp-sdk/4.5/api/classes/imfusion-gui-inputevent) &event) — Dispatch *event* to all known ViewObjects considering m_mouseEventFocusObject and m_touchEventFocusObject.
+- virtual [EventResult](/cpp-sdk/4.5/api/structs/imfusion-gui-eventresult) [dispatchToViewEventHandlers](#dispatchtovieweventhandlers) (const [InputEvent](/cpp-sdk/4.5/api/classes/imfusion-gui-inputevent) &event) — Dispatch *event* to all known View::EventHandlers considering m_mouseEventFocusObject and m_touchEventFocusObject.
+- void [updateEventFocus](#updateeventfocus) (const [InputEvent](/cpp-sdk/4.5/api/classes/imfusion-gui-inputevent) &event, const void \*newTarget) — Update the internal bookkeeping of "focus" event handlers:
+- bool [filterEventFocus](#filtereventfocus) (const [InputEvent](/cpp-sdk/4.5/api/classes/imfusion-gui-inputevent) &event, const void \*target) const — Checks if the object *target* should receive the given *event* based on the event type and current "focus" object.
+- virtual void [showDataImpl](#showdataimpl) ([Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data) — Override this function to implement custom logic whenever a dataset is added to the list of visible data.
+- virtual void [hideDataImpl](#hidedataimpl) (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data) — Override this function to implement custom logic whenever a dataset is removed from the list of visible data.
+
+## Protected Attributes
+
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &gt; **m_glView**
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; ViewOverlayLayouter &gt; **m_overlayLayouter**
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [EventHandler](/cpp-sdk/4.5/api/classes/imfusion-gui-view-eventhandler) &gt; &gt; **m_eventHandlers**
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [ViewOverlay](/cpp-sdk/4.5/api/classes/imfusion-gui-viewoverlay) &gt; &gt; **m_overlays**
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [ViewObject](/cpp-sdk/4.5/api/classes/imfusion-gui-viewobject) \* &gt; **m_objects**
+- [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) **m_visibleData**
+- [GL::Viewport](/cpp-sdk/4.5/api/structs/imfusion-gl-viewport) **m_viewport**
+- const void \* [m_mouseEventFocusObject](#m-mouseeventfocusobject) = nullptr — Pointer to the event receiver that shall receive [MouseEvent::Type::Move](/cpp-sdk/4.5/api/classes/imfusion-gui-mouseevent) events exclusively.
+- const void \* [m_touchEventFocusObject](#m-toucheventfocusobject) = nullptr — Pointer to the event receiver that shall receive [TouchEvent::Type::Update](/cpp-sdk/4.5/api/classes/imfusion-gui-touchevent) events exclusively.
+
+## Setting the shown datasets in a generic fashion
+
+- virtual bool [acceptsData](#acceptsdata) (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data) const — Returns whether this view is capable of displaying the given data.
+- void [setVisibleData](#setvisibledata) (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data) — Set the list of datasets that should be shown in this view.
+- const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) & [visibleData](#visibledata) () const — Returns the list of currently displayed datasets.
+- bool [showData](#showdata) ([Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data) — Appends the given dataset to the list of visible datasets.
+- void [hideData](#hidedata) (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data) — Removes the given dataset from the list of visible datasets.
+
+## Configure the set of input event handlers reacting to user inputs
+
+- void **setEventHandlers** ([std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [EventHandler](/cpp-sdk/4.5/api/classes/imfusion-gui-view-eventhandler) &gt; &gt; eventHandlers) — Replace all existing EventHandlers with the ones in *eventHandlers*.
+- void [addEventHandler](#addeventhandler) ([std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [EventHandler](/cpp-sdk/4.5/api/classes/imfusion-gui-view-eventhandler) &gt; eventHandler, int where=-1) — Add an [EventHandler](/cpp-sdk/4.5/api/classes/imfusion-gui-view-eventhandler) at the given position (default is at the end).
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [EventHandler](/cpp-sdk/4.5/api/classes/imfusion-gui-view-eventhandler) &gt; **removeEventHandler** ([EventHandler](/cpp-sdk/4.5/api/classes/imfusion-gui-view-eventhandler) \*interaction) — Delete the given interaction, if it exists. Note: This will make the pointer invalid.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [EventHandler](/cpp-sdk/4.5/api/classes/imfusion-gui-view-eventhandler) \* &gt; **eventHandlers** () const — Returns all view interactions of this view.
+- T \* **findEventHandler** () const — Returns the first [EventHandler](/cpp-sdk/4.5/api/classes/imfusion-gui-view-eventhandler) that dynamic_casts to T, or nullptr if no such [EventHandler](/cpp-sdk/4.5/api/classes/imfusion-gui-view-eventhandler) exists.
+
+## Configure the set of overlays rendered on top of this view
+
+- void [addOverlay](#addoverlay) ([std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [ViewOverlay](/cpp-sdk/4.5/api/classes/imfusion-gui-viewoverlay) &gt; overlay, [ViewOverlay::Anchor](/cpp-sdk/4.5/api/classes/imfusion-gui-viewoverlay) anchor, int position=-1) — Inserts *overlay* into the list of overlays of this view at *position* of the given *anchor*.
+- virtual [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [ViewOverlay](/cpp-sdk/4.5/api/classes/imfusion-gui-viewoverlay) &gt; [removeOverlay](#removeoverlay) ([ViewOverlay](/cpp-sdk/4.5/api/classes/imfusion-gui-viewoverlay) \*overlay) — Remove a previously added overlay from this view again.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [ViewOverlay](/cpp-sdk/4.5/api/classes/imfusion-gui-viewoverlay) \* &gt; **overlays** () const — Returns all InteractiveOverlays of this view.
+- void **setOverlayAnchor** ([ViewOverlay](/cpp-sdk/4.5/api/classes/imfusion-gui-viewoverlay) \*overlay, [ViewOverlay::Anchor](/cpp-sdk/4.5/api/classes/imfusion-gui-viewoverlay) anchor) — Set the anchor point to use for the given *overlay*.
+- void **setOverlayLayoutDirection** ([ViewOverlay::Anchor](/cpp-sdk/4.5/api/classes/imfusion-gui-viewoverlay) anchor, [ViewOverlay::LayoutDirection](/cpp-sdk/4.5/api/classes/imfusion-gui-viewoverlay) direction) — Sets in which direction multiple overlays at one anchor are laid out.
+
+## Configure the set of interactive scene objects
+
+- virtual void [addObject](#addobject) ([ViewObject](/cpp-sdk/4.5/api/classes/imfusion-gui-viewobject) \*object) — Will add the underlying [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) to the [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) and register the event handler.
+- virtual void [removeObject](#removeobject) (const [ViewObject](/cpp-sdk/4.5/api/classes/imfusion-gui-viewobject) \*object) — Remove the given [ViewObject](/cpp-sdk/4.5/api/classes/imfusion-gui-viewobject) from this view unregistering both the [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) renderer and the event handler.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [ViewObject](/cpp-sdk/4.5/api/classes/imfusion-gui-viewobject) \* &gt; [objects](#objects) () const — Returns all currently registered [ViewObjects](/cpp-sdk/4.5/api/classes/imfusion-gui-viewobject) of this view.
+
+## Original access API for compatibility with derived class InteractiveView
+
+- const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) \* [view](#view) () const
+- [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) \* **view** () — Return associated [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) object.
+
+## Member Function Documentation
+
+### acceptsData
+
+```cpp
+virtual bool ImFusion::GUI::View::acceptsData (const Data * data) const
+```
+
+*virtual*
+
+Returns whether this view is capable of displaying the given data.
+
+The default implementation checks whether there is any registered [DataDisplayHandler](/cpp-sdk/4.5/api/classes/imfusion-datadisplayhandler) that accepts this data for this type of view.
+
+**See also:** [setVisibleData()](#setvisibledata), [showData()](#showdata)
+
+### setVisibleData
+
+```cpp
+void ImFusion::GUI::View::setVisibleData (const DataList & data)
+```
+
+Set the list of datasets that should be shown in this view.
+
+The default implementation relies on [DataDisplayHandler](/cpp-sdk/4.5/api/classes/imfusion-datadisplayhandler) interface to determine if and how a [Data](/cpp-sdk/4.5/api/classes/imfusion-data) instance is visualized in this view. It is not an error if a particular [Data](/cpp-sdk/4.5/api/classes/imfusion-data) type is not visualizable (i.e. [acceptsData()](#acceptsdata) returns false), however it will be silently dropped and not be part of [visibleData()](#visibledata) afterwards. If the new visible data is different from the current [visibleData()](#visibledata) signalVisibleDataChanged is emitted.
+
+**See also:** [visibleData()](#visibledata), [showData()](#showdata), [hideData()](#hidedata)
+
+### visibleData
+
+```cpp
+const DataList & ImFusion::GUI::View::visibleData () const
+```
+
+Returns the list of currently displayed datasets.
+
+**See also:** [setVisibleData()](#setvisibledata), [showData()](#showdata), [hideData()](#hidedata)
+
+### showData
+
+```cpp
+bool ImFusion::GUI::View::showData (Data * data)
+```
+
+Appends the given dataset to the list of visible datasets.
+
+**See also:** [setVisibleData()](#setvisibledata), [hideData()](#hidedata)
+
+### hideData
+
+```cpp
+void ImFusion::GUI::View::hideData (const Data * data)
+```
+
+Removes the given dataset from the list of visible datasets.
+
+**See also:** [setVisibleData()](#setvisibledata), [showData()](#showdata)
+
+### addEventHandler
+
+```cpp
+void ImFusion::GUI::View::addEventHandler (std::unique_ptr < EventHandler > eventHandler, int where = -1)
+```
+
+Add an [EventHandler](/cpp-sdk/4.5/api/classes/imfusion-gui-view-eventhandler) at the given position (default is at the end).
+
+Note that events will be forwarded to the view interactions in the given order, and the first one accepting it will consume it. Thus, subsequent interactions will not receive events already taken care of.
+
+### addOverlay
+
+```cpp
+void ImFusion::GUI::View::addOverlay (std::unique_ptr < ViewOverlay > overlay, ViewOverlay::Anchor anchor, int position = -1)
+```
+
+Inserts *overlay* into the list of overlays of this view at *position* of the given *anchor*.
+
+A negative *position* indicates to insert it at the end of the list.
+
+### removeOverlay
+
+```cpp
+virtual std::unique_ptr < ViewOverlay > ImFusion::GUI::View::removeOverlay (ViewOverlay * overlay)
+```
+
+*virtual*
+
+Remove a previously added overlay from this view again.
+
+### addObject
+
+```cpp
+virtual void ImFusion::GUI::View::addObject (ViewObject * object)
+```
+
+*virtual*
+
+Will add the underlying [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) to the [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) and register the event handler.
+
+This function is in the [GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui) layer and registers a [GUI::ViewObject](/cpp-sdk/4.5/api/classes/imfusion-gui-viewobject) (combining a [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) renderer with event handling logic) with a [GUI::View](/cpp-sdk/4.5/api/classes/imfusion-gui-view) (hosting a [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) for rendering and dispatching input events). There is a similar function [GlView::addObject()](/cpp-sdk/4.5/api/classes/imfusion-glview) in the [GL](/cpp-sdk/4.5/api/namespaces/imfusion-gl) layer that you can use in case you have a plain/unwrapped [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) without event handling.
+
+**See also:** [removeObject()](#removeobject), [objects()](#objects)
+
+### removeObject
+
+```cpp
+virtual void ImFusion::GUI::View::removeObject (const ViewObject * object)
+```
+
+*virtual*
+
+Remove the given [ViewObject](/cpp-sdk/4.5/api/classes/imfusion-gui-viewobject) from this view unregistering both the [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) renderer and the event handler.
+
+**Note:** *object* must have been added previously via [View::addObject()](#addobject) and *not* via [GlView::addObject()](/cpp-sdk/4.5/api/classes/imfusion-glview).
+
+**See also:** [addObject()](#addobject), [objects()](#objects)
+
+### objects
+
+```cpp
+std::vector < ViewObject * > ImFusion::GUI::View::objects () const
+```
+
+Returns all currently registered [ViewObjects](/cpp-sdk/4.5/api/classes/imfusion-gui-viewobject) of this view.
+
+**See also:** [addObject()](#addobject), [removeObject()](#removeobject)
+
+### render
+
+```cpp
+virtual void ImFusion::GUI::View::render ()
+```
+
+*virtual*
+
+Will render the view into the viewport() of the current framebuffer by drawing the optional background color, the optional border, the underlying [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview), and finally all overlays().
+
+### view
+
+```cpp
+const GlView * ImFusion::GUI::View::view () const
+```
+
+*inline*
+
+Return associated [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) object
+
+### setViewport
+
+```cpp
+virtual void ImFusion::GUI::View::setViewport (const GL::Viewport & rect)
+```
+
+*virtual*
+
+Sets the area where this view is drawn in [render()](#render) wrt. the attached framebuffer.
+
+### setBorderConfig
+
+```cpp
+virtual void ImFusion::GUI::View::setBorderConfig (const BorderConfig & value)
+```
+
+*virtual*
+
+Sets the [BorderConfig](/cpp-sdk/4.5/api/structs/imfusion-gui-view-borderconfig) struct defining if and how to render a border frame surrounding the view.
+
+### handleInputEvent
+
+```cpp
+virtual EventResult ImFusion::GUI::View::handleInputEvent (const InputEvent & event)
+```
+
+*virtual*
+
+Called by the parent [Display](/cpp-sdk/4.5/api/classes/imfusion-gui-display) if a user input event has happened on this view.
+
+The default implementation will forward the event to the sub-objects in the following order:
+
+- ViewOverlays, see [dispatchToViewOverlays()](#dispatchtoviewoverlays)
+- ViewObjects, see [dispatchToViewObjects()](#dispatchtoviewobjects)
+- EventHandlers, see [dispatchToViewEventHandlers()](#dispatchtovieweventhandlers)
+
+### setDataDisplayDispatcher
+
+```cpp
+void ImFusion::GUI::View::setDataDisplayDispatcher (std::shared_ptr < DataDisplayDispatcher > ddd)
+```
+
+Sets a common DataDisplayDispatcher so that it can be shared across views.
+
+**Note:** Normally, you do **not** need to call this function manually because [Display::addView()](/cpp-sdk/4.5/api/classes/imfusion-gui-display) will do it for you.
+
+### dispatchToViewOverlays
+
+```cpp
+virtual EventResult ImFusion::GUI::View::dispatchToViewOverlays (const InputEvent & event)
+```
+
+*protected, virtual*
+
+Dispatch *event* to all known ViewOverlays considering m_mouseEventFocusObject and m_touchEventFocusObject.
+
+### dispatchToViewObjects
+
+```cpp
+virtual EventResult ImFusion::GUI::View::dispatchToViewObjects (const InputEvent & event)
+```
+
+*protected, virtual*
+
+Dispatch *event* to all known ViewObjects considering m_mouseEventFocusObject and m_touchEventFocusObject.
+
+### dispatchToViewEventHandlers
+
+```cpp
+virtual EventResult ImFusion::GUI::View::dispatchToViewEventHandlers (const InputEvent & event)
+```
+
+*protected, virtual*
+
+Dispatch *event* to all known View::EventHandlers considering m_mouseEventFocusObject and m_touchEventFocusObject.
+
+### updateEventFocus
+
+```cpp
+void ImFusion::GUI::View::updateEventFocus (const InputEvent & event, const void * newTarget)
+```
+
+*protected*
+
+Update the internal bookkeeping of "focus" event handlers:
+
+- If *event* is a mouse press event, m_mouseEventFocusObject is set to *newTarget*.
+- If *event* is a mouse release event, m_mouseEventFocusObject is set to nullptr.
+- If *event* is a touch begin event, m_touchEventFocusObject is set to *newTarget*.
+- If *event* is a touch end event, m_touchEventFocusObject is set to nullptr.
+
+  **See also:** [filterEventFocus()](#filtereventfocus)
+
+### filterEventFocus
+
+```cpp
+bool ImFusion::GUI::View::filterEventFocus (const InputEvent & event, const void * target) const
+```
+
+*protected*
+
+Checks if the object *target* should receive the given *event* based on the event type and current "focus" object.
+
+- Returns true if current focus object is nullptr or matches *target*.
+- Returns true if *event* is not a mouse-move or touch-update event.
+- Returns false if *event* is a mouse-move or touch-update event and *target* does not match the current focus object.
+
+  **See also:** [updateEventFocus()](#updateeventfocus)
+
+### showDataImpl
+
+```cpp
+virtual void ImFusion::GUI::View::showDataImpl (Data * data)
+```
+
+*protected, virtual*
+
+Override this function to implement custom logic whenever a dataset is added to the list of visible data.
+
+The default implementation will call DataDisplayDispatcher::show() and add *data* to m_visibleData.
+
+### hideDataImpl
+
+```cpp
+virtual void ImFusion::GUI::View::hideDataImpl (const Data * data)
+```
+
+*protected, virtual*
+
+Override this function to implement custom logic whenever a dataset is removed from the list of visible data.
+
+The default implementation will call DataDisplayDispatcher::hide() and remove *data* to m_visibleData.
+
+## Member Data Documentation
+
+### m_mouseEventFocusObject
+
+```cpp
+const void* ImFusion::GUI::View::m_mouseEventFocusObject = nullptr
+```
+
+*protected*
+
+Pointer to the event receiver that shall receive [MouseEvent::Type::Move](/cpp-sdk/4.5/api/classes/imfusion-gui-mouseevent) events exclusively.
+
+The default implementation will set this to any object/overlay/interaction that handles ([EventResult::stopPropagation](/cpp-sdk/4.5/api/structs/imfusion-gui-eventresult) == true) a MouseButtonPress event. The default implementation will reset this to nullptr on any [MouseEvent::Type::Release](/cpp-sdk/4.5/api/classes/imfusion-gui-mouseevent) event.
+
+### m_touchEventFocusObject
+
+```cpp
+const void* ImFusion::GUI::View::m_touchEventFocusObject = nullptr
+```
+
+*protected*
+
+Pointer to the event receiver that shall receive [TouchEvent::Type::Update](/cpp-sdk/4.5/api/classes/imfusion-gui-touchevent) events exclusively.
+
+The default implementation will set this to any object/overlay/interaction that handles ([EventResult::stopPropagation](/cpp-sdk/4.5/api/structs/imfusion-gui-eventresult) == true) a TouchBegin event. The default implementation will reset this to nullptr on any [TouchEvent::Type::End](/cpp-sdk/4.5/api/classes/imfusion-gui-touchevent) or [TouchEvent::Type::Cancel](/cpp-sdk/4.5/api/classes/imfusion-gui-touchevent) event.

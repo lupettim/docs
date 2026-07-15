@@ -1,0 +1,61 @@
+---
+title: "ImFusion::Dicom::Series"
+sidebarTitle: "Series"
+---
+
+## Public Member Functions
+
+- **Series** ([Study](/cpp-sdk/4.5/api/structs/imfusion-dicom-study) \*parent)
+- **Series** ([Study](/cpp-sdk/4.5/api/structs/imfusion-dicom-study) \*parent, DcmItem &item, bool loadImage=true)
+- **Series** (const Series &rhs) — Copy constructor only copies series information, neither images nor parent are copied.
+- void [updateDimensions](#updatedimensions) (SharedDatasetCache cache) — Updates the dimensions of the series.
+- void [estimateDimensions](#estimatedimensions) () — Like updateDimensions but only tries to estimate the dimensions before all images of a series are available.
+- void [insertImage](#insertimage) ([std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Image](/cpp-sdk/4.5/api/structs/imfusion-dicom-image) \* &gt;::const_iterator where, [Image](/cpp-sdk/4.5/api/structs/imfusion-dicom-image) \*image) — Inserts a new image at the given position and calls estimateDimensions.
+
+## Public Attributes
+
+- [Study](/cpp-sdk/4.5/api/structs/imfusion-dicom-study) \* **parent**
+- QString **instanceUID** — Unique identifier of the [Series](/cpp-sdk/4.5/api/structs/imfusion-dicom-series). (0020, 000e).
+- QString **sopClassUID** — SOP (Storage Service Class) Class UID. (0008, 0016).
+- QTime **time** — Time the [Series](/cpp-sdk/4.5/api/structs/imfusion-dicom-series) started. (0008, 0031).
+- QDate **date** — Date the [Series](/cpp-sdk/4.5/api/structs/imfusion-dicom-series) started. (0008, 0021).
+- QString **number** — A number that identifies this [Series](/cpp-sdk/4.5/api/structs/imfusion-dicom-series). (0020, 0011).
+- QString **description** — Description of the [Series](/cpp-sdk/4.5/api/structs/imfusion-dicom-series). (0008, 103e).
+- QString **imageType** — [Image](/cpp-sdk/4.5/api/structs/imfusion-dicom-image) type copied from first image in this series (0008, 0008).
+- QString **modality** — Type of equipment that originally acquired the data used to create the images in this [Series](/cpp-sdk/4.5/api/structs/imfusion-dicom-series). (0008, 0060).
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [DimensionsInfo](/cpp-sdk/4.5/api/structs/imfusion-dicom-dimensionsinfo) &gt; **dimensions** — The dimensions of the series. See updateDimensions for details. Empty by default.
+- [DimensionsInfo](/cpp-sdk/4.5/api/structs/imfusion-dicom-dimensionsinfo) **estimatedDimensions** — Estimated dimensions of the series. See estimateDimensions for details.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Image](/cpp-sdk/4.5/api/structs/imfusion-dicom-image) \* &gt; **images** — List of filepaths to the images that are part of the [Series](/cpp-sdk/4.5/api/structs/imfusion-dicom-series).
+- bool **isChecked** — True if the [Series](/cpp-sdk/4.5/api/structs/imfusion-dicom-series) is checked by the user or false otherwise.
+
+## Member Function Documentation
+
+### updateDimensions
+
+```cpp
+void ImFusion::Dicom::Series::updateDimensions (SharedDatasetCache cache)
+```
+
+Updates the dimensions of the series.
+
+When a series is loaded it might be loaded as multiple datasets with different dimensions. To get reliable results, scanning needs to be finished and all images of the series must be available. This uses [DicomLoader](/cpp-sdk/4.5/api/classes/imfusion-dicomloader) to determine the exact dimensions of the data that will be loaded from this [Series](/cpp-sdk/4.5/api/structs/imfusion-dicom-series) but without loading any actual pixel data. The Image::uri parameter must be valid, for all images in this series (automatically set by the [Scanner](/cpp-sdk/4.5/api/classes/imfusion-dicom-scanner), but not when [Series](/cpp-sdk/4.5/api/structs/imfusion-dicom-series) object is created directly from DcmDataset). Calling this function clears any existing dimensions values.
+
+### estimateDimensions
+
+```cpp
+void ImFusion::Dicom::Series::estimateDimensions ()
+```
+
+Like updateDimensions but only tries to estimate the dimensions before all images of a series are available.
+
+The estimate is generally more accurate for "simple" datasets, e.g. single 3D volumes or 2D images. For complicated datasets, the dimensions can often not be determined correctly. The result depends on the order in which images have been inserted.
+
+### insertImage
+
+```cpp
+void ImFusion::Dicom::Series::insertImage (std::vector < Image * >::const_iterator where, Image * image)
+```
+
+Inserts a new image at the given position and calls estimateDimensions.
+
+While it is possible to directly insert into images and call estimateDimensions, the performance will be much worse it that case. Do not re-order images if you are using this methods.

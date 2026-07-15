@@ -1,0 +1,119 @@
+---
+title: "ImFusion::Geometry::Rectangle"
+sidebarTitle: "Rectangle"
+description: "Arbitrary rectangle in 3D space."
+---
+
+`#include <ImFusion/Core/Geometry/Rectangle.h>`
+
+## Overview
+
+Arbitrary rectangle in 3D space.
+
+By convention, the vertex from with both edge vectors are outgoing is the lower left corner. All other corners are determined from there using the edge vectors. User is responsible for making sure the input for creating the object results in a valid rectangle, in particular that the axes are orthogonal and all variables are finite. Otherwise the behaviour is undefined (may or may not produce correct solutions for an arbitrary parallelogram). Use the isValid() method if in doubt.
+
+## Public Types
+
+- enum **Corner** : int &#123; **LowerLeft** = 0 , **UpperLeft** = 1 , **UpperRight** = 2 , **LowerRight** = 3 &#125;
+
+## Public Member Functions
+
+- **Rectangle** (const Rectangle &)=default
+- Rectangle & **operator=** (const Rectangle &)=default
+- bool **operator==** (const Rectangle &) const
+- bool **operator!=** (const Rectangle &) const
+- bool **isApprox** (const Rectangle &) const — Comparison allowing for numerical inaccuracy.
+- bool **isEquivalent** (const Rectangle &) const — Like isApprox, but additionally allows opposite winding order.
+- bool **isValid** () const — Returns whether the constructor input resulted in a valid rectangle.
+- vec2 **extent** () const — Returns the edge lengths.
+- vec3 **center** () const — Returns the center of the rectangle.
+- vec3 **horizontalAxis** () const — Returns the normalized direction of the edge vector from LowerLeft to LowerRight.
+- vec3 **verticalAxis** () const — Returns the normalized direction of the edge vector from LowerLeft to UpperLeft.
+- vec3 **horizontalEdge** () const — Returns the edge vector from LowerLeft to LowerRight.
+- vec3 **verticalEdge** () const — Returns the edge vector from LowerLeft to UpperLeft.
+- vec3 **normal** () const — Surface normal, sign depends on winding order.
+- mat4 **centerPointPose** () const — To-world transform matrix from local coordinates relative to center.
+- mat4 **cornerPointPose** () const — To-world transform matrix from local coordinates relative to LowerLeft corner.
+- vec3 **closestPoint** (const vec3 &p) const — Closest point on rectangle, including the boundary.
+- bool **includesPoint** (const vec3 &point) const — Returns whether point is part of rectangle, including boundary.
+- double **distanceToPoint** (const vec3 &point) const — Euclidean distance to closest point.
+- vec3 **corner** (Corner which=LowerLeft) const — Returns position of corner or NAN in case of invalid input.
+- vec3 [lambdaToPoint](#lambdatopoint) (const vec2 &lambda) const — Transforms point in local coord frame based on corner(0) and axis1/2 to world coords.
+- vec2 [pointToLambda](#pointtolambda) (const vec3 &pWorld) const — Transforms point in world coords to closest point on rectangle plane, expressed in coord frame using corner(0) and axis1/2.
+
+## Static Public Member Functions
+
+- static Rectangle [fromCenterPose](#fromcenterpose) (Eigen::Isometry3d pose, const vec2 &extent) — Create rectangle from extent and pose of center point.
+- static Rectangle [fromCornerPose](#fromcornerpose) (const Eigen::Isometry3d &pose, const vec2 &extent) — Create rectangle from extent and pose of lower left corner point.
+- static Rectangle [fromCornerAndEdges](#fromcornerandedges) (const vec3 &corner, const vec3 &edge1, const vec3 &edge2) — Create rectangle from position of a corner and the outgoing edges from that corner.
+- static Rectangle [fromCenterAndEdges](#fromcenterandedges) (const vec3 &center, const vec3 &edge1, const vec3 &edge2) — Create rectangle from center point and perpendicular edge vectors.
+
+## Member Function Documentation
+
+### fromCenterPose
+
+```cpp
+Rectangle ImFusion::Geometry::Rectangle::fromCenterPose (Eigen::Isometry3d pose, const vec2 & extent)
+```
+
+*static*
+
+Create rectangle from extent and pose of center point.
+
+[Pose](/cpp-sdk/4.5/api/namespaces/imfusion-pose) must be a rigid transform matrix where columns are direction of first edge, direction of second edge, normal and position of center in world coords.
+
+### fromCornerPose
+
+```cpp
+Rectangle ImFusion::Geometry::Rectangle::fromCornerPose (const Eigen::Isometry3d & pose, const vec2 & extent)
+```
+
+*static*
+
+Create rectangle from extent and pose of lower left corner point.
+
+[Pose](/cpp-sdk/4.5/api/namespaces/imfusion-pose) must be a rigid transform matrix where columns are direction of first edge, direction of second edge, normal and position of corner from which edge vectors are outgoing in world coords.
+
+### fromCornerAndEdges
+
+```cpp
+Rectangle ImFusion::Geometry::Rectangle::fromCornerAndEdges (const vec3 & corner, const vec3 & edge1, const vec3 & edge2)
+```
+
+*static*
+
+Create rectangle from position of a corner and the outgoing edges from that corner.
+
+Normal is set along direction edge1.cross(edge2).
+
+### fromCenterAndEdges
+
+```cpp
+Rectangle ImFusion::Geometry::Rectangle::fromCenterAndEdges (const vec3 & center, const vec3 & edge1, const vec3 & edge2)
+```
+
+*static*
+
+Create rectangle from center point and perpendicular edge vectors.
+
+The zero-corner will be set to center-0.5\*(edge1+edge2)
+
+### lambdaToPoint
+
+```cpp
+vec3 ImFusion::Geometry::Rectangle::lambdaToPoint (const vec2 & lambda) const
+```
+
+Transforms point in local coord frame based on corner(0) and axis1/2 to world coords.
+
+If lambda is negative or exceeds extent(), the resulting world coords will be outside of the rectangle.
+
+### pointToLambda
+
+```cpp
+vec2 ImFusion::Geometry::Rectangle::pointToLambda (const vec3 & pWorld) const
+```
+
+Transforms point in world coords to closest point on rectangle plane, expressed in coord frame using corner(0) and axis1/2.
+
+Note that the resulting point is NOT restricted to the rectangle, clamp to [0, extent()] if necessary.

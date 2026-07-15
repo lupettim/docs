@@ -1,0 +1,291 @@
+---
+title: "ImFusion::ImFusionFile"
+sidebarTitle: "ImFusionFile"
+description: "Loading and saving of the ImFusion file format."
+---
+
+`#include <ImFusion/Base/ImFusionFile.h>`
+
+## Overview
+
+Loading and saving of the ImFusion file format.
+
+**See also:** ImFusionFileIoAlgorithm
+
+## Classes
+
+- struct [CompressionSettings](/cpp-sdk/4.5/api/structs/imfusion-imfusionfile-compressionsettings) — [Compression](/cpp-sdk/4.5/api/namespaces/imfusion-compression) settings for nested ImFusionFile save operations.
+
+## Public Types
+
+- enum class [CompressionMode](#compressionmode) &#123; None = 0 , RLE = 1 , Huffman = 6 , FFV1 = 64 , ZSTD = 65 , H264 = 128 &#125; — [Compression](/cpp-sdk/4.5/api/namespaces/imfusion-compression) modes for ImFusionFile format.
+- using [CompressionOverride](#compressionoverride) = [std::unordered_map](http://en.cppreference.com/w/cpp/container/unordered_map.html)&lt;[std::string](http://en.cppreference.com/w/cpp/string/basic_string.html), [CompressionMode](#compressionmode)&gt; — Map of data names to compression modes for per-data compression control.
+
+## Public Member Functions
+
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) &gt; [load](#load-1-2) (int blockId=-1) — Load the file and add content to provided data list, returns true on success If the given blockId is &lt; 0, all data stored in the file will be loaded.
+- bool **loadMetaInfo** () — Load only the meta-info block in the file, returns true on success.
+- bool **save** ([DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) data) — Save data to a file, returns true on success.
+- bool **save** (const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*img) — Convenience method to save an image data set, returns true on success.
+- void **setProperties** ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) — Set global properties.
+- const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \* **properties** () const — Get global properties.
+- void **addGroup** ([ImFusionFileGroup](/cpp-sdk/4.5/api/classes/imfusion-imfusionfilegroup) &g) — Add group.
+- const [std::map](http://en.cppreference.com/w/cpp/container/map.html)&lt; [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*, unsigned int &gt; & **dataBlockIds** () const — Returns the map of the written/loaded data to their corresponding block IDs.
+- void **setLoadAllSharedImageSetProperties** (bool val) — Defines whether properties should be copied to all contained SharedImageSets.
+- void **setEnsureTopLeftOriginOnLoad** (bool val) — Defines whether legacy data with origin in botton-left corner should be flipped when loading.
+- bool **isEnsuringTopLeftOriginOnLoad** () const — Returns whether legacy data with origin in botton-left corner should be flipped when loading.
+- bool **fileSizeFitsBlockData** (size_t \*sizeOfContent=nullptr) const
+- [std::streampos](http://en.cppreference.com/w/cpp/io/fpos.html) [getReadPosition](#getreadposition) () — Read position of the reading-head in the current input stream (i.e.
+- bool [load](#load-2-2) ([DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, int blockId=-1)
+
+## Static Public Member Functions
+
+- static void **addPlugin** ([std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [ImFusionFilePlugin](/cpp-sdk/4.5/api/classes/imfusion-imfusionfileplugin) &gt; p) — Add a plugin for custom data types to load and save.
+- static void [addPlugin](#addplugin) ([ImFusionFilePlugin](/cpp-sdk/4.5/api/classes/imfusion-imfusionfileplugin) \*p)
+
+## Methods for general load and save
+
+- static bool [canSave](#cansave) (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data)
+- static [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) &gt; **load** (const [ByteBufferView](/cpp-sdk/4.5/api/classes/imfusion-bytebufferview) &byteBufferView, int blockId=-1) — Use this to avoid having to copy the underlying buffer.
+- static [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [ImFusionFilePlugin](/cpp-sdk/4.5/api/classes/imfusion-imfusionfileplugin) &gt; &gt; & **plugins** () — Retrieve the vector of available plugins.
+- **ImFusionFile** ([std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) filename) — Constructor with filename to load or save.
+- **ImFusionFile** ([std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; char &gt; &buffer) — Constructor with buffer to load or save to.
+- void **setProgress** ([Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) \*p) — Set an optional progress interface.
+- void [setCompression](#setcompression) (int mode) — Set compression mode.
+- void **setCompression** ([CompressionMode](#compressionmode) mode)
+- void [setCompressionOptions](#setcompressionoptions) (int mode, int passes, int dx, int dy) — Set options for image compression.
+- void **setCompressionOptions** ([CompressionMode](#compressionmode) mode, int passes, int dx, int dy)
+- void [setCompressionOverride](#setcompressionoverride) ([CompressionOverride](#compressionoverride) overrides) — Set per-data compression override for nested data control.
+- const [std::set](http://en.cppreference.com/w/cpp/container/set.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; & **ignoredDataComponentIds** () const — Returns the list of DataComponentIDs that should not be written/read.
+- void [setIgnoredDataComponentIds](#setignoreddatacomponentids) (const [std::set](http://en.cppreference.com/w/cpp/container/set.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; &value) — Sets the list of DataComponentIDs that should not be written/read.
+- void [setSaveUnrestoredDataComponents](#setsaveunrestoreddatacomponents) (bool enable) — Sets whether DataComponents should be saved which couldn't be restored when the input dataset was loaded.
+
+## Methods for selective query and loading of data
+
+- bool [open](#open) (int mode) — Open the file and retrieve block information, return true on success and at least one block present.
+- bool [beginBlockWrite](#beginblockwrite) ([ImFusionFilePlugin](/cpp-sdk/4.5/api/classes/imfusion-imfusionfileplugin) \*p, [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*d=0) — Initialize plugin The file will open a new block and initialize the plugin with the file pointer.
+- unsigned long long [endBlockWrite](#endblockwrite) () — Close block and disable plugin access.
+- bool [beginBlockRead](#beginblockread) (int block, [ImFusionFilePlugin](/cpp-sdk/4.5/api/classes/imfusion-imfusionfileplugin) \*p) — Initialize plugin The file will read the block header and point the plugin to the position after the header.
+- unsigned long long [endBlockRead](#endblockread) () — Close block and disable plugin access.
+- int [listBlocks](#listblocks) ([std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; unsigned int &gt; &blockTypeOut, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; unsigned long long &gt; &blockSizeOut) — Return block information, available after having called [open()](#open).
+- bool **close** () — Close the file manually if selective read methods above have been used.
+
+## Member Typedef Documentation
+
+### CompressionOverride
+
+```cpp
+using ImFusion::ImFusionFile::CompressionOverride = std::unordered_map < std::string, CompressionMode >
+```
+
+Map of data names to compression modes for per-data compression control.
+
+Use "&lt;ALL&gt;" as key to set compression for all data not explicitly listed.
+
+## Member Enumeration Documentation
+
+### CompressionMode
+
+```cpp
+enum class ImFusion::ImFusionFile::CompressionMode
+```
+
+*strong*
+
+[Compression](/cpp-sdk/4.5/api/namespaces/imfusion-compression) modes for ImFusionFile format.
+
+**Enumerator:**
+
+- `None` — No compression.
+- `RLE` — Run-length encoding.
+- `Huffman` — [Huffman](/cpp-sdk/4.5/api/classes/imfusion-huffman) encoding.
+- `FFV1` — FFV1 lossless video codec.
+- `ZSTD` — ZSTD lossless compression.
+- `H264` — H264 lossy video codec.
+
+## Member Function Documentation
+
+### addPlugin
+
+```cpp
+void ImFusion::ImFusionFile::addPlugin (ImFusionFilePlugin * p)
+```
+
+*static*
+
+****Deprecated**:** "Use addPlugin(std::unique_ptr&lt;ImFusionFilePlugin&gt;) for correct ownership semantics."
+
+### canSave
+
+```cpp
+bool ImFusion::ImFusionFile::canSave (const DataList & data)
+```
+
+*static*
+
+Determines if all [Data](/cpp-sdk/4.5/api/classes/imfusion-data) items in the given data list can be saved into an ImFusion file
+
+### setCompression
+
+```cpp
+void ImFusion::ImFusionFile::setCompression (int mode)
+```
+
+Set compression mode.
+
+****Deprecated**:** "Use setCompression(CompressionMode mode) instead."
+
+### setCompressionOptions
+
+```cpp
+void ImFusion::ImFusionFile::setCompressionOptions (int mode, int passes, int dx, int dy)
+```
+
+Set options for image compression.
+
+****Deprecated**:** "Use setCompressionOptions(CompressionMode mode, int passes, int dx, int dy) instead."
+
+### setCompressionOverride
+
+```cpp
+void ImFusion::ImFusionFile::setCompressionOverride (CompressionOverride overrides)
+```
+
+Set per-data compression override for nested data control.
+
+The callback is consulted for each [Data](/cpp-sdk/4.5/api/classes/imfusion-data) element
+
+### setIgnoredDataComponentIds
+
+```cpp
+void ImFusion::ImFusionFile::setIgnoredDataComponentIds (const std::set < std::string > & value)
+```
+
+Sets the list of DataComponentIDs that should not be written/read.
+
+**Note:** If this set consists of the single value "&lt;ALL&gt;", all DataComponents will be ignored.
+
+### setSaveUnrestoredDataComponents
+
+```cpp
+void ImFusion::ImFusionFile::setSaveUnrestoredDataComponents (bool enable)
+```
+
+Sets whether DataComponents should be saved which couldn't be restored when the input dataset was loaded.
+
+An ImFusionFile might contain DataComponents of plugins that are currently not loaded. In this case, the particular [DataComponent](/cpp-sdk/4.5/api/classes/imfusion-datacomponent) cannot be restored and are instead saved inside the [UnrestoredDataComponents](/cpp-sdk/4.5/api/classes/imfusion-unrestoreddatacomponents) component. If this component is present and this option enabled, the configuration of those components is written back to the resulting ImFusionFile.
+
+This option is important for e.g. scripts that load a ImFusionFile, modify the data and save it again.
+
+Unrestored component ids that are in ignoredDataComponentIds will not be saved, regardless of this option.
+
+Enabled by default.
+
+### open
+
+```cpp
+bool ImFusion::ImFusionFile::open (int mode)
+```
+
+Open the file and retrieve block information, return true on success and at least one block present.
+
+**Parameters:**
+
+- `mode` — Access mode 0 = read, 1 = write
+
+### beginBlockWrite
+
+```cpp
+bool ImFusion::ImFusionFile::beginBlockWrite (ImFusionFilePlugin * p, Data * d = 0)
+```
+
+Initialize plugin The file will open a new block and initialize the plugin with the file pointer.
+
+The plugin can then write freely to the block.
+
+**Parameters:**
+
+- `p` — plugin for writing to block
+- `d` — data for determining save type
+
+**Returns:** true if successful, false otherwise
+
+### endBlockWrite
+
+```cpp
+unsigned long long ImFusion::ImFusionFile::endBlockWrite ()
+```
+
+Close block and disable plugin access.
+
+**Returns:** number of bytes written to block, -1 on error
+
+### beginBlockRead
+
+```cpp
+bool ImFusion::ImFusionFile::beginBlockRead (int block, ImFusionFilePlugin * p)
+```
+
+Initialize plugin The file will read the block header and point the plugin to the position after the header.
+
+The plugin can then access the data in the block.
+
+**Parameters:**
+
+- `block` — block number
+- `p` — plugin for writing to block
+
+**Returns:** true if successful, false otherwise
+
+### endBlockRead
+
+```cpp
+unsigned long long ImFusion::ImFusionFile::endBlockRead ()
+```
+
+Close block and disable plugin access.
+
+**Returns:** number of bytes written to block, -1 on error
+
+### listBlocks
+
+```cpp
+int ImFusion::ImFusionFile::listBlocks (std::vector < unsigned int > & blockTypeOut, std::vector < unsigned long long > & blockSizeOut)
+```
+
+Return block information, available after having called [open()](#open).
+
+**Parameters:**
+
+- `blockTypeOut` — list of block types
+- `blockSizeOut` — list of block sizes in bytes
+
+**Returns:** number of blocks or -1 on error
+
+### load
+
+```cpp
+std::optional < OwningDataList > ImFusion::ImFusionFile::load (int blockId = -1)
+```
+
+Load the file and add content to provided data list, returns true on success If the given blockId is &lt; 0, all data stored in the file will be loaded.
+
+If the given blockId is &gt;= 0, only the data in the given block will be loaded.
+
+### getReadPosition
+
+```cpp
+std::streampos ImFusion::ImFusionFile::getReadPosition ()
+```
+
+Read position of the reading-head in the current input stream (i.e.
+
+number of bytes that were read) Basically returns the tellg() of the underlying stream, and returns -1 if no valid stream is present. Only valid when using the buffer constructor This function is not supported on older MacOS systems
+
+### load
+
+```cpp
+bool ImFusion::ImFusionFile::load (DataList & data, int blockId = -1)
+```
+
+****Deprecated**:** "Use the std::optional&lt;OwningDataList&gt; load(int) overload instead for correct ownership semantics."

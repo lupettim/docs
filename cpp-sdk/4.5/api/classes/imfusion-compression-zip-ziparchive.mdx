@@ -1,0 +1,87 @@
+---
+title: "ImFusion::Compression::zip::ZipArchive"
+sidebarTitle: "ZipArchive"
+description: "Class representing a zip archive."
+---
+
+`#include <ImFusion/Core/Zip.h>`
+
+## Overview
+
+Class representing a zip archive. A [ZipArchive](/cpp-sdk/4.5/api/classes/imfusion-compression-zip-ziparchive) instance can create a zip archive, add/extract files/memory buffers to/from it.
+
+## Public Member Functions
+
+- [ZipArchive](#ziparchive-1-2) (const [Filesystem::Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path) &archivePath, [ExistingArchivePolicy](/cpp-sdk/4.5/api/namespaces/imfusion-compression-zip) archivePolicy=ExistingArchivePolicy::Append) — Constructor with the path of the archive, should be a valid file path.
+- [ZipArchive](#ziparchive-2-2) ([ByteBufferView](/cpp-sdk/4.5/api/classes/imfusion-bytebufferview) buffer) — Constructor with a buffer.
+- [Utils::Expected](/cpp-sdk/4.5/api/classes/imfusion-utils-expected)&lt; void, [Error](/cpp-sdk/4.5/api/structs/imfusion-compression-zip-error) &gt; [add](#add-1-2) (const [Filesystem::Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path) &inputPath, [Algorithm](/cpp-sdk/4.5/api/namespaces/imfusion-compression-zip) algorithm=[Algorithm::ZLib](/cpp-sdk/4.5/api/namespaces/imfusion-compression-zip), [Level](/cpp-sdk/4.5/api/namespaces/imfusion-compression-zip) level=[Level::Default](/cpp-sdk/4.5/api/namespaces/imfusion-compression-zip)) — Adds a file or folder at inputPath to the zip archive.
+- [Utils::Expected](/cpp-sdk/4.5/api/classes/imfusion-utils-expected)&lt; void, [Error](/cpp-sdk/4.5/api/structs/imfusion-compression-zip-error) &gt; [add](#add-2-2) (const [ByteBufferView](/cpp-sdk/4.5/api/classes/imfusion-bytebufferview) &buffer, const [Filesystem::Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path) &entryName, [Algorithm](/cpp-sdk/4.5/api/namespaces/imfusion-compression-zip) algorithm=[Algorithm::ZLib](/cpp-sdk/4.5/api/namespaces/imfusion-compression-zip), [Level](/cpp-sdk/4.5/api/namespaces/imfusion-compression-zip) level=[Level::Default](/cpp-sdk/4.5/api/namespaces/imfusion-compression-zip)) — Adds the content of the buffer to the zip archive using the given entryName.
+- [Utils::Expected](/cpp-sdk/4.5/api/classes/imfusion-utils-expected)&lt; void, [Error](/cpp-sdk/4.5/api/structs/imfusion-compression-zip-error) &gt; **extractAll** (const [Filesystem::Directory](/cpp-sdk/4.5/api/classes/imfusion-filesystem-directory) &outputDir) const — Extracts the current archive into the given outputDir directory. If the directory does not exists, it is created.
+- [Utils::Expected](/cpp-sdk/4.5/api/classes/imfusion-utils-expected)&lt; [ByteBuffer](/cpp-sdk/4.5/api/classes/imfusion-bytebuffer), [Error](/cpp-sdk/4.5/api/structs/imfusion-compression-zip-error) &gt; **extractSingle** (const [Filesystem::Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path) &entryPath) const — Extracts a single entry inside the archive with path entryPath into a memory buffer.
+- [Utils::Expected](/cpp-sdk/4.5/api/classes/imfusion-utils-expected)&lt; void, [Error](/cpp-sdk/4.5/api/structs/imfusion-compression-zip-error) &gt; **extractSingle** (const [Filesystem::Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path) &entryPath, const [Filesystem::Directory](/cpp-sdk/4.5/api/classes/imfusion-filesystem-directory) &outputDir) const — Extracts a single entry inside the archive with path entryPath into the directory outputDir.
+- [Utils::Expected](/cpp-sdk/4.5/api/classes/imfusion-utils-expected)&lt; [EntryInfo](/cpp-sdk/4.5/api/structs/imfusion-compression-zip-entryinfo), [Error](/cpp-sdk/4.5/api/structs/imfusion-compression-zip-error) &gt; **entryInfo** (const [Filesystem::Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path) &entryPath) const — Returns information about the entry with path entryPath.
+- [Utils::Expected](/cpp-sdk/4.5/api/classes/imfusion-utils-expected)&lt; [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [EntryInfo](/cpp-sdk/4.5/api/structs/imfusion-compression-zip-entryinfo) &gt;, [Error](/cpp-sdk/4.5/api/structs/imfusion-compression-zip-error) &gt; [listEntries](#listentries) (bool listDirectories=false) const — Lists information about the entries of the archive.
+
+## Constructor & Destructor Documentation
+
+### ZipArchive
+
+```cpp
+ImFusion::Compression::zip::ZipArchive::ZipArchive (const Filesystem::Path & archivePath, ExistingArchivePolicy archivePolicy = ExistingArchivePolicy::Append)
+```
+
+*explicit*
+
+Constructor with the path of the archive, should be a valid file path.
+
+**Parameters:**
+
+- `existingArchivePolicy` — indicates if the (existing) archive should be overwritten or files appended to it.
+
+**Exceptions:**
+
+- `std::invalid_argument` — if the path is empty or not a valid file path.
+
+### ZipArchive
+
+```cpp
+ImFusion::Compression::zip::ZipArchive::ZipArchive (ByteBufferView buffer)
+```
+
+*explicit*
+
+Constructor with a buffer.
+
+**Note:** This is a read-only archive. Every attempt to write to it will fail.
+
+## Member Function Documentation
+
+### add
+
+```cpp
+Utils::Expected < void, Error > ImFusion::Compression::zip::ZipArchive::add (const Filesystem::Path & inputPath, Algorithm algorithm = Algorithm::ZLib, Level level = Level::Default)
+```
+
+Adds a file or folder at inputPath to the zip archive.
+
+The file is compressed using the given compression algorithm and the given compression level. Note: If the file is already present in the archive, an error is returned.
+
+### add
+
+```cpp
+Utils::Expected < void, Error > ImFusion::Compression::zip::ZipArchive::add (const ByteBufferView & buffer, const Filesystem::Path & entryName, Algorithm algorithm = Algorithm::ZLib, Level level = Level::Default)
+```
+
+Adds the content of the buffer to the zip archive using the given entryName.
+
+The content of the buffer is compressed using the given compression algorithm. Note: If an entry with name "entryName" is already present in the archive, an error is returned.
+
+### listEntries
+
+```cpp
+Utils::Expected < std::vector < EntryInfo >, Error > ImFusion::Compression::zip::ZipArchive::listEntries (bool listDirectories = false) const
+```
+
+Lists information about the entries of the archive.
+
+Note: If listDirectories is set to true, directories are listed, otherwise only files.

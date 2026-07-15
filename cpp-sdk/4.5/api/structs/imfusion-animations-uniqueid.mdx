@@ -1,0 +1,26 @@
+---
+title: "ImFusion::Animations::UniqueId"
+sidebarTitle: "UniqueId"
+description: "Helper struct to uniquely describe a type of annotation."
+---
+
+`#include <ImFusion/GUI/Animations.h>`
+
+## Overview
+
+Helper struct to uniquely describe a type of annotation.
+
+You can pass instances of this struct when dispatching a new annotation to prevent multiple concurrent animations with the same ID. A unique ID can be described by the address of an object (usually you would pass the this pointer of the caller if it was allocated on the heap), by a string identifier of sufficient uniqueness, or the combination of both.
+
+## Public Member Functions
+
+- **UniqueId** (const void \*addressId, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &stringId="")
+- **UniqueId** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &stringId)
+- **UniqueId** (const char \*stringId)
+- bool **operator&lt;** (const UniqueId &rhs) const noexcept
+- bool **isEmpty** () const noexcept
+
+## Public Attributes
+
+- const void \* **addressId** = nullptr
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **stringId**

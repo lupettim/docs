@@ -1,0 +1,41 @@
+---
+title: "DicomWorklist.cpp"
+---
+
+```cpp
+#include <ImFusion/Core/Log.h>
+#include <ImFusion/Dicom/DicomModalityWorklist.h>
+
+#include <dcmtk/dcmdata/dctk.h>
+
+int main()
+{
+ // A simple example that reads the DICOM Modality Worklist of DCMTKs wlmscpfs SCP.
+ // To get the server running:
+ // 1. Clone the dcmtk repository and go to the dcmwlm/data/wlistdb folder
+ // 2. Convert the files in the OFFIS directory with: dump2dcm -g wklist1.dump wklist1.wl
+ // 3. Start the server on port 8080: wlmscpfs 8080
+ ImFusion::DicomPacsConfiguration config("localhost", 8080, "OFFIS");
+    config.clientPort = 11112;
+    config.clientAETitle = "OFFIS";
+    config.cfgFilePath = "";
+    config.connectionTimeout = 3;
+
+ auto request = ImFusion::Dicom::ModalityWorklist::createMinimalRequest();
+
+ // filter by station AE title
+    DcmItem* scheduledProcedure = nullptr;
+    request->findAndGetSequenceItem(DCM_ScheduledProcedureStepSequence, scheduledProcedure);
+    scheduledProcedure->putAndInsertString(DCM_ScheduledStationAETitle, "AB45");
+
+ // Will return 2 items
+ auto results = ImFusion::Dicom::ModalityWorklist::getWorklist(config, *request);
+ for (const auto& result : results)
+    {
+ std::stringstream ss;
+        result->print(ss);
+ LOG_INFO(ss.str());
+    }
+}
+```
+ fragment

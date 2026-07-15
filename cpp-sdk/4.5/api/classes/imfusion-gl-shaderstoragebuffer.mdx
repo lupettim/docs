@@ -1,0 +1,197 @@
+---
+title: "ImFusion::GL::ShaderStorageBuffer"
+sidebarTitle: "ShaderStorageBuffer"
+description: "Specialization of Buffer for OpenGL Shader Storage Buffer Object."
+---
+
+`#include <ImFusion/Core/GL/ShaderStorageBuffer.h>`
+
+## Overview
+
+Specialization of [Buffer](/cpp-sdk/4.5/api/classes/imfusion-gl-buffer) for OpenGL Shader Storage [Buffer](/cpp-sdk/4.5/api/classes/imfusion-gl-buffer) Object.
+
+SSBOs are the most powerful way to transport data between the CPU and OpenGL shaders and allow for both read and write access.
+
+Example for setting up an SSBO and attaching it to a shader
+
+```cpp
+// define buffer layout of data to be shared with GPU
+struct Foo {
+    int32_t input = 0;
+ float result = 0.f;
+};
+std::vector<Foo> foos(4, Foo{});
+for (int i = 0; i < 4; ++i)
+    foos[i].input = i + 1;
+
+// create SSBO and upload data
+ShaderStorageBuffer ssbo(Buffer::Usage::DynamicDraw);
+ssbo.bind();
+ssbo.setData(foos);
+
+// bind SSBO to shader
+Program prog = ...
+prog.enable();
+prog.bindBuffer("_fooBuffer", ssbo);
+```
+ fragment
+Corresponding GLSL shader code:
+
+```cpp
+// define buffer layout on the GPU side, make sure to match the CPU side including potential padding
+struct Foo {
+ int input;
+ float result;
+};
+layout(std430) buffer _fooBuffer {
+    Foo[] foos;
+};
+
+void main() {
+ // access SSBO
+ for (int i = 0; i < 4; ++i)
+        foos[0].result = computeResult(foos[i].input);
+}
+```
+ fragment
+
+**Note:** SSBOs require at least OpenGL 4.3 or the ARB_shader_storage_buffer_object extension.
+
+**See also:** [https://www.khronos.org/opengl/wiki/Shader_Storage_Buffer_Object](https://www.khronos.org/opengl/wiki/Shader_Storage_Buffer_Object)
+
+## Public Member Functions
+
+- [ShaderStorageBuffer](#shaderstoragebuffer) ([Usage](/cpp-sdk/4.5/api/classes/imfusion-gl-buffer) [usageHint](/cpp-sdk/4.5/api/classes/imfusion-gl-buffer)=[Buffer::Usage::StaticDraw](/cpp-sdk/4.5/api/classes/imfusion-gl-buffer)) — Instantiate a new Shader Storage [Buffer](/cpp-sdk/4.5/api/classes/imfusion-gl-buffer) Object.
+- void **bindBase** (uint32_t index) — Bind the buffer to the storage block with the given index.
+- void [setSubData](#setsubdata-1-2) (size_t offset, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; Ts &gt;... data) — Upload data into the buffer starting at the given offset.
+- void [setData](#setdata-1-2) ([Utils::Span](/cpp-sdk/4.5/api/classes/imfusion-utils-span)&lt; T &gt; data) — Upload data to the buffer.
+- void [setData](#setdata-2-2) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; T &gt; &data) — Upload data to the buffer.
+- void [getData](#getdata) ([std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; T &gt; &outData) const — Download all data from the buffer attached to the given target that fits into the given vector.
+- void [getSubData](#getsubdata) (int64_t offsetBytes, int64_t sizeBytes, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; T &gt; &outData) const — Download the given range of data of the buffer attached to the given target.
+- size_t **bufferSize** () const — Returns the number of bytes that were previously allocated on the GPU for this buffer.
+- void [allocateBuffer](#allocatebuffer) (int64_t numBytes) — Allocates storage on the GPU for this buffer object.
+- void [setSubData](#setsubdata-2-2) (size_t offset, [Utils::Span](/cpp-sdk/4.5/api/classes/imfusion-utils-span)&lt; Ts &gt;... data) — Upload data into the buffer starting at the given offset.
+
+## Static Public Member Functions
+
+- static void **unbind** () — Unbind any bound shader storage buffer.
+
+## Constructor & Destructor Documentation
+
+### ShaderStorageBuffer
+
+```cpp
+ImFusion::GL::ShaderStorageBuffer::ShaderStorageBuffer (Usage usageHint = Buffer::Usage::StaticDraw)
+```
+
+*explicit*
+
+Instantiate a new Shader Storage [Buffer](/cpp-sdk/4.5/api/classes/imfusion-gl-buffer) Object.
+
+**Parameters:**
+
+- `usageHint` — Expected usage pattern of the buffer
+
+**Exceptions:**
+
+- `std::runtime_error` — if the corresponding OpenGL buffer object could not be created.
+
+## Member Function Documentation
+
+### setSubData
+
+```cpp
+template<typename... Ts> void ImFusion::GL::ShaderStorageBuffer::setSubData (size_t offset, std::vector < Ts >... data)
+```
+
+*inline*
+
+Upload data into the buffer starting at the given offset.
+
+**Parameters:**
+
+- `offset` — Offset in bytes into the buffer object's data store where start writing data.
+- `data` — Pack of data arrays that should be copied to the buffer. If you provide multiple spans they will be concatenated and end up next to each other in the buffer without any padding.
+
+### setData
+
+```cpp
+template<typename T> void ImFusion::GL::ShaderStorageBuffer::setData (Utils::Span < T > data)
+```
+
+Upload data to the buffer.
+
+**Note:** The buffer needs to be bound before this method is called. Any previous data will be deleted.
+
+**Parameters:**
+
+- `data` — Contiguous sequence of elements that shall be uploaded to the buffer.
+
+### setData
+
+```cpp
+template<typename T> void ImFusion::GL::ShaderStorageBuffer::setData (const std::vector < T > & data)
+```
+
+Upload data to the buffer.
+
+**Note:** The buffer needs to be bound before this method is called. Any previous data will be deleted.
+
+**Parameters:**
+
+- `data` — [Vector](/cpp-sdk/4.5/api/classes/imfusion-vector) of elements that shall be uploaded to the buffer.
+
+### getData
+
+```cpp
+template<typename T> void ImFusion::GL::ShaderStorageBuffer::getData (std::vector < T > & outData) const
+```
+
+Download all data from the buffer attached to the given target that fits into the given vector.
+
+**Note:** The buffer needs to be bound before this method is called.
+
+**Parameters:**
+
+- `outData` — [Vector](/cpp-sdk/4.5/api/classes/imfusion-vector) in which the data should be downloaded. The size of the vector must correspond the number of bytes to be downloaded.
+
+### getSubData
+
+```cpp
+template<typename T> void ImFusion::GL::ShaderStorageBuffer::getSubData (int64_t offsetBytes, int64_t sizeBytes, std::vector < T > & outData) const
+```
+
+Download the given range of data of the buffer attached to the given target.
+
+**Note:** The buffer needs to be bound before this method is called.
+
+**Parameters:**
+
+- `offsetBytes` — Specifies the offset into the buffer object's data store from which data will be returned, measured in bytes.
+- `sizeBytes` — Specifies the size in bytes of the data store region being returned.
+- `outData` — [Vector](/cpp-sdk/4.5/api/classes/imfusion-vector) into which the data should be downloaded, will be resized to fit the data.
+
+### allocateBuffer
+
+```cpp
+void ImFusion::GL::Buffer::allocateBuffer (int64_t numBytes)
+```
+
+Allocates storage on the GPU for this buffer object.
+
+**Parameters:**
+
+- `numBytes` — Number of bytes to allocate.
+
+### setSubData
+
+```cpp
+template<typename... Ts> void ImFusion::GL::Buffer::setSubData (size_t offset, Utils::Span < Ts >... data)
+```
+
+Upload data into the buffer starting at the given offset.
+
+**Parameters:**
+
+- `offset` — Offset in bytes into the buffer object's data store where start writing data.
+- `data` — Pack of data arrays that should be copied to the buffer. If you provide multiple spans they will be concatenated and end up next to each other in the buffer without any padding.

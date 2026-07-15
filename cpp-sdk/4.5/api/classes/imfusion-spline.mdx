@@ -1,0 +1,309 @@
+---
+title: "ImFusion::Spline"
+sidebarTitle: "Spline"
+description: "Uniform Catmull-Rom spline."
+---
+
+`#include <ImFusion/Base/Spline.h>`
+
+## Overview
+
+Uniform Catmull-Rom spline.
+
+## Public Member Functions
+
+- **Spline** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; &points)
+- void **addPoint** (const vec3 &p, int position=-1) — Add control point.
+- void **removePoint** (int index) — Remove control point.
+- void **setPoints** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; &points) — Set control points.
+- void **getPoints** ([std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; &points) const — Get control points.
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; & **points** () const — Get control points.
+- void [evaluate](#evaluate) (double t, vec3 &res) const — Evaluates spline.
+- void [evaluateTangent](#evaluatetangent) (double t, vec3 &res) const — Evaluates spline tangent.
+- void [evaluateNormal](#evaluatenormal-1-2) (double t, int axis, vec3 &res) const — Evaluates spline normal orthogonal to the tangent and the specified axis.
+- void [evaluateNormal](#evaluatenormal-2-2) (double t, const vec3 &dir, vec3 &res) const — Evaluates spline normal orthogonal to the tangent and the specified direction.
+- double [getCurveLength](#getcurvelength) (double t1=0.0, double t2=1.0) const — Computes the length of the spline between t1 and t2.
+- double [getProjectedCurveLength](#getprojectedcurvelength-1-2) (int axis, double t1=0.0, double t2=1.0) const — Computes the length of the spline between t1 and t2 when projected onto an axis plane.
+- double [getProjectedCurveLength](#getprojectedcurvelength-2-2) (const vec3 &normal, double t1=0.0, double t2=1.0) const — Computes the length of the spline between t1 and t2 when projected onto a plane.
+- void [getUniformSamples](#getuniformsamples-1-2) (int n, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::pair](http://en.cppreference.com/w/cpp/utility/pair.html)&lt; double, vec3 &gt; &gt; &samples) const — Returns sort-of uniformly spaced sample points on the spline (in terms of distance).
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; [getParametricUniformSamples](#getparametricuniformsamples) (int n) const — Returns t-uniformly-spaced sample points on the spline.
+- void [getUniformSamplesX](#getuniformsamplesx) (int n, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; &samples) const — Sample spline uniformly along x-axis.
+- void [getUniformSamples](#getuniformsamples-2-2) (int n, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; &samples, double eps=1e-10) const — Returns uniformly spaced sample points on the spline (in terms of arc length).
+- void [getProjectedUniformSamples](#getprojecteduniformsamples-1-2) (int n, int axis, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::pair](http://en.cppreference.com/w/cpp/utility/pair.html)&lt; double, vec3 &gt; &gt; &samples) const — Returns uniformly spaced points on the spline (in terms of distance on the given axis plane).
+- void [getProjectedUniformSamples](#getprojecteduniformsamples-2-2) (int n, const vec3 &normal, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::pair](http://en.cppreference.com/w/cpp/utility/pair.html)&lt; double, vec3 &gt; &gt; &samples) const — Returns uniformly spaced points on the spline (in terms of distance on the given plane).
+- double [arcLengthToSplineCoord](#arclengthtosplinecoord) (double pos) const — Converts a position on the spline given in arc length parameterization (in world units) to the corresponding position in the spline parameterization.
+- double [splineCoordToArcLength](#splinecoordtoarclength) (double t) const — Converts a position on the spline given in spline parameterization to the corresponding position in arc length parameterization (in world units).
+- void **convertToLabelMap** (unsigned char \*buffer, int width, int height, const vec3 &spacing, unsigned char inValue=1, unsigned char outValue=0, bool skipInterpolation=false) const — Fills a label map from the spline with inside/outside values.
+- void **setClosed** (bool v)
+- bool **closed** () const
+- double [calculateNearestPointArcLength](#calculatenearestpointarclength) (const Eigen::Vector3d &pos, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; Eigen::Vector3d &gt; pointsApproximation=[std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; Eigen::Vector3d &gt;(), Eigen::Vector3d \*nearestPoint=nullptr, bool \*outsideCurve=nullptr) const — Calculates the arc length of the point nearest to pos.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; Spline &gt; **getApproximateSpline** (double eps) const — Get a spline that approximates the current spline up to an error eps.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; Spline &gt; [getApproximateClosedSpline](#getapproximateclosedspline) (int skipFactor, bool optimizePositions) const — Get a closed spline that approximates the current closed spline.
+- void [evaluateLoop](#evaluateloop) (double t_, vec3 &res) const — This version of evaluate scraps the padding points at each end and cycles around instead to produce a closed loop.
+
+## Member Function Documentation
+
+### evaluate
+
+```cpp
+void ImFusion::Spline::evaluate (double t, vec3 & res) const
+```
+
+Evaluates spline.
+
+The spline is parametrized in the range t = [0;1]
+
+**Parameters:**
+
+- `t` — spline parameter
+- `res` — position at t (output parameter)
+
+### evaluateTangent
+
+```cpp
+void ImFusion::Spline::evaluateTangent (double t, vec3 & res) const
+```
+
+Evaluates spline tangent.
+
+The spline is parametrized in the range t = [0;1]
+
+**Parameters:**
+
+- `t` — spline parameter
+- `res` — tangent at t (output parameter)
+
+### evaluateNormal
+
+```cpp
+void ImFusion::Spline::evaluateNormal (double t, int axis, vec3 & res) const
+```
+
+Evaluates spline normal orthogonal to the tangent and the specified axis.
+
+The spline is parametrized in the range t = [0;1]
+
+**Parameters:**
+
+- `t` — spline parameter
+- `res` — normal at t (output parameter)
+
+### evaluateNormal
+
+```cpp
+void ImFusion::Spline::evaluateNormal (double t, const vec3 & dir, vec3 & res) const
+```
+
+Evaluates spline normal orthogonal to the tangent and the specified direction.
+
+The spline is parametrized in the range t = [0;1]
+
+**Parameters:**
+
+- `t` — spline parameter
+- `dir` — orthogonal direction
+- `res` — normal at t (output parameter)
+
+### getCurveLength
+
+```cpp
+double ImFusion::Spline::getCurveLength (double t1 = 0.0, double t2 = 1.0) const
+```
+
+Computes the length of the spline between t1 and t2.
+
+Does not consider and thus does not work with closed splines!
+
+**Parameters:**
+
+- `t1` — start parameter
+- `t2` — stop parameter
+
+**Returns:** spline length between t1 and t2
+
+### getProjectedCurveLength
+
+```cpp
+double ImFusion::Spline::getProjectedCurveLength (int axis, double t1 = 0.0, double t2 = 1.0) const
+```
+
+Computes the length of the spline between t1 and t2 when projected onto an axis plane.
+
+**Parameters:**
+
+- `axis` — axis (0 = z, 1 = y, 2 = x)
+- `t1` — start parameter
+- `t2` — stop parameter
+
+**Returns:** length of spline between t1 and t2 projected on axis axis
+
+### getProjectedCurveLength
+
+```cpp
+double ImFusion::Spline::getProjectedCurveLength (const vec3 & normal, double t1 = 0.0, double t2 = 1.0) const
+```
+
+Computes the length of the spline between t1 and t2 when projected onto a plane.
+
+**Parameters:**
+
+- `normal` — plane normal
+- `t1` — start parameter
+- `t2` — stop parameter
+
+**Returns:** length of spline between t1 and t2 projected on axis axis
+
+### getUniformSamples
+
+```cpp
+void ImFusion::Spline::getUniformSamples (int n, std::vector < std::pair < double, vec3 > > & samples) const
+```
+
+Returns sort-of uniformly spaced sample points on the spline (in terms of distance).
+
+Works for open splines only.
+
+**Parameters:**
+
+- `n` — upper bound for number of sample points
+- `samples` — spline samples (output parameter)
+
+### getParametricUniformSamples
+
+```cpp
+std::vector < vec3 > ImFusion::Spline::getParametricUniformSamples (int n) const
+```
+
+Returns t-uniformly-spaced sample points on the spline.
+
+The curve parameter t is uniformly sampled. This gives the guarantee of an equal number of samples within segments (in-between control points) which are sort-of uniformly sampled within a segment. Works for closed and open splines.
+
+**Parameters:**
+
+- `n` — number of sample points
+
+**Returns:** [Spline](/cpp-sdk/4.5/api/classes/imfusion-spline) samples
+
+### getUniformSamplesX
+
+```cpp
+void ImFusion::Spline::getUniformSamplesX (int n, std::vector < vec3 > & samples) const
+```
+
+Sample spline uniformly along x-axis.
+
+Assumes that spline is a graph in the xy-plane.
+
+### getUniformSamples
+
+```cpp
+void ImFusion::Spline::getUniformSamples (int n, std::vector < vec3 > & samples, double eps = 1e-10) const
+```
+
+Returns uniformly spaced sample points on the spline (in terms of arc length).
+
+Doesn't work with closed splines
+
+**Parameters:**
+
+- `n` — number of sample points
+- `samples` — spline samples (output parameter)
+- `eps` — threshold on max deviation of the sample's arc length
+
+### getProjectedUniformSamples
+
+```cpp
+void ImFusion::Spline::getProjectedUniformSamples (int n, int axis, std::vector < std::pair < double, vec3 > > & samples) const
+```
+
+Returns uniformly spaced points on the spline (in terms of distance on the given axis plane).
+
+**Parameters:**
+
+- `n` — number of sample points
+- `samples` — spline samples (output parameter)
+
+### getProjectedUniformSamples
+
+```cpp
+void ImFusion::Spline::getProjectedUniformSamples (int n, const vec3 & normal, std::vector < std::pair < double, vec3 > > & samples) const
+```
+
+Returns uniformly spaced points on the spline (in terms of distance on the given plane).
+
+**Parameters:**
+
+- `n` — number of sample points
+- `normal` — plane normal
+- `samples` — spline samples (output parameter)
+
+### arcLengthToSplineCoord
+
+```cpp
+double ImFusion::Spline::arcLengthToSplineCoord (double pos) const
+```
+
+Converts a position on the spline given in arc length parameterization (in world units) to the corresponding position in the spline parameterization.
+
+**Parameters:**
+
+- `pos` — arc length position
+
+**Returns:** spline parameterization position
+
+### splineCoordToArcLength
+
+```cpp
+double ImFusion::Spline::splineCoordToArcLength (double t) const
+```
+
+*inline*
+
+Converts a position on the spline given in spline parameterization to the corresponding position in arc length parameterization (in world units).
+
+**Parameters:**
+
+- `t` — spline parameterization position
+
+**Returns:** arc length position
+
+### calculateNearestPointArcLength
+
+```cpp
+double ImFusion::Spline::calculateNearestPointArcLength (const Eigen::Vector3d & pos, const std::vector < Eigen::Vector3d > pointsApproximation = std::vector < Eigen::Vector3d >(), Eigen::Vector3d * nearestPoint = nullptr, bool * outsideCurve = nullptr) const
+```
+
+Calculates the arc length of the point nearest to pos.
+
+First the nearest point to pos on the spline is determined and the arc length from the start of the spline to this point returned. The calculation pretends that the first and last segment of the spline extend to infinity. This means that the returned arc length can be negative (before the first point) or larger than the overall arc length (after the last point).
+
+**Parameters:**
+
+- `pos` — worldspace position of a point on the view
+- `optional` — list of approximated points used instead of the control points
+- `optional` — nearestPoint world position of the nearest point on the spline
+
+### getApproximateClosedSpline
+
+```cpp
+std::unique_ptr < Spline > ImFusion::Spline::getApproximateClosedSpline (int skipFactor, bool optimizePositions) const
+```
+
+Get a closed spline that approximates the current closed spline.
+
+**Parameters:**
+
+- `skipFactor` — The factor by which to skip points in the approximation. A skipFactor of 1 will result in the same number of points as the original spline.
+- `optimizePositions` — Whether or not to run a post optimization after the skipping step
+
+### evaluateLoop
+
+```cpp
+void ImFusion::Spline::evaluateLoop (double t_, vec3 & res) const
+```
+
+This version of evaluate scraps the padding points at each end and cycles around instead to produce a closed loop.
+
+It is called in [evaluate](#evaluate) when the spline is set to be closed.
+
+****Deprecated**:** "Use Spline::evaluate instead"

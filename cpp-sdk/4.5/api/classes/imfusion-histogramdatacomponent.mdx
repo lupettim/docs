@@ -1,0 +1,208 @@
+---
+title: "ImFusion::HistogramDataComponent"
+sidebarTitle: "HistogramDataComponent"
+description: "DataComponent storing information on the intensity distribution of the image they are attached to."
+---
+
+`#include <ImFusion/Base/HistogramDataComponent.h>`
+
+## Overview
+
+[DataComponent](/cpp-sdk/4.5/api/classes/imfusion-datacomponent) storing information on the intensity distribution of the image they are attached to.
+
+You can use it to query the minimum/maximum intensity of an image as well as its intensity histogram. Most information is lazy-evaluated and cached. Thus, you can expect consecutive calls to [minmax()](#minmax-1-2) and/or [histogram()](#histogram) as being free as long as the corresponding image remains unchanged.
+
+Example:
+
+```cpp
+SharedImageSet sis = ...;
+
+// query minimum/maximum value of the first image in storage domain
+vec2 minmaxStorage = HistogramDataComponent::get(sis).minmax(0);
+
+// query 16-bin intensity histogram of the first image for the intensity range of [0..100]
+auto histogram = HistogramDataComponent::get(sis).derivedHistogram(0, 16, vec2(0, 100));
+```
+ fragment
+
+**Note:** [HistogramDataComponent](/cpp-sdk/4.5/api/classes/imfusion-histogramdatacomponent) does not support serialization since it will always be lazy-instantiated during runtime.
+
+**See also:** [Image](/cpp-sdk/4.5/api/classes/imfusion-image), [Pixel Value Domains](/cpp-sdk/4.5/api/guides/pixel-value-domains)
+
+## Public Member Functions
+
+- [HistogramDataComponent](#histogramdatacomponent) (const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*sis) — Creates a new [HistogramDataComponent](/cpp-sdk/4.5/api/classes/imfusion-histogramdatacomponent) for the given [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset).
+- const [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \* [histogram](#histogram) (int index) const — Returns the intensity histogram for the image with the given index not considering any masks.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) &gt; [histogramMaskWeighted](#histogrammaskweighted) (int index) const — Returns the intensity histogram for the image with the given index while considering masks.
+- [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; const [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) &gt; [derivedHistogram](#derivedhistogram) (int index, int numBins, const vec2 &intensityRange) const — Returns the intensity histogram with the given parameters for image with the given index.
+- vec2 [minmax](#minmax-1-2) () const — Returns the accumulated minimum and maximum intensity of all images considering all channels.
+- vec2 [minmax](#minmax-2-2) (int index) const — Returns the minimum and maximum intensity of the image with the given index considering all channels.
+- vec2 [minmaxNormalized](#minmaxnormalized-1-2) () const — Returns the minimum and maximum intensity of all images in the normalized intensity range as it is seen by GLSL shaders.
+- vec2 [minmaxNormalized](#minmaxnormalized-2-2) (int index) const — Returns the minimum and maximum intensity of the image in the normalized intensity range as it is seen by GLSL shaders.
+- vec2 [minmaxOriginal](#minmaxoriginal-1-2) () const — Returns the minimum and maximum intensity of all images in the original pixel values domain.
+- vec2 [minmaxOriginal](#minmaxoriginal-2-2) (int index) const — Returns the minimum and maximum intensity of the image in the original pixel values domain.
+- int [maxNumBuckets](#maxnumbuckets) (int index) const — Returns the maximum number of buckets that makes sense for a histogram for the image with the given index.
+- vec2 [computeAutoWindowing](#computeautowindowing) (double lowerLimit, double upperLimit, int index, bool considerMask=false) const — Deduces optimal window/level (returned as vec2) settings the image with the given index based on its histogram.
+- vec2 [computeAutoWindowingParameters](#computeautowindowingparameters) (double window, double level, int index, bool considerMask=false) const — Inverse computation of computeAutoWindowing.
+
+## Constructor & Destructor Documentation
+
+### HistogramDataComponent
+
+```cpp
+ImFusion::HistogramDataComponent::HistogramDataComponent (const SharedImageSet * sis)
+```
+
+*explicit*
+
+Creates a new [HistogramDataComponent](/cpp-sdk/4.5/api/classes/imfusion-histogramdatacomponent) for the given [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset).
+
+**Parameters:**
+
+- `data` — Pointer to the [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) to compute histograms for.
+
+## Member Function Documentation
+
+### histogram
+
+```cpp
+const SharedImage * ImFusion::HistogramDataComponent::histogram (int index) const
+```
+
+Returns the intensity histogram for the image with the given index not considering any masks.
+
+The binning of the histogram is based on the image content. The min/max bin correspond to the min/max value of the underlying image (i.e. [minmax()](#minmax-1-2)). The number of bins determined by [maxNumBuckets()](#maxnumbuckets).
+
+**Note:** This histogram will be cached by [HistogramDataComponent](/cpp-sdk/4.5/api/classes/imfusion-histogramdatacomponent).
+
+### histogramMaskWeighted
+
+```cpp
+std::unique_ptr < SharedImage > ImFusion::HistogramDataComponent::histogramMaskWeighted (int index) const
+```
+
+Returns the intensity histogram for the image with the given index while considering masks.
+
+The binning of the histogram is based on the image content. The min/max bin correspond to the min/max value of the underlying image (i.e. [minmax()](#minmax-1-2)). The number of bins determined by [maxNumBuckets()](#maxnumbuckets).
+
+**Note:** Due to the volatility of the mask, the computed histogram can *not* be cached and will be recomputed every time it is requested.
+
+### derivedHistogram
+
+```cpp
+std::shared_ptr < const SharedImage > ImFusion::HistogramDataComponent::derivedHistogram (int index, int numBins, const vec2 & intensityRange) const
+```
+
+Returns the intensity histogram with the given parameters for image with the given index.
+
+The histogram is derived from the original full range histogram.
+
+**Parameters:**
+
+- `index` — Index of the image to compute the histogram for.
+- `numBins` — Number of bins of the histogram to compute.
+- `intensityRange` — Intensity range of the histogram to compute in storage value domain.
+
+**Note:** This histogram will be cached (in an LRU cache) by [HistogramDataComponent](/cpp-sdk/4.5/api/classes/imfusion-histogramdatacomponent).
+
+### minmax
+
+```cpp
+vec2 ImFusion::HistogramDataComponent::minmax () const
+```
+
+Returns the accumulated minimum and maximum intensity of all images considering all channels.
+
+**Note:** The returned intensities are in storage value domain as they are stored in the [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage).
+
+### minmax
+
+```cpp
+vec2 ImFusion::HistogramDataComponent::minmax (int index) const
+```
+
+Returns the minimum and maximum intensity of the image with the given index considering all channels.
+
+**Note:** The returned intensities are in storage value domain as they are stored in the [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage).
+
+### minmaxNormalized
+
+```cpp
+vec2 ImFusion::HistogramDataComponent::minmaxNormalized () const
+```
+
+Returns the minimum and maximum intensity of all images in the normalized intensity range as it is seen by GLSL shaders.
+
+**See also:** [GlUtils::storageToNormalized()](/cpp-sdk/4.5/api/namespaces/imfusion-glutils), [GlUtils::normalizedToStorage()](/cpp-sdk/4.5/api/namespaces/imfusion-glutils)
+
+### minmaxNormalized
+
+```cpp
+vec2 ImFusion::HistogramDataComponent::minmaxNormalized (int index) const
+```
+
+Returns the minimum and maximum intensity of the image in the normalized intensity range as it is seen by GLSL shaders.
+
+**See also:** [GlUtils::storageToNormalized()](/cpp-sdk/4.5/api/namespaces/imfusion-glutils), [GlUtils::normalizedToStorage()](/cpp-sdk/4.5/api/namespaces/imfusion-glutils)
+
+### minmaxOriginal
+
+```cpp
+vec2 ImFusion::HistogramDataComponent::minmaxOriginal () const
+```
+
+Returns the minimum and maximum intensity of all images in the original pixel values domain.
+
+**See also:** [Image::storageToOriginal()](/cpp-sdk/4.5/api/classes/imfusion-image)
+
+### minmaxOriginal
+
+```cpp
+vec2 ImFusion::HistogramDataComponent::minmaxOriginal (int index) const
+```
+
+Returns the minimum and maximum intensity of the image in the original pixel values domain.
+
+**See also:** [Image::storageToOriginal()](/cpp-sdk/4.5/api/classes/imfusion-image)
+
+### maxNumBuckets
+
+```cpp
+int ImFusion::HistogramDataComponent::maxNumBuckets (int index) const
+```
+
+Returns the maximum number of buckets that makes sense for a histogram for the image with the given index.
+
+For discrete numeric type images this matches the distance between the min and max value. However, it will never exceed the maximum supported 1D texture size, which is also the number of bins used for float images.
+
+### computeAutoWindowing
+
+```cpp
+vec2 ImFusion::HistogramDataComponent::computeAutoWindowing (double lowerLimit, double upperLimit, int index, bool considerMask = false) const
+```
+
+Deduces optimal window/level (returned as vec2) settings the image with the given index based on its histogram.
+
+**Parameters:**
+
+- `lowerLimit` — Percentage of lower values removed by the auto windowing.
+- `upperLimit` — Percentage of upper values removed by the auto windowing.
+- `index` — Index of the image to compute the auto windowing for.
+- `considerMask` — Flag whether to consider a mask attached to the image when computing the auto windowing.
+
+### computeAutoWindowingParameters
+
+```cpp
+vec2 ImFusion::HistogramDataComponent::computeAutoWindowingParameters (double window, double level, int index, bool considerMask = false) const
+```
+
+Inverse computation of computeAutoWindowing.
+
+Computes the needed lower/upper limit (returned as vec2) needed to deduce the auto windowing with the provided parameters.
+
+**Parameters:**
+
+- `window` — Window parameter to use.
+- `level` — Windowing level to use.
+- `index` — Index of the image to compute the inverse auto windowing for.
+- `considerMask` — Flag whether to consider a mask attached to the image when computing the inverse auto windowing.

@@ -1,0 +1,350 @@
+---
+title: "ImFusion::PointBasedAnnotationManipulator"
+sidebarTitle: "PointBasedAnnotationManipulator"
+description: "Manipulator for point-based annotations."
+---
+
+`#include <ImFusion/GUI/PointBasedAnnotationManipulator.h>`
+
+## Overview
+
+[Manipulator](/cpp-sdk/4.5/api/classes/imfusion-manipulator) for point-based annotations.
+
+## Classes
+
+- struct [MouseEvent](/cpp-sdk/4.5/api/structs/imfusion-pointbasedannotationmanipulator-mouseevent) — Mouse event structure.
+- class [InteractionModeWrapper](/cpp-sdk/4.5/api/classes/imfusion-pointbasedannotationmanipulator-interactionmodewrapper)
+
+## Public Types
+
+- enum **InteractionMode** &#123; **InteractionNone** = 0 , **InteractionCreate** = 1 , **InteractionMove** = 2 , **InteractionAdd** = 4 , **InteractionRemove** = 8 , **InteractionEdit** = 16 , **InteractionScale** = 32 , **InteractionRotate** = 64 &#125;
+- enum class [VolumeViewPickingMode](#volumeviewpickingmode) &#123; On , Off , Automatic &#125; — Enumeration to describe when [PointBasedAnnotationManipulator](/cpp-sdk/4.5/api/classes/imfusion-pointbasedannotationmanipulator) should perform 3D position picking in GlVolumeViews.
+
+## Public Member Functions
+
+- **PointBasedAnnotationManipulator** ([GlPointBasedAnnotation](/cpp-sdk/4.5/api/classes/imfusion-glpointbasedannotation) &annotation)
+- bool [sceneEvent](#sceneevent) (QEvent \*event, const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &view) override
+- virtual bool **sceneEvent3D** (const [MouseEvent](/cpp-sdk/4.5/api/structs/imfusion-pointbasedannotationmanipulator-mouseevent) &ev, const [GlVolumeView](/cpp-sdk/4.5/api/classes/imfusion-glvolumeview) &view)
+- bool **get3dPos** (const [MouseEvent](/cpp-sdk/4.5/api/structs/imfusion-pointbasedannotationmanipulator-mouseevent) &ev, const [GlVolumeView](/cpp-sdk/4.5/api/classes/imfusion-glvolumeview) &view, vec3 &result)
+- virtual void [setInteractionMode](#setinteractionmode) (PointBasedAnnotationManipulator::InteractionMode mode, bool finalize=true) — Sets the interaction mode.
+- InteractionMode [interactionMode](#interactionmode) () const — Returns the interactions mode.
+- void [setAllowedInteractions](#setallowedinteractions) ([Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; PointBasedAnnotationManipulator::InteractionMode &gt; [allowedInteractions](#allowedinteractions)) — Sets allowed interactions.
+- [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; PointBasedAnnotationManipulator::InteractionMode &gt; [allowedInteractions](#allowedinteractions) () const — Returns the allowed interactions.
+- void [setHovering](#sethovering) (bool [hovering](#hovering)) — Sets the hovering behavior (i.e.
+- bool [hovering](#hovering) () const — Returns whether hovering support is enabled.
+- void **reset** () — Resets all parameters to their default value.
+- void **setPoints** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; &points)
+- void **setAxisManip** (int axis) — Set axis along which points can be moved. Point coordinates will be fixed on other axes. Only applies to move and edit interactions.
+- void **clearAxisManip** () — Make point movable along all axes.
+- void **setBounds** (double x0, double x1, double y0, double y1, double z0, double z1) — Set bounds for allowed point coordinates.
+- void **clearBounds** () — Clear bounds.
+- MouseEvent::Button **lastButton** () const — Return button with which last interaction was performed.
+- virtual void [setHoverCursor](#sethovercursor) () — Sets cursor to open hand.
+- virtual void [setInteractionCursor](#setinteractioncursor) () — Sets cursor to closed (grabbing) hand.
+- void **resetCursor** () — Resets cursor to default.
+- void **setInteractiveAnnotation** ([InteractiveAnnotation](/cpp-sdk/4.5/api/classes/imfusion-interactiveannotation) \*annot)
+- bool [requiresFocus](#requiresfocus) () override — Derived classes that need priority scene events can override this.
+- void **setVolumeViewPickingMode** ([VolumeViewPickingMode](#volumeviewpickingmode) pickingMode)
+- void **setChangeCursorOnEdit** (bool change)
+- Qt::Key **finishCreationKey** () const
+- void **setFinishCreationKey** (Qt::Key key)
+- Qt::Key **abortCreationKey** () const
+- void **setAbortCreationKey** (Qt::Key key)
+
+## Public Attributes
+
+- Signal&lt; const PointBasedAnnotationManipulator \* &gt; **signalCreatingFinished** — Emitted when the manipulator leaves the InteractionCreate mode.
+
+## Protected Member Functions
+
+- virtual InteractionMode **selectInteraction** (const [MouseEvent](/cpp-sdk/4.5/api/structs/imfusion-pointbasedannotationmanipulator-mouseevent) &ev, bool hitLine) — Selects the next interaction given the mouse event and hitLine.
+- virtual bool [onCreate](#oncreate) (const [MouseEvent](/cpp-sdk/4.5/api/structs/imfusion-pointbasedannotationmanipulator-mouseevent) &event, vec3 &X, bool &update, const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &view) — Handler for mouse events in the InteractionCreate mode.
+- virtual bool [onMove](#onmove) (const [MouseEvent](/cpp-sdk/4.5/api/structs/imfusion-pointbasedannotationmanipulator-mouseevent) &event, vec3 &X, bool &update) — Handler for mouse events in the InteractionMove mode.
+- virtual bool [onAdd](#onadd) (const [MouseEvent](/cpp-sdk/4.5/api/structs/imfusion-pointbasedannotationmanipulator-mouseevent) &event, vec3 &X, bool &update) — Handler for mouse events in the InteractionAdd mode.
+- virtual bool [onRemove](#onremove) (const [MouseEvent](/cpp-sdk/4.5/api/structs/imfusion-pointbasedannotationmanipulator-mouseevent) &event, vec3 &X, bool &update) — Handler for mouse events in the InteractionRemove mode.
+- virtual bool [onEdit](#onedit) (const [MouseEvent](/cpp-sdk/4.5/api/structs/imfusion-pointbasedannotationmanipulator-mouseevent) &event, vec3 &X, bool &update, const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &view) — Handler for mouse events in the InteractionEdit mode.
+- virtual bool [onScale](#onscale) (const [MouseEvent](/cpp-sdk/4.5/api/structs/imfusion-pointbasedannotationmanipulator-mouseevent) &event, vec3 &X, bool &update) — Handler for mouse events in the InteractionScale mode.
+- virtual bool [onRotate](#onrotate) (const [MouseEvent](/cpp-sdk/4.5/api/structs/imfusion-pointbasedannotationmanipulator-mouseevent) &event, vec3 &X, bool &update, const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &view) — Handler for mouse events in the InteractionRotate mode.
+- void **finalizeInteraction** ()
+- virtual bool **pickingNeeded** ()
+- bool **computeCursorMeshIntersection** (const [MouseEvent](/cpp-sdk/4.5/api/structs/imfusion-pointbasedannotationmanipulator-mouseevent) &event, const [GlVolumeView](/cpp-sdk/4.5/api/classes/imfusion-glvolumeview) &view, const [GlMesh](/cpp-sdk/4.5/api/classes/imfusion-glmesh) \*mesh, vec3 &result)
+- void **enablePicking** ([GlVolumeView](/cpp-sdk/4.5/api/classes/imfusion-glvolumeview) &view)
+- void **disablePicking** ()
+
+## Protected Attributes
+
+- [GlPointBasedAnnotation](/cpp-sdk/4.5/api/classes/imfusion-glpointbasedannotation) & **m_annotation**
+- [GlObject::RenderingOrderGroup](/cpp-sdk/4.5/api/classes/imfusion-globject) **m_originalAnnotationRenderingOrder** = [GlObject::RenderingGroupRest](/cpp-sdk/4.5/api/classes/imfusion-globject)
+- vec3 **m_pos0**
+- int **m_selectedPoint**
+- [InteractionModeWrapper](/cpp-sdk/4.5/api/classes/imfusion-pointbasedannotationmanipulator-interactionmodewrapper) **m_interactionMode**
+- [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; InteractionMode &gt; **m_allowedInteractions**
+- bool **m_hovering**
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; **m_points0**
+- int **m_axisManip**
+- bool **m_useBounds**
+- double **m_bounds** [6]
+- bool **m_changeCursorOnEdit** = false
+- bool **m_interactionCursor** = false
+- bool **m_hoverCursor** = false
+- bool **m_wantsFocus**
+- bool **m_suppressNextContextMenuEvent** — If true, the context menu is not shown after right mouse release (usually set after a move).
+- bool **m_isPressed** = false
+- [VolumeViewPickingMode](#volumeviewpickingmode) **m_3dPickingMode** = VolumeViewPickingMode::On
+- [InteractiveAnnotation](/cpp-sdk/4.5/api/classes/imfusion-interactiveannotation) \* **m_interactiveAnnotation**
+- vec3 **m_center**
+- vec2i **m_mouse0**
+- vec2i **m_mouse**
+- vec3 **m_depthAxis**
+- vec3 **m_xAxis**
+- vec3 **m_yAxis**
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [GlVolumeView::PickingToken](/cpp-sdk/4.5/api/classes/imfusion-glvolumeview-pickingtoken) &gt; **m_pickingToken**
+- [std::map](http://en.cppreference.com/w/cpp/container/map.html)&lt; [GlMesh](/cpp-sdk/4.5/api/classes/imfusion-glmesh) \*, int &gt; **m_originalMeshPickingModes**
+- MouseEvent::Button **m_lastButton**
+- Qt::Key **m_abortCreationKey**
+- Qt::Key **m_finishCreationKey**
+
+## Member Enumeration Documentation
+
+### VolumeViewPickingMode
+
+```cpp
+enum class ImFusion::PointBasedAnnotationManipulator::VolumeViewPickingMode
+```
+
+*strong*
+
+Enumeration to describe when [PointBasedAnnotationManipulator](/cpp-sdk/4.5/api/classes/imfusion-pointbasedannotationmanipulator) should perform 3D position picking in GlVolumeViews.
+
+**Enumerator:**
+
+- `On` — Always on.
+- `Off` — Always off.
+- `Automatic` — Automatic based on annotation type, and presence of meshes in the [AnnotationModel](/cpp-sdk/4.5/api/classes/imfusion-annotationmodel).
+
+## Member Function Documentation
+
+### sceneEvent
+
+```cpp
+bool ImFusion::PointBasedAnnotationManipulator::sceneEvent (QEvent * event, const GlView & view)
+```
+
+*override, virtual*
+
+### setInteractionMode
+
+```cpp
+virtual void ImFusion::PointBasedAnnotationManipulator::setInteractionMode (PointBasedAnnotationManipulator::InteractionMode mode, bool finalize = true)
+```
+
+*virtual*
+
+Sets the interaction mode.
+
+**Parameters:**
+
+- `mode` — interaction mode
+
+### interactionMode
+
+```cpp
+InteractionMode ImFusion::PointBasedAnnotationManipulator::interactionMode () const
+```
+
+*inline*
+
+Returns the interactions mode.
+
+**Returns:** interaction mode
+
+### setAllowedInteractions
+
+```cpp
+void ImFusion::PointBasedAnnotationManipulator::setAllowedInteractions (Flags < PointBasedAnnotationManipulator::InteractionMode > allowedInteractions)
+```
+
+*inline*
+
+Sets allowed interactions.
+
+**Parameters:**
+
+- `allowedInteractions` — allowed interactions
+
+### allowedInteractions
+
+```cpp
+Flags < PointBasedAnnotationManipulator::InteractionMode > ImFusion::PointBasedAnnotationManipulator::allowedInteractions () const
+```
+
+*inline*
+
+Returns the allowed interactions.
+
+**Returns:** allowed interactions
+
+### setHovering
+
+```cpp
+void ImFusion::PointBasedAnnotationManipulator::setHovering (bool hovering)
+```
+
+*inline*
+
+Sets the hovering behavior (i.e.
+
+whether to update the point set on mouse hovering events)
+
+**Parameters:**
+
+- `hovering` — true to enable hovering support
+
+### hovering
+
+```cpp
+bool ImFusion::PointBasedAnnotationManipulator::hovering () const
+```
+
+*inline*
+
+Returns whether hovering support is enabled.
+
+**Returns:** true if hovering support is enabled
+
+### setHoverCursor
+
+```cpp
+virtual void ImFusion::PointBasedAnnotationManipulator::setHoverCursor ()
+```
+
+*virtual*
+
+Sets cursor to open hand.
+
+### setInteractionCursor
+
+```cpp
+virtual void ImFusion::PointBasedAnnotationManipulator::setInteractionCursor ()
+```
+
+*virtual*
+
+Sets cursor to closed (grabbing) hand.
+
+### requiresFocus
+
+```cpp
+bool ImFusion::PointBasedAnnotationManipulator::requiresFocus ()
+```
+
+*inline, override, virtual*
+
+Derived classes that need priority scene events can override this.
+
+By definition only one manipulator can get served first, so use with care.
+
+### onCreate
+
+```cpp
+virtual bool ImFusion::PointBasedAnnotationManipulator::onCreate (const MouseEvent & event, vec3 & X, bool & update, const GlView & view)
+```
+
+*protected, virtual*
+
+Handler for mouse events in the InteractionCreate mode.
+
+**Parameters:**
+
+- `event` — mouse event
+- `update` — true if the point set was changed (output parameter)
+
+### onMove
+
+```cpp
+virtual bool ImFusion::PointBasedAnnotationManipulator::onMove (const MouseEvent & event, vec3 & X, bool & update)
+```
+
+*protected, virtual*
+
+Handler for mouse events in the InteractionMove mode.
+
+**Parameters:**
+
+- `event` — mouse event
+- `update` — true if the point set was changed (output parameter)
+
+### onAdd
+
+```cpp
+virtual bool ImFusion::PointBasedAnnotationManipulator::onAdd (const MouseEvent & event, vec3 & X, bool & update)
+```
+
+*protected, virtual*
+
+Handler for mouse events in the InteractionAdd mode.
+
+**Parameters:**
+
+- `event` — mouse event
+- `update` — true if the point set was changed (output parameter)
+
+### onRemove
+
+```cpp
+virtual bool ImFusion::PointBasedAnnotationManipulator::onRemove (const MouseEvent & event, vec3 & X, bool & update)
+```
+
+*protected, virtual*
+
+Handler for mouse events in the InteractionRemove mode.
+
+**Parameters:**
+
+- `event` — mouse event
+- `update` — true if the point set was changed (output parameter)
+
+### onEdit
+
+```cpp
+virtual bool ImFusion::PointBasedAnnotationManipulator::onEdit (const MouseEvent & event, vec3 & X, bool & update, const GlView & view)
+```
+
+*protected, virtual*
+
+Handler for mouse events in the InteractionEdit mode.
+
+**Parameters:**
+
+- `event` — mouse event
+- `update` — true if the point set was changed (output parameter)
+
+### onScale
+
+```cpp
+virtual bool ImFusion::PointBasedAnnotationManipulator::onScale (const MouseEvent & event, vec3 & X, bool & update)
+```
+
+*protected, virtual*
+
+Handler for mouse events in the InteractionScale mode.
+
+**Parameters:**
+
+- `event` — mouse event
+- `update` — true if the point set was changed (output parameter)
+
+### onRotate
+
+```cpp
+virtual bool ImFusion::PointBasedAnnotationManipulator::onRotate (const MouseEvent & event, vec3 & X, bool & update, const GlView & view)
+```
+
+*protected, virtual*
+
+Handler for mouse events in the InteractionRotate mode.
+
+**Parameters:**
+
+- `event` — mouse event
+- `update` — true if the point set was changed (output parameter)

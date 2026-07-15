@@ -1,0 +1,89 @@
+---
+title: "ImFusion::OctreeDataComponent"
+sidebarTitle: "OctreeDataComponent"
+description: "DataComponent to store Octrees directly with their SharedImageSet ."
+---
+
+`#include <ImFusion/Base/Octree.h>`
+
+## Overview
+
+[DataComponent](/cpp-sdk/4.5/api/classes/imfusion-datacomponent) to store Octrees directly with their [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset).
+
+Hooks to the [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset)'s images and will take care of invalidating instantiated Octrees when the corresponding images change.
+
+## Public Member Functions
+
+- [OctreeDataComponent](#octreedatacomponent) (const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*sis) — Instantiates a new [OctreeDataComponent](/cpp-sdk/4.5/api/classes/imfusion-octreedatacomponent) for the given [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset).
+- [Octree](/cpp-sdk/4.5/api/classes/imfusion-octree) \* [octree](#octree) (int which) — Returns the [Octree](/cpp-sdk/4.5/api/classes/imfusion-octree) for the given image of the parent [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset).
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [id](#id) () const override — Returns a unique string identifier for this type of data component.
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+## Constructor & Destructor Documentation
+
+### OctreeDataComponent
+
+```cpp
+ImFusion::OctreeDataComponent::OctreeDataComponent (const SharedImageSet * sis)
+```
+
+*explicit*
+
+Instantiates a new [OctreeDataComponent](/cpp-sdk/4.5/api/classes/imfusion-octreedatacomponent) for the given [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset).
+
+**Parameters:**
+
+- `data` — Must not be null, otherwise the [OctreeDataComponent](/cpp-sdk/4.5/api/classes/imfusion-octreedatacomponent) will not work.
+
+## Member Function Documentation
+
+### octree
+
+```cpp
+Octree * ImFusion::OctreeDataComponent::octree (int which)
+```
+
+Returns the [Octree](/cpp-sdk/4.5/api/classes/imfusion-octree) for the given image of the parent [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset).
+
+Returns nullptr if no such image exists or the [Octree](/cpp-sdk/4.5/api/classes/imfusion-octree) can not be instantiated for any reason.
+
+### id
+
+```cpp
+std::string ImFusion::OctreeDataComponent::id () const
+```
+
+*override, virtual*
+
+Returns a unique string identifier for this type of data component.
+
+**Note:** To avoid conflicts make sure to include potential plugin names into this ID. Due to the modular architecture of the ImFusion library, uniqueness of IDs cannot be checked at compile time. However, [DataComponentFactory](/cpp-sdk/4.5/api/classes/imfusion-datacomponentfactory) will check the uniqueness of the ID during registration.
+
+### configure
+
+```cpp
+void ImFusion::OctreeDataComponent::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### configuration
+
+```cpp
+void ImFusion::OctreeDataComponent::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality

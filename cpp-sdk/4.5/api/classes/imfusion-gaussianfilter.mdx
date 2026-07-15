@@ -1,0 +1,25 @@
+---
+title: "ImFusion::GaussianFilter"
+sidebarTitle: "GaussianFilter"
+description: "Applies a symmetric Gaussian filter to an image."
+---
+
+`#include <ImFusion/GL/GaussianFilter.h>`
+
+## Overview
+
+Applies a symmetric Gaussian filter to an image.
+
+[Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) is based on separable convolution. Guarantees identical results between OpenGL and CPU modes, up to numerical precision (which is slightly higher on CPU).
+
+## Public Member Functions
+
+- **GaussianFilter** (unsigned int kernelRadius=3, double sigma=1.0)
+- void **setSigmaInPixels** (double sigma) — Set standard deviation for Gauss curve in pixels, does not change kernel size.
+- void **setKernelRadius** (unsigned int r) — Set kernel radius, total size is 2\*r+1 pixels. Does not change sigma.
+- bool **setSigmaAsCutoffRatio** (double cutoffRatio) — Sets sigma such that at the kernel edge the Gauss has cutoffRatio of its peak value. Returns whether value was valid.
+- void **setUseGPU** (bool val)
+- void **setIgnoreOutside** (bool val)
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) &gt; **compute** (const [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) &imgIn)
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) &gt; **compute** (const [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) &imgIn)
+- void **compute** (const float \*in, float \*out, int width, int height, int slices, int channels)

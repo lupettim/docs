@@ -1,0 +1,90 @@
+---
+title: "ImFusion::PointCorrespondencesWidget"
+sidebarTitle: "PointCorrespondencesWidget"
+description: "Widget that displays point correspondences in a table with buttons that allows to add and remove correspondences."
+---
+
+`#include <ImFusion/GUI/PointCorrespondencesWidget.h>`
+
+## Overview
+
+Widget that displays point correspondences in a table with buttons that allows to add and remove correspondences.
+
+Update to the underlying points are automatically reflected in the UI
+
+## Public Slots
+
+- void **onRowEdited** (QStandardItem \*)
+
+## Signals
+
+- void **correspondenceRenamed** (int)
+
+## Public Member Functions
+
+- [PointCorrespondencesWidget](#pointcorrespondenceswidget) ([PointCorrespondences](/cpp-sdk/4.5/api/classes/imfusion-pointcorrespondences) \*correspondences, [PointsOnDataManipulator](/cpp-sdk/4.5/api/classes/imfusion-pointsondatamanipulator) \*first, [PointsOnDataManipulator](/cpp-sdk/4.5/api/classes/imfusion-pointsondatamanipulator) \*second)
+- void **init** ([DisplayWidgetMulti](/cpp-sdk/4.5/api/classes/imfusion-displaywidgetmulti) \*disp)
+- void **exportPoints** ([AnnotationModel](/cpp-sdk/4.5/api/classes/imfusion-annotationmodel) \*annotationModel)
+- void **setShowNames** (bool show) — If set to true will show names next to the points in the views.
+- void **setShowError** (bool show) — If set to true (default) will show the registration error in the widget.
+- void **setShowFitError** (bool show) — If set to true will show the mean rigid fit error as column in the widget. (default: false).
+- void **setShowRankError** (bool show) — If set to true will mark low rank points.
+- void **setShowVisualGuide** (bool show) — If set to true a visual guide will be rendered to help with setting the point correspondences for a particular target. (default: false).
+- [ItemViewWidget](/cpp-sdk/4.5/api/classes/imfusion-itemviewwidget) \* **itemViewWidget** () const
+
+## Protected Member Functions
+
+- void **connectToTable** ()
+- void **computeNames** ()
+- void **updateErrorLabel** ()
+- void **onCorrespondencesChanged** (int first, int last)
+- bool **updateRow** (int index) — Updates the row of the table for correspondence index. Returns false if the row has been deleted.
+- void **updateItemStyle** (int index, [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; double &gt; fitError=std::nullopt) — Update custom style of item.
+- void **updateTableGlobalStyle** () — Update the global part of the style for the table that must be updated when an item changes.
+- void **onFitErrorThresholdChanged** (double fitErrorThreshold) — Update threshold and run styling of items.
+- void **onFitErrorTypeChanged** (int fitErrorType) — Update fit error type.
+- void **onVisualGuideDataChanged** (int visualGuideDataSelection) — Update suspect data for visual guide.
+
+## Protected Attributes
+
+- [PointCorrespondences](/cpp-sdk/4.5/api/classes/imfusion-pointcorrespondences) \* **m_correspondences** = nullptr
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [PointsOnDataManipulator](/cpp-sdk/4.5/api/classes/imfusion-pointsondatamanipulator) \* &gt; **m_manipulators**
+- [ItemViewWidget](/cpp-sdk/4.5/api/classes/imfusion-itemviewwidget) \* **m_widget** = nullptr
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; CorrespondencesItemControl &gt; **m_itemControl**
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; QPushButton \* &gt; **m_addPointButtons**
+- [std::array](http://en.cppreference.com/w/cpp/container/array.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html), 2 &gt; **m_manipulatorNames**
+- [std::array](http://en.cppreference.com/w/cpp/container/array.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html), 2 &gt; **m_manipulatorShortNames**
+- QCheckBox \* **m_showNamesCheckbox** = nullptr
+- QCheckBox \* **m_showFitErrorCheckbox** = nullptr
+- QCheckBox \* **m_showVisualGuideCheckbox** = nullptr
+- QComboBox \* **m_visualGuideDataCombobox** = nullptr
+- QGroupBox \* **m_visualGuideGroupBox** = nullptr
+- QLabel \* **m_visualGuideDataLabel** = nullptr
+- [PointCorrespondencesVisualGuide](/cpp-sdk/4.5/api/classes/imfusion-pointcorrespondencesvisualguide) **m_visualGuide**
+- QComboBox \* **m_fitErrorTypeCombobox** = nullptr
+- QGroupBox \* **m_fitErrorGroupBox** = nullptr
+- QLabel \* **m_fitErrorLabel** = nullptr
+- QLineEdit \* **m_fitErrorThresholdEdit** = nullptr
+- QLabel \* **m_fitErrorThresholdLabel** = nullptr
+- double **m_fitErrorThreshold** = -1
+- bool **m_showFitError** = false
+- QLabel \* **m_errorLabel** = nullptr
+- [std::array](http://en.cppreference.com/w/cpp/container/array.html)&lt; QLabel \*, 2 &gt; **m_rankLabels**
+- bool **m_showError** = true
+- bool **m_showRankError** = false
+- [DisplayWidgetMulti](/cpp-sdk/4.5/api/classes/imfusion-displaywidgetmulti) \* **m_disp** = nullptr
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; QMetaObject::Connection &gt; **m_tableConnections**
+
+## Constructor & Destructor Documentation
+
+### PointCorrespondencesWidget
+
+```cpp
+ImFusion::PointCorrespondencesWidget::PointCorrespondencesWidget (PointCorrespondences * correspondences, PointsOnDataManipulator * first, PointsOnDataManipulator * second)
+```
+
+*explicit*
+
+**Exceptions:**
+
+- `std::runtime_error` — if correspondences, first or second are nullptr.

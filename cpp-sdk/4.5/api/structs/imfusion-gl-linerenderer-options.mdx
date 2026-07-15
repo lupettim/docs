@@ -1,0 +1,24 @@
+---
+title: "ImFusion::GL::LineRenderer::Options"
+sidebarTitle: "Options"
+description: "Helper struct to encapsulate all supported rendering options."
+---
+
+`#include <ImFusion/Core/GL/LineRenderer.h>`
+
+## Overview
+
+Helper struct to encapsulate all supported rendering options.
+
+## Public Member Functions
+
+- **Options** (const vec4 &color, double thickness, const mat4 &modelMatrix=mat4::Identity(), uint16_t stipplePattern=0xFFFF, double stippleFactor=1.0)
+- **Options** (const vec3 &color, double thickness, const mat4 &modelMatrix=mat4::Identity(), uint16_t stipplePattern=0xFFFF, double stippleFactor=1.0)
+
+## Public Attributes
+
+- vec4 **color** = vec4::Ones() — Line color and opacity to use.
+- double **thickness** = 1.0 — Line thickness in pixels.
+- mat4 **modelMatrix** = mat4::Identity() — Optional model matrix to apply during rendering.
+- uint16_t **stipplePattern** = 0xFFFF — Interpreted as bit field defining which pixels to repeatedly render.
+- double **stippleFactor** = 1.0 — Scaling factor determining the length of the rendered stipples.

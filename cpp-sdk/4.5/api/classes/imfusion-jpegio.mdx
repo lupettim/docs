@@ -1,0 +1,123 @@
+---
+title: "ImFusion::JpegIO"
+sidebarTitle: "JpegIO"
+description: "Class for reading and writing JPEG images."
+---
+
+`#include <ImFusion/IO/JpegIO.h>`
+
+## Overview
+
+Class for reading and writing JPEG images.
+
+## Static Public Member Functions
+
+- static [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) &gt; [readImage](#readimage-1-4) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &filename) — Read JPEG image from file.
+- static [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) &gt; [readImage](#readimage-2-4) (const [ByteBuffer](/cpp-sdk/4.5/api/classes/imfusion-bytebuffer) &buffer) — Read JPEG image from memory.
+- static bool [readImage](#readimage-3-4) (const [ByteBuffer](/cpp-sdk/4.5/api/classes/imfusion-bytebuffer) &buffer, [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) \*&img, [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) \*header=0) — Read JPEG image from buffer.
+- static bool [readImage](#readimage-4-4) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &filename, [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) \*&img, [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) \*header=0) — Read JPEG image from file.
+- static bool [writeImage](#writeimage-1-2) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &filename, const [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) \*img, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &header="", int sourceQuality=90) — Write JPEG image to file.
+- static bool [writeImage](#writeimage-2-2) ([ByteBuffer](/cpp-sdk/4.5/api/classes/imfusion-bytebuffer) &buffer, const [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) \*img, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &header="", int sourceQuality=90) — Write JPEG image to memory buffer.
+
+## Member Function Documentation
+
+### readImage
+
+```cpp
+std::unique_ptr < MemImage > ImFusion::JpegIO::readImage (const std::string & filename)
+```
+
+*static*
+
+Read JPEG image from file.
+
+**Parameters:**
+
+- `filename` — file name
+
+**Returns:** the image read from file
+
+### readImage
+
+```cpp
+std::unique_ptr < MemImage > ImFusion::JpegIO::readImage (const ByteBuffer & buffer)
+```
+
+*static*
+
+Read JPEG image from memory.
+
+**Parameters:**
+
+- `buffer` — temporary placeholder of the JPEG data
+
+**Returns:** the image read from memory
+
+### readImage
+
+```cpp
+bool ImFusion::JpegIO::readImage (const ByteBuffer & buffer, MemImage *& img, std::string * header = 0)
+```
+
+*static*
+
+Read JPEG image from buffer.
+
+**Parameters:**
+
+- `buffer` — temporary placeholder of the JPEG data
+- `img` — reference to image pointer which will receive the loaded image
+- `header` — optional pointer to string which is to be placed in the header
+
+**Returns:** true if successful, false otherwise
+
+### readImage
+
+```cpp
+bool ImFusion::JpegIO::readImage (const std::string & filename, MemImage *& img, std::string * header = 0)
+```
+
+*static*
+
+Read JPEG image from file.
+
+**Parameters:**
+
+- `filename` — file name
+- `img` — reference to image pointer which will receive the loaded image
+- `header` — optional pointer to string which is to be placed in the header
+
+**Returns:** true if successful, false otherwise
+
+### writeImage
+
+```cpp
+bool ImFusion::JpegIO::writeImage (const std::string & filename, const MemImage * img, const std::string & header = "", int sourceQuality = 90)
+```
+
+*static*
+
+Write JPEG image to file.
+
+**Parameters:**
+
+- `filename` — file name
+
+**Returns:** true if successful, false otherwise
+
+### writeImage
+
+```cpp
+bool ImFusion::JpegIO::writeImage (ByteBuffer & buffer, const MemImage * img, const std::string & header = "", int sourceQuality = 90)
+```
+
+*static*
+
+Write JPEG image to memory buffer.
+
+**Parameters:**
+
+- `buffer` — temporary placeholder allocated by the JPEG library.
+- `img` — [Image](/cpp-sdk/4.5/api/classes/imfusion-image) to be written
+- `header` — optional string which is to be placed in the header
+- `sourceQuality` — quality indicator

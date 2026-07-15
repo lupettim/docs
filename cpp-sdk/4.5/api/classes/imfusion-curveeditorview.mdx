@@ -1,0 +1,41 @@
+---
+title: "ImFusion::CurveEditorView"
+sidebarTitle: "CurveEditorView"
+description: "Curve editor view."
+---
+
+`#include <ImFusion/GUI/CurveEditorView.h>`
+
+## Overview
+
+[Curve](/cpp-sdk/4.5/api/classes/imfusion-curve) editor view.
+
+## Public Types
+
+- enum **CurveType** &#123; **Spline** , **Polyline** &#125; — Layout direction when stacking multiple InteractiveOverlays at the same anchor.
+
+## Public Member Functions
+
+- **CurveEditorView** () — Default constructor.
+- **~CurveEditorView** () override — Destructor.
+- bool [acceptsData](#acceptsdata) (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data) const override — Returns whether this view is capable of displaying the given data.
+- void **setCoordinateSystem** (double minX, double maxX, double minY, double maxY)
+- void **setCurve** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec2 &gt; &pts, int curve=0, CurveType curveType=Spline)
+- [Interactive](/cpp-sdk/4.5/api/classes/imfusion-interactive)&lt; [GlPointBasedAnnotation](/cpp-sdk/4.5/api/classes/imfusion-glpointbasedannotation) &gt; \* **curve** (int curve=0) const
+- GlCurveEditorView \* **view** () const
+
+## Member Function Documentation
+
+### acceptsData
+
+```cpp
+bool ImFusion::CurveEditorView::acceptsData (const Data * data) const
+```
+
+*override, virtual*
+
+Returns whether this view is capable of displaying the given data.
+
+The default implementation checks whether there is any registered [DataDisplayHandler](/cpp-sdk/4.5/api/classes/imfusion-datadisplayhandler) that accepts this data for this type of view.
+
+**See also:** [setVisibleData()](/cpp-sdk/4.5/api/classes/imfusion-gui-view), [showData()](/cpp-sdk/4.5/api/classes/imfusion-gui-view)

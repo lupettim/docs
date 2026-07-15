@@ -1,0 +1,18 @@
+---
+title: "ImFusion::Dicom::Patient"
+sidebarTitle: "Patient"
+---
+
+## Public Member Functions
+
+- **Patient** (DcmItem &item, bool loadStudy=true)
+- **Patient** (const Patient &rhs) — Copy constructor only copies patient information, no studies.
+
+## Public Attributes
+
+- QString **id** — Primary hospital identification number or code for the patient. (0010, 0020).
+- QString **name** — [Patient](/cpp-sdk/4.5/api/structs/imfusion-dicom-patient)'s full name. (0010, 0010).
+- QString **sex** — Sex of the named patient (values: M = male, F = female, O = other). (0010, 0040).
+- QDate **birthDate** — Date of birth of the named patient. (0010, 0030).
+- QString **comment** — User-defined comments about the patient. (0010, 4000).
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Study](/cpp-sdk/4.5/api/structs/imfusion-dicom-study) \* &gt; **studies** — Studies performed on the patient.

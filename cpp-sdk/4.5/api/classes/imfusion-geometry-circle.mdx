@@ -1,0 +1,75 @@
+---
+title: "ImFusion::Geometry::Circle"
+sidebarTitle: "Circle"
+description: "Class representing a circle (actually a disk, so including the inner part) in 3D space."
+---
+
+`#include <ImFusion/Core/Geometry/Circle.h>`
+
+## Overview
+
+Class representing a circle (actually a disk, so including the inner part) in 3D space.
+
+Unless stated otherwise, all operations that involve comparisons use the same tolerance epsilon as vec3::isApprox (which is 1e-12).
+
+**See also:** Intersections between geometry primitives can be computed using the sets of free functions Geometry::intersection() and Geometry::intersects().
+
+## Public Member Functions
+
+- [Circle](#circle) (const vec3 &center, const vec3 &normal, double radius) — Construct a circle from central point, normal and radius.
+- const vec3 & **center** () const
+- const vec3 & **normal** () const
+- double **radius** () const
+- bool **isApprox** (const [Circle](#circle) &other) — Comparison using the same epsilon as Eigen::isApprox.
+- bool [isEquivalent](#isequivalent) (const [Circle](#circle) &other) — Returns if both [Circle](/cpp-sdk/4.5/api/classes/imfusion-geometry-circle) objects desribe the same geometrical objects.
+- vec3 **closestPoint** (const vec3 &p) const — Returns the point on or inside the circle closest to p, or NAN if p is not finite.
+- vec3 [closestPointOnBoundary](#closestpointonboundary) (const vec3 &p) const — Returns the point on the circle (excluding the enclosed area) closest to p, or NAN if p is not finite.
+- double **distanceToPoint** (const vec3 &p) const — Returns the L2 distance between p and closestPoint(p), or NAN if p is not finite.
+- bool **includesPoint** (const vec3 &p) const — Returns if p sits on or inside the circle.
+- [AlignedBox](/cpp-sdk/4.5/api/classes/imfusion-geometry-alignedbox) **bounds** () const — Returns the 3D bounds of the circle.
+- bool [operator==](#operator) (const [Circle](#circle) &) const — Exact comparisons of [Circle](/cpp-sdk/4.5/api/classes/imfusion-geometry-circle) instances.
+- bool **operator!=** (const [Circle](#circle) &) const
+
+## Constructor & Destructor Documentation
+
+### Circle
+
+```cpp
+ImFusion::Geometry::Circle::Circle (const vec3 & center, const vec3 & normal, double radius)
+```
+
+Construct a circle from central point, normal and radius.
+
+A negative radius will be flipped. Zero length normals result in an invalid object that will return NAN/false on most operations.
+
+## Member Function Documentation
+
+### operator
+
+```cpp
+bool ImFusion::Geometry::Circle::operator== (const Circle &) const
+```
+
+Exact comparisons of [Circle](/cpp-sdk/4.5/api/classes/imfusion-geometry-circle) instances.
+
+If you instead want to check if the represented geometric structures are the same, use isEquivalent.
+
+### isEquivalent
+
+```cpp
+bool ImFusion::Geometry::Circle::isEquivalent (const Circle & other)
+```
+
+Returns if both [Circle](/cpp-sdk/4.5/api/classes/imfusion-geometry-circle) objects desribe the same geometrical objects.
+
+Note that unlike all other comparisons provided here this allows anti-parallel normals.
+
+### closestPointOnBoundary
+
+```cpp
+vec3 ImFusion::Geometry::Circle::closestPointOnBoundary (const vec3 & p) const
+```
+
+Returns the point on the circle (excluding the enclosed area) closest to p, or NAN if p is not finite.
+
+Note that the result is not necessarily unique.

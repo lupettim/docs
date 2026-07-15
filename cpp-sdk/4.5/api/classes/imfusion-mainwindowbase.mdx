@@ -1,0 +1,477 @@
+---
+title: "ImFusion::MainWindowBase"
+sidebarTitle: "MainWindowBase"
+description: "Extends ApplicationController with additional interfaces for graphical user interfaces."
+---
+
+`#include <ImFusion/GUI/MainWindowBase.h>`
+
+## Overview
+
+Extends [ApplicationController](/cpp-sdk/4.5/api/classes/imfusion-applicationcontroller) with additional interfaces for graphical user interfaces.
+
+Depending on the constructor arguments, instantiating this class can also take care of proper initialization (e.g. factories, OpenGL contexts, etc.) of the ImFusion SDK. In this case you do not need to call [Framework::init()](/cpp-sdk/4.5/api/namespaces/imfusion-framework) explicitly.
+
+## Public Types
+
+- enum class [PostLoadAction](#postloadaction) &#123; None = 0 , SelectData = 1 &lt;&lt; 0 , ShowViews = 1 &lt;&lt; 1 , StoreOriginalMatrix = 1 &lt;&lt; 2 , CreateDataController = 1 &lt;&lt; 3 , All = 0xFF &#125; — Bitflag enumeration of available actions that the default implementation of [postLoad()](#postload) performs.
+
+## Public Slots
+
+- virtual void **onVisibleDataChanged** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &before, const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &now) — This method is called when the selection in the [DataWidget](/cpp-sdk/4.5/api/classes/imfusion-datawidget) changes. The base implementation only hands all image data to the [DisplayWidget](/cpp-sdk/4.5/api/classes/imfusion-displaywidget).
+- virtual void **onDataDeleting** ([Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data) — This is called when data in the [DataWidget](/cpp-sdk/4.5/api/classes/imfusion-datawidget) is about to be deleted.
+- virtual void **onDataDeleted** () — This is called when data in the [DataWidget](/cpp-sdk/4.5/api/classes/imfusion-datawidget) has been deleted.
+
+## Signals
+
+- void [settingsChanged](#settingschanged) () — Emitted when the settings are changed by the user e.g.
+
+## Public Member Functions
+
+- [MainWindowBase](#mainwindowbase) ([std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [Framework::InitConfig](/cpp-sdk/4.5/api/structs/imfusion-framework-initconfig) &gt; sdkInitConfig, QWidget \*parent=nullptr, Qt::WindowFlags flags=Qt::Widget) — Instantiate and initialize the [MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase) interface.
+- **~MainWindowBase** () override — Destructor.
+- [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) \* [progress](#progress) () override — Returns m_progressDialog.
+- void **setupWidgets** () — Initializes any widget of [MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase) and adds them to the ui. Must be called after the ui has been initialized.
+- virtual void **resetViews** () — Resets views of [MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase).
+- virtual void **resetLayout** () — Resets layout of [MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase).
+- void **readSettings** () — Load and restore window position and size settings.
+- void **writeSettings** () — Write window position and size settings.
+- virtual void [loadStyleSheet](#loadstylesheet-3-3) () — Reads the default style and loads it.
+- virtual QBoxLayout \* **algorithmDock** () const =0
+- virtual QBoxLayout \* **secondaryAlgorithmDock** () const — Returns an optional secondary algorithm dock.
+- virtual QBoxLayout \* **scrollBarLayout** () const =0
+- virtual QToolBar \* **toolbar** () const
+- virtual [DataControllerBar](/cpp-sdk/4.5/api/classes/imfusion-datacontrollerbar) \* **controllerBar** () const
+- virtual [DisplayWidgetMulti](/cpp-sdk/4.5/api/classes/imfusion-displaywidgetmulti) \* **display** () const =0
+- virtual [LogViewerWidget](/cpp-sdk/4.5/api/classes/imfusion-logviewerwidget) \* **logWidget** () const
+- virtual QWidget \* **collapseDockButton** () const
+- virtual QWidget \* **mainWidget** () const
+- virtual const [DataItemModel](/cpp-sdk/4.5/api/classes/imfusion-dataitemmodel) \* **dataItemModel** () const
+- virtual const QItemSelectionModel \* **dataSelectionModel** () const
+- virtual const [AnnotationModel](/cpp-sdk/4.5/api/classes/imfusion-annotationmodel) \* **annotationModel** () const
+- virtual [DataItemModel](/cpp-sdk/4.5/api/classes/imfusion-dataitemmodel) \* **dataItemModel** ()
+- virtual QItemSelectionModel \* **dataSelectionModel** ()
+- virtual [DataFilterModel](/cpp-sdk/4.5/api/classes/imfusion-datafiltermodel) \* **dataItemFilterModel** ()
+- virtual [AnnotationModel](/cpp-sdk/4.5/api/classes/imfusion-annotationmodel) \* **annotationModel** ()
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [InteractiveObject](/cpp-sdk/4.5/api/classes/imfusion-interactiveobject) \* &gt; **selectedAnnotations** (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*dataset, bool includeGlobal=true) const — Return the currently selected annotations for a given data set or all annotation if data set is zero.
+- [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) **selectedData** () const — Return the currently selected data.
+- void **selectData** (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data) — Select a single data sets.
+- void **selectData** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &selection) — Select one or multiple data sets.
+- void **updateSelected** () — Update the currently selected data in terms of description and scroll bar.
+- [AlgorithmController](/cpp-sdk/4.5/api/classes/imfusion-algorithmcontroller) \* [getAlgorithmController](#getalgorithmcontroller) (const [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*a) const override — Returns the controller of the algorithm or nullptr if not existing.
+- virtual [AlgorithmController](/cpp-sdk/4.5/api/classes/imfusion-algorithmcontroller) \* **getAlgorithmController** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &id) const — Returns the controller of the first algorithm with the given id or nullptr if not existing.
+- virtual [DataController](/cpp-sdk/4.5/api/classes/imfusion-datacontroller) \* **getDataController** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name) const — Returns the data controller with the given name or nullptr if not existing.
+- virtual [ControllerDecorator](/cpp-sdk/4.5/api/classes/imfusion-controllerdecorator) \* **getControllerDecorator** (const [Controller](/cpp-sdk/4.5/api/classes/imfusion-controller) \*controller) — Returns the container widget hosting the corresponding [Controller](/cpp-sdk/4.5/api/classes/imfusion-controller) or nullptr if not existing.
+- virtual [ControllerDecorator](/cpp-sdk/4.5/api/classes/imfusion-controllerdecorator) \* [addController](#addcontroller) ([Controller](/cpp-sdk/4.5/api/classes/imfusion-controller) \*controller) — Registers a [Controller](/cpp-sdk/4.5/api/classes/imfusion-controller) instance with the [MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase) so that it can be shown in the [GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui).
+- virtual void [removeController](#removecontroller) ([Controller](/cpp-sdk/4.5/api/classes/imfusion-controller) \*controller) — Removes a previously registered [Controller](/cpp-sdk/4.5/api/classes/imfusion-controller) from this [MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase) so that it is no longer shown in the [GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui).
+- T \* **getDataController** () const — Returns the data controller of the given type or nullptr if not existing.
+- bool [canBeDeleted](#canbedeleted) (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data) override — Check whether data can be deleted or loaded algorithms depend on it.
+- void **showAnnotationWidget** (bool visible=true) — Shows / hides the annotation editor.
+- void **expandAnnotationWidget** (bool visible=true) — Expands / collapses the annotation editor.
+- void **showDataWidget** (bool visible=true) — Expands / collapses the data widget.
+- void **initIOPlugins** (QMenu \*importMenu) — Add I/O plugins to import and export menu.
+- void **reset** (bool keepTester=false) — Reset application. Set keepTester to true when running [GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui) unit tests.
+- void **processEvents** () — Process pending [GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui) events.
+- void **dragEnterEvent** (QDragEnterEvent \*event) override — Accepts drops with mime type "text/uri-list".
+- void **dropEvent** (QDropEvent \*event) override — For mime type "text/uri-list", the mime text is used as a filename and the file is opened as data.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::map](http://en.cppreference.com/w/cpp/container/map.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html), [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; &gt; [askWorkspacePlaceholders](#askworkspaceplaceholders) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; &placeholderKeys) override — Asks the user the value of some placeholders and returns the input of the user.
+- virtual void **setStatusText** (const QString &) — Sets the text of the status bar.
+- void [closeAll](#closeall) () override — Closes all data, algorithms and annotations.
+- [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; [PostLoadAction](#postloadaction) &gt; **postLoadActions** () const — Returns the set of actions to perform in default implementation of [postLoad()](#postload).
+- void **setPostLoadActions** ([Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; [PostLoadAction](#postloadaction) &gt; value) — Sets the set of actions to perform in default implementation of [postLoad()](#postload).
+- void [addAlgorithm](#addalgorithm) ([std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) &gt; a, const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*config=nullptr) override — Adds a the given algorithm and creates a controller if available.
+- void [removeAlgorithm](#removealgorithm-1-2) ([Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*a, bool del=true) override — Same as removeAlgorithm(a, del, true).
+- virtual void [removeAlgorithm](#removealgorithm-2-2) ([Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*a, bool del, bool delCtrl, bool executed=false) — Removes the given algorithm and its associated controller.
+- void **removeAlgorithmLater** ([Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*a, bool del, bool delCtrl, bool executed=false) — Schedules a call to [removeAlgorithm()](#removealgorithm-1-2) with the same arguments using the Qt event loop.
+- virtual void **setLogoPixmap** ([std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; QPixmap &gt; logoPixmap) — Set a logo for customized branding. This functionality is disabled by default unless it is explicitly enabled for an installer.
+- virtual void **onObjectDeleting** ([InteractiveObject](/cpp-sdk/4.5/api/classes/imfusion-interactiveobject) \*obj) — This is called when data in the [DataWidget](/cpp-sdk/4.5/api/classes/imfusion-datawidget) is about to be deleted.
+- void **onPaste** ()
+- virtual void **applySettings** () — Apply updated settings.
+- void **importData** () — Import data using I/O algorithm.
+- void **addRecentFile** (const QString &algorithm, const QString &fileName, const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) — Add file to recently opened files.
+- [AnnotationWidget](/cpp-sdk/4.5/api/classes/imfusion-annotationwidget) \* **annotationWidget** ()
+- [DataWidget](/cpp-sdk/4.5/api/classes/imfusion-datawidget) \* **dataWidget** ()
+- [ViewLayoutWidget](/cpp-sdk/4.5/api/classes/imfusion-viewlayoutwidget) \* **viewsWidget** ()
+- [SelectionWidget](/cpp-sdk/4.5/api/classes/imfusion-selectionwidget) \* **selectionWidget** ()
+- virtual bool [open](#open-2-2) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &filename, [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) \*outDataList=nullptr) — Opens a generic file and adds it to the [DataModel](/cpp-sdk/4.5/api/classes/imfusion-datamodel).
+
+## Static Public Member Functions
+
+- static void [loadStyleSheet](#loadstylesheet-1-3) (QApplication &app, QString style) — Loads a specified style sheet.
+- static void [loadStyleSheet](#loadstylesheet-2-3) (QApplication &app) — Loads the default style sheet.
+- static QString **readDefaultStyleQssFiles** () — Reads the default style qss files and returns their content (files are concatenated).
+- static void [reloadStyleSheet](#reloadstylesheet) () — Reloads default style sheet.
+
+## Protected Slots
+
+- bool **prepareData** ([Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data) const override — Calls [ApplicationController::prepareData](/cpp-sdk/4.5/api/classes/imfusion-applicationcontroller) and additionally checks if an image can be uploaded with OpenGL.
+- virtual void [postLoad](#postload) ([Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data) — This method is called after data has been loaded.
+- void **toggleFullscreen** (bool flag) — Toggles between fullscreen and default/maximized window mode.
+- virtual void **onSelectionModelChanged** (const QItemSelection &selected, const QItemSelection &deselected) — Slot called when the MainWindow's data selection model has changed.
+- virtual void [onScreenChanged](#onscreenchanged) (QScreen \*newScreen) — Slot called when the hosting QWindow's screen has changed.
+- void **processDroppedFiles** (const QStringList filenames) — Slot called after a drop event has been accepted (as to not block the source program by loading data in the drop event itself).
+
+## Protected Member Functions
+
+- bool [openFile](#openfile) (const QString \*additionalFilters=0, QString \*filename=0, QString \*selectedFilter=0) — Shows file selection dialog for open and opens file if the format is known.
+- bool [saveFileAs](#savefileas) (const QString \*additionalFilters=0, QString \*filename=0, QString \*selectedFilter=0) — Shows file selection dialog for save and saves file if the format is known.
+- bool [openWithIoAlgorithms](#openwithioalgorithms) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; &algs, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &filename, [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) \*dataOut) override — Asks the user which of the algs to use to open filename, loads file into the [DataModel](/cpp-sdk/4.5/api/classes/imfusion-datamodel) and stores the result in dataOut.
+- bool [eventFilter](#eventfilter) (QObject \*target, QEvent \*event) override — [Filters](/cpp-sdk/4.5/api/namespaces/imfusion-filters) close events of algorithm controllers and data controllers.
+- void **closeEvent** (QCloseEvent \*event) override — Removes all algorithms before closing.
+- void [configureAlgorithm](#configurealgorithm) ([Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*a) override — Called before an [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) is executed, allows for custom configuration.
+- bool [open](#open-1-2) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &algorithm, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name, [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) \*data, bool addToRecentFiles=true, const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p=nullptr, [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) \*effectivePath=nullptr) override — Open a specific file type.
+- void **deleteControllerIfOwned** ([Controller](/cpp-sdk/4.5/api/classes/imfusion-controller) \*controller) — Deletes *controller* and related instances if it is owned by this instance (only applies to AlgorithmControllers and DataControllers).
+
+## Protected Attributes
+
+- [std::map](http://en.cppreference.com/w/cpp/container/map.html)&lt; [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*, [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [AlgorithmController](/cpp-sdk/4.5/api/classes/imfusion-algorithmcontroller) &gt; &gt; **m_algorithmController** — AlgorithmControllers per [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm).
+- [std::map](http://en.cppreference.com/w/cpp/container/map.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html), [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [DataController](/cpp-sdk/4.5/api/classes/imfusion-datacontroller) &gt; &gt; **m_dataControllers** — DataControllers per factory ID.
+- [std::map](http://en.cppreference.com/w/cpp/container/map.html)&lt; [Controller](/cpp-sdk/4.5/api/classes/imfusion-controller) \*, [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; DefaultControllerDecorator &gt; &gt; **m_controllers** — List of all known Controllers and their container widgets.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [ProgressDialog](/cpp-sdk/4.5/api/classes/imfusion-progressdialog) &gt; **m_progressDialog** — [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) dialog widget.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [DataItemModel](/cpp-sdk/4.5/api/classes/imfusion-dataitemmodel) &gt; **m_dataItemModel** — [DataItemModel](/cpp-sdk/4.5/api/classes/imfusion-dataitemmodel) wrapping the [ApplicationController](/cpp-sdk/4.5/api/classes/imfusion-applicationcontroller)'s dataModel().
+- [DataWidget](/cpp-sdk/4.5/api/classes/imfusion-datawidget) \* **m_dataWidget** = nullptr — Displays the [DataModel](/cpp-sdk/4.5/api/classes/imfusion-datamodel) and provides selection.
+- [AnnotationWidget](/cpp-sdk/4.5/api/classes/imfusion-annotationwidget) \* **m_annotationWidget** = nullptr — widget to edit annotations
+- [SelectionWidget](/cpp-sdk/4.5/api/classes/imfusion-selectionwidget) \* **m_selWidget** = nullptr — selection widget
+- [ViewLayoutWidget](/cpp-sdk/4.5/api/classes/imfusion-viewlayoutwidget) \* **m_layoutWidget** = nullptr — widget controls for the view layout
+- [RecentFilesMenu](/cpp-sdk/4.5/api/classes/imfusion-recentfilesmenu) \* **m_recentFilesMenu** = nullptr — menu for recent files
+- QMap&lt; QString, QAction \* &gt; **m_actions** — Contains all menu actions.
+- [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; [PostLoadAction](#postloadaction) &gt; **m_postLoadActions** = PostLoadAction::All — Set of actions to perform in default implementation of [postLoad()](#postload).
+
+## Member Enumeration Documentation
+
+### PostLoadAction
+
+```cpp
+enum class ImFusion::MainWindowBase::PostLoadAction
+```
+
+*strong*
+
+Bitflag enumeration of available actions that the default implementation of [postLoad()](#postload) performs.
+
+**Enumerator:**
+
+- `None` — Don't perform any actions in [postLoad()](#postload).
+- `SelectData` — Change the selection of the [DataWidget](/cpp-sdk/4.5/api/classes/imfusion-datawidget) to the newly added [Data](/cpp-sdk/4.5/api/classes/imfusion-data).
+- `ShowViews` — Make views that can show the added [Data](/cpp-sdk/4.5/api/classes/imfusion-data) visible in case they are not.
+- `StoreOriginalMatrix` — Store the [Data](/cpp-sdk/4.5/api/classes/imfusion-data)'s original pose matrix in its [TransformationStashDataComponent](/cpp-sdk/4.5/api/classes/imfusion-transformationstashdatacomponent).
+- `CreateDataController` — Create and show a [DataController](/cpp-sdk/4.5/api/classes/imfusion-datacontroller) for the added [Data](/cpp-sdk/4.5/api/classes/imfusion-data) if possible.
+- `All` — Perform all actions in [postLoad()](#postload).
+
+## Constructor & Destructor Documentation
+
+### MainWindowBase
+
+```cpp
+ImFusion::MainWindowBase::MainWindowBase (std::optional < Framework::InitConfig > sdkInitConfig, QWidget * parent = nullptr, Qt::WindowFlags flags = Qt::Widget)
+```
+
+Instantiate and initialize the [MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase) interface.
+
+**Parameters:**
+
+- `sdkInitConfig` — Flag and parameters whether to call [Framework::init()](/cpp-sdk/4.5/api/namespaces/imfusion-framework) during construction. Leave the Optional empty in case you have initialized the SDK already manually.
+
+**Note:** If you provide a custom OpenGL context make sure to use a [GlContextQt](/cpp-sdk/4.5/api/classes/imfusion-glcontextqt) so that it is compatible with [DisplayWidget](/cpp-sdk/4.5/api/classes/imfusion-displaywidget).
+
+**Parameters:**
+
+- `parent` — Optional parent QWidget.
+- `flags` — Qt window flags
+
+## Member Function Documentation
+
+### progress
+
+```cpp
+Progress * ImFusion::MainWindowBase::progress ()
+```
+
+*override, virtual*
+
+Returns m_progressDialog.
+
+### loadStyleSheet
+
+```cpp
+void ImFusion::MainWindowBase::loadStyleSheet (QApplication & app, QString style)
+```
+
+*static*
+
+Loads a specified style sheet.
+
+This function can be used to initially set the style before the main window is created to ensure that a splash/loading, login or license dialog is styled correctly. In this case you should call MainWindowBase::loadStyleSheet(\*qApp,CustomMainWindow::readCustomStyle()) where readCustomStyle is a static function reading the custom style (instead of readDefaultStyleQssFiles).
+
+### loadStyleSheet
+
+```cpp
+void ImFusion::MainWindowBase::loadStyleSheet (QApplication & app)
+```
+
+*static*
+
+Loads the default style sheet.
+
+****Deprecated**:** "Use `loadStyleSheet(QApplication& app, QString& style)` to specify the style content or use the non-static version to ensure loading of the correct style"
+
+### loadStyleSheet
+
+```cpp
+virtual void ImFusion::MainWindowBase::loadStyleSheet ()
+```
+
+*virtual*
+
+Reads the default style and loads it.
+
+This method internally calls readDefaultStyleQssFiles.
+
+Override this method if you want to provide a custom style in a derived class. Example in custom main window class:
+
+```cpp
+class CustomMainWindow : public MainWindowBase
+{
+ // ...
+
+    QString readCustomStyle()
+    {
+ // get file from resource
+        QFile stylesheet(":/style/customStyle.qss");
+ if (stylesheet.open(QIODevice::ReadOnly))
+ return stylesheet.readAll();
+ else
+ return QString();
+    }
+
+ void loadStyleSheet() override
+ {
+ MainWindowBase::loadStyleSheet(*qApp, MiniNavSystem::readCustomStyle());
+    }
+}
+```
+ fragment
+
+### reloadStyleSheet
+
+```cpp
+void ImFusion::MainWindowBase::reloadStyleSheet ()
+```
+
+*static*
+
+Reloads default style sheet.
+
+****Deprecated**:** "Directly use `loadStyleSheet` instead"
+
+### getAlgorithmController
+
+```cpp
+AlgorithmController * ImFusion::MainWindowBase::getAlgorithmController (const Algorithm * a) const
+```
+
+*override, virtual*
+
+Returns the controller of the algorithm or nullptr if not existing.
+
+### addController
+
+```cpp
+virtual ControllerDecorator * ImFusion::MainWindowBase::addController (Controller * controller)
+```
+
+*virtual*
+
+Registers a [Controller](/cpp-sdk/4.5/api/classes/imfusion-controller) instance with the [MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase) so that it can be shown in the [GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui).
+
+The default implementation will decorate it using a standard [DefaultControllerDecorator](/cpp-sdk/4.5/api/classes/imfusion-defaultcontrollerdecorator). Subclasses may override this function to use a custom UI.
+
+### removeController
+
+```cpp
+virtual void ImFusion::MainWindowBase::removeController (Controller * controller)
+```
+
+*virtual*
+
+Removes a previously registered [Controller](/cpp-sdk/4.5/api/classes/imfusion-controller) from this [MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase) so that it is no longer shown in the [GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui).
+
+The default implementation will remove the [ControllerDecorator](/cpp-sdk/4.5/api/classes/imfusion-controllerdecorator) used for decoration. Furthermore, it will delete *controller* if *deleteControllerIfOwned* is true and *controller* is owned by this [MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase) instance (only applies to AlgorithmControllers and DataControllers that were originally created through [MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase) and not added from the outside).
+
+### canBeDeleted
+
+```cpp
+bool ImFusion::MainWindowBase::canBeDeleted (const Data * data)
+```
+
+*override, virtual*
+
+Check whether data can be deleted or loaded algorithms depend on it.
+
+### askWorkspacePlaceholders
+
+```cpp
+std::vector < std::map < std::string, std::string > > ImFusion::MainWindowBase::askWorkspacePlaceholders (const std::vector < std::string > & placeholderKeys)
+```
+
+*override, virtual*
+
+Asks the user the value of some placeholders and returns the input of the user.
+
+### closeAll
+
+```cpp
+void ImFusion::MainWindowBase::closeAll ()
+```
+
+*override, virtual*
+
+Closes all data, algorithms and annotations.
+
+### addAlgorithm
+
+```cpp
+void ImFusion::MainWindowBase::addAlgorithm (std::unique_ptr < Algorithm > a, const Properties * config = nullptr)
+```
+
+*override, virtual*
+
+Adds a the given algorithm and creates a controller if available.
+
+If no controller is available, the algorithm is instantly executed and deletes afterwards (a will be set to 0). If config contains a sub-property "Controller", it will be used to configure the controller. The controller is always initialized after the algorithm was configured and added.
+
+### removeAlgorithm
+
+```cpp
+void ImFusion::MainWindowBase::removeAlgorithm (Algorithm * a, bool del = true)
+```
+
+*override, virtual*
+
+Same as removeAlgorithm(a, del, true).
+
+### removeAlgorithm
+
+```cpp
+virtual void ImFusion::MainWindowBase::removeAlgorithm (Algorithm * a, bool del, bool delCtrl, bool executed = false)
+```
+
+*virtual*
+
+Removes the given algorithm and its associated controller.
+
+If del is true, the algorithm is also deleted (a will be invalid afterwards!). If delCtrl is true, the controller is deleted, too. If executed is true, the algorithm configuration is stored in the history of executed algorithms.
+
+### settingsChanged
+
+```cpp
+void ImFusion::MainWindowBase::settingsChanged ()
+```
+
+*signal*
+
+Emitted when the settings are changed by the user e.g.
+
+through the [SettingsDialog](/cpp-sdk/4.5/api/classes/imfusion-settingsdialog). It is *not* emitted when the settings change through any other means. You should *not* rely on this signal ever being called.
+
+### postLoad
+
+```cpp
+virtual void ImFusion::MainWindowBase::postLoad (Data * data)
+```
+
+*protected, virtual, slot*
+
+This method is called after data has been loaded.
+
+The default implementation will perform all actions as specified in postLoadActions().
+
+### onScreenChanged
+
+```cpp
+virtual void ImFusion::MainWindowBase::onScreenChanged (QScreen * newScreen)
+```
+
+*protected, virtual, slot*
+
+Slot called when the hosting QWindow's screen has changed.
+
+Will re-evaluate the new screen's DPI and notify the renderer backend etc.
+
+### openFile
+
+```cpp
+bool ImFusion::MainWindowBase::openFile (const QString * additionalFilters = 0, QString * filename = 0, QString * selectedFilter = 0)
+```
+
+*protected*
+
+Shows file selection dialog for open and opens file if the format is known.
+
+The caller can add additional filters to the file open dialog. If an unknown filter is selected the method returns it in selectedFilter.
+
+### saveFileAs
+
+```cpp
+bool ImFusion::MainWindowBase::saveFileAs (const QString * additionalFilters = 0, QString * filename = 0, QString * selectedFilter = 0)
+```
+
+*protected*
+
+Shows file selection dialog for save and saves file if the format is known.
+
+The caller can add additional filters to the file save dialog. If an unknown filter is selected the method returns it in selectedFilter.
+
+### openWithIoAlgorithms
+
+```cpp
+bool ImFusion::MainWindowBase::openWithIoAlgorithms (const std::vector < std::string > & algs, const std::string & filename, DataList * dataOut)
+```
+
+*override, protected, virtual*
+
+Asks the user which of the algs to use to open filename, loads file into the [DataModel](/cpp-sdk/4.5/api/classes/imfusion-datamodel) and stores the result in dataOut.
+
+### eventFilter
+
+```cpp
+bool ImFusion::MainWindowBase::eventFilter (QObject * target, QEvent * event)
+```
+
+*override, protected*
+
+[Filters](/cpp-sdk/4.5/api/namespaces/imfusion-filters) close events of algorithm controllers and data controllers.
+
+On close event for a data controller, the controller is removed and deleted. For algorithm controllers which are QWidget the controller and its algorithm is removed and deleted. For controllers which are QDialog, reject() slot will be raised. They must handle deleting themselves and their algorithms either by overriding the reject() slot or in their run() method considering that the default reject slot() causes the exec() method to return 0. [AlgorithmController::closeAlgorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithmcontroller) method can be called to remove the algorithm and its controller.
+
+### configureAlgorithm
+
+```cpp
+void ImFusion::MainWindowBase::configureAlgorithm (Algorithm * a)
+```
+
+*override, protected, virtual*
+
+Called before an [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) is executed, allows for custom configuration.
+
+### open
+
+```cpp
+bool ImFusion::MainWindowBase::open (const std::string & algorithm, const std::string & name, DataList * data, bool addToRecentFiles = true, const Properties * p = nullptr, std::string * effectivePath = nullptr)
+```
+
+*override, protected, virtual*
+
+Open a specific file type.
+
+### open
+
+```cpp
+virtual bool ImFusion::ApplicationController::open (const std::string & filename, DataList * outDataList = nullptr)
+```
+
+*virtual*
+
+Opens a generic file and adds it to the [DataModel](/cpp-sdk/4.5/api/classes/imfusion-datamodel).
+
+The algorithm used to open the file is decided on the extension. You can provide an optional *outDataList* parameter to receive the list of loaded data. Returns true on success, false otherwise.

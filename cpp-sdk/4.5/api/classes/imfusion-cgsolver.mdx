@@ -1,0 +1,26 @@
+---
+title: "ImFusion::CGSolver"
+sidebarTitle: "CGSolver"
+description: "Conjugate gradient solver (Eigen implementation)."
+---
+
+`#include <ImFusion/Base/LinearSystemSolvers.h>`
+
+## Overview
+
+Conjugate gradient solver (Eigen implementation).
+
+## Public Member Functions
+
+- **CGSolver** (int maxIterations, float minTolerance=1e-8f)
+- void [solve](#solve) (Eigen::SparseMatrix&lt; float &gt; &A, Eigen::VectorXf &b, Eigen::VectorXf &x, Eigen::VectorXf &x0) override
+
+## Member Function Documentation
+
+### solve
+
+```cpp
+void ImFusion::CGSolver::solve (Eigen::SparseMatrix< float > & A, Eigen::VectorXf & b, Eigen::VectorXf & x, Eigen::VectorXf & x0)
+```
+
+*override, virtual*

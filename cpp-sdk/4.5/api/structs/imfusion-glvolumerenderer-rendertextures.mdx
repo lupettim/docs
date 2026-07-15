@@ -1,0 +1,20 @@
+---
+title: "ImFusion::GlVolumeRenderer::RenderTextures"
+sidebarTitle: "RenderTextures"
+description: "Helper struct to encapsulate all input/output textures needed/used during direct volume rendering."
+---
+
+`#include <ImFusion/GL/GlVolumeRenderer.h>`
+
+## Overview
+
+Helper struct to encapsulate all input/output textures needed/used during direct volume rendering.
+
+## Public Attributes
+
+- [GL::Texture](/cpp-sdk/4.5/api/classes/imfusion-gl-texture) & **outputColor** — Output color texture to render into (mandatory).
+- [GL::Texture](/cpp-sdk/4.5/api/classes/imfusion-gl-texture) \* **outputDepth** — Output depth texture to render into (optional).
+- [GL::Texture](/cpp-sdk/4.5/api/classes/imfusion-gl-texture) \* **sceneColor** — Optional color texture of scene geometry to integrate into rendering.
+- [GL::Texture](/cpp-sdk/4.5/api/classes/imfusion-gl-texture) \* **sceneDepth** — Optional depth texture of scene geometry to integrate into rendering.
+- [GL::Texture](/cpp-sdk/4.5/api/classes/imfusion-gl-texture) \* **sceneCompare** — Optional color texture of scene geometry of the previously rendered frame, you can compare this against sceneColor to check if a fragment needs to be recomputed.
+- [GL::OrderIndependentTransparency](/cpp-sdk/4.5/api/classes/imfusion-gl-orderindependenttransparency) \* **oit** — Order-independent transparency handling class instance, will only be filled if [supportsOITIntegration()](/cpp-sdk/4.5/api/classes/imfusion-glvolumerenderer) returns true.

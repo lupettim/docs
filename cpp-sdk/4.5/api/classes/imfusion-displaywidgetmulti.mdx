@@ -1,0 +1,522 @@
+---
+title: "ImFusion::DisplayWidgetMulti"
+sidebarTitle: "DisplayWidgetMulti"
+description: "Specialized version of DisplayWidget that manages specific views and provides an automatic layout."
+---
+
+`#include <ImFusion/GUI/DisplayWidgetMulti.h>`
+
+## Overview
+
+Specialized version of [DisplayWidget](/cpp-sdk/4.5/api/classes/imfusion-displaywidget) that manages specific views and provides an automatic layout.
+
+Other than [DisplayWidget](/cpp-sdk/4.5/api/classes/imfusion-displaywidget), [DisplayWidgetMulti](/cpp-sdk/4.5/api/classes/imfusion-displaywidgetmulti) knows the specific properties of each view (e.g. 2D or 3D). It provides several convenience methods to add specific views with preset properties and overlays. Views are automatically separated into into 4 categories: 2D, 3D, MPR or [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm).
+
+[Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) views are owned by [DisplayWidgetMulti](/cpp-sdk/4.5/api/classes/imfusion-displaywidgetmulti) and will be considered during layouting, however they are not considered by other functionality (e.g. showing [Data](/cpp-sdk/4.5/api/classes/imfusion-data)) and are alto not modified otherwise by this class. As the name suggests they are intended to be fully maintained by an Algorithm(Controller) and show algorithm-specific data, such as plots or debugging information.
+
+## Public Types
+
+- enum **LayoutMode** : int &#123; **LayoutRows** = 0 , **LayoutFocusPlusStack** = 1 , **LayoutFocusPlusRows** = 2 , **LayoutSideBySide** = 3 , **LayoutAuto** = 4 , **LayoutCustom** = 100 &#125;
+- enum [LayoutFeatures](#layoutfeatures) : int &#123; Features2DView = 1 , FeaturesMPRViews = 2 , Features3DView = 4 , FeaturesAlgorithmViews = 8 , FeaturesFocus = 16 , FeaturesTopBottomRow = 32 , **FeaturesAllViews** = Features2DView | FeaturesMPRViews | Features3DView | FeaturesAlgorithmViews &#125;
+- enum class **OrientationMeshType** &#123; **Cube** , **Head** , **Body** , **CubeQuadruped** &#125;
+- enum class [DefaultOverlays](#defaultoverlays) &#123; **None** = 0 , FullscreenButton = 1 &lt;&lt; 0 , ViewOrderButton = 1 &lt;&lt; 1 , DataSelectionButton = 1 &lt;&lt; 2 , ViewOptionsButton = 1 &lt;&lt; 3 , DisplayOptionsButton = 1 &lt;&lt; 4 , PatientInfo = 1 &lt;&lt; 5 , ScaleOverlays = 1 &lt;&lt; 6 , OrientationMesh = 1 &lt;&lt; 7 , Histogram = 1 &lt;&lt; 8 , PixelInfo = 1 &lt;&lt; 9 , FpsCounter = 1 &lt;&lt; 10 , OffscreenIndicator = 1 &lt;&lt; 11 , SliceIndex = 1 &lt;&lt; 12 , **All** = 0xFFFF , FocusButton = ViewOrderButton &#125; — Enumeration to select default overlays to add to a view.
+- enum [ViewFilter](#viewfilter) &#123; AllViews , NoAlgorithmViews , OnlyAlgorithmViews &#125; — Enumeration used by a couple of convenience functions to define which views to filter during lookup.
+- using [LayoutFunc](#layoutfunc) = [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt;DisplayLayoutConfig(const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt;[InteractiveView](/cpp-sdk/4.5/api/classes/imfusion-interactiveview)\*&gt;& visibleViews)&gt; — Returns a layout configuration containing the visibleViews.
+
+## Public Slots
+
+- void **hideView** ([InteractiveView](/cpp-sdk/4.5/api/classes/imfusion-interactiveview) \*[view](/cpp-sdk/4.5/api/classes/imfusion-displaywidget)) — hides view and resets the layout accordingly
+- void **show2DView** (bool show) — Shows or hides the 2D view and resets the layout accordingly.
+- void **showMPRViews** (bool show) — Shows or hides all MPR views and resets the layout accordingly.
+- void **show3DView** (bool show) — Shows or hides the 3D view and resets the layout accordingly.
+- void **showAlgorithmViews** (bool show) — Shows or hides all algorithm views and resets the layout accordingly.
+- void **setLayoutMode** (DisplayWidgetMulti::LayoutMode mode) — Sets layout mode and resets the layout according to mode.
+- void **maximizeView** ([InteractiveView](/cpp-sdk/4.5/api/classes/imfusion-interactiveview) \*[view](/cpp-sdk/4.5/api/classes/imfusion-displaywidget)) — Maximizes a single view.
+- void **unMaximizeView** () — Unmaximizes the view that is currently maximized.
+- void [setFocusView](#setfocusview) ([InteractiveView](/cpp-sdk/4.5/api/classes/imfusion-interactiveview) \*[view](/cpp-sdk/4.5/api/classes/imfusion-displaywidget)) — Moves the view to the focus if the layout supports that.
+- void **resetLayout** () — Resets the layout based on the currently selected display layout and view order configuration.
+- QString [getViewName](#getviewname) (const [InteractiveView](/cpp-sdk/4.5/api/classes/imfusion-interactiveview) \*[view](/cpp-sdk/4.5/api/classes/imfusion-displaywidget)) const — Returns a human-readable name describing the view.
+
+## Signals
+
+- void **view2DVisibilityChanged** (bool visible) — Emits true if 2D changed to visible or false otherwise.
+- void **viewsMPRVisibilityChanged** (bool visible) — Emits true if a MPR view changed to visible and all MPR views are visible or false otherwise.
+- void **view3DVisibilityChanged** (bool visible) — Emits true if 3D changed to visible or false otherwise.
+- void **viewsAlgorithmVisibilityChanged** (bool visible) — Emits true if a algorithm view changed to visible and all algorithm views are visible or false otherwise.
+- void [visibleDataChanged](#visibledatachanged) (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &before, const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &now) — Emitted when any view changes its visible data This is also emitted if the visible data is the same but there are displayed in different views now.
+- void **layoutModeChanged** (DisplayWidgetMulti::LayoutMode mode) — Emitted after the layout mode has changed.
+- void **customLayoutAdded** (DisplayWidgetMulti::LayoutMode mode) — Emitted after a custom layout with the given name has been added.
+- void **customLayoutRemoved** (DisplayWidgetMulti::LayoutMode mode) — Emitted after a custom layout with the given name has been removed.
+
+## Public Member Functions
+
+- [DisplayWidgetMulti](#displaywidgetmulti) (bool initialize=true, QWindow \*parent=0) — Creates a new empty [DisplayWidgetMulti](/cpp-sdk/4.5/api/classes/imfusion-displaywidgetmulti).
+- [ImageView2D](/cpp-sdk/4.5/api/classes/imfusion-imageview2d) \* [addView2D](#addview2d-1-2) (bool algorithmView=true, bool defaultOverlays=true) — Convenience method to create and add a 2D view with default settings and returns a pointer to the newly created view.
+- void [addView2D](#addview2d-2-2) ([ImageView2D](/cpp-sdk/4.5/api/classes/imfusion-imageview2d) \*[view](/cpp-sdk/4.5/api/classes/imfusion-displaywidget), bool algorithmView=true, bool defaultOverlays=true) — Add an already existing 2D view and pass ownership.
+- void **addDefaultOverlays** ([InteractiveView](/cpp-sdk/4.5/api/classes/imfusion-interactiveview) &[view](/cpp-sdk/4.5/api/classes/imfusion-displaywidget), [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; [DefaultOverlays](#defaultoverlays) &gt; overlays) — Add the selected overlays to the view of.
+- [ViewGroup](/cpp-sdk/4.5/api/classes/imfusion-viewgroup) \* [addViewGroup3D](#addviewgroup3d) (bool algorithmView=true, bool defaultOverlays=true) — Create and add three MPR views, 3D view combined in a [ViewGroup](/cpp-sdk/4.5/api/classes/imfusion-viewgroup).
+- bool [addView](#addview-1-2) ([InteractiveView](/cpp-sdk/4.5/api/classes/imfusion-interactiveview) \*[view](/cpp-sdk/4.5/api/classes/imfusion-displaywidget), bool algorithmView, bool defaultOverlays=true) — Add an already existing view and pass ownership.
+- bool [addView](#addview-2-2) ([InteractiveView](/cpp-sdk/4.5/api/classes/imfusion-interactiveview) \*[view](/cpp-sdk/4.5/api/classes/imfusion-displaywidget)) override — Add view and pass ownership. If the view is not removed before this object is deleted it will be deleted too.
+- bool [removeView](#removeview) ([InteractiveView](/cpp-sdk/4.5/api/classes/imfusion-interactiveview) \*[view](/cpp-sdk/4.5/api/classes/imfusion-displaywidget)) override — Remove view used by an algorithm. The user is responsible for deleting the view.
+- [ImageView2D](/cpp-sdk/4.5/api/classes/imfusion-imageview2d) \* **view2D** (int which=0) — Access 2D views.
+- int **number2DViews** () const
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [ImageView2D](/cpp-sdk/4.5/api/classes/imfusion-imageview2d) \* &gt; **views2d** ()
+- [ImageView2D](/cpp-sdk/4.5/api/classes/imfusion-imageview2d) \* **viewSlice** (int which=0) — Access MPR/slice views.
+- int **numberSliceViews** () const
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [ImageView2D](/cpp-sdk/4.5/api/classes/imfusion-imageview2d) \* &gt; **viewsSlice** ()
+- [ImageView3D](/cpp-sdk/4.5/api/classes/imfusion-imageview3d) \* **view3D** (int which=0) — Access 3D views.
+- int **number3DViews** () const
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [ImageView3D](/cpp-sdk/4.5/api/classes/imfusion-imageview3d) \* &gt; **views3d** ()
+- [ViewGroup](/cpp-sdk/4.5/api/classes/imfusion-viewgroup) \* **viewGroup** (int which=0) — Access ViewGroups.
+- int **numberViewGroups** () const
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [ViewGroup](/cpp-sdk/4.5/api/classes/imfusion-viewgroup) \* &gt; **viewGroups** ()
+- int **numAlgorithmViews** () const — Access algorithm views.
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [InteractiveView](/cpp-sdk/4.5/api/classes/imfusion-interactiveview) \* &gt; & **algorithmViews** () const
+- bool **isAlgorithmView** (const [InteractiveView](/cpp-sdk/4.5/api/classes/imfusion-interactiveview) \*[view](/cpp-sdk/4.5/api/classes/imfusion-displaywidget)) const — Returns true if the given view is an algorithm view.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [InteractiveView](/cpp-sdk/4.5/api/classes/imfusion-interactiveview) \* &gt; **views** ([ViewFilter](#viewfilter) viewFilter=ViewFilter::AllViews) const — Access a set of views based on a specified filter.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [InteractiveView](/cpp-sdk/4.5/api/classes/imfusion-interactiveview) \* &gt; **dataViews** (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data, [ViewFilter](#viewfilter) viewFilter=ViewFilter::AllViews) const — Returns all views that currently show the given image.
+- void [setVisibleData](#setvisibledata) (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data) — Visualize the given data in the first 2D view and the first MPR/3D view group where applicable.
+- [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) **visibleData** ([ViewFilter](#viewfilter) viewFilter=ViewFilter::AllViews) const — Returns the union of the currently visible data in the specified views.
+- bool **isVisible** (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data, [ViewFilter](#viewfilter) viewFilter=ViewFilter::AllViews) const — Whether the given data is currently visible in any of the specified views.
+- bool [showData](#showdata) ([Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data) — Appends data to the visible data by calling [showData()](#showdata) on the first 2D view and the first MPR/3D view group where applicable.
+- void **hideData** (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data, [ViewFilter](#viewfilter) viewFilter=ViewFilter::AllViews) — Removes data from the set of visible data by calling hideData() on all specified views.
+- void **replaceData** ([Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*which, [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*with, [ViewFilter](#viewfilter) viewFilter=ViewFilter::AllViews) — Replaces all occurrence of which in the set of visible data with with in all specified views.
+- void **addObject** ([InteractiveObject](/cpp-sdk/4.5/api/classes/imfusion-interactiveobject) \*object, [InteractiveView](/cpp-sdk/4.5/api/classes/imfusion-interactiveview) \*[view](/cpp-sdk/4.5/api/classes/imfusion-displaywidget)) — Add object to specified view.
+- void **addObject** ([InteractiveObject](/cpp-sdk/4.5/api/classes/imfusion-interactiveobject) \*object, const [ViewGroup](/cpp-sdk/4.5/api/classes/imfusion-viewgroup) \*viewgroup) — Add object to specified view group.
+- void **removeObject** ([InteractiveObject](/cpp-sdk/4.5/api/classes/imfusion-interactiveobject) \*object, [InteractiveView](/cpp-sdk/4.5/api/classes/imfusion-interactiveview) \*[view](/cpp-sdk/4.5/api/classes/imfusion-displaywidget)) — Remove object from specified view.
+- void **removeObject** ([InteractiveObject](/cpp-sdk/4.5/api/classes/imfusion-interactiveobject) \*object, const [ViewGroup](/cpp-sdk/4.5/api/classes/imfusion-viewgroup) \*viewgroup) — Remove object from specified view group.
+- void **removeObject** ([InteractiveObject](/cpp-sdk/4.5/api/classes/imfusion-interactiveobject) \*object) — Remove object from all views in which it is shown.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [InteractiveObject](/cpp-sdk/4.5/api/classes/imfusion-interactiveobject) \* &gt; **objects** ([InteractiveView](/cpp-sdk/4.5/api/classes/imfusion-interactiveview) \*[view](/cpp-sdk/4.5/api/classes/imfusion-displaywidget)) const — Return all objects associated with a view.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [InteractiveObject](/cpp-sdk/4.5/api/classes/imfusion-interactiveobject) \* &gt; **objects** (const [ViewGroup](/cpp-sdk/4.5/api/classes/imfusion-viewgroup) \*viewgroup) const — Return all objects associated with a view group.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [InteractiveObject](/cpp-sdk/4.5/api/classes/imfusion-interactiveobject) \* &gt; **objects** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*is) const — Return all objects associated with a data set.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [InteractiveObject](/cpp-sdk/4.5/api/classes/imfusion-interactiveobject) \* &gt; **objects** ([ViewFilter](#viewfilter) viewFilter=ViewFilter::AllViews) const — Return all objects.
+- void **centerOnObject** (const [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) &object, const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*parentData=nullptr) — Centers views on a given object.
+- [Interactive](/cpp-sdk/4.5/api/classes/imfusion-interactive)&lt; [GlSlice](/cpp-sdk/4.5/api/classes/imfusion-glslice) &gt; \* [addSliceManipulator](#addslicemanipulator) ([InteractiveView](/cpp-sdk/4.5/api/classes/imfusion-interactiveview) \*[view](/cpp-sdk/4.5/api/classes/imfusion-displaywidget)) — Create and add interactive object containing slice object and its manipulator to the specified view.
+- bool **removeSliceManipulator** ([InteractiveView](/cpp-sdk/4.5/api/classes/imfusion-interactiveview) \*[view](/cpp-sdk/4.5/api/classes/imfusion-displaywidget)) — Remove interactive object containing slice object and its manipulator from the specified view. Return true upon success.
+- [Interactive](/cpp-sdk/4.5/api/classes/imfusion-interactive)&lt; [GlSlice](/cpp-sdk/4.5/api/classes/imfusion-glslice) &gt; \* **sliceManipulator** ([InteractiveView](/cpp-sdk/4.5/api/classes/imfusion-interactiveview) \*[view](/cpp-sdk/4.5/api/classes/imfusion-displaywidget)) const — Access a slice manipulator of a 2D view. The ownership of the interactive object remains belonging to the [DisplayWidgetMulti](/cpp-sdk/4.5/api/classes/imfusion-displaywidgetmulti).
+- void [setShowPatientInformation](#setshowpatientinformation) (int val) — Set where patient information should be displayed: 0=Nowhere, 1=First view only, 2=All views.
+- void [setShowScaleInformation](#setshowscaleinformation) (int val) — Set how the scale information overlay should be displayed: 0=None, 1=Horizontal, 2=Vertical, 3=Both.
+- void [setShowDataSelectionButton](#setshowdataselectionbutton) (bool show, const [DataItemModel](/cpp-sdk/4.5/api/classes/imfusion-dataitemmodel) \*dataModel) — Sets if the views should contain a button to select the visible data of the view.
+- void **setShowOffscreenIndicators** (bool show) — Sets if the views should show indicators to datasets that are outside the viewing area.
+- void **setShowSliceIndex** (bool show) — Sets if the views should show the slice index overlay.
+- void **setShowDisplayOptionsOverlay** (bool show) — Sets if the display options overlay should be visible.
+- void **setShowViewOptionsOverlay** (bool show) — Sets if the view options overlay should be visible.
+- void **loadOrientationMesh** () — Loads the orientation mesh that is specified in the settings.
+- void **loadOrientationMesh** (OrientationMeshType mesh) — Loads a specified orientation mesh.
+- void **addToViews** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*is, [InteractiveObject](/cpp-sdk/4.5/api/classes/imfusion-interactiveobject) \*ia) — Add to views.
+- void **addCurvedView** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*is, [InteractiveObject](/cpp-sdk/4.5/api/classes/imfusion-interactiveobject) \*ia) — Add curved view.
+- bool **is2DViewVisible** () const — Returns true if the first 2D view is visible.
+- bool **isMPRViewsVisible** () const — Returns true if all MPR views are visible.
+- bool **isAnyMPRViewVisible** () const — Returns true if any MPR view is visible.
+- bool **is3DViewVisible** () const — Returns true if the first 3D view is visible.
+- bool **isAlgorithmViewsVisible** () const — Returns true if all algorithm views are visible.
+- bool **isMaximized** (const [InteractiveView](/cpp-sdk/4.5/api/classes/imfusion-interactiveview) \*[view](/cpp-sdk/4.5/api/classes/imfusion-displaywidget)) const — Returns true if specified view is maximized, false otherwise.
+- const [InteractiveView](/cpp-sdk/4.5/api/classes/imfusion-interactiveview) \* **focusedView** () const — Returns the view that is currently in the focus (if the layout supports that concept).
+- [GUI::DisplayAutoLayouter](/cpp-sdk/4.5/api/classes/imfusion-gui-displayautolayouter) & **autoLayouter** () — Returns the underlying DisplayAutoLayouter instance used to layout the views.
+- LayoutMode [addCustomLayout](#addcustomlayout) ([LayoutFunc](#layoutfunc) layout, [LayoutFeatures](#layoutfeatures) features, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name="") — Adds a custom function to provide a layout for the visible views.
+- void **removeCustomLayout** (LayoutMode mode) — Removes the custom layout with the specified mode.
+- [LayoutFeatures](#layoutfeatures) **layoutFeatures** (LayoutMode mode) — Returns the features that are supported by the layout or 0 if the layout does not exist.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **layoutName** (LayoutMode mode) — Returns the name of the layout.
+- LayoutMode **layoutMode** () const — Returns the current layout mode.
+- DisplayLayoutConfig **createRowLayout** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [InteractiveView](/cpp-sdk/4.5/api/classes/imfusion-interactiveview) \* &gt; &visibleViews) const — Creates a layout with 2 rows.
+- DisplayLayoutConfig **createFocusPlusStackLayout** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [InteractiveView](/cpp-sdk/4.5/api/classes/imfusion-interactiveview) \* &gt; &visibleViews) const — Creates a layout with the first visible view uses half the space and the remaining views are placed on top of each other on the right.
+- DisplayLayoutConfig **createFocusPlusRowsLayout** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [InteractiveView](/cpp-sdk/4.5/api/classes/imfusion-interactiveview) \* &gt; &visibleViews) const — Creates a layout with the first visible view uses half the space and the remaining views are placed in two rows on the right.
+- DisplayLayoutConfig **createSideBySideLayout** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [InteractiveView](/cpp-sdk/4.5/api/classes/imfusion-interactiveview) \* &gt; &visibleViews) const — Creates a mirrored layout with views from scene 0 on the left and views from scene 1 on the right.
+- DisplayLayoutConfig **createAutoLayout** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [InteractiveView](/cpp-sdk/4.5/api/classes/imfusion-interactiveview) \* &gt; &visibleViews) — Automatically creates an appropriate layout from the number and types of views.
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Retrieve the properties of this object.
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Set one or multiple properties.
+- void [render](#render) (bool swapBuffers=true) override — Deals with view groups before issuing paint.
+- void **setPatientInfoFormatter** ([std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html)(const [ImageInfoDataComponent](/cpp-sdk/4.5/api/classes/imfusion-imageinfodatacomponent) \*)&gt; formatter) — Registers a callback that converts *[ImageInfoDataComponent](/cpp-sdk/4.5/api/classes/imfusion-imageinfodatacomponent)* into the patient info string displayed as an overlay.
+- void [setPatientInfoFormatString](#setpatientinfoformatstring) ([std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) fmt) — Sets the format string used to produce the patient info overlay.
+- void [setViewOrder](#setvieworder) ([std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [InteractiveView](/cpp-sdk/4.5/api/classes/imfusion-interactiveview) \* &gt; viewOrder) — Set a custom view order to be used by the display layout.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [InteractiveView](/cpp-sdk/4.5/api/classes/imfusion-interactiveview) \* &gt; **viewOrder** () const — Returns the custom order of the views shown in the display layout.
+- void **swapViewOrder** (const [InteractiveView](/cpp-sdk/4.5/api/classes/imfusion-interactiveview) \*view1, const [InteractiveView](/cpp-sdk/4.5/api/classes/imfusion-interactiveview) \*view2) — Swaps the position of the two given views in the display layout.
+- void **moveViewToTopRow** (const [InteractiveView](/cpp-sdk/4.5/api/classes/imfusion-interactiveview) \*[view](/cpp-sdk/4.5/api/classes/imfusion-displaywidget)) — Moves the given *view* to the top row for display layouts that support LayoutFeatures::FeaturesTopBottomRow.
+- void **moveViewToBottomRow** (const [InteractiveView](/cpp-sdk/4.5/api/classes/imfusion-interactiveview) \*[view](/cpp-sdk/4.5/api/classes/imfusion-displaywidget)) — Moves the given *view* to the bottom row for display layouts that support LayoutFeatures::FeaturesTopBottomRow.
+
+## Protected Slots
+
+- void [onViewVisiblityChanged](#onviewvisiblitychanged) () override — A view visibility has changed.
+- void [onViewVisiblityChangeRequested](#onviewvisiblitychangerequested) (bool visible) override — A view has requested to change its visibility.
+- void **onVisibleDataChanged** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &before, const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &now) — Called on View::visibleDataChanged and will emit [DisplayWidgetMulti::visibleDataChanged](#visibledatachanged).
+- void **updateViewOrderButtonOverlays** () — Updates the visibility of the focus button overlays.
+
+## Protected Member Functions
+
+- void **showPatientInfo** ([InteractiveView](/cpp-sdk/4.5/api/classes/imfusion-interactiveview) \*[view](/cpp-sdk/4.5/api/classes/imfusion-displaywidget), const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* &gt; &images) — Show patient info stored in properties.
+- void **showPatientInfo** ([InteractiveView](/cpp-sdk/4.5/api/classes/imfusion-interactiveview) \*[view](/cpp-sdk/4.5/api/classes/imfusion-displaywidget), const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &patientInfo) — Show patient info.
+- void **updateOrientationMesh** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &visibleData)
+
+## Protected Attributes
+
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [ImageView2D](/cpp-sdk/4.5/api/classes/imfusion-imageview2d) \* &gt; **m_view2D** — 2D views of 2D images
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [ImageView2D](/cpp-sdk/4.5/api/classes/imfusion-imageview2d) \* &gt; **m_viewSlice** — [Slice](/cpp-sdk/4.5/api/classes/imfusion-slice) views of 3D images.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [ImageView3D](/cpp-sdk/4.5/api/classes/imfusion-imageview3d) \* &gt; **m_view3D** — 3D views
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [ViewGroup](/cpp-sdk/4.5/api/classes/imfusion-viewgroup) \* &gt; **m_viewGroups** — View groups.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [InteractiveView](/cpp-sdk/4.5/api/classes/imfusion-interactiveview) \* &gt; **m_viewAlgorithm** — Views used by algorithms.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [InteractiveView](/cpp-sdk/4.5/api/classes/imfusion-interactiveview) \* &gt; **m_viewSideBySide** — Views that were added by the SideBySide layout.
+
+## Member Typedef Documentation
+
+### LayoutFunc
+
+```cpp
+using ImFusion::DisplayWidgetMulti::LayoutFunc = std::function <DisplayLayoutConfig(const std::vector < InteractiveView *>& visibleViews)>
+```
+
+Returns a layout configuration containing the visibleViews.
+
+A well behaved [LayoutFunc](#layoutfunc) will only contain the visibleViews in the final configuration. It is also valid to ignore this list and return a layout containing other views of the [DisplayWidget](/cpp-sdk/4.5/api/classes/imfusion-displaywidget). This way a controller could enforce a specific fixed layout for a certain workflow. However, this should only be used for specific use cases because the user experience may degrade otherwise (e.g. user cannot hide certain views anymore). If certain view types are not supported at all by the [LayoutFunc](#layoutfunc), the [LayoutFeatures](#layoutfeatures) should be set accordingly when adding the layout.
+
+**See also:** [addCustomLayout](#addcustomlayout)
+
+## Member Enumeration Documentation
+
+### int
+
+```cpp
+enum ImFusion::DisplayWidgetMulti::LayoutFeatures : int
+```
+
+**Enumerator:**
+
+- `Features2DView` — supports show/hide 2D view
+- `FeaturesMPRViews` — supports show/hide MPR views
+- `Features3DView` — supports show/hide 3D view
+- `FeaturesAlgorithmViews` — supports show/hide algorithm views
+- `FeaturesFocus` — supports a view being focused e.g. larger or more prominent than the rest
+- `FeaturesTopBottomRow` — supports a view being move to top/bottom row
+
+### DefaultOverlays
+
+```cpp
+enum class ImFusion::DisplayWidgetMulti::DefaultOverlays
+```
+
+*strong*
+
+Enumeration to select default overlays to add to a view.
+
+**Enumerator:**
+
+- `FullscreenButton` — Button to maximize/minimize the view.
+- `ViewOrderButton` — Button to move the view to a different position if supported by the view layout.
+- `DataSelectionButton` — Button to select the visible data from the [DataModel](/cpp-sdk/4.5/api/classes/imfusion-datamodel).
+- `ViewOptionsButton` — Button to show a popup for configuring view options.
+- `DisplayOptionsButton` — Button to show a popup for configuring display options.
+- `PatientInfo` — Text overlay showing patient information.
+- `ScaleOverlays` — Horizontal and vertical ruler overlays showing the image scale.
+- `OrientationMesh` — Overlay showing the orientation of the shown data (e.g. in form of a cube).
+- `Histogram` — Overlay showing the intensity distribution of the shown image as histogram.
+- `PixelInfo` — Overlay showing pixel information underneath the mouse pointer of the shown image.
+- `FpsCounter` — Overlay showing an estimate of the frames per second of the renderer.
+- `OffscreenIndicator` — Dynamic overlay showing data that is outside of the current view area.
+- `SliceIndex` — Overlay showing the current slice and the total slices for the view orientation.
+- `FocusButton` — **Deprecated**
+
+### ViewFilter
+
+```cpp
+enum ImFusion::DisplayWidgetMulti::ViewFilter
+```
+
+Enumeration used by a couple of convenience functions to define which views to filter during lookup.
+
+**Enumerator:**
+
+- `AllViews` — Consider all views during lookup.
+- `NoAlgorithmViews` — Consider all views except for algorithm views.
+- `OnlyAlgorithmViews` — Consider only algorithm views during lookup.
+
+## Constructor & Destructor Documentation
+
+### DisplayWidgetMulti
+
+```cpp
+ImFusion::DisplayWidgetMulti::DisplayWidgetMulti (bool initialize = true, QWindow * parent = 0)
+```
+
+Creates a new empty [DisplayWidgetMulti](/cpp-sdk/4.5/api/classes/imfusion-displaywidgetmulti).
+
+**Parameters:**
+
+- `initialize` — Flag whether to fully initialize the [DisplayWidget](/cpp-sdk/4.5/api/classes/imfusion-displaywidget) on construction. If you are embedding the [DisplayWidget](/cpp-sdk/4.5/api/classes/imfusion-displaywidget) in a Qt window container, you need to postpone initialization to after calling QWidget::createWindowContainer. In this case, set it to false and call [DisplayWidget::init()](/cpp-sdk/4.5/api/classes/imfusion-displaywidget) manually.
+- `parent` — Parent Qt window.
+
+**Warning:** The constructor will throw in case that the [GL::ContextManager](/cpp-sdk/4.5/api/classes/imfusion-gl-contextmanager)'s main context is not a GlQtContext (see class description).
+
+## Member Function Documentation
+
+### addView2D
+
+```cpp
+ImageView2D * ImFusion::DisplayWidgetMulti::addView2D (bool algorithmView = true, bool defaultOverlays = true)
+```
+
+Convenience method to create and add a 2D view with default settings and returns a pointer to the newly created view.
+
+**Parameters:**
+
+- `algorithmView` — Use this view as an algorithm view
+- `defaultOverlays` — Flag whether to add default overlays such as a (hidden) histogram overlay (with a property 'Histogram') and a text overlay including patient information (with a property 'PatientInfo').
+
+### addView2D
+
+```cpp
+void ImFusion::DisplayWidgetMulti::addView2D (ImageView2D * view, bool algorithmView = true, bool defaultOverlays = true)
+```
+
+Add an already existing 2D view and pass ownership.
+
+**Parameters:**
+
+- `view` — a view which is to be added (ownership is passed)
+- `algorithmView` — Use this view as an algorithm view
+- `defaultOverlays` — Flag whether to add the default overlays
+
+### addViewGroup3D
+
+```cpp
+ViewGroup * ImFusion::DisplayWidgetMulti::addViewGroup3D (bool algorithmView = true, bool defaultOverlays = true)
+```
+
+Create and add three MPR views, 3D view combined in a [ViewGroup](/cpp-sdk/4.5/api/classes/imfusion-viewgroup).
+
+**Note:** The layout may not group those views together other than the first added group
+
+**Parameters:**
+
+- `algorithmView` — Use this view as an algorithm view
+- `defaultOverlays` — Flag whether to add the default overlays such as a (hidden) histogram overlay (with a property 'Histogram') and a text overlay including patient information (with a property 'PatientInfo'). The default patient information visibility can be configured with the 'patientInfoVisibility' setting. The 3d view include a (hidden) transfer function overlay (with a property '[TransferFunction](/cpp-sdk/4.5/api/classes/imfusion-transferfunction)'). All views include an orientation overlay (with property 'Orientation').
+
+### addView
+
+```cpp
+bool ImFusion::DisplayWidgetMulti::addView (InteractiveView * view, bool algorithmView, bool defaultOverlays = true)
+```
+
+Add an already existing view and pass ownership.
+
+If the view is not removed before this object is deleted it will be deleted too.
+
+**Parameters:**
+
+- `algorithmView` — Use this view as an algorithm view
+- `defaultOverlays` — Flag whether to add DefaultOverlays::FullscreenButton, DefaultOverlays::ViewOrderButton, as well as optionally DefaultOverlays::DataSelectionButton, DefaultOverlays::ViewOptionsButton, and DefaultOverlays::DisplayOptionsButton if compatible with *view*.
+
+### addView
+
+```cpp
+bool ImFusion::DisplayWidgetMulti::addView (InteractiveView * view)
+```
+
+*inline, override, virtual*
+
+Add view and pass ownership. If the view is not removed before this object is deleted it will be deleted too.
+
+### removeView
+
+```cpp
+bool ImFusion::DisplayWidgetMulti::removeView (InteractiveView * view)
+```
+
+*override, virtual*
+
+Remove view used by an algorithm. The user is responsible for deleting the view.
+
+### setVisibleData
+
+```cpp
+void ImFusion::DisplayWidgetMulti::setVisibleData (const DataList & data)
+```
+
+Visualize the given data in the first 2D view and the first MPR/3D view group where applicable.
+
+If the current layout mode is LayoutSideBySide it will distribute data of the same type across the first and the second 2D view and MPR/3D view group, respectively. Use [InteractiveView::setVisibleData()](/cpp-sdk/4.5/api/classes/imfusion-gui-view) directly if you need to control in which views the data is shown.
+
+### showData
+
+```cpp
+bool ImFusion::DisplayWidgetMulti::showData (Data * data)
+```
+
+Appends data to the visible data by calling [showData()](#showdata) on the first 2D view and the first MPR/3D view group where applicable.
+
+**See also:** [setVisibleData()](#setvisibledata) for replacing the entire set of shown data.
+
+### addSliceManipulator
+
+```cpp
+Interactive < GlSlice > * ImFusion::DisplayWidgetMulti::addSliceManipulator (InteractiveView * view)
+```
+
+Create and add interactive object containing slice object and its manipulator to the specified view.
+
+Returns the created object. If the specified view already contains such object, the method returns this existing object. [DisplayWidgetMulti](/cpp-sdk/4.5/api/classes/imfusion-displaywidgetmulti) is responsible for freeing the memory of manipulator and interactive object itself. The ownership of the [GlSlice](/cpp-sdk/4.5/api/classes/imfusion-glslice) is not taken over
+
+### setShowPatientInformation
+
+```cpp
+void ImFusion::DisplayWidgetMulti::setShowPatientInformation (int val)
+```
+
+Set where patient information should be displayed: 0=Nowhere, 1=First view only, 2=All views.
+
+The patient information is displayed in an overlay in the top left corner of a view. If no patient information is the overlay gets automatically hidden.
+
+### setShowScaleInformation
+
+```cpp
+void ImFusion::DisplayWidgetMulti::setShowScaleInformation (int val)
+```
+
+Set how the scale information overlay should be displayed: 0=None, 1=Horizontal, 2=Vertical, 3=Both.
+
+The horizontal overlay will be displayed at the bottom, the vertical overlay at the left.
+
+### setShowDataSelectionButton
+
+```cpp
+void ImFusion::DisplayWidgetMulti::setShowDataSelectionButton (bool show, const DataItemModel * dataModel)
+```
+
+Sets if the views should contain a button to select the visible data of the view.
+
+The available data that can be shown in a view will be retrieved from the dataModel. The dataModel is only required if show is true. Internally a ImFusion::DataViewModel is used to determine which datasets are compatible with a view.
+
+### addCustomLayout
+
+```cpp
+LayoutMode ImFusion::DisplayWidgetMulti::addCustomLayout (LayoutFunc layout, LayoutFeatures features, const std::string & name = "")
+```
+
+Adds a custom function to provide a layout for the visible views.
+
+The new layout automatically gets assigned the next unused LayoutMode starting from LayoutCustom (e.g. LayoutCustom+2 if there are already two other layouts). The new layout is not used until it is specifically set. The [LayoutFeatures](#layoutfeatures) are an indicator which UI controls need to be enabled/disabled.
+
+**Parameters:**
+
+- `layout` — Function that creates and returns a layout.
+- `features` — Bitwise OR'ed combination of features the layout supports
+- `name` — An optional name for layout. Should be under 20 characters and not contain the word 'Layout'. If empty it will be set according to the mode (e.g. "Custom 2").
+
+**Returns:** the mode the new layout was assigned to
+
+**See also:** [LayoutFunc](#layoutfunc), [ViewLayoutWidget](/cpp-sdk/4.5/api/classes/imfusion-viewlayoutwidget)
+
+### configuration
+
+```cpp
+void ImFusion::DisplayWidgetMulti::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Retrieve the properties of this object.
+
+### configure
+
+```cpp
+void ImFusion::DisplayWidgetMulti::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Set one or multiple properties.
+
+### render
+
+```cpp
+void ImFusion::DisplayWidgetMulti::render (bool swapBuffers = true)
+```
+
+*override, virtual*
+
+Deals with view groups before issuing paint.
+
+### setPatientInfoFormatString
+
+```cpp
+void ImFusion::DisplayWidgetMulti::setPatientInfoFormatString (std::string fmt)
+```
+
+Sets the format string used to produce the patient info overlay.
+
+Placeholders are surrounded by curly &#123;&#125; braces, available placeholders are: patient_name, birthdate, study_date, study_time, modality, patient_sex
+
+Example:
+
+```cpp
+setPatientInfoFormatString("{modality}: {patient_name}({patient_sex}) - {study_date} {study_time}")
+```
+ fragment
+
+### visibleDataChanged
+
+```cpp
+void ImFusion::DisplayWidgetMulti::visibleDataChanged (const DataList & before, const DataList & now)
+```
+
+*signal*
+
+Emitted when any view changes its visible data This is also emitted if the visible data is the same but there are displayed in different views now.
+
+*before* always contains all datasets that where visible before the current change. *now* contains the currently visible data.
+
+### setFocusView
+
+```cpp
+void ImFusion::DisplayWidgetMulti::setFocusView (InteractiveView * view)
+```
+
+*slot*
+
+Moves the view to the focus if the layout supports that.
+
+If the focus view changes, the layout gets reset.
+
+### getViewName
+
+```cpp
+QString ImFusion::DisplayWidgetMulti::getViewName (const InteractiveView * view) const
+```
+
+*slot*
+
+Returns a human-readable name describing the view.
+
+This name is not meant to be a unique identifier for the corresponding view.
+
+### setViewOrder
+
+```cpp
+void ImFusion::DisplayWidgetMulti::setViewOrder (std::vector < InteractiveView * > viewOrder)
+```
+
+Set a custom view order to be used by the display layout.
+
+*viewOrder* must contain only views that are part of this [DisplayWidget](/cpp-sdk/4.5/api/classes/imfusion-displaywidget). Missing views will be appended to the end of the view order in the order they were originally created.
+
+### onViewVisiblityChanged
+
+```cpp
+void ImFusion::DisplayWidgetMulti::onViewVisiblityChanged ()
+```
+
+*override, protected, slot*
+
+A view visibility has changed.
+
+Emits the view\*VisibilityChanged signal if necessary.
+
+### onViewVisiblityChangeRequested
+
+```cpp
+void ImFusion::DisplayWidgetMulti::onViewVisiblityChangeRequested (bool visible)
+```
+
+*override, protected, slot*
+
+A view has requested to change its visibility.
+
+The visibility of the view is set as requested and the layout is reset.

@@ -1,0 +1,58 @@
+---
+title: "ImFusion::Seg"
+sidebarTitle: "Seg"
+description: "Namespace of the Segmentation Plugin plugin."
+---
+
+## Overview
+
+Namespace of the Segmentation Plugin plugin.
+
+## Classes
+
+- class [Brush](/cpp-sdk/4.5/api/classes/imfusion-seg-brush) — Convenience class to facilitate drawing in the views using the [LabelPainter](/cpp-sdk/4.5/api/classes/imfusion-seg-labelpainter).
+- struct [Contour](/cpp-sdk/4.5/api/structs/imfusion-seg-contour) — [Data](/cpp-sdk/4.5/api/classes/imfusion-data) [Structure](/cpp-sdk/4.5/api/classes/imfusion-seg-structure) containing a vector of 3D points as well as metadata such as:
+- class [ContoursStorageComponent](/cpp-sdk/4.5/api/classes/imfusion-seg-contoursstoragecomponent)
+- class [FreeformSelector](/cpp-sdk/4.5/api/classes/imfusion-seg-freeformselector) — Simple class to make it easy to select by hand a portion of a volume.
+- class [LabelMapRefinement](/cpp-sdk/4.5/api/classes/imfusion-seg-labelmaprefinement) — Helper class for post-processing a label map.
+- class [LabelPainter](/cpp-sdk/4.5/api/classes/imfusion-seg-labelpainter) — Class for manually drawing to label maps.
+- class [ReferenceShape](/cpp-sdk/4.5/api/classes/imfusion-seg-referenceshape) — Abstract class defining a reference shape which has been fitted to a segmentation map.
+- class [LinearReferenceShape](/cpp-sdk/4.5/api/classes/imfusion-seg-linearreferenceshape) — Class defining a reference shape for which the conversion between local and world coordinates is a linear map (matrix multiplication + vector).
+- class [Line2DReferenceShape](/cpp-sdk/4.5/api/classes/imfusion-seg-line2dreferenceshape) — Reference with a line shape.
+- class [EllipseReferenceShape](/cpp-sdk/4.5/api/classes/imfusion-seg-ellipsereferenceshape) — Reference with an ellipse section shape.
+- class [SegmentedStructure](/cpp-sdk/4.5/api/classes/imfusion-seg-segmentedstructure) — Interface class that offers methods to obtain measuring markers on a segmented object.
+- class [SegmentedBlob](/cpp-sdk/4.5/api/classes/imfusion-seg-segmentedblob)
+- class [SegmentedStructureWithReference](/cpp-sdk/4.5/api/classes/imfusion-seg-segmentedstructurewithreference)
+- class [SegmentedLine2DStructure](/cpp-sdk/4.5/api/classes/imfusion-seg-segmentedline2dstructure)
+- class [SegmentedEllipseStructure](/cpp-sdk/4.5/api/classes/imfusion-seg-segmentedellipsestructure)
+- class [Structure](/cpp-sdk/4.5/api/classes/imfusion-seg-structure) — A [Structure](/cpp-sdk/4.5/api/classes/imfusion-seg-structure) is a helper class providing a view onto a single label value within a label map.
+- class [StructuresView](/cpp-sdk/4.5/api/classes/imfusion-seg-structuresview) — The [StructuresView](/cpp-sdk/4.5/api/classes/imfusion-seg-structuresview) provides a flattened view onto a given set of label maps.
+- struct [StructureStatistics](/cpp-sdk/4.5/api/structs/imfusion-seg-structurestatistics) — Struct collecting statistics about a [Structure](/cpp-sdk/4.5/api/classes/imfusion-seg-structure).
+- class [StructuresViewAlgorithm](/cpp-sdk/4.5/api/classes/imfusion-seg-structuresviewalgorithm) — ImFusion::Algorithm that wraps around a [StructuresView](/cpp-sdk/4.5/api/classes/imfusion-seg-structuresview) and adds a couple of convenience functions.
+- class [StructuresViewAlgorithmController](/cpp-sdk/4.5/api/classes/imfusion-seg-structuresviewalgorithmcontroller) — [GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui) for the [StructuresViewAlgorithm](/cpp-sdk/4.5/api/classes/imfusion-seg-structuresviewalgorithm).
+- class [StructuresViewRenderer](/cpp-sdk/4.5/api/classes/imfusion-seg-structuresviewrenderer) — Helper class to automatically visualize the content of a [StructuresView](/cpp-sdk/4.5/api/classes/imfusion-seg-structuresview) in a [DisplayWidget](/cpp-sdk/4.5/api/classes/imfusion-displaywidget).
+- class [StructuresViewWidget](/cpp-sdk/4.5/api/classes/imfusion-seg-structuresviewwidget) — [GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui) to show the contents of a [StructuresView](/cpp-sdk/4.5/api/classes/imfusion-seg-structuresview) as a table widget.
+- class [ThresholdTool](/cpp-sdk/4.5/api/classes/imfusion-seg-thresholdtool) — Simple class to set values of a labelMap by doing thresholding on its corresponding image.
+- class [UndoRecorder](/cpp-sdk/4.5/api/classes/imfusion-seg-undorecorder) — Simple class to keep track of data changes in a [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset).
+- class [LambdaManipulator](/cpp-sdk/4.5/api/classes/imfusion-seg-lambdamanipulator) — Utility class to avoid having to subclass the [Manipulator](/cpp-sdk/4.5/api/classes/imfusion-manipulator) class.
+- class [LambdaEventHandler](/cpp-sdk/4.5/api/classes/imfusion-seg-lambdaeventhandler)
+- class [LabelLock](/cpp-sdk/4.5/api/classes/imfusion-seg-labellock) — Convenience class for handling locked/unlocked state of labels.
+- class [WatershedTool](/cpp-sdk/4.5/api/classes/imfusion-seg-watershedtool) — Wrapper class around the [WatershedComputer](/cpp-sdk/4.5/api/classes/imfusion-watershedcomputer) to simplify common use cases.
+
+## Enumerations
+
+- enum class **LabelValidity** &#123; **Valid** , **WrongModality** , **WrongType** , **WrongChannels** , **WrongFrameSize** , **WrongFrameNumber** , **WrongSpacing** &#125;
+
+## Functions
+
+- bool **operator==** (const [Contour](/cpp-sdk/4.5/api/structs/imfusion-seg-contour) &lhs, const [Contour](/cpp-sdk/4.5/api/structs/imfusion-seg-contour) &rhs)
+- bool **operator!=** (const [Contour](/cpp-sdk/4.5/api/structs/imfusion-seg-contour) &lhs, const [Contour](/cpp-sdk/4.5/api/structs/imfusion-seg-contour) &rhs)
+- vec3 **getPixelCoordinatesAt** (const [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) &si, const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &view, const vec3 &world) — Get the pixel coordinates of an image at a given location (works in 2D and 3D views).
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; unsigned char &gt; **getValueAt** (const [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) &si, const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &view, const vec3 &world) — Get the pixel value of an image at a given location Works in 2D and 3D views Return nothing if there is no value at the location.
+- void **showCircleOnView** ([GlCircle](/cpp-sdk/4.5/api/classes/imfusion-glcircle) &circle, const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &view, const vec3 &world) — Moves the given circle to a certain position, such that it is visible in the given view.
+- vec3 **getIntersection** ([DisplayWidgetMultiAdapter](/cpp-sdk/4.5/api/classes/imfusion-displaywidgetmultiadapter) disp) — Get the point at which the MPRs intersect.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &gt; **cutVolume** (const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &sis, const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &view, const [Spline](/cpp-sdk/4.5/api/classes/imfusion-spline) &spline) — Get a volume that indicates elements that are inside and outside when by projecting the spline in the view 0 is inside, 255 is outside.
+- void **centerSliceViewsAt** ([DisplayWidgetMultiAdapter](/cpp-sdk/4.5/api/classes/imfusion-displaywidgetmultiadapter) disp, const vec3 &center, const void \*except, bool withAnim=true, const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data=nullptr) — Move the slice views of the [DisplayWidgetMulti](/cpp-sdk/4.5/api/classes/imfusion-displaywidgetmulti) such that 'center' is visible in all of them except can be a pointer to a [InteractiveView](/cpp-sdk/4.5/api/classes/imfusion-interactiveview), [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) or [ViewInteraction](/cpp-sdk/4.5/api/classes/imfusion-viewinteraction) to indicate that this view should not be moved If withAnim is false, the centering is immediately executed.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &gt; **createCompatibleLabelMap** (const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &sis) — Creates a labelMap that is compatible with the passed.
+- LabelValidity **isCompatibleLabelMap** (const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &sis, const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &labels, bool lenient=false) — if lenient is set to true, certain classes of errors that can be corrected are ignored (such as wrong modality, wrong spacing...)
+- void **ensureCompatibleLabelMap** (const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &image, [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &labels) — Fix the classes of incompatibility that can be fixed.

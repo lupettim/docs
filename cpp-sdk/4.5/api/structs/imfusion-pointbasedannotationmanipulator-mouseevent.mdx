@@ -1,0 +1,54 @@
+---
+title: "ImFusion::PointBasedAnnotationManipulator::MouseEvent"
+sidebarTitle: "MouseEvent"
+description: "Mouse event structure."
+---
+
+`#include <ImFusion/GUI/PointBasedAnnotationManipulator.h>`
+
+## Overview
+
+Mouse event structure.
+
+## Public Types
+
+- enum **EventType** &#123; **NoEvent** = 0 , **PressEvent** = 1 , **MoveEvent** = 2 , **ReleaseEvent** = 3 , **ScrollEvent** = 4 , **DoubleClickEvent** = 5 &#125;
+- enum **Button** &#123; **NoButton** = 0 , **LeftButton** = 1 , **RightButton** = 2 , **MiddleButton** = 4 &#125;
+- enum **Modifier** &#123; **NoModifier** = 0 , **ShiftModifier** = 0x02000000 , **CtrlModifier** = 0x04000000 , **AltModifier** = 0x08000000 &#125;
+
+## Public Member Functions
+
+- [MouseEvent](#mouseevent) (EventType _event, Button _button, int _buttons, int _modifiers, int _x, int _y, int _delta=0) — Construct [MouseEvent](/cpp-sdk/4.5/api/structs/imfusion-pointbasedannotationmanipulator-mouseevent).
+- **MouseEvent** (const QEvent &e)
+
+## Public Attributes
+
+- EventType **event**
+- Button **button**
+- int **buttons**
+- int **modifiers**
+- int **x**
+- int **y**
+- int **delta**
+
+## Constructor & Destructor Documentation
+
+### MouseEvent
+
+```cpp
+ImFusion::PointBasedAnnotationManipulator::MouseEvent::MouseEvent (EventType _event, Button _button, int _buttons, int _modifiers, int _x, int _y, int _delta = 0)
+```
+
+*inline*
+
+Construct [MouseEvent](/cpp-sdk/4.5/api/structs/imfusion-pointbasedannotationmanipulator-mouseevent).
+
+**Parameters:**
+
+- `_event` — Event type.
+- `_button` — Button which triggered the event. For move events this must be NoButton.
+- `_buttons` — Button state when the event was generated. The button state is a combination of LeftButton, RightButton, MiddleButton using the OR operator. For mouse move events, this is all buttons that are pressed down. For mouse press and double click events this includes the button that caused the event. For mouse release events this excludes the button that caused the event.
+- `_modifiers` — Keyboard modifiers when the event was generated. The modifier state is a combination of ShiftModifier, CtrlModifier and AltModifier using the OR operator.
+- `_x` — x-position of mouse in window coordinates
+- `_y` — y-position of mouse in window coordinates
+- `_delta` — Distance that the mouse wheel is rotated. A single step of the mouse wheel is 120.

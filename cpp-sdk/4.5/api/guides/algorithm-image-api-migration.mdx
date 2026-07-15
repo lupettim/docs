@@ -1,0 +1,213 @@
+---
+title: "Algorithm/Image API Migration Guide"
+description: "With SDK versions 2.20 and 2.21 the Algorithm and Image API has undergone an extensive overhaul."
+---
+
+With SDK versions 2.20 and 2.21 the [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) and [Image](/cpp-sdk/4.5/api/classes/imfusion-image) API has undergone an extensive overhaul.
+
+Often there is a 1-to-1 mapping between the legacy API and the modern API. However, the new API provides a bunch of new interfaces for increased convenience. This page lists how common usage patters can be mapped to the new API.
+
+Summary of the changes:
+
+- Algorithm::output(DataList&) was declared deprecated, use the new [Algorithm::takeOutput()](/cpp-sdk/4.5/api/classes/imfusion-algorithm) instead. The default implementation of these two member functions forward to the repsective other to maintain compatibility of existing code.
+- Introduce [Algorithm::FactoryInfo](/cpp-sdk/4.5/api/structs/imfusion-algorithm-factoryinfo) struct with corresponding getters/setters to store information about how an [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) was created by the factory. Naming is explicit to make intentions clear.
+- Algorithm::input(), Algorithm::setName(), and Algorithm::name() are deprecated. Use the [Algorithm::FactoryInfo](/cpp-sdk/4.5/api/structs/imfusion-algorithm-factoryinfo) struct instead. Algorithm::setInput() has been removed completely because of its highly confusing semantics.
+- Removed unused Algorithm::categories() interface.
+- The AlgorithmListener interface was deprecated and replaced by dedicated signals [Algorithm::signalParametersChanged](/cpp-sdk/4.5/api/classes/imfusion-algorithm) and [Algorithm::signalOutputChanged](/cpp-sdk/4.5/api/classes/imfusion-algorithm). [AlgorithmController](/cpp-sdk/4.5/api/classes/imfusion-algorithmcontroller) now inherits from [SignalReceiver](/cpp-sdk/4.5/api/classes/imfusion-signalreceiver) and will connect to these signals on construction.
+
+### Algorithm::output()
+
+Algorithm::output() has been superseeded with [Algorithm::takeOutput()](/cpp-sdk/4.5/api/classes/imfusion-algorithm) offering clearer ownership semantics:
+
+```cpp
+// legacy version
+void Algorithm::output(DataList& dataOut)
+{
+ if (m_imgOut)
+        dataOut.add(m_imgOut.release());
+}
+
+// new version
+OwningDataList Algorithm::takeOutput()
+{
+ // you can also safely move in a vector<unique_ptr<Data>>
+ return OwningDataList(std::move(m_imgOut));
+}
+```
+ fragment
+
+### Algorithm::setInput() et al.
+
+If you were using Algorithm::setInput(), Algorithm::input(), Algorithm::setName(), or Algorithm::name(), chances are high that those functions did not actually do what you expect since they are only about tracking information for factories/workspaces and could not be used to dynamically exchange the input data of an algorithm. In case you want to actually access the factory information, this is now available through the FactoryInfo struct returned by [Algorithm::factoryInfo()](/cpp-sdk/4.5/api/classes/imfusion-algorithm).
+
+Summary of the changes:
+
+- Usage of the [Image](/cpp-sdk/4.5/api/classes/imfusion-image) base class as image descriptor has been deprecated. Use the new [ImageDescriptor](/cpp-sdk/4.5/api/structs/imfusion-imagedescriptor) struct instead, which avoid ambiguous function overloads taking an [Image](/cpp-sdk/4.5/api/classes/imfusion-image) as polymorphic argument.
+- Member functions of [Image](/cpp-sdk/4.5/api/classes/imfusion-image), [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage), and [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) that use owning raw pointers have been deprecated. The new overloads with [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html) or [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html) should be used instead.
+- [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) has been refactored to hold its SharedImages in a [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html). This makes the previous container mode (own flag) obsolete and deprecated. Copy the [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html) directly to model 'container' SharedImageSets providing a view onto images. You can access the std::shared_ptrs via [SharedImageSet::getShared()](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) and [SharedImageSet::images()](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset).
+- The SharedImageSetIterator has been deprecated because of confusing semantics.
+- As a corollary, the interface to clone a [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) has been overhauled as well: clone() and nonOwningClone() have been deprecated, use the new SharedImageSet::clone2() member function instead (clone2() will be renamed to clone() once the old deprecated functions have been removed completely).
+- The ImageListener interface has been deprecated. There is no planned replacement. Use the shared ownership models of SharedImage/SharedImageSet if you want to implement shared ownership of image data.
+
+### Creating a new MemImage from a template image
+
+We introduced the [ImageDescriptor](/cpp-sdk/4.5/api/structs/imfusion-imagedescriptor) class enabling you to easily copy over the core aspects of an image and optionally adjusting them:
+
+```cpp
+// legacy version, shift and scale was forgotten to copy over (probably a bug)
+int channelsRef = imageRef->channels();
+int width = imageRef->width();
+int height = imageRef->height();
+int slices = imageRef->slices();
+
+TypedImage<float>* outTypedImage = new TypedImage<float>(Image::FLOAT, width, height, slices, outChannels);
+outTypedImage->setSpacing(memImageRef->spacing(), memImageRef->isMetric());
+
+// new version
+ImageDescriptor imgDesc = imageRef->descriptor();
+imgDesc.channels = outChannels;
+std::unique_ptr<TypedImage<float>> outTypedImage = TypedImage<float>::create(imgDesc);
+```
+ fragment
+
+### Creating a new TypedImage from scratch
+
+The legacy [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage) constructor asked for the pixel type while at the same time ignoring it since it's already given by the template type:
+
+```cpp
+// legacy version
+auto img = std::make_unique<TypedImage<unsigned char>>(Image::UBYTE, width, height, slices)
+
+// new version
+auto img = std::make_unique<TypedImage<unsigned char>>(vec3i(width, height, slices));
+```
+ fragment
+
+### Creating a SharedImage from an existing Image
+
+We fixed the very odd ownership semantics of the [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) constructor:
+
+```cpp
+// legacy version
+// SharedImage ctor takes argument by reference but actually assumes it's a heap object and takes ownership
+TypedImage<float>* outMem = new TypedImage<float>(...);
+m_imgOut = new SharedImage(*outMem);
+
+// new version
+// this also works with stack objects (rare use case but it might exist)
+auto outMem = std::make_unique<TypedImage<float>>(...);
+m_imgOut = new SharedImage(std::move(outMem));
+```
+ fragment
+
+### Cloning of SharedImages
+
+We made cloning a [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) and all of its properties easier and more idiomatic:
+
+```cpp
+// legacy version (deformation not copied over: on purpose or oversight?)
+m_imgOut = std::make_unique<SharedImageSet>();
+SharedImage* imgNew = new SharedImage(*m_imgIn[n]->mem(i)->clone());
+imgNew->setModality(m_imgIn[n]->get(i)->modality());
+imgNew->setMatrix(m_imgIn[n]->matrix(i));
+m_imgOut->add(imgNew);
+if (m_imgIn[n]->mask(i))
+    m_imgOut->setMask(m_imgIn[n]->mask(i), m_imgOut->size() - 1);
+
+// new version
+m_imgOut->add(m_imgIn[n]->get(i)->clone2(SharedImage::CloneOptions::NoDeformation));
+```
+ fragment
+
+### Updating an Image inside a SharedImage
+
+Updating a [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) with new image content has become easier and more explicit:
+
+```cpp
+// legacy version
+SharedImage* si = ...;
+si->mem()->crop(...);     // internal reallocation is hidden
+si->setDirtyMem();        // do not forget to mark as dirty
+
+// new version
+SharedImage* si = ...;
+si->assign(ImageProcessing::createCropped(*si->mem(), ...));     // needed reallocation explicit, directly marks the MemImage as dirty
+```
+ fragment
+
+### Container (non-owning) SharedImageSets
+
+The legacy [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) API offered a "container" mode where it would not own the SharedImages inside. This was error-prone, highly implicit, and algorithms could easily break stuff when they were not aware of this caveat. The new [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) API stores its SharedImages in std::shared_ptrs so that use cases where images need to be shared across multiple SharedImageSets become very natural:
+
+```cpp
+// legacy version
+void foo(SharedImageSet* input)
+{
+    SharedImageSet container(false);
+ for (int i = 0; i < input->size(); ++i)
+        container.add(input->get(i));
+
+    SomeFanyAlgorthm::compute(container);
+}
+
+// new version
+void foo(SharedImageSet* input)
+{
+ // Option 1a: manually copy the shared images
+    SharedImageSet container;
+ for (int i = 0; i < input->size(); ++i)
+        container.add(input->getShared(i));
+
+ // Option 1b: manually copy the shared images in a single call
+    SharedImageSet container;
+    container.add(input->images());
+
+ // Option 2: use the CloneOption to shallow-copy the underlying image data but create new SharedImage instances.
+ // This option has different semantics because it will actually clone the underlying SharedImages,
+ // however the shared_ptr<Image> inside the SharedImage will remain the same. This is useful if
+ // you want to maintain all metadata of the SharedImageSet but exchange the image content.
+ std::unique_ptr<SharedImageSet> copy = input->clone2(SharedImageSet::ShallowImageCopy);
+
+    SomeFanyAlgorthm::compute(container);
+}
+```
+ fragment
+
+### Iterating over the images of a SharedImageSet
+
+The SharedImageSetIterator has been deprecated because of it's unclear semantics. Iterate over [SharedImageSet::images()](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) or [SharedImageSet::selectedImages()](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) instead:
+
+```cpp
+// legacy version
+SharedImageSet* sis = ...
+for (SharedImage* si : sis)
+{
+    [...]  // unclear over which images we iterate
+}
+
+// new version
+SharedImageSet* sis = ...
+for (std::shared_ptr<SharedImage>& si : sis->images())
+    [...]
+for (std::shared_ptr<SharedImage>& si : sis->selectedImages(Selection::NonePolicy::All))
+    [...]
+```
+ fragment
+The majority of basic image processing functions in [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) / [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage) has been deprecated. Use the new free functions in the [ImageProcessing](/cpp-sdk/4.5/api/namespaces/imfusion-imageprocessing) namespace instead. These functions will always create a new [Image](/cpp-sdk/4.5/api/classes/imfusion-image) instance if the image descriptor changes. You can use move assignment or [std::swap](http://en.cppreference.com/w/cpp/algorithm/swap.html) to mimic an in-place processing operation.
+
+### MemImage/TypedImage Processing
+
+The image processing member functions of MemImage/TypedImage have been deprecated. Use the free functions in the [ImageProcessing](/cpp-sdk/4.5/api/namespaces/imfusion-imageprocessing) namespace which are more powerful, more explicit and exhibit proper memory ownership semantics:
+
+```cpp
+// legacy version
+TypedImage<float>* imageFloat = curImage->mem()->createFloat(true, false, true);
+imageFloat->flip();
+
+// new version
+std::unique_ptr<TypedImage<float>> imageFloat = ImageProcessing::createFloat(
+    *curImage->mem(),
+    {ImageProcessing::Normalization::TypeRange, ImageProcessing::Normalization::ApplyShiftAndScale});
+ImageProcessing::flip(*imageFloat);
+```
+ fragment

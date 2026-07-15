@@ -1,0 +1,43 @@
+---
+title: "ImFusion::TensorFactory"
+sidebarTitle: "TensorFactory"
+description: "Factory for creating standard type tensors up to a certain maximum rank."
+---
+
+`#include <ImFusion/Base/Tensor.h>`
+
+## Overview
+
+Factory for creating standard type tensors up to a certain maximum rank.
+
+The maxRank variable can be changed according to your needs if required. However, since the compiler will generate code for all possible permitted ranks, the executable size will grow along with maxRank.
+
+## Classes
+
+- struct [RankFactory&lt; TensorFactory::maxRank &gt;](/cpp-sdk/4.5/api/structs/imfusion-tensorfactory-rankfactory)
+
+## Static Public Member Functions
+
+- static [TensorBase](/cpp-sdk/4.5/api/classes/imfusion-tensorbase) \* **create** (size_t rank) — Returns a tensor of the given rank and type or null if either the rank is too high or the type non-standard.
+
+## Static Public Attributes
+
+- static const size_t [maxRank](#maxrank) — Compiler will generate factories up to this rank. Public because other code dealing with tensor IO has to know.
+
+## Member Data Documentation
+
+### maxRank
+
+```cpp
+const size_t ImFusion::TensorFactory::maxRank
+```
+
+*static*
+
+**Initial value:**
+```cpp
+                =
+4
+```
+ fragment
+Compiler will generate factories up to this rank. Public because other code dealing with tensor IO has to know.

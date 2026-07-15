@@ -1,0 +1,105 @@
+---
+title: "ImFusion::GlEllipse"
+sidebarTitle: "GlEllipse"
+description: "Ellipse annotation."
+---
+
+`#include <ImFusion/GL/GlEllipse.h>`
+
+## Overview
+
+Ellipse annotation.
+
+## Public Member Functions
+
+- void [draw](#draw) (const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &[view](/cpp-sdk/4.5/api/classes/imfusion-glannotation)) override — Draw the object in 3D space.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [typeName](#typename) () const override — Return unique identifier for this object class used for serialization.
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Set one or multiple properties.
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Retrieve the properties of this object.
+- bool [hitTestLine2D](#hittestline2d) (int x, int y, const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &[view](/cpp-sdk/4.5/api/classes/imfusion-glannotation)) const override — Checks whether the line between handles gets hit (if not a straight line, override this in the annotation).
+- bool [sampleRenderPath](#samplerenderpath) (int samples, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; &out) const override — For annotations where the rendered shape differs from the stored points, this method returns true and a set of points on the rendered curve.
+- vec3 **center** () const
+- void **setCenter** (const vec3 &c)
+- void **setAllowAllPoints** (bool v) — If set to false (default) the first 2 points have to form the major axis for the ellipse to be valid.
+- void [updatePoints](#updatepoints) () override — Update the internal point structure.
+
+## Protected Attributes
+
+- vec3 **m_center** = vec3::Zero()
+- bool **m_fitPoints** = false
+
+## Member Function Documentation
+
+### draw
+
+```cpp
+void ImFusion::GlEllipse::draw (const GlView & view)
+```
+
+*override, virtual*
+
+Draw the object in 3D space.
+
+### typeName
+
+```cpp
+std::string ImFusion::GlEllipse::typeName () const
+```
+
+*inline, override, virtual*
+
+Return unique identifier for this object class used for serialization.
+
+### configure
+
+```cpp
+void ImFusion::GlEllipse::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Set one or multiple properties.
+
+### configuration
+
+```cpp
+void ImFusion::GlEllipse::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Retrieve the properties of this object.
+
+### hitTestLine2D
+
+```cpp
+bool ImFusion::GlEllipse::hitTestLine2D (int x, int y, const GlView & view) const
+```
+
+*override, virtual*
+
+Checks whether the line between handles gets hit (if not a straight line, override this in the annotation).
+
+### sampleRenderPath
+
+```cpp
+bool ImFusion::GlEllipse::sampleRenderPath (int samples, std::vector < vec3 > & out) const
+```
+
+*override, virtual*
+
+For annotations where the rendered shape differs from the stored points, this method returns true and a set of points on the rendered curve.
+
+Otherwise it returns false and the control points.
+
+### updatePoints
+
+```cpp
+void ImFusion::GlEllipse::updatePoints ()
+```
+
+*override, virtual*
+
+Update the internal point structure.
+
+Should be implemented by subtypes which have custom data depending on the point data. Derived implementation needs to call base class implementation.

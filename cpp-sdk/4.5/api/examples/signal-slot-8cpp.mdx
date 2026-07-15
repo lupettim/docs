@@ -1,0 +1,71 @@
+---
+title: "SignalSlot.cpp"
+---
+
+```cpp
+// clang-format off
+#include <ImFusion/Core/Signal.h>
+using namespace ImFusion;
+
+class MySubject
+{
+public:
+ Signal<> signal1;
+ ProtectedSignal<int, std::string> signal2;
+};
+
+MySubject subject;
+
+subject.signal2.connect([](int i, std::string s) {
+ std::cout << "Signal2 was emitted with int " << i << " and string " << s << ".";
+});
+
+// create a connection and store the connection object.
+std::shared_ptr<const SignalConnection> connection = subject.signal1.connect([]() { std::cout << "Signal1 was emitted."; });
+
+// ...
+
+// when needed disconnect the observer
+connection->disconnect();
+
+// Inherit from SignalReceiver to allow for lifetime-tracking.
+class MyObserver : public SignalReceiver
+{
+public:
+ void onEvent() { std::cout << "MyObserver has been notified."; }
+}
+
+{
+    MyObserver observer;
+
+ // establish automatic lifetime tracking by passing a reference to the observer instance
+    subject.signal1.connect(&observer, [&observer]() { observer.onEvent(); });
+ // alternative/simpler overload for member functions:
+    subject.signal1.connect(&observer, &MyObserver::onEvent);
+}
+// Since MyObserver inherits from SignalReceiver and the object instance was provided when
+// connecting to the signal, both connections will be disconnected automatically when observer
+// is destroyed on scope exit.
+
+Signal<> signal;
+MyObserver observer1, observer2;
+auto connection1 = signal.connect(&observer1, &MyObserver::onEvent);
+auto connection2 = signal.connect(&observer2, &MyObserver::onEvent);
+
+{
+ SignalBlocker blocker(signal);    // temporary blocks all connections of signal
+ signal.emitSignal();              // neither observer1 nor observer2 will be notified
+}
+{
+ SignalBlocker blocker(*connection1);    // temporary blocks only connection1
+ signal.emitSignal();                    // only observer2 will  be notified
+}
+{
+ SignalBlocker b(signal, observer2);    // temporary blocks all connections between signal and observer2
+ signal.emitSignal();                   // only observer1 will  be notified
+}
+
+// notifies both observer1 and observer2 since signals/connections are no longer blocked
+signal.emitSignal();
+```
+ fragment

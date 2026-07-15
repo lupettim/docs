@@ -1,0 +1,92 @@
+---
+title: "ImFusion::GlSliceRenderer"
+sidebarTitle: "GlSliceRenderer"
+description: "Interface for a class that can render data into a GlSlice/GlSliceView."
+---
+
+`#include <ImFusion/GL/GlSliceRenderer.h>`
+
+## Overview
+
+Interface for a class that can render data into a GlSlice/GlSliceView.
+
+Implement the [Configurable](/cpp-sdk/4.5/api/classes/imfusion-configurable) interface in order to provide an automatically generated [GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui) for configuration when using the [InteractiveViewOptionsOverlay](/cpp-sdk/4.5/api/classes/imfusion-interactiveviewoptionsoverlay).
+
+**See also:** [ImageView2D](/cpp-sdk/4.5/api/classes/imfusion-imageview2d), [GlSliceView](/cpp-sdk/4.5/api/classes/imfusion-glsliceview), [GlSlice](/cpp-sdk/4.5/api/classes/imfusion-glslice), [InteractiveViewOptionsOverlay](/cpp-sdk/4.5/api/classes/imfusion-interactiveviewoptionsoverlay)
+
+## Public Member Functions
+
+- **GlSliceRenderer** ()=default — Creates a new [GlSliceRenderer](/cpp-sdk/4.5/api/classes/imfusion-glslicerenderer) using the given decorator for masking.
+- virtual [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [name](#name) () const =0 — Returns the name for identification/GUI usage of this slice renderer.
+- virtual bool [accepts](#accepts) (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data) const =0 — Returns whether this slice renderer is capable of displaying the given data.
+- virtual void [render](#render) (const [GL::ViewState](/cpp-sdk/4.5/api/classes/imfusion-gl-viewstate) &viewState, const [Slice](/cpp-sdk/4.5/api/classes/imfusion-slice) &slice, const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) &data, const [DisplayOptions2d](/cpp-sdk/4.5/api/classes/imfusion-displayoptions2d) &displayOptions, bool encodeDistance)=0 — Renders the data in the given configuration.
+- virtual mat4 [defaultPose](#defaultpose) (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) &data, [Slice::AnatomicalPlane](/cpp-sdk/4.5/api/classes/imfusion-slice) originalPlane) const =0 — Returns the default view matrix to use for showing the given dataset in a slice view of the given anatomical plane.
+- virtual vec2 [extent](#extent) (const [Slice](/cpp-sdk/4.5/api/classes/imfusion-slice) &slice, const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) &data)=0 — Returns the 2D extent of the *data* when rendering it onto *slice* in pixels.
+
+## Member Function Documentation
+
+### name
+
+```cpp
+virtual std::string ImFusion::GlSliceRenderer::name () const
+```
+
+*pure virtual*
+
+Returns the name for identification/GUI usage of this slice renderer.
+
+### accepts
+
+```cpp
+virtual bool ImFusion::GlSliceRenderer::accepts (const Data * data) const
+```
+
+*pure virtual*
+
+Returns whether this slice renderer is capable of displaying the given data.
+
+### render
+
+```cpp
+virtual void ImFusion::GlSliceRenderer::render (const GL::ViewState & viewState, const Slice & slice, const Data & data, const DisplayOptions2d & displayOptions, bool encodeDistance)
+```
+
+*pure virtual*
+
+Renders the data in the given configuration.
+
+**Parameters:**
+
+- `viewState` — GlState object defining view and projection matrices.
+- `slice` — [Slice](/cpp-sdk/4.5/api/classes/imfusion-slice) on which to render the data.
+- `data` — The data to render
+- `displayOptions` — The display options to use for rendering.
+- `encodeDistance` — Flag whether to encode the distance to the border in the secondary color buffer.
+
+**Note:** Call this method only with data that is accepted by this renderer.
+
+### defaultPose
+
+```cpp
+virtual mat4 ImFusion::GlSliceRenderer::defaultPose (const Data & data, Slice::AnatomicalPlane originalPlane) const
+```
+
+*pure virtual*
+
+Returns the default view matrix to use for showing the given dataset in a slice view of the given anatomical plane.
+
+This function is for instance use by the reset function of ImageView2D/GlSliceView.
+
+**Note:** Call this method only with data that is accepted by this renderer.
+
+### extent
+
+```cpp
+virtual vec2 ImFusion::GlSliceRenderer::extent (const Slice & slice, const Data & data)
+```
+
+*pure virtual*
+
+Returns the 2D extent of the *data* when rendering it onto *slice* in pixels.
+
+**Note:** Call this method only with data that is accepted by this renderer.

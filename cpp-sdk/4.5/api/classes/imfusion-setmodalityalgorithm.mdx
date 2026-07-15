@@ -1,0 +1,69 @@
+---
+title: "ImFusion::SetModalityAlgorithm"
+sidebarTitle: "SetModalityAlgorithm"
+description: "Sets the modality flag of an image data set."
+---
+
+`#include <ImFusion/Base/SetModalityAlgorithm.h>`
+
+## Overview
+
+Sets the modality flag of an image data set.
+
+## Public Member Functions
+
+- **SetModalityAlgorithm** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*img) — Creates the algorithm instance with an image.
+- **SetModalityAlgorithm** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* &gt; &imgs) — Creates the algorithm instance with multiple images.
+- void **setModality** ([Data::Modality](/cpp-sdk/4.5/api/classes/imfusion-data) modality) — Sets the modality to apply on the data.
+- void **setResetDisplayOptions** (bool value) — Sets the flag whether to reset the DisplayOptions to the default for the new modality.
+- const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* **image** () const — Read-only access to the image.
+
+## Methods implementing the algorithm interface
+
+- void [compute](#compute) () override — Execute the algorithm.
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=0)
+
+## Methods implementing the Configurable interface
+
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+## Member Function Documentation
+
+### compute
+
+```cpp
+void ImFusion::SetModalityAlgorithm::compute ()
+```
+
+*override, virtual*
+
+Execute the algorithm.
+
+### configure
+
+```cpp
+void ImFusion::SetModalityAlgorithm::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### configuration
+
+```cpp
+void ImFusion::SetModalityAlgorithm::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality

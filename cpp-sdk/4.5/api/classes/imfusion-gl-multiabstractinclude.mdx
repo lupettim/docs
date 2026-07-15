@@ -1,0 +1,45 @@
+---
+title: "ImFusion::GL::MultiAbstractInclude< BaseIncludeType, IncludeArgumentsTypes >"
+sidebarTitle: "MultiAbstractInclude< BaseIncludeType, IncludeArgumentsTypes >"
+description: "Concrete type for an instance of a Multi-AbstractInclude."
+---
+
+`#include <ImFusion/Core/GL/MultiAbstractInclude.h>`
+
+## Overview
+
+template&lt;typename BaseIncludeType, typename... IncludeArgumentsTypes&gt;
+
+class ImFusion::GL::MultiAbstractInclude&lt; BaseIncludeType, IncludeArgumentsTypes &gt;
+Concrete type for an instance of a Multi-AbstractInclude.
+
+Developers are not meant to manually construct instances of this type but shall use [MultiIncludable::createMultiInclude()](/cpp-sdk/4.5/api/classes/imfusion-gl-multiincludable) instead.
+
+**See also:** [MultiIncludable](/cpp-sdk/4.5/api/classes/imfusion-gl-multiincludable)
+
+## Public Member Functions
+
+- int [setIncludeArguments](#setincludearguments) ([Program](/cpp-sdk/4.5/api/classes/imfusion-gl-program) &prog, IncludeArgumentsTypes... includeArgs) — Specialization of [MultiIncludable::setIncludeArguments()](/cpp-sdk/4.5/api/classes/imfusion-gl-multiincludable) so that users do not need to repeat the token.
+- **MultiAbstractInclude** (private_cookie, BaseIncludeType \*baseInclude, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &baseToken, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &replacementToken, [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; ShaderTextReplacement &gt; replacementScheme)
+
+## Member Function Documentation
+
+### setIncludeArguments
+
+```cpp
+template<typename BaseIncludeType, typename... IncludeArgumentsTypes> int ImFusion::GL::MultiAbstractInclude < BaseIncludeType, IncludeArgumentsTypes >::setIncludeArguments (Program & prog, IncludeArgumentsTypes... includeArgs)
+```
+
+*inline*
+
+Specialization of [MultiIncludable::setIncludeArguments()](/cpp-sdk/4.5/api/classes/imfusion-gl-multiincludable) so that users do not need to repeat the token.
+
+Interface that multi includes should use to configure the shader include (such as setting uniforms, binding textures, etc).
+
+The return value shall indicate the number of textures bound to the program.
+
+**Parameters:**
+
+- `prog` — Shader instance to configure
+- `includeArgs` — List of custom arguments the user needs to provide in order to configure the include
+- `token` — Text fragment to distinguish multiple include instances: The [MultiIncludable](/cpp-sdk/4.5/api/classes/imfusion-gl-multiincludable) framework will ensure that this contains the replacement token of a concrete multi include instance.

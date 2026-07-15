@@ -1,0 +1,70 @@
+---
+title: "ImFusion::ImageDownsampler"
+sidebarTitle: "ImageDownsampler"
+description: "Manager for image downsampling/upsampling."
+---
+
+`#include <ImFusion/Base/ImageDownsampler.h>`
+
+## Overview
+
+Manager for image downsampling/upsampling.
+
+This class should be used when some computations should be executed on an image with a lower resolution. The intended workflow is : OriginalImage -(ImageDownsampler::downsample)-&gt; DownsampledImage -(SomeAlgorithm)-&gt; DownsampledOutput -(ImageDownsampler::upsample)-&gt; Output
+
+If the input image has a mask, the mask will be converted to an [ExplicitMask](/cpp-sdk/4.5/api/classes/imfusion-explicitmask) and resampled as well.
+
+## Public Types
+
+- enum [ResamplingMode](#resamplingmode) &#123; MAXDIMENSION , MAXDIMENSION_EQUAL , MAXSIZE , MAXSIZE_EQUAL , MAXSPACING , MINSPACING , SPACING_EQUAL &#125;
+- enum [ResamplingMethod](#resamplingmethod) &#123; NEAREST , LINEAR , HYBRID &#125;
+
+## Public Member Functions
+
+- **ImageDownsampler** (const vec3 &originalSpacing, [ResamplingMode](#resamplingmode) mode, double resamplingParameter, [ResamplingMethod](#resamplingmethod) method)
+- void **downsample** (const [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*inIm, [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*&outIm, bool labelMode=false, bool zeroMask=false)
+- void **downsample** (const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*inIm, [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*&outIm, bool labelMode=false, bool zeroMask=false)
+- void **upsample** (const [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*inIm, [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*&outIm, bool labelMode=false, bool zeroMask=false)
+- void **upsample** (const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*inIm, [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*&outIm, bool labelMode=false, bool zeroMask=false)
+- bool **different** (const [Image](/cpp-sdk/4.5/api/classes/imfusion-image) \*desc) const — Returns true if the resulting image dimensions are different and hence processing is necessary.
+
+## Protected Attributes
+
+- vec3 **m_originalSpacing**
+- [ResamplingMode](#resamplingmode) **m_mode**
+- [ResamplingMethod](#resamplingmethod) **m_method**
+- double **m_resamplingParam**
+- int **m_newWidth**
+- int **m_newHeight**
+- int **m_newSlices**
+- double **m_newSpacing** [3]
+
+## Member Enumeration Documentation
+
+### ResamplingMode
+
+```cpp
+enum ImFusion::ImageDownsampler::ResamplingMode
+```
+
+**Enumerator:**
+
+- `MAXDIMENSION` — Scales down all dimensions by a common factor such that the maximum dimension is equal to the resampling parameter.
+- `MAXDIMENSION_EQUAL` — Sets all dimensions to be equal to the resampling parameter.
+- `MAXSIZE` — Scales down all dimensions by a common factor such that the total data size is equal to the resampling parameter.
+- `MAXSIZE_EQUAL` — Sets all dimensions to be equal and such that the total data size is equal to the resampling parameter.
+- `MAXSPACING` — Scales down all dimensions by a common factor such that the maximum spacing is equal to the resampling parameter.
+- `MINSPACING` — Scales down all dimensions by a common factor such that the minimum spacing is equal to the resampling parameter.
+- `SPACING_EQUAL` — Sets the spacing of all dimensions to be equal to the resampling parameter.
+
+### ResamplingMethod
+
+```cpp
+enum ImFusion::ImageDownsampler::ResamplingMethod
+```
+
+**Enumerator:**
+
+- `NEAREST` — Nearest neighbor interpolation.
+- `LINEAR` — Linear interpolation.
+- `HYBRID` — Nearest for downsampling, linear for upsampling.

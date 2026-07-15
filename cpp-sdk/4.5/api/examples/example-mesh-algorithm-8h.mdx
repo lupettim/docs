@@ -1,0 +1,57 @@
+---
+title: "ExampleMeshAlgorithm.h"
+---
+
+```cpp
+#ifndef EXAMPLE_MESH_ALGORITHM_H
+#define EXAMPLE_MESH_ALGORITHM_H
+
+#include <ImFusion/Base/Algorithm.h>
+#include <ImFusion/Base/PointCloud.h>
+
+namespace ImFusion
+{
+ class Mesh;
+ // An example algorithm that does some processing on a Mesh and converts it to a PointCloud.
+ //
+ // This algorithm demonstrates how to import a Mesh, how to work directly on a given Mesh,
+ // and how to use other algorithms to process a Mesh.
+ //
+ // If started without input data the algorithm tries to open the filename given in the
+ // respective controller input as a Mesh and return the loaded Mesh.
+ // Supported file types are stl, off, vtk, ply, obj, surf, grid, 3mf.
+ //
+ // If started on a Mesh the algorithm takes the Mesh, decimates and smoothes its copy,
+ // and generates a point cloud from it, which is then returned as the algorithm's output.
+ // The controller offers parameters for decimation and smoothing.
+ //
+ class ExampleMeshAlgorithm : public Algorithm
+    {
+ public:
+        ExampleMeshAlgorithm();
+ explicit ExampleMeshAlgorithm(const ImFusion::Mesh* mesh);
+        ~ExampleMeshAlgorithm();
+
+ static bool createCompatible(const DataList& data, Algorithm** a = 0);
+
+ void compute() override;
+        OwningDataList takeOutput() override;
+
+ void configure(const Properties* p) override;
+ void configuration(Properties* p) const override;
+
+ private:
+ void computeMeshImport();
+ void computeMeshProcessing();
+ const ImFusion::Mesh* m_inputMesh;                 // input
+ std::unique_ptr<PointCloud> m_outputPointCloud;    // output option 1
+ std::unique_ptr<ImFusion::Mesh> m_outputMesh;      // output option 2
+ double m_decimMaxEdgeLength;
+ int m_smoothIterations;
+ std::string m_filePath;
+    };
+}
+
+#endif
+```
+ fragment

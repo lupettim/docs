@@ -1,0 +1,40 @@
+---
+title: "ImFusion::TransferFunctionFactory"
+sidebarTitle: "TransferFunctionFactory"
+description: "Collection of factory functions for transfer function presets."
+---
+
+`#include <ImFusion/GL/TransferFunction.h>`
+
+## Overview
+
+Collection of factory functions for transfer function presets.
+
+,
+
+## Creator functions for presets
+
+- static [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [TransferFunction](/cpp-sdk/4.5/api/classes/imfusion-transferfunction) &gt; [createUltrasoundColorPreset](#createultrasoundcolorpreset) ()
+- static [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [TransferFunction](/cpp-sdk/4.5/api/classes/imfusion-transferfunction) &gt; **createUltrasoundGrayPreset** () — Creates a mostly grayscale transfer function preset to be used with ultrasound images, specifically in chroma-depth/gradient-free-shading rendering modes.
+- static [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [TransferFunction](/cpp-sdk/4.5/api/classes/imfusion-transferfunction) &gt; **createUltrasoundGrayWithSilhouettesPreset** () — Creates a mostly grayscale transfer function preset showing silhouettes to be used with ultrasound images, specifically in chroma-depth/gradient-free-shading rendering modes.
+- static [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [TransferFunction](/cpp-sdk/4.5/api/classes/imfusion-transferfunction) &gt; **createCtCardiacPreset** () — Creates a transfer function preset to be used with CT cardiac data.
+- static [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [TransferFunction](/cpp-sdk/4.5/api/classes/imfusion-transferfunction) &gt; **createCtBonePreset** () — Creates a transfer function preset to be used with CT bone data.
+- static [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [TransferFunction](/cpp-sdk/4.5/api/classes/imfusion-transferfunction) &gt; **createCtLungPreset** () — Creates a transfer function preset to be used with CT lung data.
+- static [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [TransferFunction](/cpp-sdk/4.5/api/classes/imfusion-transferfunction) &gt; **createCtSkinSoftTissueBonePreset** () — Creates a transfer function preset to be used with CT data showing skin, soft tissue, and bone.
+- static [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [TransferFunction](/cpp-sdk/4.5/api/classes/imfusion-transferfunction) &gt; **createMriAngioPreset** (const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &image) — Creates a transfer function preset to be used with MRI angio data.
+- static [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [TransferFunction](/cpp-sdk/4.5/api/classes/imfusion-transferfunction) &gt; **createMriDefaultPreset** (const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &image) — Creates a transfer function preset to be used with generic MRI data.
+- static [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [TransferFunction](/cpp-sdk/4.5/api/classes/imfusion-transferfunction) &gt; **createMriMusclePreset** (const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &image) — Creates a transfer function preset to be used with MRI muscle data.
+- static [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [TransferFunction](/cpp-sdk/4.5/api/classes/imfusion-transferfunction) &gt; **createPetPreset** (const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &image) — Creates a transfer function preset to be used with PET data.
+- static [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [TransferFunction](/cpp-sdk/4.5/api/classes/imfusion-transferfunction) &gt; **createJetColormap** (const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &image) — Creates a transfer function representing the classic Jet color map.
+
+## Member Function Documentation
+
+### createUltrasoundColorPreset
+
+```cpp
+std::unique_ptr < TransferFunction > ImFusion::TransferFunctionFactory::createUltrasoundColorPreset ()
+```
+
+*static*
+
+Creates a colorful transfer function preset to be used with ultrasound images, specifically in regular gradient-based rendering modes.

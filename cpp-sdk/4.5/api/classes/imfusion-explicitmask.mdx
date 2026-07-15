@@ -1,0 +1,246 @@
+---
+title: "ImFusion::ExplicitMask"
+sidebarTitle: "ExplicitMask"
+description: "An ExplicitMask holds an individual mask value for every pixel."
+---
+
+`#include <ImFusion/GL/ExplicitMask.h>`
+
+## Overview
+
+An [ExplicitMask](/cpp-sdk/4.5/api/classes/imfusion-explicitmask) holds an individual mask value for every pixel.
+
+Internally, it uses a [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) as storage for the pixel buffer and the returned mask values are retrieved directly from there. The internal mask image will always be of PixelType::UByte and single channel.
+
+## Public Member Functions
+
+- **ExplicitMask** (int width, int height, int slices, uint8_t initial=0) — Creates a new [ExplicitMask](/cpp-sdk/4.5/api/classes/imfusion-explicitmask) of the given size and initialized with the given value.
+- **ExplicitMask** (const vec3i &dimensions, uint8_t initial=0)
+- [ExplicitMask](#explicitmask-1-2) ([std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; uint8_t &gt; &gt; [maskImage](#maskimage)) — Creates a new [ExplicitMask](/cpp-sdk/4.5/api/classes/imfusion-explicitmask) using the provided mask image.
+- [ExplicitMask](#explicitmask-2-2) ([std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) &gt; [maskImage](#maskimage)) — Creates a new [ExplicitMask](/cpp-sdk/4.5/api/classes/imfusion-explicitmask) using the provided mask image.
+- [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \* [maskImage](#maskimage) () — Returns the internal image holding the mask values.
+- const [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \* **maskImage** () const
+- [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; uint8_t &gt; \* **maskImageTyped** () — Convenience method that retrieves the [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) from [maskImage()](#maskimage) and cast it to [TypedImage&lt;uint8_t&gt;](/cpp-sdk/4.5/api/classes/imfusion-typedimage).
+- const [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; uint8_t &gt; \* **maskImageTyped** () const
+- uint8_t [maskValue](#maskvalue) (const vec3i &coord, const vec4f &color) const override — Returns 0 if the given pixel is outside the mask (i.e.
+- bool [isCompatible](#iscompatible) (const [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*image) const override — Returns true if the mask can be used with the given image or false otherwise.
+- bool [requiresPixelValue](#requirespixelvalue) () const override — Returns true if the [maskValue()](#maskvalue) rely on the pixel value.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; uint8_t &gt; &gt; [createExplicitMask](#createexplicitmask) (const [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) &image, [CreateOption](/cpp-sdk/4.5/api/classes/imfusion-mask) createOption=[CreateOption::DeepCopy](/cpp-sdk/4.5/api/classes/imfusion-mask)) const override — Creates an explicit mask representation of this mask for a given image.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) &gt; [createExplicitMaskGl](#createexplicitmaskgl) (const [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) &inputImage, bool normalized=false) override — Creates an explicit mask representation of this mask when applied to the given image.
+- int [setIncludeArguments](#setincludearguments) ([GL::Program](/cpp-sdk/4.5/api/classes/imfusion-gl-program) &p, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &prefix="mask") const override — Called by users of [GlMask](/cpp-sdk/4.5/api/classes/imfusion-glmask) in order to correctly setup the mask shader.
+- [GlMask](/cpp-sdk/4.5/api/classes/imfusion-glmask) \* [glMask](#glmask) () override — Returns the OpenGL-based implementation of the mask interface if available.
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+- uint8_t **maskValue** (const vec3i &coord, float value=-1.0f) const — Convenience overload that calls [maskValue](#maskvalue)(coord, vec4f(value, value, value, 1.0f)).
+
+## Static Public Member Functions
+
+- static [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; ExplicitMask &gt; [convert](#convert-1-3) ([std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) &gt; [maskImage](#maskimage)) — Creates an [ExplicitMask](/cpp-sdk/4.5/api/classes/imfusion-explicitmask) from the given [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) and takes ownership of it.
+- static [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; ExplicitMask &gt; [convert](#convert-2-3) (const [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) &[maskImage](#maskimage)) — Creates an [ExplicitMask](/cpp-sdk/4.5/api/classes/imfusion-explicitmask) by copying the values of the given [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage).
+- static [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; ExplicitMask &gt; [convert](#convert-3-3) (const [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) &[maskImage](#maskimage)) — Creates an [ExplicitMask](/cpp-sdk/4.5/api/classes/imfusion-explicitmask) by copying the values of the given [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage).
+
+## Constructor & Destructor Documentation
+
+### ExplicitMask
+
+```cpp
+ImFusion::ExplicitMask::ExplicitMask (std::shared_ptr < TypedImage < uint8_t > > maskImage)
+```
+
+*explicit*
+
+Creates a new [ExplicitMask](/cpp-sdk/4.5/api/classes/imfusion-explicitmask) using the provided mask image.
+
+**Parameters:**
+
+- `maskImage` — [Mask](/cpp-sdk/4.5/api/classes/imfusion-mask) image to consume, must be single-channel.
+
+### ExplicitMask
+
+```cpp
+ImFusion::ExplicitMask::ExplicitMask (std::shared_ptr < GlImage > maskImage)
+```
+
+*explicit*
+
+Creates a new [ExplicitMask](/cpp-sdk/4.5/api/classes/imfusion-explicitmask) using the provided mask image.
+
+**Parameters:**
+
+- `maskImage` — [Mask](/cpp-sdk/4.5/api/classes/imfusion-mask) image to consume, must be of PixelType::UByte and single-channel.
+
+## Member Function Documentation
+
+### convert
+
+```cpp
+std::unique_ptr < ExplicitMask > ImFusion::ExplicitMask::convert (std::unique_ptr < SharedImage > maskImage)
+```
+
+*static*
+
+Creates an [ExplicitMask](/cpp-sdk/4.5/api/classes/imfusion-explicitmask) from the given [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) and takes ownership of it.
+
+If the input image is not of PixelType::UByte or has more than one channel, it will be converted internally.
+
+### convert
+
+```cpp
+std::unique_ptr < ExplicitMask > ImFusion::ExplicitMask::convert (const MemImage & maskImage)
+```
+
+*static*
+
+Creates an [ExplicitMask](/cpp-sdk/4.5/api/classes/imfusion-explicitmask) by copying the values of the given [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage).
+
+If the input image is not of PixelType::UByte or has more than one channel, it will be converted internally.
+
+### convert
+
+```cpp
+std::unique_ptr < ExplicitMask > ImFusion::ExplicitMask::convert (const GlImage & maskImage)
+```
+
+*static*
+
+Creates an [ExplicitMask](/cpp-sdk/4.5/api/classes/imfusion-explicitmask) by copying the values of the given [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage).
+
+If the input image is not of PixelType::UByte or has more than one channel, it will be converted internally.
+
+### maskImage
+
+```cpp
+SharedImage * ImFusion::ExplicitMask::maskImage ()
+```
+
+Returns the internal image holding the mask values.
+
+This image will always be of type UBYTE.
+
+### maskValue
+
+```cpp
+uint8_t ImFusion::ExplicitMask::maskValue (const vec3i & coord, const vec4f & color) const
+```
+
+*override, virtual*
+
+Returns 0 if the given pixel is outside the mask (i.e.
+
+invisible/to be ignored) or a non-zero value if it is inside the mask (i.e. visible/to be considered).
+
+This function takes both the pixel coordinate and pixel value as input. Concrete implementations of the [Mask](/cpp-sdk/4.5/api/classes/imfusion-mask) interface are free to use only either input for their decision if it makes sense. Also, it is up to the implementation whether it supports multi-channel images or not. Subclasses only supporting grayscale images should only use the first channel.
+
+**Parameters:**
+
+- `coord` — Pixel coordinate to be tested against the mask, can be outside of the image.
+- `color` — Pixel value (not normalized) to be tested against the mask. This parameter is only needed if [requiresPixelValue()](#requirespixelvalue) returns true, which can allow for optimizations where pixel lookup is expensive.
+
+### isCompatible
+
+```cpp
+bool ImFusion::ExplicitMask::isCompatible (const SharedImage * image) const
+```
+
+*override, virtual*
+
+Returns true if the mask can be used with the given image or false otherwise.
+
+### requiresPixelValue
+
+```cpp
+bool ImFusion::ExplicitMask::requiresPixelValue () const
+```
+
+*inline, override, virtual*
+
+Returns true if the [maskValue()](#maskvalue) rely on the pixel value.
+
+If this method returns false, the [maskValue()](#maskvalue) method can be safely used with only the coordinate. This is useful to avoid an otherwise unnecessary and expensive pixel lookup.
+
+### createExplicitMask
+
+```cpp
+std::unique_ptr < TypedImage < uint8_t > > ImFusion::ExplicitMask::createExplicitMask (const SharedImage & image, CreateOption createOption = CreateOption::DeepCopy) const
+```
+
+*override, virtual*
+
+Creates an explicit mask representation of this mask for a given image.
+
+**Parameters:**
+
+- `image` — Reference image for which to create the mask, must be compatible.
+- `createOption` — Subclasses that already store an explicit representation of the mask can optionally return a non-owning [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage) (shallow copy). If the returned [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage) will outlive the source [Mask](/cpp-sdk/4.5/api/classes/imfusion-mask), make sure to use [CreateOption::DeepCopy](/cpp-sdk/4.5/api/classes/imfusion-mask).
+
+### createExplicitMaskGl
+
+```cpp
+std::unique_ptr < GlImage > ImFusion::ExplicitMask::createExplicitMaskGl (const GlImage & inputImage, bool normalized = false)
+```
+
+*override, virtual*
+
+Creates an explicit mask representation of this mask when applied to the given image.
+
+**Parameters:**
+
+- `inputImage` — [Image](/cpp-sdk/4.5/api/classes/imfusion-image) to which the mask should be applied for each pixel in order to generate the explicit mask image. Must be compatible with the mask.
+- `normalized` — If the this parameter is true the resulting binary mask value will be created as CPU uint8_t values 0 and 255 (corresponding to 0 and 1 on the GPU), instead of 0 and 1 (0 and 1/255 on the GPU).
+
+### setIncludeArguments
+
+```cpp
+int ImFusion::ExplicitMask::setIncludeArguments (GL::Program & p, const std::string & prefix = "mask") const
+```
+
+*override, virtual*
+
+Called by users of [GlMask](/cpp-sdk/4.5/api/classes/imfusion-glmask) in order to correctly setup the mask shader.
+
+Subclasses should implement this function so that it correctly sets all needed uniforms and input textures to be used by the OpenGL shader instance. Make sure to use the given *prefix* argument instead of a hardcoded "mask" when defining uniform names to support multi-includes where the prefixes have been replaced with unique alternatives. Example:
+
+```cpp
+p.setArgument(prefix + "UseRange", m_useRange);
+```
+ fragment
+
+### glMask
+
+```cpp
+GlMask * ImFusion::ExplicitMask::glMask ()
+```
+
+*override, virtual*
+
+Returns the OpenGL-based implementation of the mask interface if available.
+
+This function may return nullptr if this is not implemented (default).
+
+### configure
+
+```cpp
+void ImFusion::ExplicitMask::configure (const Properties * p)
+```
+
+*inline, override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### configuration
+
+```cpp
+void ImFusion::ExplicitMask::configuration (Properties * p) const
+```
+
+*inline, override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality

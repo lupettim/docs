@@ -1,0 +1,71 @@
+---
+title: "ImFusion::ImageComparison"
+sidebarTitle: "ImageComparison"
+description: "Compares two image sets based on their original pixel values."
+---
+
+`#include <ImFusion/Base/ImageComparison.h>`
+
+## Overview
+
+Compares two image sets based on their original pixel values.
+
+The comparison applies each image's shift/scale to convert storage values to original values:
+
+```cpp
+original = storage / scale - shift
+```
+ fragment
+Images with different storage values can compare equal if their original values match.
+
+If needed, the second image is resampled to the first image's geometry before comparison.
+
+## Public Member Functions
+
+- **ImageComparison** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*image1, [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*image2)
+- void [compute](#compute) () override — Execute the algorithm.
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; bool &gt; [imagesAreEqual](#imagesareequal) () — Returns whether the images are equal in original pixel values after [compute()](#compute) has run successfully.
+- [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) [takeOutput](#takeoutput) () override — If the algorithm creates new image data, it has to be transferred here.
+
+## Static Public Member Functions
+
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=nullptr) — If data is compatible with algorithm return true. If a is not zero, create algorithm with input data.
+
+## Protected Attributes
+
+- [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* **m_image1**
+- [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* **m_image2**
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &gt; **m_imageDiff**
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; bool &gt; **m_imagesAreEqual**
+
+## Member Function Documentation
+
+### compute
+
+```cpp
+void ImFusion::ImageComparison::compute ()
+```
+
+*override, virtual*
+
+Execute the algorithm.
+
+### imagesAreEqual
+
+```cpp
+std::optional < bool > ImFusion::ImageComparison::imagesAreEqual ()
+```
+
+Returns whether the images are equal in original pixel values after [compute()](#compute) has run successfully.
+
+Returns std::nullopt if no comparison result is available, e.g. before [compute()](#compute) has run.
+
+### takeOutput
+
+```cpp
+OwningDataList ImFusion::ImageComparison::takeOutput ()
+```
+
+*override, virtual*
+
+If the algorithm creates new image data, it has to be transferred here.

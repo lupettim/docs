@@ -1,0 +1,209 @@
+---
+title: "ImFusion::DicomPacsCommunication"
+sidebarTitle: "DicomPacsCommunication"
+description: "Class facilitating the communication with DICOM PACS servers."
+---
+
+`#include <ImFusion/Dicom/DicomPacsCommunication.h>`
+
+## Overview
+
+Class facilitating the communication with DICOM PACS servers.
+
+[DicomPacsCommunication](/cpp-sdk/4.5/api/classes/imfusion-dicompacscommunication) automates issuing C-FIND and C-MOVE commands as well as receiving C-STORE commands. Receiving data from PACS servers is easily customized by attaching a callback function to the request.
+
+This class also provides lean wrappers around asynchronous (non-blocking) requests. [DicomPacsCommunication](/cpp-sdk/4.5/api/classes/imfusion-dicompacscommunication) protects all C-MOVE requests to the PACS server by a mutex and thereby ensures that only a single thread is issuing C-MOVE requests at a time. However, outgoing async requests (i.e. C-ECHO, C-FIND and C-STORE) will be sent concurrently since every modern PACS instance should support this. If your particular instance does not, please keep to the synchronous methods. The scheduling of asynchronous requests is based on [std::async](http://en.cppreference.com/w/cpp/thread/async.html) and thus relies on the OS thread scheduling.
+
+[DicomPacsCommunication](/cpp-sdk/4.5/api/classes/imfusion-dicompacscommunication) can be considered as thread-safe in the following way:
+
+- Concurrently issuing (synchronous and asynchronous) requests from multiple threads is safe.
+- Concurrently issuing (synchronous and asynchronous) C-MOVE requests from multiple instances of this class is safe but limited to one request at a time.
+- Aborting requests/waiting for requests is thread-safe.
+
+**Note:** The mutex for protecting C-MOVE requests is a static mutex (i.e. it acts globally across all instances of [DicomPacsCommunication](/cpp-sdk/4.5/api/classes/imfusion-dicompacscommunication) at the same time).
+
+**Examples:** [PacsExample.cpp](/cpp-sdk/4.5/api/examples/pacs-8cpp).
+
+## Classes
+
+- struct [AsyncRequestInfo](/cpp-sdk/4.5/api/structs/imfusion-dicompacscommunication-asyncrequestinfo) — Structure wrapping the return value of an asynchronous PACS request.
+
+## Public Types
+
+- enum [RetrieveInformationModel](#retrieveinformationmodel) &#123; **PatientRootRetrieveInformationModel** , **StudyRootRetrieveInformationModel** , **ModalityWorklistInformationModel** &#125; — Enumeration of Standard Query/Retrieve Information Models.
+
+## Public Member Functions
+
+- **DicomPacsCommunication** ([DicomPacsConfiguration](/cpp-sdk/4.5/api/structs/imfusion-dicompacsconfiguration) configuration) — Creates a new PCAS communication instance connecting to the server defined in the given configuration.
+- const [DicomPacsConfiguration](/cpp-sdk/4.5/api/structs/imfusion-dicompacsconfiguration) & **connectionConfiguration** () const — Returns the connection configuration to use when communicating with the PACS server.
+- bool **sendEchoRequest** () — Connects to the configured PACS and sends a C-ECHO message in order to test the association.
+- void [sendFindRequest](#sendfindrequest) ([RetrieveInformationModel](#retrieveinformationmodel) queryModel, DcmDataset &request, [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; void([std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; DcmDataset &gt;)&gt; responseItemCallback, [std::atomic](http://en.cppreference.com/w/cpp/atomic/atomic.html)&lt; bool &gt; \*abortFlag=nullptr) — Synchronously sends a C-FIND request to the currently connected PACS server.
+- [AsyncRequestInfo](/cpp-sdk/4.5/api/structs/imfusion-dicompacscommunication-asyncrequestinfo) [sendFindRequestAsync](#sendfindrequestasync) ([RetrieveInformationModel](#retrieveinformationmodel) queryModel, DcmDataset &request, [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; void([std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; DcmDataset &gt;)&gt; responseItemCallback, [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; void(bool)&gt; finishedCallback) — Asynchronously sends a C-FIND request to the currently connected PACS server.
+- void [sendMoveRequest](#sendmoverequest) ([RetrieveInformationModel](#retrieveinformationmodel) queryModel, DcmDataset &request, [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; void([std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; DcmDataset &gt;)&gt; responseItemCallback, [std::atomic](http://en.cppreference.com/w/cpp/atomic/atomic.html)&lt; bool &gt; \*abortFlag=nullptr) — Synchronously sends a C-MOVE request to the currently connected PACS server.
+- [AsyncRequestInfo](/cpp-sdk/4.5/api/structs/imfusion-dicompacscommunication-asyncrequestinfo) [sendMoveRequestAsync](#sendmoverequestasync) ([RetrieveInformationModel](#retrieveinformationmodel) queryModel, DcmDataset &request, [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; void([std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; DcmDataset &gt;)&gt; responseItemCallback, [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; void(bool)&gt; finishedCallback) — Asynchronously sends a C-MOVE request to the currently connected PACS server.
+- void [sendGetRequest](#sendgetrequest) ([RetrieveInformationModel](#retrieveinformationmodel) queryModel, DcmDataset &request, [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; void([std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; DcmDataset &gt;)&gt; responseItemCallback, [std::atomic](http://en.cppreference.com/w/cpp/atomic/atomic.html)&lt; bool &gt; \*abortFlag=nullptr) — Synchronously sends a C-GET request to the currently connected PACS server.
+- bool [sendStoreRequest](#sendstorerequest) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; DcmDataset \* &gt; &datasets, int transferSyntax, [std::atomic](http://en.cppreference.com/w/cpp/atomic/atomic.html)&lt; bool &gt; \*abortFlag=nullptr) — Synchronously sends a C-STORE request to the currently connected PACS server.
+- void [abortAsyncRequests](#abortasyncrequests) () — Aborts all async request currently in flight.
+- void [waitForAsyncRequests](#waitforasyncrequests) () — Blocks until all async requests that are currently in flight have been completed.
+
+## Member Enumeration Documentation
+
+### RetrieveInformationModel
+
+```cpp
+enum ImFusion::DicomPacsCommunication::RetrieveInformationModel
+```
+
+Enumeration of Standard Query/Retrieve Information Models.
+
+**See also:** [http://dicom.nema.org/dicom/2013/output/chtml/part04/sect_C.3.html](http://dicom.nema.org/dicom/2013/output/chtml/part04/sect_C.3.html)
+
+## Member Function Documentation
+
+### sendFindRequest
+
+```cpp
+void ImFusion::DicomPacsCommunication::sendFindRequest (RetrieveInformationModel queryModel, DcmDataset & request, std::function < void(std::unique_ptr < DcmDataset >)> responseItemCallback, std::atomic < bool > * abortFlag = nullptr)
+```
+
+Synchronously sends a C-FIND request to the currently connected PACS server.
+
+**Parameters:**
+
+- `queryModel` — Query/Retrieve Information Model to use for the request.
+- `request` — [Dicom](/cpp-sdk/4.5/api/namespaces/imfusion-dicom) object representing the request to send.
+- `responseItemCallback` — Callback method to call for every item of the response.
+- `abortFlag` — Flag that will abort the request at next possibility. The pointer must stay valid until the request finishes.
+
+**Note:** Based on the setting in [DicomPluginSettings](/cpp-sdk/4.5/api/classes/imfusion-dicompluginsettings) the DcmDataset in the response will be anonymized.
+
+**See also:** [http://dicom.nema.org/dicom/2013/output/chtml/part07/sect_9.3.html#sect_9.3.2](http://dicom.nema.org/dicom/2013/output/chtml/part07/sect_9.3.html#sect_9.3.2)
+
+**Examples:** [PacsExample.cpp](/cpp-sdk/4.5/api/examples/pacs-8cpp).
+
+### sendFindRequestAsync
+
+```cpp
+AsyncRequestInfo ImFusion::DicomPacsCommunication::sendFindRequestAsync (RetrieveInformationModel queryModel, DcmDataset & request, std::function < void(std::unique_ptr < DcmDataset >)> responseItemCallback, std::function < void(bool)> finishedCallback)
+```
+
+Asynchronously sends a C-FIND request to the currently connected PACS server.
+
+**Parameters:**
+
+- `queryModel` — Query/Retrieve Information Model to use for the request.
+- `request` — [Dicom](/cpp-sdk/4.5/api/namespaces/imfusion-dicom) object representing the request to send.
+- `responseItemCallback` — Callback method to call for every item of the response.
+- `finishedCallback` — Callback method to call when the request has been completed, the bool parameter indicates the state of the abort flag.
+
+**Returns:** [AsyncRequestInfo](/cpp-sdk/4.5/api/structs/imfusion-dicompacscommunication-asyncrequestinfo) structure allowing to abort and/or wait for the asynchronous execution.
+
+**See also:** [http://dicom.nema.org/dicom/2013/output/chtml/part07/sect_9.3.html#sect_9.3.2](http://dicom.nema.org/dicom/2013/output/chtml/part07/sect_9.3.html#sect_9.3.2)
+
+**Note:** Based on the setting in [DicomPluginSettings](/cpp-sdk/4.5/api/classes/imfusion-dicompluginsettings) the DcmDataset in the response will be anonymized.
+
+### sendMoveRequest
+
+```cpp
+void ImFusion::DicomPacsCommunication::sendMoveRequest (RetrieveInformationModel queryModel, DcmDataset & request, std::function < void(std::unique_ptr < DcmDataset >)> responseItemCallback, std::atomic < bool > * abortFlag = nullptr)
+```
+
+Synchronously sends a C-MOVE request to the currently connected PACS server.
+
+**Parameters:**
+
+- `queryModel` — Query/Retrieve Information Model to use for the request.
+- `request` — [Dicom](/cpp-sdk/4.5/api/namespaces/imfusion-dicom) object representing the request to send.
+- `responseItemCallback` — Callback method to call for every item of the response.
+
+**See also:** [http://dicom.nema.org/dicom/2013/output/chtml/part07/sect_9.3.html#sect_9.3.4](http://dicom.nema.org/dicom/2013/output/chtml/part07/sect_9.3.html#sect_9.3.4)
+
+**Note:** Based on the setting in [DicomPluginSettings](/cpp-sdk/4.5/api/classes/imfusion-dicompluginsettings) the DcmDataset in the response will be anonymized.
+
+**Note:** Internally, [DicomPacsCommunication](/cpp-sdk/4.5/api/classes/imfusion-dicompacscommunication) protects C-MOVE requests by a mutex to ensure that only a single request is handled at a time.
+
+**Examples:** [PacsExample.cpp](/cpp-sdk/4.5/api/examples/pacs-8cpp).
+
+### sendMoveRequestAsync
+
+```cpp
+AsyncRequestInfo ImFusion::DicomPacsCommunication::sendMoveRequestAsync (RetrieveInformationModel queryModel, DcmDataset & request, std::function < void(std::unique_ptr < DcmDataset >)> responseItemCallback, std::function < void(bool)> finishedCallback)
+```
+
+Asynchronously sends a C-MOVE request to the currently connected PACS server.
+
+**Parameters:**
+
+- `queryModel` — Query/Retrieve Information Model to use for the request.
+- `request` — [Dicom](/cpp-sdk/4.5/api/namespaces/imfusion-dicom) object representing the request to send.
+- `responseItemCallback` — Callback method to call for every item of the response.
+- `finishedCallback` — Callback method to call when the request has been completed, the bool parameter indicates the state of the abort flag.
+
+**Returns:** [AsyncRequestInfo](/cpp-sdk/4.5/api/structs/imfusion-dicompacscommunication-asyncrequestinfo) structure allowing to abort and/or wait for the asynchronous execution.
+
+**Note:** Based on the setting in [DicomPluginSettings](/cpp-sdk/4.5/api/classes/imfusion-dicompluginsettings) the DcmDataset in the response will be anonymized.
+
+**Note:** Internally, [DicomPacsCommunication](/cpp-sdk/4.5/api/classes/imfusion-dicompacscommunication) protects C-MOVE requests by a mutex to ensure that only a single request is handled at a time. Thus, even if you asynchronously issue multiple move requests they will be handled in a serialized fashion.
+
+**See also:** [http://dicom.nema.org/dicom/2013/output/chtml/part07/sect_9.3.html#sect_9.3.4](http://dicom.nema.org/dicom/2013/output/chtml/part07/sect_9.3.html#sect_9.3.4)
+
+### sendGetRequest
+
+```cpp
+void ImFusion::DicomPacsCommunication::sendGetRequest (RetrieveInformationModel queryModel, DcmDataset & request, std::function < void(std::unique_ptr < DcmDataset >)> responseItemCallback, std::atomic < bool > * abortFlag = nullptr)
+```
+
+Synchronously sends a C-GET request to the currently connected PACS server.
+
+**Parameters:**
+
+- `queryModel` — Query/Retrieve Information Model to use for the request.
+- `request` — [Dicom](/cpp-sdk/4.5/api/namespaces/imfusion-dicom) object representing the request to send. Should contain tags according to the queryModel. E.g. study model requires QueryRetrieveLevel, StudyInstanceUID and SeriesInstanceUID.
+- `responseItemCallback` — Callback method to call for every item of the response.
+- `abortFlag` — Flag that will abort the request at next possibility. The pointer must stay valid until the request finishes.
+
+**Note:** Based on the setting in [DicomPluginSettings](/cpp-sdk/4.5/api/classes/imfusion-dicompluginsettings) the DcmDataset in the response will be anonymized.
+
+**See also:** [https://dicom.nema.org/dicom/2013/output/chtml/part07/sect_9.3.html#sect_9.3.3](https://dicom.nema.org/dicom/2013/output/chtml/part07/sect_9.3.html#sect_9.3.3)
+
+### sendStoreRequest
+
+```cpp
+bool ImFusion::DicomPacsCommunication::sendStoreRequest (const std::vector < DcmDataset * > & datasets, int transferSyntax, std::atomic < bool > * abortFlag = nullptr)
+```
+
+Synchronously sends a C-STORE request to the currently connected PACS server.
+
+All datasets are generally send as a single association except if the datasets use over 128 different SOP class UIDs. If the request is aborted before it finishes, all datasets already sent to the PACS are *not* deleted!
+
+**Parameters:**
+
+- `datasets` — List of DcmDatasets to send to the server.
+- `transferSyntax` — Transfer syntax to choose for sending the data set to the PACS instance. Use values from DCMTK's E_TransferSyntax enum in dcxfer.h.
+- `abortFlag` — Flag that will abort the request at next possibility. The pointer must stay valid until the request finishes.
+
+**Returns:** True if the C-STORE request was successful.
+
+**Note:** The current implementation of this functionality is only very rudimentary and does support any progress monitoring. Once you launch this method it will block until the request has been completed (in case of a network timeout this may be quite some time!).
+
+**See also:** [http://dicom.nema.org/dicom/2013/output/chtml/part07/sect_9.3.html#sect_9.3.1](http://dicom.nema.org/dicom/2013/output/chtml/part07/sect_9.3.html#sect_9.3.1)
+
+### abortAsyncRequests
+
+```cpp
+void ImFusion::DicomPacsCommunication::abortAsyncRequests ()
+```
+
+Aborts all async request currently in flight.
+
+This includes scheduled move requests that have not yet been started due to another move request being active.
+
+### waitForAsyncRequests
+
+```cpp
+void ImFusion::DicomPacsCommunication::waitForAsyncRequests ()
+```
+
+Blocks until all async requests that are currently in flight have been completed.
+
+This includes scheduled move requests that have not yet been started due to another move request being active.

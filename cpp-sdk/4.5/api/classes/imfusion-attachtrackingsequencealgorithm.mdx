@@ -1,0 +1,69 @@
+---
+title: "ImFusion::AttachTrackingSequenceAlgorithm"
+sidebarTitle: "AttachTrackingSequenceAlgorithm"
+description: "Attach tracking sequence to existing tracked shared image set."
+---
+
+`#include <ImFusion/Base/AttachTrackingSequenceAlgorithm.h>`
+
+## Overview
+
+Attach tracking sequence to existing tracked shared image set.
+
+## Public Member Functions
+
+- **AttachTrackingSequenceAlgorithm** ([TrackedSharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-trackedsharedimageset) &us, [TrackingSequence](/cpp-sdk/4.5/api/classes/imfusion-trackingsequence) \*trck) — Constructor.
+- **~AttachTrackingSequenceAlgorithm** () override=default — Destructor.
+- [TrackingSequence](/cpp-sdk/4.5/api/classes/imfusion-trackingsequence) \* **trackingSequence** ()
+- void **setShouldNotClone** (bool x)
+- bool **shouldNotClone** () const
+
+## Algorithm interface methods
+
+- void [compute](#compute) () override — Execute the algorithm.
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=0)
+
+## Configurable interface methods
+
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+## Member Function Documentation
+
+### compute
+
+```cpp
+void ImFusion::AttachTrackingSequenceAlgorithm::compute ()
+```
+
+*override, virtual*
+
+Execute the algorithm.
+
+### configure
+
+```cpp
+void ImFusion::AttachTrackingSequenceAlgorithm::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### configuration
+
+```cpp
+void ImFusion::AttachTrackingSequenceAlgorithm::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality

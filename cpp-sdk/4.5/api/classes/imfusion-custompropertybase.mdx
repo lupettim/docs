@@ -1,0 +1,49 @@
+---
+title: "ImFusion::CustomPropertyBase"
+sidebarTitle: "CustomPropertyBase"
+description: "Basic interface for a custom property, i.e."
+---
+
+`#include <ImFusion/Mesh/MeshCustomProperties.h>`
+
+## Overview
+
+Basic interface for a custom property, i.e. a collection of values on different elements (vertices/faces).
+
+## Public Member Functions
+
+- virtual [CustomPropertyElementBase](/cpp-sdk/4.5/api/classes/imfusion-custompropertyelementbase) & [element](#element) (size_t idx) const =0 — Untyped access to the property at element idx, for cases where you do not need to interpret the data (e.g. just memcpy).
+- virtual void [clone](#clone) ([Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) &meshToCloneTo) const =0 — Creates a property of the same type and storage name on another mesh, does not (and indeed cannot possibly) copy any data.
+- virtual [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [name](#name) () const =0 — Returns name that uniquely identifies the property on this mesh.
+
+## Member Function Documentation
+
+### element
+
+```cpp
+virtual CustomPropertyElementBase & ImFusion::CustomPropertyBase::element (size_t idx) const
+```
+
+*pure virtual*
+
+Untyped access to the property at element idx, for cases where you do not need to interpret the data (e.g. just memcpy).
+
+### clone
+
+```cpp
+virtual void ImFusion::CustomPropertyBase::clone (Mesh & meshToCloneTo) const
+```
+
+*pure virtual*
+
+Creates a property of the same type and storage name on another mesh, does not (and indeed cannot possibly) copy any data.
+
+### name
+
+```cpp
+virtual std::string ImFusion::CustomPropertyBase::name () const
+```
+
+*pure virtual*
+
+Returns name that uniquely identifies the property on this mesh.

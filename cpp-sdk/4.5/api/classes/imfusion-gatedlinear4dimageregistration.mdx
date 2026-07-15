@@ -1,0 +1,91 @@
+---
+title: "ImFusion::GatedLinear4DImageRegistration"
+sidebarTitle: "GatedLinear4DImageRegistration"
+description: "Registers two volume clips using a rigid/affine transformation, including a gating phase offset between the two."
+---
+
+`#include <ImFusion/Reg/GatedLinear4DImageRegistration.h>`
+
+## Overview
+
+Registers two volume clips using a rigid/affine transformation, including a gating phase offset between the two.
+
+Performs a non-linear optimization to find the maximum of a similarity measure that indicates an alignment of the two image sets.
+
+## Public Member Functions
+
+- **GatedLinear4DImageRegistration** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*image1, [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*image2) — Creates a registration that keeps image1 fixed and moves image2.
+- void [compute](#compute) () override — Starts the registration.
+- void [initializeTransformationModel](#initializetransformationmodel) () override — Does nothing because all images already have a matrix.
+- double [evaluate](#evaluate) (int n, const double \*x, double \*dx=0) override — Assembles the matrix and calls evaluate(const mat4&). Will also.
+- int [numberOfParameters](#numberofparameters) () const final — Returns 6 for rigid and 12 for affine transformation, plus 1 if the phase offset, regardless of a gating metadata actually being there.
+- void [reset](#reset) () override — Resets the transformation of moving to its initial transformation.
+- bool [isDeformable](#isdeformable) () const override — Returns false.
+
+## Static Public Member Functions
+
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=0) — Expects two volume sets.
+
+## Member Function Documentation
+
+### compute
+
+```cpp
+void ImFusion::GatedLinear4DImageRegistration::compute ()
+```
+
+*override, virtual*
+
+Starts the registration.
+
+### initializeTransformationModel
+
+```cpp
+void ImFusion::GatedLinear4DImageRegistration::initializeTransformationModel ()
+```
+
+*override, virtual*
+
+Does nothing because all images already have a matrix.
+
+### evaluate
+
+```cpp
+double ImFusion::GatedLinear4DImageRegistration::evaluate (int n, const double * x, double * dx = 0)
+```
+
+*override, virtual*
+
+Assembles the matrix and calls evaluate(const mat4&). Will also.
+
+### numberOfParameters
+
+```cpp
+int ImFusion::GatedLinear4DImageRegistration::numberOfParameters () const
+```
+
+*final, virtual*
+
+Returns 6 for rigid and 12 for affine transformation, plus 1 if the phase offset, regardless of a gating metadata actually being there.
+
+(Only at the start of the registration, [compute()](#compute) looks for a suitable gating metadata.) Since it is called in the constructor, it is defined final.
+
+### reset
+
+```cpp
+void ImFusion::GatedLinear4DImageRegistration::reset ()
+```
+
+*override, virtual*
+
+Resets the transformation of moving to its initial transformation.
+
+### isDeformable
+
+```cpp
+bool ImFusion::GatedLinear4DImageRegistration::isDeformable () const
+```
+
+*override, virtual*
+
+Returns false.

@@ -1,0 +1,73 @@
+---
+title: "ImFusion::Dicom::DatasetHandler"
+sidebarTitle: "DatasetHandler"
+description: "Read access handler for proprietary / non-standard DICOM image formats, or non-image datasets."
+---
+
+`#include <ImFusion/Dicom/DatasetHandler.h>`
+
+## Overview
+
+Read access handler for proprietary / non-standard DICOM image formats, or non-image datasets.
+
+\experimental
+
+## Public Types
+
+- using **DcmDatasetList** = [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt;[std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt;DcmDataset&gt;&gt;
+
+## Public Member Functions
+
+- virtual [std::tuple](http://en.cppreference.com/w/cpp/utility/tuple.html)&lt; DcmDatasetList, DcmDatasetList &gt; [selectDatasets](#selectdatasets) (const DcmDatasetList &datasets) const =0 — Function that selects the datasets this handler will load based on some property of the dataset.
+- virtual [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) [loadFromDataset](#loadfromdataset) (DcmDataset &dataset, [ErrorRecorder](/cpp-sdk/4.5/api/classes/imfusion-dicom-errorrecorder) \*errors, [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) \*progress) const =0 — Load the given datasets.
+- virtual [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [displayName](#displayname) () const =0 — Display name for the [DatasetHandler](/cpp-sdk/4.5/api/classes/imfusion-dicom-datasethandler), e.g. for subproperty label.
+
+## Protected Member Functions
+
+- [std::tuple](http://en.cppreference.com/w/cpp/utility/tuple.html)&lt; DcmDatasetList, DcmDatasetList &gt; [selectDatasetsBySopClass](#selectdatasetsbysopclass) (const DcmDatasetList &datasets, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &sopClass) const — Convenient method to select datasets according to their SOPClassUID.
+
+## Member Function Documentation
+
+### selectDatasets
+
+```cpp
+virtual std::tuple < DcmDatasetList, DcmDatasetList > ImFusion::Dicom::DatasetHandler::selectDatasets (const DcmDatasetList & datasets) const
+```
+
+*pure virtual*
+
+Function that selects the datasets this handler will load based on some property of the dataset.
+
+**Returns:** list of datasets this handler will not load, and list of datasets this handler will handle
+
+### loadFromDataset
+
+```cpp
+virtual OwningDataList ImFusion::Dicom::DatasetHandler::loadFromDataset (DcmDataset & dataset, ErrorRecorder * errors, Progress * progress) const
+```
+
+*pure virtual*
+
+Load the given datasets.
+
+### displayName
+
+```cpp
+virtual std::string ImFusion::Dicom::DatasetHandler::displayName () const
+```
+
+*pure virtual*
+
+Display name for the [DatasetHandler](/cpp-sdk/4.5/api/classes/imfusion-dicom-datasethandler), e.g. for subproperty label.
+
+### selectDatasetsBySopClass
+
+```cpp
+std::tuple < DcmDatasetList, DcmDatasetList > ImFusion::Dicom::DatasetHandler::selectDatasetsBySopClass (const DcmDatasetList & datasets, const std::string & sopClass) const
+```
+
+*protected*
+
+Convenient method to select datasets according to their SOPClassUID.
+
+Can be used to implement selectDatasets above.

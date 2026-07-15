@@ -1,0 +1,165 @@
+---
+title: "ImFusion::GL::Context"
+sidebarTitle: "Context"
+description: "Base class for low-level OpenGL context handling within the ImFusion SDK."
+---
+
+`#include <ImFusion/Core/GL/Context.h>`
+
+## Overview
+
+[Base](/cpp-sdk/4.5/api/structs/imfusion-dicom-base) class for low-level OpenGL context handling within the ImFusion SDK.
+
+The child classes implement the concrete platform-specific code (based on WGL, GLX, etc.).
+
+For very barebone applications, you can use the static [create()](#create) factory function to create a [GL::Context](/cpp-sdk/4.5/api/classes/imfusion-gl-context) instance matching your local platform:
+
+```cpp
+GL::Context::CreateInfo createInfo;
+createInfo.requestedVersion = {4, 2};   // request at least OpenGL 4.2
+createInfo.useDebugContext = true;      // request a debug context if available
+
+// will create an offscreen context with the given specifications
+std::unique_ptr<GL::Context> ctx = GL::Context::create(createInfo);
+```
+ fragment
+
+**See also:** [ContextManager](/cpp-sdk/4.5/api/classes/imfusion-gl-contextmanager) for a more high-level interface to manage OpenGL contexts
+
+## Classes
+
+- struct [CreateInfo](/cpp-sdk/4.5/api/structs/imfusion-gl-context-createinfo)
+
+## Public Member Functions
+
+- virtual bool [makeCurrent](#makecurrent) () const =0 — Make context current.
+- virtual bool [doneCurrent](#donecurrent) () const =0 — Disable context.
+- virtual void \* [internalHandle](#internalhandle) () const =0 — Returns the native handle of this OpenGL context that can be used with [CreateInfo::shareContext](/cpp-sdk/4.5/api/structs/imfusion-gl-context-createinfo).
+- virtual [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; Context &gt; [clone](#clone) ()=0 — Instantiates a new OpenGL context that is shared with this one.
+- virtual void [detachFromCurrentThread](#detachfromcurrentthread) () — Removes the binding of the OpenGL context to the current (i.e., calling) thread.
+- virtual void [moveToCurrentThread](#movetocurrentthread) () — Moves the OpenGL context to the current (i.e., calling) thread.
+
+## Static Public Member Functions
+
+- static [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; Context &gt; [create](#create) ([CreateInfo](/cpp-sdk/4.5/api/structs/imfusion-gl-context-createinfo) createInfo) — Factory function for creating a new offscreen OpenGL context.
+- static bool **hasCurrent** () — Returns whether the calling thread has a current OpenGL context.
+- static void \* [currentContextId](#currentcontextid) () — Returns a platform-specific handle to the currently active OpenGL context.
+
+## Protected Member Functions
+
+- virtual void [deinitialize](#deinitialize) () — Clean up internal resources attached to this context.
+
+## Static Protected Member Functions
+
+- static int **defaultPixelBufferSize** () — Default width and height of the pixel buffer of newly created offscreen contexts.
+- static void **installDefaultDebugMessageHandler** () — Sets up the Debug::defaultMessageCallback handler.
+
+## Member Function Documentation
+
+### create
+
+```cpp
+std::unique_ptr < Context > ImFusion::GL::Context::create (CreateInfo createInfo)
+```
+
+*static*
+
+Factory function for creating a new offscreen OpenGL context.
+
+The freshly created context will be made current. The derived class of the returned object is platform dependent.
+
+On Linux, multiple backends are supported which can be changed by setting the IMFUSION_GL_BACKEND environment variable. Possible values are 'glx' and 'egl'. If the variable is empty, 'glx' is used by default.
+
+**See also:** There is [ContextManager::createContext()](/cpp-sdk/4.5/api/classes/imfusion-gl-contextmanager) as convenience function to automatically [create](#create) an OpenGL context that is compatible and shared with the main OpenGL context used by the ImFusion SDK.
+
+### currentContextId
+
+```cpp
+void * ImFusion::GL::Context::currentContextId ()
+```
+
+*static*
+
+Returns a platform-specific handle to the currently active OpenGL context.
+
+**Note:** There is a 1-to-1 mapping of existing OpenGL contexts to the pointers returned. If there is no context current, this function will return 0. Apart from this you can not make any assumptions on the underlying type of the return value.
+
+### makeCurrent
+
+```cpp
+virtual bool ImFusion::GL::Context::makeCurrent () const
+```
+
+*pure virtual*
+
+Make context current.
+
+### doneCurrent
+
+```cpp
+virtual bool ImFusion::GL::Context::doneCurrent () const
+```
+
+*pure virtual*
+
+Disable context.
+
+### internalHandle
+
+```cpp
+virtual void * ImFusion::GL::Context::internalHandle () const
+```
+
+*pure virtual*
+
+Returns the native handle of this OpenGL context that can be used with [CreateInfo::shareContext](/cpp-sdk/4.5/api/structs/imfusion-gl-context-createinfo).
+
+### clone
+
+```cpp
+virtual std::unique_ptr < Context > ImFusion::GL::Context::clone ()
+```
+
+*pure virtual*
+
+Instantiates a new OpenGL context that is shared with this one.
+
+The freshly created context will be made current. This method will throw if the context could not be initialized.
+
+**Note:** If you plan to use this context in a different thread, you will need to call [moveToCurrentThread()](#movetocurrentthread) on the returned context before.
+
+### detachFromCurrentThread
+
+```cpp
+virtual void ImFusion::GL::Context::detachFromCurrentThread ()
+```
+
+*virtual*
+
+Removes the binding of the OpenGL context to the current (i.e., calling) thread.
+
+**Note:** Before calling this method, make sure to release the context from the source thread (i.e. call [doneCurrent()](#donecurrent)). After calling this method, move the context to the new thread and make it current there.
+
+### moveToCurrentThread
+
+```cpp
+virtual void ImFusion::GL::Context::moveToCurrentThread ()
+```
+
+*virtual*
+
+Moves the OpenGL context to the current (i.e., calling) thread.
+
+**Note:** Before calling this method, make sure to release the context from the source thread (i.e. call [doneCurrent()](#donecurrent)). After calling this method, make the context current in the new thread.
+
+### deinitialize
+
+```cpp
+virtual void ImFusion::GL::Context::deinitialize ()
+```
+
+*protected, virtual*
+
+Clean up internal resources attached to this context.
+
+Derived classes must call this function in their destructor *before* destroying the [GL](/cpp-sdk/4.5/api/namespaces/imfusion-gl) context.

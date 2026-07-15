@@ -1,0 +1,35 @@
+---
+title: "ImFusion::PointCloudAnalysisController"
+sidebarTitle: "PointCloudAnalysisController"
+description: "Controller for point cloud analysis."
+---
+
+`#include <ImFusion/GUI/PointCloudAnalysisController.h>`
+
+## Overview
+
+[Controller](/cpp-sdk/4.5/api/classes/imfusion-controller) for point cloud analysis.
+
+## Public Slots
+
+- void **onSelectionChanged** (int val)
+- void **onUpdateCloudPoint** (int val)
+
+## Public Member Functions
+
+- **PointCloudAnalysisController** ([PointCloudAnalysis](/cpp-sdk/4.5/api/classes/imfusion-pointcloudanalysis) \*pca)
+- void [init](#init) () override — Two-step initialization function to be implemented by subclasses.
+
+## Member Function Documentation
+
+### init
+
+```cpp
+void ImFusion::PointCloudAnalysisController::init ()
+```
+
+*override, virtual*
+
+Two-step initialization function to be implemented by subclasses.
+
+This function is called by [setMainWindowBase()](/cpp-sdk/4.5/api/classes/imfusion-controller) after the [m_disp](/cpp-sdk/4.5/api/classes/imfusion-controller) and [m_main](/cpp-sdk/4.5/api/classes/imfusion-controller) attributes have been set and hence a complete initialization of the controller is possible at this point.

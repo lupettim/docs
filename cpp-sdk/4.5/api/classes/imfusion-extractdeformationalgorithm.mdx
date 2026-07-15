@@ -1,0 +1,47 @@
+---
+title: "ImFusion::ExtractDeformationAlgorithm"
+sidebarTitle: "ExtractDeformationAlgorithm"
+description: "Extracts the displacement field of a deformation as a 3 channel float image."
+---
+
+`#include <ImFusion/GL/ExtractDeformationAlgorithm.h>`
+
+## Overview
+
+Extracts the displacement field of a deformation as a 3 channel float image.
+
+## Public Member Functions
+
+- **ExtractDeformationAlgorithm** (const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &image)
+- void [compute](#compute) () override — Execute the algorithm.
+- [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) [takeOutput](#takeoutput) () override — Return any new [Data](/cpp-sdk/4.5/api/classes/imfusion-data) that was created by the [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) during the last call to [compute()](#compute).
+
+## Static Public Member Functions
+
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=nullptr)
+
+## Member Function Documentation
+
+### compute
+
+```cpp
+void ImFusion::ExtractDeformationAlgorithm::compute ()
+```
+
+*override, virtual*
+
+Execute the algorithm.
+
+### takeOutput
+
+```cpp
+OwningDataList ImFusion::ExtractDeformationAlgorithm::takeOutput ()
+```
+
+*override, virtual*
+
+Return any new [Data](/cpp-sdk/4.5/api/classes/imfusion-data) that was created by the [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) during the last call to [compute()](#compute).
+
+The default implementation will return an empty list.
+
+**Note:** Since ownership of the data is transferred, you can call this method only once between calls to [compute()](#compute).

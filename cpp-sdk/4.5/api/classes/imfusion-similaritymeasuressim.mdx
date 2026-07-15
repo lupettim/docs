@@ -1,0 +1,76 @@
+---
+title: "ImFusion::SimilarityMeasureSSIM"
+sidebarTitle: "SimilarityMeasureSSIM"
+---
+
+## Public Member Functions
+
+- **SimilarityMeasureSSIM** ([SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*img1, [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*img2)
+- virtual void **setPatchSize** (int patchSize)
+- virtual int **patchSize** () const
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Set one or multiple properties.
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Retrieve the properties of this object.
+
+## Static Public Member Functions
+
+- static void **defaultConfiguration** ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p)
+
+## Protected Member Functions
+
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; float &gt; **createGaussianKernel1D** (int size, float sigma) const — Creates a Gaussian kernel of the output size: (2 \* size + 1).
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; float &gt; [createGaussianKernel2D](#creategaussiankernel2d) (int size, float sigma) const — Creates a Gaussian kernel of the output size: (2 \* size + 1) \*\* 2.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; float &gt; [createGaussianKernel3D](#creategaussiankernel3d) (int size, float sigma) const — Creates a Gaussian kernel of the output size: (2 \* size + 1) \*\* 3.
+
+## Protected Attributes
+
+- int **m_patchSize** — Half patch size of the SSIM kernel, the default value is 3.
+
+## Member Function Documentation
+
+### configure
+
+```cpp
+void ImFusion::SimilarityMeasureSSIM::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Set one or multiple properties.
+
+The default implementation retrieves the mask mode (param names "maskModeImg1" and "maskModeImg2")
+
+### configuration
+
+```cpp
+void ImFusion::SimilarityMeasureSSIM::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Retrieve the properties of this object.
+
+The default implementation stores the mask mode (param names "maskModeImg1" and "maskModeImg2")
+
+### createGaussianKernel2D
+
+```cpp
+std::vector < float > ImFusion::SimilarityMeasureSSIM::createGaussianKernel2D (int size, float sigma) const
+```
+
+*protected*
+
+Creates a Gaussian kernel of the output size: (2 \* size + 1) \*\* 2.
+
+The resulting vector is in: "y, x" order
+
+### createGaussianKernel3D
+
+```cpp
+std::vector < float > ImFusion::SimilarityMeasureSSIM::createGaussianKernel3D (int size, float sigma) const
+```
+
+*protected*
+
+Creates a Gaussian kernel of the output size: (2 \* size + 1) \*\* 3.
+
+The resulting vector is in: "z, y, x" order

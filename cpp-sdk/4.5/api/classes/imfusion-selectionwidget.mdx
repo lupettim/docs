@@ -1,0 +1,130 @@
+---
+title: "ImFusion::SelectionWidget"
+sidebarTitle: "SelectionWidget"
+description: "Widget and scrollbar for handling selection and playback of data."
+---
+
+`#include <ImFusion/GUI/SelectionWidget.h>`
+
+## Overview
+
+Widget and scrollbar for handling selection and playback of data.
+
+If more than one data is selected, the selection of all of them can be handled simultaneously as long as they have the same size as the first selected [Data](/cpp-sdk/4.5/api/classes/imfusion-data).
+
+## Classes
+
+- class [PlaybackWrapper](/cpp-sdk/4.5/api/classes/imfusion-selectionwidget-playbackwrapper) — This class provides an interface for creating wrappers that allow playback functionality to a type.
+
+## Public Types
+
+- enum class [InputMode](#inputmode) &#123; Manual , VisibleData , DataWidgetSelection &#125; — Enumeration of modes how to determine which datasets are used as input data to operate on by the [SelectionWidget](/cpp-sdk/4.5/api/classes/imfusion-selectionwidget).
+- enum class [LockMode](#lockmode) &#123; None , Single , First , Last &#125; — Enumeration of modes how the selection changes with the focus.
+
+## Public Slots
+
+- void **onSelFocus** (int val) — Sets the focus to *val - 1*.
+- void **onSelFirst** ()
+- void **onSelLast** ()
+- void **onSelAll** ()
+- void **onSelNone** ()
+- void **onSelSkip** (int val)
+- void **onFirstChanged** (int val)
+- void **onLastChanged** (int val)
+- void **onSelLock** (int val)
+- void **onDisplayWidgetLayoutChanged** ()
+- void **onSyncFocus** ()
+- void **onPlay** ()
+- void **onStop** ()
+- void **onLoopToggled** ()
+- void **onPlaySelectedToggled** ()
+- bool **dataHasNewSelection** ([ImFusion::Selectable](/cpp-sdk/4.5/api/classes/imfusion-selectable) \*data)
+- void **deleteCachedSelection** ([ImFusion::Selectable](/cpp-sdk/4.5/api/classes/imfusion-selectable) \*data)
+- void **showFocusLabel** (bool show) — Show/hide focus label showing the current index.
+
+## Public Member Functions
+
+- **SelectionWidget** ([MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase) \*mw)
+- void **initFromGlobalSettings** () — Initializes the local configuration such as the inputMode() from global settings.
+- void **update** () — Updates widget with data selection and changes [GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui) accordingly.
+- void [setInputData](#setinputdata) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Selectable](/cpp-sdk/4.5/api/classes/imfusion-selectable) \* &gt; &input) — Explicitly define what datasets the [SelectionWidget](/cpp-sdk/4.5/api/classes/imfusion-selectionwidget) should operate on.
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Selectable](/cpp-sdk/4.5/api/classes/imfusion-selectable) \* &gt; & [inputData](#inputdata) () — Returns the datasets the [Selection](/cpp-sdk/4.5/api/classes/imfusion-selection) widget is currently operating on.
+- [InputMode](#inputmode) **inputMode** () const — Returns the source which defines which datasets are configured by the [SelectionWidget](/cpp-sdk/4.5/api/classes/imfusion-selectionwidget).
+- void **setInputMode** ([InputMode](#inputmode) value, bool storeInGlobalSettings=false) — Sets the source which defines which datasets are configured by the [SelectionWidget](/cpp-sdk/4.5/api/classes/imfusion-selectionwidget).
+- [LockMode](#lockmode) **lockMode** () const — Returns the lock mode of the selection with respect to the focus.
+- void **setLockMode** ([LockMode](#lockmode) mode) — Sets the lock mode of the selection with respect to the focus.
+- [SelectionScrollBar](/cpp-sdk/4.5/api/classes/imfusion-selectionscrollbar) & **scrollBar** () — Return the [SelectionScrollBar](/cpp-sdk/4.5/api/classes/imfusion-selectionscrollbar) hosted next to this widget.
+- void **setPlaySelected** (bool selectedOnly) — Set whether only selected frames should be played.
+- bool [isPlaying](#isplaying) ()
+- void **stopPlayback** ([Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data) — If data is currently playing through a playback wrapper, attempt to stop it.
+
+## Static Public Member Functions
+
+- static void **registerPlaybackWrapper** ([std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [PlaybackWrapper](/cpp-sdk/4.5/api/classes/imfusion-selectionwidget-playbackwrapper) &gt; wrapper) — Adds a wrapper for figuring out playback on a [Data](/cpp-sdk/4.5/api/classes/imfusion-data) object.
+
+## Member Enumeration Documentation
+
+### InputMode
+
+```cpp
+enum class ImFusion::SelectionWidget::InputMode
+```
+
+*strong*
+
+Enumeration of modes how to determine which datasets are used as input data to operate on by the [SelectionWidget](/cpp-sdk/4.5/api/classes/imfusion-selectionwidget).
+
+**Enumerator:**
+
+- `Manual` — The datasets are solely defined by the user through calling [setInputData()](#setinputdata).
+- `VisibleData` — Listen to the [DisplayWidget](/cpp-sdk/4.5/api/classes/imfusion-displaywidget) of the parent [MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase) and use the currently visible datasets.
+- `DataWidgetSelection` — Listen to the [DataWidget](/cpp-sdk/4.5/api/classes/imfusion-datawidget) of the parent [MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase) and use its current selection.
+
+### LockMode
+
+```cpp
+enum class ImFusion::SelectionWidget::LockMode
+```
+
+*strong*
+
+Enumeration of modes how the selection changes with the focus.
+
+**Enumerator:**
+
+- `None` — Focus has no effect on the rest of the selection.
+- `Single` — Both *first* and *last* are locked to the focus.
+- `First` — The *first* parameter of the selection is locked to the focus.
+- `Last` — The *last* parameter of the selection is locked to the focus.
+
+## Member Function Documentation
+
+### setInputData
+
+```cpp
+void ImFusion::SelectionWidget::setInputData (const std::vector < Selectable * > & input)
+```
+
+Explicitly define what datasets the [SelectionWidget](/cpp-sdk/4.5/api/classes/imfusion-selectionwidget) should operate on.
+
+If *input* has multiple datasets they must have the same size in order to be manipulated at the same time. If inputMode() is not InputMode::Manual the input data will be changed automatically according to the setting.
+
+### inputData
+
+```cpp
+const std::vector < Selectable * > & ImFusion::SelectionWidget::inputData ()
+```
+
+*inline*
+
+Returns the datasets the [Selection](/cpp-sdk/4.5/api/classes/imfusion-selection) widget is currently operating on.
+
+**Note:** The return value may be a subset of the datasets originally passed to [setInputData()](#setinputdata) because all input datasets must have the same size in order to be manipulated at the same time.
+
+### isPlaying
+
+```cpp
+bool ImFusion::SelectionWidget::isPlaying ()
+```
+
+**Returns:** true iff the playback is currently running.

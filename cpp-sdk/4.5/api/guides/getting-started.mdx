@@ -1,0 +1,338 @@
+---
+title: "Getting Started"
+description: "You can get an installer for the ImFusion SDK from the ImFusion Website ."
+---
+
+You can get an installer for the ImFusion SDK from the [ImFusion Website](https://imfusion.com/shop/). Download and execute the installer to make the ImFusion SDK available on your machine. The default location for installing the SDK is C:\Program Files\ImFusion\ImFusion Suite on Windows systems, the /usr folders on Linux systems, and the /Applications folder on MacOS. We denote this folder by $IMFUSION_SDK.
+
+It contains the following structure on Windows:
+
+```cpp
+$IMFUSION_SDK/
+├── include/
+├── lib/
+└── cmake/
+```
+ fragment
+whereas on Linux, the installation is distributed as follows:
+
+```cpp
+$IMFUSION_SDK/
+├── lib/
+│   └── cmake/
+└── include/
+```
+ fragment
+and on MacOS, the installation is bundled as follows:
+
+```cpp
+$IMFUSION_SDK/
+├── lib/
+│   └── cmake/
+└── Contents/
+    └── Resources/
+        └── include/
+```
+ fragment
+In all cases, include contains the header files for the C++ SDK, lib contains the libraries required for linking, and cmake contains the CMake package config allowing you to use find_package(ImFusionLib) in your CMakeLists.txt.
+
+The simplest way to activate a license for an ImFusion product is by setting the environment variable IMFUSION_LICENSE_KEY to your key before starting the application. If you cannot or do not want to use the default framework behavior and need more control when integrating the SDK please refer to Programmatically activating a License.
+
+**Note:** Every ImFusion product (Suite, Labels, SDK, PythonSDK) needs to be license activated separately on the same machine, even if the same key is applicable.
+
+### Set Up a Build Environment
+
+In order to build custom applications with the ImFusion SDK you need to set up your build environment correctly. The installed version of the ImFusion SDK comes with package files for [CMake](https://cmake.org/) that enable straight-forward integration of the ImFusionLib and plugins into a CMake-based build.
+
+**Note:** The ImFusion SDK does not ship Qt. If you do not yet have a matching version of Qt, you can [download Qt from their web site](https://www.qt.io/download).
+
+#### CMake-based configuration
+
+[CMake](https://cmake.org/) is a cross-platform software for specifying the build process of executables and libraries. It will generate native project files (e.g. Visual Studio Solutions, Makefiles) so that you can develop your software in your preferred build environment. If you're not familiar with CMake, you can find an introduction to how to use CMake in the [official CMake documentation](https://cmake.org/cmake/help/latest/manual/cmake-buildsystem.7.html). We recommend to follow modern (target-based) practices when writing CMake builds.
+
+The ImFusion SDK ships a CMake package config with the installer, which is located in $(IMFUSION_SDK)\cmake (Windows) or $(IMFUSION_SDK)/lib/cmake/ (Linux and MacOS). If the ImFusion SDK was installed correctly, a CMake call to find_package(ImFusionLib) should locate the package config automatically. Optionally, use the COMPONENTS argument to specify additional ImFusion plugins.
+
+The CMake package defines targets for the ImFusionLib and all specified plugins. Linking your application/library against those targets using target_link_libraries(YourLibName PRIVATE ImFusionLib) will automatically add the needed include directories, etc. to your target.
+
+Since the ImFusion SDK does not ship Qt you will need to find_package(Qt6) or find_package(Qt5) (depending on the version your installer was built for) and link it yourself. If CMake does not locate Qt automatically, set Qt6_DIR or Qt5_DIR accordingly, e.g. &lt;Qt6 install dir&gt;/lib/cmake/Qt6.
+
+#### Manual Configuration
+
+For using the ImFusion SDK within a custom build environment configure the following:
+
+**Required include Directories:** - includes of the ImFusion SDK: $(IMFUSION_SDK)/include/ImFusion (Windows and Linux) and $(IMFUSION_SDK)/Contents/Resources/include/ImFusion (MacOS)
+- 3rd-party includes of the ImFusion SDK: $(IMFUSION_SDK_INCLUDE_DIR)/Ext where IMFUSION_SDK_INCLUDE_DIR is the folder defined above
+- Qt5/Qt6 includes (not shipped)
+
+**Required linking targets:** - $(IMFUSION_SDK)\lib\ImFusionLib.lib (Windows) or $(IMFUSION_SDK)/lib/libImFusionLib.so (Linux and MacOS)
+- optionally also plugins in $(IMFUSION_SDK)\lib (Windows) or $(IMFUSION_SDK)/lib/ImFusionLib/plugins (Linux and MacOS)
+- Qt5/Qt6 (not shipped)
+
+### Building an Example Application
+
+Consider the following example application ExampleMainWindowBaseApplication, which is taken from our [Example Projects on Github](/cpp-sdk/4.5/api/guides/example-projects). The project is setup with the following directory structure:
+
+```cpp
+ExampleMainWindowBaseApplication/
+├── CMakeLists.txt
+├── DemoMainWindowBase.cpp
+└── DemoMainWindowBase.h
+```
+ fragment
+The CMakeLists.txt contains the necessary CMake calls to define the build process of the example project:
+
+```cpp
+# Define a new CMake project for the demo application
+cmake_minimum_required(VERSION 3.13.0)
+project(DemoMainWindowBase)
+
+# Locate the ImFusion SDK. List required modules/plugins in the COMPONENTS section.
+find_package(ImFusionLib COMPONENTS ImFusionDicom REQUIRED)
+
+# Enable automatic MOC, RCC and UIC preprocessing for Qt
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
+set(CMAKE_AUTOUIC ON)
+
+# Define and configure the CMake target
+set(Sources
+    DemoMainWindowBase.cpp
+)
+set(Headers
+    DemoMainWindowBase.h
+)
+
+# Define target executable
+add_executable(DemoMainWindowBase ${Sources} ${Headers})
+target_include_directories(DemoMainWindowBase PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}
+)
+
+# Link against the ImFusionLib and selected modules/plugins
+target_link_libraries(DemoMainWindowBase PRIVATE
+    ImFusionLib
+    ImFusionDicom
+)
+
+imfusion_set_common_target_properties()
+```
+ fragment
+The source files show how to use the ImFusion SDK to visualize medical DICOM data. Copy the following content into DemoMainWindowBase.h
+
+```cpp
+#pragma once
+
+#include <ImFusion/GUI/DisplayWidgetMulti.h>
+#include <ImFusion/GUI/MainWindowBase.h>
+
+#include <memory>
+
+namespace ImFusion
+{
+ // Minimalistic demo application to show a DICOM data set.
+ // We inherit from ImFusion::MainWindowBase to get a GUI setup resembling a standard radiology
+ // workstation out-of-the-box. This will contain GUI elements such as the DataWidget and SelectionWidget,
+ // as well as scroll area where on-demand UI elements (e.g. ImFusion::AlgorithmControllers) can be hosted.
+ //
+ // The appearance will be very similar to the one of the ImFusion Suite. In case you want more control over
+ // the GUI layout and build everything from scratch, you can inherit from the ImFusion::ApplicationController
+ // base interface instead.
+ class DemoMainWindowBase : public MainWindowBase
+    {
+ public:
+        DemoMainWindowBase();
+        ~DemoMainWindowBase() override;
+
+ // implement layout setting to display algorithm controllers in the algorithm dock
+ // for example: one can set m_algorithmDock layout for a container widget
+ // the widget can later host algorithm controllers in a scroll area
+        QBoxLayout* algorithmDock() const override { return m_algorithmDock; };
+
+ // implement layout setting to display 2D/3D views of image data
+ // and offer a scrollbar if there are multiple 2D image frames in display
+        QBoxLayout* scrollBarLayout() const override { return m_verticalLayout; };
+
+ // display image data in the view and take care of arranging the views as well as user interaction
+        DisplayWidgetMulti* display() const override { return m_display.get(); };
+
+ private:
+ void setupGUI();
+        std::unique_ptr<DisplayWidgetMulti> m_display;
+        QBoxLayout* m_algorithmDock = nullptr;
+        QBoxLayout* m_verticalLayout = nullptr;
+    };
+}
+```
+ fragment
+and copy the following content into DemoMainWindowBase.cpp
+
+```cpp
+#include "DemoMainWindowBase.h"
+
+#include <ImFusion/Base/BasicImageProcessing.h>
+#include <ImFusion/Base/DataModel.h>
+#include <ImFusion/Core/Platform.h>
+#include <ImFusion/Dicom/DicomLoader.h>
+#include <ImFusion/GL/SharedImageSet.h>
+#include <ImFusion/GUI/GlContextQt.h>
+#include <ImFusion/GUI/InteractiveView.h>
+#include <ImFusion/GUI/ViewGroup.h>
+
+#include <QApplication>
+#include <QScrollArea>
+#include <QVBoxLayout>
+#include <QWidget>
+
+// main entry point
+int main(int argn, char** argv)
+{
+    QApplication app(argn, argv);
+    ImFusion::DemoMainWindowBase ex;
+    ex.show();
+    QApplication::exec();
+}
+
+// MainWindowBaseApplication implementation
+namespace ImFusion
+{
+
+    DemoMainWindowBase::DemoMainWindowBase()
+ // Construct the ApplicationController with a Qt OpenGL context so that we can use a DisplayWidget later on.
+        : MainWindowBase([]() {
+ ImFusion::Framework::InitConfig initConfig;
+            initConfig.glContext = std::make_unique<ImFusion::GlContextQt>();
+            initConfig.organizationName = "ImFusion GmbH";
+            initConfig.applicationName = "DemoMainWindowBase";
+ return initConfig;
+        }())
+    {
+        loadStyleSheet();
+        PluginManager::get().registerPlugins();
+        PluginManager::get().initAllRegisteredPlugins();
+
+ // create a new DisplayWidget and assign it to the QMainWindow
+ // pass `false` to not initialize the DisplayWidget yet (we do this explicitly below)
+        m_display = std::make_unique<DisplayWidgetMulti>(false);
+
+ // Qt 5.9 changed some internals on how it creates a QWindow.
+ // Older versions need to initialize the DisplayWidget *before* wrapping it in a QWidget,
+ // otherwise there will be "CreateWindowEx failed (Cannot create a top-level child window)" errors.
+#if QT_VERSION < QT_VERSION_CHECK(5, 9, 0)
+        m_display->init();
+#endif
+
+        this->setMinimumSize(800, 600);
+        setupGUI();
+
+ // Qt 5.9 changed some internals on how it creates a QWindow.
+ // Newer versions need to initialize the DisplayWidget *after* wrapping it in a QWidget,
+ // otherwise there will be weird offsets in the rendering and in the mouse event positions.
+#if QT_VERSION >= QT_VERSION_CHECK(5, 9, 0)
+        m_display->init();
+#endif
+
+ // add 2D view as well as default MPR and 3D view group and make them visible
+        m_display->addView2D(false);
+        m_display->addViewGroup3D(false);
+ for (auto v : m_display->views())
+            v->setVisible(true);
+
+        readSettings();
+        setupWidgets();
+
+ // Use the DicomLoader to load DICOM data from the disk
+        DicomLoader dicomLoader("C:/path/to/your/DICOM/data");
+ std::vector<std::unique_ptr<SharedImageSet>> images = dicomLoader.loadImages();
+ if (images.empty())
+ return;
+
+ // Handle loaded images:
+ // - Move them to the ApplicationController's DataModel (transfer ownership)
+ // - Add them to the views of the DisplayWidget
+        DataList dl;
+ for (auto& sis : images)
+        {
+            dl.add(sis.get());
+            this->dataModel()->add(std::move(sis));
+        }
+
+ // show the data, DisplayWidget takes care of distributing them to the compatible views
+        m_display->setVisibleData(dl);
+
+ // Add an algorithm to algorithmDock
+ auto demoAlg = std::make_unique<BasicImageProcessing>(dl.getImage(Data::UNKNOWN));
+        this->addAlgorithm((std::move(demoAlg)));
+
+ // align controller widgets
+ auto spacer = new QSpacerItem(0, 0, QSizePolicy::MinimumExpanding, QSizePolicy::Expanding);
+        m_algorithmDock->addSpacerItem(spacer);
+    }
+
+    DemoMainWindowBase::~DemoMainWindowBase()
+    {
+ // clean up before the ImFusion SDK is deinitalized
+ for (auto v : m_display->views())
+            v->setVisibleData({});
+    }
+
+ void DemoMainWindowBase::setupGUI()
+    {
+ // Setup display widgets and layout
+ // 2D/3D view
+ auto dispWrapper = QWidget::createWindowContainer(m_display.get(), this);
+        dispWrapper->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+        dispWrapper->setMinimumSize(QSize(64, 64));
+        m_display->setContainerWidget(dispWrapper);
+
+ // main display widget
+ auto centralwidget = new QWidget(this);
+        centralwidget->setObjectName(QString::fromUtf8("centralWidget"));
+        centralwidget->setProperty("lightStyle", QVariant(true));
+        this->setCentralWidget(centralwidget);
+
+ // layout of main display widget
+ auto gridLayout = new QGridLayout(centralwidget);
+        gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
+        gridLayout->setHorizontalSpacing(3);
+        gridLayout->setVerticalSpacing(1);
+        gridLayout->setContentsMargins(4, 4, 4, 4);
+
+ // layout for 2D/3D view
+        m_verticalLayout = new QVBoxLayout();
+        m_verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
+        gridLayout->addLayout(m_verticalLayout, 0, 3, -1, 1);
+        gridLayout->addWidget(dispWrapper, 0, 4, 1, 1);
+
+ // DataList and algorithm dock layout
+ auto verticalLayout = new QVBoxLayout();
+        verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
+        verticalLayout->setContentsMargins(0, 0, 0, 0);
+        gridLayout->addLayout(verticalLayout, 0, 0, 2, 2);
+
+ // parent widget containing algorithm controllers.
+ auto scrollAreaWidget = new QWidget();
+        scrollAreaWidget->setObjectName(QString::fromUtf8("scrollAreaWidget"));
+        scrollAreaWidget->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
+        scrollAreaWidget->setProperty("lightStyle", QVariant(true));
+
+ // algorithm controllers layout
+        m_algorithmDock = new QVBoxLayout();
+        m_algorithmDock->setSpacing(3);
+        m_algorithmDock->setObjectName(QString::fromUtf8("algorithmDock"));
+        m_algorithmDock->setContentsMargins(0, 0, 0, 0);
+        scrollAreaWidget->setLayout(m_algorithmDock);
+
+ // scroll area for algorithm dock
+ auto scrollArea = new QScrollArea();
+        scrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+        scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+        scrollArea->setWidgetResizable(true);
+        scrollArea->setWidget(scrollAreaWidget);
+        verticalLayout->insertWidget(0, scrollArea, 1);
+    }
+}
+```
+ fragment
+You can then use CMake to generate build/project files for your build system of choice. If you are using Visual Studio the CMake scripts will automatically configure the generated Solution with the correct environment parameters so that you can launch the example application directly from Visual Studio. Note that the DemoMainWindowBase constructor contains a hardcoded path to a folder containing DICOM data. You can either change this folder or start the application and add data via drag and drop.
+
+For more examples of using the ImFusion SDK, refer to our [Example Projects on Github](/cpp-sdk/4.5/api/guides/example-projects) and the smaller and self-contained Examples.

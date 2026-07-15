@@ -1,0 +1,133 @@
+---
+title: "ImFusion::GUI::SliceViewDefaultEventHandler"
+sidebarTitle: "SliceViewDefaultEventHandler"
+description: "Implementation of an input event handler providing standard mouse, touch, and keyboard interaction with a SliceView ."
+---
+
+`#include <ImFusion/GUI/SliceViewDefaultEventHandler.h>`
+
+## Overview
+
+Implementation of an input event handler providing standard mouse, touch, and keyboard interaction with a [SliceView](/cpp-sdk/4.5/api/classes/imfusion-gui-sliceview).
+
+**See also:** [SliceView](/cpp-sdk/4.5/api/classes/imfusion-gui-sliceview)
+
+## Classes
+
+- struct [TouchActionConfig](/cpp-sdk/4.5/api/structs/imfusion-gui-sliceviewdefaulteventhandler-touchactionconfig) — Record to define which touch events should be processed and how.
+- struct [ActionSpeed](/cpp-sdk/4.5/api/structs/imfusion-gui-sliceviewdefaulteventhandler-actionspeed) — Record to define the speed at which a mouse/touch movement will modify the underlying view.
+
+## Public Types
+
+- enum class [Action](#action) &#123; Pan , SweepSlice , Zoom , InPlaneRotation , OutOfPlaneRotation , ChangeFocus , Windowing , Blending &#125; — Enumeration of actions that can be performed based on input events.
+- enum class [CenterOfRotation](#centerofrotation) &#123; FirstImage , AllDatasets , View , MprIntersection &#125; — Enumeration of options for determining the center of rotation.
+
+## Public Member Functions
+
+- **SliceViewDefaultEventHandler** ([SliceView](/cpp-sdk/4.5/api/classes/imfusion-gui-sliceview) &view)
+- [CenterOfRotation](#centerofrotation) **centerOfRotation** () const — Returns the center of rotation for in-plane and out-of-plane rotations.
+- void **setCenterOfRotation** ([CenterOfRotation](#centerofrotation) value) — Sets the center of rotation for in-plane and out-of-plane rotations.
+- const [TouchActionConfig](/cpp-sdk/4.5/api/structs/imfusion-gui-sliceviewdefaulteventhandler-touchactionconfig) & **touchActionConfig** () const — Returns which touch events should be processed and how.
+- void **setTouchActionConfig** (const [TouchActionConfig](/cpp-sdk/4.5/api/structs/imfusion-gui-sliceviewdefaulteventhandler-touchactionconfig) &value) — Sets which touch events should be processed and how.
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* &gt; & **manualRegistrationImages** () const — Returns the list of images for which pan and rotation actions are interpreted as manual registration actions.
+- void [setManualRegistrationImages](#setmanualregistrationimages) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* &gt; &images) — Sets the list of images for which pan and rotation actions are interpreted as manual registration actions.
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; vec4 &gt; **manualRegistrationHighlightColor** () const — Returns the optional tint color to indicate/highlight the manualRegistrationImages() in the rendering.
+- void **setManualRegistrationHighlightColor** ([std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; vec4 &gt; color) — Sets the optional tint color to indicate/highlight the manualRegistrationImages() in the rendering.
+- [ActionSpeed](/cpp-sdk/4.5/api/structs/imfusion-gui-sliceviewdefaulteventhandler-actionspeed) **actionSpeed** ([Action](#action) action) const — Returns the speed at which a mouse/touch movement will modify the underlying view.
+- void **setActionSpeed** ([Action](#action) action, [ActionSpeed](/cpp-sdk/4.5/api/structs/imfusion-gui-sliceviewdefaulteventhandler-actionspeed) value) — Sets the speed at which a mouse/touch movement will modify the underlying view.
+- [InputEventMapper](/cpp-sdk/4.5/api/classes/imfusion-gui-inputeventmapper)&lt; [Action](#action) &gt; & **inputEventMapper** () — Access to the helper class to map an [InputEvent](/cpp-sdk/4.5/api/classes/imfusion-gui-inputevent) to an [Action](#action) of this view to allow for to customize the mapping from the outside.
+- [EventResult](/cpp-sdk/4.5/api/structs/imfusion-gui-eventresult) [handleInputEvent](#handleinputevent) (const [InputEvent](/cpp-sdk/4.5/api/classes/imfusion-gui-inputevent) &event) override — This function is called by sources of input events in order to dispatch them to the handlers.
+
+## Protected Member Functions
+
+- vec3 **rotationCenter** () const
+- [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* [targetImage](#targetimage) () const — Returns the target image for window/level, and focus actions.
+- virtual [EventResult](/cpp-sdk/4.5/api/structs/imfusion-gui-eventresult) **handleMouseEvent** (const [MouseEvent](/cpp-sdk/4.5/api/classes/imfusion-gui-mouseevent) &event)
+- virtual [EventResult](/cpp-sdk/4.5/api/structs/imfusion-gui-eventresult) **handleTouchEvent** (const [TouchEvent](/cpp-sdk/4.5/api/classes/imfusion-gui-touchevent) &event)
+- virtual [EventResult](/cpp-sdk/4.5/api/structs/imfusion-gui-eventresult) **handleContextMenuEvent** (const [ContextMenuEvent](/cpp-sdk/4.5/api/classes/imfusion-gui-contextmenuevent) &event)
+
+## Protected Attributes
+
+- [SliceView](/cpp-sdk/4.5/api/classes/imfusion-gui-sliceview) & **m_view**
+- [InputEventMapper](/cpp-sdk/4.5/api/classes/imfusion-gui-inputeventmapper)&lt; [Action](#action) &gt; **m_actionMapper**
+- [CenterOfRotation](#centerofrotation) **m_centerOfRotation** = CenterOfRotation::MprIntersection
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* &gt; **m_manualRegImages**
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [GlImageHighlighter](/cpp-sdk/4.5/api/classes/imfusion-glimagehighlighter) &gt; **m_manualRegHighlighter**
+- bool **m_highlightMoveImages** = false
+- [TouchActionConfig](/cpp-sdk/4.5/api/structs/imfusion-gui-sliceviewdefaulteventhandler-touchactionconfig) **m_touchActionConfig**
+
+## Member Enumeration Documentation
+
+### Action
+
+```cpp
+enum class ImFusion::GUI::SliceViewDefaultEventHandler::Action
+```
+
+*strong*
+
+Enumeration of actions that can be performed based on input events.
+
+**Enumerator:**
+
+- `Pan` — in-plane panning of the viewport
+- `SweepSlice` — out-of-plane panning panning of the viewport / change the visible slice of a 3D dataset in a MPR view
+- `Zoom` — change the zoom of the viewport
+- `InPlaneRotation` — in-plane rotation of the viewport
+- `OutOfPlaneRotation` — out-of-plane rotation of the viewport
+- `ChangeFocus` — change the [focus image](/cpp-sdk/4.5/api/classes/imfusion-selection) of the current dataset
+- `Windowing` — change the [window and level](/cpp-sdk/4.5/api/classes/imfusion-displayoptions2d) of the display options of the current dataset
+- `Blending` — change the [blending factor](/cpp-sdk/4.5/api/classes/imfusion-gui-sliceview)
+
+### CenterOfRotation
+
+```cpp
+enum class ImFusion::GUI::SliceViewDefaultEventHandler::CenterOfRotation
+```
+
+*strong*
+
+Enumeration of options for determining the center of rotation.
+
+**Enumerator:**
+
+- `FirstImage` — Center of the first shown image.
+- `AllDatasets` — Center of all shown datasets.
+- `View` — Center of the currently visible viewport.
+- `MprIntersection` — Intersection point of all SliceViews if it is part of a ViewGroup3D; CenterOfRotation::View otherwise.
+
+## Member Function Documentation
+
+### setManualRegistrationImages
+
+```cpp
+void ImFusion::GUI::SliceViewDefaultEventHandler::setManualRegistrationImages (const std::vector < SharedImageSet * > & images)
+```
+
+Sets the list of images for which pan and rotation actions are interpreted as manual registration actions.
+
+If this list is empty pan and rotation will be applied to the view matrix. If the list is not empty pan and rotation will be applied to the images' matrices instead.
+
+### handleInputEvent
+
+```cpp
+EventResult ImFusion::GUI::SliceViewDefaultEventHandler::handleInputEvent (const InputEvent & event)
+```
+
+*override, virtual*
+
+This function is called by sources of input events in order to dispatch them to the handlers.
+
+In case there are more than one InputEventHandlers dispatchers are intended call this function consecutively until the first handler indicates to stop by returning a result where [EventResult::stopPropagation()](/cpp-sdk/4.5/api/structs/imfusion-gui-eventresult) is true.
+
+### targetImage
+
+```cpp
+SharedImageSet * ImFusion::GUI::SliceViewDefaultEventHandler::targetImage () const
+```
+
+*protected*
+
+Returns the target image for window/level, and focus actions.
+
+For 2D views, returns the first image in [View::visibleData()](/cpp-sdk/4.5/api/classes/imfusion-gui-view). For MPR views, returns the first volumetric view in [View::visibleData()](/cpp-sdk/4.5/api/classes/imfusion-gui-view).

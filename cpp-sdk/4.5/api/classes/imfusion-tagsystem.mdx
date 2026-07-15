@@ -1,0 +1,70 @@
+---
+title: "ImFusion::TagSystem"
+sidebarTitle: "TagSystem"
+---
+
+## Classes
+
+- struct [RemovedTagInfo](/cpp-sdk/4.5/api/structs/imfusion-tagsystem-removedtaginfo)
+
+## Public Types
+
+- using **ValueMigration** = [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt;[std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt;[TagValue](/cpp-sdk/4.5/api/unions/imfusion-tagvalue)&gt;(const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt;[TagValue](/cpp-sdk/4.5/api/unions/imfusion-tagvalue)&gt;&)&gt;
+
+## Public Member Functions
+
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [TagType](/cpp-sdk/4.5/api/structs/imfusion-tagtype) &gt; & **tagTypes** () const
+- bool **defineNewTags** ([std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [TagType](/cpp-sdk/4.5/api/structs/imfusion-tagtype) &gt; newTagTypes)
+- bool **addNewTag** (size_t index, [TagType](/cpp-sdk/4.5/api/structs/imfusion-tagtype) newTagType)
+- bool **appendNewBoolTag** (QString name, QColor color)
+- bool **appendNewEnumTag** (QString name, QColor color, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; QString &gt; values)
+- bool **appendNewFloatTag** (QString name, QColor color)
+- bool **changeTag** (size_t index, const [TagType](/cpp-sdk/4.5/api/structs/imfusion-tagtype) &changedTag)
+- bool **moveTag** (size_t from, size_t to)
+- bool **deleteTag** (size_t index)
+- bool **moveTag** (const QString &id, size_t to)
+- bool **changeTag** (const QString &id, const [TagType](/cpp-sdk/4.5/api/structs/imfusion-tagtype) &newTagType)
+- bool **deleteTag** (const QString &id)
+- [RemovedTagInfo](/cpp-sdk/4.5/api/structs/imfusion-tagsystem-removedtaginfo) **getRemovedTagInfo** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [TagType](/cpp-sdk/4.5/api/structs/imfusion-tagtype) &gt; &newTagTypes) const
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void **configureFromRemote** (const QJsonArray &)
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [TagValue](/cpp-sdk/4.5/api/unions/imfusion-tagvalue) &gt; **defaultTagValues** () const
+- bool **checkConsistency** () const
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; size_t &gt; **tagIndexById** (const QString &id) const
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; size_t &gt; **tagIndexByName** (const QString &name) const
+
+## Public Attributes
+
+- Signal **signalTagsChangedPre**
+- Signal&lt; const ValueMigration & &gt; **signalTagsChangedPost**
+
+## Member Function Documentation
+
+### configuration
+
+```cpp
+void ImFusion::TagSystem::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality
+
+### configure
+
+```cpp
+void ImFusion::TagSystem::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality

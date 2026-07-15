@@ -1,0 +1,69 @@
+---
+title: "ImFusion::Geometry::Polygon2D"
+sidebarTitle: "Polygon2D"
+description: "Class representing a planar polygon."
+---
+
+`#include <ImFusion/Core/Geometry/Polygon.h>`
+
+## Overview
+
+Class representing a planar polygon.
+
+**See also:** Intersections between geometry primitives can be computed using the sets of free functions Geometry::intersection() and Geometry::intersects().
+
+## Public Member Functions
+
+- [Polygon2D](#polygon2d) ([std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec2 &gt; points) — Constructs the polygon from sorted boundary points.
+- bool **operator==** (const [Polygon2D](#polygon2d) &other) const
+- bool **operator!=** (const [Polygon2D](#polygon2d) &other) const
+- bool **isApprox** (const [Polygon2D](#polygon2d) &other) const
+- bool [isEquivalent](#isequivalent) (const [Polygon2D](#polygon2d) &other) const — Returns whether the Polygon2Ds represent the same boundary.
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec2 &gt; & **points** () const
+- bool **isSimple** () const — Returns whether the polygon is simple, which means: None of the edge segments intersect (except for neighbouring segments touching at the connecting point), each of these connecting vertices is part of exactly 2 segments, and the enclosed area is finite and not zero.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3i &gt; [triangulate](#triangulate) () const — Splits the enclosed space into triangles defined by vertices of the polygon.
+- bool [includesPoint](#includespoint) (const vec2 &point) const — Returns whether the point is inside the polygon.
+
+## Constructor & Destructor Documentation
+
+### Polygon2D
+
+```cpp
+ImFusion::Geometry::Polygon2D::Polygon2D (std::vector < vec2 > points)
+```
+
+Constructs the polygon from sorted boundary points.
+
+If adjacent points have the same position, the duplicate will be discarded.
+
+## Member Function Documentation
+
+### isEquivalent
+
+```cpp
+bool ImFusion::Geometry::Polygon2D::isEquivalent (const Polygon2D & other) const
+```
+
+Returns whether the Polygon2Ds represent the same boundary.
+
+Note that this is still the case if the points are reversed or shifted inside the array.
+
+### triangulate
+
+```cpp
+std::vector < vec3i > ImFusion::Geometry::Polygon2D::triangulate () const
+```
+
+Splits the enclosed space into triangles defined by vertices of the polygon.
+
+The vertices are chosen to minimize triangle areas. If triangulation is not possible due to lack of vertices or part of the polygon not being finite, an empty vector is returned. Note that the returned indices correspond to the points currently held by this object, which is not necessarily the same list of points that was passed into the constructor originally.
+
+### includesPoint
+
+```cpp
+bool ImFusion::Geometry::Polygon2D::includesPoint (const vec2 & point) const
+```
+
+Returns whether the point is inside the polygon.
+
+The result for points extremely close to the boundary is undefined, with extremely close being a range of about 1e-15 times the largest involved coordinate.

@@ -1,0 +1,25 @@
+---
+title: "ImFusion::HistogramDisplayWidget"
+sidebarTitle: "HistogramDisplayWidget"
+description: "Qt Widget for displaying and manipulating a histogram from MeshDistanceController ."
+---
+
+`#include <ImFusion/GUI/MeshDistanceController.h>`
+
+## Overview
+
+Qt Widget for displaying and manipulating a histogram from [MeshDistanceController](/cpp-sdk/4.5/api/classes/imfusion-meshdistancecontroller).
+
+## Signals
+
+- void **histogramRangeChanged** ()
+
+## Public Member Functions
+
+- **HistogramDisplayWidget** (const [MeshDistanceController::Histogram](/cpp-sdk/4.5/api/structs/imfusion-meshdistancecontroller-histogram) &histogram, QWidget \*parent=nullptr)
+- void **paintEvent** (QPaintEvent \*e) override
+- void **mousePressEvent** (QMouseEvent \*e) override
+- void **mouseMoveEvent** (QMouseEvent \*e) override
+- void **mouseReleaseEvent** (QMouseEvent \*e) override
+- void **setHistogram** (const [MeshDistanceController::Histogram](/cpp-sdk/4.5/api/structs/imfusion-meshdistancecontroller-histogram) &histogram)
+- [MeshDistanceController::Histogram](/cpp-sdk/4.5/api/structs/imfusion-meshdistancecontroller-histogram) & **histogram** ()

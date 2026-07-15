@@ -1,0 +1,39 @@
+---
+title: "ImFusion::DataGroupingModel"
+sidebarTitle: "DataGroupingModel"
+description: "QAbstractProxyModel implementation that groups data in a source-model according to a specified GroupingOption ."
+---
+
+`#include <ImFusion/GUI/DataGroupingModel.h>`
+
+## Overview
+
+QAbstractProxyModel implementation that groups data in a source-model according to a specified GroupingOption.
+
+**Note:** This model is reset every time new data is added/moved/removed from the Data Model and if the GroupingOption is changed. This model should not be used without a source-model. [Data](/cpp-sdk/4.5/api/classes/imfusion-data) can be grouped by Study-ID (GroupingOption::StudyId), Patient-ID (GroupingOption::PatientId), or not grouped (GroupingOption::None)
+
+## Public Types
+
+- enum class GroupingOption &#123; **StudyId** = 0 , **PatientId** = 1 , **None** = 2 &#125; — Specific grouping options to gather the corresponding info from the [ImageInfoDataComponent](/cpp-sdk/4.5/api/classes/imfusion-imageinfodatacomponent).
+
+## Public Member Functions
+
+- **DataGroupingModel** (GroupingOption opt, QAbstractItemModel \*sourceModel=nullptr, QObject \*parent=nullptr) — Ctor: pass the option for grouping the data and the source model. If you prefer you can also set the source model via setSourceModel.
+- int **columnCount** (const QModelIndex &parent=QModelIndex()) const override — QAbstractItemModel interface implementation.
+- int **rowCount** (const QModelIndex &parent=QModelIndex()) const override
+- QVariant **data** (const QModelIndex &index, int role=Qt::DisplayRole) const override
+- QModelIndex **index** (int row, int column, const QModelIndex &parent=QModelIndex()) const override
+- QModelIndex **parent** (const QModelIndex &index) const override
+- QModelIndex **buddy** (const QModelIndex &index) const override
+- QModelIndex **index** (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*, int column) const
+- Qt::ItemFlags **flags** (const QModelIndex &index) const override
+- QModelIndex **mapFromSource** (const QModelIndex &sourceIndex) const override — QAbstractProxyModel interface implementation.
+- QModelIndex **mapToSource** (const QModelIndex &proxyIndex) const override
+- bool **setData** (const QModelIndex &index, const QVariant &value, int role=Qt::EditRole) override
+- void **setSourceModel** (QAbstractItemModel \*sourceModel) override — sets the source model and resets this model
+- void **setGroupingOption** (GroupingOption opt) — sets the GroupingOption and resets this model
+- GroupingOption **groupingOption** () const
+
+## Public Attributes
+
+- Signal&lt; QModelIndex &gt; **signalGroupAdded** — Signals that a group was added - connect to this e.g. to expand items in the [DataWidget](/cpp-sdk/4.5/api/classes/imfusion-datawidget).

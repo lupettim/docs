@@ -1,0 +1,101 @@
+---
+title: "ImFusion::DataSet"
+sidebarTitle: "DataSet"
+---
+
+## Classes
+
+- class [TypeSpecificData](/cpp-sdk/4.5/api/classes/imfusion-dataset-typespecificdata)
+- class [GeometricAnnotationData](/cpp-sdk/4.5/api/classes/imfusion-dataset-geometricannotationdata)
+- class [PixelwiseData](/cpp-sdk/4.5/api/classes/imfusion-dataset-pixelwisedata)
+
+## Public Member Functions
+
+- const [Image](/cpp-sdk/4.5/api/classes/imfusion-image) & **image** () const
+- [DataDescriptor](/cpp-sdk/4.5/api/classes/imfusion-datadescriptor) & **descriptor** () const
+- [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) & **data** ()
+- const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) & **data** () const
+- size_t **frame** () const
+- size_t **frameCount** () const
+- void **tryToLock** ()
+- void **refreshLock** ()
+- void **unlock** ()
+- bool **hasLock** () const
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [Network::LockToken](/cpp-sdk/4.5/api/structs/imfusion-network-locktoken) &gt; **lockToken** () const
+- bool **isReadOnly** () const
+- bool [isEditable](#iseditable) () const — Returns whether the dataset can be edited (i.e.
+- [CroppingMask](/cpp-sdk/4.5/api/classes/imfusion-croppingmask) & **mask** ()
+- const [CroppingMask](/cpp-sdk/4.5/api/classes/imfusion-croppingmask) & **mask** () const
+- void **setMaskChanged** ()
+- void **release** ()
+- [Utils::Expected](/cpp-sdk/4.5/api/classes/imfusion-utils-expected)&lt; void, [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **save** ([Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) \*progress)
+- bool **hasData** (size_t frame) const
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; QImage &gt; **getThumbnail** ()
+- [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* **relatedImage** () const
+- void **loadRelatedImage** (const [DataDescriptor::RelatedData](/cpp-sdk/4.5/api/structs/imfusion-datadescriptor-relateddata) &relatedData, [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) \*progress=nullptr)
+- void **unloadRelatedImage** ()
+- [PixelwiseData](/cpp-sdk/4.5/api/classes/imfusion-dataset-pixelwisedata) \* **pixelwise** ([std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; size_t &gt;=&#123;&#125;)
+- const [PixelwiseData](/cpp-sdk/4.5/api/classes/imfusion-dataset-pixelwisedata) \* **pixelwise** ([std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; size_t &gt;=&#123;&#125;) const
+- [GeometricAnnotationData](/cpp-sdk/4.5/api/classes/imfusion-dataset-geometricannotationdata) \* **geometricAnnotations** ([std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; size_t &gt;=&#123;&#125;)
+- const [GeometricAnnotationData](/cpp-sdk/4.5/api/classes/imfusion-dataset-geometricannotationdata) \* **geometricAnnotations** ([std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; size_t &gt;=&#123;&#125;) const
+- bool [saveLayersToImFusionFile](#savelayerstoimfusionfile) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &path) — Saves all layers into a ImFusionFile.
+- [Utils::Expected](/cpp-sdk/4.5/api/classes/imfusion-utils-expected)&lt; [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &gt;, [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; [restorePixelwiseLayerFromImFusionFile](#restorepixelwiselayerfromimfusionfile) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &path, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &layerId) const — Restores a pixelwise layer from an ImFusionFile.
+- [Utils::Expected](/cpp-sdk/4.5/api/classes/imfusion-utils-expected)&lt; GeometricAnnotations, [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; [restoreGeoAnnotationLayerFromImFusionFile](#restoregeoannotationlayerfromimfusionfile) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &path, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &layerId) const — Restores a pixelwise layer from an ImFusionFile.
+
+## Static Public Member Functions
+
+- static [Utils::Expected](/cpp-sdk/4.5/api/classes/imfusion-utils-expected)&lt; [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; DataSet &gt;, [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **load** ([DataDescriptor](/cpp-sdk/4.5/api/classes/imfusion-datadescriptor) &d, [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) \*progress=nullptr)
+- static [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; DataSet &gt; **load** ([DataDescriptor](/cpp-sdk/4.5/api/classes/imfusion-datadescriptor) &d, [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &sis, [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &labels, bool dataOwned)
+- static [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; DataSet &gt; **load** ([DataDescriptor](/cpp-sdk/4.5/api/classes/imfusion-datadescriptor) &d, [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &gt; sis, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &gt; &gt; labelLayers, bool dataOwned=true)
+- static bool **setRelatedMatrix** (const [DataDescriptor::RelatedData](/cpp-sdk/4.5/api/structs/imfusion-datadescriptor-relateddata) &relatedData, const [DataDescriptor](/cpp-sdk/4.5/api/classes/imfusion-datadescriptor) \*relatedDesc, const [DataDescriptor](/cpp-sdk/4.5/api/classes/imfusion-datadescriptor) \*referenceDesc, [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*relatedImage, const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*referenceImage)
+
+## Public Attributes
+
+- Signal **signalRelatedImageLoadedPre**
+- Signal **signalRelatedImageLoadedPost**
+- Signal **maskChanged**
+- Signal **windowLevelChanged**
+- Signal **savedPre**
+- Signal **savedPost**
+
+## Member Function Documentation
+
+### isEditable
+
+```cpp
+bool ImFusion::DataSet::isEditable () const
+```
+
+Returns whether the dataset can be edited (i.e.
+
+name or tags can be changed). This depends on whether the [Project](/cpp-sdk/4.5/api/classes/imfusion-project) or [DataDescriptor](/cpp-sdk/4.5/api/classes/imfusion-datadescriptor) is read-only and the current user having sufficient permissions.
+
+### saveLayersToImFusionFile
+
+```cpp
+bool ImFusion::DataSet::saveLayersToImFusionFile (const std::string & path)
+```
+
+Saves all layers into a ImFusionFile.
+
+The labelmaps will be saved with the layer id as name. Geometric annotations are saved inside the properties in sub-properties also using the layer id as name.
+
+### restorePixelwiseLayerFromImFusionFile
+
+```cpp
+Utils::Expected < std::unique_ptr < SharedImageSet >, std::string > ImFusion::DataSet::restorePixelwiseLayerFromImFusionFile (const std::string & path, const std::string & layerId) const
+```
+
+Restores a pixelwise layer from an ImFusionFile.
+
+Does **not** change the layers of this dataset! The ImFusionFile is assumed to be created by saveLayersToImFusionFile. An error is returned if no labelmap with layerId as name is contained in the file.
+
+### restoreGeoAnnotationLayerFromImFusionFile
+
+```cpp
+Utils::Expected < GeometricAnnotations, std::string > ImFusion::DataSet::restoreGeoAnnotationLayerFromImFusionFile (const std::string & path, const std::string & layerId) const
+```
+
+Restores a pixelwise layer from an ImFusionFile.
+
+Does **not** change the layers of this dataset! The ImFusionFile is assumed to be created by saveLayersToImFusionFile. An error is returned if no annotations with layerId as name is contained in the properties of the file.

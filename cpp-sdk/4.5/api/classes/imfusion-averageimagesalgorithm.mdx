@@ -1,0 +1,96 @@
+---
+title: "ImFusion::AverageImagesAlgorithm"
+sidebarTitle: "AverageImagesAlgorithm"
+description: "Algorithm to average multiple images."
+---
+
+`#include <ImFusion/Base/AverageImagesAlgorithm.h>`
+
+## Overview
+
+[Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) to average multiple images.
+
+## Public Types
+
+- enum **AveragingMode** &#123; **Mean** = 0 , **Median** &#125; — [Status](/cpp-sdk/4.5/api/classes/imfusion-algorithm) codes.
+
+## Public Member Functions
+
+- **AverageImagesAlgorithm** (const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*img) — Creates the algorithm instance with a series of images.
+- **AverageImagesAlgorithm** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* &gt; &img)
+- **~AverageImagesAlgorithm** () override — Destructor.
+- void **setIgnoreZeroValues** (bool v) — If set to true, zero values will be ignored when computing the average.
+- bool **ignoreZeroValues** () const
+- void **setAveragingMode** (AveragingMode mode)
+- AveragingMode **averagingMode** () const
+
+## Methods implementing the algorithm interface
+
+- void [compute](#compute) () override — Applies the processing.
+- [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) [takeOutput](#takeoutput) () override — If new data was created, make it available here.
+- static bool [createCompatible](#createcompatible) (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=0)
+
+## Methods implementing the Configurable interface
+
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+## Member Function Documentation
+
+### createCompatible
+
+```cpp
+bool ImFusion::AverageImagesAlgorithm::createCompatible (const DataList & data, Algorithm ** a = 0)
+```
+
+*static*
+
+Factory method to check for applicability or to create the algorithm
+
+### compute
+
+```cpp
+void ImFusion::AverageImagesAlgorithm::compute ()
+```
+
+*override, virtual*
+
+Applies the processing.
+
+### takeOutput
+
+```cpp
+OwningDataList ImFusion::AverageImagesAlgorithm::takeOutput ()
+```
+
+*override, virtual*
+
+If new data was created, make it available here.
+
+### configure
+
+```cpp
+void ImFusion::AverageImagesAlgorithm::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### configuration
+
+```cpp
+void ImFusion::AverageImagesAlgorithm::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality

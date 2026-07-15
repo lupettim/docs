@@ -1,0 +1,52 @@
+---
+title: "ImFusion::MorphologicalInterpolationAlgorithm"
+sidebarTitle: "MorphologicalInterpolationAlgorithm"
+description: "Algorithm to interpolate between two label maps."
+---
+
+`#include <ImFusion/Seg/LabelMapInterpolationAlgorithm.h>`
+
+## Overview
+
+[Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) to interpolate between two label maps.
+
+Input are two binary masks, output is one (or more) interpolated frames. Inspired and adapted from 10.1109/TBME.2008.921158.
+
+## Public Member Functions
+
+- **MorphologicalInterpolationAlgorithm** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*label1, [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*label2) — Main constructor.
+- **~MorphologicalInterpolationAlgorithm** () — Destructor.
+
+## Public Attributes
+
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; int &gt; **p_numInterpolations** = &#123;"numInterpolations", 1, this&#125;
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; int &gt; **p_morphoKernelSize** = &#123;"morphoKernelSize", 3, this&#125;
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; bool &gt; **p_outputDebug** = &#123;"outputDebug", false, this&#125;
+
+## Methods implementing the algorithm interface
+
+- [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) [takeOutput](#takeoutput) () override — If new data was created, make it available here.
+- void [compute](#compute) () override — Execute the algorithm.
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=0) — If data is compatible with algorithm return true. If a is not zero, create algorithm with input data.
+
+## Member Function Documentation
+
+### takeOutput
+
+```cpp
+OwningDataList ImFusion::MorphologicalInterpolationAlgorithm::takeOutput ()
+```
+
+*override, virtual*
+
+If new data was created, make it available here.
+
+### compute
+
+```cpp
+void ImFusion::MorphologicalInterpolationAlgorithm::compute ()
+```
+
+*override, virtual*
+
+Execute the algorithm.

@@ -1,0 +1,58 @@
+---
+title: "ImFusion::DatasetLicenseComponent::DatasetInfo"
+sidebarTitle: "DatasetInfo"
+description: "Structure holding the information for one element."
+---
+
+`#include <ImFusion/Base/DatasetLicenseComponent.h>`
+
+## Overview
+
+Structure holding the information for one element.
+
+## Public Member Functions
+
+- **DatasetInfo** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &authors, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &website, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &license, bool attributionRequired, bool commercialUseAllowed)
+- bool **operator==** (const DatasetInfo &other) const
+- bool **operator!=** (const DatasetInfo &other) const
+
+## Public Attributes
+
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **p_name** = &#123;"name", "", this&#125; — Name of the dataset.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **p_authors** = &#123;"authors", "", this&#125; — Authors and affiliation.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **p_website** = &#123;"website", "", this&#125; — Link to the dataset website.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **p_license** = &#123;"license", "", this&#125; — Full license text (or link).
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; bool &gt; [p_attributionRequired](#p-attributionrequired) — Whether attribution to the dataset in the acknowledgments is required.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; bool &gt; [p_commercialUseAllowed](#p-commercialuseallowed) — Whether the dataset can be used for commercial applications.
+
+## Member Data Documentation
+
+### p_attributionRequired
+
+```cpp
+Parameter <bool> ImFusion::DatasetLicenseComponent::DatasetInfo::p_attributionRequired
+```
+
+**Initial value:**
+```cpp
+= {"attributionRequired",
+ true,
+ this}
+```
+ fragment
+Whether attribution to the dataset in the acknowledgments is required.
+
+### p_commercialUseAllowed
+
+```cpp
+Parameter <bool> ImFusion::DatasetLicenseComponent::DatasetInfo::p_commercialUseAllowed
+```
+
+**Initial value:**
+```cpp
+= {"commercialUseAllowed",
+ false,
+ this}
+```
+ fragment
+Whether the dataset can be used for commercial applications.

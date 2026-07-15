@@ -1,0 +1,136 @@
+---
+title: "ImFusion::MeshBooleanOperationsAlgorithm"
+sidebarTitle: "MeshBooleanOperationsAlgorithm"
+description: "Algorithm for performing boolean operations on meshes."
+---
+
+`#include <ImFusion/Mesh/MeshBooleanOperationsAlgorithm.h>`
+
+## Overview
+
+[Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) for performing boolean operations on meshes.
+
+Meshes must be watertight. The algorithm internally will only check if the meshes are manifold and closed but it will not check for self-intersections. When in doubt, use [Mesh::isSelfIntersecting](/cpp-sdk/4.5/api/classes/imfusion-mesh)
+
+## Public Types
+
+- enum [Mode](#mode) &#123; UNION = 0 , DIFFERENCE , INTERSECTION &#125; — Enumeration listing supported boolean operations.
+- enum class [StatusExt](#statusext) &#123; NonManifoldInput = static_cast&lt;int&gt;(Status::User) + 1 , EmptyOutput &#125; — Enumeration listing possible errors during the computation.
+
+## Public Member Functions
+
+- **MeshBooleanOperationsAlgorithm** ([Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) \*mesh1, [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) \*mesh2) — Constructor.
+- **MeshBooleanOperationsAlgorithm** (const [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) \*mesh1, const [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) \*mesh2)
+- **~MeshBooleanOperationsAlgorithm** () override — Destructor.
+- void [compute](#compute) () override — Execute the algorithm.
+- [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) [takeOutput](#takeoutput) () override — Return any new [Data](/cpp-sdk/4.5/api/classes/imfusion-data) that was created by the [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) during the last call to [compute()](#compute).
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+- void **setMode** (const [Mode](#mode) &mode) — Set computation mode.
+- [Mode](#mode) **mode** () const — Get computation mode.
+- void **setCreateNewMesh** (bool create) — Specify whether the new mesh should be created.
+- bool [createNewMesh](#createnewmesh) () const — Returns true if the new mesh should be created, returns false if the result of the computation should be assigned to the first mesh (i.e.
+- void **setFirstMesh** (int mesh) — Specify which mesh should be the first one.
+- int **firstMesh** () const — Returns 0 if the first input mesh should be the first one (when calculating difference between two meshes), returns 1 if the second input mesh should be the first one.
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) \* &gt; **inputMeshes** () const
+
+## Static Public Member Functions
+
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=0)
+
+## Member Enumeration Documentation
+
+### Mode
+
+```cpp
+enum ImFusion::MeshBooleanOperationsAlgorithm::Mode
+```
+
+Enumeration listing supported boolean operations.
+
+**Enumerator:**
+
+- `UNION` — Compute union between first and second mesh.
+- `DIFFERENCE` — Subtract second from first mesh.
+- `INTERSECTION` — Extract portion common to both, first and second mesh.
+
+### StatusExt
+
+```cpp
+enum class ImFusion::MeshBooleanOperationsAlgorithm::StatusExt
+```
+
+*strong*
+
+Enumeration listing possible errors during the computation.
+
+**Enumerator:**
+
+- `NonManifoldInput` — At least one of the input meshes is non-manifold.
+- `EmptyOutput` — The boolean operation applied to meshes resulted in an empty mesh.
+
+## Member Function Documentation
+
+### compute
+
+```cpp
+void ImFusion::MeshBooleanOperationsAlgorithm::compute ()
+```
+
+*override, virtual*
+
+Execute the algorithm.
+
+### takeOutput
+
+```cpp
+OwningDataList ImFusion::MeshBooleanOperationsAlgorithm::takeOutput ()
+```
+
+*override, virtual*
+
+Return any new [Data](/cpp-sdk/4.5/api/classes/imfusion-data) that was created by the [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) during the last call to [compute()](#compute).
+
+The default implementation will return an empty list.
+
+**Note:** Since ownership of the data is transferred, you can call this method only once between calls to [compute()](#compute).
+
+### configure
+
+```cpp
+void ImFusion::MeshBooleanOperationsAlgorithm::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### configuration
+
+```cpp
+void ImFusion::MeshBooleanOperationsAlgorithm::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality
+
+### createNewMesh
+
+```cpp
+bool ImFusion::MeshBooleanOperationsAlgorithm::createNewMesh () const
+```
+
+*inline*
+
+Returns true if the new mesh should be created, returns false if the result of the computation should be assigned to the first mesh (i.e.
+
+to the mesh m_firstMesh)

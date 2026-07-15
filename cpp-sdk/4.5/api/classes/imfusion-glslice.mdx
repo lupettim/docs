@@ -1,0 +1,322 @@
+---
+title: "ImFusion::GlSlice"
+sidebarTitle: "GlSlice"
+description: "Represents an MPR slice for rendering Data into 2D views."
+---
+
+`#include <ImFusion/GL/GlSlice.h>`
+
+## Overview
+
+Represents an MPR slice for rendering [Data](/cpp-sdk/4.5/api/classes/imfusion-data) into 2D views.
+
+[GlSlice](/cpp-sdk/4.5/api/classes/imfusion-glslice) will render MPRs of one or multiple [Data](/cpp-sdk/4.5/api/classes/imfusion-data) instances. While the actual rendering of individual data is delegated to the [GlSliceRenderer](/cpp-sdk/4.5/api/classes/imfusion-glslicerenderer) interface, [GlSlice](/cpp-sdk/4.5/api/classes/imfusion-glslice) will take care of setting up the OpenGL context and blending the rendered images.
+
+Furthermore, [GlSlice](/cpp-sdk/4.5/api/classes/imfusion-glslice) can act as [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) to render the extent (and optionally image content) of the MPR slice into other third-party views.
+
+**See also:** [ImageView2D](/cpp-sdk/4.5/api/classes/imfusion-imageview2d), [GlSliceView](/cpp-sdk/4.5/api/classes/imfusion-glsliceview), [GlSliceRenderer](/cpp-sdk/4.5/api/classes/imfusion-glslicerenderer)
+
+## Classes
+
+- struct [RenderInfo](/cpp-sdk/4.5/api/structs/imfusion-glslice-renderinfo) — Structure storing information on how to render a data set.
+- struct [Renderbuffer](/cpp-sdk/4.5/api/structs/imfusion-glslice-renderbuffer)
+
+## Public Types
+
+- enum class [BlendingMode](#blendingmode) &#123; None = 0 , Default = 1 , Color = 2 , Checkerboard = 3 , DistanceToBorder = 4 , SingleColor = 5 , DualColor = 6 &#125; — Enumeration of the blending modes available in [GlSlice](/cpp-sdk/4.5/api/classes/imfusion-glslice).
+- enum class [ObjectRenderMode](#objectrendermode) &#123; Nothing = 0 , Border = 1 &lt;&lt; 0 , ImageContent = 1 &lt;&lt; 1 , Centerlines = 1 &lt;&lt; 2 , Plane = 1 &lt;&lt; 3 , Crosssection = 1 &lt;&lt; 4 &#125; — Enumeration for selecting what to render as [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject).
+- enum class [CrosssectionRenderMode](#crosssectionrendermode) &#123; Nothing = 0 , Line = 1 &lt;&lt; 1 , Thickness = 1 &lt;&lt; 2 , OrientationMarkers = 1 &lt;&lt; 3 , OrientationMarkersQuadrupedDefault = 1 &lt;&lt; 4 &#125; — Enumeration for selecting how to render the cross-section between this MPR and other MPR slice views.
+
+## Public Member Functions
+
+- [GlSlice](#glslice) (bool is3D, const [Slice](/cpp-sdk/4.5/api/classes/imfusion-slice) &slice) — Creates a new [GlSlice](/cpp-sdk/4.5/api/classes/imfusion-glslice) instance.
+- virtual bool **acceptsData** (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*d) const — Returns whether this slice is capable of displaying the given data.
+- virtual void [setData](#setdata) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::pair](http://en.cppreference.com/w/cpp/utility/pair.html)&lt; const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*, const [DisplayOptions2d](/cpp-sdk/4.5/api/classes/imfusion-displayoptions2d) \* &gt; &gt; &data) — Sets the data that is to be rendered by this [GlSlice](/cpp-sdk/4.5/api/classes/imfusion-glslice).
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::pair](http://en.cppreference.com/w/cpp/utility/pair.html)&lt; const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*, const [DisplayOptions2d](/cpp-sdk/4.5/api/classes/imfusion-displayoptions2d) \* &gt; &gt; **data** () const — Return the list of shown data paired with the DisplayOptions to use.
+- [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* [imageData](#imagedata) () const — Returns the first [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) that is rendered by this [GlSlice](/cpp-sdk/4.5/api/classes/imfusion-glslice).
+- virtual void [setSlice](#setslice) (const [Slice](/cpp-sdk/4.5/api/classes/imfusion-slice) &s) — Set a custom slice in 3D space.
+- [Slice](/cpp-sdk/4.5/api/classes/imfusion-slice) **slice** () const — Return the slice of this view.
+- virtual bool **isMetric** () const — Return whether displayed data is metric.
+- void **setThickness** (double val) — Set 3D MPR thickness.
+- double **thickness** () const — Get 3D MPR thickness.
+- int [setNextSlice](#setnextslice) (int relative) — Jump to one of the next whole voxels before or behind the current slice [imageData()](#imagedata).
+- int **currentSlice** () const — Return closest slice of [imageData()](#imagedata) to current position/view matrix.
+- int [numSlices](#numslices) () const — Return the total number of slices of [imageData()](#imagedata) wrt.
+- vec3 [center](#center) (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data=nullptr) const — Returns the center in world coordinates of the given data.
+- vec2 **extent** () const — Returns slice extent based on the current image data.
+- mat4 [defaultPose](#defaultpose) (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data, [Slice::AnatomicalPlane](/cpp-sdk/4.5/api/classes/imfusion-slice) plane) const — Returns the default view matrix to use for showing the given dataset in a slice view of the given anatomical plane.
+- void **setInterpolation** (int mode) — Set the interpolation mode to nearest-neighbor (0), linear (1) or cubic (2).
+- void **setColor** (const vec3 &c) — Set the border color of the slice.
+- void [draw](#draw) (const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &view) override — Renders this [GlSlice](/cpp-sdk/4.5/api/classes/imfusion-glslice).
+- int **interpolation** () const — Return the interpolation mode.
+- const vec3 & **color** () const — Return the border color.
+- virtual bool **is3D** () const — Return if a 2D image or 3D MPR plane is shown.
+- void **render** (const [GL::ViewState](/cpp-sdk/4.5/api/classes/imfusion-gl-viewstate) &viewState) const — Render the image content.
+- bool **rendersFirstImageWithFullOpacity** () const — Returns the flag whether to render the first image always with full opacity independent of its actual alpha channel.
+- void **setRenderFirstImageWithFullOpacity** (bool value) — Sets the flag whether to render the first image always with full opacity independent of its actual alpha channel.
+- [BlendingMode](#blendingmode) **blendingMode** () const — Returns the blending mode to use.
+- void **setBlendingMode** ([BlendingMode](#blendingmode) value) — Sets the blending mode to use.
+- double **blendFactor** () const — Returns the blending factor to be used in alpha blending mode.
+- void **setBlendFactor** (double value) — Sets the blending factor to be used in alpha blending mode.
+- double **blendDistance** () const — Returns the stitching overlap in pixels when using DistToBorder blending mode.
+- void **setBlendDistance** (double value) — Sets the stitching overlap in pixels when using DistToBorder blending mode.
+- const [std::pair](http://en.cppreference.com/w/cpp/utility/pair.html)&lt; vec4, vec4 &gt; & **blendingColors** () const — Returns the primary and secondary tint color when using one of the color blending modes.
+- void **setBlendingColors** (const [std::pair](http://en.cppreference.com/w/cpp/utility/pair.html)&lt; vec4, vec4 &gt; &value) — Sets the primary and secondary tint color when using one of the color blending modes.
+- int **checkerboardFieldSize** () const — Returns the field size in pixels when using BlendingMode::Checkerboard.
+- void **setCheckerboardFieldSize** (int value) — Sets the field size in pixels when using BlendingMode::Checkerboard.
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; vec2f &gt; **customCheckerboardLocation** () const — Returns the optional custom location in normalized [0..1]^2 space for a basic 2x2 checkerboard blending.
+- void **setCustomCheckerboardLocation** ([std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; vec2f &gt; value) — Sets the optional custom location in normalized [0..1]^2 space for a basic 2x2 checkerboard blending.
+- [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; [ObjectRenderMode](#objectrendermode) &gt; **objectRenderMode** () const — Return how the slice is shown when rendered as [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject).
+- void **setObjectRenderMode** ([Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; [ObjectRenderMode](#objectrendermode) &gt; renderMode) — Sets how the slice is shown when rendered as [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject).
+- void **setObjectRenderModeFlag** ([ObjectRenderMode](#objectrendermode) renderModeFlag, bool value) — Sets a single flag of how the slice is shown when rendered as [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject).
+- [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; [CrosssectionRenderMode](#crosssectionrendermode) &gt; **crosssectionRenderMode** () const — Returns the what is shown when rendering the cross-section with other MPR views.
+- void **setCrosssectionRenderMode** ([Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; [CrosssectionRenderMode](#crosssectionrendermode) &gt; value) — Sets the what is shown when rendering the cross-section with other MPR views.
+- void **setCrosssectionRenderModeFlag** ([CrosssectionRenderMode](#crosssectionrendermode) crosssectionModeFlag, bool value) — Sets a single flag of how the slice is shown when rendered as [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject).
+- bool **usesAlphaBlendingToParentFbo** () const — Returns the flag whether to use alpha blending when rendering the result to the parent FBO, set to false to use existing custom blending configuration.
+- void **setUseAlphaBlendingToParentFbo** (bool value) — Sets the flag whether to use alpha blending when rendering the result to the parent FBO, set to false to use existing custom blending configuration.
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [GlSliceRenderer](/cpp-sdk/4.5/api/classes/imfusion-glslicerenderer) &gt; &gt; & **renderers** () const — Return the list of all available renderers.
+- void [setMatrix](#setmatrix) (const mat4 &m) override — Set the modelview matrix of this object.
+- [Geometry::AlignedBox](/cpp-sdk/4.5/api/classes/imfusion-geometry-alignedbox) [bounds](#bounds) () const override — Get the axis-aligned bounding box of this [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) in world space.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [typeName](#typename) () const override — Return unique identifier for this object class used for serialization.
+- [GlSliceRendererImage](/cpp-sdk/4.5/api/classes/imfusion-glslicerendererimage) & **defaultRenderer** () const — Return reference to the default renderer.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [GlSliceRenderer](/cpp-sdk/4.5/api/classes/imfusion-glslicerenderer) \* &gt; **activeRenderers** () const — Return the list of all renderers that are used to render the currently set [Data](/cpp-sdk/4.5/api/classes/imfusion-data).
+
+## Public Attributes
+
+- Signal&lt; [GlSlice](#glslice) \* &gt; **signalSliceChanged** — Signal emitted when the slice configuration has changed.
+
+## Protected Member Functions
+
+- bool **drawOtherSlice** (const [GL::ViewState](/cpp-sdk/4.5/api/classes/imfusion-gl-viewstate) &viewState, const [GlSlice](#glslice) \*s) const — Render the intersection plane of another slice view.
+- void **renderMprIntersectionCross** (const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &parentView) const
+
+## Protected Attributes
+
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [GlSliceRenderer](/cpp-sdk/4.5/api/classes/imfusion-glslicerenderer) &gt; &gt; **m_renderers** — List of all slice renderers that can be used for rendering [Data](/cpp-sdk/4.5/api/classes/imfusion-data).
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [RenderInfo](/cpp-sdk/4.5/api/structs/imfusion-glslice-renderinfo) &gt; **m_imagesToRender** — The list of images to render.
+- double **m_sx** — Half width of the slice.
+- double **m_sy** — Half height of the slice.
+- vec3 **m_color** — Border color of the slice.
+- bool **m_renderFirstImageWithFullOpacity** = false — Show the first image always with full opacity independent of its alpha channel.
+- [BlendingMode](#blendingmode) **m_blendingMode** = BlendingMode::Default — [Blending](/cpp-sdk/4.5/api/classes/imfusion-gl-blending) mode to use.
+- double **m_blendFactor** = 0.5 — [Blending](/cpp-sdk/4.5/api/classes/imfusion-gl-blending) factor used in alpha blending mode.
+- double **m_blendDistance** = 16.0 — Stitching overlap in pixels when using DistToBorder blending mode.
+- [std::pair](http://en.cppreference.com/w/cpp/utility/pair.html)&lt; vec4, vec4 &gt; [m_blendColors](#m-blendcolors) — Primary and secondary tint color when using color blending.
+- int **m_checkerboardFieldSize** = 100 — Size of the checkerboard fields in pixels when using Checkerboard blending.
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; vec2f &gt; **m_customCheckerboardLocation** — Optional custom location for a basic 2x2 checkerboard blending.
+- bool **m_is3d** — Flag whether this [GlSlice](/cpp-sdk/4.5/api/classes/imfusion-glslice) is supposed to show 3D data or 2D data.
+- bool **m_useAlphaBlendingToParentFbo** = true — By default [GlSlice](/cpp-sdk/4.5/api/classes/imfusion-glslice) will use alpha compositing when blending the result to the parent FBO, set to false to use existing custom blending configuration.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [GL::Program](/cpp-sdk/4.5/api/classes/imfusion-gl-program) &gt; **m_blendProg** — Shader used for blending.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [GL::Framebuffer](/cpp-sdk/4.5/api/classes/imfusion-gl-framebuffer) &gt; **m_fbo** — FBO used for sweep blending.
+- [Renderbuffer](/cpp-sdk/4.5/api/structs/imfusion-glslice-renderbuffer) **m_tex** [3] — Auxiliary color+depth texture attached to m_fbo used for blending.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [GL::VertexBuffer](/cpp-sdk/4.5/api/classes/imfusion-gl-vertexbuffer) &gt; **m_vbo** — VBO used for rendering primitives.
+
+## Member Enumeration Documentation
+
+### BlendingMode
+
+```cpp
+enum class ImFusion::GlSlice::BlendingMode
+```
+
+*strong*
+
+Enumeration of the blending modes available in [GlSlice](/cpp-sdk/4.5/api/classes/imfusion-glslice).
+
+**Enumerator:**
+
+- `None` — No blending.
+- `Default` — Default alpha blending.
+- `Color` — Automatic color blending depending on modality (either SingleColor or DualColor blending mode).
+- `Checkerboard` — Checkerboard blending.
+- `DistanceToBorder` — Per-pixel blending based on distance to image border.
+- `SingleColor` — Use no tint color for the first image, use the primary blendingColor for all other images.
+- `DualColor` — Use primary blendingColor for the first image, use secondary blendingColor for all other images.
+
+### ObjectRenderMode
+
+```cpp
+enum class ImFusion::GlSlice::ObjectRenderMode
+```
+
+*strong*
+
+Enumeration for selecting what to render as [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject).
+
+**Enumerator:**
+
+- `Nothing` — Don't render MPR cross-sections at all.
+- `Border` — Render the surrounding border of the slice.
+- `ImageContent` — Render the actual image content.
+- `Centerlines` — Render the centerlines of the slice.
+- `Plane` — Render the slice as semi-transparent plane.
+- `Crosssection` — Render lines forming a cross where the three MPR planes intersect (only if exactly 3 slice views exist).
+
+### CrosssectionRenderMode
+
+```cpp
+enum class ImFusion::GlSlice::CrosssectionRenderMode
+```
+
+*strong*
+
+Enumeration for selecting how to render the cross-section between this MPR and other MPR slice views.
+
+**Enumerator:**
+
+- `Nothing` — Don't render MPR cross-sections at all.
+- `Line` — Render the actual MPR cross-section lines.
+- `Thickness` — Render slice thickness indicators in MPR cross-sections.
+- `OrientationMarkers` — Render orientation markers in MPR cross-sections.
+- `OrientationMarkersQuadrupedDefault` — Default to quadruped orientation markers in MPR cross-sections.
+
+## Constructor & Destructor Documentation
+
+### GlSlice
+
+```cpp
+ImFusion::GlSlice::GlSlice (bool is3D, const Slice & slice)
+```
+
+Creates a new [GlSlice](/cpp-sdk/4.5/api/classes/imfusion-glslice) instance.
+
+**Parameters:**
+
+- `is3D` — Flag whether this [GlSlice](/cpp-sdk/4.5/api/classes/imfusion-glslice) is supposed to display 3D data (instead of 2D data).
+- `slice` — Definition MPR slice orientation and extent.
+
+## Member Function Documentation
+
+### setData
+
+```cpp
+virtual void ImFusion::GlSlice::setData (const std::vector < std::pair < const Data *, const DisplayOptions2d * > > & data)
+```
+
+*virtual*
+
+Sets the data that is to be rendered by this [GlSlice](/cpp-sdk/4.5/api/classes/imfusion-glslice).
+
+For each [Data](/cpp-sdk/4.5/api/classes/imfusion-data) to display you have to specify the 2D display options to use.
+
+### imageData
+
+```cpp
+SharedImageSet * ImFusion::GlSlice::imageData () const
+```
+
+Returns the first [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) that is rendered by this [GlSlice](/cpp-sdk/4.5/api/classes/imfusion-glslice).
+
+**Note:** This is merely a low-level convenience function. Please use GlSlice::data() or [ImageView2D::visibleData()](/cpp-sdk/4.5/api/classes/imfusion-gui-view) on the parent view in order to get all shown data.
+
+### setSlice
+
+```cpp
+virtual void ImFusion::GlSlice::setSlice (const Slice & s)
+```
+
+*virtual*
+
+Set a custom slice in 3D space.
+
+### setNextSlice
+
+```cpp
+int ImFusion::GlSlice::setNextSlice (int relative)
+```
+
+Jump to one of the next whole voxels before or behind the current slice [imageData()](#imagedata).
+
+Returns the index of the resulting whole slice number.
+
+### numSlices
+
+```cpp
+int ImFusion::GlSlice::numSlices () const
+```
+
+Return the total number of slices of [imageData()](#imagedata) wrt.
+
+to the current orientation of the view. Will return 0 if [imageData()](#imagedata) is empty or not a volume.
+
+### center
+
+```cpp
+vec3 ImFusion::GlSlice::center (const Data * data = nullptr) const
+```
+
+Returns the center in world coordinates of the given data.
+
+**Parameters:**
+
+- `data` — The data to compute the center for, must be assigned to this slice. If *data* is nullptr (default), it will use the first shown data.
+
+### defaultPose
+
+```cpp
+mat4 ImFusion::GlSlice::defaultPose (const Data * data, Slice::AnatomicalPlane plane) const
+```
+
+Returns the default view matrix to use for showing the given dataset in a slice view of the given anatomical plane.
+
+This function is for instance use by the reset function of ImageView2D/GlSliceView.
+
+### draw
+
+```cpp
+void ImFusion::GlSlice::draw (const GlView & view)
+```
+
+*override, virtual*
+
+Renders this [GlSlice](/cpp-sdk/4.5/api/classes/imfusion-glslice).
+
+### setMatrix
+
+```cpp
+void ImFusion::GlSlice::setMatrix (const mat4 & m)
+```
+
+*override, virtual*
+
+Set the modelview matrix of this object.
+
+### bounds
+
+```cpp
+Geometry::AlignedBox ImFusion::GlSlice::bounds () const
+```
+
+*override, virtual*
+
+Get the axis-aligned bounding box of this [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) in world space.
+
+Return an empty (default-constructed) AlignedBox object if the [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) does not reside in world space.
+
+### typeName
+
+```cpp
+std::string ImFusion::GlSlice::typeName () const
+```
+
+*inline, override, virtual*
+
+Return unique identifier for this object class used for serialization.
+
+## Member Data Documentation
+
+### m_blendColors
+
+```cpp
+std::pair <vec4, vec4> ImFusion::GlSlice::m_blendColors
+```
+
+*protected*
+
+**Initial value:**
+```cpp
+            =
+{vec4(1.0, 0.2, 0.0, 1.0), vec4(0.0, 0.8, 1.0, 1.0)}
+```
+ fragment
+Primary and secondary tint color when using color blending.

@@ -1,0 +1,96 @@
+---
+title: "ImFusion::PointCorrespondences"
+sidebarTitle: "PointCorrespondences"
+description: "Class that handles point correspondences."
+---
+
+`#include <ImFusion/Base/PointCorrespondences.h>`
+
+## Overview
+
+Class that handles point correspondences.
+
+Points at corresponding indices on the two [PointsOnData](/cpp-sdk/4.5/api/classes/imfusion-pointsondata) instances are considered correspondences. When creating PointCorrespondences(first, second) names of points in first and second are made uniform giving precedence to names in first. Logic for matching points based on their names should be implemented outside of this class. The class supports both full-set and subset-based rigid fitting, allowing users to select specific point correspondences for the transformation calculation. The class supports estimation of a fitting error for any correspondence using complementary correspondences, which can assist with the identification of inconsistent correspondences.
+
+## Public Types
+
+- enum class Reduction &#123; **Mean** , **Median** , **Max** , **Min** &#125; — Reduction type used during distance evaluation.
+- enum class **FitErrorType** &#123; **LeaveOneOut** = 0 , **Hierarchical** = 1 &#125;
+
+## Public Member Functions
+
+- **PointCorrespondences** ([PointsOnData](/cpp-sdk/4.5/api/classes/imfusion-pointsondata) \*first, [PointsOnData](/cpp-sdk/4.5/api/classes/imfusion-pointsondata) \*second) — Takes two [PointsOnData](/cpp-sdk/4.5/api/classes/imfusion-pointsondata) handle the correspondences between them.
+- int **size** () const — Returns the smallest number of points out of both [PointsOnData](/cpp-sdk/4.5/api/classes/imfusion-pointsondata).
+- int **selectedSize** () const — Returns the number of selected correspondences.
+- int **numberOfPoints** () const — Returns the largest number of points out of both [PointsOnData](/cpp-sdk/4.5/api/classes/imfusion-pointsondata).
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **name** (int which) const — Returns the name of a correspondence.
+- void **setName** (int which, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name) — Sets the name of a correspondence. It sets the name of both points at index which.
+- void **clear** () — Removes all the correspondences.
+- void **remove** (int index) — Removes a specific correspondence.
+- void **remove** (int first, int last) — Removes the correspondences in range [first,last).
+- bool **isSelected** (int index) const — Returns whether a point correspondence is selected. Selected correspondences are used during evaluation and fitting. By default all correspondences are selected.
+- void **setSelected** (int index, bool selected) — Set whether a point correspondence is selected. Selected correspondences are used during evaluation and fitting.
+- double [evaluate](#evaluate) (Reduction reduction=Reduction::Mean, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; \*weights=nullptr) const — Computes the distance between pairs of correspondences If an optional weights vector is provided, the individual errors are multiplied with it before reduction.
+- double **computePairwiseDistances** (Reduction reduction=Reduction::Mean, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; \*weights=nullptr) const — Computes the distance between pairs of correspondences If an optional weights vector is provided, the individual errors are multiplied with it before reduction.
+- mat4 [fitRigid](#fitrigid) (double \*errorOut=nullptr, [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; int &gt; &gt; subsetIndices=std::nullopt) const — Fit a rigid transformation that aligns the selected points correspondence using Walker method.
+- double **calcFitError** (int index) const — Estimate an error (of type m_fitErrorType) for a correspondence (specified by index), based on a fitting procedure involving complementary correspondences Considers the selection.
+- [PointsOnData](/cpp-sdk/4.5/api/classes/imfusion-pointsondata) \* **pointHandler** (int which) — Returns the [PointsOnData](/cpp-sdk/4.5/api/classes/imfusion-pointsondata), index matches container order in construction.
+- const [PointsOnData](/cpp-sdk/4.5/api/classes/imfusion-pointsondata) \* **pointHandler** (int which) const
+- void [setDefaultNameFormat](#setdefaultnameformat) ([std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) format) — Sets the default name format.
+- void **setFitErrorType** (FitErrorType type)
+- FitErrorType **fitErrorType** ()
+
+## Public Attributes
+
+- Signal **signalCorrespondencesChanged** — Signal emitted whenever a correspondence changes. This can be because a correspondence is removed, added or a point is moved.
+
+## Protected Member Functions
+
+- void **onPointsAdded** ([PointsOnData](/cpp-sdk/4.5/api/classes/imfusion-pointsondata) \*pod, int first, int last)
+- void **onPointsRemoved** (int first, int last)
+- void **connectSignals** ()
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **defaultName** (int index) const
+
+## Protected Attributes
+
+- FitErrorType **m_fitErrorType** = FitErrorType::LeaveOneOut
+- [std::pair](http://en.cppreference.com/w/cpp/utility/pair.html)&lt; [PointsOnData](/cpp-sdk/4.5/api/classes/imfusion-pointsondata) \*, [PointsOnData](/cpp-sdk/4.5/api/classes/imfusion-pointsondata) \* &gt; **m_pods**
+- bool **m_renamingGuard** = true
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **m_defaultNameFormat** = "Correspondence &#123;&#125;"
+
+## Member Function Documentation
+
+### evaluate
+
+```cpp
+double ImFusion::PointCorrespondences::evaluate (Reduction reduction = Reduction::Mean, const std::vector < double > * weights = nullptr) const
+```
+
+*inline*
+
+Computes the distance between pairs of correspondences If an optional weights vector is provided, the individual errors are multiplied with it before reduction.
+
+****Deprecated**:** "evaluate is deprecated, use computePairwiseDistances instead."
+
+### fitRigid
+
+```cpp
+mat4 ImFusion::PointCorrespondences::fitRigid (double * errorOut = nullptr, std::optional < std::vector < int > > subsetIndices = std::nullopt) const
+```
+
+Fit a rigid transformation that aligns the selected points correspondence using Walker method.
+
+**Parameters:**
+
+- `errorOut` — If specified will be filled with the mean error
+- `subsetIndices` — If specified only the points at these indices will be used whether they are selected or not
+
+### setDefaultNameFormat
+
+```cpp
+void ImFusion::PointCorrespondences::setDefaultNameFormat (std::string format)
+```
+
+Sets the default name format.
+
+The first argument of the format string is the index of the correspondence + 1. For example "Correspondence &#123;&#125;" will generate name "Correspondence 1" for the first correspondence

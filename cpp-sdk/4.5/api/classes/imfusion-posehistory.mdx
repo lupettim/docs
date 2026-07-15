@@ -1,0 +1,23 @@
+---
+title: "ImFusion::PoseHistory"
+sidebarTitle: "PoseHistory"
+description: "Class for keeping track of the poses of an image and provide undo/redo functionality."
+---
+
+`#include <ImFusion/Reg/DescriptorsRegistrationAlgorithm.h>`
+
+## Overview
+
+Class for keeping track of the poses of an image and provide undo/redo functionality.
+
+## Public Member Functions
+
+- **PoseHistory** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &image)
+- void **addCurrentPose** () — Adds current pose to history.
+- bool **canUndo** () const
+- bool **canRedo** () const
+- void **undo** ()
+- void **redo** ()
+- int **size** () const
+- void **moveTo** (int index) — Moves to a specific item in the history.
+- bool **poseHasChanged** () — Check if the pose of the image has change from the one that was set by this class.

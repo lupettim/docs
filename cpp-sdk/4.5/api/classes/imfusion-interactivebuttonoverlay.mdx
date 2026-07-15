@@ -1,0 +1,26 @@
+---
+title: "ImFusion::InteractiveButtonOverlay"
+sidebarTitle: "InteractiveButtonOverlay"
+description: "Interactive overlay for a click-able button."
+---
+
+`#include <ImFusion/GUI/InteractiveButtonOverlay.h>`
+
+## Overview
+
+[Interactive](/cpp-sdk/4.5/api/classes/imfusion-interactive) overlay for a click-able button.
+
+## Public Slots
+
+- virtual void **click** ()
+
+## Signals
+
+- void **clicked** () — NOTE: use Qt::QueuedConnection when your slot is blocking (like a QMenu), otherwise the mouse release event gets lost.
+
+## Public Member Functions
+
+- **InteractiveButtonOverlay** ([AnchorPoint](/cpp-sdk/4.5/api/classes/imfusion-interactiveoverlay) anchor)
+- void **setIcon** ([SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*icon) — Set the icon to use for the button.
+- void **setIcon** ([std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) &gt; icon) — Set the icon to use for the button.
+- void **setHighlight** (bool highlight) — Set the highlight status of the button.

@@ -1,0 +1,19 @@
+---
+title: "ImFusion::detail::AnatomyItemWidget"
+sidebarTitle: "AnatomyItemWidget"
+---
+
+## Signals
+
+- void **checked** (int64_t anatomyId) — Emitted when the checkbox is checked, for adding the anatomy to the current list.
+- void **unchecked** (int64_t anatomyId) — Emitted when the checkbox is unchecked or when the remove button is clicked, for removing the anatomy from the current list.
+
+## Public Member Functions
+
+- **AnatomyItemWidget** (int64_t anatomyId, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name, Qt::CheckState checkState, QWidget \*parent=nullptr)
+- void **setId** (int64_t anatomyId)
+- void **setName** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name)
+- void **setCheckState** (Qt::CheckState checkState)
+- int64_t **anatomyId** () const
+- bool **isUnknown** () const
+- virtual void **resizeEvent** (QResizeEvent \*event) override

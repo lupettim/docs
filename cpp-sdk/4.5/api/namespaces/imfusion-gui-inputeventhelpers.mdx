@@ -1,0 +1,20 @@
+---
+title: "ImFusion::GUI::InputEventHelpers"
+sidebarTitle: "InputEventHelpers"
+description: "Free helper functions to work with InputEvents."
+---
+
+## Overview
+
+Free helper functions to work with InputEvents.
+
+## Functions
+
+- MouseCursorShape convertFromQtCursorShape (int qtCursorShape) — Converts a Qt::CursorShape to an ImFusion::MouseCursorShape.
+- int **convertToQtCursorShape** (MouseCursorShape shape) — Converts an ImFusion::MouseCursorShape to a Qt::CursorShape.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [InputEvent](/cpp-sdk/4.5/api/classes/imfusion-gui-inputevent) &gt; convertFromQEvent (const QEvent \*source, const [DisplayWidget](/cpp-sdk/4.5/api/classes/imfusion-displaywidget) &display, bool flipY) — Converts a QEvent to a corresponding ImFusion::InputEvent where applicable.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [InputEvent](/cpp-sdk/4.5/api/classes/imfusion-gui-inputevent) &gt; **convertFromQEvent** (const QEvent \*source, const [QtDisplayWrapperBase](/cpp-sdk/4.5/api/classes/imfusion-gui-qtdisplaywrapperbase) &display, bool flipY)
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; QEvent &gt; convertToQEvent (const [InputEvent](/cpp-sdk/4.5/api/classes/imfusion-gui-inputevent) &source) — Converts an [InputEvent](/cpp-sdk/4.5/api/classes/imfusion-gui-inputevent) to a corresponding QEvent.
+- [EventResult](/cpp-sdk/4.5/api/structs/imfusion-gui-eventresult) forwardAsQEventTo (const [InputEvent](/cpp-sdk/4.5/api/classes/imfusion-gui-inputevent) &event, [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; bool(QEvent \*)&gt; qEventHandler) — Transforms *event* into a corresponding QEvent and forwards it to *qEventHandler*.
+- bool **handleWithQt** (const [EventResult](/cpp-sdk/4.5/api/structs/imfusion-gui-eventresult) &result, const void \*handlerInstance)
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; QMenu &gt; **createQMenu** (const [Menu](/cpp-sdk/4.5/api/classes/imfusion-gui-menu) &menu) — Creates a new QMenu with the same structure as *menu*.

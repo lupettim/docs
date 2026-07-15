@@ -1,0 +1,201 @@
+---
+title: "PacsExample.cpp"
+---
+
+```cpp
+#include <ImFusion/Core/Filesystem/Url.h>
+#include <ImFusion/Core/Log.h>
+#include <ImFusion/Dicom/DicomPacsCommunication.h>
+
+#include <dcmtk/dcmdata/dctk.h>
+
+#include <iostream>
+#include <memory>
+#include <vector>
+
+int main(int argc, char** argv)
+{
+ // A simple application that demos the PACS utilities in the ImFusionLib.
+ // It queries all patients, all studies and all series of a pacs and displays
+ // the results on the console.
+ // The easiest way to test this, is to setup an orthanc server on your local
+ // machine, upload some DICOM files and then run this example.
+ //
+ // The application expects two arguments: the hostname including the port of the server
+ // and the Application Entity (AE) title of the server.
+ // Optionally a third integer argument can be passed, which will load the images of
+ // the series with that index.
+ //
+ // E.g. with the default orthanc configuration:
+ // ./PacsExample http://localhost:4242 ORTHANC 0
+
+ if (argc < 3)
+    {
+ std::cout << "Two arguments are expected:" << std::endl;
+ std::cout << "The server url including port (e.g. http://localhost:8042)" << std::endl;
+ std::cout << "The AE title of the server" << std::endl;
+ return 1;
+    }
+
+ int loadSeries = -1;
+ if (argc >= 4)
+        loadSeries = std::atoi(argv[3]);
+
+ ImFusion::Log::init(ImFusion::Log::Level::Warning, ImFusion::Log::Mode::Synchronous);
+    OFLog::configure(OFLogger::LogLevel::ERROR_LOG_LEVEL);
+
+ ImFusion::Filesystem::Url serverUrl(argv[1]);
+ if (!serverUrl.isValid())
+    {
+ std::cout << "The server url is not valid" << std::endl;
+ return 2;
+    }
+ const std::string serverAeTitle(argv[2]);
+ if (serverAeTitle.empty())
+    {
+ std::cout << "The AE Title must not be empty" << std::endl;
+ return 3;
+    }
+
+ ImFusion::DicomPacsConfiguration config(serverUrl.host(), std::stoi(serverUrl.port()), serverAeTitle);
+
+ // Those values are initialized with the values in DicomPluginSettings by default.
+ // The settings require a QApplication, which we are not using here so we set the
+ // values explicitly
+    config.clientAETitle = "IMFDCMCLIENT";    // can be anything but has to be known to the PACS server
+    config.clientPort = 2000;
+    config.connectionTimeout = 10;
+
+ if (!config.isValid())
+    {
+ std::cout << "The PACS configuration is not valid" << std::endl;
+ return 4;
+    }
+
+ // Check whether we can connect to the server at all
+ ImFusion::DicomPacsCommunication dcp(config);
+ if (dcp.sendEchoRequest())
+ std::cout << "Echo request successful!" << std::endl;
+ else
+    {
+ std::cout << "Echo request failed!" << std::endl;
+ return 5;
+    }
+
+ // Perform some C-FIND requests to get a list of patients, studies or series
+    DcmDataset request;
+
+ // Request the following tags without any filtering.
+ // If you want to e.g. filter by patient name, just enter the search term for DCM_PatientName.
+    request.putAndInsertOFStringArray(DCM_StudyInstanceUID, "");
+    request.putAndInsertOFStringArray(DCM_StudyID, "");
+    request.putAndInsertOFStringArray(DCM_StudyTime, "");
+    request.putAndInsertOFStringArray(DCM_StudyDate, "");
+    request.putAndInsertOFStringArray(DCM_StudyDescription, "");
+
+    request.putAndInsertOFStringArray(DCM_PatientID, "");
+    request.putAndInsertOFStringArray(DCM_PatientName, "");
+    request.putAndInsertOFStringArray(DCM_PatientSex, "");
+    request.putAndInsertOFStringArray(DCM_PatientBirthDate, "");
+    request.putAndInsertOFStringArray(DCM_PatientComments, "");
+
+    {
+ // Request all patients from the PACS
+        request.putAndInsertOFStringArray(DCM_QueryRetrieveLevel, "PATIENT");
+
+ std::vector<std::unique_ptr<DcmDataset>> datasets;
+        dcp.sendFindRequest(ImFusion::DicomPacsCommunication::PatientRootRetrieveInformationModel, request, [&](auto dataset) {
+ if (dataset)
+                datasets.push_back(std::move(dataset));
+        });
+
+ std::cout << "##########################################" << std::endl;
+ std::cout << "Received " << datasets.size() << " patients" << std::endl;
+ std::cout << "##########################################" << std::endl;
+ for (const auto& dataset : datasets)
+            dataset->print(std::cout);
+    }
+
+    {
+ // Request all studies from the PACS
+        request.putAndInsertOFStringArray(DCM_QueryRetrieveLevel, "STUDY");
+
+ std::vector<std::unique_ptr<DcmDataset>> datasets;
+        dcp.sendFindRequest(ImFusion::DicomPacsCommunication::StudyRootRetrieveInformationModel, request, [&](auto dataset) {
+ if (dataset)
+                datasets.push_back(std::move(dataset));
+        });
+
+ std::cout << std::endl;
+ std::cout << "##########################################" << std::endl;
+ std::cout << "Received " << datasets.size() << " studies" << std::endl;
+ std::cout << "##########################################" << std::endl;
+ for (const auto& dataset : datasets)
+            dataset->print(std::cout);
+    }
+
+ std::vector<std::string> seriesUIDs;
+    {
+ // Request all series from the PACS
+        request.putAndInsertOFStringArray(DCM_QueryRetrieveLevel, "SERIES");
+
+        request.putAndInsertOFStringArray(DCM_SeriesInstanceUID, "");
+        request.putAndInsertOFStringArray(DCM_SeriesNumber, "");
+        request.putAndInsertOFStringArray(DCM_SeriesTime, "");
+        request.putAndInsertOFStringArray(DCM_SeriesDate, "");
+        request.putAndInsertOFStringArray(DCM_SeriesDescription, "");
+
+ std::vector<std::unique_ptr<DcmDataset>> datasets;
+        dcp.sendFindRequest(ImFusion::DicomPacsCommunication::StudyRootRetrieveInformationModel, request, [&](auto dataset) {
+ if (dataset)
+            {
+ std::string seriesUID;
+                dataset->findAndGetOFString(DCM_SeriesInstanceUID, seriesUID);
+                seriesUIDs.push_back(seriesUID);
+
+                datasets.push_back(std::move(dataset));
+            }
+        });
+
+ std::cout << std::endl;
+ std::cout << "##########################################" << std::endl;
+ std::cout << "Received " << datasets.size() << " series" << std::endl;
+ std::cout << "##########################################" << std::endl;
+ for (const auto& dataset : datasets)
+            dataset->print(std::cout);
+    }
+
+ if (loadSeries >= 0 && loadSeries < seriesUIDs.size())
+    {
+ // Load the images of the selected series.
+ // This performs a C-MOVE request which requires the server to connect to the client
+ // on the configured hostname or port. This might fail because of a lot of reasons:
+ // - The server doesn't know the AE title of the client (has to be configured on the server)
+ // - The request is blocked by a firewall
+ // - The client port is already used by another application
+ // - The client isn't in the same network and not reachable from the outside (e.g. the request is blocked by the router)
+ // - Many other network related problems...
+        DcmDataset moveRequest;
+ // Only request images of a particular series
+        moveRequest.putAndInsertOFStringArray(DCM_QueryRetrieveLevel, "SERIES");
+        moveRequest.putAndInsertOFStringArray(DCM_SeriesInstanceUID, seriesUIDs[loadSeries]);
+
+ std::vector<std::unique_ptr<DcmDataset>> datasets;
+        dcp.sendMoveRequest(ImFusion::DicomPacsCommunication::StudyRootRetrieveInformationModel, moveRequest, [&](auto dataset) {
+ if (dataset)
+                datasets.push_back(std::move(dataset));
+        });
+
+ std::cout << std::endl;
+ std::cout << "##########################################" << std::endl;
+ std::cout << "Received " << datasets.size() << " images for series " << seriesUIDs[loadSeries] << std::endl;
+ std::cout << "##########################################" << std::endl;
+ for (const auto& dataset : datasets)
+            dataset->print(std::cout, DCMTypes::PF_shortenLongTagValues);
+    }
+
+ ImFusion::Log::deinit();
+ return 0;
+}
+```
+ fragment

@@ -1,0 +1,93 @@
+---
+title: "ImFusion::Container::LRUCache< Key, Value, Hash, KeyEqual >"
+sidebarTitle: "LRUCache< Key, Value, Hash, KeyEqual >"
+description: "Templated container class implementing a Least Recently Used Cache."
+---
+
+`#include <ImFusion/Core/LRUCache.h>`
+
+## Overview
+
+template&lt;typename Key, typename Value, typename Hash = std::hash&lt;Key&gt;, typename KeyEqual = std::equal_to&lt;Key&gt;&gt;
+
+class ImFusion::Container::LRUCache&lt; Key, Value, Hash, KeyEqual &gt;
+Templated container class implementing a Least Recently Used Cache.
+
+Stores key-value pairs for up to a maximum cost. By default the [insert()](#insert-1-2) functions will assume that all elements have the same constant cost of 1 and therefore the maximum cost corresponds to the maximum number of elements. However, you can also specify a per-element cost in terms of [ByteSize](/cpp-sdk/4.5/api/classes/imfusion-bytesize) if needed. Setting a maximum cost of 0 disables caching.
+
+Accessing a value moves it to the front of the cache (like in a queue). If adding a value makes the total cost of the cache too high, values at the back (the least recently used ones) are removed until the cost is low enough.
+
+Internally uses a [std::unordered_map](http://en.cppreference.com/w/cpp/container/unordered_map.html), so keys must be hashable and equality-comparable.
+
+**Template Parameters:** | Key | Type used for lookup/description of payload |
+| --- | --- |
+| Value | Type used for the actual payload to be stored in the cache |
+| Hash | Hash functor type to use for the underlying [std::unordered_map](http://en.cppreference.com/w/cpp/container/unordered_map.html) |
+| KeyEqual | Equal-comparison functor type to use for the underlying [std::unordered_map](http://en.cppreference.com/w/cpp/container/unordered_map.html) |
+
+**See also:** [https://en.wikipedia.org/wiki/Cache_replacement_policies#Least_recently_used_(LRU)](https://en.wikipedia.org/wiki/Cache_replacement_policies#Least_recently_used_(LRU))
+
+## Public Member Functions
+
+- **LRUCache** (size_t maximumCost)
+- **LRUCache** ([ByteSize](/cpp-sdk/4.5/api/classes/imfusion-bytesize) maximumCost)
+- void [insert](#insert-1-2) (const Key &key, const Value &value, [ByteSize](/cpp-sdk/4.5/api/classes/imfusion-bytesize) cost=[ByteSize](/cpp-sdk/4.5/api/classes/imfusion-bytesize)(1)) — Inserts a new element identified by *key* with payload *value* into the cache.
+- void [insert](#insert-2-2) (const Key &key, Value &&value, [ByteSize](/cpp-sdk/4.5/api/classes/imfusion-bytesize) cost=[ByteSize](/cpp-sdk/4.5/api/classes/imfusion-bytesize)(1)) — Inserts a new element identified by *key* with payload *value* into the cache.
+- void **erase** (const Key &key) — Removes the element identified by *key* from the cache if present freeing up space.
+- void **clear** () — Removes all elements from the cache.
+- const Value \* **get** (const Key &key) — Returns the payload for the given key if present or nullptr otherwise.
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; Value &gt; [extract](#extract) (const Key &key) — Extracts and returns the element identified by *key* from the cache if present freeing up space.
+- bool **contains** (const Key &key) const — Checks whether an element is present.
+- bool **isEmpty** () const — Returns true if the cache contains no elements.
+- [ByteSize](/cpp-sdk/4.5/api/classes/imfusion-bytesize) **maximumCost** () const — Returns the maximum sum of element costs the cache can store until it starts erasing elements.
+- void **setMaximumCost** ([ByteSize](/cpp-sdk/4.5/api/classes/imfusion-bytesize) newMaximumCost) — Sets a new maximum cost and removes elements if necessary; setting a maximum cost of 0 disables caching.
+- [std::size_t](http://en.cppreference.com/w/cpp/types/size_t.html) **size** () const — Number of elements in the cache.
+- [ByteSize](/cpp-sdk/4.5/api/classes/imfusion-bytesize) **totalCost** () const — Combined cost of all elements in the cache.
+
+## Public Attributes
+
+- Signal&lt; const Key & &gt; [signalItemRemoved](#signalitemremoved) — Emitted when an item is removed from the cache either explicitly or to free up space.
+
+## Member Function Documentation
+
+### insert
+
+```cpp
+template<typename Key, typename Value, typename Hash, typename KeyEqual> void ImFusion::Container::LRUCache < Key, Value, Hash, KeyEqual >::insert (const Key & key, const Value & value, ByteSize cost = ByteSize (1))
+```
+
+Inserts a new element identified by *key* with payload *value* into the cache.
+
+You can optionally specify a per-element *cost* that should relate approximately to the actual amount of memory consumed by *value*. Any object with the same key already in the cache will be replaced. If the total cost exceeds the maximum cost after insertion the least recently used elements will be removed. Be aware that if *cost* exceeds maximumCost() the object will not be stored at all.
+
+### insert
+
+```cpp
+template<typename Key, typename Value, typename Hash, typename KeyEqual> void ImFusion::Container::LRUCache < Key, Value, Hash, KeyEqual >::insert (const Key & key, Value && value, ByteSize cost = ByteSize (1))
+```
+
+Inserts a new element identified by *key* with payload *value* into the cache.
+
+You can optionally specify a per-element *cost* that should relate approximately to the actual amount of memory consumed by *value*. Any object with the same key already in the cache will be replaced. If the total cost exceeds the maximum cost after insertion the least recently used elements will be removed. Be aware that if *cost* exceeds maximumCost() the object will not be stored at all.
+
+### extract
+
+```cpp
+template<typename Key, typename Value, typename Hash, typename KeyEqual> std::optional < Value > ImFusion::Container::LRUCache < Key, Value, Hash, KeyEqual >::extract (const Key & key)
+```
+
+Extracts and returns the element identified by *key* from the cache if present freeing up space.
+
+Returns std::nullopt if no such element is present.
+
+## Member Data Documentation
+
+### Hash
+
+```cpp
+template<typename Key, typename Value, typename Hash = std::hash<Key>, typename KeyEqual = std::equal_to<Key>> Signal <const Key&> ImFusion::Container::LRUCache < Key, Value, Hash, KeyEqual >::signalItemRemoved
+```
+
+Emitted when an item is removed from the cache either explicitly or to free up space.
+
+Not emitted on replacement (insert called with a key that is already in the cache).

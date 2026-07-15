@@ -1,0 +1,136 @@
+---
+title: "ImFusion::GUI::VolumeViewDefaultEventHandler"
+sidebarTitle: "VolumeViewDefaultEventHandler"
+description: "Implementation of an input event handler providing standard mouse, touch, and keyboard interaction with a VolumeView ."
+---
+
+`#include <ImFusion/GUI/VolumeViewDefaultEventHandler.h>`
+
+## Overview
+
+Implementation of an input event handler providing standard mouse, touch, and keyboard interaction with a [VolumeView](/cpp-sdk/4.5/api/classes/imfusion-gui-volumeview).
+
+**See also:** [VolumeView](/cpp-sdk/4.5/api/classes/imfusion-gui-volumeview), [CameraNavigation](/cpp-sdk/4.5/api/classes/imfusion-cameranavigation)
+
+## Classes
+
+- struct [ActionSpeed](/cpp-sdk/4.5/api/structs/imfusion-gui-volumeviewdefaulteventhandler-actionspeed) — Record to define the speed/change rate at which a mouse/touch movement will modify the underlying view.
+
+## Public Types
+
+- enum class [Action](#action) &#123; Pan , Zoom , Rotate , Windowing , Blending , SetCameraPositiveX , SetCameraNegativeX , SetCameraPositiveY , SetCameraNegativeY , SetCameraPositiveZ , SetCameraNegativeZ , PanUp , PanDown , PanLeft , PanRight , ZoomIn , ZoomOut , RotateUp , RotateDown , RotateLeft , RotateRight &#125; — Enumeration of actions that can be performed based on input events.
+
+## Public Member Functions
+
+- **VolumeViewDefaultEventHandler** ([VolumeView](/cpp-sdk/4.5/api/classes/imfusion-gui-volumeview) &view)
+- const vec3 & **rotationCenter** () const — Returns the center of rotation used during camera navigation.
+- void **setRotationCenter** (const vec3 &value) — Sets the center of rotation used during camera navigation.
+- [ActionSpeed](/cpp-sdk/4.5/api/structs/imfusion-gui-volumeviewdefaulteventhandler-actionspeed) [actionSpeed](#actionspeed) ([Action](#action) action) const — Returns the speed at which a mouse/touch/keyboard event will modify the underlying view.
+- void [setActionSpeed](#setactionspeed) ([Action](#action) action, [ActionSpeed](/cpp-sdk/4.5/api/structs/imfusion-gui-volumeviewdefaulteventhandler-actionspeed) value) — Sets the speed at which a mouse/touch/keyboard event will modify the underlying view.
+- bool **orientToNormalOnDoubleClick** () const — Returns the flag whether MPR slices and camera should be oriented to the local surface normal on double click.
+- void **setOrientToNormalOnDoubleClick** (bool value) — Sets the flag whether MPR slices and camera should be oriented to the local surface normal on double click.
+- void [setUseLowQualityRenderingDuringInteraction](#setuselowqualityrenderingduringinteraction) (bool enable, [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [ByteSize](/cpp-sdk/4.5/api/classes/imfusion-bytesize) &gt; volumeSizeThreshold) — Sets whether to reduce the visual rendering quality while running interactions to improve performance.
+- [InputEventMapper](/cpp-sdk/4.5/api/classes/imfusion-gui-inputeventmapper)&lt; [Action](#action) &gt; & **inputEventMapper** () — Access to the helper class to map an [InputEvent](/cpp-sdk/4.5/api/classes/imfusion-gui-inputevent) to an [Action](#action) of this view to allow for to customize the mapping from the outside.
+- [EventResult](/cpp-sdk/4.5/api/structs/imfusion-gui-eventresult) [handleInputEvent](#handleinputevent) (const [InputEvent](/cpp-sdk/4.5/api/classes/imfusion-gui-inputevent) &event) override — This function is called by sources of input events in order to dispatch them to the handlers.
+
+## Protected Member Functions
+
+- virtual [EventResult](/cpp-sdk/4.5/api/structs/imfusion-gui-eventresult) **handleKeyEvent** (const [KeyEvent](/cpp-sdk/4.5/api/classes/imfusion-gui-keyevent) &event)
+- virtual [EventResult](/cpp-sdk/4.5/api/structs/imfusion-gui-eventresult) **handleMouseEvent** (const [MouseEvent](/cpp-sdk/4.5/api/classes/imfusion-gui-mouseevent) &event)
+- virtual [EventResult](/cpp-sdk/4.5/api/structs/imfusion-gui-eventresult) **handleTouchEvent** (const [TouchEvent](/cpp-sdk/4.5/api/classes/imfusion-gui-touchevent) &event)
+- virtual [EventResult](/cpp-sdk/4.5/api/structs/imfusion-gui-eventresult) **handleContextMenuEvent** (const [ContextMenuEvent](/cpp-sdk/4.5/api/classes/imfusion-gui-contextmenuevent) &event)
+- void **enableLowQualityRenderingIfApplicable** ()
+- void **disableLowQualityRendering** ()
+
+## Protected Attributes
+
+- [VolumeView](/cpp-sdk/4.5/api/classes/imfusion-gui-volumeview) & **m_view**
+- [InputEventMapper](/cpp-sdk/4.5/api/classes/imfusion-gui-inputeventmapper)&lt; [Action](#action) &gt; **m_actionMapper**
+- [CameraNavigation](/cpp-sdk/4.5/api/classes/imfusion-cameranavigation) **m_camNav**
+- bool **m_simultaneousBlending** = true
+- bool **m_orientToNormalOnDoubleClick** = false
+- bool **m_useLowQualityRenderingDuringInteraction** = false
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [ByteSize](/cpp-sdk/4.5/api/classes/imfusion-bytesize) &gt; **m_volumeSizeThresholdForLQRendering**
+
+## Member Enumeration Documentation
+
+### Action
+
+```cpp
+enum class ImFusion::GUI::VolumeViewDefaultEventHandler::Action
+```
+
+*strong*
+
+Enumeration of actions that can be performed based on input events.
+
+**Enumerator:**
+
+- `Pan` — in-plane panning of the viewport
+- `Zoom` — change the zoom of the viewport / move the camera along the view axis
+- `Rotate` — Rotate the camera around the scene center.
+- `Windowing` — change the [window and level](/cpp-sdk/4.5/api/classes/imfusion-displayoptions3d) of the display options of the current dataset
+- `Blending` — change the blending the visible volume by modifying their [opacity](/cpp-sdk/4.5/api/classes/imfusion-displayoptions3d)
+- `SetCameraPositiveX` — Reset the camera so that it looks onto the scene from the positive side of the world coordinates X axis.
+- `SetCameraNegativeX` — Reset the camera so that it looks onto the scene from the negative side of the world coordinates X axis.
+- `SetCameraPositiveY` — Reset the camera so that it looks onto the scene from the positive side of the world coordinates Y axis.
+- `SetCameraNegativeY` — Reset the camera so that it looks onto the scene from the negative side of the world coordinates Y axis.
+- `SetCameraPositiveZ` — Reset the camera so that it looks onto the scene from the positive side of the world coordinates Z axis.
+- `SetCameraNegativeZ` — Reset the camera so that it looks onto the scene from the negative side of the world coordinates Z axis.
+- `PanUp` — Pan the viewport upwards.
+- `PanDown` — Pan the viewport downwards.
+- `PanLeft` — Pan the viewport to the left.
+- `PanRight` — Pan the viewport to the right.
+- `ZoomIn` — Zoom into the viewport / move the camera towards the scene.
+- `ZoomOut` — Zoom out of the viewport / move the camera away from the scene.
+- `RotateUp` — Rotate the camera upwards around the scene center.
+- `RotateDown` — Rotate the camera downwards around the scene center.
+- `RotateLeft` — Rotate the camera left around the scene center.
+- `RotateRight` — Rotate the camera right around the scene center.
+
+## Member Function Documentation
+
+### actionSpeed
+
+```cpp
+ActionSpeed ImFusion::GUI::VolumeViewDefaultEventHandler::actionSpeed (Action action) const
+```
+
+Returns the speed at which a mouse/touch/keyboard event will modify the underlying view.
+
+action must be one of Pan, Zoom, Rotate, Windowing, or [Blending](/cpp-sdk/4.5/api/classes/imfusion-gl-blending).
+
+### setActionSpeed
+
+```cpp
+void ImFusion::GUI::VolumeViewDefaultEventHandler::setActionSpeed (Action action, ActionSpeed value)
+```
+
+Sets the speed at which a mouse/touch/keyboard event will modify the underlying view.
+
+action must be one of Pan, Zoom, Rotate, Windowing, or [Blending](/cpp-sdk/4.5/api/classes/imfusion-gl-blending).
+
+### setUseLowQualityRenderingDuringInteraction
+
+```cpp
+void ImFusion::GUI::VolumeViewDefaultEventHandler::setUseLowQualityRenderingDuringInteraction (bool enable, std::optional < ByteSize > volumeSizeThreshold)
+```
+
+Sets whether to reduce the visual rendering quality while running interactions to improve performance.
+
+**Parameters:**
+
+- `enable` — Flag whether to enable LQ mode while running interactions.
+- `volumeSizeThreshold` — Optional minimal sum of rendered volume sizes for the LQ mode to be used.
+
+### handleInputEvent
+
+```cpp
+EventResult ImFusion::GUI::VolumeViewDefaultEventHandler::handleInputEvent (const InputEvent & event)
+```
+
+*override, virtual*
+
+This function is called by sources of input events in order to dispatch them to the handlers.
+
+In case there are more than one InputEventHandlers dispatchers are intended call this function consecutively until the first handler indicates to stop by returning a result where [EventResult::stopPropagation()](/cpp-sdk/4.5/api/structs/imfusion-gui-eventresult) is true.

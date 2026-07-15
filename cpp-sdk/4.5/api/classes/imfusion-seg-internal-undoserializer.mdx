@@ -1,0 +1,38 @@
+---
+title: "ImFusion::Seg::internal::UndoSerializer"
+sidebarTitle: "UndoSerializer"
+description: "Serializes undo levels into (binary) files and restores the whole stack of undos from these files writeUndoFile() can be repeatedly called asynchronously, resto"
+---
+
+`#include <ImFusion/Seg/UndoRecorder.h>`
+
+## Overview
+
+Serializes undo levels into (binary) files and restores the whole stack of undos from these files writeUndoFile() can be repeatedly called asynchronously, restoreUndoStack() should be called once.
+
+## Public Member Functions
+
+- **UndoSerializer** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &undoDir)
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [internal::UndoLevel](/cpp-sdk/4.5/api/structs/imfusion-seg-internal-undolevel) &gt; **restoreUndoStack** (bool deleteUnrestoredFiles=true) — Restores the full undo stack reading from the directory passed in the constructor.
+- void [writeUndoFileAsync](#writeundofileasync) ([internal::UndoLevel](/cpp-sdk/4.5/api/structs/imfusion-seg-internal-undolevel) uLevel) — Starts writing the given undo to a binary file in the background and return immediately.
+- void **waitUntilWriterFinished** () — Waits until all async writers are finished (see writeUndoFileAsync).
+
+## Protected Member Functions
+
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [internal::UndoLevel](/cpp-sdk/4.5/api/structs/imfusion-seg-internal-undolevel) &gt; **readIn** ([std::istream](http://en.cppreference.com/w/cpp/io/basic_istream.html) &is)
+
+## Static Protected Member Functions
+
+- static void **writeOut** ([std::ostream](http://en.cppreference.com/w/cpp/io/basic_ostream.html) &os, const [internal::UndoLevel](/cpp-sdk/4.5/api/structs/imfusion-seg-internal-undolevel) &uLevel) — Methods to serialize and deserialize an [UndoLevel](/cpp-sdk/4.5/api/structs/imfusion-seg-internal-undolevel) to ostream/istream.
+
+## Member Function Documentation
+
+### writeUndoFileAsync
+
+```cpp
+void ImFusion::Seg::internal::UndoSerializer::writeUndoFileAsync (internal::UndoLevel uLevel)
+```
+
+Starts writing the given undo to a binary file in the background and return immediately.
+
+Only one file is written at a time. When calling this function multiple times, the next file is only written once the previous files have been completely written.

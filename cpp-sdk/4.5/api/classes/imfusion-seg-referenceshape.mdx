@@ -1,0 +1,34 @@
+---
+title: "ImFusion::Seg::ReferenceShape"
+sidebarTitle: "ReferenceShape"
+description: "Abstract class defining a reference shape which has been fitted to a segmentation map."
+---
+
+`#include <ImFusion/Seg/ReferenceShape.h>`
+
+## Overview
+
+Abstract class defining a reference shape which has been fitted to a segmentation map.
+
+The class defines local coordinates (which could also be curved) for the segmented object.
+
+## Public Member Functions
+
+- virtual vec3 **worldToLocal** (vec3 p) const =0
+- virtual vec3 **localToWorld** (vec3 p) const =0
+- void **addMargin** (double margin, int axis=0)
+- double **lowerBound** (int axis) const
+- double **upperBound** (int axis) const
+- [std::pair](http://en.cppreference.com/w/cpp/utility/pair.html)&lt; double, double &gt; **range** (int axis) const
+- bool **isOk** () const
+- virtual bool **is2D** () const
+
+## Protected Member Functions
+
+- void **computeBounds** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec2 &gt; &points)
+
+## Protected Attributes
+
+- vec3 **m_lowerBounds** = &#123;0, 0, 0&#125;
+- vec3 **m_upperBounds** = &#123;0, 0, 0&#125;
+- bool **m_isOk** = true

@@ -1,0 +1,23 @@
+---
+title: "ImFusion::LabelSelector"
+sidebarTitle: "LabelSelector"
+---
+
+## Public Types
+
+- enum **SelectorOption** &#123; **NoOptions** = 0 , **ShowEye** = 1 &lt;&lt; 0 , **ShowLock** = 1 &lt;&lt; 1 , **Selectable** = 1 &lt;&lt; 2 , **HideZeroLabel** = 1 &lt;&lt; 3 , **MultiSelection** = 1 &lt;&lt; 4 , **ZeroLabelUnselectable** = 1 &lt;&lt; 5 &#125;
+
+## Public Member Functions
+
+- **LabelSelector** ([AnnotationActionSharedState::LabelMapSettings](/cpp-sdk/4.5/api/structs/imfusion-annotationactionsharedstate-labelmapsettings) &settings, [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; SelectorOption &gt; options, QWidget \*parent=nullptr)
+- void **setBlankOverride** ([std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [Project::PixelwiseLabelType](/cpp-sdk/4.5/api/structs/imfusion-project-pixelwiselabeltype) &gt; blankOverride)
+- [Project::PixelwiseLabelType](/cpp-sdk/4.5/api/structs/imfusion-project-pixelwiselabeltype) \* **blankOverride** () const
+- const [Project::PixelwiseLabelType](/cpp-sdk/4.5/api/structs/imfusion-project-pixelwiselabeltype) \* **activeLabel** (bool withOverride=true) const
+- int **labelCount** () const
+- QSize **sizeHint** () const override
+- void **keyPressEvent** (QKeyEvent \*event) override
+- void **keyReleaseEvent** (QKeyEvent \*event) override
+- void **showEvent** (QShowEvent \*event) override
+- void **mousePressEvent** (QMouseEvent \*event) override
+- void **addCustomContextMenuAction** (const QString &text, [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; void(void)&gt; lambda) — Appends a custom context-menu action with the given text and callback.
+- void **clearCustomContextMenuActions** () — Clears all custom context menu actions.

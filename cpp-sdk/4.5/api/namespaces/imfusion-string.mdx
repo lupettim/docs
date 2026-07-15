@@ -1,0 +1,69 @@
+---
+title: "ImFusion::String"
+sidebarTitle: "String"
+description: "Collection of utility functions to work on or with strings."
+---
+
+## Overview
+
+Collection of utility functions to work on or with strings.
+
+**See also:** String Processing
+
+## Enumerations
+
+- enum SplitOptions &#123; Default = 0 , AnyOf = 1 &lt;&lt; 0 , IgnoreEmptyParts = 1 &lt;&lt; 1 , TrimWhitespace = 1 &lt;&lt; 2 &#125; — Bitflag enumeration for String::split().
+- enum CaseSensitivity &#123; **CaseSensitive** = 0 , **CaseInsensitive** = 1 &#125; — Enumeration for levenshteinDistance.
+
+## Functions
+
+- void replaceAll ([std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &str, [std::string_view](http://en.cppreference.com/w/cpp/string/basic_string_view.html) from, [std::string_view](http://en.cppreference.com/w/cpp/string/basic_string_view.html) to) — Replaces all occurrences of *from* in *str* with *to*.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) replaceAllCopy ([std::string_view](http://en.cppreference.com/w/cpp/string/basic_string_view.html) str, [std::string_view](http://en.cppreference.com/w/cpp/string/basic_string_view.html) from, [std::string_view](http://en.cppreference.com/w/cpp/string/basic_string_view.html) to) — Returns a copy of *str* with all occurrences of *replaced* by *to*.
+- void removeLetters ([std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &str) — Removes all alphabetic characters in place.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) fromDurationMs (double durationInMilliseconds) — Convert a duration in milliseconds to a human-readable string with days, hours, minutes where applicable.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) fromDouble (double value, [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; int &gt; maxDecimals=std::nullopt) — Convert a double to a string representation, with a limited max number of decimals.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **ordinal** (int num) — Convert an integer number to its ordinal number string representation, such as "1st", "2nd", "3rd", "4th", etc.
+- int naturalCompare (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &str1, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &str2) — Compare two strings according to the natural sort order.
+- int levenshteinDistance (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &source, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &target, CaseSensitivity sensitivity=CaseSensitive) — Computes the Levenshtein distance (also known as Edit distance) between two strings.
+
+## Comparison and substring search
+
+- bool iEquals ([std::string_view](http://en.cppreference.com/w/cpp/string/basic_string_view.html) a, [std::string_view](http://en.cppreference.com/w/cpp/string/basic_string_view.html) b) — Compares both strings case insensitive, returns true if they are the same (case insensitive).
+- bool **startsWith** ([std::string_view](http://en.cppreference.com/w/cpp/string/basic_string_view.html) str, [std::string_view](http://en.cppreference.com/w/cpp/string/basic_string_view.html) prefix) — Checks whether the input string has the given prefix.
+- bool iStartsWith ([std::string_view](http://en.cppreference.com/w/cpp/string/basic_string_view.html) str, [std::string_view](http://en.cppreference.com/w/cpp/string/basic_string_view.html) prefix) — Checks whether the input string has the given prefix, ignoring case (case-insensitive).
+- bool **endsWith** ([std::string_view](http://en.cppreference.com/w/cpp/string/basic_string_view.html) str, [std::string_view](http://en.cppreference.com/w/cpp/string/basic_string_view.html) suffix) — Checks whether the input string has the given suffix.
+- bool iEndsWith ([std::string_view](http://en.cppreference.com/w/cpp/string/basic_string_view.html) str, [std::string_view](http://en.cppreference.com/w/cpp/string/basic_string_view.html) suffix) — Checks whether the input string has the given suffix, ignoring case (case-insensitive).
+- bool **contains** ([std::string_view](http://en.cppreference.com/w/cpp/string/basic_string_view.html) str, [std::string_view](http://en.cppreference.com/w/cpp/string/basic_string_view.html) substring) — Checks whether the input string contains the given substring.
+- bool iContains ([std::string_view](http://en.cppreference.com/w/cpp/string/basic_string_view.html) str, [std::string_view](http://en.cppreference.com/w/cpp/string/basic_string_view.html) substring) — Checks whether the input string contains the given substring, ignoring case (case-insensitive).
+- bool **containsAnyOf** ([std::string_view](http://en.cppreference.com/w/cpp/string/basic_string_view.html) str, [std::string_view](http://en.cppreference.com/w/cpp/string/basic_string_view.html) characters) — Checks whether the input string contains any of the given characters.
+- bool iContainsAnyOf ([std::string_view](http://en.cppreference.com/w/cpp/string/basic_string_view.html) str, [std::string_view](http://en.cppreference.com/w/cpp/string/basic_string_view.html) characters) — Checks whether the input string contains any of the given characters, ignoring case (case-insensitive).
+- bool matchesPattern ([std::string_view](http://en.cppreference.com/w/cpp/string/basic_string_view.html) str, [std::string_view](http://en.cppreference.com/w/cpp/string/basic_string_view.html) pattern) — Checks if a string matches a pattern containing \* and ? wildcards.
+
+## Remove whitespace at the ends
+
+- void trim ([std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &str, [std::string_view](http://en.cppreference.com/w/cpp/string/basic_string_view.html) whitespace=" \t\f\v\r\n") — Removes all leading and trailing occurrences of the characters in *whitespace* from *str* in-place.
+- void ltrim ([std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &str, [std::string_view](http://en.cppreference.com/w/cpp/string/basic_string_view.html) whitespace=" \t\f\v\r\n") — Removes all leading occurrences of the characters in *whitespace* from *str* in-place.
+- void rtrim ([std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &str, [std::string_view](http://en.cppreference.com/w/cpp/string/basic_string_view.html) whitespace=" \t\f\v\r\n") — Removes all trailing occurrences of the characters in *whitespace* from *str* in-place.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) trimCopy ([std::string_view](http://en.cppreference.com/w/cpp/string/basic_string_view.html) str, [std::string_view](http://en.cppreference.com/w/cpp/string/basic_string_view.html) whitespace=" \t\f\v\r\n") — Returns a copy of *str* with all leading and trailing occurrences of whitespace removed.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) ltrimCopy ([std::string_view](http://en.cppreference.com/w/cpp/string/basic_string_view.html) str, [std::string_view](http://en.cppreference.com/w/cpp/string/basic_string_view.html) whitespace=" \t\f\v\r\n") — Returns a copy of *str* with all leading occurrences of the characters in *whitespace* removed.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) rtrimCopy ([std::string_view](http://en.cppreference.com/w/cpp/string/basic_string_view.html) str, [std::string_view](http://en.cppreference.com/w/cpp/string/basic_string_view.html) whitespace=" \t\f\v\r\n") — Returns a copy of *str* with all trailing occurrences of the characters in *whitespace* removed.
+- [std::string_view](http://en.cppreference.com/w/cpp/string/basic_string_view.html) trimRef ([std::string_view](http://en.cppreference.com/w/cpp/string/basic_string_view.html) str, [std::string_view](http://en.cppreference.com/w/cpp/string/basic_string_view.html) whitespace=" \t\f\v\r\n") — Returns a [std::string_view](http://en.cppreference.com/w/cpp/string/basic_string_view.html) into the input string where all leading and trailing occurrences of *whitespace* are removed.
+- [std::string_view](http://en.cppreference.com/w/cpp/string/basic_string_view.html) ltrimRef ([std::string_view](http://en.cppreference.com/w/cpp/string/basic_string_view.html) str, [std::string_view](http://en.cppreference.com/w/cpp/string/basic_string_view.html) whitespace=" \t\f\v\r\n") — Returns a [std::string_view](http://en.cppreference.com/w/cpp/string/basic_string_view.html) into the input string where all leading occurrences of *whitespace* are removed.
+- [std::string_view](http://en.cppreference.com/w/cpp/string/basic_string_view.html) rtrimRef ([std::string_view](http://en.cppreference.com/w/cpp/string/basic_string_view.html) str, [std::string_view](http://en.cppreference.com/w/cpp/string/basic_string_view.html) whitespace=" \t\f\v\r\n") — Returns a [std::string_view](http://en.cppreference.com/w/cpp/string/basic_string_view.html) into the input string where all trailing occurrences of *whitespace* are removed.
+
+## Change capitalization of 7 bit ASCII strings
+
+- void toLower ([std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &input) — Convert the input string to lower case characters.
+- void toUpper ([std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &input) — Convert the input string to upper case characters.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) toLowerCopy ([std::string_view](http://en.cppreference.com/w/cpp/string/basic_string_view.html) input) — Convert the input string to lower case characters.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) toUpperCopy ([std::string_view](http://en.cppreference.com/w/cpp/string/basic_string_view.html) input) — Convert the input string to upper case characters.
+
+## Split strings into individual elements and vice-versa
+
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) join (const [Container](/cpp-sdk/4.5/api/namespaces/imfusion-container) &list, UnaryOperation unary_op, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &sep) — Joins the list to a string and separates the elements with *sep*.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) join (const C &list, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &sep) — Joins the list to a string and separates the elements with *sep*.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **join** (const [std::initializer_list](http://en.cppreference.com/w/cpp/utility/initializer_list.html)&lt; T &gt; &list, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &sep) — Helper methods for initializer lists.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) joinNonEmpty (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; &vec, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &sep="") — Joins a vector of strings together, interposing a separator (empty by default).
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; split ([std::string_view](http://en.cppreference.com/w/cpp/string/basic_string_view.html) input, [std::string_view](http://en.cppreference.com/w/cpp/string/basic_string_view.html) separator, [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; SplitOptions &gt; splitOptions=SplitOptions::Default) — Splits *input* into substrings based on the given *separator* and *splitOptions*.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::string_view](http://en.cppreference.com/w/cpp/string/basic_string_view.html) &gt; splitRef ([std::string_view](http://en.cppreference.com/w/cpp/string/basic_string_view.html) input, [std::string_view](http://en.cppreference.com/w/cpp/string/basic_string_view.html) separator, [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; SplitOptions &gt; splitOptions=SplitOptions::Default) — Splits *input* into substring views based on the given *separator* and *splitOptions*.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; splitCamelCase (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &input) — Split camel case string into words.

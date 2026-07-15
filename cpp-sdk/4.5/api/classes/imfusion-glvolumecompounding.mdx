@@ -1,0 +1,142 @@
+---
+title: "ImFusion::GlVolumeCompounding"
+sidebarTitle: "GlVolumeCompounding"
+description: "Compounding of multiple volumes (SharedImageSets) with different modalities for the computation of the resulting voxel values ( Mode ): Mean, Median, Maximum, a"
+---
+
+`#include <ImFusion/GL/GlVolumeCompounding.h>`
+
+## Overview
+
+Compounding of multiple volumes (SharedImageSets) with different modalities for the computation of the resulting voxel values ([Mode](#mode)): Mean, Median, Maximum, and Distance.
+
+**Note:** While the first three modes are self-descriptive, the DISTANCE mode computes distance-maps of the input volumes and employs them to blend the resulting volume. This mode allows to reduce artifacts at the edges. The properties of the resulting volume are taken from the given reference volume (setReferenceVolume()) or inferred from the input volumes.
+
+## Public Types
+
+- enum [Mode](#mode) &#123; MEAN = 1 , MEDIAN = 2 , MAXIMUM = 3 , DISTANCE = 4 &#125; — Compounding mode, i.e. how the resulting voxel values is computed.
+- enum [WeightedMeanMode](#weightedmeanmode) &#123; RADIAL = 1 , ALONGZ = 2 , COSINE = 3 &#125; — The mode for weighted Mean.
+- enum class [InterpolationMode](#interpolationmode) &#123; Nearest = 1 , Linear = 2 &#125; — Interpolation mode for texture lookup.
+
+## Public Member Functions
+
+- **GlVolumeCompounding** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*volumes, bool own=false) — Constructor providing the volume set as single [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset).
+- **GlVolumeCompounding** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* &gt; volumes) — Constructor taking a list of SharedImageSets.
+- **~GlVolumeCompounding** () override — Destructor.
+- void **setMode** ([Mode](#mode) mode) — Set the compounding mode.
+- void **setUseGPU** (bool enable) — Enable/Disable GPU computation.
+- void **setWeightedMean** (bool enable) — Use weighting wrt. volume center for mean mode (only on GPU).
+- void **setWeightedMeanMode** ([WeightedMeanMode](#weightedmeanmode) mode) — set the weighted mean mode
+- void **setInterpolationMode** ([InterpolationMode](#interpolationmode) mode) — Set the interpolation mode used for texture lookup.
+- void **setReferenceVolume** ([SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*vol) — Provide an optional reference volume to use as descriptor for the output volume.
+- bool **hasReferenceVolume** () const — Return if a reference volume is used.
+- void **boundingBox** (vec3 &centerOut, vec3 &extentOut, double &spacingOut) const — Compute the bounding box of the volume set.
+- void [compute](#compute) () override — Creates the compound volume.
+- [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* **volumeSet** () — Return the set of volumes to be compounded.
+- [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) [takeOutput](#takeoutput) () override — Return any new [Data](/cpp-sdk/4.5/api/classes/imfusion-data) that was created by the [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) during the last call to [compute()](#compute).
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+## Static Public Member Functions
+
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=0) — Check if input data is compatible and create this algorithm if requested.
+
+## Member Enumeration Documentation
+
+### Mode
+
+```cpp
+enum ImFusion::GlVolumeCompounding::Mode
+```
+
+Compounding mode, i.e. how the resulting voxel values is computed.
+
+**Enumerator:**
+
+- `MEAN` — Compute mean.
+- `MEDIAN` — Compute median (in case of even number of samples, will use the larger center one).
+- `MAXIMUM` — Compute maximum.
+- `DISTANCE` — Compute distance to border.
+
+### WeightedMeanMode
+
+```cpp
+enum ImFusion::GlVolumeCompounding::WeightedMeanMode
+```
+
+The mode for weighted Mean.
+
+**Enumerator:**
+
+- `RADIAL` — Compute the weight by the distance to the center.
+- `ALONGZ` — Compute the weight by the distance to the center in z direction.
+- `COSINE` — Compute the weight by a smooth cosine along the border covering any overlap.
+
+### InterpolationMode
+
+```cpp
+enum class ImFusion::GlVolumeCompounding::InterpolationMode
+```
+
+*strong*
+
+Interpolation mode for texture lookup.
+
+**Enumerator:**
+
+- `Nearest` — Nearest-neighbor interpolation, useful for label maps.
+- `Linear` — Use bi-/tri-linear interpolation.
+
+## Member Function Documentation
+
+### compute
+
+```cpp
+void ImFusion::GlVolumeCompounding::compute ()
+```
+
+*override, virtual*
+
+Creates the compound volume.
+
+### takeOutput
+
+```cpp
+OwningDataList ImFusion::GlVolumeCompounding::takeOutput ()
+```
+
+*override, virtual*
+
+Return any new [Data](/cpp-sdk/4.5/api/classes/imfusion-data) that was created by the [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) during the last call to [compute()](#compute).
+
+The default implementation will return an empty list.
+
+**Note:** Since ownership of the data is transferred, you can call this method only once between calls to [compute()](#compute).
+
+### configure
+
+```cpp
+void ImFusion::GlVolumeCompounding::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### configuration
+
+```cpp
+void ImFusion::GlVolumeCompounding::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality

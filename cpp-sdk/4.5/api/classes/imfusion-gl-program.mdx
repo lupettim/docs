@@ -1,0 +1,550 @@
+---
+title: "ImFusion::GL::Program"
+sidebarTitle: "Program"
+description: "OpenGL GLSL program with a fragment and optional vertex and geometry shader."
+---
+
+`#include <ImFusion/Core/GL/Program.h>`
+
+## Overview
+
+OpenGL GLSL program with a fragment and optional vertex and geometry shader.
+
+The source code for the shaders is resolved by [GL::Program](/cpp-sdk/4.5/api/classes/imfusion-gl-program) in conjunction with the Resource System infrastructure. It will use Resource::query() to check whether any registered resource repository can provide the source code corresponding to the identifier (i.e. file name) passed during construction of the [GL::Program](/cpp-sdk/4.5/api/classes/imfusion-gl-program). An optional path prefix will be interpreted as repository name to allow for more specific source code queries and resolve potential ambiguities, for instance the identifier MyPlugin/MyShader.frag will first search to find the resource MyShader.frag in a repository with the name MyPlugin. Only if this can not be resolved, it will continue searching for a resource with the name MyPlugin/MyShader.frag in any registered repository. If none of the resource repositories can resolve the given shader name, initialization of the [GL::Program](/cpp-sdk/4.5/api/classes/imfusion-gl-program) will fail.
+
+When you're using OpenGL shaders in your own module, you should create a dedicated [Resource::Repository](/cpp-sdk/4.5/api/classes/imfusion-resource-repository) in order to control the loading behavior for your shaders.
+
+Similar to C++ headers, a GLSL program can include other GLSL headers. By convention, a GLSL header has the extension .glh and must not contain a main function. Otherwise, it can contain other function, struct, variable or uniform definitions like any normal shader. A GLSL header can be included in a shader using:
+
+```cpp
+#pragma include "<headername>.glh"
+```
+ fragment
+The code from the include file will be inserted (as in copied) right after the #pragma.
+
+To allow for using the same include in different shaders, the [GL::Program](/cpp-sdk/4.5/api/classes/imfusion-gl-program) shader preprocessor will define one of the following defines in the corresponding shader stages: IMFUSION_VERTEX_SHADER, IMFUSION_GEOMETRY_SHADER, IMFUSION_FRAGMENT_SHADER, IMFUSION_COMPUTE_SHADER, IMFUSION_TESSELATION_EVALUATION_SHADER, or IMFUSION_TESSELATION_CONTROL_SHADER.
+
+In the case of an error, the resulting log will be reformatted and the line number is replaced with the line number and the filename where the line originates. Include file names are resolved the same way as normal shader file names (i.e. querying the Resource System infrastructure).
+
+[GL::Program](/cpp-sdk/4.5/api/classes/imfusion-gl-program) will parse the version directive of each loaded shader/shader include. If there is no version directive present in a shader, it will assume GLSL 3.3. If a shader and its includes require different GLSL versions, [GL::Program](/cpp-sdk/4.5/api/classes/imfusion-gl-program) will use the maximum version.
+
+**Warning:** If there are conflicting versions (i.e. one part &lt; 3.3 and one part &gt;= 3.3), [GL::Program](/cpp-sdk/4.5/api/classes/imfusion-gl-program) will enable the GLSL compatibility mode and convert certain legacy GLSL constructs (e.g. varying) to their modern GLSL counterpart. This compatibility mode may be dropped at future versions to only allow GLSL &gt;= 3.3
+
+Example:
+
+```cpp
+// loads shader sources from a ImFusion::Resource repository called `MyModule`,
+// resource names are `MyShader.vert` and `MyShader.frag`
+GL::Program prog({
+    {GL::Program::Stage::Vertex, "MyModule/MyShader.vert"},
+    {GL::Program::Stage::Fragment, "MyModule/MyShader.frag"},
+});
+prog.enable();
+prog.setArgument("u_color", vec4f(1.f, .5f, 0.f, 1.f));
+prog.setArgument("u_texture", texture, sampler);
+
+// draw...
+
+prog.unbindImages();
+prog.disable();
+```
+ fragment
+
+**See also:** - [https://www.khronos.org/opengl/wiki/Shader](https://www.khronos.org/opengl/wiki/Shader)
+- Resource System
+
+## Classes
+
+- struct [ShaderInfo](/cpp-sdk/4.5/api/structs/imfusion-gl-program-shaderinfo) — Encapsulates information about each shader stage.
+- struct [AbstractIncludeStruct](/cpp-sdk/4.5/api/structs/imfusion-gl-program-abstractincludestruct) — Struct for representing an abstract include object.
+- struct [BufferBinding](/cpp-sdk/4.5/api/structs/imfusion-gl-program-bufferbinding) — Struct to keep track of GlBuffers bound shaders as SSBOs.
+- struct [TextureBinding](/cpp-sdk/4.5/api/structs/imfusion-gl-program-texturebinding)
+- struct [ImageBinding](/cpp-sdk/4.5/api/structs/imfusion-gl-program-imagebinding)
+
+## Public Types
+
+- enum class [ImageAccess](#imageaccess) &#123; **ReadOnly** = 0x88B8 , **WriteOnly** = 0x88B9 , **ReadWrite** = 0x88BA &#125; — Type of access that will be performed on a bound image.
+- enum class [Stage](#stage) &#123; **Vertex** = 0x8B31 , **Geometry** = 0x8DD9 , **Fragment** = 0x8B30 , **Compute** = 0x91B9 , **TesselationEvaluation** = 0x8E87 , **TesselationControl** = 0x8E88 &#125; — Enumeration of supported shader stages.
+- enum class [Cloning](#cloning) &#123; Everything = 0 , NoDecorators = 1 &lt;&lt; 0 , NoAbstractIncludes = 1 &lt;&lt; 1 &#125; — Bitflag enumeration to configure [Program::clone()](#clone).
+- enum class [Compilation](#compilation) &#123; Defer , Immediate , ImmediateThrowOnFailure &#125; — Describes how to deal with necessary (re-) compilation of the shader.
+
+## Public Member Functions
+
+- [Program](#program) ([std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::pair](http://en.cppreference.com/w/cpp/utility/pair.html)&lt; [Stage](#stage), const char \* &gt; &gt; shaders, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &defines="", [Compilation](#compilation) compileBehavior=Compilation::ImmediateThrowOnFailure) — Instantiates a new OpenGL program consisting of one or multiple GLSL shaders.
+- virtual **~Program** () — Destructor, deletes all allocated resources.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [Program](#program) &gt; [clone](#clone) ([Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; [Cloning](#cloning) &gt; cloneOptions, [Compilation](#compilation) compileBehavior) const — Performs a deep copy of the shader with its sources, defines, and optionally also decorators and abstract includes.
+- virtual bool [setDefines](#setdefines) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &defines, [Compilation](#compilation) compileBehavior=Compilation::Immediate) — Sets the optional string of definitions that is pasted at the beginning of all shaders.
+- const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) & **defines** () const — Returns the optional string of definitions that is pasted at the beginning of all shaders.
+- bool [setExpandDefines](#setexpanddefines) (bool expandDefines, [Compilation](#compilation) compileBehavior=Compilation::Immediate) — Sets the flag to optionally also expand (abstract) includes recursively found in defines.
+- bool **expandsDefines** () const — Returns the flag whether to also expand (abstract) includes recursively found in defines.
+- bool [addRequiredExtension](#addrequiredextension) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &extensionName, [Compilation](#compilation) compileBehavior=Compilation::Immediate) — Registers a GLSL extension as required so that the preprocessor adds the corresponding #extension directives.
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; & **requiredExtensions** () const — Returns all GLSL extensions that were registered as required through [addRequiredExtension()](#addrequiredextension).
+- void [setArgument](#setargument-1-2) (const char \*name, const T &val) — Sets a shader argument (i.e., uniform), including images, matrices, vectors.
+- void [setArgument](#setargument-2-2) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name, const T &val) — Sets a shader argument (i.e., uniform), including images, matrices, vectors.
+- void **setArgument** (const char \*name, const [Texture](/cpp-sdk/4.5/api/classes/imfusion-gl-texture) &val, const [Sampler](/cpp-sdk/4.5/api/classes/imfusion-gl-sampler) &sampling) — Sets a shader sampler with additional sampling parameters (temporarily overrides the parameters of the texture).
+- void **setArgument** (const char \*name, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; const [Texture](/cpp-sdk/4.5/api/classes/imfusion-gl-texture) \* &gt; &val, const [Sampler](/cpp-sdk/4.5/api/classes/imfusion-gl-sampler) &sampling) — Sets multiple shader samplers with additional sampling parameters (temporarily overrides the parameters of the texture).
+- bool [bindBuffer](#bindbuffer) (const char \*name, [ShaderStorageBuffer](/cpp-sdk/4.5/api/classes/imfusion-gl-shaderstoragebuffer) &buffer) — Binds the given SSBO to the interface block of the given name in the shader.
+- void **unbindBuffers** () — Unbinds all buffers from this shader.
+- bool [bindImage](#bindimage) (const char \*name, [Texture](/cpp-sdk/4.5/api/classes/imfusion-gl-texture) &image, [ImageAccess](#imageaccess) access) — Binds the given texture as GLSL image variable to the given uniform name.
+- void **addDecorator** ([ProgramDecorator](/cpp-sdk/4.5/api/classes/imfusion-gl-programdecorator) \*dec) — Add a decorator to apply upon enabling.
+- void **removeDecorator** ([ProgramDecorator](/cpp-sdk/4.5/api/classes/imfusion-gl-programdecorator) \*dec) — Remove a decorator.
+- bool [addAbstractIncludeDefinition](#addabstractincludedefinition) (const [AbstractInclude](/cpp-sdk/4.5/api/classes/imfusion-gl-abstractinclude) \*include, [Compilation](#compilation) compileBehavior=Compilation::Immediate) — Adds an abstract include to the shader source.
+- bool [removeAbstractIncludeDefinition](#removeabstractincludedefinition-1-2) ([AbstractInclude](/cpp-sdk/4.5/api/classes/imfusion-gl-abstractinclude) \*include, [Compilation](#compilation) compileBehavior=Compilation::Immediate) — Removes an abstract include definition.
+- bool [removeAbstractIncludeDefinition](#removeabstractincludedefinition-2-2) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &defineName, [Compilation](#compilation) compileBehavior=Compilation::Immediate) — Removes an abstract include definition.
+- void **enable** () — Enable the shader program now.
+- void **disable** () — Disable the shader program and set no active shader.
+- void [dispatchCompute](#dispatchcompute-1-2) (const vec3i &numWorkGroups) — Launch a compute shader with the given number of work groups.
+- void [dispatchCompute](#dispatchcompute-2-2) (int numWorkGroupsX, int numWorkGroupsY=1, int numWorkGroupsZ=1) — Launch a compute shader with the given number of work groups.
+- void [unbindImages](#unbindimages) (bool manipGlState=true) — Unbind texture arguments that had been set before.
+- int [numImages](#numimages) () const — Returns an upper bound of the number of images that have been set as arguments.
+- int **loc** (const char \*name) — Returns GLSL uniform location.
+- uint32_t **id** () const — Returns the internal OpenGL id for this program.
+- bool [overrideShaderSource](#overrideshadersource) ([Stage](#stage) shaderStage, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &shaderSource, [Compilation](#compilation) compileBehavior) — Set custom shader source to override source code from [Resource](/cpp-sdk/4.5/api/namespaces/imfusion-resource) infrastructure for the given shader stage.
+- bool [compile](#compile) ([Compilation](#compilation) compileBehavior=Compilation::Immediate) — Immediately compiles the GLSL shaders and links them to the final program.
+- bool **isCompiled** () const — Returns whether the shader has been successfully compiled and is up-to-date or whether there are pending changes.
+
+## Static Public Member Functions
+
+- static [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [Program](#program) &gt; [createVertexFragment](#createvertexfragment) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &vertexShaderName, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &framentShaderName, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &defines="", [Compilation](#compilation) compileBehavior=Compilation::Immediate) — Convenience function to instantiate a new OpenGL program consisting of a vertex and a fragment shader.
+- static [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [Program](#program) &gt; [createVertexGeometryFragment](#createvertexgeometryfragment) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &vertexShaderName, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &geometryShaderName, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &framentShaderName, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &defines="", [Compilation](#compilation) compileBehavior=Compilation::Immediate) — Convenience function to instantiate a new OpenGL program consisting of a vertex, geometry, and a fragment shader.
+- static [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [Program](#program) &gt; [createCompute](#createcompute) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &computeShaderName, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &defines="", [Compilation](#compilation) compileBehavior=Compilation::Immediate) — Convenience function to instantiate a new OpenGL program consisting of a compute shader.
+- static [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [determineVersion](#determineversion) (int minVersion, int maxVersion, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &filename) — Returns a GLSL version string that accommodates the given version range.
+
+## Protected Member Functions
+
+- virtual [Program](#program) \* [cloneImpl](#cloneimpl) () const — Virtual helper function to actually clone this type, may throw on error.
+- int [checkForUnititializedUniforms](#checkforunititializeduniforms) () const — Only in _DEBUG builds: Checks for active uniforms (GL_ACTIVE_UNIFORMS) that were not initializes using [GL::Program::setArgument()](#setargument-1-2).
+- bool **initProgram** ([Compilation](#compilation) compileBehavior) — Initializes or Reinitializes the program.
+- void **initShader** (const [ShaderInfo](/cpp-sdk/4.5/api/structs/imfusion-gl-program-shaderinfo) &si) — Initialize a single shader.
+- int **bindSampler** (const char \*uniformName, const [Texture](/cpp-sdk/4.5/api/classes/imfusion-gl-texture) &texture, const [Sampler](/cpp-sdk/4.5/api/classes/imfusion-gl-sampler) \*sampler, bool setUniformAndRecycleUnit)
+- void **unbindSamplers** (const char \*uniformName)
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **joinShaderNames** () const
+
+## Static Protected Member Functions
+
+- static [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **loadShaderSource** (const [ShaderInfo](/cpp-sdk/4.5/api/structs/imfusion-gl-program-shaderinfo) &si, bool expandDefines, const [std::map](http://en.cppreference.com/w/cpp/container/map.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html), [AbstractIncludeStruct](/cpp-sdk/4.5/api/structs/imfusion-gl-program-abstractincludestruct) &gt; &abstractIncludes, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &additionalDefines, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; &requiredExtensions=&#123;&#125;)
+- static [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [expandInclude](#expandinclude) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &line, [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &defines, int &minVersion, int &maxVersion, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; &includeFilenames, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &shaderName, const [std::map](http://en.cppreference.com/w/cpp/container/map.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html), [AbstractIncludeStruct](/cpp-sdk/4.5/api/structs/imfusion-gl-program-abstractincludestruct) &gt; &abstractIncludes, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &additionalDefines, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &dependentIncludesPrefix="") — Searches for #pragma include defines and returns the source of the include file expandInclude is called recursively by the include to expand includes inside the include.
+- static void **convertLegacyCodeToModernGlsl** ([std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &lines, [Stage](#stage) shaderType) — Converts selected legacy GLSL constructs to their modern GLSL &gt; 3.3 counterpart using simple text replacement.
+- static void **gatherAbstractIncludesRecursively** (const [AbstractInclude](/cpp-sdk/4.5/api/classes/imfusion-gl-abstractinclude) \*include, const [std::map](http://en.cppreference.com/w/cpp/container/map.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html), [AbstractIncludeStruct](/cpp-sdk/4.5/api/structs/imfusion-gl-program-abstractincludestruct) &gt; &abstractIncludes, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [AbstractIncludeStruct](/cpp-sdk/4.5/api/structs/imfusion-gl-program-abstractincludestruct) &gt; &outIncludes, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &dependentIncludesPrefix="")
+
+## Protected Attributes
+
+- uint32_t **m_progID** = 0 — OpenGL program ID.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [ShaderInfo](/cpp-sdk/4.5/api/structs/imfusion-gl-program-shaderinfo) &gt; **m_shaders** — List of all shader stages part of the program.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **m_defines** — Optional string of definitions pasted to the beginning of each shader.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [TextureBinding](/cpp-sdk/4.5/api/structs/imfusion-gl-program-texturebinding) &gt; **m_textures** — All textures bound to the shader, index defines binding location.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [BufferBinding](/cpp-sdk/4.5/api/structs/imfusion-gl-program-bufferbinding) &gt; **m_buffers** — All buffers bound to the shader, index defines binding location.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [ImageBinding](/cpp-sdk/4.5/api/structs/imfusion-gl-program-imagebinding) &gt; **m_images** — All images bound to the shader as images, index defines image unit.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [ProgramDecorator](/cpp-sdk/4.5/api/classes/imfusion-gl-programdecorator) \* &gt; **m_dec** — The optional decorator instances.
+- bool **m_expandDefines** = false — Flag whether to optionally also expand includes found in defines.
+- [std::unordered_set](http://en.cppreference.com/w/cpp/container/unordered_set.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **m_assignedUniforms** — Names of all uniforms that were set using [setArgument()](#setargument-1-2).
+- [std::map](http://en.cppreference.com/w/cpp/container/map.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html), [AbstractIncludeStruct](/cpp-sdk/4.5/api/structs/imfusion-gl-program-abstractincludestruct) &gt; **m_abstractIncludes** — Abstract include by define name.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **m_requiredExtensions** — GLSL extensions that must be enabled.
+
+## Member Enumeration Documentation
+
+### ImageAccess
+
+```cpp
+enum class ImFusion::GL::Program::ImageAccess
+```
+
+*strong*
+
+Type of access that will be performed on a bound image.
+
+**See also:** [https://www.khronos.org/opengl/wiki/Image_Load_Store](https://www.khronos.org/opengl/wiki/Image_Load_Store)
+
+### Stage
+
+```cpp
+enum class ImFusion::GL::Program::Stage
+```
+
+*strong*
+
+Enumeration of supported shader stages.
+
+**See also:** [https://www.khronos.org/opengl/wiki/Shader#Stages](https://www.khronos.org/opengl/wiki/Shader#Stages)
+
+### Cloning
+
+```cpp
+enum class ImFusion::GL::Program::Cloning
+```
+
+*strong*
+
+Bitflag enumeration to configure [Program::clone()](#clone).
+
+**Enumerator:**
+
+- `Everything` — Clone everything.
+- `NoDecorators` — Do not copy [GL::ProgramDecorator](/cpp-sdk/4.5/api/classes/imfusion-gl-programdecorator) instances.
+- `NoAbstractIncludes` — Do not copy [AbstractInclude](/cpp-sdk/4.5/api/classes/imfusion-gl-abstractinclude) instances.
+
+### Compilation
+
+```cpp
+enum class ImFusion::GL::Program::Compilation
+```
+
+*strong*
+
+Describes how to deal with necessary (re-) compilation of the shader.
+
+**Enumerator:**
+
+- `Defer` — Defer shader compilation until it is explicitly requested in the future.
+- `Immediate` — Immediately attempt compilation, indicate failure through the return value.
+- `ImmediateThrowOnFailure` — Immediately attempt compilation, indicate failure through throwing an exception.
+
+## Constructor & Destructor Documentation
+
+### Program
+
+```cpp
+ImFusion::GL::Program::Program (std::vector < std::pair < Stage, const char * > > shaders, const std::string & defines = "", Compilation compileBehavior = Compilation::ImmediateThrowOnFailure)
+```
+
+Instantiates a new OpenGL program consisting of one or multiple GLSL shaders.
+
+**Parameters:**
+
+- `shaders` — List of pairs &#123;shader stage, source code resource name&#125; of all shaders that shall form the OpenGL program. The shaders' source code is resolved using the ImFusion::Resource infrastructure as described above.
+- `defines` — List of optional definitions that are to be pasted at the beginning of the source code of each participating shader.
+- `compileBehavior` — Flag whether the copied shader should be compiled immediately and how to handle compilation failure.
+
+**Exceptions:**
+
+- `std::runtime_error` — Will always throw if the underlying OpenGL objects could not be created. Depending on *compileBehavior* this function may also throw if compilation of the shader fails (e.g. shader source could not be resolved, shader source contains invalid GLSL, ...).
+
+**See also:** [createVertexFragment()](#createvertexfragment), [createVertexGeometryFragment()](#createvertexgeometryfragment), [createCompute()](#createcompute)
+
+## Member Function Documentation
+
+### createVertexFragment
+
+```cpp
+std::unique_ptr < Program > ImFusion::GL::Program::createVertexFragment (const std::string & vertexShaderName, const std::string & framentShaderName, const std::string & defines = "", Compilation compileBehavior = Compilation::Immediate)
+```
+
+*static*
+
+Convenience function to instantiate a new OpenGL program consisting of a vertex and a fragment shader.
+
+Depending on *compileBehavior* failure will be indicated either by returning a nullptr or by throwing. Failure can happen if the underlying OpenGL objects could not be created or if immediate compilation of the shader fails (e.g. shader source could not be resolved, shader source contains invalid GLSL, ...).
+
+**Exceptions:**
+
+- `std::runtime_error` — on failure if *compileBehavior* is ImmediateThrowOnFailure.
+
+### createVertexGeometryFragment
+
+```cpp
+std::unique_ptr < Program > ImFusion::GL::Program::createVertexGeometryFragment (const std::string & vertexShaderName, const std::string & geometryShaderName, const std::string & framentShaderName, const std::string & defines = "", Compilation compileBehavior = Compilation::Immediate)
+```
+
+*static*
+
+Convenience function to instantiate a new OpenGL program consisting of a vertex, geometry, and a fragment shader.
+
+Depending on *compileBehavior* failure will be indicated either by returning a nullptr or by throwing. Failure can happen if the underlying OpenGL objects could not be created or if immediate compilation of the shader fails (e.g. shader source could not be resolved, shader source contains invalid GLSL, ...).
+
+**Exceptions:**
+
+- `std::runtime_error` — on failure if *compileBehavior* is ImmediateThrowOnFailure.
+
+### createCompute
+
+```cpp
+std::unique_ptr < Program > ImFusion::GL::Program::createCompute (const std::string & computeShaderName, const std::string & defines = "", Compilation compileBehavior = Compilation::Immediate)
+```
+
+*static*
+
+Convenience function to instantiate a new OpenGL program consisting of a compute shader.
+
+Depending on *compileBehavior* failure will be indicated either by returning a nullptr or by throwing. Failure can happen if the underlying OpenGL objects could not be created or if immediate compilation of the shader fails (e.g. shader source could not be resolved, shader source contains invalid GLSL, ...).
+
+**Exceptions:**
+
+- `std::runtime_error` — on failure if *compileBehavior* is ImmediateThrowOnFailure.
+
+### clone
+
+```cpp
+std::unique_ptr < Program > ImFusion::GL::Program::clone (Flags < Cloning > cloneOptions, Compilation compileBehavior) const
+```
+
+Performs a deep copy of the shader with its sources, defines, and optionally also decorators and abstract includes.
+
+[GL::ProgramDecorator](/cpp-sdk/4.5/api/classes/imfusion-gl-programdecorator) instances are *not* deep-copied, thus you must make sure that they remain valid throughout the lifetime of all clones. In contrast, [GL::AbstractInclude](/cpp-sdk/4.5/api/classes/imfusion-gl-abstractinclude) instances are deep-copied.
+
+**Parameters:**
+
+- `cloneOptions` — Bitflag mask describing what aspects of the program are to be cloned.
+- `compileBehavior` — Flag whether the copied shader should be compiled immediately and how to handle compilation failure.
+
+**Note:** This function does not copy any OpenGL state such as assigned uniform arguments/images/etc.
+
+### setDefines
+
+```cpp
+virtual bool ImFusion::GL::Program::setDefines (const std::string & defines, Compilation compileBehavior = Compilation::Immediate)
+```
+
+*virtual*
+
+Sets the optional string of definitions that is pasted at the beginning of all shaders.
+
+Changing the defines will require recompilation of the shader and invalidate all configured uniforms, buffers, and images.
+
+### setExpandDefines
+
+```cpp
+bool ImFusion::GL::Program::setExpandDefines (bool expandDefines, Compilation compileBehavior = Compilation::Immediate)
+```
+
+Sets the flag to optionally also expand (abstract) includes recursively found in defines.
+
+Changing this flag will require recompilation of the shader and invalidate all configured uniforms, buffers, and images.
+
+### addRequiredExtension
+
+```cpp
+bool ImFusion::GL::Program::addRequiredExtension (const std::string & extensionName, Compilation compileBehavior = Compilation::Immediate)
+```
+
+Registers a GLSL extension as required so that the preprocessor adds the corresponding #extension directives.
+
+For every registered *extensionName* the preprocessor will put #extension &lt;extensionName&gt; : require to the top of the source code.
+
+### setArgument
+
+```cpp
+template<typename T> void ImFusion::GL::Program::setArgument (const char * name, const T & val)
+```
+
+Sets a shader argument (i.e., uniform), including images, matrices, vectors.
+
+This template member function is implemented for the following types T:
+
+- bool
+- int32_t, uint32_t, float, as well as a [std::vector](http://en.cppreference.com/w/cpp/container/vector.html) of these types
+- vec2i, vec3i, vec4i, as well as a [std::vector](http://en.cppreference.com/w/cpp/container/vector.html) of these types
+- vec2f, vec3f, vec4f, as well as a [std::vector](http://en.cppreference.com/w/cpp/container/vector.html) of these types
+- mat2f, mat3f, mat4f, as well as a [std::vector](http://en.cppreference.com/w/cpp/container/vector.html) of these types
+- [GL::Texture](/cpp-sdk/4.5/api/classes/imfusion-gl-texture), and [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt;const Gl::Texture\*&gt;
+
+Furthermore, we implement the following convenience overloads for double-precision floating point values. Be advised that they are not supported by GLSL and a narrowing conversion to single-precision will take place:
+
+- double, vec2, vec3, vec4, mat2, mat3, mat4
+
+### setArgument
+
+```cpp
+template<typename T> void ImFusion::GL::Program::setArgument (const std::string & name, const T & val)
+```
+
+*inline*
+
+Sets a shader argument (i.e., uniform), including images, matrices, vectors.
+
+This template member function is implemented for the following types T:
+
+- bool
+- int32_t, uint32_t, float, as well as a [std::vector](http://en.cppreference.com/w/cpp/container/vector.html) of these types
+- vec2i, vec3i, vec4i, as well as a [std::vector](http://en.cppreference.com/w/cpp/container/vector.html) of these types
+- vec2f, vec3f, vec4f, as well as a [std::vector](http://en.cppreference.com/w/cpp/container/vector.html) of these types
+- mat2f, mat3f, mat4f, as well as a [std::vector](http://en.cppreference.com/w/cpp/container/vector.html) of these types
+- [GL::Texture](/cpp-sdk/4.5/api/classes/imfusion-gl-texture), and [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt;const Gl::Texture\*&gt;
+
+Furthermore, we implement the following convenience overloads for double-precision floating point values. Be advised that they are not supported by GLSL and a narrowing conversion to single-precision will take place:
+
+- double, vec2, vec3, vec4, mat2, mat3, mat4
+
+### bindBuffer
+
+```cpp
+bool ImFusion::GL::Program::bindBuffer (const char * name, ShaderStorageBuffer & buffer)
+```
+
+Binds the given SSBO to the interface block of the given name in the shader.
+
+The return value indicates whether the binding was successful
+
+### bindImage
+
+```cpp
+bool ImFusion::GL::Program::bindImage (const char * name, Texture & image, ImageAccess access)
+```
+
+Binds the given texture as GLSL image variable to the given uniform name.
+
+**Note:** This function is only for GLSL image load/store and requires at least OpenGL 4.2. If you want to bind a texture to a sampler use [setArgument()](#setargument-1-2) instead.
+
+**See also:** [https://www.khronos.org/opengl/wiki/Image_Load_Store](https://www.khronos.org/opengl/wiki/Image_Load_Store)
+
+**Note:** This function is only for GLSL image load/store. If you want to bind a texture to a sampler use [setArgument()](#setargument-1-2) instead.
+
+### addAbstractIncludeDefinition
+
+```cpp
+bool ImFusion::GL::Program::addAbstractIncludeDefinition (const AbstractInclude * include, Compilation compileBehavior = Compilation::Immediate)
+```
+
+Adds an abstract include to the shader source.
+
+This method only extracts the define name and include path from the [AbstractInclude](/cpp-sdk/4.5/api/classes/imfusion-gl-abstractinclude), the pointer itself is not stored and only used in this method. Only one [AbstractInclude](/cpp-sdk/4.5/api/classes/imfusion-gl-abstractinclude) can be set per define name. If an [AbstractInclude](/cpp-sdk/4.5/api/classes/imfusion-gl-abstractinclude) with the same defineName is already set, it will be overridden in the case of non-matching fingerprints. Changing the defines will require recompilation of the shader and invalidate all configured uniforms, buffers, and images.
+
+### removeAbstractIncludeDefinition
+
+```cpp
+bool ImFusion::GL::Program::removeAbstractIncludeDefinition (AbstractInclude * include, Compilation compileBehavior = Compilation::Immediate)
+```
+
+Removes an abstract include definition.
+
+Changing the defines will require recompilation of the shader and invalidate all configured uniforms, buffers, and images.
+
+### removeAbstractIncludeDefinition
+
+```cpp
+bool ImFusion::GL::Program::removeAbstractIncludeDefinition (const std::string & defineName, Compilation compileBehavior = Compilation::Immediate)
+```
+
+Removes an abstract include definition.
+
+Changing the defines will require recompilation of the shader and invalidate all configured uniforms, buffers, and images.
+
+### dispatchCompute
+
+```cpp
+void ImFusion::GL::Program::dispatchCompute (const vec3i & numWorkGroups)
+```
+
+Launch a compute shader with the given number of work groups.
+
+This function must only be called if this shader is a compute shader.
+
+**See also:** [https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glDispatchCompute.xhtml](https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glDispatchCompute.xhtml)
+
+### dispatchCompute
+
+```cpp
+void ImFusion::GL::Program::dispatchCompute (int numWorkGroupsX, int numWorkGroupsY = 1, int numWorkGroupsZ = 1)
+```
+
+Launch a compute shader with the given number of work groups.
+
+This function must only be called if this shader is a compute shader.
+
+**See also:** [https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glDispatchCompute.xhtml](https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glDispatchCompute.xhtml)
+
+### unbindImages
+
+```cpp
+void ImFusion::GL::Program::unbindImages (bool manipGlState = true)
+```
+
+Unbind texture arguments that had been set before.
+
+**Parameters:**
+
+- `manipGlState` — Flag whether to also manipulate OpenGL state. If false, will only update internal bookkeeping.
+
+### numImages
+
+```cpp
+int ImFusion::GL::Program::numImages () const
+```
+
+Returns an upper bound of the number of images that have been set as arguments.
+
+**Note:** Due to some internal bookkeeping caveats the actual number of active images may be less.
+
+### overrideShaderSource
+
+```cpp
+bool ImFusion::GL::Program::overrideShaderSource (Stage shaderStage, const std::string & shaderSource, Compilation compileBehavior)
+```
+
+Set custom shader source to override source code from [Resource](/cpp-sdk/4.5/api/namespaces/imfusion-resource) infrastructure for the given shader stage.
+
+**Warning:** Providing bad source code may crash the application or lead to undefined behavior. Use at your own risk.
+
+### compile
+
+```cpp
+bool ImFusion::GL::Program::compile (Compilation compileBehavior = Compilation::Immediate)
+```
+
+Immediately compiles the GLSL shaders and links them to the final program.
+
+You do not need to call this function explicitly unless you used Compilation::Defer previously.
+
+**Parameters:**
+
+- `compileBehavior` — Defines how to indicate errors, must not be Defer.
+
+**Returns:** false if *compileBehavior* is Compilation::Immediate and compilation failed. true in all other cases.
+
+### determineVersion
+
+```cpp
+std::string ImFusion::GL::Program::determineVersion (int minVersion, int maxVersion, const std::string & filename)
+```
+
+*static*
+
+Returns a GLSL version string that accommodates the given version range.
+
+E.g. determineVersion(330, 450, "") would return "#version 450". The given filename is only used for logging purposes. This usually returns a version string containing maxVersion, except when IMFUSION_GLES is defined which always returns "#version 300 es". Returns an empty string if maxVersion is 0.
+
+### cloneImpl
+
+```cpp
+virtual Program * ImFusion::GL::Program::cloneImpl () const
+```
+
+*protected, virtual*
+
+Virtual helper function to actually clone this type, may throw on error.
+
+### checkForUnititializedUniforms
+
+```cpp
+int ImFusion::GL::Program::checkForUnititializedUniforms () const
+```
+
+*protected*
+
+Only in _DEBUG builds: Checks for active uniforms (GL_ACTIVE_UNIFORMS) that were not initializes using [GL::Program::setArgument()](#setargument-1-2).
+
+Logs a warning for each uninitialized uniform and returns the count of those.
+
+**Note:** Does nothing in Release builds.
+
+### expandInclude
+
+```cpp
+std::string ImFusion::GL::Program::expandInclude (const std::string & line, std::string & defines, int & minVersion, int & maxVersion, std::vector < std::string > & includeFilenames, const std::string & shaderName, const std::map < std::string, AbstractIncludeStruct > & abstractIncludes, const std::string & additionalDefines, const std::string & dependentIncludesPrefix = "")
+```
+
+*static, protected*
+
+Searches for #pragma include defines and returns the source of the include file expandInclude is called recursively by the include to expand includes inside the include.
+
+**Parameters:**
+
+- `line` — the line to search for the pragma
+- `defines` — the current active defines, if the include is an abstract include its define will be appended
+- `minVersion` — the current minimum GLSL version in the program, will be updated if the include has a lower version
+- `maxVersion` — the current maximum GLSL version in the program, will be updated if the include has a higher version
+- `includeFilenames` — list of all current includes, if an include is found it will be appended
+- `shaderName` — m_shaderNames[num] for logging only
+- `abstractIncludes` — this is generally taken to be m_abstractIncludes
+- `additionalDefines` — this is generally taken to be m_defines
+
+**Returns:** Include source code or empty if line does not contain an include

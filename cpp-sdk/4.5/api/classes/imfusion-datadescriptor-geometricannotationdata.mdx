@@ -1,0 +1,36 @@
+---
+title: "ImFusion::DataDescriptor::GeometricAnnotationData"
+sidebarTitle: "GeometricAnnotationData"
+---
+
+## Public Member Functions
+
+- **GeometricAnnotationData** (DataDescriptor \*, const Project::GeometricAnnotationData \*)
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; GeometricAnnotations &gt; **loadAnnotations** ([Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) \*progress) const
+- bool **saveAnnotations** (const GeometricAnnotations &bb, bool hasData, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &lockToken, [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) \*progress)
+- QString [dataPath](#datapath) () const override
+- QString [projectId](#projectid) () const override — Returns the ID of this layer as defined in the project.
+
+## Public Attributes
+
+- const Project::GeometricAnnotationData \*const **m_projectData** = nullptr
+
+## Member Function Documentation
+
+### dataPath
+
+```cpp
+QString ImFusion::DataDescriptor::GeometricAnnotationData::dataPath () const
+```
+
+*override, virtual*
+
+### projectId
+
+```cpp
+QString ImFusion::DataDescriptor::GeometricAnnotationData::projectId () const
+```
+
+*override, virtual*
+
+Returns the ID of this layer as defined in the project.

@@ -1,0 +1,104 @@
+---
+title: "ImFusion::Animations::Animation"
+sidebarTitle: "Animation"
+description: "Helper class to define an animation, that is an interpolated transition between two states."
+---
+
+`#include <ImFusion/GUI/Animations.h>`
+
+## Overview
+
+Helper class to define an animation, that is an interpolated transition between two states.
+
+[Animations](/cpp-sdk/4.5/api/namespaces/imfusion-animations) are managed by the [AnimationBackend](/cpp-sdk/4.5/api/classes/imfusion-animations-animationbackendbase), which takes care of calling the update() function at a regular time interval with the progress value t interpolated between 0.0 and 1.0 according to the duration and time passed since start. Regular (non-looped) animations are guaranteed to always be called with the value 1.0 at the end to ensure that the final state is reached. The frequency and granularity of intermediate update calls (and looped animations) are subject to the system load as well as the concrete implementation of the underlying backend.
+
+An [Animation](/cpp-sdk/4.5/api/classes/imfusion-animations-animation) provides two different means to notify the receiver about updates:
+
+- You can pass a callback to the constructor. In this case you have to manually ensure that the lifetime of the animation does not exceed the captured objects in the callback.
+- You can subscribe to [signalUpdated](#signalupdated) which enables you to utilize the lifetime management of the [SignalReceiver](/cpp-sdk/4.5/api/classes/imfusion-signalreceiver) interface in case the caller implements it.
+
+**See also:** The runAnimation() and runLoopedAnimation() convenience functions that will execute the animation on the currently installed global backend.
+
+## Public Types
+
+- enum class [State](#state) &#123; Created , Running , Cancelled , Finished &#125; — Enumeration of possible animation states.
+
+## Public Member Functions
+
+- [Animation](#animation) ([std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; void(double t)&gt; &&updateFunc=nullptr) — Create a new [Animation](/cpp-sdk/4.5/api/classes/imfusion-animations-animation) instance with an [EasingCurve::InOutCubic](/cpp-sdk/4.5/api/namespaces/imfusion-animations) by default.
+- [std::chrono::milliseconds](http://en.cppreference.com/w/cpp/chrono/duration.html) **duration** () const — Returns the duration of a single iteration of the animation.
+- void **setDuration** ([std::chrono::milliseconds](http://en.cppreference.com/w/cpp/chrono/duration.html) duration) — Sets the duration of a single iteration of the animation; must not be changed after starting the animation.
+- bool **isLooped** () const — Returns whether this animation is looped endlessly or not.
+- void **setLooped** (bool value) — Sets whether this animation is looped endlessly or not; must not be changed after starting the animation.
+- void **setEasingCurve** ([EasingCurve](/cpp-sdk/4.5/api/namespaces/imfusion-animations) curve) — Sets the easing curve to one of the built-in ones.
+- void [setEasingCurve](#seteasingcurve) ([std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; double(double t)&gt; &&easingCurveFunc) — Sets a custom easing curve.
+- [State](#state) **state** () const — Returns the current state of the animation.
+- void **cancel** () — Cancels the animation without.
+- void **update** (double t) const — To be called by the backend; applies the easing curve and calls the m_updateFunc as well as signalUpdated with the result.
+
+## Public Attributes
+
+- ProtectedSignal&lt; double &gt; [signalUpdated](#signalupdated) — Signal emitted at regular time intervals while the animation is running.
+- ProtectedSignal&lt; [State](#state) &gt; **signalStateChanged** — Signal emitted whenever the state of the animation has changed.
+- ProtectedSignal **signalConfigChanged** — Signal emitted whenever the duration, or isLooped state has changed.
+
+## Member Enumeration Documentation
+
+### State
+
+```cpp
+enum class ImFusion::Animations::Animation::State
+```
+
+*strong*
+
+Enumeration of possible animation states.
+
+**Enumerator:**
+
+- `Created` — Created but not started.
+- `Running` — Started and still running.
+- `Cancelled` — Cancelled before the final state was reached.
+- `Finished` — Completed after the final state was reached.
+
+## Constructor & Destructor Documentation
+
+### Animation
+
+```cpp
+ImFusion::Animations::Animation::Animation (std::function < void(double t)> && updateFunc = nullptr)
+```
+
+*explicit*
+
+Create a new [Animation](/cpp-sdk/4.5/api/classes/imfusion-animations-animation) instance with an [EasingCurve::InOutCubic](/cpp-sdk/4.5/api/namespaces/imfusion-animations) by default.
+
+**Parameters:**
+
+- `updateFunc` — Optional callback function that is called by the backend at regular time intervals with *t* having values interpolated between 0.0 and 1.0 according to the duration and time passed since start.
+
+## Member Function Documentation
+
+### setEasingCurve
+
+```cpp
+void ImFusion::Animations::Animation::setEasingCurve (std::function < double(double t)> && easingCurveFunc)
+```
+
+Sets a custom easing curve.
+
+**Parameters:**
+
+- `easingCurveFunc` — Interpolation function receiving a value *t* between 0.0 and 1.0. The function must return a value between 0.0 and 1.0 for all input.
+
+## Member Data Documentation
+
+### signalUpdated
+
+```cpp
+ProtectedSignal <double> ImFusion::Animations::Animation::signalUpdated
+```
+
+Signal emitted at regular time intervals while the animation is running.
+
+The values are interpolated between 0.0 and 1.0 according to the duration and time passed since start.

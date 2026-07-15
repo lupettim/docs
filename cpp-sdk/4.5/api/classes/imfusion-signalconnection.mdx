@@ -1,0 +1,65 @@
+---
+title: "ImFusion::SignalConnection"
+sidebarTitle: "SignalConnection"
+description: "Structure for describing/identifying individual connections between signals and slots."
+---
+
+`#include <ImFusion/Core/Signal.h>`
+
+## Overview
+
+Structure for describing/identifying individual connections between signals and slots.
+
+Instances of this class can only be instantiated by the corresponding signal and allow for safely disconnecting from a signal without explicitly knowing about the lifetime of signal and receiver.
+
+**See also:** Signals and Slots
+
+## Public Member Functions
+
+- bool **isActive** () const — Returns true if the connections is currently active (i.e. both connected and not temporarily blocked).
+- bool [disconnect](#disconnect) () — Disconnect the connection from the signal.
+- bool **isConnected** () const — Returns true if the connection is still connected.
+- bool [setBlocked](#setblocked) (bool block) — Set the flag whether to block notifications to the observer sent via this connection.
+- bool **isBlocked** () const — Returns whether the connection has been temporarily blocked so that the receiver is not notified.
+- [SignalConnection](#signalconnection) (private_cookie, const [SignalBase](/cpp-sdk/4.5/api/classes/imfusion-signalbase) &signal, const SignalReceiver \*receiver) — Constructor for a connection between the given signal and slot.
+
+## Constructor & Destructor Documentation
+
+### SignalConnection
+
+```cpp
+ImFusion::SignalConnection::SignalConnection (private_cookie, const SignalBase & signal, const SignalReceiver * receiver)
+```
+
+Constructor for a connection between the given signal and slot.
+
+**Parameters:**
+
+- `signal` — Reference to the signal
+- `receiver` — Pointer to the receiver, may be 0 in the case that the receiver is a free function.
+
+## Member Function Documentation
+
+### disconnect
+
+```cpp
+bool ImFusion::SignalConnection::disconnect ()
+```
+
+Disconnect the connection from the signal.
+
+Returns false if the connection was no longer active.
+
+### setBlocked
+
+```cpp
+bool ImFusion::SignalConnection::setBlocked (bool block)
+```
+
+Set the flag whether to block notifications to the observer sent via this connection.
+
+If *block* is true, any notification from the source signal will not be sent to the target slot, however other slots connected to the same signal may still be notified if their connection is active. The caller is responsible to reset the blocked state to its original value when appropriate.
+
+**Returns:** Previous value of isBlocked().
+
+**See also:** [SignalBlocker](/cpp-sdk/4.5/api/classes/imfusion-signalblocker) for a more convenient and exception-safe interface to temporarily block a signal.

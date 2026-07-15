@@ -1,0 +1,19 @@
+---
+title: "ImFusion::MinimumBoundingBox"
+sidebarTitle: "MinimumBoundingBox"
+description: "Algorithm for computing the minimum axis-aligned bounding box from image data."
+---
+
+`#include <ImFusion/Base/MinimumBoundingBox.h>`
+
+## Overview
+
+[Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) for computing the minimum axis-aligned bounding box from image data.
+
+## Public Member Functions
+
+- **MinimumBoundingBox** ([SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*img, double threshold=0.0) — Compute minimum bounding box, given threshold above which image data is assumed.
+- void **asPixels** (vec3i &minOut, vec3i &maxOut) const — Return the bounding box as pixel/voxel indices.
+- void **asSpaced** (vec3 &minOut, vec3 &maxOut) const — Return the bounding box in centered image coordinates with spacing.
+- mat4 **asMatrix** () const — Return the bounding box as translation and scale matrix in world coordinates.
+- size_t **insideCount** () const — Return the number of pixels/voxels above the threshold.

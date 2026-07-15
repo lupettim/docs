@@ -1,0 +1,25 @@
+---
+title: "MyCustomGlObject.h"
+---
+
+```cpp
+#pragma once
+
+#include <ImFusion/GL/GlObject.h>
+
+class MyCustomGlObject : public ImFusion::GlObject
+{
+public:
+ // This function implements the actual rendering code
+ virtual void draw(const ImFusion::GlView& view) override;
+
+ // This function returns the world extent of the rendered object so that the
+ // view architecture can automatically determine proper scaling etc.
+ // For now we return a default (empty) extent.
+ virtual ImFusion::Geometry::AlignedBox bounds() const override { return ImFusion::Geometry::AlignedBox(); }
+
+ // Return a string ID of this class that can be used for serialization.
+ virtual std::string typeName() const override { return "MyCustomGlObject"; }
+};
+```
+ fragment

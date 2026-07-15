@@ -1,0 +1,54 @@
+---
+title: "Filesystem.cpp"
+---
+
+```cpp
+#include <ImFusion/Core/Filesystem/Directory.h>
+#include <ImFusion/Core/Filesystem/File.h>
+#include <ImFusion/Core/Filesystem/Path.h>
+using namespace ImFusion;
+
+std::string nativePathAsString = "C:\Program Files\ImFusion Suite";
+Filesystem::Path fsPath = nativePathAsString;    // will convert native path separators to generic ones
+LOG_INFO(fsPath.parentPath());                   // logs "C:/Program Files"
+IMFUSION_ASSERT(std::string(fsPath) == "C:/Program Files/ImFusion Suite");
+
+Filesystem::Path projectDirectoryPath{"/home/username/Development"};
+Filesystem::Path dataDirectoryPath = projectDirectoryPath / "data";     // "/home/username/Development/data"
+Filesystem::Path testDataPath = projectDirectoryPath / Path("test");    // "/home/username/Development/data/test"
+
+IMFUSION_ASSERT(projectDirectoryPath != testDataPath);
+
+Filesystem::Path dataDirectoryPath =
+ Filesystem::Path{"/home/username/Development/./Data/symbolic_link_image.imf"}.makeCanonical();
+// => dataDirectoryPath == "/data/real_image.imf"
+
+Filesystem::Path relativePath = dataDirectoryPath.makeRelativeTo("/data");
+// => relativePath == "real_image.imf"
+
+Filesystem::Directory d{"/home/username/Data"};
+std::vector<Filesystem::Path> itemsShallow = d.scan();
+std::vector<Filesystem::Path> itemsDeep = d.scanRecursive();
+std::vector<Filesystem::Path> dicomFiles = d.scanRecursive([](Path p) { p.getExtension() == ".dcm" });
+
+Filesystem::File file{"/home/username/Data/myimage.imf"};
+if (file.exists())
+{
+ std::cout << "Size: " << file.size() << " bytes" << std::endl;
+ std::cout << "Directory: " << file.parentDirectory();    // -> /home/username/Data
+}
+
+Filesystem::File file{"/home/username/Data/zipfile.tar.gz"};
+
+std::cout << "Parent Path: " << file.parentPath() << std::endl;                 // -> "/home/username/Data"
+std::cout << "Name: " << file.name() << std::endl;                              // -> "zipfile.tar.gz"
+std::cout << "Basename: " << file.path().baseName() << std::endl;               // -> "zipfile"
+std::cout << "Full Basename: " << file.path().fullBaseName() << std::endl;      // -> "zipfile.tar"
+std::cout << "Extension: " << file.path().extension() << std::endl;             // -> "gz"
+std::cout << "Full Extension: " << file.path().fullExtension() << std::endl;    // -> "tar.gz"
+
+Filesystem::Path savePath{"/home/username/data/project/my file.bin"};
+savePath.asDirectory().createRecursive();    // make sure the parent directory actually exists
+savePath.asFile().writeBinary(data);         // create the file and write data to it
+```
+ fragment

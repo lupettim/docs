@@ -1,0 +1,21 @@
+---
+title: "ImFusion::Utils::detail::expected_storage_base< T, E, bool, bool >"
+sidebarTitle: "expected_storage_base< T, E, bool, bool >"
+---
+
+## Public Member Functions
+
+- constexpr **expected_storage_base** ([no_init_t](/cpp-sdk/4.5/api/structs/imfusion-utils-detail-no-init-t))
+- constexpr **expected_storage_base** (in_place_t, Args &&... args)
+- constexpr **expected_storage_base** (in_place_t, [std::initializer_list](http://en.cppreference.com/w/cpp/utility/initializer_list.html)&lt; U &gt; il, Args &&... args)
+- constexpr **expected_storage_base** (Unexpect_t, Args &&... args)
+- constexpr **expected_storage_base** (Unexpect_t, [std::initializer_list](http://en.cppreference.com/w/cpp/utility/initializer_list.html)&lt; U &gt; il, Args &&... args)
+
+## Public Attributes
+
+- union &#123;
+- T **m_val**
+- [Unexpected](/cpp-sdk/4.5/api/classes/imfusion-utils-unexpected)&lt; E &gt; **m_unexpect**
+- char **m_no_init**
+- &#125;;
+- bool **m_has_val**

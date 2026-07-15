@@ -1,0 +1,44 @@
+---
+title: "ImFusion::RegistrationResultsIoAlgorithm"
+sidebarTitle: "RegistrationResultsIoAlgorithm"
+description: "Algorithm for loading ImFusion Registration Results (irr) files."
+---
+
+`#include <ImFusion/Reg/RegistrationResultsIoAlgorithm.h>`
+
+## Overview
+
+[Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) for loading ImFusion Registration Results (irr) files.
+
+Only meant to be used in the ImFusion Suite, in the SDK use [RegistrationResults::load](/cpp-sdk/4.5/api/classes/imfusion-registrationresults). This algorithm will add [RegistrationResultsAlgorithm](/cpp-sdk/4.5/api/classes/imfusion-registrationresultsalgorithm) to the main window and load the results inside it.
+
+## Public Member Functions
+
+- void [compute](#compute) () override — Execute the algorithm.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; [supportedFileExtensions](#supportedfileextensions) () const override — Return supported file extensions (for file based IO).
+
+## Static Public Member Functions
+
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=nullptr)
+
+## Member Function Documentation
+
+### compute
+
+```cpp
+void ImFusion::RegistrationResultsIoAlgorithm::compute ()
+```
+
+*override, virtual*
+
+Execute the algorithm.
+
+### supportedFileExtensions
+
+```cpp
+std::vector < std::string > ImFusion::RegistrationResultsIoAlgorithm::supportedFileExtensions () const
+```
+
+*inline, override, virtual*
+
+Return supported file extensions (for file based IO).

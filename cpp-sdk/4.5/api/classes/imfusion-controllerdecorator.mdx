@@ -1,0 +1,90 @@
+---
+title: "ImFusion::ControllerDecorator"
+sidebarTitle: "ControllerDecorator"
+description: "Base interface for wrapper classes to decorate Controller instances and place them inside a MainWindowBase ."
+---
+
+`#include <ImFusion/GUI/ControllerDecorator.h>`
+
+## Overview
+
+[Base](/cpp-sdk/4.5/api/structs/imfusion-dicom-base) interface for wrapper classes to decorate [Controller](/cpp-sdk/4.5/api/classes/imfusion-controller) instances and place them inside a [MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase).
+
+This interface defines a set of generic functionality that must be implemented by container widgets. Subclasses can extend it with extra logic for decoration, docking, or other functionality needed for their intended [GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui).
+
+Instances of this interface are usually not created manually by SDK users but rather instantiated and maintained by [MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase) after calling [MainWindowBase::addController()](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase).
+
+**See also:** [MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase), [Controller](/cpp-sdk/4.5/api/classes/imfusion-controller), [DefaultControllerDecorator](/cpp-sdk/4.5/api/classes/imfusion-defaultcontrollerdecorator)
+
+## Public Member Functions
+
+- virtual bool [setLocation](#setlocation) ([Controller::Location](/cpp-sdk/4.5/api/classes/imfusion-controller) [location](#location))=0 — Sets how the controller should be decorated and where it should be placed in the parent [MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase).
+- virtual [Controller::Location](/cpp-sdk/4.5/api/classes/imfusion-controller) [location](#location) () const =0 — Returns the current location of the controller, i.e. where it is placed in the parent [MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase).
+- virtual void [setVisible](#setvisible) (bool value)=0 — Sets whether the controller should be visible or hidden from the [GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui).
+- virtual bool [isVisible](#isvisible) () const =0 — Returns whether the controller widget is currently visible.
+- virtual void [setUserClosable](#setuserclosable) (bool closable)=0 — Sets whether the container widget should show a button to close the underlying [Controller](/cpp-sdk/4.5/api/classes/imfusion-controller).
+- virtual bool [isUserClosable](#isuserclosable) () const =0 — Returns whether the container widget should show a button to close the underlying [Controller](/cpp-sdk/4.5/api/classes/imfusion-controller).
+
+## Member Function Documentation
+
+### setLocation
+
+```cpp
+virtual bool ImFusion::ControllerDecorator::setLocation (Controller::Location location)
+```
+
+*pure virtual*
+
+Sets how the controller should be decorated and where it should be placed in the parent [MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase).
+
+Returns false if requested location could not be set (e.g. because not in [Controller::supportedLocations()](/cpp-sdk/4.5/api/classes/imfusion-controller)).
+
+### location
+
+```cpp
+virtual Controller::Location ImFusion::ControllerDecorator::location () const
+```
+
+*pure virtual*
+
+Returns the current location of the controller, i.e. where it is placed in the parent [MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase).
+
+### setVisible
+
+```cpp
+virtual void ImFusion::ControllerDecorator::setVisible (bool value)
+```
+
+*pure virtual*
+
+Sets whether the controller should be visible or hidden from the [GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui).
+
+### isVisible
+
+```cpp
+virtual bool ImFusion::ControllerDecorator::isVisible () const
+```
+
+*pure virtual*
+
+Returns whether the controller widget is currently visible.
+
+### setUserClosable
+
+```cpp
+virtual void ImFusion::ControllerDecorator::setUserClosable (bool closable)
+```
+
+*pure virtual*
+
+Sets whether the container widget should show a button to close the underlying [Controller](/cpp-sdk/4.5/api/classes/imfusion-controller).
+
+### isUserClosable
+
+```cpp
+virtual bool ImFusion::ControllerDecorator::isUserClosable () const
+```
+
+*pure virtual*
+
+Returns whether the container widget should show a button to close the underlying [Controller](/cpp-sdk/4.5/api/classes/imfusion-controller).

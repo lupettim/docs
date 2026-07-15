@@ -1,0 +1,88 @@
+---
+title: "ImFusion::Utils::Span< ElementType, Extent >"
+sidebarTitle: "Span< ElementType, Extent >"
+description: "Describes a non-owning view into contiguous sequence of elements."
+---
+
+`#include <ImFusion/Core/Utils/Span.h>`
+
+## Overview
+
+template&lt;typename ElementType, [std::size_t](http://en.cppreference.com/w/cpp/types/size_t.html) Extent&gt;
+
+class ImFusion::Utils::Span&lt; ElementType, Extent &gt;
+Describes a non-owning view into contiguous sequence of elements.
+
+The main use case of a span is to pass contiguous arrays of objects as function parameters so that the callee can work with/on the elements without requiring a particular container type to be used by the caller. Spans can be constructed conveniently from many different containers such as arrays, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html), and [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html).
+
+A span can either have a static extent, in which case the number of elements in the sequence is known at compile-time and encoded in the type, or a dynamic extent. For a [Span](/cpp-sdk/4.5/api/classes/imfusion-utils-span)s, pointers, iterators, and references to elements of s are invalidated when an operation invalidates a pointer in the range [s.data(), s.data() + s.size()).
+
+**Template Parameters:** | ElementType | Type of the wrapped elements, must be a complete type. |
+| --- | --- |
+| Extent | The number of elements in the sequence, or SpanDynamicExtent if dynamic. |
+
+**Note:** This class is a polyfill of [std::span](http://en.cppreference.com/w/cpp/container/span.html) from C++20 providing the same interface and functionality.
+
+## Public Types
+
+- using **element_type** = ElementType
+- using **value_type** = typename [std::remove_cv](http://en.cppreference.com/w/cpp/types/remove_cv.html)&lt;ElementType&gt;::type
+- using **size_type** = [std::size_t](http://en.cppreference.com/w/cpp/types/size_t.html)
+- using **difference_type** = [std::ptrdiff_t](http://en.cppreference.com/w/cpp/types/ptrdiff_t.html)
+- using **pointer** = element_type\*
+- using **const_pointer** = const element_type\*
+- using **reference** = element_type&
+- using **const_reference** = const element_type&
+- using **iterator** = pointer
+- using **reverse_iterator** = [std::reverse_iterator](http://en.cppreference.com/w/cpp/iterator/reverse_iterator.html)&lt;iterator&gt;
+- using [subspan_return_t](#subspan-return-t)
+
+## Public Member Functions
+
+- constexpr **Span** (pointer ptr, size_type count)
+- constexpr **Span** (pointer first_elem, pointer last_elem)
+- constexpr **Span** (element_type(&arr)[N]) noexcept
+- constexpr **Span** ([std::array](http://en.cppreference.com/w/cpp/container/array.html)&lt; T, N &gt; &arr) noexcept
+- constexpr **Span** (const [std::array](http://en.cppreference.com/w/cpp/container/array.html)&lt; T, N &gt; &arr) noexcept
+- constexpr **Span** ([Container](/cpp-sdk/4.5/api/namespaces/imfusion-container) &cont)
+- constexpr **Span** (const [Container](/cpp-sdk/4.5/api/namespaces/imfusion-container) &cont)
+- constexpr **Span** (const Span &other) noexcept=default
+- constexpr **Span** (const Span&lt; OtherElementType, OtherExtent &gt; &other) noexcept
+- constexpr Span & **operator=** (const Span &other) noexcept=default
+- constexpr Span&lt; element_type, Count &gt; **first** () const
+- constexpr Span&lt; element_type, Count &gt; **last** () const
+- constexpr subspan_return_t&lt; Offset, Count &gt; **subspan** () const
+- constexpr Span&lt; element_type, SpanDynamicExtent &gt; **first** (size_type count) const
+- constexpr Span&lt; element_type, SpanDynamicExtent &gt; **last** (size_type count) const
+- constexpr Span&lt; element_type, SpanDynamicExtent &gt; **subspan** (size_type offset, size_type count=SpanDynamicExtent) const
+- constexpr size_type **size** () const noexcept
+- constexpr size_type **size_bytes** () const noexcept
+- constexpr bool **empty** () const noexcept
+- constexpr reference **operator[]** (size_type idx) const
+- constexpr reference **front** () const
+- constexpr reference **back** () const
+- constexpr pointer **data** () const noexcept
+- constexpr iterator **begin** () const noexcept
+- constexpr iterator **end** () const noexcept
+- constexpr reverse_iterator **rbegin** () const noexcept
+- constexpr reverse_iterator **rend** () const noexcept
+
+## Static Public Attributes
+
+- static constexpr size_type **extent** = Extent
+
+## Member Typedef Documentation
+
+### Count
+
+```cpp
+template<typename ElementType, std::size_t Extent> template< std::size_t Offset, std::size_t Count = SpanDynamicExtent> using ImFusion::Utils::Span < ElementType, Extent >::subspan_return_t
+```
+
+**Initial value:**
+```cpp
+
+Span<ElementType,
+     Count != SpanDynamicExtent ? Count : (Extent != SpanDynamicExtent ? Extent - Offset : SpanDynamicExtent)>
+```
+ fragment

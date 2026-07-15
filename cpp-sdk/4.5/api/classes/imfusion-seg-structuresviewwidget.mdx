@@ -1,0 +1,31 @@
+---
+title: "ImFusion::Seg::StructuresViewWidget"
+sidebarTitle: "StructuresViewWidget"
+description: "GUI to show the contents of a StructuresView as a table widget."
+---
+
+`#include <ImFusion/Seg/StructuresViewWidget.h>`
+
+## Overview
+
+[GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui) to show the contents of a [StructuresView](/cpp-sdk/4.5/api/classes/imfusion-seg-structuresview) as a table widget.
+
+## Signals
+
+- void **editStructureSignal** ([Structure](/cpp-sdk/4.5/api/classes/imfusion-seg-structure) \*s)
+
+## Public Member Functions
+
+- **StructuresViewWidget** ([DisplayWidgetMulti](/cpp-sdk/4.5/api/classes/imfusion-displaywidgetmulti) \*display, [StructuresViewAlgorithm](/cpp-sdk/4.5/api/classes/imfusion-seg-structuresviewalgorithm) \*algo=nullptr, QWidget \*parent=nullptr)
+- [StructuresView](/cpp-sdk/4.5/api/classes/imfusion-seg-structuresview) \* **structuresView** () const — Returns the StructuresModel.
+- void **setStructuresView** ([StructuresView](/cpp-sdk/4.5/api/classes/imfusion-seg-structuresview) \*value) — Sets the StructuresModel.
+- void **refreshAllThumbnails** ()
+- void **moveSelectedLabelUp** ()
+- void **moveSelectedLabelDown** ()
+- void **removeSelected** ()
+- void **resetSorting** ()
+- void **contextMenuEvent** (QContextMenuEvent \*e) override
+
+## Protected Member Functions
+
+- void **createStatsDialog** (const [Structure](/cpp-sdk/4.5/api/classes/imfusion-seg-structure) \*s) — Triggers the computation of statistics and fills the dialog Requires the [StructuresViewAlgorithm](/cpp-sdk/4.5/api/classes/imfusion-seg-structuresviewalgorithm) (see constructor).

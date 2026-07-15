@@ -1,0 +1,61 @@
+---
+title: "ImFusion::Log"
+sidebarTitle: "Log"
+description: "Logging framework."
+---
+
+## Overview
+
+Logging framework.
+
+**See also:** Logging
+
+## Classes
+
+- class [ConsoleSink](/cpp-sdk/4.5/api/classes/imfusion-log-consolesink) — Default implementation for a Logger that prints to the attached console/terminal.
+- class [FileSink](/cpp-sdk/4.5/api/classes/imfusion-log-filesink) — Default implementation for a Logger that writes to the filesystem.
+- class [Sink](/cpp-sdk/4.5/api/classes/imfusion-log-sink) — Interface for a logger sink that can receive individual log events.
+
+## Enumerations
+
+- enum class Level &#123; Level::Trace = 0 , Level::Debug = 1 , Level::Info = 2 , Level::Warning = 3 , Level::Error = 4 , Level::Fatal = 5 , Level::Quiet = 6 &#125; — Severity of the log event.
+- enum class [Mode](#mode) &#123; Synchronous , Asynchronous &#125; — Operation mode of the log worker:
+
+## Functions
+
+- void init (Level globalMinimumLevel, [Mode](#mode) operationMode) — Initialize the logging framework.
+- void **deinit** () — Deinitialize the logging framework.
+- bool **isInitialized** () — Return whether the logging framework has been initialized.
+- bool isAccepted (Level level, const char \*category) noexcept — Checks whether a log message is accepted by at least one of the registered sinks.
+- Level globalLevel () — Return the global minimum log level/severity that is going to be handled.
+- Level setGlobalLevel (Level maximumLevel) — Set the global minimum log level/severity that is going to be handled.
+- void log (Level level, const char \*category, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &message, const char \*fileName="", int line=-1) — Logs the given message on all registered loggers.
+- void **flush** () — Ensures that all log messages have been fully written, also in async mode.
+- void addSink ([std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [Sink](/cpp-sdk/4.5/api/classes/imfusion-log-sink) &gt; sink) — Registers the given sink so that it will receive future log events.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [Sink](/cpp-sdk/4.5/api/classes/imfusion-log-sink) &gt; removeSink ([Sink](/cpp-sdk/4.5/api/classes/imfusion-log-sink) \*sink) — Removes a previously added sink so that it will no longer receive log events.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Sink](/cpp-sdk/4.5/api/classes/imfusion-log-sink) \* &gt; **getSinks** () — Returns a list of all registered logger sinks.
+- bool **isAccepted** (Level level, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &category) noexcept
+- void **log** (Level level, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &category, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &message, const char \*fileName="", int line=-1)
+
+## Variables
+
+- Level **g_globalLevel**
+
+## Enumeration Type Documentation
+
+### Mode
+
+```cpp
+enum class ImFusion::Log::Mode
+```
+
+*strong*
+
+Operation mode of the log worker:
+
+**Enumerator:**
+
+- `Synchronous` — All log events are synchronously forwarded to all registered loggers.
+A call to log() does not return before all loggers have finished logging the event.
+- `Asynchronous` — All log events are temporarily stored by the worker and forwarded to the loggers in an asynchronous fashion.
+A call to log() will return immediately, however the log events are not necessarily processed by all loggers at this point.

@@ -1,0 +1,259 @@
+---
+title: "ImFusion::GlPlotView"
+sidebarTitle: "GlPlotView"
+description: "View for plotting data."
+---
+
+`#include <ImFusion/GL/GlPlotView.h>`
+
+## Overview
+
+View for plotting data.
+
+Code examples for using [GlPlotView](/cpp-sdk/4.5/api/classes/imfusion-glplotview):
+
+```cpp
+//reference and clear existing view
+GlPlotView *pv = m_speedView->view();
+pv->clear();    //clear all plots
+
+//initialize plot view
+//pv->setGrid(false, false, false);     //completely hide grid
+pv->setGrid(true, true, true);          //show grid incl fine grid and scale
+pv->setGridSize(6, 6, 6);               //set size of the grid (number of subdivisions)
+pv->setTitle("Speed");                  //set title of the plot view
+pv->setLabels("Sample", "Angulation");  //set labels of x- and y-axis
+//pv->setAdjustBounds(false);           //do not automatically adjust min/max and scale
+pv->setAxisEqual(true);                 //makes both axes of equal scale (does not distort circles e.g.)
+
+//create and plot a diagonal line
+//only y-values are passed, x-values are computed automatically
+//line is solid with cyan color
+//other style examples: "r-+", "g.", "m-", "g-", "b-s"
+const int data6size = 20;
+int *data6y = new int[data6size];
+for (int i = 0; i < data6size; ++i)
+    data6y[i] = i;
+int h6 = pv->addPlot2d(data6size, data6y,"c-");
+
+//create and plot a circle
+const int data10size = 360;
+double *data10x = new double[data10size];
+double *data10y = new double[data10size];
+double cx = 40.0; double cy = 20.0; double radius = 15.0;
+for (int i = 0; i < data10size; ++i) {
+ float theta = 2.0f * 3.1415926f * double(i) / double(data10size);
+ double x = radius * cosf(theta);
+ double y = radius * sinf(theta);
+    data10x[i] = cx + x;
+    data10y[i] = cy + y;
+}
+int h10 = pv->addPlot2d(data10size, data10x, data10y, "r-", false, false);
+
+//read 3d data from file and show 3d plot
+//x- and y-axes are assumed to have the same size
+//remark: 2d and 3d plots cannot be mixed in the same GlPlotView!
+std::ifstream file("Plot.txt");
+int steps = 5;
+float* data7X = new float[steps*steps];
+float* data7Y = new float[steps*steps];
+float* data7Z = new float[steps*steps];
+if (file.good()) {
+ for (int i = 0; i < steps; i++)
+ for (int j = 0; j < steps; j++)
+            file >> data7X[i*steps + j] >> data7Y[i*steps + j] >> data7Z[i*steps + j];
+    file.close();
+}
+int h7 = pv->addPlot3d(steps, data7X, data7Y, data7Z, "g");
+```
+ fragment
+
+## Classes
+
+- struct [PlotInfo](/cpp-sdk/4.5/api/structs/imfusion-glplotview-plotinfo) — [Data](/cpp-sdk/4.5/api/classes/imfusion-data) for a single plot handle.
+
+## Public Types
+
+- enum Coordinate &#123; **X** , **Y** , **Z** &#125; — Convenience enum for classification of coordinates.
+- enum SelectionFocusMarkerStyle &#123; **DEFAULT_STYLE** = -1 , **DISABLED** = 0 , **CROSSES** , **VERTICAL_LINE** , **NR_STYLES** &#125; — Configure the appearance of the focus marker.
+- enum [LogarithmicAxes](#logarithmicaxes) &#123; **None** = 0 , **LogX** = 1 , **LogY** = 2 , **LogXY** = 3 &#125; — Options for logarithmic scaling of axes.
+- enum Marker &#123; **Point** , **Square** , **Cross** , **Triangle** , **NoMarker** &#125; — Marker types for 2d plotting.
+- enum LineStyle &#123; **Solid** , **Dashed** , **Bar** , **NoLine** &#125; — Line styles for 2d plotting.
+
+## Public Member Functions
+
+- int [addPlot2d](#addplot2d-1-2) (int size, const T \*x, const T \*y, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &style="r-", bool fit=false, bool sort=true) — Add a 2d plot to the plot view by passing x and y values, takes ownership of data.
+- int [addPlot2d](#addplot2d-2-2) (int size, const T \*y, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &style="r-", bool fit=false, bool sort=true) — Add a 2d plot to the plot view by just passing y values (array of size size) The corresponding x values are set automatically as the sample indices from 0 to size-1.
+- int **addPlot2d** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; T &gt; &y, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &style="r-", bool fit=false, bool sort=true) — Add a 2d plot using y vector, see above for details.
+- int **addPlot2d** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; T &gt; &x, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; T &gt; &y, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &style="r-", bool fit=false, bool sort=true) — Add a 2d plot using x and y vectors, see above for details.
+- int **addPlot2d** (const [Tensor](/cpp-sdk/4.5/api/classes/imfusion-tensor)&lt; 1 &gt; \*xPtr, const [Tensor](/cpp-sdk/4.5/api/classes/imfusion-tensor)&lt; 1 &gt; &y, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &style="r-", bool fit=false, bool sort=true) — Add a 2d plot using x and y rank 1 tensors, see above for details.
+- void **updatePlot2d** (int handle, const T \*y) — Updates the existing y values of a 2d plot with the passed y values. Passed y-array has to be of the same size as the existing plot.
+- void **addValuePlot2d** (int handle, double y) — Add a single Y data point to an existing plot.
+- void **addValuePlot2d** (int handle, double x, double y, bool sort=true) — Add a single X/Y data point to an existing plot.
+- void **clearPlot** (int handle) — Clear the data for an existing plot but keep the handle and attributes.
+- int **plotCount** () const — Return number of plots.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **getNextUnusedStyle** (bool allowAutoColors=false) const — Returns the next unused style string using solid line or dashes. If allowAutoColors is set, the "o" (other) color flag may be used.
+- int [addPlot3d](#addplot3d) (int size, const T \*x, const T \*y, const T \*z, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &style="r") — Add a 3d plot to the plot view by passing x, y, z values, does not take ownership of data.
+- void **removePlot** (int handle) — Removes the plot for the given handle from the view.
+- void **clear** () — Clears all plots from the view and recomputes axis bounds (same as other plot mutations).
+- void **setTitle** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &title) — Set the title of the plot view.
+- void **setLabels** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &lx, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &ly) — Sets the labels of x- and y-axis.
+- void **setGrid** (const bool grid, const bool halfGrid=false, const bool showNumbers=true, const bool dataGrid=true) — Set the grid size along each axis, i.e. the number of grid lines an axis is split up into.
+- void **setGridSize** (const int gridSizeX=10, const int gridSizeY=10, const int gridSizeZ=10) — Set the grid size along each axis, i.e. the number of grid lines an axis is split up into.
+- void **setAdjustBounds** (const bool rescale) — Rescales min and max of the plot view to have a better scale at the axes.
+- void **setBounds** (Coordinate coord, double min, double max) — Set bounds (min/max values) for selected axis.
+- void **resetBounds** () — Reset bounds.
+- vec4 **bounds2D** () const
+- vec2 **extent2D** () const
+- void **setBounds2D** (const vec4 &bounds)
+- const double \* **bounds** () const
+- void **setAxisEqual** (const bool axisEqual) — Makes x- and y-axis of equal scale (e.g. to avoid distorting circles).
+- void **setHeatmap** (const bool heatMapOn) — Sets whether the colors are based on a heat map, only in 3d plotting.
+- void **setFlatShaded** (const bool optFlatShaded) — Sets flat shading.
+- void **setIsolines** (const bool iso) — Sets isolines.
+- void **setBarWidth** (const unsigned int [width](/cpp-sdk/4.5/api/classes/imfusion-glview)) — Sets histogram bar width.
+- void [setXAxisRefersToSelection](#setxaxisreferstoselection) (bool on) — In some scenarios, x-data of a 2D plot directly corresponds to the image set data of an algorithm.
+- bool **xAxisRefersToSelection** () const
+- void [updateSelectionFocusMarker](#updateselectionfocusmarker) (int focus) — Update the selection focus marker.
+- void **setFocusImage** (const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &img)
+- void **setSelectionFocusMarkerStyle** (int style, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &color="w")
+- int **selectionFocusMarkerStyle** () const
+- void [setLogarithmicAxes](#setlogarithmicaxes) ([LogarithmicAxes](#logarithmicaxes) logAxes, bool refresh=false) — Sets options for logarithmic scaling of axes.
+- [LogarithmicAxes](#logarithmicaxes) **logAxes** () const
+- bool [render](#render) () override — Renders the plots on the view. If a LogAxes option is set, invalid coordinates will be skipped.
+- void **reset** () — Reset settings to their default values.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **title** () — Get the title of the plot view.
+- [Type](/cpp-sdk/4.5/api/classes/imfusion-glview) [type](#type) () const override — Return the type of this view.
+- virtual [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **typeName** () const
+- bool **exportPlotsCsv** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &filename) — Export plots as CSV file.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **markerToString** (Marker m) const — Converts a Marker value to the corresponding string, e.g. Cross becomes "+".
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **lineStyleToString** (LineStyle l) const — Convert a LineStyle value to the corresponding string, e.g. Solid becomes "-".
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **colorToString** (const vec3 &color) const
+- bool **setLineStyle** (int handle, LineStyle style)
+- bool **setMarkerStyle** (int handle, Marker style)
+- bool **setColor** (int handle, const vec3 &color)
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **styleToString** (const [PlotInfo](/cpp-sdk/4.5/api/structs/imfusion-glplotview-plotinfo) &pi) const
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [PlotInfo](/cpp-sdk/4.5/api/structs/imfusion-glplotview-plotinfo) &gt; & **plotData** () const — Read access to all the plot data.
+- bool [plotData](#plotdata) (int handle, [PlotInfo](/cpp-sdk/4.5/api/structs/imfusion-glplotview-plotinfo) &plot) const — Fetch copy of [PlotInfo](/cpp-sdk/4.5/api/structs/imfusion-glplotview-plotinfo) with specified handle.
+- bool **is3D** () const — Fetch information if plots are 3D or not.
+- bool **hasHistogramPlot** () const — Finds out if this [GlPlotView](/cpp-sdk/4.5/api/classes/imfusion-glplotview) contains one or more histograms (i.e. PlotInfos with LineStyle::Bar).
+- void **setWhiteBackgroundOverride** (bool toWhite) — Toggle background color between white and global background color.
+- vec2 **screenPixelToCoord** (const vec2 &pixel) const
+- vec2 **coordToScreenPixel** (const vec2 &coord) const
+- void **setMousePosition** (const vec2i &val)
+- void **setShowLabelAtCursor** (bool v)
+- void **setShowAllLabels** (bool v)
+- void **setPointLabels** (int idx, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; &labels)
+- bool **computeSpectrum** (const [PlotInfo](/cpp-sdk/4.5/api/structs/imfusion-glplotview-plotinfo) &plot, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; &ampOut, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; &freqOut) const
+
+## Member Enumeration Documentation
+
+### LogarithmicAxes
+
+```cpp
+enum ImFusion::GlPlotView::LogarithmicAxes
+```
+
+Options for logarithmic scaling of axes.
+
+**Warning:** Don't change the order since the corresponding QStrings are hardcoded in PlotView::createActions()
+
+## Member Function Documentation
+
+### addPlot2d
+
+```cpp
+template<typename T> int ImFusion::GlPlotView::addPlot2d (int size, const T * x, const T * y, const std::string & style = "r-", bool fit = false, bool sort = true)
+```
+
+Add a 2d plot to the plot view by passing x and y values, takes ownership of data.
+
+The buffer of both arrays needs to be of size size and hence represents a size x 1 vector. Color, line style and marker of the plot can be defined by supplying the format string style, which is a combination of characters. (colors: r, g, b, c, m, y, k, w; line styles: -=solid, .=dashed, n=none, |=bar; markers: +=cross, \*=point, s=square, t=triangle; marker sizes: 1 to 9, default=3) Returns a handle that can be used to remove or update the plot.
+
+### addPlot2d
+
+```cpp
+template<typename T> int ImFusion::GlPlotView::addPlot2d (int size, const T * y, const std::string & style = "r-", bool fit = false, bool sort = true)
+```
+
+Add a 2d plot to the plot view by just passing y values (array of size size) The corresponding x values are set automatically as the sample indices from 0 to size-1.
+
+Returns a handle that can be used to remove or update the plot.
+
+### addPlot3d
+
+```cpp
+template<typename T> int ImFusion::GlPlotView::addPlot3d (int size, const T * x, const T * y, const T * z, const std::string & style = "r")
+```
+
+Add a 3d plot to the plot view by passing x, y, z values, does not take ownership of data.
+
+The buffer of all three arrays needs to be of size size\*size. The format string in style so far only supports colors. Returns a handle that can be used to remove or update the plot. Note that the data points do not have to fall onto an orthonormal grid, which is why the x and y positions for each point have to be given individually. Also note that nonetheless the points are assumed to be on a sorted grid by the rendering code.
+
+### setXAxisRefersToSelection
+
+```cpp
+void ImFusion::GlPlotView::setXAxisRefersToSelection (bool on)
+```
+
+*inline*
+
+In some scenarios, x-data of a 2D plot directly corresponds to the image set data of an algorithm.
+
+The position of the currently focused image can be marked for better visualization. To this end, the controller that owns the plotview needs to derive from SelectionListener. The listener needs to be added to the image data of the corresponding algorithm (and removed in the destructor). Override the selectionChanged() method to `glPlotView->updateSelectionFocusMarker`(m_images-&gt;focus()); In the `Controller::init()`, set the flag `setXAxisRefersToSelection` and an optional marker style.
+
+### updateSelectionFocusMarker
+
+```cpp
+void ImFusion::GlPlotView::updateSelectionFocusMarker (int focus)
+```
+
+Update the selection focus marker.
+
+This should be called from the `selectionChanged()` method of the controller.
+
+**Parameters:**
+
+- `focus` — Index of the focus image.
+
+### setLogarithmicAxes
+
+```cpp
+void ImFusion::GlPlotView::setLogarithmicAxes (LogarithmicAxes logAxes, bool refresh = false)
+```
+
+Sets options for logarithmic scaling of axes.
+
+**Parameters:**
+
+- `refresh` — Pass false if computation of bounds is not necessary (e.g. right after construction of [PlotView](/cpp-sdk/4.5/api/classes/imfusion-plotview))
+
+### render
+
+```cpp
+bool ImFusion::GlPlotView::render ()
+```
+
+*override, virtual*
+
+Renders the plots on the view. If a LogAxes option is set, invalid coordinates will be skipped.
+
+### type
+
+```cpp
+Type ImFusion::GlPlotView::type () const
+```
+
+*inline, override, virtual*
+
+Return the type of this view.
+
+### plotData
+
+```cpp
+bool ImFusion::GlPlotView::plotData (int handle, PlotInfo & plot) const
+```
+
+Fetch copy of [PlotInfo](/cpp-sdk/4.5/api/structs/imfusion-glplotview-plotinfo) with specified handle.
+
+**Returns:** True if plot with given handle is found. This plot is copied to the plot passed by reference.

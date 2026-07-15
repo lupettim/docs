@@ -1,0 +1,72 @@
+---
+title: "ImFusion::GlLabelRenderer"
+sidebarTitle: "GlLabelRenderer"
+description: "GlObject to render a label map into a GlSliceView ."
+---
+
+`#include <ImFusion/Seg/GlLabelRenderer.h>`
+
+## Overview
+
+[GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) to render a label map into a [GlSliceView](/cpp-sdk/4.5/api/classes/imfusion-glsliceview).
+
+In contrast to the default render path for label maps of a [GlSliceView](/cpp-sdk/4.5/api/classes/imfusion-glsliceview) (based on the image modality), [GlLabelRenderer](/cpp-sdk/4.5/api/classes/imfusion-gllabelrenderer) will not take part in the blending of multiple images that [GlSlice](/cpp-sdk/4.5/api/classes/imfusion-glslice) does. This can be useful if you want to blend multiple (non-label) images and additionally show a label map on top. Furthermore, [GlLabelRenderer](/cpp-sdk/4.5/api/classes/imfusion-gllabelrenderer) can operate independently of the [LabelDataComponent](/cpp-sdk/4.5/api/classes/imfusion-labeldatacomponent) and use its own color map.
+
+## Public Member Functions
+
+- **GlLabelRenderer** (const [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*labelImg) — Creates a new label renderer for the given label image (may be 0).
+- const [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \* **labelMap** () const
+- void **setLabelMap** (const [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*labelImg) — Sets the label image (may be 0 to disable rendering).
+- const [LabelDataComponent](/cpp-sdk/4.5/api/classes/imfusion-labeldatacomponent) \* **labelDataComponent** () const — Returns the optional [LabelDataComponent](/cpp-sdk/4.5/api/classes/imfusion-labeldatacomponent) to pull color configuration from.
+- void **setLabelDataComponent** (const [LabelDataComponent](/cpp-sdk/4.5/api/classes/imfusion-labeldatacomponent) \*value) — Sets the optional [LabelDataComponent](/cpp-sdk/4.5/api/classes/imfusion-labeldatacomponent) to pull color configuration from.
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3f &gt; & **colors** () const — Returns the color map to use for label rendering when no [LabelDataComponent](/cpp-sdk/4.5/api/classes/imfusion-labeldatacomponent) is set.
+- void [setColors](#setcolors) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3f &gt; &colorMap) — Sets the color map to use for label rendering when no [LabelDataComponent](/cpp-sdk/4.5/api/classes/imfusion-labeldatacomponent) is set.
+- double **opacity** () const — Returns the global opacity of all rendered labels.
+- void **setOpacity** (double value) — Sets the global opacity of all rendered labels.
+- void [draw](#draw) (const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &view) override — Draw the object in 3D space.
+- [Geometry::AlignedBox](/cpp-sdk/4.5/api/classes/imfusion-geometry-alignedbox) [bounds](#bounds) () const override — Get the axis-aligned bounding box of this [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) in world space.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [typeName](#typename) () const override — Return unique identifier for this object class used for serialization.
+
+## Member Function Documentation
+
+### setColors
+
+```cpp
+void ImFusion::GlLabelRenderer::setColors (const std::vector < vec3f > & colorMap)
+```
+
+Sets the color map to use for label rendering when no [LabelDataComponent](/cpp-sdk/4.5/api/classes/imfusion-labeldatacomponent) is set.
+
+**Note:** To maintain backward-compatibility, the *colorMap* will apply to the value range of [1 .. colorMap.size()], i.e. a label map value of 0 will always be fully transparent when using this function.
+
+### draw
+
+```cpp
+void ImFusion::GlLabelRenderer::draw (const GlView & view)
+```
+
+*override, virtual*
+
+Draw the object in 3D space.
+
+### bounds
+
+```cpp
+Geometry::AlignedBox ImFusion::GlLabelRenderer::bounds () const
+```
+
+*override, virtual*
+
+Get the axis-aligned bounding box of this [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) in world space.
+
+Return an empty (default-constructed) AlignedBox object if the [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) does not reside in world space.
+
+### typeName
+
+```cpp
+std::string ImFusion::GlLabelRenderer::typeName () const
+```
+
+*override, virtual*
+
+Return unique identifier for this object class used for serialization.

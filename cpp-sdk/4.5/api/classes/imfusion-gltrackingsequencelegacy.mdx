@@ -1,0 +1,164 @@
+---
+title: "ImFusion::GlTrackingSequenceLegacy"
+sidebarTitle: "GlTrackingSequenceLegacy"
+description: "Deprecated 'Use GlTrackingSequence'"
+---
+
+`#include <ImFusion/GL/GlTrackingSequenceLegacy.h>`
+
+## Overview
+
+****Deprecated**:** "Use GlTrackingSequence"
+
+## Public Types
+
+- enum **VisType** &#123; **None** , **Pose** , **Coord** &#125;
+- enum **VisMode** &#123; **Position** , **Timestamp** &#125; — Enumeration to determine rendering order of GlObjects in [GlSliceView](/cpp-sdk/4.5/api/classes/imfusion-glsliceview) and [GlVolumeView](/cpp-sdk/4.5/api/classes/imfusion-glvolumeview).
+
+## Public Member Functions
+
+- **GlTrackingSequenceLegacy** ([TrackingSequence](/cpp-sdk/4.5/api/classes/imfusion-trackingsequence) \*trackingData)
+- [TrackingSequence](/cpp-sdk/4.5/api/classes/imfusion-trackingsequence) \* **trackingSequence** () const
+- void [draw](#draw) (const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &[view](/cpp-sdk/4.5/api/classes/imfusion-glannotation)) override — Draw the object in 3D space.
+- [Geometry::AlignedBox](/cpp-sdk/4.5/api/classes/imfusion-geometry-alignedbox) [bounds](#bounds) () const override — Get the axis-aligned bounding box of this [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) in world space.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [typeName](#typename) () const override — Return unique identifier for this object class used for serialization.
+- vec3 [center](#center) () const override — Return the center of the object in local coordinates without considering any matrix.
+- vec3 [extent](#extent) () const override — Return the extent of the object in local coordinates without considering any matrix.
+- int **start** () const
+- void **setStart** (int val)
+- int **end** () const
+- void **setEnd** (int val)
+- void **resetRange** ()
+- void **setMinQuality** (double q)
+- double **minQuality** () const
+- bool **showZeroQuality** () const
+- void **setShowZeroQuality** (bool val)
+- bool **colorWithQuality** () const
+- void **setColorWithQuality** (bool val)
+- int **medianSkipFactor** () const
+- void **setMedianSkipFactor** (int val)
+- void [setLabelVisible](#setlabelvisible) (bool flag) override — Shows or hides the label of the tracking instrument. Only visible if visType is not None.
+- bool [labelVisible](#labelvisible) () const override — Return annotation label visibility.
+- VisMode **visMode** () const
+- void **setVisMode** (VisMode visMode)
+- int **visPos** () const
+- void **setVisPos** (int val)
+- double **visTimestamp** () const
+- void **setVisTimestamp** (double val)
+- VisType **visType** () const
+- void **setVisType** (VisType val)
+- double **visSize** () const
+- void **setVisSize** (double val)
+- double **visLineWidth** () const — Get width of the line of the visualized camera in a "Pose" visType.
+- void **setVisLineWidth** (double val) — Set width of the line of the visualized camera in a "Pose" visType.
+- void [setLineWidth](#setlinewidth) (float [lineWidth](/cpp-sdk/4.5/api/classes/imfusion-glannotation)) override — Set width of the polylines.
+- vec3 **visColor** () const
+- void **setVisColor** (const vec3 &val)
+- void [setColor](#setcolor) (const vec3 &val) override — Set annotation color.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; **perSampleColors** () const — Get the per-sample colors.
+- void [setPerSampleColors](#setpersamplecolors) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; &val) — Set the per-sample colors.
+- void **update** ()
+
+## Member Function Documentation
+
+### draw
+
+```cpp
+void ImFusion::GlTrackingSequenceLegacy::draw (const GlView & view)
+```
+
+*override, virtual*
+
+Draw the object in 3D space.
+
+### bounds
+
+```cpp
+Geometry::AlignedBox ImFusion::GlTrackingSequenceLegacy::bounds () const
+```
+
+*override, virtual*
+
+Get the axis-aligned bounding box of this [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) in world space.
+
+Return an empty (default-constructed) AlignedBox object if the [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) does not reside in world space.
+
+### typeName
+
+```cpp
+std::string ImFusion::GlTrackingSequenceLegacy::typeName () const
+```
+
+*inline, override, virtual*
+
+Return unique identifier for this object class used for serialization.
+
+### center
+
+```cpp
+vec3 ImFusion::GlTrackingSequenceLegacy::center () const
+```
+
+*override, virtual*
+
+Return the center of the object in local coordinates without considering any matrix.
+
+### extent
+
+```cpp
+vec3 ImFusion::GlTrackingSequenceLegacy::extent () const
+```
+
+*override, virtual*
+
+Return the extent of the object in local coordinates without considering any matrix.
+
+### setLabelVisible
+
+```cpp
+void ImFusion::GlTrackingSequenceLegacy::setLabelVisible (bool flag)
+```
+
+*override, virtual*
+
+Shows or hides the label of the tracking instrument. Only visible if visType is not None.
+
+### labelVisible
+
+```cpp
+bool ImFusion::GlTrackingSequenceLegacy::labelVisible () const
+```
+
+*inline, override, virtual*
+
+Return annotation label visibility.
+
+### setLineWidth
+
+```cpp
+void ImFusion::GlTrackingSequenceLegacy::setLineWidth (float lineWidth)
+```
+
+*override, virtual*
+
+Set width of the polylines.
+
+### setColor
+
+```cpp
+void ImFusion::GlTrackingSequenceLegacy::setColor (const vec3 & color)
+```
+
+*override, virtual*
+
+Set annotation color.
+
+### setPerSampleColors
+
+```cpp
+void ImFusion::GlTrackingSequenceLegacy::setPerSampleColors (const std::vector < vec3 > & val)
+```
+
+Set the per-sample colors.
+
+These colors will be ignored if their size is different from the number of tracking samples. These colors will not be used if "colorWithQuality" is true

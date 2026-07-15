@@ -1,0 +1,83 @@
+---
+title: "ImFusion::SequentialImageProcessor"
+sidebarTitle: "SequentialImageProcessor"
+description: "Interface for algorithms that are able to repeatedly process individual images."
+---
+
+`#include <ImFusion/Base/SequentialImageProcessor.h>`
+
+## Overview
+
+Interface for algorithms that are able to repeatedly process individual images.
+
+The central idea behind this interface is to create algorithms once and use them on multiple images, without having to re-configure, re-compile shaders, or performing other unnecessary and time-consuming steps for every image.
+
+Algorithms implementing this interface must support instantiation through the algorithm factory with a single, exemplary image as the only input. This input may be used to set configuration, prepare shader programs etc. It must not be used for processing within [processImage()](#processimage), though, because it may only exist temporarily.
+
+A common way to use such an algorithm is as follows:
+
+```cpp
+ImageResamplingAlgorithm resampler({exampleImage});
+resampler.setSequentialMode(true);
+resampler.configure(&p); // configure with some properties
+
+for (int i = 0; i < testSIS->size(); i++)
+{
+ auto resampledImg = resampler.processImage(testSIS->get(i), testSIS->components(i));
+     ...
+}
+```
+ fragment
+Note that the standard compute() method is not called. Mixing standard operation via compute() and sequential operation is not necessarily supported as supporting algorithms may bind framebuffers etc. on demand, which are not transferable across [GL](/cpp-sdk/4.5/api/namespaces/imfusion-gl) contexts.
+
+See StreamAlgorithmExecutor for exemplary usage of this interface.
+
+## Public Member Functions
+
+- virtual [std::pair](http://en.cppreference.com/w/cpp/utility/pair.html)&lt; [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) &gt;, [DataComponentList](/cpp-sdk/4.5/api/classes/imfusion-datacomponentlist) &gt; [processImage](#processimage) (const [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) &image, const [DataComponentList](/cpp-sdk/4.5/api/classes/imfusion-datacomponentlist) &components) const =0 — Processes a single image without modifying the algorithm's status.
+- virtual void [setSequentialMode](#setsequentialmode) (bool b) — This method should be called to let the algorithm know that it should only run in sequential mode.
+- virtual bool [isSequentialMode](#issequentialmode) () const — Returns of the algorithm should only run in sequential mode.
+
+## Protected Attributes
+
+- bool **m_isSequentialMode** = false — Flag to determine if algorithm is running in sequential mode.
+
+## Member Function Documentation
+
+### processImage
+
+```cpp
+virtual std::pair < std::shared_ptr < SharedImage >, DataComponentList > ImFusion::SequentialImageProcessor::processImage (const SharedImage & image, const DataComponentList & components) const
+```
+
+*pure virtual*
+
+Processes a single image without modifying the algorithm's status.
+
+The algorithm parameters should be configured in advance.
+
+**Returns:** the result of the computation (may be null, e.g. if some frame should be dropped)
+
+### setSequentialMode
+
+```cpp
+virtual void ImFusion::SequentialImageProcessor::setSequentialMode (bool b)
+```
+
+*inline, virtual*
+
+This method should be called to let the algorithm know that it should only run in sequential mode.
+
+It is set to true by the StreamAlgorithmExecutor. [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) controllers may use this flag to not call compute().
+
+### isSequentialMode
+
+```cpp
+virtual bool ImFusion::SequentialImageProcessor::isSequentialMode () const
+```
+
+*inline, virtual*
+
+Returns of the algorithm should only run in sequential mode.
+
+[Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) controllers may use this flag to not call compute().

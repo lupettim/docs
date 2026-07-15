@@ -1,0 +1,58 @@
+---
+title: "ImFusion::ModelsManager"
+sidebarTitle: "ModelsManager"
+description: "Contains functionality for downloading ML models from a server and caching them on disk."
+---
+
+## Overview
+
+Contains functionality for downloading ML models from a server and caching them on disk.
+
+## Classes
+
+- struct [ModelInfo](/cpp-sdk/4.5/api/structs/imfusion-modelsmanager-modelinfo)
+
+## Typedefs
+
+- using **Json** = nlohmann::json
+- using **ErrorMessage** = [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html)
+
+## Functions
+
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Utils::Expected](/cpp-sdk/4.5/api/classes/imfusion-utils-expected)&lt; [ModelInfo](/cpp-sdk/4.5/api/structs/imfusion-modelsmanager-modelinfo), ErrorMessage &gt; &gt; [listLocalModels](#listlocalmodels) (const [Filesystem::Directory](/cpp-sdk/4.5/api/classes/imfusion-filesystem-directory) &modelsDirectory, [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) \*progress=nullptr) — Lists all cached models that are contained in the given directory.
+- [Utils::Expected](/cpp-sdk/4.5/api/classes/imfusion-utils-expected)&lt; [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [ModelInfo](/cpp-sdk/4.5/api/structs/imfusion-modelsmanager-modelinfo) &gt;, [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; [listRemoteModels](#listremotemodels) ([Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) \*progress=nullptr) — Lists all models that are available on the server.
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; ErrorMessage &gt; [downloadModel](#downloadmodel) (const [ModelInfo](/cpp-sdk/4.5/api/structs/imfusion-modelsmanager-modelinfo) &modelInfo, const [Filesystem::Directory](/cpp-sdk/4.5/api/classes/imfusion-filesystem-directory) &destination, [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) \*progress=nullptr) — Downloads a model from the server and caches it in the given folder (created if not existing).
+- bool **updateModelsJsonToLatest** (const [Filesystem::Directory](/cpp-sdk/4.5/api/classes/imfusion-filesystem-directory) &modelsDirectory, [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) \*progress=nullptr)
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; int &gt; **modelsJsonVersion** (const [Filesystem::Directory](/cpp-sdk/4.5/api/classes/imfusion-filesystem-directory) &modelsDirectory)
+
+## Function Documentation
+
+### listLocalModels
+
+```cpp
+std::vector < Utils::Expected < ModelInfo, ErrorMessage > > ImFusion::ModelsManager::listLocalModels (const Filesystem::Directory & modelsDirectory, Progress * progress = nullptr)
+```
+
+Lists all cached models that are contained in the given directory.
+
+If a model cannot be loaded, an error is added to the list, but the search continues.
+
+### listRemoteModels
+
+```cpp
+Utils::Expected < std::vector < ModelInfo >, std::string > ImFusion::ModelsManager::listRemoteModels (Progress * progress = nullptr)
+```
+
+Lists all models that are available on the server.
+
+Returns an error if the server doesn't answer or the response cannot be parsed.
+
+### downloadModel
+
+```cpp
+std::optional < ErrorMessage > ImFusion::ModelsManager::downloadModel (const ModelInfo & modelInfo, const Filesystem::Directory & destination, Progress * progress = nullptr)
+```
+
+Downloads a model from the server and caches it in the given folder (created if not existing).
+
+Downloads both the model config file and the model binary file. Both files are named according to their filenames in modelInfo. Any existing files with those names will be overwritten! The model will not be downloaded if the config cannot be downloaded first. Likewise the config is deleted again if the model cannot be downloaded.

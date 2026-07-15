@@ -1,0 +1,32 @@
+---
+title: "ImFusion::GL::Debug::Group"
+sidebarTitle: "Group"
+description: "The Group class allows to group a set of OpenGL calls together."
+---
+
+`#include <ImFusion/Core/GL/Debug.h>`
+
+## Overview
+
+The [Group](/cpp-sdk/4.5/api/classes/imfusion-gl-debug-group) class allows to group a set of OpenGL calls together.
+
+Tools like APITrace will group all OpenGL calls between the constructor and the destructor of this class. Useful to filter all OpenGL calls related to an algorithm or a render method. A [Group](/cpp-sdk/4.5/api/classes/imfusion-gl-debug-group) has no effect on the actual OpenGL calls, e.g. the OpenGL state machine is completely untouched.
+
+**See also:** GL::Debug::insertMessage()
+
+## Public Member Functions
+
+- [Group](#group) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name) — Pushes a new group with given name to the OpenGL command stream.
+- **~Group** () — Ends the group.
+
+## Constructor & Destructor Documentation
+
+### Group
+
+```cpp
+ImFusion::GL::Debug::Group::Group (const std::string & name)
+```
+
+Pushes a new group with given name to the OpenGL command stream.
+
+All following OpenGL calls will be grouped together until this object is deleted. Inside the context of this group, other groups can be created.

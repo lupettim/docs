@@ -1,0 +1,73 @@
+---
+title: "ImFusion::HistogramIntensityClusteringAlgorithm"
+sidebarTitle: "HistogramIntensityClusteringAlgorithm"
+description: "HistogramIntensityClusteringAlgorithm ."
+---
+
+`#include <ImFusion/Seg/HistogramIntensityClusteringAlgorithm.h>`
+
+## Overview
+
+[HistogramIntensityClusteringAlgorithm](/cpp-sdk/4.5/api/classes/imfusion-histogramintensityclusteringalgorithm).
+
+This algorithm computes a segmentation of the input image based on a intensity clustering. In order to perform this the histogram of the image is computed and local minima in the histogram are used to split the intensity clusters. Before the detection the histogram is smoothed and downsampled in order to make the detection more robust w.r.t. outliers. The labels are sorted in ascending order w.r.t. the intensities, i.e. the label 0 corresponds to the cluster with the lowest intensities. In addition the algorithm also provides a getter for the label indices sorted ascending w.r.t. the label size.
+
+## Public Member Functions
+
+- **HistogramIntensityClusteringAlgorithm** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &img)
+- void [compute](#compute) () override — Execute the algorithm.
+- [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) [takeOutput](#takeoutput) () override — Return any new [Data](/cpp-sdk/4.5/api/classes/imfusion-data) that was created by the [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) during the last call to [compute()](#compute).
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; int &gt; & **orderAscBySize** () const
+
+## Static Public Member Functions
+
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=nullptr)
+
+## Public Attributes
+
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; bool &gt; **p_debugOutput** = &#123;"debugOutput", false, this&#125; — If set to true the processed histograms will be provided as output.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; double &gt; **p_minValHisto** = &#123;"minValHisto", 0.0, this&#125; — min intensity for histogram
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; double &gt; **p_maxValHisto** = &#123;"maxValHisto", 0.0, this&#125; — Max intensity for histogram.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; int &gt; **p_smoothRadius** = &#123;"smoothRadius", 5, this&#125; — Window radius for a smoothing filter applied to the histogram.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; int &gt; **p_underSamplingSkip** = &#123;"underSamplingSkip", 10, this&#125; — The smoothed histogram will be undersampled and represented via a spline.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; double &gt; **p_clusterSizeRatio** = &#123;"clusterSizeRatio", 0.001, this&#125; — Cluster size ratio. A detected cluster needs to have at least p_clusterSizeRatio \* img.size() pixel/voxel to be considered.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; double &gt; **p_binSizeRatio** = &#123;"binSizeRatio", 0.00001, this&#125; — Bin size ratio. A bin of the histogram gets ignored if it contains less than p_binSizeRatio \* img.size() pixel/voxel.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; double &gt; [p_minMaxRatio](#p-minmaxratio) = &#123;"minMaxRatio", 1.3, this&#125; — Minima to maxima ratio.
+
+## Member Function Documentation
+
+### compute
+
+```cpp
+void ImFusion::HistogramIntensityClusteringAlgorithm::compute ()
+```
+
+*override, virtual*
+
+Execute the algorithm.
+
+### takeOutput
+
+```cpp
+OwningDataList ImFusion::HistogramIntensityClusteringAlgorithm::takeOutput ()
+```
+
+*override, virtual*
+
+Return any new [Data](/cpp-sdk/4.5/api/classes/imfusion-data) that was created by the [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) during the last call to [compute()](#compute).
+
+The default implementation will return an empty list.
+
+**Note:** Since ownership of the data is transferred, you can call this method only once between calls to [compute()](#compute).
+
+## Member Data Documentation
+
+### p_minMaxRatio
+
+```cpp
+Parameter <double> ImFusion::HistogramIntensityClusteringAlgorithm::p_minMaxRatio = {"minMaxRatio", 1.3, this}
+```
+
+Minima to maxima ratio.
+
+Ratio based on the count of the last maxima and the current minima If the ratio is bigger the minima is accepted

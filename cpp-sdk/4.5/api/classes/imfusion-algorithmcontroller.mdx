@@ -1,0 +1,161 @@
+---
+title: "ImFusion::AlgorithmController"
+sidebarTitle: "AlgorithmController"
+description: "Specialization of the Controller interface to be used with Algorithm instances."
+---
+
+`#include <ImFusion/GUI/AlgorithmController.h>`
+
+## Overview
+
+Specialization of the [Controller](/cpp-sdk/4.5/api/classes/imfusion-controller) interface to be used with [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) instances.
+
+An [AlgorithmController](/cpp-sdk/4.5/api/classes/imfusion-algorithmcontroller) is supposed to provide a [GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui) enabling the user to configure and control the underlying [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm). In contrast to the Algorithm interface the AlgorithmController has access to the parent [MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase) instance and can therefore also access entities that usually would not be accessible by the Algorithm (e.g. [DisplayWidget](/cpp-sdk/4.5/api/classes/imfusion-displaywidget), [DataModel](/cpp-sdk/4.5/api/classes/imfusion-datamodel), other Algorithms, ...).
+
+AlgorithmControllers receive different callbacks:
+
+- [onSelectedDataChanged()](/cpp-sdk/4.5/api/classes/imfusion-controller) is called whenever the selection in the [DataWidget](/cpp-sdk/4.5/api/classes/imfusion-datawidget) changes.
+- [onVisibleDataChanged()](/cpp-sdk/4.5/api/classes/imfusion-controller) is called whenever the visible data in the [DisplayWidgetMulti](/cpp-sdk/4.5/api/classes/imfusion-displaywidgetmulti) changes.
+- [onAlgorithmParametersChanged()](#onalgorithmparameterschanged) is called whenever the underlying [Algorithm::signalParametersChanged](/cpp-sdk/4.5/api/classes/imfusion-algorithm) was emitted.
+- [onAlgorithmOutputChanged()](#onalgorithmoutputchanged) is called whenever the underlying [Algorithm::signalOutputChanged](/cpp-sdk/4.5/api/classes/imfusion-algorithm) was emitted.
+
+Furthermore, it extends the base [Controller](/cpp-sdk/4.5/api/classes/imfusion-controller) interface with extra functionality specific to Algorithms. If wrapped in a DefaultControllerContainer, it will decorate it with additional buttons for showInputData() and [showHelp()](#showhelp).
+
+**Note:** AlgorithmControllers should be registered with the [AlgorithmControllerFactory](/cpp-sdk/4.5/api/classes/imfusion-algorithmcontrollerfactory) interface so that [MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase) can instantiate them automatically together with their [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm).
+
+**See also:** [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm), [AlgorithmControllerFactory](/cpp-sdk/4.5/api/classes/imfusion-algorithmcontrollerfactory), [MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase), [ControllerDecorator](/cpp-sdk/4.5/api/classes/imfusion-controllerdecorator), [DataController](/cpp-sdk/4.5/api/classes/imfusion-datacontroller)
+
+## Public Types
+
+- enum class [InputDataVisibility](#inputdatavisibility) &#123; None = 0 , All = 1 , Some = 2 &#125; — Enumeration of possible return values for showsInputData().
+
+## Public Member Functions
+
+- [AlgorithmController](#algorithmcontroller) ([Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*algorithm) — Creates a new [AlgorithmController](/cpp-sdk/4.5/api/classes/imfusion-algorithmcontroller) wrapping the given *algorithm*, which must not be null.
+- const [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \* **algorithm** () const — Returns the underlying [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) instance.
+- [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \* **algorithm** ()
+- void **showInputData** () — Shows the input data in the [DisplayWidget](/cpp-sdk/4.5/api/classes/imfusion-displaywidget).
+- [InputDataVisibility](#inputdatavisibility) **showsInputData** () — Checks if the input data is currently visible in the [DisplayWidget](/cpp-sdk/4.5/api/classes/imfusion-displaywidget).
+- void [showHelp](#showhelp) () — Attempts to open the user documentation page for the underlying algorithm.
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [Filesystem::Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path) &gt; **helpPath** () const — Returns the path to the user documentation page if it is available, std::nullopt otherwise.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [title](#title) () const override — Returns the original factory name of the underlying [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm).
+
+## Protected Member Functions
+
+- virtual void [closeAlgorithm](#closealgorithm) (bool executed=false) — Removes the algorithm from the [ApplicationController](/cpp-sdk/4.5/api/classes/imfusion-applicationcontroller) and closes the controller.
+- virtual void [onAlgorithmParametersChanged](#onalgorithmparameterschanged) () — Callback called when the [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm)'s signalParametersChanged signal was emitted.
+- virtual void [onAlgorithmOutputChanged](#onalgorithmoutputchanged) () — Callback called when the [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm)'s signalOutputChanged signal was emitted.
+- virtual void [duplicateAlgorithmOnSelectedData](#duplicatealgorithmonselecteddata) () const — Instantiates a new copy of underlying [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) on the currently selected [Data](/cpp-sdk/4.5/api/classes/imfusion-data) in the [DataModel](/cpp-sdk/4.5/api/classes/imfusion-datamodel) and adds it to the [ApplicationController](/cpp-sdk/4.5/api/classes/imfusion-applicationcontroller).
+- void [addToDataAndAnnotationModels](#addtodataandannotationmodels) ([OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) data) — Adds the contents of *data* to the [DataModel](/cpp-sdk/4.5/api/classes/imfusion-datamodel) of the parent [MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase).
+
+## Protected Attributes
+
+- [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \* **m_algorithm** = nullptr — The underlying algorithm.
+
+## Member Enumeration Documentation
+
+### InputDataVisibility
+
+```cpp
+enum class ImFusion::AlgorithmController::InputDataVisibility
+```
+
+*strong*
+
+Enumeration of possible return values for showsInputData().
+
+**Enumerator:**
+
+- `None` — None of the input data is currently visible.
+- `All` — All of the input data is currently visible.
+- `Some` — A subset of the input data is currently visible.
+
+## Constructor & Destructor Documentation
+
+### AlgorithmController
+
+```cpp
+ImFusion::AlgorithmController::AlgorithmController (Algorithm * algorithm)
+```
+
+*explicit*
+
+Creates a new [AlgorithmController](/cpp-sdk/4.5/api/classes/imfusion-algorithmcontroller) wrapping the given *algorithm*, which must not be null.
+
+The [Algorithm::signalParametersChanged](/cpp-sdk/4.5/api/classes/imfusion-algorithm) and [Algorithm::signalOutputChanged](/cpp-sdk/4.5/api/classes/imfusion-algorithm) signals will be connected to the corresponding member functions.
+
+## Member Function Documentation
+
+### showHelp
+
+```cpp
+void ImFusion::AlgorithmController::showHelp ()
+```
+
+Attempts to open the user documentation page for the underlying algorithm.
+
+**See also:** UserDocumentation
+
+### title
+
+```cpp
+std::string ImFusion::AlgorithmController::title () const
+```
+
+*override, virtual*
+
+Returns the original factory name of the underlying [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm).
+
+### closeAlgorithm
+
+```cpp
+virtual void ImFusion::AlgorithmController::closeAlgorithm (bool executed = false)
+```
+
+*protected, virtual*
+
+Removes the algorithm from the [ApplicationController](/cpp-sdk/4.5/api/classes/imfusion-applicationcontroller) and closes the controller.
+
+**Warning:** Since this method deletes the algorithm and the controller, the this pointer becomes invalid immediately. Therefore this method should be called last. If you need to wait for certain events (e.g. Qt signals) before doing so you should override this function and implement the necessary custom logic.
+
+### onAlgorithmParametersChanged
+
+```cpp
+virtual void ImFusion::AlgorithmController::onAlgorithmParametersChanged ()
+```
+
+*inline, protected, virtual*
+
+Callback called when the [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm)'s signalParametersChanged signal was emitted.
+
+### onAlgorithmOutputChanged
+
+```cpp
+virtual void ImFusion::AlgorithmController::onAlgorithmOutputChanged ()
+```
+
+*inline, protected, virtual*
+
+Callback called when the [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm)'s signalOutputChanged signal was emitted.
+
+### duplicateAlgorithmOnSelectedData
+
+```cpp
+virtual void ImFusion::AlgorithmController::duplicateAlgorithmOnSelectedData () const
+```
+
+*protected, virtual*
+
+Instantiates a new copy of underlying [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) on the currently selected [Data](/cpp-sdk/4.5/api/classes/imfusion-data) in the [DataModel](/cpp-sdk/4.5/api/classes/imfusion-datamodel) and adds it to the [ApplicationController](/cpp-sdk/4.5/api/classes/imfusion-applicationcontroller).
+
+### addToDataAndAnnotationModels
+
+```cpp
+void ImFusion::AlgorithmController::addToDataAndAnnotationModels (OwningDataList data)
+```
+
+*protected*
+
+Adds the contents of *data* to the [DataModel](/cpp-sdk/4.5/api/classes/imfusion-datamodel) of the parent [MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase).
+
+If a dataset is annotation data ([Data::isAnnotationType()](/cpp-sdk/4.5/api/classes/imfusion-data)) it will take care of also adding it to the [AnnotationModel](/cpp-sdk/4.5/api/classes/imfusion-annotationmodel).

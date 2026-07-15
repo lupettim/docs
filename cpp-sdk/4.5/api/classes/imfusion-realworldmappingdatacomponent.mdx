@@ -1,0 +1,107 @@
+---
+title: "ImFusion::RealWorldMappingDataComponent"
+sidebarTitle: "RealWorldMappingDataComponent"
+description: "The RealWorldMappingDataComponent stores information about an image's real world values."
+---
+
+`#include <ImFusion/Base/RealWorldMappingDataComponent.h>`
+
+## Overview
+
+The [RealWorldMappingDataComponent](/cpp-sdk/4.5/api/classes/imfusion-realworldmappingdatacomponent) stores information about an image's real world values.
+
+The data component can provide multiple mappings that are usually derived from DICOM.
+
+## Classes
+
+- struct [Mapping](/cpp-sdk/4.5/api/structs/imfusion-realworldmappingdatacomponent-mapping)
+
+## Public Types
+
+- enum class **MappingType** &#123; **RealWorldValues** = 0 , **StandardizedUptakeValues** = 1 &#125;
+
+## Public Member Functions
+
+- **RealWorldMappingDataComponent** (const RealWorldMappingDataComponent &other)=default
+- RealWorldMappingDataComponent & **operator=** (const RealWorldMappingDataComponent &other)=default
+- bool **operator==** (const RealWorldMappingDataComponent &other) const
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [id](#id) () const override — Returns a unique string identifier for this type of data component.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [rescaleUnit](#rescaleunit) () const — Returns the real world unit of the intensities.
+- void **setRescaleType** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &rescaleType) — Sets the DICOM RescaleType of the image.
+- bool [addRealWorldValueMapping](#addrealworldvaluemapping) (const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &parent, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &unit, double intercept, double slope) — Add a Real-World-Value-Mapping for the given unit.
+- bool [addStandardizedUptakeValueMapping](#addstandardizeduptakevaluemapping) (const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &parent, double patientWeightKg, double radionuclideHalfLife, double radionuclideTotalDose, [std::chrono::seconds](http://en.cppreference.com/w/cpp/chrono/duration.html) timeDifference) — Add a Standardized Uptake Value based on body weight mapping.
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Mapping](/cpp-sdk/4.5/api/structs/imfusion-realworldmappingdatacomponent-mapping) &gt; & **getMappings** () const
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+## Member Function Documentation
+
+### id
+
+```cpp
+std::string ImFusion::RealWorldMappingDataComponent::id () const
+```
+
+*override, virtual*
+
+Returns a unique string identifier for this type of data component.
+
+**Note:** To avoid conflicts make sure to include potential plugin names into this ID. Due to the modular architecture of the ImFusion library, uniqueness of IDs cannot be checked at compile time. However, [DataComponentFactory](/cpp-sdk/4.5/api/classes/imfusion-datacomponentfactory) will check the uniqueness of the ID during registration.
+
+### rescaleUnit
+
+```cpp
+std::string ImFusion::RealWorldMappingDataComponent::rescaleUnit () const
+```
+
+Returns the real world unit of the intensities.
+
+An example would be 'HU' for Hounsfield units in CT images or 'Bq/ml' in PET images. The returned value does not garantuee a specific formatting or scheme and should only be used for display purposes. Returns an empty string if no unit is available.
+
+### addRealWorldValueMapping
+
+```cpp
+bool ImFusion::RealWorldMappingDataComponent::addRealWorldValueMapping (const SharedImageSet & parent, const std::string & unit, double intercept, double slope)
+```
+
+Add a Real-World-Value-Mapping for the given unit.
+
+The intercept and slope values map from Storage Values (SV) to Real-World Values (RWV): Internally the mapping will be transformed to apply from Original Values (OV) to RWV. Like this, the mapping remains valid even when the storage values change. Mappings can only be added if the parent image has the same shift and scale for each image. If this is not the case, no mapping is added.
+
+### addStandardizedUptakeValueMapping
+
+```cpp
+bool ImFusion::RealWorldMappingDataComponent::addStandardizedUptakeValueMapping (const SharedImageSet & parent, double patientWeightKg, double radionuclideHalfLife, double radionuclideTotalDose, std::chrono::seconds timeDifference)
+```
+
+Add a Standardized Uptake Value based on body weight mapping.
+
+This mapping is usually only used for PET data.
+
+### configure
+
+```cpp
+void ImFusion::RealWorldMappingDataComponent::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### configuration
+
+```cpp
+void ImFusion::RealWorldMappingDataComponent::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality

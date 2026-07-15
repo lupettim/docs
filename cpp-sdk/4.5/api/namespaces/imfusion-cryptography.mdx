@@ -1,0 +1,42 @@
+---
+title: "ImFusion::Cryptography"
+sidebarTitle: "Cryptography"
+description: "Cryptographic tools."
+---
+
+## Overview
+
+Cryptographic tools.
+
+## Namespaces
+
+- namespace [MonoCypher](/cpp-sdk/4.5/api/namespaces/imfusion-cryptography-monocypher) — The [MonoCypher](/cpp-sdk/4.5/api/namespaces/imfusion-cryptography-monocypher) encryption API is based on the Monocypher library: [https://monocypher.org/](https://monocypher.org/).
+
+## Functions
+
+- [std::array](http://en.cppreference.com/w/cpp/container/array.html)&lt; uint8_t, 64 &gt; [hashBlake2b](#hashblake2b) (const [ByteBufferView](/cpp-sdk/4.5/api/classes/imfusion-bytebufferview) &message) — Creates a 64 byte hash from a message using Blake2b.
+- void [cryptoWipe](#cryptowipe) (const [ByteBufferView](/cpp-sdk/4.5/api/classes/imfusion-bytebufferview) &data) — Securely wipe contents of a buffer.
+
+## Function Documentation
+
+### hashBlake2b
+
+```cpp
+std::array < uint8_t, 64 > ImFusion::Cryptography::hashBlake2b (const ByteBufferView & message)
+```
+
+Creates a 64 byte hash from a message using Blake2b.
+
+This hashing algorithm can be considered reasonably safe for most cryptographic applications while at the same time being faster than MD5 or SHA-family of algorithms.
+
+**See also:** [https://www.blake2.net/](https://www.blake2.net/)
+
+### cryptoWipe
+
+```cpp
+void ImFusion::Cryptography::cryptoWipe (const ByteBufferView & data)
+```
+
+Securely wipe contents of a buffer.
+
+Use it to delete private keys from memory.

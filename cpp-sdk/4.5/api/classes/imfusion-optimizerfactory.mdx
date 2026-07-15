@@ -1,0 +1,34 @@
+---
+title: "ImFusion::OptimizerFactory"
+sidebarTitle: "OptimizerFactory"
+description: "Factory for creating an Optimizer ."
+---
+
+`#include <ImFusion/Base/OptimizerFactory.h>`
+
+## Overview
+
+Factory for creating an [Optimizer](/cpp-sdk/4.5/api/classes/imfusion-optimizer).
+
+## Static Public Member Functions
+
+- static [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [Optimizer](/cpp-sdk/4.5/api/classes/imfusion-optimizer) &gt; [create](#create) (int type, int dimension) — Create an [Optimizer](/cpp-sdk/4.5/api/classes/imfusion-optimizer) class with a type value and dimensions.
+- static [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [Optimizer](/cpp-sdk/4.5/api/classes/imfusion-optimizer) &gt; **create** (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) — Create and configure an [Optimizer](/cpp-sdk/4.5/api/classes/imfusion-optimizer) through [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- static int **count** () — Return the number of available optimizer types (currently 44).
+- static [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **name** (int type) — Return the name of an optimizer.
+- static bool **global** (int type) — Return whether an optimizer is a global (vs. local) method.
+- static bool **derivative** (int type) — Return whether an optimizer is using derivatives.
+
+## Member Function Documentation
+
+### create
+
+```cpp
+std::shared_ptr < Optimizer > ImFusion::OptimizerFactory::create (int type, int dimension)
+```
+
+*static*
+
+Create an [Optimizer](/cpp-sdk/4.5/api/classes/imfusion-optimizer) class with a type value and dimensions.
+
+Currently the following type values are supported: 0..41 The optimizers from the NlOpt library, see nlopt.h 42 ImFusion implementation of DIRECT ([OptimizerDiRect](/cpp-sdk/4.5/api/classes/imfusion-optimizerdirect) class) 43 ImFusion implementation of Nelder-Mead simplex ([OptimizerNelderMead](/cpp-sdk/4.5/api/classes/imfusion-optimizerneldermead) class) 44 [Series](/cpp-sdk/4.5/api/structs/imfusion-dicom-series) of other optimizations; not enumerated in methods below because it can not be configured through the [OptimizationDialog](/cpp-sdk/4.5/api/classes/imfusion-optimizationdialog)[GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui) but only with [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties)

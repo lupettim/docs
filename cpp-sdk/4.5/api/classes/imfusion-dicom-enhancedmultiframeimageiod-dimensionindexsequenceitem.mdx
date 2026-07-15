@@ -1,0 +1,15 @@
+---
+title: "ImFusion::Dicom::EnhancedMultiFrameImageIOD::DimensionIndexSequenceItem"
+sidebarTitle: "DimensionIndexSequenceItem"
+---
+
+## Public Member Functions
+
+- **DimensionIndexSequenceItem** (DcmItem &item, bool createSequence=false)
+
+## Public Attributes
+
+- [Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **dimensionOrganizationUID** — The same UID and tag we also have to write directly onto the top level dataset.
+- [Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element)&lt; [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; int &gt; &gt; **dimensionIndexPointer** — Tag of whatever this represents, e.g. DCM_ReferencedSegmentNumber.
+- [Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element)&lt; [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; int &gt; &gt; **functionalGroupPointer** — Parent functional group of the tag above, e.g. DCM_SegmentIdentificationSequence.
+- [Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **dimensionDescriptionLabel** — Human readable version of dimensionIndexPointer.

@@ -1,0 +1,24 @@
+---
+title: "ImFusion::DataControllerBar"
+sidebarTitle: "DataControllerBar"
+description: "The DataControllerBar displays DataController in toolbar-mode."
+---
+
+`#include <ImFusion/GUI/DataControllerBar.h>`
+
+## Overview
+
+The [DataControllerBar](/cpp-sdk/4.5/api/classes/imfusion-datacontrollerbar) displays [DataController](/cpp-sdk/4.5/api/classes/imfusion-datacontroller) in toolbar-mode.
+
+This class is usually not used directly but automatically by the [DataController](/cpp-sdk/4.5/api/classes/imfusion-datacontroller). If it was created with a QToolBar, the [DataControllerBar](/cpp-sdk/4.5/api/classes/imfusion-datacontrollerbar) will automatically place DataControllers into the QToolBar if it has sufficient free space.
+
+## Public Member Functions
+
+- **DataControllerBar** (QToolBar \*toolBar, QWidget \*parent=nullptr)
+- QSize **minimumSizeHint** () const override
+- QSize **sizeHint** () const override
+- void **addWidget** (QWidget \*widget) — Adds a [DataController](/cpp-sdk/4.5/api/classes/imfusion-datacontroller)'s widget to the bar.
+- void **removeWidget** (QWidget \*widget) — Removes a [DataController](/cpp-sdk/4.5/api/classes/imfusion-datacontroller)'s widget from the bar.
+- QSize **iconSize** () const — Recommended size of icons in the toolbar.
+- void **updateLayout** () — Checks the free space of the QToolBar and moves DataControllers accordingly.
+- bool **eventFilter** (QObject \*obj, QEvent \*event) override

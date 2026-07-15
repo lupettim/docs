@@ -1,0 +1,92 @@
+---
+title: "ImFusionPlugin Migration"
+description: "With SDK Version 4.4 we introduced a new plugin architecture that deprecates the existing plugin infrastructure."
+---
+
+With SDK Version 4.4 we introduced a new plugin architecture that deprecates the existing plugin infrastructure.
+
+This page provides instructions for migrating the the new API.
+
+- The [ImFusionPlugin](/cpp-sdk/4.5/api/classes/imfusion-imfusionplugin) interface has been deprecated. It has been replaced with the new [PluginBase](/cpp-sdk/4.5/api/classes/imfusion-pluginbase) base interface in ImFusionCore providing generic plugin functionality and metadata, as well as the more specialized [ImFusionLibPlugin](/cpp-sdk/4.5/api/classes/imfusion-imfusionlibplugin) interface providing extra API and helper functions for usage with ImFusionLib and [ApplicationController](/cpp-sdk/4.5/api/classes/imfusion-applicationcontroller).
+- All plugin-related functions in the [Framework](/cpp-sdk/4.5/api/namespaces/imfusion-framework) namespace have been deprecated. The corresponding functionality has been moved to the new [PluginManager](/cpp-sdk/4.5/api/classes/imfusion-pluginmanager) singleton in ImFusionCore.
+- Plugins now have a descriptor with metadata about supported host applications, versions, build types. This allows for detecting incompatible plugins early.
+- Plugins can define other plugins as dependencies. If a dependency is not met the plugin initialization will fail
+- Two-step initialization: The loading of the plugin shared library and the initialization of the plugin (e.g. populate factories) has been split into two separate steps.
+- Added extra functionality such as auto-registration of plugins if a host application links against it and the OS implicitly loads the library, and duplicate detection to avoid loading 2 different copies of the same plugin.
+
+The guidelines regarding plugin names have changed: it now consists of two components &lt;Namespace&gt;.&lt;PluginName&gt;. In practice this means that general ImFusion plugins now have a dot after "ImFusion", e.g. ImFusionDicom -&gt; ImFusion.Dicom. If you are querying a loaded plugin via its string identifier (e.g. [Framework::queryLoadedPlugin()](/cpp-sdk/4.5/api/namespaces/imfusion-framework) and its replacement [PluginManager::pluginInstance()](/cpp-sdk/4.5/api/classes/imfusion-pluginmanager)), you need to adjust the used string identifier.
+
+This section outlines the necessary steps to migrate an existing legacy [ImFusionPlugin](/cpp-sdk/4.5/api/classes/imfusion-imfusionplugin) to implement the new plugin architecture.
+
+### Quick change to make existing code compile
+
+If you only need to quickly make existing code using the ImFusionPlugin interface compile and want to postpone actual migration to later, there is an easy solution:
+
+Assume you have the following legacy plugin declaration
+
+```cpp
+// in the header file
+class MyPlugin : public ImFusionPlugin {
+    [...]
+};
+
+// in the cpp file
+IMFUSION_REGISTER_PLUGIN(MyPlugin)
+```
+ fragment
+the compiler will complain that it "cannot instantate the abstract class 'MyPlugin'" and likely also that "'id()' is not a member of 'MyPlugin'". This is because the new [PluginBase](/cpp-sdk/4.5/api/classes/imfusion-pluginbase) interface requires additional functions which are not provided by the legacy [ImFusionPlugin](/cpp-sdk/4.5/api/classes/imfusion-imfusionplugin) interface.
+
+You can fix this easily by replacing the plugin registration in the cpp file to
+
+```cpp
+// in the cpp file
+IMFUSION_REGISTER_LEGACY_PLUGIN(MyPlugin, "<plugin id>")
+```
+ fragment
+where &lt;plugin id&gt; is the unique identifier for your plugin required by the new plugin architecture (make sure to follow the guidelines for a plugin ID as described in Anatomy of an ImFusion Plugin).
+
+This should be sufficient to make your existing plugin continue to work as long as the deprecation layers are in place. However, eventually you will need to migrate it properly to the new API as described in the section below.
+
+### Proper migration to the new API
+
+Perform the following steps to properly migrate a legacy [ImFusionPlugin](/cpp-sdk/4.5/api/classes/imfusion-imfusionplugin) to the new architecture:
+
+- Inherit from [ImFusionLibPlugin](/cpp-sdk/4.5/api/classes/imfusion-imfusionlibplugin) instead of [ImFusionPlugin](/cpp-sdk/4.5/api/classes/imfusion-imfusionplugin)
+- Add a public static member function with the signature static const char\* id() and have it return a unique identifier for your plugin following the defined scheme &lt;Namespace&gt;.&lt;PluginName&gt; (cf. Anatomy of an ImFusion Plugin).
+- Implement the necessary pure virtual member function of the [PluginBase](/cpp-sdk/4.5/api/classes/imfusion-pluginbase) interface.
+- Move plugin initialization code from the plugin constructor to the init() function. Most likely you no longer need a dedicated constructor but can simply use the default implementation generated by the compiler.
+
+  **Note:** You need to add additional code to the initialization function to mimic the behavior of legacy plugins:
+  - Perform a license check at the beginning of the function if required (for legacy plugins this was done by the SDK depending on some logic based on the plugin name). For instance:
+    ```cpp
+    if (!isLicensed("<entitlement ID for plugin>"))
+     return Status::LicenseCheckFailed;
+    ```
+     fragment
+  - Register factories and workspace conversion function explicitly with ImFusionLib. You can use the [ImFusionLibPlugin::registerFactories()](/cpp-sdk/4.5/api/classes/imfusion-imfusionlibplugin) helper function for convenience.
+- Remove virtual member functions of the legacy interface which are no longer part of the ImFusionLib interface (i.e. getAlgorithmFactory(), getAlgorithmControllerFactory(), getDataAnnotationFactory(), getWorkspaceConversionFunctions(), and pluginName()).
+
+The necessary steps to migrate an existing application/executable to use the new plugin architecture are straight-forward:
+
+**Warning:** Pay attention that for some functions the sematics of the function parameters has slighty changed. Furthermore, the new plugin ID is not the same as the legacy [ImFusionPlugin::pluginName](/cpp-sdk/4.5/api/classes/imfusion-imfusionplugin).
+
+All you need to do is to replace calls to the now deprecated plugin-related functions in the [Framework](/cpp-sdk/4.5/api/namespaces/imfusion-framework) namespace to their new replacements in the [PluginManager](/cpp-sdk/4.5/api/classes/imfusion-pluginmanager) singleton. For example, if you want to simply load and initialize all plugins from the default plugin directory (relative to the executable path + based on the value of the IMFUSION_PLUGIN_PATH environment variable), you can use the following code:
+
+```cpp
+PluginManager::get().loadPlugins(PluginManager::defaultPluginSearchDirectories());
+```
+ fragment
+If you use the [ApplicationController](/cpp-sdk/4.5/api/classes/imfusion-applicationcontroller) interface in your application, you additionally need to make the loaded plugins aware of it. Therefore, you need to downcast to the ImFusionLibPlugin interface:
+
+```cpp
+for (const auto& pluginInfo : PluginManager::get().plugins())
+{
+ if (auto libPlugin = dynamic_cast<ImFusionLibPlugin*>(pluginInfo.instance.get());
+        pluginInfo.status == PluginManager::PluginStatus::Initialized && libPlugin != nullptr)
+    {
+        libPlugin->setApplicationController(appCtrl);
+    }
+}
+```
+ fragment
+If you use code that queries the presence of a plugin based on the plugin name/ID, be advised that the new Plugin ID is not the same as legacy [ImFusionPlugin::pluginName](/cpp-sdk/4.5/api/classes/imfusion-imfusionplugin)! Thus, you need to adjust the argument when migrating calls from the now deprecated [Framework::queryLoadedPlugin()](/cpp-sdk/4.5/api/namespaces/imfusion-framework) to [PluginManager::pluginInstance()](/cpp-sdk/4.5/api/classes/imfusion-pluginmanager).

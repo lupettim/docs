@@ -1,0 +1,110 @@
+---
+title: "ImFusion::Progress"
+sidebarTitle: "Progress"
+description: "Generic interface to report operation/computation progress."
+---
+
+`#include <ImFusion/Base/Progress.h>`
+
+## Overview
+
+Generic interface to report operation/computation progress.
+
+The [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) interface can host progress reports of multiple independent tasks, where each can represent either a regular progress bar with an individual number of steps, or a busy indicator that runs endlessly until stopped. Algorithms that want to provide progress/status information request their individual [Task](/cpp-sdk/4.5/api/classes/imfusion-progress-task) instance, store it locally as variable, and report their progress/status update through it. As soon as the instance goes out of scope the progress report is automatically removed form the parent reporter.
+
+Basic usage example:
+
+```cpp
+void processData(const std::vector<Foo>& data, Progress& progressHandler) {
+ Progress::Task task = progressHandler.addTask(data.size(), "Processing data");
+ for (auto& elem : data) {
+ if (task.wasCanceled())
+ break;
+
+        processElement(elem);
+        task.incrementStep();
+    }
+}
+```
+ fragment
+By default the [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) interface is *not* thread-safe and must only be accessed from the same thread it was created on. You can request a limited support for concurrent access for individual tasks through [Task::requestThreadSafety()](/cpp-sdk/4.5/api/classes/imfusion-progress-task).
+
+## Classes
+
+- class [Task](/cpp-sdk/4.5/api/classes/imfusion-progress-task) — Represents the progress/status report of an individual task hosted by a [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress).
+
+## Public Member Functions
+
+- [Task](/cpp-sdk/4.5/api/classes/imfusion-progress-task) [addTask](#addtask) (int numSteps, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &description) — Create a new progress report for an operation with the given number of steps.
+- [Task](/cpp-sdk/4.5/api/classes/imfusion-progress-task) [addBusyIndicator](#addbusyindicator) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &description) — Create a busy indicator for an operation but does not have a predefined number of steps.
+
+## Protected Member Functions
+
+- virtual void [onTaskAdded](#ontaskadded) ([Task](/cpp-sdk/4.5/api/classes/imfusion-progress-task) \*task)=0 — Function is called whenever a new [Task](/cpp-sdk/4.5/api/classes/imfusion-progress-task) has been created.
+- virtual void [onTaskUpdated](#ontaskupdated) (const [Task](/cpp-sdk/4.5/api/classes/imfusion-progress-task) \*task)=0 — Function is called whenever the state of a [Task](/cpp-sdk/4.5/api/classes/imfusion-progress-task) has changed and the reporter should update its UI.
+- virtual bool [onTaskRequestsThreadSafety](#ontaskrequeststhreadsafety) (const [Task](/cpp-sdk/4.5/api/classes/imfusion-progress-task) \*task)=0 — Function is called by [Task::requestThreadSafety()](/cpp-sdk/4.5/api/classes/imfusion-progress-task) in order to check whether the parent reporter supports concurrent access.
+- virtual void [onTaskRemoved](#ontaskremoved) (const [Task](/cpp-sdk/4.5/api/classes/imfusion-progress-task) \*task)=0 — Function is called whenever a [Task](/cpp-sdk/4.5/api/classes/imfusion-progress-task) is about to be destroyed and its pointer will become invalid.
+
+## Member Function Documentation
+
+### addTask
+
+```cpp
+Task ImFusion::Progress::addTask (int numSteps, const std::string & description)
+```
+
+Create a new progress report for an operation with the given number of steps.
+
+Convenience function with the same effect as calling the Task(this, numSteps, description) constructor.
+
+### addBusyIndicator
+
+```cpp
+Task ImFusion::Progress::addBusyIndicator (const std::string & description)
+```
+
+Create a busy indicator for an operation but does not have a predefined number of steps.
+
+Convenience function with the same effect as calling the Task(this, 0, description) constructor.
+
+### onTaskAdded
+
+```cpp
+virtual void ImFusion::Progress::onTaskAdded (Task * task)
+```
+
+*protected, pure virtual*
+
+Function is called whenever a new [Task](/cpp-sdk/4.5/api/classes/imfusion-progress-task) has been created.
+
+### onTaskUpdated
+
+```cpp
+virtual void ImFusion::Progress::onTaskUpdated (const Task * task)
+```
+
+*protected, pure virtual*
+
+Function is called whenever the state of a [Task](/cpp-sdk/4.5/api/classes/imfusion-progress-task) has changed and the reporter should update its UI.
+
+### onTaskRequestsThreadSafety
+
+```cpp
+virtual bool ImFusion::Progress::onTaskRequestsThreadSafety (const Task * task)
+```
+
+*protected, pure virtual*
+
+Function is called by [Task::requestThreadSafety()](/cpp-sdk/4.5/api/classes/imfusion-progress-task) in order to check whether the parent reporter supports concurrent access.
+
+Implementations are free to ignore this request and return false. Otherwise they must ensure that subsequent concurrent calls to any of the onTask...() callbacks are handled correctly without race conditions. Implementations are free to return to a unsynchronized implementation as soon as all multi-threaded tasks have been removed from the reporter.
+
+### onTaskRemoved
+
+```cpp
+virtual void ImFusion::Progress::onTaskRemoved (const Task * task)
+```
+
+*protected, pure virtual*
+
+Function is called whenever a [Task](/cpp-sdk/4.5/api/classes/imfusion-progress-task) is about to be destroyed and its pointer will become invalid.

@@ -1,0 +1,106 @@
+---
+title: "ImFusion::Dicom::MultiFrameImageIOD"
+sidebarTitle: "MultiFrameImageIOD"
+description: "Base IOD for classic DICOM files."
+---
+
+`#include <ImFusion/Dicom/DicomIOD.h>`
+
+## Overview
+
+[Base](/cpp-sdk/4.5/api/structs/imfusion-dicom-base)[IOD](/cpp-sdk/4.5/api/classes/imfusion-dicom-iod) for classic DICOM files.
+
+Contains the most common subset of modules that are generally used by [Dicom](/cpp-sdk/4.5/api/namespaces/imfusion-dicom) series that are stored in multiple files. The MultiFrameIOD will never assemble frames into volumes, use VolmetricImageIOD for SOP classes that are potential volumes. Most classic DICOMs only contain a single frame per file/IOD, however, some IODs also allow multiple frames in a single file. All modules are Conditional so that derived classes can make them mandatory if needed. Additionally, derived classes can override the validator of module elements, to restrict values according to the standard.
+
+## Public Member Functions
+
+- **MultiFrameImageIOD** (DcmDataset &[dataset](/cpp-sdk/4.5/api/classes/imfusion-dicom-iod), const OFString &[sopClassUID](/cpp-sdk/4.5/api/classes/imfusion-dicom-iod))
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [FrameDescriptor](/cpp-sdk/4.5/api/structs/imfusion-dicom-framedescriptor) &gt; [loadFrames](#loadframes) () override — Loads all frames contained in this [IOD](/cpp-sdk/4.5/api/classes/imfusion-dicom-iod).
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [FrameDescriptorSet](/cpp-sdk/4.5/api/namespaces/imfusion-dicom) &gt; [sortAndGroupFrames](#sortandgroupframes) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [FrameDescriptor](/cpp-sdk/4.5/api/structs/imfusion-dicom-framedescriptor) &gt; &frames) const override — Groups each frame individual, i.e. as an imageset (sorted by instanceNumber).
+- void [loadFrameData](#loadframedata) (const [FrameDescriptor](/cpp-sdk/4.5/api/structs/imfusion-dicom-framedescriptor) &desc, [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) &image, int slice=-1) override — Loads the actual frame data into the given image.
+- void [loadFrameProperties](#loadframeproperties) (const [FrameDescriptor](/cpp-sdk/4.5/api/structs/imfusion-dicom-framedescriptor) &desc, [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &image) override — Loads any additional properties into the given image.
+- void [save](#save) ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &imageSet, int sharedImageIndex, int sliceIndex) override — Stores the general image descriptor and metadata of *imageSet* in the DICOM data set.
+- void [savePixelData](#savepixeldata) ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &imageSet, int sharedImageIndex, int sliceIndex) override — Writes the pixel data of *imageSet* in the DICOM data set.
+
+## Public Attributes
+
+- [PixelSpacingCalibration](/cpp-sdk/4.5/api/classes/imfusion-dicom-pixelspacingcalibration) **pixelSpacingCalib**
+- [ModalityLUT](/cpp-sdk/4.5/api/classes/imfusion-dicom-modalitylut) **modalityLut**
+
+## Member Function Documentation
+
+### loadFrames
+
+```cpp
+std::vector < FrameDescriptor > ImFusion::Dicom::MultiFrameImageIOD::loadFrames ()
+```
+
+*override, virtual*
+
+Loads all frames contained in this [IOD](/cpp-sdk/4.5/api/classes/imfusion-dicom-iod).
+
+Might be multiple frames depending on numberOfFrames.
+
+### sortAndGroupFrames
+
+```cpp
+std::vector < FrameDescriptorSet > ImFusion::Dicom::MultiFrameImageIOD::sortAndGroupFrames (const std::vector < FrameDescriptor > & frames) const
+```
+
+*override, virtual*
+
+Groups each frame individual, i.e. as an imageset (sorted by instanceNumber).
+
+### loadFrameData
+
+```cpp
+void ImFusion::Dicom::MultiFrameImageIOD::loadFrameData (const FrameDescriptor & desc, MemImage & image, int slice = -1)
+```
+
+*override, virtual*
+
+Loads the actual frame data into the given image.
+
+The frameNumber in the given [FrameDescriptor](/cpp-sdk/4.5/api/structs/imfusion-dicom-framedescriptor) is the index of the corresponding frame as returned by loadFrames. If slice is not -1, the frame should be loaded into the given slice of the image.
+
+### loadFrameProperties
+
+```cpp
+void ImFusion::Dicom::MultiFrameImageIOD::loadFrameProperties (const FrameDescriptor & desc, SharedImageSet & image)
+```
+
+*override, virtual*
+
+Loads any additional properties into the given image.
+
+This method is called after the complete image data has been loaded. *desc* will contain valid sharedImageIndex and sliceIndex parameters indicating where this frame has been stored in the image. Implementations must not reorder, remove or resize the images of the given SharedImageSet!
+
+The order or amount of images must not be changed inside the SharedImageSet! Also, the size of the individual images must not change. Otherwise, this would lead to inconsistent sharedImageIndex and sliceIndex values.
+
+This method might throw an exception if the properties somehow make the image completely invalid. This should only be used as a last restort if there is really no way to use the image in any meaningful way!
+
+**Note:** The default implementation will create an [ImageInfoDataComponent](/cpp-sdk/4.5/api/classes/imfusion-imageinfodatacomponent) instance and attach it to *image*. Thus, when overriding this method make sure to call the base class method.
+
+### save
+
+```cpp
+void ImFusion::Dicom::MultiFrameImageIOD::save (SharedImageSet & imageSet, int sharedImageIndex, int sliceIndex)
+```
+
+*override, virtual*
+
+Stores the general image descriptor and metadata of *imageSet* in the DICOM data set.
+
+*sharedImageIndex* and *sliceIndex* describe which part of the image set should be stored.
+
+### savePixelData
+
+```cpp
+void ImFusion::Dicom::MultiFrameImageIOD::savePixelData (SharedImageSet & imageSet, int sharedImageIndex, int sliceIndex)
+```
+
+*override, virtual*
+
+Writes the pixel data of *imageSet* in the DICOM data set.
+
+*sharedImageIndex* and *sliceIndex* describe which part of the image set should be stored.

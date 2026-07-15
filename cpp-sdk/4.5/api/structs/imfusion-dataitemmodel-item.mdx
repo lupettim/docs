@@ -1,0 +1,36 @@
+---
+title: "ImFusion::DataItemModel::Item"
+sidebarTitle: "Item"
+description: "Internal record to implement bookkeeping of the hierarchy in the underlying DataModel ."
+---
+
+`#include <ImFusion/GUI/DataItemModel.h>`
+
+## Overview
+
+Internal record to implement bookkeeping of the hierarchy in the underlying [DataModel](/cpp-sdk/4.5/api/classes/imfusion-datamodel).
+
+It enables two main things:
+
+1. provide fast lookups of elements and their relationships
+2. have a secondary storage backend so that we can call the pairs of Qt's begin/endFooRows() functions correctly. One [Item](/cpp-sdk/4.5/api/structs/imfusion-dataitemmodel-item) instance always corresponds to exactly one element in the QAbstractItemModel. However, the [Item](/cpp-sdk/4.5/api/structs/imfusion-dataitemmodel-item) hierarchy does not necessarily 1-to-1 correspond to the hierarchy in the underlying [DataModel](/cpp-sdk/4.5/api/classes/imfusion-datamodel).
+
+## Public Attributes
+
+- [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \* **data** = nullptr — Pointer to [Data](/cpp-sdk/4.5/api/classes/imfusion-data) instance in parent model.
+- [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \* [proxyChild](#proxychild) = nullptr — Pointer to the DataGroup::proxyData if data is a [DataGroup](/cpp-sdk/4.5/api/classes/imfusion-datagroup).
+- [Item](/cpp-sdk/4.5/api/structs/imfusion-dataitemmodel-item) \* **parent** = nullptr — Pointer to parent node.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [Item](/cpp-sdk/4.5/api/structs/imfusion-dataitemmodel-item) &gt; &gt; **children** — Enumeration of child nodes, unique_ptr so that their addresses are persistent.
+- [ElementType](/cpp-sdk/4.5/api/classes/imfusion-dataitemmodel) **type** = [ElementType::Regular](/cpp-sdk/4.5/api/classes/imfusion-dataitemmodel) — Type of the underlying [Data](/cpp-sdk/4.5/api/classes/imfusion-data) instance.
+
+## Member Data Documentation
+
+### proxyChild
+
+```cpp
+Data * ImFusion::DataItemModel::Item::proxyChild = nullptr
+```
+
+Pointer to the DataGroup::proxyData if data is a [DataGroup](/cpp-sdk/4.5/api/classes/imfusion-datagroup).
+
+Will serve as reference dataset instead of data if not null.

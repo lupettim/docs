@@ -1,0 +1,101 @@
+---
+title: "ImFusion::Settings::Setting< T >"
+sidebarTitle: "Setting< T >"
+description: "Provides a type-safe way to access a setting value."
+---
+
+`#include <ImFusion/Base/Settings.h>`
+
+## Overview
+
+template&lt;typename T&gt;
+
+class ImFusion::Settings::Setting&lt; T &gt;
+Provides a type-safe way to access a setting value.
+
+Can be used like a type, e.g.:
+
+```cpp
+Settings settings;
+Setting<bool> s = settings.showLoadOptionsOnStart;
+bool show = s; // same as: show = settings.value();
+s = true; // same as: s.setValue(true);
+```
+ fragment
+If nothing is stored in the backend, the defaultValue is used.
+
+## Public Types
+
+- using **MakeDefaultValueFunc** = T (\*)()
+
+## Public Member Functions
+
+- [Setting](#setting-1-4) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name, T defaultValue)
+- [Setting](#setting-2-4) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name, MakeDefaultValueFunc makeDefaultValueFunc)
+- [Setting](#setting-3-4) ([LegacyInterfaceSettings](/cpp-sdk/4.5/api/structs/imfusion-settings-legacyinterfacesettings) &settings, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name, T defaultValue) — Constructs a [Setting](/cpp-sdk/4.5/api/classes/imfusion-settings-setting) fully initializing the default value.
+- [Setting](#setting-4-4) ([LegacyInterfaceSettings](/cpp-sdk/4.5/api/structs/imfusion-settings-legacyinterfacesettings) &settings, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name, MakeDefaultValueFunc makeDefaultValueFunc) — Alternative constructor using lazy initialization of the default value.
+- void **setValue** (const T &[value](#value)) — Sets the setting to the given value.
+- T [value](#value) (bool \*exists=nullptr) const — Retrieves the current value of the setting.
+- T **defaultValue** () const — Returns the default value of the setting.
+- **operator T** () const — Calls [value()](#value).
+- [Setting](#setting-1-4)&lt; T &gt; & **operator=** (const T &[value](#value)) — Calls setValue(value).
+- void **configure** (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p)
+- void **configuration** ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const
+
+## Public Attributes
+
+- const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **name**
+
+## Constructor & Destructor Documentation
+
+### Setting
+
+```cpp
+template<typename T> ImFusion::Settings::Setting < T >::Setting (const std::string & name, T defaultValue)
+```
+
+****Deprecated**:** "Use GlobalSettings instead"
+
+### Setting
+
+```cpp
+template<typename T> ImFusion::Settings::Setting < T >::Setting (const std::string & name, MakeDefaultValueFunc makeDefaultValueFunc)
+```
+
+****Deprecated**:** "Use GlobalSettings instead"
+
+### Setting
+
+```cpp
+template<typename T> ImFusion::Settings::Setting < T >::Setting (LegacyInterfaceSettings & settings, const std::string & name, T defaultValue)
+```
+
+Constructs a [Setting](/cpp-sdk/4.5/api/classes/imfusion-settings-setting) fully initializing the default value.
+
+Use this overload only where T is a primitive/cheap to generate value.
+
+****Deprecated**:** "Use GlobalSettings instead"
+
+### Setting
+
+```cpp
+template<typename T> ImFusion::Settings::Setting < T >::Setting (LegacyInterfaceSettings & settings, const std::string & name, MakeDefaultValueFunc makeDefaultValueFunc)
+```
+
+Alternative constructor using lazy initialization of the default value.
+
+Use this overload if generating the default value is expensive, *makeDefaultValueFunc* must not be 0.
+
+****Deprecated**:** "Use GlobalSettings instead"
+
+## Member Function Documentation
+
+### value
+
+```cpp
+template<typename T> T ImFusion::Settings::Setting < T >::value (bool * exists = nullptr) const
+```
+
+Retrieves the current value of the setting.
+
+If no value is stored yet, the default value is returned. The optional 'exists' value is set to true if the value exists in the backend or false if the default value was returned.

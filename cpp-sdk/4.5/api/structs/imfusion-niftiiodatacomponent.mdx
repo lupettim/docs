@@ -1,0 +1,29 @@
+---
+title: "ImFusion::NiftiIODataComponent"
+sidebarTitle: "NiftiIODataComponent"
+---
+
+## Public Member Functions
+
+- **NiftiIODataComponent** (bool loadedLeftHanded, PixelType originalPixelType)
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [id](#id) () const override — Returns a unique string identifier for this type of data component.
+- bool **operator==** (const NiftiIODataComponent &rhs) const
+
+## Public Attributes
+
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; bool &gt; **m_loadedLeftHanded**
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; PixelType &gt; **m_originalPixelType**
+
+## Member Function Documentation
+
+### id
+
+```cpp
+std::string ImFusion::NiftiIODataComponent::id () const
+```
+
+*inline, override, virtual*
+
+Returns a unique string identifier for this type of data component.
+
+**Note:** To avoid conflicts make sure to include potential plugin names into this ID. Due to the modular architecture of the ImFusion library, uniqueness of IDs cannot be checked at compile time. However, [DataComponentFactory](/cpp-sdk/4.5/api/classes/imfusion-datacomponentfactory) will check the uniqueness of the ID during registration.

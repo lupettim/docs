@@ -1,0 +1,92 @@
+---
+title: "ImFusion::LabelsOperationsAlgorithm"
+sidebarTitle: "LabelsOperationsAlgorithm"
+description: "Algorithm to combine multiple labels set into a new shared image set."
+---
+
+`#include <ImFusion/Base/LabelsOperationsAlgorithm.h>`
+
+## Overview
+
+[Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) to combine multiple labels set into a new shared image set.
+
+## Public Types
+
+- enum OperationType &#123; **UNION** = 0 , **INTERSECTION** = 1 &#125; — Type of operation.
+
+## Public Member Functions
+
+- **LabelsOperationsAlgorithm** ([std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* &gt; labelSets) — Creates the algorithm instance with two sets of images.
+- **~LabelsOperationsAlgorithm** () override — Destructor.
+- void **setOperationType** (OperationType type)
+
+## Methods implementing the algorithm interface
+
+- void [compute](#compute) () override — Applies the processing.
+- [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) [takeOutput](#takeoutput) () override — If new data was created, make it available here.
+- static bool [createCompatible](#createcompatible) (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=0)
+
+## Methods implementing the Configurable interface
+
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+## Member Function Documentation
+
+### createCompatible
+
+```cpp
+bool ImFusion::LabelsOperationsAlgorithm::createCompatible (const DataList & data, Algorithm ** a = 0)
+```
+
+*static*
+
+Factory method to check for applicability or to create the algorithm
+
+### compute
+
+```cpp
+void ImFusion::LabelsOperationsAlgorithm::compute ()
+```
+
+*override, virtual*
+
+Applies the processing.
+
+### takeOutput
+
+```cpp
+OwningDataList ImFusion::LabelsOperationsAlgorithm::takeOutput ()
+```
+
+*override, virtual*
+
+If new data was created, make it available here.
+
+### configure
+
+```cpp
+void ImFusion::LabelsOperationsAlgorithm::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### configuration
+
+```cpp
+void ImFusion::LabelsOperationsAlgorithm::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality

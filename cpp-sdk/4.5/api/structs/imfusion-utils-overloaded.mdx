@@ -1,0 +1,29 @@
+---
+title: "ImFusion::Utils::Overloaded< Ts >"
+sidebarTitle: "Overloaded< Ts >"
+description: "Syntactic sugar for easier implementation of visitors of a std::variant or our Utils::Variant ."
+---
+
+`#include <ImFusion/Core/Utils/Overloaded.h>`
+
+## Overview
+
+template&lt;class... Ts&gt;
+
+struct ImFusion::Utils::Overloaded&lt; Ts &gt;
+Syntactic sugar for easier implementation of visitors of a [std::variant](http://en.cppreference.com/w/cpp/utility/variant.html) or our [Utils::Variant](/cpp-sdk/4.5/api/structs/imfusion-utils-variant).
+
+Can be used like this:
+
+```cpp
+std::variant<Foo, Bar, Baz> var;
+std::visit(Utils::Overloaded{
+    [](const Foo& foo) { computeFoo(foo); },
+    [](const Bar& bar) { computeBar(bar); },
+    [](const Baz& baz) { computeBaz(baz); }
+}, var);
+```
+ fragment
+You can also put a [](const auto& default) &#123; computeDefault(default); &#125; in the overload set if you would like to implement a default handler instead of an individual handler for each type. However, be aware that it will bind to anything and therefore increase the chance of introducing bugs due to unexpected implicit conversions or when extending the variant at a future time.
+
+**See also:** [https://en.cppreference.com/w/cpp/utility/variant/visit](https://en.cppreference.com/w/cpp/utility/variant/visit)

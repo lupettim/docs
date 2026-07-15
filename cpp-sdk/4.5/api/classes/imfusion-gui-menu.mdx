@@ -1,0 +1,151 @@
+---
+title: "ImFusion::GUI::Menu"
+sidebarTitle: "Menu"
+description: "Represents a hierarchical menu of actions used to describe menu bars, context menus, or popup menus."
+---
+
+`#include <ImFusion/GUI/Menu.h>`
+
+## Overview
+
+Represents a hierarchical menu of actions used to describe menu bars, context menus, or popup menus.
+
+This class does not implement any rendering or other visual representation of the underlying menu but serves only as [GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui) library-agnostic interface to describe the appearance and behavior of it.
+
+A menu is formed by a list of items, where each item is either a clickable action, a divider separating groups of related actions, or a recursive submenu of the same form.
+
+Example:
+
+```cpp
+Menu m;
+m.addAction("Reset", [this]() { reset(); }, "Reset to default settings");
+m.addToggleAction("Show details", showsDetails(); [this]() { setShowDetails(!showsDetails()); });
+m.addSeparator();
+{
+ Menu submenu("Extras", "Advanced options");
+    submenu.addAction(...);
+    m.addSubmenu(std::move(submenu));
+}
+```
+ fragment
+
+**Warning:** Due to the asynchronous nature of context menus make sure to follow the following guidelines on object lifetimes: [Action](/cpp-sdk/4.5/api/structs/imfusion-gui-menu-action) callbacks should only capture references/pointers to objects that have at least the same lifetime as the object that is creating the menu. Receivers of a [Menu](/cpp-sdk/4.5/api/classes/imfusion-gui-menu) instance must ensure that the menu does *not* outlive the lifetime of all objects to which the original [ContextMenuEvent](/cpp-sdk/4.5/api/classes/imfusion-gui-contextmenuevent) was passed to.
+
+## Classes
+
+- struct [Action](/cpp-sdk/4.5/api/structs/imfusion-gui-menu-action) — Represents an item inside a [Menu](/cpp-sdk/4.5/api/classes/imfusion-gui-menu) where a callback function is called when user clicks on it.
+- struct [Separator](/cpp-sdk/4.5/api/structs/imfusion-gui-menu-separator) — Represents a separator to be shown as divider between unrelated groups of actions.
+
+## Public Types
+
+- using **Item** = [Utils::Variant](/cpp-sdk/4.5/api/structs/imfusion-utils-variant)&lt;[Action](/cpp-sdk/4.5/api/structs/imfusion-gui-menu-action), [Separator](/cpp-sdk/4.5/api/structs/imfusion-gui-menu-separator), [Menu](#menu)&gt; — A menu item is either an action, a separator, or a recursive submenu.
+
+## Public Member Functions
+
+- [Menu](#menu) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &title="", const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &description="") — Creates a new menu.
+- void [addAction](#addaction) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &title, Action::ActivationCallback activationCallback, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &description="", [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; uint8_t &gt; &gt; icon=nullptr) — Adds a new regular [Action](/cpp-sdk/4.5/api/structs/imfusion-gui-menu-action) to the end of the list of actions.
+- void [addToggleAction](#addtoggleaction) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &title, bool checkState, Action::ActivationCallback activationCallback, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &description="", [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; uint8_t &gt; &gt; icon=nullptr) — Adds a new checkable [Action](/cpp-sdk/4.5/api/structs/imfusion-gui-menu-action) (representing a boolean state that is toggled when clicked) to the end of the list of actions.
+- void [addRadioAction](#addradioaction) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &title, bool checkState, Action::ActivationCallback activationCallback, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &description="", [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; uint8_t &gt; &gt; icon=nullptr) — Adds a new exclusively checkable [Action](/cpp-sdk/4.5/api/structs/imfusion-gui-menu-action) (representing one of multiple mutually exclusive options) to the end of the list of actions.
+- void [addSeparator](#addseparator) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &title="", const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &description="") — Adds a new [Separator](/cpp-sdk/4.5/api/structs/imfusion-gui-menu-separator) to the end of the list of actions.
+- void **addSubmenu** ([Menu](#menu) &&m) — Add an existing menu as submenu to the end of the list of actions.
+- void [insertItem](#insertitem) (Item &&item, int position=-1) — Insert an existing item into the list of actions at the given *position*.
+- void **setIcon** ([std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; uint8_t &gt; &gt; icon) — Set the optional icon to show next to the entry of this menu when shown as submenu within a parent menu.
+- void **clearItems** () — Removes all items from this menu, title and description will remain unchanged.
+- bool **isEmpty** () const — Returns if this menu does not contains any items.
+- void **appendMenu** ([Menu](#menu) otherMenu) — Appends all items of *otherMenu* to the end of this menu's list of items.
+- const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) & **title** () const
+- const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) & **description** () const
+- const [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; uint8_t &gt; &gt; & **icon** () const
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; Item &gt; & **items** () const — Returns the list of items comprising this menu.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; Item &gt; & **items** ()
+
+## Constructor & Destructor Documentation
+
+### Menu
+
+```cpp
+ImFusion::GUI::Menu::Menu (const std::string & title = "", const std::string & description = "")
+```
+
+*explicit*
+
+Creates a new menu.
+
+**Parameters:**
+
+- `title` — Optional text that should be displayed to represent the (sub) menu
+- `description` — Optional text that explains (sub) menu, to be shown as tooltip/and or in the status bar
+
+## Member Function Documentation
+
+### addAction
+
+```cpp
+void ImFusion::GUI::Menu::addAction (const std::string & title, Action::ActivationCallback activationCallback, const std::string & description = "", std::shared_ptr < TypedImage < uint8_t > > icon = nullptr)
+```
+
+Adds a new regular [Action](/cpp-sdk/4.5/api/structs/imfusion-gui-menu-action) to the end of the list of actions.
+
+**Parameters:**
+
+- `title` — Text to be displayed on the menu entry.
+- `activationCallback` — Callback function to be called when this action was clicked by the user
+- `description` — Optional text that explains the menu entry, to be shown as tooltip/and or in the status bar.
+- `icon` — Optional icon to show next to the menu entry
+
+### addToggleAction
+
+```cpp
+void ImFusion::GUI::Menu::addToggleAction (const std::string & title, bool checkState, Action::ActivationCallback activationCallback, const std::string & description = "", std::shared_ptr < TypedImage < uint8_t > > icon = nullptr)
+```
+
+Adds a new checkable [Action](/cpp-sdk/4.5/api/structs/imfusion-gui-menu-action) (representing a boolean state that is toggled when clicked) to the end of the list of actions.
+
+**Parameters:**
+
+- `title` — Text to be displayed on the menu entry.
+- `checkState` — Flag if the underlying state is currently checked.
+- `activationCallback` — Callback function to be called when this action was clicked by the user
+- `description` — Optional text that explains the menu entry, to be shown as tooltip/and or in the status bar.
+- `icon` — Optional icon to show next to the menu entry
+
+### addRadioAction
+
+```cpp
+void ImFusion::GUI::Menu::addRadioAction (const std::string & title, bool checkState, Action::ActivationCallback activationCallback, const std::string & description = "", std::shared_ptr < TypedImage < uint8_t > > icon = nullptr)
+```
+
+Adds a new exclusively checkable [Action](/cpp-sdk/4.5/api/structs/imfusion-gui-menu-action) (representing one of multiple mutually exclusive options) to the end of the list of actions.
+
+A group of exclusive options is formed by the set of adjacent actions of this type where there is no separator in-between.
+
+**Parameters:**
+
+- `title` — Text to be displayed on the menu entry.
+- `checkState` — Flag if the underlying option is currently selected.
+- `activationCallback` — Callback function to be called when this action was clicked by the user
+- `description` — Optional text that explains the menu entry, to be shown as tooltip/and or in the status bar.
+- `icon` — Optional icon to show next to the menu entry
+
+### addSeparator
+
+```cpp
+void ImFusion::GUI::Menu::addSeparator (const std::string & title = "", const std::string & description = "")
+```
+
+Adds a new [Separator](/cpp-sdk/4.5/api/structs/imfusion-gui-menu-separator) to the end of the list of actions.
+
+**Parameters:**
+
+- `title` — Optional text to be shown next to the separator and serving as group header.
+- `description` — Optional text that explains the subsequent group, to be shown as tooltip/and or in the status bar.
+
+### insertItem
+
+```cpp
+void ImFusion::GUI::Menu::insertItem (Item && item, int position = -1)
+```
+
+Insert an existing item into the list of actions at the given *position*.
+
+Will insert to the end if *position* is negative.

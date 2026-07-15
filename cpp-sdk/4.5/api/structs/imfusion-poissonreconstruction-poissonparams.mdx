@@ -1,0 +1,74 @@
+---
+title: "ImFusion::PoissonReconstruction::PoissonParams"
+sidebarTitle: "PoissonParams"
+description: "Parameters for Poisson reconstruction."
+---
+
+`#include <ImFusion/Mesh/PoissonReconstruction.h>`
+
+## Overview
+
+Parameters for Poisson reconstruction.
+
+## Public Attributes
+
+- int [depth](#depth) — Maximum depth of the tree that will be used for surface reconstruction.
+- int **kernelDepth**
+- int **iters** — Specifies the number of Gauss-Seidel relaxations to be performed at each level of the octree hierarchy.
+- int **boundaryType** — Boundary type for the finite elements. Valid values are: 0 : Free boundary constraints; -1 : Dirichlet boundary constraints; 1 : Neumann boundary constraints.
+- float [samplesPerNode](#samplespernode) — This floating point value specifies the minimum number of sample points that should fall within an octree node as the octree construction is adapted to sampling density.
+- float **scale** — Specifies the ratio between the diameter of the cube used for reconstruction and the diameter of the samples' bounding cube.
+- float **solverAccuracy** — CG solver accuracy.
+- float [pointWeight](#pointweight) — Specifies the importance that interpolation of the point samples is given in the formulation of the screened Poisson equation.
+- bool **showResidual**
+- float **confidence** — Specifies the exponent to be applied to a point's confidence to adjust its weight. (A point's confidence is defined by the magnitude of its normal.).
+- bool **density** — Enabling this flag tells the reconstructor to output the estimated depth values of the iso-surface vertices.
+- bool **verbose** — Enabling this flag provides a more verbose description of the running times and memory usages of individual components of the surface reconstructor.
+- float **width** — Specifies the target width of the finest level octree cells. This parameter is ignored if the 'depth' is also specified (greater or equal to 0).
+- bool **inCore**
+- float **confidenceBias** — Specifies the exponent to be applied to a point's confidence to bias the resolution at which the sample contributes to the linear system. (Points with lower confidence are biased to contribute at coarser resolutions.).
+- float **dataX** — Pull factor.
+- bool **colors** — Enabling this flag tells the reconstructor to read in color values with the input points and extrapolate those to the vertices of the output.
+- bool **normals** — Enabling this flag tells the reconstructor to output vertex normals, computed from the gradients of the implicit function.
+- bool **exactInterpolation**
+- int **baseDepth** — Coarse MG solver depth.
+- int **fullDepth**
+- int **baseVCycles** — Coarse MG solver V-cycles.
+- bool **linearFit** — Enabling this flag has the reconstructor use linear interpolation to estimate the positions of iso - vertices.
+- int **degree** — Degree of the B-spline that is to be used to define the finite elements system. Larger degrees support higher order approximations, but come at the cost of denser system matrices (incurring a cost in both space and time).
+- int **maxMemoryGB** — If positive, this integer value specifies the peak memory utilization for running the reconstruction code (forcing the execution to terminate if the limit is exceeded).
+- [DensityThresholdMode](/cpp-sdk/4.5/api/namespaces/imfusion-poissonreconstruction) **densityThresholdMode** — Mode of thresholding.
+- float **densityThreshold** — Density threshold for selected thresholding mode.
+- bool **useDensityToColor** — Use mapping of density information to replace colors.
+
+## Member Data Documentation
+
+### depth
+
+```cpp
+int ImFusion::PoissonReconstruction::PoissonParams::depth
+```
+
+Maximum depth of the tree that will be used for surface reconstruction.
+
+Running at depth d corresponds to solving on a grid whose resolution is no larger than 2^d x 2^d x ... Note that since the reconstructor adapts the octree to the sampling density, the specified reconstruction depth is only an upper bound
+
+### samplesPerNode
+
+```cpp
+float ImFusion::PoissonReconstruction::PoissonParams::samplesPerNode
+```
+
+This floating point value specifies the minimum number of sample points that should fall within an octree node as the octree construction is adapted to sampling density.
+
+For noise-free samples, small values in the range [1.0 - 5.0] can be used. For more noisy samples, larger values in the range [15.0 - 20.0] may be needed to provide a smoother, noise-reduced, reconstruction.
+
+### pointWeight
+
+```cpp
+float ImFusion::PoissonReconstruction::PoissonParams::pointWeight
+```
+
+Specifies the importance that interpolation of the point samples is given in the formulation of the screened Poisson equation.
+
+The results of the original(unscreened) Poisson Reconstruction can be obtained by setting this value to 0

@@ -1,0 +1,42 @@
+---
+title: "ImFusion::DataHashAlgorithm"
+sidebarTitle: "DataHashAlgorithm"
+description: "Algorithm to compute a hash from image data."
+---
+
+`#include <ImFusion/Base/DataHashAlgorithm.h>`
+
+## Overview
+
+[Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) to compute a hash from image data.
+
+It calculates a hash and stores it in the hash parameter of this algorithm, allowing to e.g. save a workspace with it, such that on re-creating the algorithm the data is automatically validated.
+
+## Public Member Functions
+
+- **DataHashAlgorithm** (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) &data)
+- void [compute](#compute) () override — Execute the algorithm.
+
+## Static Public Member Functions
+
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=nullptr)
+- static uint64_t **compute** (const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &sis) — Compute the hash of an image data set (multiple frames are supported).
+- static uint64_t **compute** (const [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) &mi) — Compute the hash of a single image.
+
+## Public Attributes
+
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; uint64_t &gt; **p_hash** = &#123;"hash", 0, this&#125;
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; bool &gt; **p_hashDefined** = &#123;"hashDefined", false, this&#125;
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; bool &gt; **p_errorOnInconsistency** = &#123;"errorOnInconsistency", true, this&#125;
+
+## Member Function Documentation
+
+### compute
+
+```cpp
+void ImFusion::DataHashAlgorithm::compute ()
+```
+
+*override, virtual*
+
+Execute the algorithm.

@@ -1,0 +1,98 @@
+---
+title: "ImFusion::BakeDeformationAlgorithm"
+sidebarTitle: "BakeDeformationAlgorithm"
+description: "Algorithm for baking in an image deformation while adjusting the size to encompass the full deformation."
+---
+
+`#include <ImFusion/GL/BakeDeformationAlgorithm.h>`
+
+## Overview
+
+[Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) for baking in an image deformation while adjusting the size to encompass the full deformation.
+
+## Public Member Functions
+
+- [BakeDeformationAlgorithm](#bakedeformationalgorithm) ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &imgs, [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*ref=nullptr) — Creates the algorithm instance with a data.
+- **~BakeDeformationAlgorithm** () override — Deletes owned resources.
+
+## Methods implementing the algorithm interface
+
+- void [compute](#compute) () override — Applies the processing.
+- [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) [takeOutput](#takeoutput) () override — If new data was created, make it available here.
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Apply configuration.
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Configures the algorithm.
+- void **setInput** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &newInput) — Replaces the input of the algorithm.
+- void **setNearestInterpolation** (bool val=false) — Configures whether nearest interpolation is used, or linear in case of false.
+- void **setAdjustSize** (bool val=true) — Configures whether the resulting image should adjust its size to encompass the deformation.
+- void **setSamplerWrapping** ([GL::Sampler::Wrap](/cpp-sdk/4.5/api/classes/imfusion-gl-sampler) samplerWrapping) — Set sampler wrapping.
+- void **setBorderColor** (const vec4f &color) — Set border color in case sampler wrapping is ClampToEdge.
+- void **setUseCPU** (bool val=true) — Set if the algorithm should run on CPU.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) &gt; **applyTo** (int i) — Apply Deformations to [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) i in the [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) given in the constructor returns a pointer to a newly created [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage), ensure that it gets owned by a unique_ptr Note: requires estimateOutputSize(i) to have been run before.
+- void **estimateOutputSize** (int i) — Estimates the output size by running deformations on the edge surfaces.
+- static bool [createCompatible](#createcompatible) (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=0)
+
+## Constructor & Destructor Documentation
+
+### BakeDeformationAlgorithm
+
+```cpp
+ImFusion::BakeDeformationAlgorithm::BakeDeformationAlgorithm (SharedImageSet & imgs, SharedImageSet * ref = nullptr)
+```
+
+Creates the algorithm instance with a data.
+
+**Parameters:**
+
+- `ref` — - if not nullptr, the output image will have the same position as the reference image, else the output location is estimated.
+
+## Member Function Documentation
+
+### createCompatible
+
+```cpp
+bool ImFusion::BakeDeformationAlgorithm::createCompatible (const DataList & data, Algorithm ** a = 0)
+```
+
+*static*
+
+Factory method to check for applicability or to create the algorithm
+
+### compute
+
+```cpp
+void ImFusion::BakeDeformationAlgorithm::compute ()
+```
+
+*override, virtual*
+
+Applies the processing.
+
+### takeOutput
+
+```cpp
+OwningDataList ImFusion::BakeDeformationAlgorithm::takeOutput ()
+```
+
+*override, virtual*
+
+If new data was created, make it available here.
+
+### configure
+
+```cpp
+void ImFusion::BakeDeformationAlgorithm::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Apply configuration.
+
+### configuration
+
+```cpp
+void ImFusion::BakeDeformationAlgorithm::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Configures the algorithm.

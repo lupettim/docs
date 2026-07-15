@@ -1,0 +1,30 @@
+---
+title: "ImFusion::TiffIO"
+sidebarTitle: "TiffIO"
+description: "Class for reading and writing TIFF images."
+---
+
+`#include <ImFusion/IO/TiffIO.h>`
+
+## Overview
+
+Class for reading and writing TIFF images.
+
+## Static Public Member Functions
+
+- static [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) &gt; &gt; [readImage](#readimage) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &filename, bool load32bitDataAsFloat=true) — Reads all images in the given Tiff file.
+- static bool **writeImage** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &filename, const [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) \*img)
+
+## Member Function Documentation
+
+### readImage
+
+```cpp
+std::vector < std::unique_ptr < MemImage > > ImFusion::TiffIO::readImage (const std::string & filename, bool load32bitDataAsFloat = true)
+```
+
+*static*
+
+Reads all images in the given Tiff file.
+
+Returns an empty vector in case of failure.

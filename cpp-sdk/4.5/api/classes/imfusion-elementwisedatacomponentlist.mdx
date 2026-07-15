@@ -1,0 +1,86 @@
+---
+title: "ImFusion::ElementwiseDataComponentList"
+sidebarTitle: "ElementwiseDataComponentList"
+description: "Class for managing multiple DataComponentLists for individual elements."
+---
+
+`#include <ImFusion/Base/ElementwiseDataComponentList.h>`
+
+## Overview
+
+Class for managing multiple DataComponentLists for individual elements.
+
+The purpose of the [ElementwiseDataComponentList](/cpp-sdk/4.5/api/classes/imfusion-elementwisedatacomponentlist) is to store individual DataComponentLists for a range of elements. Each element may store different [DataComponent](/cpp-sdk/4.5/api/classes/imfusion-datacomponent) of the same type. The elements in question may be individual images in [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset), or frames of a [TrackingSequence](/cpp-sdk/4.5/api/classes/imfusion-trackingsequence). For example, it is used for storing stream metadata, which may vary on a per-frame basis.
+
+This class implements a basic copy-on-write pattern for de-duplication of DataComponents of consecutive elements.
+
+**See also:** [ElementwiseDataComponentData](/cpp-sdk/4.5/api/classes/imfusion-elementwisedatacomponentdata)
+
+## Public Member Functions
+
+- **ElementwiseDataComponentList** ()=default — Creates a new [ElementwiseDataComponentList](/cpp-sdk/4.5/api/classes/imfusion-elementwisedatacomponentlist) for the given data.
+- **ElementwiseDataComponentList** (const ElementwiseDataComponentList &rhs)
+- ElementwiseDataComponentList & **operator=** (const ElementwiseDataComponentList &rhs)
+- **ElementwiseDataComponentList** (ElementwiseDataComponentList &&other) noexcept
+- ElementwiseDataComponentList & **operator=** (ElementwiseDataComponentList &&other) noexcept
+- void **add** (const [DataComponentList](/cpp-sdk/4.5/api/classes/imfusion-datacomponentlist) &dcl) — Add a new element with the given list of DataComponents.
+- void **set** (int index, const [DataComponentList](/cpp-sdk/4.5/api/classes/imfusion-datacomponentlist) &dcl) — Set the DataComponents of the specified index, growing the list if necessary.
+- [DataComponentList](/cpp-sdk/4.5/api/classes/imfusion-datacomponentlist) & [mutableElement](#mutableelement) (int which) — Returns a reference to the specified list, or an empty list if the index is outside the range.
+- const [DataComponentList](/cpp-sdk/4.5/api/classes/imfusion-datacomponentlist) & **element** (int which) const — Returns a const reference to the specified list, or an empty list if the index is outside the range.
+- void **clear** () — Clear all recorded data components.
+- int **size** () const — Returns the number of DataComponentLists.
+- void **removeElement** (int index, int count=1) — Remove *count* elements starting at the specified index.
+- void **sortElements** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; int &gt; &indexMap) — Sort elements according to the provided index map.
+- void [forEach](#foreach) (const [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; void([DataComponentList](/cpp-sdk/4.5/api/classes/imfusion-datacomponentlist) &dcl)&gt; &lambda) — Perform an action on each stored DataComponentLists, regardless for how many elements each is valid for.
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+## Member Function Documentation
+
+### mutableElement
+
+```cpp
+DataComponentList & ImFusion::ElementwiseDataComponentList::mutableElement (int which)
+```
+
+Returns a reference to the specified list, or an empty list if the index is outside the range.
+
+**Note:** The return value might be changed by the caller, which will invalidate the internal de-duplication scheme. Therefore, this function is more expensive than the const element() accessor as it may spawn internal copying.
+
+### forEach
+
+```cpp
+void ImFusion::ElementwiseDataComponentList::forEach (const std::function < void(DataComponentList &dcl)> & lambda)
+```
+
+Perform an action on each stored DataComponentLists, regardless for how many elements each is valid for.
+
+Helpful due to the otherwise hidden de-duplication scheme since element() is const, and performing changes using [mutableElement()](#mutableelement) will cause duplication.
+
+### configure
+
+```cpp
+void ImFusion::ElementwiseDataComponentList::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### configuration
+
+```cpp
+void ImFusion::ElementwiseDataComponentList::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality

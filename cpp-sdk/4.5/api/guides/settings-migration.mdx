@@ -1,0 +1,110 @@
+---
+title: "Settings Migration Guide"
+description: "We have introduced a new persistent settings framework which will replace Qt/QSettings within our SDK."
+---
+
+We have introduced a new persistent settings framework which will replace Qt/QSettings within our SDK.
+
+This is intended to allows us to further decouple the SDK from Qt, while hopefully also providing a more intuitive and powerful way to manage settings. We also used this opportunity to refactor other settings-related infrastructure, such as the [Settings](/cpp-sdk/4.5/api/classes/imfusion-settings) and [SettingsDialog](/cpp-sdk/4.5/api/classes/imfusion-settingsdialog) classes. Deprecation layers are provided for the new interfaces, so breaking changes should be minimal.
+
+### Base Settings
+
+Previously, the [Settings](/cpp-sdk/4.5/api/classes/imfusion-settings) class had three responsibilities:
+
+1. Managing a set of "base" settings for ImFusionLib.
+2. Providing an interface for registering new settings so they can be shown in the [SettingsDialog](/cpp-sdk/4.5/api/classes/imfusion-settingsdialog).
+3. Providing a wrapper for QSettings through [Settings::Setting](/cpp-sdk/4.5/api/classes/imfusion-settings-setting).
+
+After the refactor, only the first of these responsibilities remains. You may continue using the base settings as before:
+
+```cpp
+bool showToolbarText = Settings().showToolbarText; // read from global settings
+Settings().showToolbarText = true;                 // write to global settings
+```
+ fragment
+[Settings::Setting](/cpp-sdk/4.5/api/classes/imfusion-settings-setting) is deprecated, but the instances in [Settings](/cpp-sdk/4.5/api/classes/imfusion-settings) will remain and can be accessed without deprecation warnings. These will be migrated later along with redistributing some of the settings to other places.
+
+See Settings Dialog for information on interaction with the [SettingsDialog](/cpp-sdk/4.5/api/classes/imfusion-settingsdialog).
+
+### Plugin Settings
+
+Instead of inheriting from [Settings](/cpp-sdk/4.5/api/classes/imfusion-settings), plugin settings now should be simple [Configurable](/cpp-sdk/4.5/api/classes/imfusion-configurable)*Configurables* which call GlobalSettings::load(\*this) in their constructors and GlobalSettings::store(\*this) in their destructors:
+
+```cpp
+class MyPluginSettings : public Configurable
+{
+public:
+  MyPluginSettings() { GlobalSettings::load(*this); }
+  ~MyPluginSettings() { GlobalSettings::store(*this); }
+
+  Parameter<bool> boolSetting{"boolSetting", false, this};
+  Parameter<vec4> vec4Setting{"vec4Setting", vec4(0, 0, 0, 0), this};
+};
+```
+ fragment
+You can then use this settings class exactly as before:
+
+```cpp
+MyPluginSettings settings;
+bool b = settings.boolSetting;           // read from global settings on construction of the settings object
+settings.vec4Setting = vec4(1, 2, 3, 4); // written to global settings on destruction of the settings object
+```
+ fragment
+You can also set the attributes for you Parameters in the constructor in case you want to create automatically generated UI using the [SettingsDialog](/cpp-sdk/4.5/api/classes/imfusion-settingsdialog), or directly with the [PropertiesWidget](/cpp-sdk/4.5/api/classes/imfusion-propertieswidget). If you want your settings to show up in the [SettingsDialog](/cpp-sdk/4.5/api/classes/imfusion-settingsdialog), you must register them.
+
+### Settings Dialog
+
+Some settings such as the ones in [Settings](/cpp-sdk/4.5/api/classes/imfusion-settings) are automatically shown in the [SettingsDialog](/cpp-sdk/4.5/api/classes/imfusion-settingsdialog). To add your own custom settings you should use:
+
+```cpp
+SettingsDialog::addCustomSettings<MyPluginSettings>();
+```
+ fragment
+This way there will be an automatically generated widget for your settings in the [Settings](/cpp-sdk/4.5/api/classes/imfusion-settings) Dialog. You can also specify your own custom widget:
+
+```cpp
+SettingsDialog::addCustomSettingsWidget<MyPluginSettings, MyPluginSettingsWidget>();
+```
+ fragment
+You can also show only a subset of your settings by providing the [SettingsDialog](/cpp-sdk/4.5/api/classes/imfusion-settingsdialog) with a [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) instance instead. Note that only the settings that are registered with the [SettingsDialog](/cpp-sdk/4.5/api/classes/imfusion-settingsdialog) will be shown in the dialog, even if the settings storage on the system contains other parameters for the same [Configurable](/cpp-sdk/4.5/api/classes/imfusion-configurable).
+
+### Decoupling Settings from Logic
+
+While you can put settings in a central place and access them in your code, this approach is bad practice if you're writing library code. Persistent settings are inherently side-effects and are best avoided in a library when possible. Instead consider having the settings you depend on as parameters for your classes in the library, and load them in the concrete application.
+
+The new [GlobalSettings](/cpp-sdk/4.5/api/classes/imfusion-globalsettings) allows you to easily configure these parameters from the settings storage:
+
+```cpp
+// === Library code ===
+class MyClass : public Configurable
+{
+public:
+ void doComplexStuff()
+  {
+ if(boolSetting)
+    {
+ // do stuff
+    }
+  }
+
+  Parameter<bool> boolSetting{"boolSetting", false, this};
+};
+
+// === Application code ===
+MyClass myClass;
+GlobalSettings::load(myClass);
+myClass.doComplexStuff();
+```
+ fragment
+This way the behavior of MyClass is always deterministic/reproducible, and the outside application decides if and when it is configured from the global settings storage.
+
+### Loading and Storing Values
+
+[GlobalSettings](/cpp-sdk/4.5/api/classes/imfusion-globalsettings) provides an interface to load an store individual values based on a simple name string similar to QSettings:
+
+```cpp
+GlobalSettings::storeValue("myValues/answer", 42);
+std::optional<int> answer = GlobalSettings::loadValue<int>("myValues/answer");
+```
+ fragment
+While this is very flexible, it's recommended to use the [Configurable](/cpp-sdk/4.5/api/classes/imfusion-configurable) interfaces of [GlobalSettings](/cpp-sdk/4.5/api/classes/imfusion-globalsettings) instead to avoid problems with typos and duplication.

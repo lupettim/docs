@@ -1,0 +1,33 @@
+---
+title: "ImFusion::DescriptorsRegistrationController"
+sidebarTitle: "DescriptorsRegistrationController"
+---
+
+## Public Member Functions
+
+- **DescriptorsRegistrationController** ([DescriptorsRegistrationAlgorithm](/cpp-sdk/4.5/api/classes/imfusion-descriptorsregistrationalgorithm) \*alg)
+- void [init](#init) () override — Two-step initialization function to be implemented by subclasses.
+- void **setSimplifiedMode** (bool simplified)
+- void **setPointHandlers** ([std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [PointsOnImage](/cpp-sdk/4.5/api/classes/imfusion-pointsonimage) &gt; poi, [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [PointsOnDataManipulator](/cpp-sdk/4.5/api/classes/imfusion-pointsondatamanipulator) &gt; podm)
+- void **updateUndoRedoButtons** ()
+- void **updatePropertiesWidgets** ()
+
+## Protected Slots
+
+- void **exportDescriptors** ()
+- void **localRegistration** ()
+- void **globalRegistration** ()
+
+## Member Function Documentation
+
+### init
+
+```cpp
+void ImFusion::DescriptorsRegistrationController::init ()
+```
+
+*override, virtual*
+
+Two-step initialization function to be implemented by subclasses.
+
+This function is called by [setMainWindowBase()](/cpp-sdk/4.5/api/classes/imfusion-controller) after the [m_disp](/cpp-sdk/4.5/api/classes/imfusion-controller) and [m_main](/cpp-sdk/4.5/api/classes/imfusion-controller) attributes have been set and hence a complete initialization of the controller is possible at this point.

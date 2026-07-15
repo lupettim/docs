@@ -1,0 +1,49 @@
+---
+title: "ImFusion::Dicom::OverlayDataComponent"
+sidebarTitle: "OverlayDataComponent"
+description: "DataComponent providing DICOM overlays."
+---
+
+`#include <ImFusion/Dicom/DicomOverlayDataComponent.h>`
+
+## Overview
+
+[DataComponent](/cpp-sdk/4.5/api/classes/imfusion-datacomponent) providing DICOM overlays.
+
+**See also:** [OverlayAnnotation](/cpp-sdk/4.5/api/classes/imfusion-dicom-overlayannotation), OverlayAnnotationDataController
+
+## Public Member Functions
+
+- int **numOverlays** () const
+- [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \* **overlay** (int frame) const
+- Eigen::Vector2i **overlayOrigin** (int frame) const
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **overlayType** (int frame) const
+- void **addOverlay** ([std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) &gt; overlay, const Eigen::Vector2i &origin, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &type)
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; DataComponentBase &gt; [clone](#clone) () const override — Creates a clone of this data component.
+- bool [assign](#assign) (const DataComponentBase &other) override — Assigns the content of *other* to this data component.
+
+## Member Function Documentation
+
+### clone
+
+```cpp
+std::unique_ptr < DataComponentBase > ImFusion::Dicom::OverlayDataComponent::clone () const
+```
+
+*override, virtual*
+
+Creates a clone of this data component.
+
+### assign
+
+```cpp
+bool ImFusion::Dicom::OverlayDataComponent::assign (const DataComponentBase & other)
+```
+
+*override, virtual*
+
+Assigns the content of *other* to this data component.
+
+**Parameters:**
+
+- `other` — Source data component for assignment.

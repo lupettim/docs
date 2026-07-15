@@ -1,0 +1,187 @@
+---
+title: "ImFusion::GlView"
+sidebarTitle: "GlView"
+description: "Base class for implementing OpenGL views."
+---
+
+`#include <ImFusion/GL/GlView.h>`
+
+## Overview
+
+[Base](/cpp-sdk/4.5/api/structs/imfusion-dicom-base) class for implementing OpenGL views.
+
+A [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) represents an OpenGL [Viewport](/cpp-sdk/4.5/api/structs/imfusion-gl-viewport), i.e. a rectangular drawing area on the screen. Each [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) contains a matrix that converts view coordinates to world coordinates (camera located in the origin, looking down the negative z-axis). In order to map the 3D view coordinates to the 2D screen, each view internally uses a projection matrix converting view coordinates to clip coordinates (visible objects will be in a cube of -1 to 1 side length). You can access view and projection matrices through the [GL::ViewState](/cpp-sdk/4.5/api/classes/imfusion-gl-viewstate) object that is updated during every render call.
+
+The view is aware of the width and height of the viewport but it will not set glViewport. Thus, the actual glViewport must be set before calling [render()](#render).
+
+Derived classes shall draw all GlObjects of the view with the current view- and projection matrix in the current viewport on [render()](#render). Furthermore, they must set the [GL::ViewState](/cpp-sdk/4.5/api/classes/imfusion-gl-viewstate) correctly.
+
+Usually a [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) is wrapped by an [InteractiveView](/cpp-sdk/4.5/api/classes/imfusion-interactiveview) to allow for handling user input events and for putting it into a [DisplayWidget](/cpp-sdk/4.5/api/classes/imfusion-displaywidget).
+
+**Examples:** [MyCustomGlObject.cpp](/cpp-sdk/4.5/api/examples/my-custom-gl-object-8cpp), and [MyCustomGlObject.h](/cpp-sdk/4.5/api/examples/my-custom-gl-object-8h).
+
+## Classes
+
+- class [ViewStateGuard](/cpp-sdk/4.5/api/classes/imfusion-glview-viewstateguard) — Temporarily changes the [GL::ViewState](/cpp-sdk/4.5/api/classes/imfusion-gl-viewstate) of a [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) and resetting to the original value on destruction.
+
+## Public Types
+
+- enum [Type](#type) &#123; SLICE2D = 0 , SLICE3D = 1 , SPACE3D = 2 , OTHER = 3 &#125; — [Type](#type) of the view.
+
+## Public Member Functions
+
+- virtual bool [render](#render) ()=0 — Render scene. glViewport must be set before. Called with valid OpenGL context.
+- virtual [Type](#type) [type](#type) () const =0 — Return the type of this view.
+- virtual void [setMatrix](#setmatrix) (const mat4 &mat) — Sets the view matrix (view coordinates to world coordinates).
+- virtual const mat4 & [matrix](#matrix) () const — Returns the current view matrix (view coordinates to world coordinates).
+- virtual void [resize](#resize) (int width, int height) — Set a new viewport size for this view.
+- virtual const [GL::OrderIndependentTransparency](/cpp-sdk/4.5/api/classes/imfusion-gl-orderindependenttransparency) \* [orderIndependentTransparency](#orderindependenttransparency) () const — Returns the optional OIT manager instance of the view if the feature is supported and enabled.
+- int **height** () const — Current viewport height of the view.
+- int **width** () const — Current viewport width of the view.
+- void [addObject](#addobject) ([GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) \*object) — Register a renderable scene object to be drawn by this [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview).
+- void [removeObject](#removeobject) (const [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) \*object) — Unregister a previously added scene object drawn by this view.
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) \* &gt; & [objects](#objects) () const — Returns all currently registered [GlObjects](/cpp-sdk/4.5/api/classes/imfusion-globject) of this view.
+- const [GL::ViewState](/cpp-sdk/4.5/api/classes/imfusion-gl-viewstate) & **state** () const — Return the view state that was set during the last [render()](#render) call.
+
+## Protected Member Functions
+
+- [GL::OrderIndependentTransparency](/cpp-sdk/4.5/api/classes/imfusion-gl-orderindependenttransparency) \* [sharedOitInstance](#sharedoitinstance) () const — Offers support for GlViews sharing [GL::OrderIndependentTransparency](/cpp-sdk/4.5/api/classes/imfusion-gl-orderindependenttransparency) instances to reduce GPU memory consumption.
+
+## Protected Attributes
+
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) \* &gt; **m_objects** — Other objects to consider during rendering.
+- mat4 **m_matrix** = mat4::Identity() — Matrix converting view coordinates to world coords (inverse of a traditional OpenGL view matrix).
+- [GL::ViewState](/cpp-sdk/4.5/api/classes/imfusion-gl-viewstate) **m_state** — OpenGL state describing viewport, projection and model-view matrix of last render call.
+- int **m_width** = 0
+- int **m_height** = 0
+
+## Member Enumeration Documentation
+
+### Type
+
+```cpp
+enum ImFusion::GlView::Type
+```
+
+[Type](#type) of the view.
+
+**Enumerator:**
+
+- `SLICE2D` — 2D slice view
+- `SLICE3D` — 3D MPR slice view
+- `SPACE3D` — 3D volume view
+- `OTHER` — Other/unknown kind of view.
+
+## Member Function Documentation
+
+### render
+
+```cpp
+virtual bool ImFusion::GlView::render ()
+```
+
+*pure virtual*
+
+Render scene. glViewport must be set before. Called with valid OpenGL context.
+
+### type
+
+```cpp
+virtual Type ImFusion::GlView::type () const
+```
+
+*pure virtual*
+
+Return the type of this view.
+
+### setMatrix
+
+```cpp
+virtual void ImFusion::GlView::setMatrix (const mat4 & mat)
+```
+
+*inline, virtual*
+
+Sets the view matrix (view coordinates to world coordinates).
+
+### matrix
+
+```cpp
+virtual const mat4 & ImFusion::GlView::matrix () const
+```
+
+*inline, virtual*
+
+Returns the current view matrix (view coordinates to world coordinates).
+
+### resize
+
+```cpp
+virtual void ImFusion::GlView::resize (int width, int height)
+```
+
+*virtual*
+
+Set a new viewport size for this view.
+
+Updates the width and height properties but does not change the glViewport. Depending on the view type, this may also update the view matrix.
+
+### orderIndependentTransparency
+
+```cpp
+virtual const GL::OrderIndependentTransparency * ImFusion::GlView::orderIndependentTransparency () const
+```
+
+*inline, virtual*
+
+Returns the optional OIT manager instance of the view if the feature is supported and enabled.
+
+A GlView may choose to support correct order-independent blending of semi-transparent surfaces of scene objects. In this case it should override this function to return its corresponding [GL::OrderIndependentTransparency](/cpp-sdk/4.5/api/classes/imfusion-gl-orderindependenttransparency) instance. Draw calls of GlObjects can query OIT support through this function and use the pointer to setup their shaders so that it writes semi-transparent fragments to the OIT buffer which the view will ultimately resolve at the end of the render pass.
+
+### addObject
+
+```cpp
+void ImFusion::GlView::addObject (GlObject * object)
+```
+
+Register a renderable scene object to be drawn by this [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview).
+
+This function is in the [GL](/cpp-sdk/4.5/api/namespaces/imfusion-gl) layer and registers only the renderer. If *object* is originally wrapped in a [GUI::ViewObject](/cpp-sdk/4.5/api/classes/imfusion-gui-viewobject) to implement event handling logic you must instead register it in the [GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui) layer via [GUI::View::addObject()](/cpp-sdk/4.5/api/classes/imfusion-gui-view).
+
+**See also:** [removeObject()](#removeobject), [objects()](#objects)
+
+### removeObject
+
+```cpp
+void ImFusion::GlView::removeObject (const GlObject * object)
+```
+
+Unregister a previously added scene object drawn by this view.
+
+**Note:** *object* must have been added previously via [GlView::addObject()](#addobject) and *not* via [GUI::View::addObject()](/cpp-sdk/4.5/api/classes/imfusion-gui-view).
+
+**See also:** [addObject()](#addobject), [objects()](#objects)
+
+### objects
+
+```cpp
+const std::vector < GlObject * > & ImFusion::GlView::objects () const
+```
+
+*inline*
+
+Returns all currently registered [GlObjects](/cpp-sdk/4.5/api/classes/imfusion-globject) of this view.
+
+**See also:** [addObject()](#addobject), [removeObject()](#removeobject)
+
+### sharedOitInstance
+
+```cpp
+GL::OrderIndependentTransparency * ImFusion::GlView::sharedOitInstance () const
+```
+
+*protected*
+
+Offers support for GlViews sharing [GL::OrderIndependentTransparency](/cpp-sdk/4.5/api/classes/imfusion-gl-orderindependenttransparency) instances to reduce GPU memory consumption.
+
+Internally, this function will use the [GL::InstanceManager](/cpp-sdk/4.5/api/classes/imfusion-gl-instancemanager) interface to manage the internal caching. Usage of this class must be limited to a single [GlView::render()](#render) call in order to ensure that multiple views sharing the same instance do not compromise each other. This function will return nullptr if OIT is not supported.

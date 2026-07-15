@@ -1,0 +1,134 @@
+---
+title: "ImFusion::GUI::QtDisplayWindow"
+sidebarTitle: "QtDisplayWindow"
+description: "Specialization of a QWindow that allows for rendering the contents of a Display directly into the window framebuffer."
+---
+
+`#include <ImFusion/GUI/QtDisplayWindow.h>`
+
+## Overview
+
+Specialization of a QWindow that allows for rendering the contents of a [Display](/cpp-sdk/4.5/api/classes/imfusion-gui-display) directly into the window framebuffer.
+
+Using a QWindow as backend is the most flexible approach as it should support integration into either a QtWidgets-based application, into a QML-based application, or as a freestanding window. Other integrations such as the [QtDisplayWidget](/cpp-sdk/4.5/api/classes/imfusion-gui-qtdisplaywidget) may perform better depending on your use case.
+
+**Warning:** Make sure you understand and follow the constraints/expected class invariants regarding the used OpenGL contexts by both the ImFusion SDK and by QOpenGLWidget described below.
+
+[QtDisplayWindow](/cpp-sdk/4.5/api/classes/imfusion-gui-qtdisplaywindow) will always use [main context](/cpp-sdk/4.5/api/classes/imfusion-gl-contextmanager) of the ImFusion SDK for rendering. Due to limitations of the underlying QWindow this main context **must** be of type [GlContextQt](/cpp-sdk/4.5/api/classes/imfusion-glcontextqt). Thus, you must use that during SDK initialization, for instance:
+
+```cpp
+// Initialize the SDK with a GlContextQt as main context
+GL::Context::CreateInfo glCreateInfo = ...;
+Framework::InitConfig sdkInitConfig;
+sdkInitConfig.glContext = std::make_unique<GlContextQt>(glCreateInfo);
+Framekwork::init(std::move(sdkInitConfig));
+```
+ fragment
+Furthermore, this class requires a two-step initialization process: you must call [init()](#init) once the main context has been initialized. If you are embedding this class into a QtWidgets-based application using QWidget::createWindowContainer() you should do this before calling [init()](#init) unless you use an old Qt version.
+
+**See also:** [QtDisplayWidget](/cpp-sdk/4.5/api/classes/imfusion-gui-qtdisplaywidget)
+
+## Public Member Functions
+
+- [QtDisplayWindow](#qtdisplaywindow) ([Display](/cpp-sdk/4.5/api/classes/imfusion-gui-display) &[display](/cpp-sdk/4.5/api/classes/imfusion-gui-qtdisplaywrapperbase), QWindow \*parent=nullptr) — Create a new [QtDisplayWindow](/cpp-sdk/4.5/api/classes/imfusion-gui-qtdisplaywindow) showing the given *display*.
+- void [init](#init) () — Initialize the underlying window/display surface with the format of the main OpenGL context.
+- void [deinit](#deinit) () — Deinitialize the surface, which will effectively disable any rendering.
+- void **render** ()
+- bool **event** (QEvent \*event) override
+- void **resizeEvent** (QResizeEvent \*event) override
+- QPointF [mapToGlobal](#maptoglobal) (const QPointF &pos) const final override — Implementations shall forward to Qt's [mapToGlobal()](#maptoglobal) function of the wrapper class.
+
+## Protected Member Functions
+
+- void [onDisplayUpdateRequested](#ondisplayupdaterequested) () final override — Implementations shall make Qt rerender the display.
+- double [getDevicePixelRatio](#getdevicepixelratio) () const final override — Return the device pixel ratio of the screen the display is shown on.
+- int [getHeight](#getheight) () const final override — Return the height of the display wrapper in pixels.
+- void [setCursor](#setcursor) (const QCursor &cursor) final override — Implementations shall forward to Qt's [setCursor()](#setcursor) function of the wrapper class.
+
+## Constructor & Destructor Documentation
+
+### QtDisplayWindow
+
+```cpp
+ImFusion::GUI::QtDisplayWindow::QtDisplayWindow (Display & display, QWindow * parent = nullptr)
+```
+
+Create a new [QtDisplayWindow](/cpp-sdk/4.5/api/classes/imfusion-gui-qtdisplaywindow) showing the given *display*.
+
+**Exceptions:**
+
+- `std::runtime_error` — if the [GL::ContextManager::mainContext()](/cpp-sdk/4.5/api/classes/imfusion-gl-contextmanager) is not a [GlContextQt](/cpp-sdk/4.5/api/classes/imfusion-glcontextqt) (see class description).
+
+## Member Function Documentation
+
+### init
+
+```cpp
+void ImFusion::GUI::QtDisplayWindow::init ()
+```
+
+Initialize the underlying window/display surface with the format of the main OpenGL context.
+
+**Note:** If you are embedding [QtDisplayWindow](/cpp-sdk/4.5/api/classes/imfusion-gui-qtdisplaywindow) into a QtWidgets-based application we recommend:
+- With Qt versions newer or equal than 5.9 you must call this function **after** calling QWidget::createWindowContainer().
+- With Qt versions older than 5.9 you must call this function **before** calling QWidget::createWindowContainer().
+
+### deinit
+
+```cpp
+void ImFusion::GUI::QtDisplayWindow::deinit ()
+```
+
+Deinitialize the surface, which will effectively disable any rendering.
+
+This function is called implicitly by the destructor.
+
+### mapToGlobal
+
+```cpp
+QPointF ImFusion::GUI::QtDisplayWindow::mapToGlobal (const QPointF & pos) const
+```
+
+*final, override, virtual*
+
+Implementations shall forward to Qt's [mapToGlobal()](#maptoglobal) function of the wrapper class.
+
+### onDisplayUpdateRequested
+
+```cpp
+void ImFusion::GUI::QtDisplayWindow::onDisplayUpdateRequested ()
+```
+
+*final, override, protected, virtual*
+
+Implementations shall make Qt rerender the display.
+
+### getDevicePixelRatio
+
+```cpp
+double ImFusion::GUI::QtDisplayWindow::getDevicePixelRatio () const
+```
+
+*final, override, protected, virtual*
+
+Return the device pixel ratio of the screen the display is shown on.
+
+### getHeight
+
+```cpp
+int ImFusion::GUI::QtDisplayWindow::getHeight () const
+```
+
+*final, override, protected, virtual*
+
+Return the height of the display wrapper in pixels.
+
+### setCursor
+
+```cpp
+void ImFusion::GUI::QtDisplayWindow::setCursor (const QCursor & cursor)
+```
+
+*final, override, protected, virtual*
+
+Implementations shall forward to Qt's [setCursor()](#setcursor) function of the wrapper class.

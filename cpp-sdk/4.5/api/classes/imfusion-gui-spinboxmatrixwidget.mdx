@@ -1,0 +1,32 @@
+---
+title: "ImFusion::GUI::SpinboxMatrixWidget"
+sidebarTitle: "SpinboxMatrixWidget"
+description: "QWidget that allows editing the elements of a matrix (vector) via QDoubleSpinBoxes."
+---
+
+`#include <ImFusion/GUI/SpinBoxMatrixWidget.h>`
+
+## Overview
+
+QWidget that allows editing the elements of a matrix (vector) via QDoubleSpinBoxes. Used by EigenMatrixParamControls.
+
+## Signals
+
+- void **matrixChanged** ()
+
+## Public Member Functions
+
+- **SpinboxMatrixWidget** (QWidget \*parent=nullptr)
+- void **setMatrix** (const Eigen::MatrixXd &newValue) — Setter/Getter pair for the matrix.
+- Eigen::MatrixXd **matrix** () const
+- Eigen::MatrixXd **resetMatrix** () const — Setter/Getter pair for the reset-matrix, i.e. the matrix that will be set when "Reset" is clicked (you should call setResetMatrix once before opening the widget).
+- void **setResetMatrix** (const Eigen::MatrixXd &)
+- void **setMaximum** (double max) — Setter/Getter for maximum value of SpinBoxes.
+- double **maximum** () const
+- void **setMinimum** (double min) — Setter for minimum value of SpinBoxes.
+- double **minimum** () const
+- void **setStep** (double step) — Setter/Getter for step value of SpinBoxes.
+- double **step** () const
+- void **setDecimals** (int decimals) — Setter/Getter for the number of decimal values.
+- int **decimals** () const
+- void **setReadOnly** (bool readOnly) — Makes the SpinBoxes values read-only or not.

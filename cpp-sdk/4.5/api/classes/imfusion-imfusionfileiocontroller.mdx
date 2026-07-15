@@ -1,0 +1,65 @@
+---
+title: "ImFusion::ImFusionFileIoController"
+sidebarTitle: "ImFusionFileIoController"
+description: "Dialog for adjusting image compression settings."
+---
+
+`#include <ImFusion/GUI/ImFusionFileIoController.h>`
+
+## Overview
+
+Dialog for adjusting image compression settings.
+
+## Public Slots
+
+- void **run** ()
+
+## Public Member Functions
+
+- **ImFusionFileIoController** ([ImFusionFileIoAlgorithm](/cpp-sdk/4.5/api/classes/imfusion-imfusionfileioalgorithm) \*io, QWidget \*parent=0) — Construct image compression dialog.
+- void [init](#init) () override — Two-step initialization function to be implemented by subclasses.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Location](/cpp-sdk/4.5/api/classes/imfusion-controller) &gt; [supportedLocations](#supportedlocations) () const override — Returns the list of locations in which this controller is allowed to be placed by the parent [MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase).
+- [Location](/cpp-sdk/4.5/api/classes/imfusion-controller) [preferredLocation](#preferredlocation) () const override — Returns the preferred location in which the parent [MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase) should place this controller.
+
+## Protected Attributes
+
+- [ImFusionFileIoAlgorithm](/cpp-sdk/4.5/api/classes/imfusion-imfusionfileioalgorithm) \* **m_io**
+- Ui_ImFusionFileIoController \* **m_ui**
+
+## Member Function Documentation
+
+### init
+
+```cpp
+void ImFusion::ImFusionFileIoController::init ()
+```
+
+*override, virtual*
+
+Two-step initialization function to be implemented by subclasses.
+
+This function is called by [setMainWindowBase()](/cpp-sdk/4.5/api/classes/imfusion-controller) after the [m_disp](/cpp-sdk/4.5/api/classes/imfusion-controller) and [m_main](/cpp-sdk/4.5/api/classes/imfusion-controller) attributes have been set and hence a complete initialization of the controller is possible at this point.
+
+### supportedLocations
+
+```cpp
+std::vector < Location > ImFusion::ImFusionFileIoController::supportedLocations () const
+```
+
+*override, virtual*
+
+Returns the list of locations in which this controller is allowed to be placed by the parent [MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase).
+
+If the controller should not be placed/wrapped by the host but stand by itself you should return a list containing only [Location::Naked](/cpp-sdk/4.5/api/classes/imfusion-controller).
+
+### preferredLocation
+
+```cpp
+Location ImFusion::ImFusionFileIoController::preferredLocation () const
+```
+
+*override, virtual*
+
+Returns the preferred location in which the parent [MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase) should place this controller.
+
+If the controller should not be placed/wrapped by the host but stand by itself you should return [Location::Naked](/cpp-sdk/4.5/api/classes/imfusion-controller).

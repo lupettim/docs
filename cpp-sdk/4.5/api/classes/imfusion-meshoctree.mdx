@@ -1,0 +1,73 @@
+---
+title: "ImFusion::MeshOctree"
+sidebarTitle: "MeshOctree"
+description: "Class representing a mesh octree."
+---
+
+`#include <ImFusion/Mesh/MeshOctree.h>`
+
+## Overview
+
+Class representing a mesh octree. Faces of the mesh are split between the nodes of the tree, each node represents a partition of the parent volume (minimum 1/8th).
+
+## Public Member Functions
+
+- **MeshOctree** (const [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) \*mesh)
+- bool [buildTree](#buildtree) (int depth) — Builds a tree from mesh faces.
+- double [distanceToPoint](#distancetopoint) (const vec3 &point, bool signedDistance, int \*closestFaceId) const — Compute distance from point to mesh.
+- bool [usesTriangleCache](#usestrianglecache) () const — Returns the flag whether to cache mesh triangles.
+- void [setUseTriangleCache](#setusetrianglecache) (bool value) — Sets the flag whether to cache mesh triangles.
+
+## Member Function Documentation
+
+### buildTree
+
+```cpp
+bool ImFusion::MeshOctree::buildTree (int depth)
+```
+
+Builds a tree from mesh faces.
+
+**Parameters:**
+
+- `depth` — Maximum level of recursive devision
+
+### distanceToPoint
+
+```cpp
+double ImFusion::MeshOctree::distanceToPoint (const vec3 & point, bool signedDistance, int * closestFaceId) const
+```
+
+Compute distance from point to mesh.
+
+**Parameters:**
+
+- `point` — Input point
+- `signedDistance` — Specifies whether the distance should be signed
+- `closestFaceId` — Id of the closest to the point face
+
+### usesTriangleCache
+
+```cpp
+bool ImFusion::MeshOctree::usesTriangleCache () const
+```
+
+*inline*
+
+Returns the flag whether to cache mesh triangles.
+
+**Note:** Only useful if you run multiple iterations of [distanceToPoint()](#distancetopoint) with the same octree.
+
+### setUseTriangleCache
+
+```cpp
+void ImFusion::MeshOctree::setUseTriangleCache (bool value)
+```
+
+*inline*
+
+Sets the flag whether to cache mesh triangles.
+
+Must be set before building the tree
+
+**Note:** Only useful if you run multiple iterations of [distanceToPoint()](#distancetopoint) with the same octree.

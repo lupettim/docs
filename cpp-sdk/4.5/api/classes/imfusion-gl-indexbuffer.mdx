@@ -1,0 +1,159 @@
+---
+title: "ImFusion::GL::IndexBuffer"
+sidebarTitle: "IndexBuffer"
+description: "Specialization of Buffer to store vertex index data ( GL_ELEMENT_ARRAY_BUFFER )."
+---
+
+`#include <ImFusion/Core/GL/IndexBuffer.h>`
+
+## Overview
+
+Specialization of [Buffer](/cpp-sdk/4.5/api/classes/imfusion-gl-buffer) to store vertex index data (GL_ELEMENT_ARRAY_BUFFER).
+
+Can be passed to a [GL::VertexBuffer::draw()](/cpp-sdk/4.5/api/classes/imfusion-gl-vertexbuffer) call for indexed rendering where the same vertex data can be used by multiple vertices to reduce memory usage.
+
+Example for rendering a quad using indexed rendering:
+
+```cpp
+// vertex data describing 4 vertices
+std::vector<vec2f> vertices = {
+    vec2f(-1.0, -1.0),
+    vec2f( 1.0, -1.0),
+    vec2f(-1.0,  1.0),
+    vec2f( 1.0,  1.0)
+};
+VertexBuffer vbo;
+vbo.bind();
+vbo.setData(vertices);
+
+// index data to render two triangles of 3 vertices each
+std::vector<uint16_t> indices = {
+    0, 1, 2, 1, 2, 3
+};
+IndexBuffer ibo;
+ibo.bind();
+ibo.setData(indices);
+
+// Note that this is an artificial example to showcase the usage of index buffers.
+// You could achieve the same rendering result with the vertex data only and using
+// the Primitive::TriangleStrip primitive instead.
+vbo.draw(Primitive::Triangles, ibo);
+```
+ fragment
+
+**Warning:** In WebGL, the PRIMITIVE_RESTART_FIXED_INDEX option is always enabled. If an index is the maximum for the data type (i.e. 0xFF, 0xFFFF or 0xFFFFFFFF), it is not treated as a regular index, but will restart the primitive. To maintain compatibility, make sure to only use indices smaller than the maximum and only use the maximum in setPrimitiveRestartIndex. See the [WebGL Spec](https://www.khronos.org/registry/webgl/specs/latest/2.0/#NO_PRIMITIVE_RESTART_FIXED_INDEX) for details.
+
+**See also:** - [VertexBuffer](/cpp-sdk/4.5/api/classes/imfusion-gl-vertexbuffer)
+- [https://www.khronos.org/opengl/wiki/Vertex_Specification#Index_buffers](https://www.khronos.org/opengl/wiki/Vertex_Specification#Index_buffers)
+
+## Public Member Functions
+
+- [IndexBuffer](#indexbuffer) ([Usage](/cpp-sdk/4.5/api/classes/imfusion-gl-buffer) [usageHint](/cpp-sdk/4.5/api/classes/imfusion-gl-buffer)=[Buffer::Usage::StaticDraw](/cpp-sdk/4.5/api/classes/imfusion-gl-buffer)) — Default constructs an empty index buffer.
+- uint32_t [primitiveRestartIndex](#primitiverestartindex) () const — Returns the OpenGL primitive restart index to use during indexed rendering.
+- void [setPrimitiveRestartIndex](#setprimitiverestartindex) (uint32_t value) — Sets the OpenGL primitive restart index to use during indexed rendering.
+- size_t **numElements** () const — Return the number of indices stored in the buffer.
+- PixelType **type** () const — Return the index data type.
+- void [setData](#setdata-1-4) ([Utils::Span](/cpp-sdk/4.5/api/classes/imfusion-utils-span)&lt; uint8_t &gt; indices) — Upload uint8_t vertex indices to the buffer.
+- void [setData](#setdata-2-4) ([Utils::Span](/cpp-sdk/4.5/api/classes/imfusion-utils-span)&lt; uint16_t &gt; indices) — Upload uint16_t vertex indices to the buffer.
+- void [setData](#setdata-3-4) ([Utils::Span](/cpp-sdk/4.5/api/classes/imfusion-utils-span)&lt; uint32_t &gt; indices) — Upload uint32_t vertex indices to the buffer.
+- void [setData](#setdata-4-4) ([Utils::Span](/cpp-sdk/4.5/api/classes/imfusion-utils-span)&lt; vec3i &gt; indices) — Upload **non-negative** int32_t triplets describing a series of triangles to the vertex index buffer.
+
+## Static Public Member Functions
+
+- static void **unbind** () — Unbind any bound index buffer.
+
+## Constructor & Destructor Documentation
+
+### IndexBuffer
+
+```cpp
+ImFusion::GL::IndexBuffer::IndexBuffer (Usage usageHint = Buffer::Usage::StaticDraw)
+```
+
+Default constructs an empty index buffer.
+
+**Parameters:**
+
+- `usageHint` — Expected usage pattern of the buffer
+
+**Exceptions:**
+
+- `std::runtime_error` — if the corresponding OpenGL buffer object could not be created.
+
+## Member Function Documentation
+
+### primitiveRestartIndex
+
+```cpp
+uint32_t ImFusion::GL::IndexBuffer::primitiveRestartIndex () const
+```
+
+Returns the OpenGL primitive restart index to use during indexed rendering.
+
+The primitive restart feature is disabled if the index is 0 (default behavior).
+
+### setPrimitiveRestartIndex
+
+```cpp
+void ImFusion::GL::IndexBuffer::setPrimitiveRestartIndex (uint32_t value)
+```
+
+Sets the OpenGL primitive restart index to use during indexed rendering.
+
+The primitive restart feature is disabled if the index is 0 (default behavior). On WebGL, the features is always enabled. Check the class documentation for details.
+
+### setData
+
+```cpp
+void ImFusion::GL::IndexBuffer::setData (Utils::Span < uint8_t > indices)
+```
+
+Upload uint8_t vertex indices to the buffer.
+
+The buffer needs to be bound before this method is called. Any previous data will be deleted.
+
+**Parameters:**
+
+- `indices` — Contiguous sequence of index data that should be copied to the buffer.
+
+### setData
+
+```cpp
+void ImFusion::GL::IndexBuffer::setData (Utils::Span < uint16_t > indices)
+```
+
+Upload uint16_t vertex indices to the buffer.
+
+The buffer needs to be bound before this method is called. Any previous data will be deleted.
+
+**Parameters:**
+
+- `indices` — Contiguous sequence of index data that should be copied to the buffer.
+
+### setData
+
+```cpp
+void ImFusion::GL::IndexBuffer::setData (Utils::Span < uint32_t > indices)
+```
+
+Upload uint32_t vertex indices to the buffer.
+
+The buffer needs to be bound before this method is called. Any previous data will be deleted.
+
+**Parameters:**
+
+- `indices` — Contiguous sequence of index data that should be copied to the buffer.
+
+### setData
+
+```cpp
+void ImFusion::GL::IndexBuffer::setData (Utils::Span < vec3i > indices)
+```
+
+Upload **non-negative**int32_t triplets describing a series of triangles to the vertex index buffer.
+
+The buffer needs to be bound before this method is called. Any previous data will be deleted.
+
+**Parameters:**
+
+- `indices` — Contiguous sequence of index data that should be copied to the buffer. Must not contain any negative elements.

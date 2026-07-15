@@ -1,0 +1,60 @@
+---
+title: "ImFusion::Animations::AnimationBackendBase"
+sidebarTitle: "AnimationBackendBase"
+description: "Base interface for managing and dispatching animations."
+---
+
+`#include <ImFusion/GUI/Animations.h>`
+
+## Overview
+
+[Base](/cpp-sdk/4.5/api/structs/imfusion-dicom-base) interface for managing and dispatching animations.
+
+This abstract base class will only take care of bookkeeping and implementing the logic for setEnabled() and setAnimationDurationFactor(). The actual dispatching and calling of [Animation::update()](/cpp-sdk/4.5/api/classes/imfusion-animations-animation) at regular time intervals with the interpolated progress value t has to be implemented by the derived classes.
+
+The dispatching of new animations can be temporarily disabled by calling setEnabled(false). Furthermore, you can configure a global multiplier applied to the animation duration so that you can change the speed of all dispatched animations consistently.
+
+**See also:** The runAnimation() and runLoopedAnimation() convenience functions that will execute the animation on the currently installed global backend (cf. setBackend()).
+
+## Public Member Functions
+
+- void [run](#run) ([std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [Animation](/cpp-sdk/4.5/api/classes/imfusion-animations-animation) &gt; animation, const [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [UniqueId](/cpp-sdk/4.5/api/structs/imfusion-animations-uniqueid) &gt; &uniqueId=std::nullopt) — Dispatches the given animation canceling any running animation with the same ID if applicable.
+- void **cancelAllAnimations** () — Cancels all animations currently in flight.
+- bool **isEnabled** () const — Returns the flag whether dispatching of new animations is enabled.
+- void **setEnabled** (bool value) — Sets the flag whether dispatching of new animations is enabled.
+- double **animationDurationFactor** () const — Returns the duration multiplier for run animations; enables you to change the speed of all animations consistently.
+- void **setAnimationDurationFactor** (double value) — Sets the duration multiplier for run animations, must be &gt;= 0; enables you to change the speed of all animations consistently.
+
+## Protected Member Functions
+
+- virtual void [runImpl](#runimpl) ([std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [Animation](/cpp-sdk/4.5/api/classes/imfusion-animations-animation) &gt; animation)=0 — Called by the base interface once *animation* is fully configured and ready to dispatch.
+- void **setAnimationState** ([Animation](/cpp-sdk/4.5/api/classes/imfusion-animations-animation) &animation, [Animation::State](/cpp-sdk/4.5/api/classes/imfusion-animations-animation) newState) const
+
+## Member Function Documentation
+
+### run
+
+```cpp
+void ImFusion::Animations::AnimationBackendBase::run (std::shared_ptr < Animation > animation, const std::optional < UniqueId > & uniqueId = std::nullopt)
+```
+
+Dispatches the given animation canceling any running animation with the same ID if applicable.
+
+If isEnabled() is false the animation will not be dispatched but its update function will be called once with t = 1.0 so that the animation reaches its final state immediately.
+
+**Parameters:**
+
+- `animation` — [Animation](/cpp-sdk/4.5/api/classes/imfusion-animations-animation) to execute, must not be null.
+- `uniqueId` — Optional identifier for this animation to prevent multiple concurrent animations of the same ID. If not empty, the backend will cancel any running animations with the same ID before starting the new one. Make sure to use a sufficiently unique ID to avoid conflicts with other users of this interface.
+
+### runImpl
+
+```cpp
+virtual void ImFusion::Animations::AnimationBackendBase::runImpl (std::shared_ptr < Animation > animation)
+```
+
+*protected, pure virtual*
+
+Called by the base interface once *animation* is fully configured and ready to dispatch.
+
+Derived classes must take care of actually dispatching the animation so that the interface invariants are met.

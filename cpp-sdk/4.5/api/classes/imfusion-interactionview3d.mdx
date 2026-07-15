@@ -1,0 +1,119 @@
+---
+title: "ImFusion::InteractionView3D"
+sidebarTitle: "InteractionView3D"
+description: "Standard 2D/3D view interaction."
+---
+
+`#include <ImFusion/GUI/InteractionView3D.h>`
+
+## Overview
+
+Standard 2D/3D view interaction.
+
+## Public Member Functions
+
+- **InteractionView3D** ([ImageView3D](/cpp-sdk/4.5/api/classes/imfusion-imageview3d) &view)
+- void [reset](#reset) () override
+- void [contextMenuCreate](#contextmenucreate) (QMenu &m) override — Create context menu entries.
+- void [contextMenuEvaluate](#contextmenuevaluate) (QAction \*a) override — Evaluate action chosen in context menu.
+- void [createActions](#createactions) () override — Create actions shown in context menu.
+- void **setSceneCenter** (const vec3 &center) — Set scene center.
+- const vec3 & **sceneCenter** () const — Get scene center.
+- bool [sceneEvent](#sceneevent) (QEvent \*event) override — Modify the view parameters based on the mouse events.
+- bool **sceneEventTouch** (QEvent \*event) — Modify the view parameters based on the touchscreen events.
+- mat4 **transformation** () const — Current transformation.
+- void **setInteractionLodMode** ([GlVolumeView::LodMode](/cpp-sdk/4.5/api/classes/imfusion-glvolumeview) lodMode)
+- void **setInteractionLodSizeThresholdMb** (int lodVolumeSizeThresholdMb)
+- void **setOrientToNormalOnClick** (bool orientOnClick) — If true, the slices will be oriented to the surface normal on double click.
+
+## Protected Member Functions
+
+- bool **changePose** (QMouseEvent \*event, const vec2 &mouseDistance)
+- void **addTranslation** (double dx, double dy, double dz=0.0) — Adds `dx`, `dy`, and `dz` to the current translation matrix (since the last mouse press event).
+- void **applyIncrementalTransform** () — Applies the current transformation from m_translation and m_rotation to m_matrix0 Sets m_translation and m_rotation to zero.
+- void **handleKeyboardShortcut** (int eventId)
+
+## Protected Attributes
+
+- [ImageView3D](/cpp-sdk/4.5/api/classes/imfusion-imageview3d) & **m_imageView3D**
+- vec2i **m_mouseDownPosition**
+- int **m_mouseDownButton**
+- mat4 **m_mouseDownMatrix**
+- vec2 **m_mouseDownWindowLevel**
+- double **m_mouseDownAlpha**
+- bool **m_dragging**
+- bool **m_rotateZ**
+- double **m_rotateZFactor**
+- int **m_rotateZAxis**
+- [Camera](/cpp-sdk/4.5/api/classes/imfusion-camera) **m_referenceCam** — View camera on mouse press.
+- vec3 **m_sceneCenter**
+- vec3 **m_translation** — Current translation parameters since the last mouse press event.
+- vec3 **m_rotation** — Current rotation parameters since the last mouse press event.
+- [GlVolumeView::LodMode](/cpp-sdk/4.5/api/classes/imfusion-glvolumeview) **m_lodMode**
+- int **m_lodVolumeSizeThresholdMb**
+- bool **m_orientToNormalOnClick**
+- bool **m_simultaneousBlending**
+- bool **m_isTouch**
+- int **m_oldDistance** — Indicates that we are generally in a touch gesture right now.
+- QPointF **m_oldPoint** — Indicates the cached distance between 2 former touchpoints.
+- QPointF **m_oldCenterPoint** — Indicates the cached point of a single touch.
+- QLineF **m_oldAngleReferenceLine** — Indicates the cached center between 2 former touchpoints.
+
+## Additional Inherited Members
+
+- static bool [addMappedViewAction](/cpp-sdk/4.5/api/classes/imfusion-viewinteraction) (ViewActionType viewAction, Qt::MouseButton button, Qt::KeyboardModifiers modifiers)
+- static bool **removeMappedViewAction** (ViewActionType viewAction, Qt::MouseButton button, Qt::KeyboardModifiers modifiers) — Removes mapping from `viewAction` to *MouseAction* defined by `button` and `modifiers` Returns true if removing succeeds, or false if this mapping does not exists.
+- static void **resetActionMapping** () — Loads the default view interaction mapping.
+- static const ViewActionMap & **globalViewActionMap** () — Const access to the global view action mapper.
+- static void **setGlobalViewActionMap** (const ViewActionMap &map) — Sets the global view action map.
+- static bool **hasConflicts** (const ViewActionMap &actionMap, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::pair](http://en.cppreference.com/w/cpp/utility/pair.html)&lt; ViewActionType, ViewActionType &gt; &gt; &conflictingActions) — Checks if the mapping defined in `actionMap` has any conflicts.
+
+## Member Function Documentation
+
+### reset
+
+```cpp
+void ImFusion::InteractionView3D::reset ()
+```
+
+*override, virtual*
+
+### contextMenuCreate
+
+```cpp
+void ImFusion::InteractionView3D::contextMenuCreate (QMenu & m)
+```
+
+*override, virtual*
+
+Create context menu entries.
+
+### contextMenuEvaluate
+
+```cpp
+void ImFusion::InteractionView3D::contextMenuEvaluate (QAction * a)
+```
+
+*override, virtual*
+
+Evaluate action chosen in context menu.
+
+### createActions
+
+```cpp
+void ImFusion::InteractionView3D::createActions ()
+```
+
+*override, virtual*
+
+Create actions shown in context menu.
+
+### sceneEvent
+
+```cpp
+bool ImFusion::InteractionView3D::sceneEvent (QEvent * event)
+```
+
+*override, virtual*
+
+Modify the view parameters based on the mouse events.

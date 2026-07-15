@@ -1,0 +1,67 @@
+---
+title: "ImFusion::GlMeshRendererSurface"
+sidebarTitle: "GlMeshRendererSurface"
+description: "Highly configurable renderer to display the surface of a Mesh ."
+---
+
+`#include <ImFusion/Mesh/Rendering/GlMeshRendererSurface.h>`
+
+## Overview
+
+Highly configurable renderer to display the surface of a [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh).
+
+This low-level renderer offers a wide range of different rendering modes that are encapsulated in [DisplayOptions](/cpp-sdk/4.5/api/structs/imfusion-glmeshrenderersurface-displayoptions):
+
+- show filled surfaces, wireframe or both
+- individual Material modes for front- and back faces
+- Optional clipping against a [Geometry::Plane](/cpp-sdk/4.5/api/classes/imfusion-geometry-plane)
+
+This class does not implement the [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) interface by design as it is meant to serve as a reusable component to be integrated into high-level classes.
+
+## Classes
+
+- struct [DisplayOptions](/cpp-sdk/4.5/api/structs/imfusion-glmeshrenderersurface-displayoptions) — Complete record of rendering options for [GlMeshRendererSurface](/cpp-sdk/4.5/api/classes/imfusion-glmeshrenderersurface).
+
+## Public Member Functions
+
+- void [render](#render) (const [MeshGl](/cpp-sdk/4.5/api/classes/imfusion-meshgl) &mesh, const [DisplayOptions](/cpp-sdk/4.5/api/structs/imfusion-glmeshrenderersurface-displayoptions) &options, const [GL::ViewState](/cpp-sdk/4.5/api/classes/imfusion-gl-viewstate) &viewState, const [GL::OrderIndependentTransparency](/cpp-sdk/4.5/api/classes/imfusion-gl-orderindependenttransparency) \*oit=nullptr, const [GL::ObjectPicking](/cpp-sdk/4.5/api/classes/imfusion-gl-objectpicking) \*objectPicking=nullptr) const — Renders the mesh into the currently active OpenGL context as specified in *options*.
+- void [renderWithCustomOptions](#renderwithcustomoptions) (const [MeshGl](/cpp-sdk/4.5/api/classes/imfusion-meshgl) &mesh, const [DisplayOptions](/cpp-sdk/4.5/api/structs/imfusion-glmeshrenderersurface-displayoptions) &options, double opacity, const [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; vec4 &gt; &clipPlaneCVNF, [DisplayOptions::Clipping::Mode](/cpp-sdk/4.5/api/structs/imfusion-glmeshrenderersurface-displayoptions-clipping) clipMode, const [GL::ViewState](/cpp-sdk/4.5/api/classes/imfusion-gl-viewstate) &viewState, const [GL::OrderIndependentTransparency](/cpp-sdk/4.5/api/classes/imfusion-gl-orderindependenttransparency) \*oit=nullptr, const [GL::ObjectPicking](/cpp-sdk/4.5/api/classes/imfusion-gl-objectpicking) \*objectPicking=nullptr, const void \*pickingObjectIdPtr=nullptr) const — Renders the mesh into the currently active OpenGL context as specified in *options* but overriding opacity and clip plane options.
+- virtual [GL::Program](/cpp-sdk/4.5/api/classes/imfusion-gl-program) \* **getShaderProgram** () const
+
+## Member Function Documentation
+
+### render
+
+```cpp
+void ImFusion::GlMeshRendererSurface::render (const MeshGl & mesh, const DisplayOptions & options, const GL::ViewState & viewState, const GL::OrderIndependentTransparency * oit = nullptr, const GL::ObjectPicking * objectPicking = nullptr) const
+```
+
+Renders the mesh into the currently active OpenGL context as specified in *options*.
+
+**Parameters:**
+
+- `mesh` — The mesh to render.
+- `options` — The rendering options to use.
+- `viewState` — The [GL::ViewState](/cpp-sdk/4.5/api/classes/imfusion-gl-viewstate) to use.
+- `oit` — An optional pointer to a [GL::OrderIndependentTransparency](/cpp-sdk/4.5/api/classes/imfusion-gl-orderindependenttransparency) instance to use.
+- `objectPicking` — An optional pointer to a GlObjectPicking instance to use. If specified will use objectPicking-&gt;objectId(&mesh.mesh()) as object ID.
+
+### renderWithCustomOptions
+
+```cpp
+void ImFusion::GlMeshRendererSurface::renderWithCustomOptions (const MeshGl & mesh, const DisplayOptions & options, double opacity, const std::optional < vec4 > & clipPlaneCVNF, DisplayOptions::Clipping::Mode clipMode, const GL::ViewState & viewState, const GL::OrderIndependentTransparency * oit = nullptr, const GL::ObjectPicking * objectPicking = nullptr, const void * pickingObjectIdPtr = nullptr) const
+```
+
+Renders the mesh into the currently active OpenGL context as specified in *options* but overriding opacity and clip plane options.
+
+**Parameters:**
+
+- `mesh` — The mesh to render.
+- `options` — The rendering options to use.
+- `opacity` — Value to override options.p_opacity with.
+- `clipPlaneCVNF` — Value to override options.p_clipPlaneCVNF with.
+- `clipMode` — Value to override options.p_clipOptions-&gt;p_mode with.
+- `viewState` — The [GL::ViewState](/cpp-sdk/4.5/api/classes/imfusion-gl-viewstate) to use.
+- `oit` — An optional pointer to a [GL::OrderIndependentTransparency](/cpp-sdk/4.5/api/classes/imfusion-gl-orderindependenttransparency) instance to use.
+- `objectPicking` — An optional pointer to a GlObjectPicking instance to use.
+- `pickingObjectIdPtr` — Object pointer to use for determining the object ID during object picking (cf. [GL::ObjectPicking::objectId()](/cpp-sdk/4.5/api/classes/imfusion-gl-objectpicking)).

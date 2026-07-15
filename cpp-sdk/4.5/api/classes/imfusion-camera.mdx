@@ -1,0 +1,238 @@
+---
+title: "ImFusion::Camera"
+sidebarTitle: "Camera"
+description: "Abstraction layer to model both intrinsic (projection) and extrinsic (view) parameters of a camera showing a 3D scene."
+---
+
+`#include <ImFusion/GL/Camera.h>`
+
+## Overview
+
+Abstraction layer to model both intrinsic (projection) and extrinsic (view) parameters of a camera showing a 3D scene.
+
+This class was designed with both OpenGL and Computer Vision conventions in mind. It is mainly intended to facilitate setting up 3D views for OpenGL rendering. At the same time it uses terminology that is common popular in Computer Vision environments and provides an interface to easily transfer camera-calibration results into the camera setup used for rendering.
+
+The extrinsic parameters describe the location and orientation of the camera in world space. In OpenGL terminology this is usually described by a view matrix that converts from world coordinates to camera coordinates. The intrinsic parameters describe the way how the scene is projected into a 2D image plane. Note that depending on the selected projection mode, a different set of intrinsic parameters are used to compile the final projection matrix.
+
+**See also:** Hartley/Zisserman: Multiple View [Geometry](/cpp-sdk/4.5/api/namespaces/imfusion-geometry) in Computer Vision
+
+**See also:** [https://ksimek.github.io/2012/08/13/introduction/](https://ksimek.github.io/2012/08/13/introduction/)
+
+## Public Types
+
+- enum class [Mode](#mode) &#123; Perspective , Orthographic &#125; — Intrinsic camera mode/projection mode.
+- enum [MatrixConvention](#matrixconvention) &#123; OpenGL , CV &#125; — Enumeration to specify matrix conventions of pose (view) matrices.
+
+## Public Member Functions
+
+- **Camera** () — Creates a new camera object with default parameters.
+- virtual void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- virtual void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+## Static Public Member Functions
+
+- static Camera [fromGlViewMatrix](#fromglviewmatrix) (const mat4 &viewMatrix) — Creates a new [Camera](/cpp-sdk/4.5/api/classes/imfusion-camera) object with the given [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) view matrix.
+- static Camera [fromPose](#frompose) (const mat4 &T, [MatrixConvention](#matrixconvention) mc) — Creates a new [Camera](/cpp-sdk/4.5/api/classes/imfusion-camera) object with the given inverse OpenGL view matrix.
+- static Camera [fromVectors](#fromvectors) (const vec3 &position, const vec3 &lookVector, const vec3 &upVector) — Creates a new [Camera](/cpp-sdk/4.5/api/classes/imfusion-camera) object with the given parameters.
+
+## Intrinsic Parameters
+
+- [Mode](#mode) **mode** () const — Returns the intrinsic camera mode.
+- void **setMode** ([Mode](#mode) value) — Sets the intrinsic camera mode.
+- void [setIntrinsicMatrix](#setintrinsicmatrix) (const mat3 &K, const vec2 &cameraSize) — Set the intrinsic parameters from a K-matrix commonly used in Computer Vision environments.
+- mat3 [intrinisicMatrix](#intrinisicmatrix) (const vec2 &cameraSize) const — Get the intrinsic parameters from a K-matrix commonly used in Computer Vision environments.
+- const vec2 & **principalPoint** () const — Returns the principal point in normalized [0,1] viewport space, origin in top-left corner.
+- void **setPrincipalPoint** (const vec2 &value) — Sets the principal point in normalized [0,1] viewport space, origin in top-left corner.
+- const vec2 & **focalLength** () const — Returns the focal length in perspective mode in normalized [0,1] space.
+- void **setFocalLength** (const vec2 &value) — Sets the focal length in perspective mode in normalized [0,1] space.
+- void [setFovY](#setfovy) (double fov) — Set camera vertical field of view in degrees.
+- double **fovY** () const — Get camera vertical field of view in degrees.
+- double **frustumHeight** () const — Returns the view frustum height in mm in orthographic camera mode.
+- void **setFrustumHeight** (double value) — Sets the view frustum height in mm in orthographic camera mode.
+- mat4 **openGLProjectionMatrix** (double aspectRatio, double nearClipDistance, double farClipDistance) const — Compute the OpenGL projection matrix based on the camera's intrinsic parameters.
+
+## Extrinsic Parameters
+
+- void **setPose** (const mat4 &T, [MatrixConvention](#matrixconvention) mc) — Set pose as world to camera coordinate system transformation.
+- mat4 **pose** ([MatrixConvention](#matrixconvention) mc) const — Get pose as world to camera coordinate system transformation.
+- void **setVectors** (const vec3 &position, const vec3 &lookVector, const vec3 &upVector) — Set position, look vector and up vector at once.
+- void **setLookAt** (const vec3 &position, const vec3 &center, const vec3 &upVector) — Set eye position, look center and up vector at once.
+- void [setLookAt](#setlookat) (const [Geometry::AlignedBox](/cpp-sdk/4.5/api/classes/imfusion-geometry-alignedbox) &worldBounds, const vec3 &lookVector, const vec3 &upVector, double boundsRatio=1.0) — Set camera position to look at the scene defined by *worldBounds* using the given *lookVector* and *upVector*.
+- void **setPosition** (const vec3 &value) — Sets the camera location in the world coordinate system.
+- vec3 **position** () const — Returns the camera location in the world coordinate system.
+- vec3 **upVector** () const — Returns the camera's up direction vector in the world coordinate system.
+- vec3 **lookVector** () const — Returns the camera's look direction vector in the world coordinate system.
+- mat4 [openGLViewMatrix](#openglviewmatrix) () const — Compute the OpenGL view matrix based on the camera's extrinsic parameters.
+- mat4 [glViewMatrix](#glviewmatrix) () const — Get the [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) view matrix describing the camera's parameters.
+
+## Member Enumeration Documentation
+
+### Mode
+
+```cpp
+enum class ImFusion::Camera::Mode
+```
+
+*strong*
+
+Intrinsic camera mode/projection mode.
+
+**Enumerator:**
+
+- `Perspective` — Perspective projection based on principal point and focal length (FOV).
+- `Orthographic` — Orthographic projection based on principal point and frustum size.
+
+### MatrixConvention
+
+```cpp
+enum ImFusion::Camera::MatrixConvention
+```
+
+Enumeration to specify matrix conventions of pose (view) matrices.
+
+**Enumerator:**
+
+- `OpenGL` — [Camera](/cpp-sdk/4.5/api/classes/imfusion-camera) looks along negative z-axis, y-axis up.
+- `CV` — [Camera](/cpp-sdk/4.5/api/classes/imfusion-camera) looks along positive z-axis, y-axis down.
+
+## Member Function Documentation
+
+### fromGlViewMatrix
+
+```cpp
+Camera ImFusion::Camera::fromGlViewMatrix (const mat4 & viewMatrix)
+```
+
+*static*
+
+Creates a new [Camera](/cpp-sdk/4.5/api/classes/imfusion-camera) object with the given [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) view matrix.
+
+**Parameters:**
+
+- `viewMatrix` — OpenGL view matrix from world coordinates to OpenGL camera coordinates.
+
+**Note:** Use this function with the matrix of a [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview).
+
+### fromPose
+
+```cpp
+Camera ImFusion::Camera::fromPose (const mat4 & T, MatrixConvention mc)
+```
+
+*static*
+
+Creates a new [Camera](/cpp-sdk/4.5/api/classes/imfusion-camera) object with the given inverse OpenGL view matrix.
+
+**Parameters:**
+
+- `inverseViewMatrix` — OpenGL view matrix from OpenGL camera coordinate system to world.
+
+### fromVectors
+
+```cpp
+Camera ImFusion::Camera::fromVectors (const vec3 & position, const vec3 & lookVector, const vec3 & upVector)
+```
+
+*static*
+
+Creates a new [Camera](/cpp-sdk/4.5/api/classes/imfusion-camera) object with the given parameters.
+
+**Parameters:**
+
+- `position` — World coordinates of the camera location
+- `lookVector` — World coordinates of the camera viewing direction
+- `upVector` — [Camera](/cpp-sdk/4.5/api/classes/imfusion-camera)'s up direction vector
+
+### setIntrinsicMatrix
+
+```cpp
+void ImFusion::Camera::setIntrinsicMatrix (const mat3 & K, const vec2 & cameraSize)
+```
+
+Set the intrinsic parameters from a K-matrix commonly used in Computer Vision environments.
+
+- For perspective projections the bottom right element is expected to be 1. The diagonal elements describe focal length and the translational part describes the principal point. Since the intrinsic parameters are invariant to uniform scaling of the camera geometry, you must specify *cameraSize* to define the scaling of the K matrix (e.g. number of pixels).
+- For orthographic projections the bottom right element is expected to be 0. The diagonal elements describe the view frustum size in mm (world coordinates) and the translational part describes the principal point. In this case only the principal point is scaled wrt. *cameraSize*, but not the frustum size since the latter is defined in world space.
+
+**Note:** Axis skew/2D pixel shearing is not supported by this class, the corresponding elements of the matrix are expected to be 0.0.
+
+### intrinisicMatrix
+
+```cpp
+mat3 ImFusion::Camera::intrinisicMatrix (const vec2 & cameraSize) const
+```
+
+Get the intrinsic parameters from a K-matrix commonly used in Computer Vision environments.
+
+- For perspective projections the bottom right element is set to 1. The diagonal elements describe focal length and the translational part describes the principal point. Since the intrinsic parameters are invariant to uniform scaling of the camera geometry, you must specify *cameraSize* to define the scaling of the K matrix (e.g. number of pixels).
+- For orthographic projections the bottom right element is set to 0. The diagonal elements describe the view frustum size in mm (world coordinates) and the translational part describes the principal point. In this case only the principal point is scaled wrt. *cameraSize*, but not the frustum size since the latter is defined in world space.
+
+### setFovY
+
+```cpp
+void ImFusion::Camera::setFovY (double fov)
+```
+
+Set camera vertical field of view in degrees.
+
+**Note:** This will also update the horizontal FOV (wrt. the aspect ratio). If you need to set horizontal and vertical FOV independently, use setFocalLength().
+
+### setLookAt
+
+```cpp
+void ImFusion::Camera::setLookAt (const Geometry::AlignedBox & worldBounds, const vec3 & lookVector, const vec3 & upVector, double boundsRatio = 1.0)
+```
+
+Set camera position to look at the scene defined by *worldBounds* using the given *lookVector* and *upVector*.
+
+This function will automatically deduce the camera position based on the camera's intrinsic parameters so that the entire scene will be visible. The boundsRatio parameter controls how much margin is given around the bounds (1.0 would match the bounds exactly)
+
+### openGLViewMatrix
+
+```cpp
+mat4 ImFusion::Camera::openGLViewMatrix () const
+```
+
+Compute the OpenGL view matrix based on the camera's extrinsic parameters.
+
+**Note:** This is a convenience function calling pose(OpenGL) internally.
+
+### glViewMatrix
+
+```cpp
+mat4 ImFusion::Camera::glViewMatrix () const
+```
+
+Get the [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) view matrix describing the camera's parameters.
+
+View matrix is from OpenGL camera coordinate system to world.
+
+**Note:** This is a convenience function calling pose(OpenGL).inverse() internally.
+
+### configure
+
+```cpp
+virtual void ImFusion::Camera::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### configuration
+
+```cpp
+virtual void ImFusion::Camera::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality

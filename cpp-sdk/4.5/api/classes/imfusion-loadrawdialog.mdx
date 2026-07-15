@@ -1,0 +1,94 @@
+---
+title: "ImFusion::LoadRawDialog"
+sidebarTitle: "LoadRawDialog"
+description: "Dialog for loading raw files, conveniently figuring out dimensions and settings."
+---
+
+`#include <ImFusion/GUI/LoadRawDialog.h>`
+
+## Overview
+
+Dialog for loading raw files, conveniently figuring out dimensions and settings.
+
+## Public Slots
+
+- void **onSetType** (int)
+- void **onSetDimX** (int val)
+- void **onSetDimY** (int val)
+- void **onSetDimZ** (int val)
+- void **onSet3D** (bool flag)
+- void **onSetOffset** (int val)
+- void **onSetChannels** (int val)
+- void **onSetImages** (int val)
+- void **onSetFile** ()
+- void **onSaveMHD** ()
+- void **onMetric** ()
+- void **onStrict** (bool flag)
+- void **onNonStrict** ()
+
+## Public Member Functions
+
+- [LoadRawDialog](#loadrawdialog) (const QString &filename, QWidget \*parent=nullptr) — Construct dialog for loading raw files.
+- **~LoadRawDialog** () override — Destructor.
+- [ImageDescriptor](/cpp-sdk/4.5/api/structs/imfusion-imagedescriptor) **descriptor** (int &framesOut) const — Returns the computed image descriptor and number of frames.
+- int64_t **offset** () const — Return the desired offset.
+- int **channels** () const — Return the desired number of channels.
+- bool **msb** () const — Return the MSB flag.
+- vec3 **spacing** () const — Return the spacing.
+- bool **metric** () const — Return whether spacing is metric.
+- QString **filename** () const — Return the filename which might have been changed in the dialog.
+- void **setPreviewView** ([ImageView2D](/cpp-sdk/4.5/api/classes/imfusion-imageview2d) \*view) — Assign an optional view that can show a preview of resulting image.
+- void **setUsePreviewView** (bool value) — Set the flag whether the preview view shall be shown and used.
+
+## Protected Member Functions
+
+- void **setSilent** (QComboBox \*element, int val)
+- void **setAllFactors** ()
+- QComboBox \* **getComboBox** (int dim)
+- void **computeFactors** (int64_t number, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; int &gt; &factors)
+- void **updateSize** ()
+- void **updateDims** (int source)
+- int **findIndex** (int val, bool second=false)
+- int64_t **imageSize** () const
+- void [updatePreview](#updatepreview) () — Load the file with the current descriptor and show the result in the preview view.
+
+## Protected Attributes
+
+- Ui_LoadRawDialog \* **m_ui**
+- QFileInfo **m_info**
+- int **m_typeSize**
+- int **m_lastDim**
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; int &gt; **m_factors**
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; int &gt; **m_factors2**
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [RawImageIoAlgorithm](/cpp-sdk/4.5/api/classes/imfusion-rawimageioalgorithm) &gt; **m_previewLoader**
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &gt; **m_preview**
+- [ImageView2D](/cpp-sdk/4.5/api/classes/imfusion-imageview2d) \* **m_previewView** = nullptr
+
+## Constructor & Destructor Documentation
+
+### LoadRawDialog
+
+```cpp
+ImFusion::LoadRawDialog::LoadRawDialog (const QString & filename, QWidget * parent = nullptr)
+```
+
+Construct dialog for loading raw files.
+
+**Parameters:**
+
+- `filename` — Raw file to be loaded and configured.
+- `parent` — Parent widget
+
+## Member Function Documentation
+
+### updatePreview
+
+```cpp
+void ImFusion::LoadRawDialog::updatePreview ()
+```
+
+*protected*
+
+Load the file with the current descriptor and show the result in the preview view.
+
+Does nothing if the preview is disabled or no view is available.

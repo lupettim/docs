@@ -1,0 +1,77 @@
+---
+title: "ImFusion::DistanceTransformAlgorithm"
+sidebarTitle: "DistanceTransformAlgorithm"
+description: "Computes a distance transformation from a label map."
+---
+
+`#include <ImFusion/Base/DistanceTransformAlgorithm.h>`
+
+## Overview
+
+Computes a distance transformation from a label map.
+
+## Public Types
+
+- enum class **Method** &#123; **Chamfer** , **SequentialEuclidean** , **FastSweeping** &#125;
+- enum class **DistanceType** &#123; **Pixel** , **Image** &#125;
+- enum class [Mode](#mode) &#123; Outer = 0 , Inner = 1 , Both = 2 , Signed = 3 &#125; — [Status](/cpp-sdk/4.5/api/classes/imfusion-algorithm) codes.
+
+## Public Member Functions
+
+- **DistanceTransformAlgorithm** (const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &img)
+
+## Public Attributes
+
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; [Mode](#mode) &gt; **p_distanceMode** = &#123;"mode", Mode::Outer, this&#125;
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; Method &gt; **p_method** = &#123;"method", Method::Chamfer, this&#125;
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; DistanceType &gt; **p_distanceType** = &#123;"distanceType", DistanceType::Image, this&#125;
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; int &gt; **p_iterations** = &#123;"iterations", 3, this&#125; — Number of iterations to use (currently only has an effect on SequentialEuclidean method, -1 means iterations until convergence).
+
+## Methods implementing the algorithm interface
+
+- void [compute](#compute) () override — Execute the algorithm.
+- [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) [takeOutput](#takeoutput) () override — Return any new [Data](/cpp-sdk/4.5/api/classes/imfusion-data) that was created by the [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) during the last call to [compute()](#compute).
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=0)
+
+## Member Enumeration Documentation
+
+### Mode
+
+```cpp
+enum class ImFusion::DistanceTransformAlgorithm::Mode
+```
+
+*strong*
+
+**Enumerator:**
+
+- `Outer` — Compute only the distance outside the object.
+- `Inner` — Compute only the distance inside the object.
+- `Both` — Compute the distance both inside and outside.
+- `Signed` — Compute the distance both inside and outside, and encodes the inner distances as negative values.
+
+## Member Function Documentation
+
+### compute
+
+```cpp
+void ImFusion::DistanceTransformAlgorithm::compute ()
+```
+
+*override, virtual*
+
+Execute the algorithm.
+
+### takeOutput
+
+```cpp
+OwningDataList ImFusion::DistanceTransformAlgorithm::takeOutput ()
+```
+
+*override, virtual*
+
+Return any new [Data](/cpp-sdk/4.5/api/classes/imfusion-data) that was created by the [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) during the last call to [compute()](#compute).
+
+The default implementation will return an empty list.
+
+**Note:** Since ownership of the data is transferred, you can call this method only once between calls to [compute()](#compute).

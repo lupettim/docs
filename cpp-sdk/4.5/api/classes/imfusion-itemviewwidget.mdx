@@ -1,0 +1,50 @@
+---
+title: "ImFusion::ItemViewWidget"
+sidebarTitle: "ItemViewWidget"
+description: "Widget containing an abstract item view, reprensenting a model, as well as configurable options to edit the model."
+---
+
+`#include <ImFusion/GUI/CoreWidgets/ItemViewWidget.h>`
+
+## Overview
+
+Widget containing an abstract item view, reprensenting a model, as well as configurable options to edit the model.
+
+ItemViewWidget::makeList and ItemViewWidget::makeTable are helper creator methods to create lists and tables easily, just by providing an [ItemControl](/cpp-sdk/4.5/api/classes/imfusion-itemcontrol) implementation and options about the desired controls and their position.
+
+## Public Types
+
+- enum class **Option** &#123; **None** = 0x0 , **Add** = 1 &lt;&lt; 0x1 , **Remove** = 1 &lt;&lt; 0x2 , **Clear** = 1 &lt;&lt; 0x3 , **Edit** = 1 &lt;&lt; 0x4 , **Sort** = 1 &lt;&lt; 0x5 , **ChangeOrder** = 1 &lt;&lt; 0x6 , **All** = 0xFF &#125;
+- enum class **OptionsPosition** &#123; **Above** , **Under** , **Left** , **Right** &#125;
+
+## Public Member Functions
+
+- [ItemViewWidget](#itemviewwidget) (QAbstractItemView \*view, QStandardItemModel \*model, [ItemControl](/cpp-sdk/4.5/api/classes/imfusion-itemcontrol) \*control, [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; Option &gt; options, OptionsPosition position, QWidget \*parent) — Constructor of an [ItemViewWidget](/cpp-sdk/4.5/api/classes/imfusion-itemviewwidget).
+- QAbstractItemView \* **view** () — Returns the QAbstractItemView provided.
+- QStandardItemModel \* **model** () — Returns the QStandardItemModel provided.
+- QBoxLayout \* **options** () — Returns the QBoxLayout where the option buttons are added. Can be used to extend the layout with more buttons.
+- QPushButton \* **addButton** () — Returns the QPushButton for the Add option.
+- QPushButton \* **removeButton** () — Returns the QPushButton for the Remove option.
+- QPushButton \* **clearButton** () — Returns the QPushButton for the Clear option.
+- QPushButton \* **editButton** () — Returns the QPushButton for the Edit option.
+- QPushButton \* **sortButton** () — Returns the QPushButton for the Sort option.
+- QPushButton \* **moveUpButton** () — Returns the QPushButton for the MoveUp option.
+- QPushButton \* **moveDownButton** () — Returns the QPushButton for the MoveDown option.
+- void **clear** ()
+
+## Static Public Member Functions
+
+- static [ListModelView](/cpp-sdk/4.5/api/structs/imfusion-listmodelview) **makeList** ([ItemControl](/cpp-sdk/4.5/api/classes/imfusion-itemcontrol) \*control, [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; ItemViewWidget::Option &gt; options=&#123;Option::All&#125;, ItemViewWidget::OptionsPosition position=OptionsPosition::Above, QWidget \*parent=nullptr) — Helper methods to generate QListView and a [ItemViewWidget](/cpp-sdk/4.5/api/classes/imfusion-itemviewwidget).
+- static [TableModelView](/cpp-sdk/4.5/api/structs/imfusion-tablemodelview) **makeTable** ([ItemControl](/cpp-sdk/4.5/api/classes/imfusion-itemcontrol) \*control, [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; ItemViewWidget::Option &gt; options=&#123;Option::All&#125;, ItemViewWidget::OptionsPosition position=OptionsPosition::Above, QWidget \*parent=nullptr) — Helper methods to generate QTableView and a [ItemViewWidget](/cpp-sdk/4.5/api/classes/imfusion-itemviewwidget).
+
+## Constructor & Destructor Documentation
+
+### ItemViewWidget
+
+```cpp
+ImFusion::ItemViewWidget::ItemViewWidget (QAbstractItemView * view, QStandardItemModel * model, ItemControl * control, Flags < Option > options, OptionsPosition position, QWidget * parent)
+```
+
+Constructor of an [ItemViewWidget](/cpp-sdk/4.5/api/classes/imfusion-itemviewwidget).
+
+It will absorb the provided View and Model, and provide a QWidget with a set of buttons specified in the [Flags&lt;Options&gt;](/cpp-sdk/4.5/api/classes/imfusion-flags). The options can be positioned using the OptionsPosition parameter. A common use case is what makeList/makeTable provides, a QListView/QTableView and a QStandardItemModel with all the button options on top.

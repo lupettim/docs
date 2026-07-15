@@ -1,0 +1,59 @@
+---
+title: "ImFusion::ExtractImagesFromVolumeAlgorithm"
+sidebarTitle: "ExtractImagesFromVolumeAlgorithm"
+description: "Algorithm to extract 2D images from a volume."
+---
+
+`#include <ImFusion/Base/ExtractImagesFromVolumeAlgorithm.h>`
+
+## Overview
+
+[Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) to extract 2D images from a volume.
+
+## Public Member Functions
+
+- **ExtractImagesFromVolumeAlgorithm** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*volume) — Creates the algorithm instance with a series of meshes.
+- **~ExtractImagesFromVolumeAlgorithm** () override — Destructor.
+
+## Public Attributes
+
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; [ImageProcessing::Axis](/cpp-sdk/4.5/api/namespaces/imfusion-imageprocessing) &gt; **p_axis** = &#123;"axis", [ImageProcessing::Axis::Z](/cpp-sdk/4.5/api/namespaces/imfusion-imageprocessing), this&#125;
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; bool &gt; **p_inPlace** = &#123;"inPlace", false, this&#125;
+
+## Methods implementing the algorithm interface
+
+- void [compute](#compute) () override — Applies the processing.
+- [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) [takeOutput](#takeoutput) () override — If new data was created, make it available here.
+- static bool [createCompatible](#createcompatible) (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=0)
+
+## Member Function Documentation
+
+### createCompatible
+
+```cpp
+bool ImFusion::ExtractImagesFromVolumeAlgorithm::createCompatible (const DataList & data, Algorithm ** a = 0)
+```
+
+*static*
+
+Factory method to check for applicability or to create the algorithm
+
+### compute
+
+```cpp
+void ImFusion::ExtractImagesFromVolumeAlgorithm::compute ()
+```
+
+*override, virtual*
+
+Applies the processing.
+
+### takeOutput
+
+```cpp
+OwningDataList ImFusion::ExtractImagesFromVolumeAlgorithm::takeOutput ()
+```
+
+*override, virtual*
+
+If new data was created, make it available here.

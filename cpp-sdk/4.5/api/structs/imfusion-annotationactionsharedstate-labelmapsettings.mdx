@@ -1,0 +1,29 @@
+---
+title: "ImFusion::AnnotationActionSharedState::LabelMapSettings"
+sidebarTitle: "LabelMapSettings"
+---
+
+## Public Member Functions
+
+- const Project::PixelwiseData \* **activePixelwise** ()
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; size_t &gt; **activePixelwiseIdx** ()
+- void **setActiveLayer** ([std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; size_t &gt; idx)
+- [std::array](http://en.cppreference.com/w/cpp/container/array.html)&lt; bool, 256 &gt; **lockedLabels** () const — Returns the locked state for each label value in a labelmap.
+
+## Public Attributes
+
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; Project::PixelwiseData \* &gt; **pixelwiseLayers** = &#123;&#125;
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; size_t &gt; **active**
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; bool &gt; **locked** — Whether a label can be modified or not. Index of the vector corresponds to the index of the label in the project types.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; bool &gt; **visible**
+- bool **globalVisibility2D** = true
+- bool **globalVisibility3D** = true
+- float **globalOpacity2D** = 1.0f
+- float **globalOpacity3D** = 1.0f
+- Signal **changed**
+
+## Protected Attributes
+
+- [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; void([std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; size_t &gt;)&gt; **m_activeLayerSetter**
+- const Project::PixelwiseData \* **m_activePixelwise** = nullptr
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; size_t &gt; **m_activePixelwiseIdx** = std::nullopt

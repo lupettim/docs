@@ -1,0 +1,55 @@
+---
+title: "ImFusion::GlMeshRendererSurface::DisplayOptions"
+sidebarTitle: "DisplayOptions"
+description: "Complete record of rendering options for GlMeshRendererSurface ."
+---
+
+`#include <ImFusion/Mesh/Rendering/GlMeshRendererSurface.h>`
+
+## Overview
+
+Complete record of rendering options for [GlMeshRendererSurface](/cpp-sdk/4.5/api/classes/imfusion-glmeshrenderersurface).
+
+## Classes
+
+- struct [Material](/cpp-sdk/4.5/api/structs/imfusion-glmeshrenderersurface-displayoptions-material)
+- struct [Clipping](/cpp-sdk/4.5/api/structs/imfusion-glmeshrenderersurface-displayoptions-clipping)
+
+## Public Types
+
+- enum class [RenderMode](#rendermode) &#123; Surface = 0 , SurfaceAndWireframe = 1 , Wireframe = 2 &#125;
+- enum class **PickingMode** &#123; **None** = 0 , **Face** = 1 , **Vertex** = 2 &#125;
+
+## Public Member Functions
+
+- void **setColor** (const vec3 &color) — Convenience method to set the ambient and diffuse components of both p_frontMaterial and p_backMaterial to *color*.
+
+## Public Attributes
+
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; [RenderMode](#rendermode) &gt; **p_renderMode** = &#123;"renderMode", RenderMode::Surface, this&#125;
+- [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty)&lt; [Material](/cpp-sdk/4.5/api/structs/imfusion-glmeshrenderersurface-displayoptions-material) &gt; **p_frontMaterial** = &#123;"materialFront", [Material](/cpp-sdk/4.5/api/structs/imfusion-glmeshrenderersurface-displayoptions-material)(), this&#125;
+- [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty)&lt; [Material](/cpp-sdk/4.5/api/structs/imfusion-glmeshrenderersurface-displayoptions-material) &gt; **p_backMaterial** = &#123;"materialBack", [Material](/cpp-sdk/4.5/api/structs/imfusion-glmeshrenderersurface-displayoptions-material)(), this&#125;
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; double &gt; **p_opacity** = &#123;"opacity", 1.0, this&#125;
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; bool &gt; **p_useFaceNormals** = &#123;"useFaceNormals", false, this&#125;
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; vec4 &gt; **p_wireframeColor** = &#123;"wireframeColor", vec4(0.0, 0.0, 1.0, 1.0), this&#125;
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; double &gt; **p_wireframeWidth** = &#123;"wireframeWidth", 1.0, this&#125;
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; [Material::Mode](/cpp-sdk/4.5/api/structs/imfusion-glmeshrenderersurface-displayoptions-material) &gt; **p_wireframeMaterialMode** = &#123;"wireframeMaterialMode", [Material::Mode::Uniform](/cpp-sdk/4.5/api/structs/imfusion-glmeshrenderersurface-displayoptions-material), this&#125;
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; vec4 &gt; &gt; **p_clipPlaneCVNF** = &#123;"clipPlaneCVNF", std::nullopt, this&#125;
+- [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty)&lt; [Clipping](/cpp-sdk/4.5/api/structs/imfusion-glmeshrenderersurface-displayoptions-clipping) &gt; **p_clipOptions** = &#123;"clipOptions", [Clipping](/cpp-sdk/4.5/api/structs/imfusion-glmeshrenderersurface-displayoptions-clipping)(), this&#125;
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; PickingMode &gt; **p_pickingMode** = &#123;"pickingMode", PickingMode::None, this&#125;
+
+## Member Enumeration Documentation
+
+### RenderMode
+
+```cpp
+enum class ImFusion::GlMeshRendererSurface::DisplayOptions::RenderMode
+```
+
+*strong*
+
+**Enumerator:**
+
+- `Surface` — Render filled polygon surfaces.
+- `SurfaceAndWireframe` — Render both filled polygon and wireframe surfaces.
+- `Wireframe` — Render wireframe polygons only.

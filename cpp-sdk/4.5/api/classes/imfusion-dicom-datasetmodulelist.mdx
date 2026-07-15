@@ -1,0 +1,35 @@
+---
+title: "ImFusion::Dicom::DatasetModuleList"
+sidebarTitle: "DatasetModuleList"
+description: "A stub that allows to use a Module with a DcmItem alone (without deriving some class from ModuleList )."
+---
+
+`#include <ImFusion/Dicom/DicomModule.h>`
+
+## Overview
+
+A stub that allows to use a [Module](/cpp-sdk/4.5/api/classes/imfusion-dicom-module) with a DcmItem alone (without deriving some class from [ModuleList](/cpp-sdk/4.5/api/classes/imfusion-dicom-modulelist)).
+
+```cpp
+DcmItem& item = ...;
+Dicom::DatasetModuleList moduleParent(item);
+Dicom::CommonModule common(moduleParent, Dicom::Module::Type::UserOption);
+```
+ fragment
+
+## Public Member Functions
+
+- **DatasetModuleList** (DcmItem &parent)
+- DcmItem & [dataset](#dataset) () override — Dataset (or sub-item of a dataset) that will be used by the Modules.
+
+## Member Function Documentation
+
+### dataset
+
+```cpp
+DcmItem & ImFusion::Dicom::DatasetModuleList::dataset ()
+```
+
+*override, virtual*
+
+Dataset (or sub-item of a dataset) that will be used by the Modules.

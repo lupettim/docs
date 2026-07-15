@@ -1,0 +1,71 @@
+---
+title: "ImFusion::VitalsDataComponent::TimeSeries"
+sidebarTitle: "TimeSeries"
+description: "A scalar time series."
+---
+
+`#include <ImFusion/Base/VitalsDataComponent.h>`
+
+## Overview
+
+A scalar time series.
+
+## Public Member Functions
+
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [Sample](/cpp-sdk/4.5/api/structs/imfusion-vitalsdatacomponent-sample) &gt; **closest** (TimePoint queryTimestamp, Duration maxDifference=[std::chrono::milliseconds](http://en.cppreference.com/w/cpp/chrono/duration.html)&#123;100&#125;) const — Find the sample closest in time to the given timestamp.
+- void **trimBefore** (TimePoint earliestTimeToKeep) — Remove all samples older than a set threshold.
+- bool **operator==** (const [TimeSeries](/cpp-sdk/4.5/api/classes/imfusion-vitalsdatacomponent-timeseries) &other) const
+- bool **operator!=** (const [TimeSeries](/cpp-sdk/4.5/api/classes/imfusion-vitalsdatacomponent-timeseries) &other) const
+
+## Public Attributes
+
+- [std::deque](http://en.cppreference.com/w/cpp/container/deque.html)&lt; double &gt; **m_signal**
+- [std::deque](http://en.cppreference.com/w/cpp/container/deque.html)&lt; TimePoint &gt; **m_timestamps** — Maintained to be sorted with increasing time.
+- [std::pair](http://en.cppreference.com/w/cpp/utility/pair.html)&lt; double, double &gt; **m_signalRange**
+- [std::pair](http://en.cppreference.com/w/cpp/utility/pair.html)&lt; TimePoint, TimePoint &gt; **m_timestampRange**
+
+## Protected Member Functions
+
+- void **add** (TimePoint timestamp, double signalSample) — Add a sample with corresponding timestamp.
+- void **updateRanges** () — Update the cached signal and timestamp ranges. To be used after bulk operations.
+- void **validateSeries** () const — Checks that the containers have the same length and time is sorted.
+- size_t [saveBufferSize](#savebuffersize) () const override — Returns the total amount of bytes required for serialization.
+- size_t **saveBufferSize** (size_t seriesLength) const
+- void [loadFromBuffer](#loadfrombuffer) (const char \*buffer, size_t len) override — Restores the state of this object from a memory buffer, using maximum `len` bytes.
+- void [saveToBuffer](#savetobuffer) (char \*buffer) const override — Saves the state of this object into a memory buffer, using maximum [saveBufferSize()](#savebuffersize) bytes.
+
+## Protected Attributes
+
+- friend **VitalsDataComponent**
+
+## Member Function Documentation
+
+### saveBufferSize
+
+```cpp
+size_t ImFusion::VitalsDataComponent::TimeSeries::saveBufferSize () const
+```
+
+*override, protected, virtual*
+
+Returns the total amount of bytes required for serialization.
+
+### loadFromBuffer
+
+```cpp
+void ImFusion::VitalsDataComponent::TimeSeries::loadFromBuffer (const char * buffer, size_t len)
+```
+
+*override, protected, virtual*
+
+Restores the state of this object from a memory buffer, using maximum `len` bytes.
+
+### saveToBuffer
+
+```cpp
+void ImFusion::VitalsDataComponent::TimeSeries::saveToBuffer (char * buffer) const
+```
+
+*override, protected, virtual*
+
+Saves the state of this object into a memory buffer, using maximum [saveBufferSize()](#savebuffersize) bytes.

@@ -1,0 +1,52 @@
+---
+title: "ImFusion::GlOvershootControlFilter"
+sidebarTitle: "GlOvershootControlFilter"
+description: "Overshoot control for sharpening algorithms, as used in ADSOC."
+---
+
+`#include <ImFusion/GL/GlOvershootControlFilter.h>`
+
+## Overview
+
+Overshoot control for sharpening algorithms, as used in ADSOC.
+
+Can be used to suppress ringing by clamping values according to the local intensity range of the original image. Keep in mind that when used after filters with high gain this clamping can lead to clusters of identical intensity.
+
+## Public Member Functions
+
+- **GlOvershootControlFilter** ([GL::Framebuffer](/cpp-sdk/4.5/api/classes/imfusion-gl-framebuffer) \*fbo=0)
+- bool **setOriginal** (const [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) &orig) — Set original.
+- bool **setOriginal** (const [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) &orig)
+- void [compute](#compute) (const [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) &imgIn, [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) &imgOut) override — Execute the filter on the image.
+- bool [good](#good) () const override — Return true if the filter can be used, in particular if the shaders are available.
+- bool **setKernelSize** (int i)
+- void **setFilterStrength** (float val)
+
+## Protected Attributes
+
+- [GL::ImageProgram](/cpp-sdk/4.5/api/classes/imfusion-gl-imageprogram) \* **m_program**
+- [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) \* **m_original**
+- int **m_kernelSize**
+- float **m_filterStrength**
+
+## Member Function Documentation
+
+### compute
+
+```cpp
+void ImFusion::GlOvershootControlFilter::compute (const GlImage & imgIn, GlImage & imgOut)
+```
+
+*override, virtual*
+
+Execute the filter on the image.
+
+### good
+
+```cpp
+bool ImFusion::GlOvershootControlFilter::good () const
+```
+
+*override, virtual*
+
+Return true if the filter can be used, in particular if the shaders are available.

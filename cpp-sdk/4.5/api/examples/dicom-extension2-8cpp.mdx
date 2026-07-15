@@ -1,0 +1,82 @@
+---
+title: "DicomExtensionExample2.cpp"
+---
+
+```cpp
+#include <ImFusion/Base/SharedImageSet.h>
+#include <ImFusion/Dicom/DicomElement.h>
+#include <ImFusion/Dicom/DicomIOD.h>
+#include <ImFusion/Dicom/Extension.h>
+
+#include <dcmtk/dcmdata/dctk.h>
+
+using namespace ImFusion;
+
+class ExtensionExample2 : public Dicom::Extension
+{
+public:
+ std::unique_ptr<Dicom::Extension> clone() const override { return std::make_unique<ExtensionExample2>(*this); };
+ std::string name() const override { return "Extension Example2"; }
+
+ std::vector<std::unique_ptr<Data>> load(const Dicom::FrameDescriptor& frame, SharedImageSet& sis) const override
+ {
+ if (auto enhanced = dynamic_cast<Dicom::EnhancedMultiFrameImageIOD*>(frame.iod))
+        {
+ // In enhanced DICOM tags can be either shared for a frames in the
+ // sharedSequence or individual for each frame in the perFrameSequence
+ bool hasShared = false;
+ if (enhanced->sharedSequence.count() >= 1)
+            {
+ auto& shared = enhanced->sharedSequence.item(0);
+                Windowing windowing(shared.dataset());
+ if (windowing.exists())
+                {
+                    windowing.load(sis);
+                    hasShared = true;
+                }
+            }
+
+ if (!hasShared && frame.index < enhanced->perFrameSequence.count())
+            {
+ auto& perFrame = enhanced->perFrameSequence.item(frame.index);
+                Windowing windowing(perFrame.dataset());
+ if (windowing.exists())
+                    windowing.load(sis);
+            }
+        }
+ else
+        {
+            Windowing windowing(frame.iod->dataset());
+ if (windowing.exists())
+                windowing.load(sis);
+        }
+
+ return {};    // If you loaded some additional data e.g. from private tags, you can return it here.
+    }
+
+ void save(const Dicom::FrameDescriptor& frame, const SharedImageSet& sis) const override {}
+
+private:
+ // Helper class for using the same code for enhanced- and classic DICOMs
+ class Windowing
+    {
+ public:
+ Dicom::Element<double> center;
+ Dicom::Element<double> width;
+
+        Windowing(DcmItem& parent)
+            : center(parent, DCM_WindowCenter, Dicom::ElementBase::Conditional, true)
+            , width(parent, DCM_WindowWidth, Dicom::ElementBase::Conditional, true)
+        {
+        }
+
+ bool exists() { return center.exists() && width.exists(); }
+
+ void load(SharedImageSet& sis)
+        {
+ // ... e.g. set window/center in DisplayOptions2d
+        }
+    };
+};
+```
+ fragment

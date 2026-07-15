@@ -1,0 +1,17 @@
+---
+title: "ImFusion::GlPainter"
+sidebarTitle: "GlPainter"
+---
+
+## Public Member Functions
+
+- void **clear** ()
+- void **addLine** (const vec3f &start, const vec3f &end, const vec4f &startColor=vec4f(1.0f, 1.0f, 1.0f, 1.0f), const vec4f &endColor=vec4f(1.0f, 1.0f, 1.0f, 1.0f))
+- void **addLines** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::pair](http://en.cppreference.com/w/cpp/utility/pair.html)&lt; vec3f, vec3f &gt; &gt; lines)
+- void **addPoint** (const vec3f &point, const vec4f &color=vec4f(1.0f, 1.0f, 1.0f, 1.0f))
+- void **addPoints** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3f &gt; &points, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec4f &gt; &colors=&#123;&#125;)
+- void **addCircle** (const vec3f &center, float radius, const vec3f &normal=vec3f(0.0f, 0.0f, 1.0f), const vec4f color=vec4f(1.0f, 1.0f, 1.0f, 1.0f), int subdivisions=30)
+- void **addRing** (const vec3f &center, float outerRadius, float innerRadius, const vec3f &normal=vec3f(0.0f, 0.0f, 1.0f), const vec4f color=vec4f(1.0f, 1.0f, 1.0f, 1.0f), int subdivisions=30)
+- void **addCross** (const vec3f &center, float radius, float thickness, const vec3f &normal=vec3f(0.0f, 0.0f, 1.0f), const vec4f color=vec4f(1.0f, 1.0f, 1.0f, 1.0f))
+- void **render** ()
+- void **renderInstanced** (int instances)

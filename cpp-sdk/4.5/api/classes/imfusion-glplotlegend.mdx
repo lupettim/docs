@@ -1,0 +1,35 @@
+---
+title: "ImFusion::GlPlotLegend"
+sidebarTitle: "GlPlotLegend"
+description: "Display legend of a plot view as an overlay Color and marker styles replicate the plot style, however, in the text form instead of graphic renders."
+---
+
+`#include <ImFusion/GUI/GlPlotLegend.h>`
+
+## Overview
+
+Display legend of a plot view as an overlay Color and marker styles replicate the plot style, however, in the text form instead of graphic renders.
+
+## Public Member Functions
+
+- void [render](#render) (const [GL::Viewport](/cpp-sdk/4.5/api/structs/imfusion-gl-viewport) &viewport) override — render the overlay with the given width and height
+- void **setTitle** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &text) — set title of the legend
+- void **addLegend** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &text, const [GlPlotView::PlotInfo](/cpp-sdk/4.5/api/structs/imfusion-glplotview-plotinfo) &info) — add a new plot legend
+- void **clearLegend** () — clear all
+- void **setFontSize** (int size) — set font size for the legend text title font size is set to size + 2pt
+- void **setTextColor** (const vec4 &color) — set text color for both title and legend text
+- void **setBackgroundColor** (const vec3 &color) — set background color
+- void **setBackgroundBoxColor** (const vec3 &color) — set background box color
+- void **setBackgroundMarginSize** (int margin) — set background margin relative to the text applied to both horizontal/vertical margin
+
+## Member Function Documentation
+
+### render
+
+```cpp
+void ImFusion::GlPlotLegend::render (const GL::Viewport & viewport)
+```
+
+*override, virtual*
+
+render the overlay with the given width and height

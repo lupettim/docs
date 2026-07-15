@@ -1,0 +1,77 @@
+---
+title: "ImFusion::GlFreeFormDeformation"
+sidebarTitle: "GlFreeFormDeformation"
+description: "Free Form Deformation ."
+---
+
+`#include <ImFusion/GL/GlFreeFormDeformation.h>`
+
+## Overview
+
+Free Form [Deformation](/cpp-sdk/4.5/api/classes/imfusion-deformation).
+
+## Public Types
+
+- enum **DeformationType** &#123; **CubicBSpline** &#125; — [Status](/cpp-sdk/4.5/api/classes/imfusion-algorithm) codes.
+
+## Public Member Functions
+
+- **GlFreeFormDeformation** ([SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*img, [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*out=0)
+- int **dimension** () const
+- void **setSubdivisions** (const vec3 &n) — Set number of control points (without border needed for interpolation).
+- vec3 **subdivisions** () const — Get number of internal subdivisions.
+- void **setGridSpacing** (const vec3 &s) — Set grid spacing in pixels.
+- vec3 **gridSpacing** () const — Get grid spacing in pixels.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; **gridPoints** () const — Get current grid point locations (including displacement).
+- vec3i **gridSize** () const
+- void **setDeformationType** (DeformationType type) — Set deformation type.
+- DeformationType **deformationType** () const — Get deformation type.
+- void **setTransformation** (const mat4 &T) — Set transformation to be applied to the control points in world coordinate system.
+- mat4 **transformation** () const — Get control point transformation in world coordinate system.
+- void [setDisplacement](#setdisplacement) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3f &gt; &d) — Set displacement in pixels for every control points.
+- void **setDisplacement** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec2f &gt; &d) — Set displacement in pixels for every control points. Convenience function for 2D images.
+- void **setInnerDisplacement** (int n, const double \*d, int borderXY=0, int borderZ=-1, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; \*cpOut=0) — Set the 3D world displacement for all inner control points (the outer ones are kept unchanged) using single linearized array.
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3f &gt; & **displacement** () const — Get displacement in pixels.
+- [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* **displacementField** () — Creates and returns a dense displacement field.
+- [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \* **getOutput** () const
+- void [applyToProgram](#applytoprogram) ([GL::Program](/cpp-sdk/4.5/api/classes/imfusion-gl-program) \*prog) override — Apply the FFD variables to a shader program.
+- [GL::Program](/cpp-sdk/4.5/api/classes/imfusion-gl-program) \* **createSliceProgram** () — Create a shader program for deformed slice visualization.
+- void [compute](#compute) () override — Apply free form deformation to image imgIn and imgOut have to be two different images.
+- void **compute** ([SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*imgIn) — Apply free form deformation to the given image imgIn and imgOut have to be two different images.
+- vec3 **transformPoint** (const vec3 &p) const — [Transform](/cpp-sdk/4.5/api/classes/imfusion-transform) point given in output image world coordinate system to input image world coordinate system.
+
+## Static Public Member Functions
+
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=0) — If data is compatible with algorithm return true. If a is not zero, create algorithm with input data.
+
+## Member Function Documentation
+
+### setDisplacement
+
+```cpp
+void ImFusion::GlFreeFormDeformation::setDisplacement (const std::vector < vec3f > & d)
+```
+
+Set displacement in pixels for every control points.
+
+For 2D images the z-coordinate of the displacement is ignored.
+
+### applyToProgram
+
+```cpp
+void ImFusion::GlFreeFormDeformation::applyToProgram (GL::Program * prog)
+```
+
+*override, virtual*
+
+Apply the FFD variables to a shader program.
+
+### compute
+
+```cpp
+void ImFusion::GlFreeFormDeformation::compute ()
+```
+
+*override, virtual*
+
+Apply free form deformation to image imgIn and imgOut have to be two different images.

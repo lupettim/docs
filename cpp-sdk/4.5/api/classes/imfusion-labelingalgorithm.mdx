@@ -1,0 +1,40 @@
+---
+title: "ImFusion::LabelingAlgorithm"
+sidebarTitle: "LabelingAlgorithm"
+description: "Labeling algorithm."
+---
+
+`#include <ImFusion/Seg/LabelingAlgorithm.h>`
+
+## Overview
+
+Labeling algorithm.
+
+If an optional list is provided for the labels, the label indices must start from one. Zero is reserved for unlabeled points.
+
+## Public Member Functions
+
+- **LabelingAlgorithm** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &is, [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*labels=nullptr, [std::map](http://en.cppreference.com/w/cpp/container/map.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html), int &gt; \*labelNameList=nullptr)
+- [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) & **image** ()
+- void **setLabels** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*labels)
+- [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* **labels** ()
+- void [compute](#compute) () override — Execute the algorithm.
+- void **statistics** ([SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*labels, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; &gt; \*stats=0) const — Compute intensity statistics from the labeled data [Statistics](/cpp-sdk/4.5/api/structs/imfusion-statistics) for label i is stored in stats[i-1].
+- bool **hasLabelList** () const — Returns true if the labeling algorithm has a list of label names.
+- [std::map](http://en.cppreference.com/w/cpp/container/map.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html), int &gt; const \* **labelList** () const — Returns the list of names for describing labels.
+
+## Static Public Member Functions
+
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=0) — If data is compatible with algorithm return true. If a is not zero, create algorithm with input data.
+
+## Member Function Documentation
+
+### compute
+
+```cpp
+void ImFusion::LabelingAlgorithm::compute ()
+```
+
+*inline, override, virtual*
+
+Execute the algorithm.

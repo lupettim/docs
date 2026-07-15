@@ -1,0 +1,48 @@
+---
+title: "ImFusion::ParameterOptimization"
+sidebarTitle: "ParameterOptimization"
+description: "Class for combining a ParameterWrapperBase instance with a cost function over C++ objects to produce a CostFunction that can be optimized over with an Optimizer"
+---
+
+`#include <ImFusion/Base/ParameterOptimization.h>`
+
+## Overview
+
+Class for combining a [ParameterWrapperBase](/cpp-sdk/4.5/api/classes/imfusion-parameterwrapperbase) instance with a cost function over C++ objects to produce a [CostFunction](/cpp-sdk/4.5/api/classes/imfusion-costfunction) that can be optimized over with an [Optimizer](/cpp-sdk/4.5/api/classes/imfusion-optimizer) instance.
+
+**See also:** [ParameterWrapperBase](/cpp-sdk/4.5/api/classes/imfusion-parameterwrapperbase)
+
+## Public Member Functions
+
+- **ParameterOptimization** (const [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; double(void)&gt; &costFunc, const [ParameterWrapperBase](/cpp-sdk/4.5/api/classes/imfusion-parameterwrapperbase) &p) — Constructor that combines a set of optimization parameters with a cost function to create a [CostFunction](/cpp-sdk/4.5/api/classes/imfusion-costfunction) instance.
+- **ParameterOptimization** (const [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; double(void)&gt; &costFunc, Ts &&... params) — Convenience constructor that concatenates a list of parameters.
+- int **dimension** () const
+- double [evaluate](#evaluate) (int n, const double \*x, double \*dx) override — Implementation of the [CostFunction](/cpp-sdk/4.5/api/classes/imfusion-costfunction) interface.
+- double \* [paramBuffer](#parambuffer) () — Sets up a stored buffer containing the serialized parameters.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **paramNames** () const — Returns names of parameters handled by this algorithm.
+- [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [Optimizer](/cpp-sdk/4.5/api/classes/imfusion-optimizer) &gt; **setupOptimizer** ([std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [Optimizer](/cpp-sdk/4.5/api/classes/imfusion-optimizer) &gt; opt=nullptr, double step=1.0, [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) \*progress=nullptr) — Setup an [Optimizer](/cpp-sdk/4.5/api/classes/imfusion-optimizer) to optimize over this instance. If no opt parameter is provided, a default optimizer is constructed.
+- double **eval** () const — Return the current value of the cost function.
+
+## Member Function Documentation
+
+### evaluate
+
+```cpp
+double ImFusion::ParameterOptimization::evaluate (int n, const double * x, double * dx)
+```
+
+*override, virtual*
+
+Implementation of the [CostFunction](/cpp-sdk/4.5/api/classes/imfusion-costfunction) interface.
+
+Calls deserialize of the parameter wrapper from x, and returns the value of the cost function.
+
+### paramBuffer
+
+```cpp
+double * ImFusion::ParameterOptimization::paramBuffer ()
+```
+
+Sets up a stored buffer containing the serialized parameters.
+
+**Returns:** the buffer

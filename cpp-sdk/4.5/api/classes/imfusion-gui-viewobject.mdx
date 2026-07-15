@@ -1,0 +1,67 @@
+---
+title: "ImFusion::GUI::ViewObject"
+sidebarTitle: "ViewObject"
+description: "Wraps a GlObject pairing it with an optional EventHandler in order to attach it to a View ."
+---
+
+`#include <ImFusion/GUI/ViewObject.h>`
+
+## Overview
+
+Wraps a [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) pairing it with an optional [EventHandler](/cpp-sdk/4.5/api/classes/imfusion-gui-viewobject-eventhandler) in order to attach it to a [View](/cpp-sdk/4.5/api/classes/imfusion-gui-view).
+
+Creating a [ViewObject](/cpp-sdk/4.5/api/classes/imfusion-gui-viewobject) and attaching it to a [View](/cpp-sdk/4.5/api/classes/imfusion-gui-view) (in contrast to attaching a plain [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) to a [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview)) allows for receiving and handling user input events (e.g. mouse events). Usually, event handling logic is implemented by the [EventHandler](/cpp-sdk/4.5/api/classes/imfusion-gui-viewobject-eventhandler) and the [ViewObject](/cpp-sdk/4.5/api/classes/imfusion-gui-viewobject) is merely supposed to coordinate.
+
+In contrast to a [ViewOverlay](/cpp-sdk/4.5/api/classes/imfusion-gui-viewoverlay) a [ViewObject](/cpp-sdk/4.5/api/classes/imfusion-gui-viewobject) resides in world space and is rendered as part of the scene of the parent [View](/cpp-sdk/4.5/api/classes/imfusion-gui-view).
+
+## Classes
+
+- class [EventHandler](/cpp-sdk/4.5/api/classes/imfusion-gui-viewobject-eventhandler) — Interface to be used as base class for event handlers of ViewObjects.
+
+## Public Member Functions
+
+- [ViewObject](#viewobject) ([std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) &gt; glObject) — Instantiate a new [ViewObject](/cpp-sdk/4.5/api/classes/imfusion-gui-viewobject) taking ownership of the underlying [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) which must not be null.
+- virtual [EventResult](/cpp-sdk/4.5/api/structs/imfusion-gui-eventresult) [handleInputEvent](#handleinputevent) (const [InputEvent](/cpp-sdk/4.5/api/classes/imfusion-gui-inputevent) &event, const [View](/cpp-sdk/4.5/api/classes/imfusion-gui-view) &view)=0 — Gets called by the parent *view* in order to handle user input events.
+- const [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) & **glObject** () const — Get the underlying abstract [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject).
+- [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) & **glObject** ()
+- const [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) \* **gl** () const — Original API methods for the underlying abstract [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject).
+- [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) \* **gl** ()
+
+## Protected Attributes
+
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) &gt; **m_glObject**
+
+## Constructor & Destructor Documentation
+
+### ViewObject
+
+```cpp
+ImFusion::GUI::ViewObject::ViewObject (std::unique_ptr < GlObject > glObject)
+```
+
+*explicit*
+
+Instantiate a new [ViewObject](/cpp-sdk/4.5/api/classes/imfusion-gui-viewobject) taking ownership of the underlying [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) which must not be null.
+
+**Exceptions:**
+
+- `std::runtime_error` — if *glObject* is nullptr
+
+## Member Function Documentation
+
+### handleInputEvent
+
+```cpp
+virtual EventResult ImFusion::GUI::ViewObject::handleInputEvent (const InputEvent & event, const View & view)
+```
+
+*pure virtual*
+
+Gets called by the parent *view* in order to handle user input events.
+
+It returns an [EventResult](/cpp-sdk/4.5/api/structs/imfusion-gui-eventresult) to indicated if and how event propagation should continue.
+
+**Parameters:**
+
+- `event` — User input event to handle.
+- `view` — Parent [View](/cpp-sdk/4.5/api/classes/imfusion-gui-view) where the event originates from. This additional payload enables you to add the same [ViewObject](/cpp-sdk/4.5/api/classes/imfusion-gui-viewobject) to multiple views and still implement view-specific handling logic.

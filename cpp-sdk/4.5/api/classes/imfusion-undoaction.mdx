@@ -1,0 +1,152 @@
+---
+title: "ImFusion::UndoAction"
+sidebarTitle: "UndoAction"
+---
+
+## Public Member Functions
+
+- bool [isProjectCompatible](#isprojectcompatible-1-2) () const override
+- bool [isProjectCompatible](#isprojectcompatible-2-2) (const Project::ProjectTypes &, bool) const override
+- bool [areActiveLayersCompatible](#areactivelayerscompatible) () const override
+- bool [isDataSetCompatible](#isdatasetcompatible) (const [DataSet](/cpp-sdk/4.5/api/classes/imfusion-dataset) &) const override
+- void [dataSetChanged](#datasetchanged) () override
+- QIcon [icon](#icon) () const override
+- QString [text](#text) () const override
+- QString [description](#description) () const override
+- QString [docPath](#docpath) () const override
+- bool [isReadOnly](#isreadonly) () const override
+- void **previous** ()
+- void **next** ()
+- void [activate](#activate) () override
+- void **recordUndoLevel** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &desc, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; size_t &gt; &frames)
+- QWidget \* [ui](#ui) (QWidget \*parent=nullptr) override
+- void **setupHistoryTable** (QWidget \*ret)
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void **setDataComponentsID** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; &ids) — Sets the data-components that will be recorder in each undo level.
+
+## Member Function Documentation
+
+### isProjectCompatible
+
+```cpp
+bool ImFusion::UndoAction::isProjectCompatible () const
+```
+
+*override, virtual*
+
+### isProjectCompatible
+
+```cpp
+bool ImFusion::UndoAction::isProjectCompatible (const Project::ProjectTypes &, bool) const
+```
+
+*override, virtual*
+
+### areActiveLayersCompatible
+
+```cpp
+bool ImFusion::UndoAction::areActiveLayersCompatible () const
+```
+
+*override, virtual*
+
+### isDataSetCompatible
+
+```cpp
+bool ImFusion::UndoAction::isDataSetCompatible (const DataSet &) const
+```
+
+*override, virtual*
+
+### dataSetChanged
+
+```cpp
+void ImFusion::UndoAction::dataSetChanged ()
+```
+
+*override, virtual*
+
+### icon
+
+```cpp
+QIcon ImFusion::UndoAction::icon () const
+```
+
+*inline, override, virtual*
+
+### text
+
+```cpp
+QString ImFusion::UndoAction::text () const
+```
+
+*inline, override, virtual*
+
+### description
+
+```cpp
+QString ImFusion::UndoAction::description () const
+```
+
+*inline, override, virtual*
+
+### docPath
+
+```cpp
+QString ImFusion::UndoAction::docPath () const
+```
+
+*inline, override, virtual*
+
+### isReadOnly
+
+```cpp
+bool ImFusion::UndoAction::isReadOnly () const
+```
+
+*inline, override, virtual*
+
+### activate
+
+```cpp
+void ImFusion::UndoAction::activate ()
+```
+
+*override, virtual*
+
+### ui
+
+```cpp
+QWidget * ImFusion::UndoAction::ui (QWidget * parent = nullptr)
+```
+
+*override, virtual*
+
+### configuration
+
+```cpp
+void ImFusion::UndoAction::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality
+
+### configure
+
+```cpp
+void ImFusion::UndoAction::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality

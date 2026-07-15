@@ -1,0 +1,104 @@
+---
+title: "ImFusion::DateTime"
+sidebarTitle: "DateTime"
+description: "Utility methods and classes related to date and time representation, including time zones."
+---
+
+## Overview
+
+Utility methods and classes related to date and time representation, including time zones.
+
+## Classes
+
+- class [TimePoint](/cpp-sdk/4.5/api/classes/imfusion-datetime-timepoint) — Class representing a point in time, keeping track of UTC offsets and time zone name, if available.
+
+## Functions
+
+- uint64_t **currentMillisecondsSinceEpochUtc** () — Returns the total number of milliseconds since the configured epoch.
+- std::chrono::system_clock::time_point [convertToTimePointFromMilliseconds](#converttotimepointfrommilliseconds) (uint64_t millisecSinceEpochUtc) — Converts a millisecond-based timestamp to a chrono time_point.
+- std::chrono::system_clock::time_point [convertToTimePointFromSeconds](#converttotimepointfromseconds) (double secSinceEpochUtc) — Converts a seconds-based timestamp to a chrono time_point.
+- std::chrono::system_clock::time_point [convertToTimePointFromYMD](#converttotimepointfromymd) (int year, int month, int day) — Converts from year, month and day to a chrono time_point.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [formatTimePoint](#formattimepoint) (std::chrono::system_clock::time_point tp, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &fmt="%F %T") — Helper function to format a given time point.
+- [std::map](http://en.cppreference.com/w/cpp/container/map.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html), [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; [possibleTimeZones](#possibletimezones) (std::chrono::system_clock::time_point utc, [std::chrono::minutes](http://en.cppreference.com/w/cpp/chrono/duration.html) offset) — Helper function to query all known time zones for a given UTC date and an offset.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; [possibleTimeZoneAbbr](#possibletimezoneabbr) (std::chrono::system_clock::time_point utc, [std::chrono::minutes](http://en.cppreference.com/w/cpp/chrono/duration.html) offset) — Helper function to query all unique known time zone abbreviation for a given UTC date and an offset.
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; std::chrono::system_clock::time_point &gt; [convertToTimezoneFromUTC](#converttotimezonefromutc) (std::chrono::system_clock::time_point utc, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &timezone) — Helper function to convert a time in UTC to a local time in the timezone specified by the timezoneAbbrev parameter.
+
+## Function Documentation
+
+### convertToTimePointFromMilliseconds
+
+```cpp
+std::chrono::system_clock::time_point ImFusion::DateTime::convertToTimePointFromMilliseconds (uint64_t millisecSinceEpochUtc)
+```
+
+Converts a millisecond-based timestamp to a chrono time_point.
+
+(convention is used in stream data and the timestamp data components)
+
+### convertToTimePointFromSeconds
+
+```cpp
+std::chrono::system_clock::time_point ImFusion::DateTime::convertToTimePointFromSeconds (double secSinceEpochUtc)
+```
+
+Converts a seconds-based timestamp to a chrono time_point.
+
+(convention is used for images and tracking samples)
+
+### convertToTimePointFromYMD
+
+```cpp
+std::chrono::system_clock::time_point ImFusion::DateTime::convertToTimePointFromYMD (int year, int month, int day)
+```
+
+Converts from year, month and day to a chrono time_point.
+
+**Parameters:**
+
+- `year` — Allowed value range is [1900, 2261]
+- `month` — Allowed value range is [1, 12]
+- `day` — Allowed value range is [1, 31]
+
+**Exceptions:**
+
+- `std::runtime_error` — if the input values cannot be converted
+
+### formatTimePoint
+
+```cpp
+std::string ImFusion::DateTime::formatTimePoint (std::chrono::system_clock::time_point tp, const std::string & fmt = "%F %T")
+```
+
+Helper function to format a given time point.
+
+Omits fractions of seconds. Allowed format strings are described here: [https://howardhinnant.github.io/date/date.html#duration_io](https://howardhinnant.github.io/date/date.html#duration_io), "to_stream formatting" section
+
+### possibleTimeZones
+
+```cpp
+std::map < std::string, std::string > ImFusion::DateTime::possibleTimeZones (std::chrono::system_clock::time_point utc, std::chrono::minutes offset)
+```
+
+Helper function to query all known time zones for a given UTC date and an offset.
+
+The returned map maps from IANA zone names to the standard abbreviation using for display, for instance Europe/Berlin to CET.
+
+### possibleTimeZoneAbbr
+
+```cpp
+std::vector < std::string > ImFusion::DateTime::possibleTimeZoneAbbr (std::chrono::system_clock::time_point utc, std::chrono::minutes offset)
+```
+
+Helper function to query all unique known time zone abbreviation for a given UTC date and an offset.
+
+For a winter date and offset +1h, it will for instance return, possibly among others, the following: +01, CET, MET, WAT.
+
+### convertToTimezoneFromUTC
+
+```cpp
+std::optional < std::chrono::system_clock::time_point > ImFusion::DateTime::convertToTimezoneFromUTC (std::chrono::system_clock::time_point utc, const std::string & timezone)
+```
+
+Helper function to convert a time in UTC to a local time in the timezone specified by the timezoneAbbrev parameter.
+
+If the timezone cannot be identified by the abbreviation, the optional is null.

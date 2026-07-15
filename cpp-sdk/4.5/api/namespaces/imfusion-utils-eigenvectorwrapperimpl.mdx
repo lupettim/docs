@@ -1,0 +1,47 @@
+---
+title: "ImFusion::Utils::EigenVectorWrapperImpl"
+sidebarTitle: "EigenVectorWrapperImpl"
+description: "Wrapper classes for using std::vector<Eigen::Matrix<T,N,1>> with arbitrary T and N as input of a non-template function."
+---
+
+## Overview
+
+Wrapper classes for using [std::vector&lt;Eigen::Matrix&lt;T,N,1&gt;&gt;](http://en.cppreference.com/w/cpp/container/vector.html) with arbitrary T and N as input of a non-template function.
+
+TL/DR: Just pass a [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt;vec2/3/4(f)&gt; when you encounter these as a function argument.
+
+Wrapper implicitly converts std::vectors of arbitrary Eigen vectors to [std::vector&lt;Eigen::Matrix&lt;InsideType, InsideDimension, 1&gt;&gt;](http://en.cppreference.com/w/cpp/container/vector.html). Is based on [std::vector&lt;Eigen::Matrix&lt;InsideType, InsideDimension, 1&gt;&gt;](http://en.cppreference.com/w/cpp/container/vector.html) and mostly can be used as such. When Output is set to true, the final state of the wrapper content will be copied back into the input data. When Optional is set to true, the object may be invalid (empty initializer or nullptr), for use as optional arguments of a function. If the input Eigen objects have a different number of rows than InsideDimension, the missing elements are set to FillValue. This class is intended to be used for implicit conversions during function calls and should be used with care in any other context.
+
+DANGER: Do NOT under any circumstances use a pointer to the [std::vector](http://en.cppreference.com/w/cpp/container/vector.html) base class to own this thing (no virtual destructor).
+
+Example usage:
+
+```cpp
+void someFunc(
+const EigenVectorWrapper<double, 3>& input,
+ OutputEigenVectorWrapper<double, 3> output,
+ OptionalEigenVectorWrapper<double, 3> optionalInput = {})
+{
+ if(optionalInput && optionalInput.size())
+        output = std::vector<vec3>(4, optionalInput[0]);
+ else
+        output = input;
+}
+
+std::vector<vec3f> a;
+std::vector<vec2> b;
+std::vector<vec4> c;
+bool itsWednesday;
+someFunc(a, b, c);  //Enabled optional argument
+someFunc(c, a);     //Defaulted optional argument
+someFunc(b, c, nullptr);    //Disabled optional argument
+someFunc(b, c, {}); //Disabled optional argument, alternative style
+someFunc(a, b, {c, itsWednesday});  //Conditional optional argument
+```
+ fragment
+
+## Classes
+
+- struct [EigenVectorWrapperBase](/cpp-sdk/4.5/api/structs/imfusion-utils-eigenvectorwrapperimpl-eigenvectorwrapperbase)
+- struct [EigenVectorWrapperOptionalBase](/cpp-sdk/4.5/api/structs/imfusion-utils-eigenvectorwrapperimpl-eigenvectorwrapperoptionalbase)
+- struct [EigenVectorWrapperOutputBase](/cpp-sdk/4.5/api/structs/imfusion-utils-eigenvectorwrapperimpl-eigenvectorwrapperoutputbase)

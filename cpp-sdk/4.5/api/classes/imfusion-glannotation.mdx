@@ -1,0 +1,282 @@
+---
+title: "ImFusion::GlAnnotation"
+sidebarTitle: "GlAnnotation"
+description: "Base class for implementing annotations."
+---
+
+`#include <ImFusion/GL/GlAnnotation.h>`
+
+## Overview
+
+[Base](/cpp-sdk/4.5/api/structs/imfusion-dicom-base) class for implementing annotations.
+
+## Public Member Functions
+
+- virtual void [setView](#setview) (const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) \*view) — Set the view through which this annotation is currently being manipulated.
+- virtual const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) \* **view** () const — Get the view through which this annotation is currently being manipulated.
+- virtual bool [hitTest](#hittest) (int, int, const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &) const — Perform hit test with points of underlying object. Return true if object is hit, false otherwise.
+- virtual void [setEditable](#seteditable) (bool [editable](#editable)) — When a [GlAnnotation](/cpp-sdk/4.5/api/classes/imfusion-glannotation) is editable it may alter its visualization and render UI elements for its manipulation.
+- virtual bool [editable](#editable) () const — When a [GlAnnotation](/cpp-sdk/4.5/api/classes/imfusion-glannotation) is editable it may alter its visualization and render UI elements for its manipulation.
+- virtual void [setColor](#setcolor) (const vec3 &color) — Set annotation color.
+- virtual vec3 **color** () const — Return annotation color.
+- virtual void [setAlpha](#setalpha) (double v) — Set alpha channel.
+- virtual double **alpha** () const — Get alpha channel.
+- virtual void [setLineWidth](#setlinewidth) (float [lineWidth](#linewidth)) — Set annotation line width.
+- virtual float [lineWidth](#linewidth) () const — Return annotation line width.
+- virtual void [setLabelVisible](#setlabelvisible) (bool [visible](/cpp-sdk/4.5/api/classes/imfusion-globject)) — Set annotation label visibility.
+- virtual bool [labelVisible](#labelvisible) () const — Return annotation label visibility.
+- virtual void **setLabelBackgroundVisible** (bool [visible](/cpp-sdk/4.5/api/classes/imfusion-globject)) — Set annotation label background visibility.
+- virtual bool **labelBackgroundVisible** () const — Return annotation label background visibility.
+- virtual void **setLabelBackgroundColor** (vec4 color) — Set annotation label background color.
+- virtual vec4 **labelBackgroundColor** () const — Return annotation label background color.
+- virtual void **setLabelBackgroundMargin** (int margin) — Set annotation label background margin in pixels.
+- virtual int **labelBackgroundMargin** () const — Return annotation label background margin in pixels.
+- virtual void [setLabelDepthTest](#setlabeldepthtest) (bool depthTest) — Set annotation label depth test flag.
+- virtual bool [labelDepthTest](#labeldepthtest) () const — Return annotation label depth test flag.
+- virtual void [setLabelColor](#setlabelcolor) (const vec3 &color) — Set annotation label color.
+- virtual vec3 **labelColor** () const — Return annotation label color.
+- virtual void [setLabelText](#setlabeltext) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &label) — Set annotation label text.
+- virtual [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **labelText** () const — Return annotation label text.
+- virtual void [setLabelTextPrefix](#setlabeltextprefix) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &labelPrefix) — Set annotation label text prefix.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **labelTextPrefix** () const — Return annotation label text prefix.
+- virtual void [setLabelTextSuffix](#setlabeltextsuffix) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &labelSuffix) — Set annotation label text suffix.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **labelTextSuffix** () const — Return annotation label text suffix.
+- virtual void **setName** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name) — Set annotation name.
+- virtual [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **name** () const — Return annotation name.
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Set one or multiple properties.
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Retrieve the properties of this object.
+- virtual void [setSelected](#setselected) (bool m) — When a [GlAnnotation](/cpp-sdk/4.5/api/classes/imfusion-glannotation) is selected, it may be rendered differently to distinguish it from non-selected annotations.
+- bool **selected** () const — When a [GlAnnotation](/cpp-sdk/4.5/api/classes/imfusion-glannotation) is selected, it may be rendered differently to distinguish it from non-selected annotations.
+- virtual void [setMatrixWithoutMoving](#setmatrixwithoutmoving) (const mat4 &m) — Change the matrix without moving the annotation, e.g. for linking it with an image transformation.
+- void **copyStyle** (const GlAnnotation &other) — Copies the settable parameters from another [GlAnnotation](/cpp-sdk/4.5/api/classes/imfusion-glannotation).
+
+## Protected Member Functions
+
+- void **renderLabel** (const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &view, const vec3 &positionWorld) const — Render the label of the annotation at the given position.
+- vec2i **labelSize** () const
+
+## Protected Attributes
+
+- bool **m_editable** = true
+- vec4 **m_color** &#123;1, 1, 0, 1&#125;
+- float **m_lineWidth** = 1
+- bool **m_labelVisible** = true
+- bool **m_labelBackgroundVisible** = false
+- vec4 **m_labelBackgroundColor** &#123;0.3, 0.3, 0.3, 0.7&#125;
+- int **m_labelBackgroundMargin** = 3
+- bool **m_labelDepthTest** = true
+- bool **m_selected** = false
+- vec3 **m_labelColor** &#123;0, 1, 1&#125;
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **m_labelText**
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **m_labelTextPrefix**
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **m_labelTextSuffix**
+- const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) \* **m_view** = nullptr
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **m_name**
+
+## Member Function Documentation
+
+### setView
+
+```cpp
+virtual void ImFusion::GlAnnotation::setView (const GlView * view)
+```
+
+*inline, virtual*
+
+Set the view through which this annotation is currently being manipulated.
+
+### hitTest
+
+```cpp
+virtual bool ImFusion::GlAnnotation::hitTest (int, int, const GlView &) const
+```
+
+*inline, virtual*
+
+Perform hit test with points of underlying object. Return true if object is hit, false otherwise.
+
+### setEditable
+
+```cpp
+virtual void ImFusion::GlAnnotation::setEditable (bool editable)
+```
+
+*virtual*
+
+When a [GlAnnotation](/cpp-sdk/4.5/api/classes/imfusion-glannotation) is editable it may alter its visualization and render UI elements for its manipulation.
+
+### editable
+
+```cpp
+virtual bool ImFusion::GlAnnotation::editable () const
+```
+
+*virtual*
+
+When a [GlAnnotation](/cpp-sdk/4.5/api/classes/imfusion-glannotation) is editable it may alter its visualization and render UI elements for its manipulation.
+
+### setColor
+
+```cpp
+virtual void ImFusion::GlAnnotation::setColor (const vec3 & color)
+```
+
+*virtual*
+
+Set annotation color.
+
+### setAlpha
+
+```cpp
+virtual void ImFusion::GlAnnotation::setAlpha (double v)
+```
+
+*virtual*
+
+Set alpha channel.
+
+### setLineWidth
+
+```cpp
+virtual void ImFusion::GlAnnotation::setLineWidth (float lineWidth)
+```
+
+*virtual*
+
+Set annotation line width.
+
+### lineWidth
+
+```cpp
+virtual float ImFusion::GlAnnotation::lineWidth () const
+```
+
+*virtual*
+
+Return annotation line width.
+
+### setLabelVisible
+
+```cpp
+virtual void ImFusion::GlAnnotation::setLabelVisible (bool visible)
+```
+
+*virtual*
+
+Set annotation label visibility.
+
+### labelVisible
+
+```cpp
+virtual bool ImFusion::GlAnnotation::labelVisible () const
+```
+
+*virtual*
+
+Return annotation label visibility.
+
+### setLabelDepthTest
+
+```cpp
+virtual void ImFusion::GlAnnotation::setLabelDepthTest (bool depthTest)
+```
+
+*virtual*
+
+Set annotation label depth test flag.
+
+**Parameters:**
+
+- `depthTest` — Flag whether apply depth test during label rendering in 3D views.
+
+### labelDepthTest
+
+```cpp
+virtual bool ImFusion::GlAnnotation::labelDepthTest () const
+```
+
+*virtual*
+
+Return annotation label depth test flag.
+
+**Returns:** Flag whether apply depth test during label rendering in 3D views.
+
+### setLabelColor
+
+```cpp
+virtual void ImFusion::GlAnnotation::setLabelColor (const vec3 & color)
+```
+
+*virtual*
+
+Set annotation label color.
+
+### setLabelText
+
+```cpp
+virtual void ImFusion::GlAnnotation::setLabelText (const std::string & label)
+```
+
+*virtual*
+
+Set annotation label text.
+
+### setLabelTextPrefix
+
+```cpp
+virtual void ImFusion::GlAnnotation::setLabelTextPrefix (const std::string & labelPrefix)
+```
+
+*virtual*
+
+Set annotation label text prefix.
+
+### setLabelTextSuffix
+
+```cpp
+virtual void ImFusion::GlAnnotation::setLabelTextSuffix (const std::string & labelSuffix)
+```
+
+*virtual*
+
+Set annotation label text suffix.
+
+### configure
+
+```cpp
+void ImFusion::GlAnnotation::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Set one or multiple properties.
+
+### configuration
+
+```cpp
+void ImFusion::GlAnnotation::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Retrieve the properties of this object.
+
+### setSelected
+
+```cpp
+virtual void ImFusion::GlAnnotation::setSelected (bool m)
+```
+
+*inline, virtual*
+
+When a [GlAnnotation](/cpp-sdk/4.5/api/classes/imfusion-glannotation) is selected, it may be rendered differently to distinguish it from non-selected annotations.
+
+### setMatrixWithoutMoving
+
+```cpp
+virtual void ImFusion::GlAnnotation::setMatrixWithoutMoving (const mat4 & m)
+```
+
+*virtual*
+
+Change the matrix without moving the annotation, e.g. for linking it with an image transformation.

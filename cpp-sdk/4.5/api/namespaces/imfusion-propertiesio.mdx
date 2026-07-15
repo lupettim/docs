@@ -1,0 +1,95 @@
+---
+title: "ImFusion::PropertiesIO"
+sidebarTitle: "PropertiesIO"
+description: "Writing and reading Properties instances to/from structured file formats."
+---
+
+## Overview
+
+Writing and reading [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) instances to/from structured file formats.
+
+**Note:** The serialization functions of this namespace will only store the values of parameters but none of their runtime information such as default values, types. Attributes are only stored if the corresponding [Format](#format) explicitly states so.
+
+**See also:** Object Serialization
+
+## Enumerations
+
+- enum class [Format](#format) &#123; Xml1_1 , Xml1_1WithAttributes , Json2_0 , Json2_0NoPreamble , Json1_0 , Json1_0NoPreamble &#125; — Enumeration of supported file formats for [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) storage.
+
+## Functions
+
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; saveToString (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) &properties, [Format](#format) format, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &commentString="") — Serialize the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) instance to a string using the specified format.
+- bool saveToXML (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) &properties, const [Filesystem::Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path) &filename, [Format](#format) format, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &commentString="") — Serialize the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) instance to an XML file on the local filesystem.
+- bool saveToJSON (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) &properties, const [Filesystem::Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path) &filename, [Format](#format) format, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &commentString="") — Serialize the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) instance to a JSON file on the local filesystem.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) &gt; loadFromString (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &input, [Format](#format) format) — Deserialize the given input string to a new [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) instance using the specified format.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) &gt; loadFromXML (const [Filesystem::Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path) &filename) — Deserialize the given XML file to a new [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) instance.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) &gt; loadFromJSON (const [Filesystem::Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path) &filename) — Deserialize the given JSON file to a new [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) instance.
+
+## Enumeration Type Documentation
+
+### Format
+
+```cpp
+enum class ImFusion::PropertiesIO::Format
+```
+
+*strong*
+
+Enumeration of supported file formats for [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) storage.
+
+**Enumerator:**
+
+- `Xml1_1` — XML format storing only parameter values and subproperties in the following form:
+&lt;propertyfile version="1.1"&gt;
+    &lt;param name="Parameter Name"&gt;Parameter Value&lt;/param&gt;
+    &lt;property name="Subproperty Name"&gt;
+        &lt;...&gt;
+    &lt;/property&gt;
+&lt;/propertyfile&gt;
+ fragment
+- `Xml1_1WithAttributes` — Extended XML format that additionally encodes the key-value pairs of parameter/subproperty attributes in the following form:
+&lt;propertyfile version="1.1"&gt;
+    &lt;param name="Parameter Name" type="&lt;type&gt;" [attrib-key="value"]\*&gt;Parameter Value&lt;/param&gt;
+    &lt;property name="Subproperty Name" [attrib-key="value"]\*&gt;
+        &lt;...&gt;
+    &lt;/property&gt;
+&lt;/propertyfile&gt;
+ fragment  The special attribute 'type' is included automatically and it provides the necessary information to restore the correct type of a parameter value.
+- `Json2_0` — Storage in Javascript Object Notation (JSON) form:
+&#123;
+ "version": "2.0",
+ "propertyfile": &#123;
+ "Parameter Name": "Parameter value",
+ "Subproperty name/index": &#123;
+            ...
+        &#125;
+    &#125;
+&#125;
+ fragment  In contrast to Json1_0 this format will use native JSON types for values where supported (e.g. numbers, booleans, ...) instead of storing them as strings. Furthermore, it will always produce valid JSONs, also in edge cases where there are multiple subproperties with the same name. Therefore, to avoid key duplication it will always add a /&lt;index&gt; suffix to the subproperty name, where &lt;index&gt; is in fact the index of appearance of that name within a given JSON scope. The subproperty index must start at 0 for a given subproperty name, and then it is incremented by 1 each time that the same subproperty name is repeated in its same scope. If a subproperty name is repeated within a nested scope, it must restart from index 0, as nested scopes can repeat the same name without ambiguity.
+- `Json2_0NoPreamble` — Storage in Javascript Object Notation (JSON) form without preamble and therefore lacking support for versioning and comments:
+&#123;
+ "Parameter Name": "Parameter value",
+ "Subproperty name/index": &#123;
+        ...
+    &#125;
+&#125;
+ fragment  This format consists in just the "propertyfile" value of the Json2_0 format.
+- `Json1_0` — Storage in Javascript Object Notation (JSON) form:
+&#123;
+ "version": "1.0",
+ "propertyfile": &#123;
+ "Parameter Name": "Parameter value",
+ "Subproperty name": &#123;
+            ...
+        &#125;
+    &#125;
+&#125;
+ fragment  This format will always use the string representation of the parameters inside [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) to store the values. Furthermore, it will use the subproperty name as key when storing subproperties. This can produce invalid JSONs in case there are multiple subproperties with the same name, since the resulting JSONs may contain duplicate keys. When there are multiple subproperties with the same name, even at the same JSON scope, a new subproperty is added without overriding the value of any other subproperty with that same name in the same scope.
+- `Json1_0NoPreamble` — Storage in Javascript Object Notation (JSON) form without preamble and therefore lacking support for versioning and comments:
+&#123;
+ "Parameter Name": "Parameter value",
+ "Subproperty name": &#123;
+        ...
+    &#125;
+&#125;
+ fragment  This format consists in just the "propertyfile" value of the Json1_0 format.

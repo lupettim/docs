@@ -1,0 +1,25 @@
+---
+title: "ImFusion::NrrdIoAlgorithm::NrrdHeader"
+sidebarTitle: "NrrdHeader"
+---
+
+## Public Types
+
+- enum **Encoding** &#123; **Raw** , **Gzip** &#125;
+- enum **Endian** &#123; **Little** , **Big** &#125;
+
+## Public Attributes
+
+- int **dataDimension** = -1
+- vec3i **sizes** = &#123;0, 0, 1&#125;
+- int **colorChannels** = 0
+- bool **metricSpacing** = false
+- vec3 **spacing** = &#123;0., 0., 1.&#125;
+- vec3 **origin** = &#123;0, 0, 0&#125;
+- mat3 **toWorldMatrix** = mat3::Identity()
+- PixelType **type** = PixelType::UByte
+- Encoding **encoding** = Encoding::Raw
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **space**
+- int **spaceDimension** = -1
+- Endian **endian** = Little
+- [std::unordered_map](http://en.cppreference.com/w/cpp/container/unordered_map.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html), [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **keyValuePairs**

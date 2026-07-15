@@ -1,0 +1,46 @@
+---
+title: "ImFusion::SettingsMigration"
+sidebarTitle: "SettingsMigration"
+description: "Helper functions for migrating settings."
+---
+
+## Overview
+
+Helper functions for migrating settings.
+
+## Functions
+
+- int **version** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name) — Returns the version for the given settings group.
+- void **setVersion** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name, int version) — Sets the version for the given settings group.
+- bool [migrateQt](#migrateqt-1-2) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &oldName, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &newName, const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) &p) — If version(*newName*) &lt; 1, attempts to migrate the settings for *newName* from the Qt backend to ImFusion::GlobalSettings, sets the version to 1, and returns true.
+- bool [migrateQt](#migrateqt-2-2) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &oldName) — Similar to the other overload, but will automatically determine the settings name and properties from the given [Configurable](/cpp-sdk/4.5/api/classes/imfusion-configurable) type.
+
+## Function Documentation
+
+### migrateQt
+
+```cpp
+bool ImFusion::SettingsMigration::migrateQt (const std::string & oldName, const std::string & newName, const Properties & p)
+```
+
+If version(*newName*) &lt; 1, attempts to migrate the settings for *newName* from the Qt backend to ImFusion::GlobalSettings, sets the version to 1, and returns true.
+
+Otherwise, returns false.
+
+**Parameters:**
+
+- `oldName` — The name of the settings group in the Qt backend. Can be empty to signify the root group.
+- `newName` — The name of the settings in ImFusion::GlobalSettings.
+- `p` — The template properties of the settings to migrate.
+
+### migrateQt
+
+```cpp
+template<typename T> bool ImFusion::SettingsMigration::migrateQt (const std::string & oldName)
+```
+
+Similar to the other overload, but will automatically determine the settings name and properties from the given [Configurable](/cpp-sdk/4.5/api/classes/imfusion-configurable) type.
+
+**Parameters:**
+
+- `oldName` — The name of the settings group in the Qt backend. Can be empty to signify the root group.

@@ -1,0 +1,138 @@
+---
+title: "ImFusion::PointsStorageComponent"
+sidebarTitle: "PointsStorageComponent"
+description: "Data component for storing and managing point sets."
+---
+
+`#include <ImFusion/Base/PointsStorageComponent.h>`
+
+## Overview
+
+[Data](/cpp-sdk/4.5/api/classes/imfusion-data) component for storing and managing point sets.
+
+This component allows you to store multiple point sets, each identified by a unique name. Each point set can be of a specific type derived from [PointsOnData](/cpp-sdk/4.5/api/classes/imfusion-pointsondata), and you can retrieve or create point sets with the specified type and name. This component keeps track of the created points sets offering automatic persistence and sharing between algorithms. Example usage:
+
+```cpp
+// SharedImageSet or any Data loaded or created in the application
+SharedImageSet sis = ...;
+// Get or create a point set named "MyPoints" of type PointsOnImage
+std::shared_ptr<PointsOnImage> points = StorageComponent::getPoints<PointsOnImage>(sis, "MyPoints");
+
+// ... add points to the point set ...
+
+// If we save the SharedImageSet, the point set will be saved as well as part of PointsStorageComponent.
+
+// points2 will point to the same instance as points
+auto points2 = PointsStorageComponent::getPoints<PointsOnImage>(sis, "MyPoints");
+```
+ fragment
+
+## Public Member Functions
+
+- bool **operator==** (const [PointsStorageComponent](/cpp-sdk/4.5/api/classes/imfusion-pointsstoragecomponent) &) const
+- [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; T &gt; [getOrCreate](#getorcreate) (DataType &data, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name) — Get a [PointsOnData](/cpp-sdk/4.5/api/classes/imfusion-pointsondata) instance with the specified name and type.
+- bool [add](#add) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name, const [PointsOnData](/cpp-sdk/4.5/api/classes/imfusion-pointsondata) \*pod) — Adds a new point set with the specified name.
+- bool [addConfiguration](#addconfiguration) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name, [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) &gt; properties) — Adds the configuration of a new point set with the specified name.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **names** () const — List all point set names stored by the component.
+- bool **contains** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name) const — Check if a point set with the specified name exists.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [id](#id) () const override — Returns a unique string identifier for this type of data component.
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+- [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \* **getConfiguration** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name) const
+
+## Static Public Member Functions
+
+- static [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; T &gt; [getOrCreatePoints](#getorcreatepoints) (DataType &data, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name) — Get a [PointsOnData](/cpp-sdk/4.5/api/classes/imfusion-pointsondata) instance associated to the provided data, with the specified name and type.
+- static [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **getCorrespondencesName** (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) &data1, const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) &data2) — Return name of points that are contained in both provided data sets, for creating correspondences (empty string if not found).
+
+## Member Function Documentation
+
+### is_base_of_v  PointsOnData, T , bool
+
+```cpp
+template<class T, class DataType, std::enable_if_t < std::is_base_of_v < PointsOnData, T >, bool > = 0, std::enable_if_t < std::is_base_of_v < Data, DataType >, bool > = 0> std::shared_ptr < T > ImFusion::PointsStorageComponent::getOrCreatePoints (DataType & data, const std::string & name)
+```
+
+*inline, static*
+
+Get a [PointsOnData](/cpp-sdk/4.5/api/classes/imfusion-pointsondata) instance associated to the provided data, with the specified name and type.
+
+This is a convenience function that retrieves the [PointsStorageComponent](/cpp-sdk/4.5/api/classes/imfusion-pointsstoragecomponent) from the data and calls [getOrCreate()](#getorcreate) on it.
+
+### is_base_of_v  PointsOnData, T , bool
+
+```cpp
+template<class T, class DataType, std::enable_if_t < std::is_base_of_v < PointsOnData, T >, bool > = 0, std::enable_if_t < std::is_base_of_v < Data, DataType >, bool > = 0> std::shared_ptr < T > ImFusion::PointsStorageComponent::getOrCreate (DataType & data, const std::string & name)
+```
+
+*inline*
+
+Get a [PointsOnData](/cpp-sdk/4.5/api/classes/imfusion-pointsondata) instance with the specified name and type.
+
+If the instance does not exist yet, it will be created. If it exists and is of the requested type, a shared pointer to it is returned.
+
+### add
+
+```cpp
+bool ImFusion::PointsStorageComponent::add (const std::string & name, const PointsOnData * pod)
+```
+
+Adds a new point set with the specified name.
+
+**Warning:** The ownership of the [PointsOnData](/cpp-sdk/4.5/api/classes/imfusion-pointsondata) instance is not transferred to the [PointsStorageComponent](/cpp-sdk/4.5/api/classes/imfusion-pointsstoragecomponent). Only its configuration is stored.
+
+**Returns:** true on success, false if a point set with the same name already exists.
+
+****Deprecated**:** "Use addConfiguration() instead"
+
+### addConfiguration
+
+```cpp
+bool ImFusion::PointsStorageComponent::addConfiguration (const std::string & name, std::unique_ptr < Properties > properties)
+```
+
+Adds the configuration of a new point set with the specified name.
+
+If a point set with the same name already exists, it will not be overwritten and this function will fail (return false).
+
+**Returns:** true on success, false if a point set with the same name already exists.
+
+### id
+
+```cpp
+std::string ImFusion::PointsStorageComponent::id () const
+```
+
+*inline, override, virtual*
+
+Returns a unique string identifier for this type of data component.
+
+**Note:** To avoid conflicts make sure to include potential plugin names into this ID. Due to the modular architecture of the ImFusion library, uniqueness of IDs cannot be checked at compile time. However, [DataComponentFactory](/cpp-sdk/4.5/api/classes/imfusion-datacomponentfactory) will check the uniqueness of the ID during registration.
+
+### configure
+
+```cpp
+void ImFusion::PointsStorageComponent::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### configuration
+
+```cpp
+void ImFusion::PointsStorageComponent::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality

@@ -1,0 +1,34 @@
+---
+title: "ImFusion::GUI::ContextMenuEvent"
+sidebarTitle: "ContextMenuEvent"
+description: "A ContextMenuEvent signals that a context-sensitive popup menu was requested by the user, for instance by a click with the right mouse button."
+---
+
+`#include <ImFusion/GUI/InputEvent.h>`
+
+## Overview
+
+A [ContextMenuEvent](/cpp-sdk/4.5/api/classes/imfusion-gui-contextmenuevent) signals that a context-sensitive popup menu was requested by the user, for instance by a click with the right mouse button.
+
+Receivers of this event should check if they should respond to it based on the position() and if so populate the contextMenu field of the [EventResult](/cpp-sdk/4.5/api/structs/imfusion-gui-eventresult) they return.
+
+## Public Member Functions
+
+- [ContextMenuEvent](#contextmenuevent) (const vec2 &position, [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; [KeyboardModifier](/cpp-sdk/4.5/api/classes/imfusion-gui-inputevent) &gt; [modifiers](/cpp-sdk/4.5/api/classes/imfusion-gui-inputevent)=[KeyboardModifier::None](/cpp-sdk/4.5/api/classes/imfusion-gui-inputevent), [LocalToGlobalCoordMapping](/cpp-sdk/4.5/api/classes/imfusion-gui-inputevent) mappingFunction=nullptr) — Constructor for a [ContextMenuEvent](/cpp-sdk/4.5/api/classes/imfusion-gui-contextmenuevent).
+- const vec2 & **position** () const — Returns the position of the mouse pointer wrt. the main GUI element enabling receiver to infer the context.
+
+## Constructor & Destructor Documentation
+
+### ContextMenuEvent
+
+```cpp
+ImFusion::GUI::ContextMenuEvent::ContextMenuEvent (const vec2 & position, Flags < KeyboardModifier > modifiers = KeyboardModifier::None, LocalToGlobalCoordMapping mappingFunction = nullptr)
+```
+
+Constructor for a [ContextMenuEvent](/cpp-sdk/4.5/api/classes/imfusion-gui-contextmenuevent).
+
+**Parameters:**
+
+- `position` — Position of the mouse pointer wrt. the main GUI element enabling receiver to infer the context.
+- `modifiers` — List of pressed keyboard modifier keys.
+- `mappingFunction` — Optional mapping function used by [mapToGlobalCoord()](/cpp-sdk/4.5/api/classes/imfusion-gui-inputevent) to convert event coordinates to global coordinates if the underlying windowing system supports it; [mapToGlobalCoord()](/cpp-sdk/4.5/api/classes/imfusion-gui-inputevent) will use the identity function if empty.

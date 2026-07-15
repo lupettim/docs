@@ -1,0 +1,94 @@
+---
+title: "ImFusion::GlPoseGraph"
+sidebarTitle: "GlPoseGraph"
+description: "Pose graph annotation."
+---
+
+`#include <ImFusion/GL/GlPoseGraph.h>`
+
+## Overview
+
+[Pose](/cpp-sdk/4.5/api/namespaces/imfusion-pose) graph annotation.
+
+## Classes
+
+- struct [Constraint](/cpp-sdk/4.5/api/structs/imfusion-glposegraph-constraint)
+
+## Public Member Functions
+
+- void [draw](#draw) (const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &[view](/cpp-sdk/4.5/api/classes/imfusion-glannotation)) override — Draw the object in 3D space.
+- [Geometry::AlignedBox](/cpp-sdk/4.5/api/classes/imfusion-geometry-alignedbox) [bounds](#bounds) () const override — Get the axis-aligned bounding box of this [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) in world space.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [typeName](#typename) () const override — Return unique identifier for this object class used for serialization.
+- void **addPose** (const mat4 &toWorldT, const vec3 &[color](/cpp-sdk/4.5/api/classes/imfusion-glannotation)=vec3(-1, -1, -1), const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &label="")
+- void **setPoses** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; mat4 &gt; &toWorldT, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; \*colors=0, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; \*labels=0)
+- void **addConstraint** (int from, int to, const mat4 &T)
+- void **setConstraints** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Constraint](/cpp-sdk/4.5/api/structs/imfusion-glposegraph-constraint) &gt; &constraints)
+- void **setColors** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; &colors)
+- void **setFocus** (int focus=-1)
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; mat4 &gt; & **poses** ()
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; mat4 &gt; **posesWithMatrix** ()
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Constraint](/cpp-sdk/4.5/api/structs/imfusion-glposegraph-constraint) &gt; & **constraints** ()
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; & **colors** ()
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; & **labels** ()
+- double **scaleFactor** () const
+- void **setScaleFactor** (double factor)
+- double **cameraVisSize** () const
+- void **setCameraVisSize** (double size)
+- double **cameraVisLineWidth** () const
+- void **setCameraVisLineWidth** (double width)
+- vec3 [center](#center) () const override — Return the center of the object in local coordinates without considering any matrix.
+- vec3 [extent](#extent) () const override — Return the extent of the object in local coordinates without considering any matrix.
+
+## Member Function Documentation
+
+### draw
+
+```cpp
+void ImFusion::GlPoseGraph::draw (const GlView & view)
+```
+
+*override, virtual*
+
+Draw the object in 3D space.
+
+### bounds
+
+```cpp
+Geometry::AlignedBox ImFusion::GlPoseGraph::bounds () const
+```
+
+*override, virtual*
+
+Get the axis-aligned bounding box of this [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) in world space.
+
+Return an empty (default-constructed) AlignedBox object if the [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) does not reside in world space.
+
+### typeName
+
+```cpp
+std::string ImFusion::GlPoseGraph::typeName () const
+```
+
+*inline, override, virtual*
+
+Return unique identifier for this object class used for serialization.
+
+### center
+
+```cpp
+vec3 ImFusion::GlPoseGraph::center () const
+```
+
+*override, virtual*
+
+Return the center of the object in local coordinates without considering any matrix.
+
+### extent
+
+```cpp
+vec3 ImFusion::GlPoseGraph::extent () const
+```
+
+*override, virtual*
+
+Return the extent of the object in local coordinates without considering any matrix.

@@ -1,0 +1,80 @@
+---
+title: "ImFusion::RawImageIoAlgorithm"
+sidebarTitle: "RawImageIoAlgorithm"
+description: "Algorithm for reading and writing raw image data."
+---
+
+`#include <ImFusion/IO/RawImageIoAlgorithm.h>`
+
+## Overview
+
+[Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) for reading and writing raw image data.
+
+## Public Member Functions
+
+- **RawImageIoAlgorithm** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*img, IoMode [ioMode](/cpp-sdk/4.5/api/classes/imfusion-ioalgorithm))
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; [supportedFileExtensions](#supportedfileextensions) () const override — Return supported file extensions (for file based IO).
+- void **setDescriptor** (const [ImageDescriptor](/cpp-sdk/4.5/api/structs/imfusion-imagedescriptor) &desc) — Set image descriptor.
+- void **setOffset** (long long ofs) — Set the byte offset for loading raw data.
+- void **setFrames** (int frames) — The number of frames for loading an image set.
+- void **setMsb** (bool msb) — Set the MSB flag.
+- void [compute](#compute) () override — Load the raw data after descriptor has been configured.
+- [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) [takeOutput](#takeoutput) () override — Output the resulting image data.
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure the image properties from workspace configuration The sub-property "Descriptor" is used configure m_desc Additionally supported parameters are "offset", "frames", "msb", "spacing", and "metric".
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Retrieve the properties of this object.
+
+## Static Public Member Functions
+
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=0) — Factory method to create the algorithm instance.
+
+## Member Function Documentation
+
+### supportedFileExtensions
+
+```cpp
+std::vector < std::string > ImFusion::RawImageIoAlgorithm::supportedFileExtensions () const
+```
+
+*override, virtual*
+
+Return supported file extensions (for file based IO).
+
+### compute
+
+```cpp
+void ImFusion::RawImageIoAlgorithm::compute ()
+```
+
+*override, virtual*
+
+Load the raw data after descriptor has been configured.
+
+### takeOutput
+
+```cpp
+OwningDataList ImFusion::RawImageIoAlgorithm::takeOutput ()
+```
+
+*override, virtual*
+
+Output the resulting image data.
+
+### configure
+
+```cpp
+void ImFusion::RawImageIoAlgorithm::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure the image properties from workspace configuration The sub-property "Descriptor" is used configure m_desc Additionally supported parameters are "offset", "frames", "msb", "spacing", and "metric".
+
+### configuration
+
+```cpp
+void ImFusion::RawImageIoAlgorithm::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Retrieve the properties of this object.

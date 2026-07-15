@@ -1,0 +1,336 @@
+---
+title: "ImFusion::Math::Interpolation"
+sidebarTitle: "Interpolation"
+description: "Helper functions for N-linear interpolation of N-cells(pixel, voxel, etc."
+---
+
+## Overview
+
+Helper functions for N-linear interpolation of N-cells(pixel, voxel, etc. ).
+
+## Typedefs
+
+- using **vecNd** = Eigen::Matrix&lt;double, N, 1&gt;
+- using **vecNi** = Eigen::Matrix&lt;int, N, 1&gt;
+
+## Functions
+
+- void [linear](#linear-1-3) (const T \*nCellData, const vecNi&lt; N &gt; &dimensions, int nChannels, const vecNd&lt; N &gt; &position, double \*output) — N-linear interpolation.
+- void [linear](#linear-2-3) (const T \*nCellData, int dimensions, int nChannels, double position, double \*output) — Convenience overload for 1D linear interpolation.
+- void [linear](#linear-3-3) (const [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; T &gt; &img, const vecNd&lt; N &gt; &position, double \*output) — Convenience overload for N-dimensional linear interpolation of a [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage).
+- void [linearClampToBorder](#linearclamptoborder-1-3) (const T \*nCellData, const vecNi&lt; N &gt; &dim, int nChannels, const vecNd&lt; N &gt; &position, double \*output, const double \*borderVal, bool interpolateBorder, bool \*wasInside=nullptr) — N-dimensional linear interpolation with border value.
+- void [linearClampToBorder](#linearclamptoborder-2-3) (const T \*nCellData, int dim, int nChannels, double position, double \*output, const double \*borderVal, bool interpolateBorder, bool \*wasInside=nullptr) — Convenience overload for 1D linear interpolation with border value.
+- void [linearClampToBorder](#linearclamptoborder-3-3) (const [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; T &gt; &img, const vecNd&lt; N &gt; &position, double \*output, const double \*borderVal, bool interpolateBorder, bool \*wasInside=nullptr) — Convenience overload for N-dimensional linear interpolation with border value of a [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage).
+- void [linearClampToEdge](#linearclamptoedge-1-6) (const T \*nCellData, const vecNi&lt; N &gt; &dim, int nChannels, vecNd&lt; N &gt; position, double \*output) — N-dimensional linear interpolation with clamping.
+- void [linearClampToEdge](#linearclamptoedge-2-6) (const T \*nCellData, int dim, int nChannels, double position, double \*output) — Convenience overload for 1D linear interpolation with clamping.
+- void [linearClampToEdge](#linearclamptoedge-3-6) (const [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; T &gt; &img, const vecNd&lt; N &gt; &position, double \*output) — Convenience overload for N-dimensional linear interpolation with clamping of a [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage).
+- void [linearClampToEdge](#linearclamptoedge-4-6) (const T \*nCellData, const vecNi&lt; N &gt; &dim, int nChannels, const vecNd&lt; N &gt; &position, double \*output, bool &wasInside) — N-dimensional linear interpolation with clamping.
+- void [linearClampToEdge](#linearclamptoedge-5-6) (const T \*nCellData, int dim, int nChannels, double position, double \*output, bool &wasInside) — Convenience overload for 1D linear interpolation with clamping.
+- void [linearClampToEdge](#linearclamptoedge-6-6) (const [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; T &gt; &img, const vecNd&lt; N &gt; &position, double \*output, bool &insideVolume) — Convenience overload for N-dimensional linear interpolation with clamping of a [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage).
+- bool [linearLegacy](#linearlegacy) (const T \*nCellData, const vecNi&lt; N &gt; &dim, int nChannels, const vecNd&lt; N &gt; &position, double \*output, const double \*borderVal, bool clamp) — N-dimensional linear interpolation with same clamping behavior as the deprecated Math::interp functions.
+
+## Function Documentation
+
+### linear
+
+```cpp
+template<typename T, int N> void ImFusion::Math::Interpolation::linear (const T * nCellData, const vecNi< N > & dimensions, int nChannels, const vecNd< N > & position, double * output)
+```
+
+N-linear interpolation.
+
+The N-cells are assumed to be centered on integer coordinates and have a diameter of 1. Note that this fast version does not do any validity checks on the lookup position and may crash if out of bounds.
+
+**Parameters:**
+
+- `nCellData` — Raw N-cell data in the shape of *dimensions* and *nChannels*
+- `dimensions` — Number of N-cells in each dimension in input data
+- `nChannels` — Number of color channels in input data
+- `position` — Lookup coordinate in N-cell space
+- `output` — Output buffer for interpolated value, buffer needs to be able to hold *nChannels* values
+
+**Template Parameters:** | T | Type of the N-cell data to interpolate |
+| --- | --- |
+| N | Dimensionality of the image to interpolate |
+
+### linear
+
+```cpp
+template<typename T> void ImFusion::Math::Interpolation::linear (const T * nCellData, int dimensions, int nChannels, double position, double * output)
+```
+
+Convenience overload for 1D linear interpolation.
+
+N-linear interpolation.
+
+The N-cells are assumed to be centered on integer coordinates and have a diameter of 1. Note that this fast version does not do any validity checks on the lookup position and may crash if out of bounds.
+
+**Parameters:**
+
+- `nCellData` — Raw N-cell data in the shape of *dimensions* and *nChannels*
+- `dimensions` — Number of N-cells in each dimension in input data
+- `nChannels` — Number of color channels in input data
+- `position` — Lookup coordinate in N-cell space
+- `output` — Output buffer for interpolated value, buffer needs to be able to hold *nChannels* values
+
+**Template Parameters:** | T | Type of the N-cell data to interpolate |
+| --- | --- |
+| N | Dimensionality of the image to interpolate |
+
+### linear
+
+```cpp
+template<typename T, int N> void ImFusion::Math::Interpolation::linear (const TypedImage < T > & img, const vecNd< N > & position, double * output)
+```
+
+Convenience overload for N-dimensional linear interpolation of a [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage).
+
+The N-cells are assumed to be centered on integer coordinates and have a diameter of 1. Note that this fast version does not do any validity checks on the lookup position and may crash if out of bounds.
+
+**Parameters:**
+
+- `img` — Input image to perform the interpolation on
+- `position` — Lookup coordinate in N-cell space
+- `output` — Output buffer for interpolated value, buffer needs to be able to hold *nChannels* values
+
+**Template Parameters:** | T | Type of the N-cell data to interpolate |
+| --- | --- |
+| N | Dimensionality of the image to interpolate |
+
+### linearClampToBorder
+
+```cpp
+template<typename T, int N> void ImFusion::Math::Interpolation::linearClampToBorder (const T * nCellData, const vecNi< N > & dim, int nChannels, const vecNd< N > & position, double * output, const double * borderVal, bool interpolateBorder, bool * wasInside = nullptr)
+```
+
+N-dimensional linear interpolation with border value.
+
+The N-cells are assumed to be centered on integer coordinates and have a diameter of 1. This version treats all N-cells outside of the given volume as having the value *borderVal*.
+
+**Parameters:**
+
+- `nCellData` — Raw N-cell data in the shape of *dimensions* and *nChannels*
+- `dimensions` — Number of N-cells in each dimension in input data
+- `nChannels` — Number of color channels in input data
+- `position` — Lookup coordinate in N-cell space
+- `output` — Output buffer for interpolated value, buffer needs to be able to hold *nChannels* values
+- `borderVal` — Intensity value outside the volume, buffer needs to hold *nChannels* values
+- `interpolateBorder` — Whether *borderVal* may be interpolated with the volume content when slightly out of bounds (OpenGL behavior)
+- `wasInside` — Optional output variable indicating whether *position* was inside the volume
+
+**Template Parameters:** | T | Type of the N-cell data to interpolate |
+| --- | --- |
+| N | Dimensionality of the image to interpolate |
+
+### linearClampToBorder
+
+```cpp
+template<typename T> void ImFusion::Math::Interpolation::linearClampToBorder (const T * nCellData, int dim, int nChannels, double position, double * output, const double * borderVal, bool interpolateBorder, bool * wasInside = nullptr)
+```
+
+Convenience overload for 1D linear interpolation with border value.
+
+N-dimensional linear interpolation with border value.
+
+The N-cells are assumed to be centered on integer coordinates and have a diameter of 1. This version treats all N-cells outside of the given volume as having the value *borderVal*.
+
+**Parameters:**
+
+- `nCellData` — Raw N-cell data in the shape of *dimensions* and *nChannels*
+- `dimensions` — Number of N-cells in each dimension in input data
+- `nChannels` — Number of color channels in input data
+- `position` — Lookup coordinate in N-cell space
+- `output` — Output buffer for interpolated value, buffer needs to be able to hold *nChannels* values
+- `borderVal` — Intensity value outside the volume, buffer needs to hold *nChannels* values
+- `interpolateBorder` — Whether *borderVal* may be interpolated with the volume content when slightly out of bounds (OpenGL behavior)
+- `wasInside` — Optional output variable indicating whether *position* was inside the volume
+
+**Template Parameters:** | T | Type of the N-cell data to interpolate |
+| --- | --- |
+| N | Dimensionality of the image to interpolate |
+
+### linearClampToBorder
+
+```cpp
+template<typename T, int N> void ImFusion::Math::Interpolation::linearClampToBorder (const TypedImage < T > & img, const vecNd< N > & position, double * output, const double * borderVal, bool interpolateBorder, bool * wasInside = nullptr)
+```
+
+Convenience overload for N-dimensional linear interpolation with border value of a [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage).
+
+The N-cells are assumed to be centered on integer coordinates and have a diameter of 1. This version treats all N-cells outside of the given volume as having the value *borderVal*.
+
+**Parameters:**
+
+- `nCellData` — Raw N-cell data in the shape of *dimensions* and *nChannels*
+- `position` — Lookup coordinate in N-cell space
+- `output` — Output buffer for interpolated value, buffer needs to be able to hold *nChannels* values
+- `borderVal` — Intensity value outside the volume, buffer needs to hold *nChannels* values
+- `interpolateBorder` — Whether *borderVal* may be interpolated with the volume content when slightly out of bounds (OpenGL behavior)
+- `wasInside` — Optional output variable indicating whether *position* was inside the volume
+
+**Template Parameters:** | T | Type of the N-cell data to interpolate |
+| --- | --- |
+| N | Dimensionality of the image to interpolate |
+
+### linearClampToEdge
+
+```cpp
+template<typename T, int N> void ImFusion::Math::Interpolation::linearClampToEdge (const T * nCellData, const vecNi< N > & dim, int nChannels, vecNd< N > position, double * output)
+```
+
+N-dimensional linear interpolation with clamping.
+
+The N-cells are assumed to be centered on integer coordinates and have a diameter of 1. This version clamps the lookup position to end up inside the volume.
+
+**Parameters:**
+
+- `N-cellData` — Raw N-cell data in the shape of *dimensions* and *nChannels*
+- `dimensions` — Number of N-cells in each dimension in input data
+- `nChannels` — Number of color channels in input data
+- `position` — Lookup coordinate in N-cell space
+- `output` — Output buffer for interpolated value, buffer needs to be able to hold *nChannels* values
+
+**Template Parameters:** | T | Type of the N-cell data to interpolate |
+| --- | --- |
+| N | Dimensionality of the image to interpolate |
+
+### linearClampToEdge
+
+```cpp
+template<typename T> void ImFusion::Math::Interpolation::linearClampToEdge (const T * nCellData, int dim, int nChannels, double position, double * output)
+```
+
+Convenience overload for 1D linear interpolation with clamping.
+
+N-dimensional linear interpolation with clamping.
+
+The N-cells are assumed to be centered on integer coordinates and have a diameter of 1. This version clamps the lookup position to end up inside the volume.
+
+**Parameters:**
+
+- `N-cellData` — Raw N-cell data in the shape of *dimensions* and *nChannels*
+- `dimensions` — Number of N-cells in each dimension in input data
+- `nChannels` — Number of color channels in input data
+- `position` — Lookup coordinate in N-cell space
+- `output` — Output buffer for interpolated value, buffer needs to be able to hold *nChannels* values
+
+**Template Parameters:** | T | Type of the N-cell data to interpolate |
+| --- | --- |
+| N | Dimensionality of the image to interpolate |
+
+### linearClampToEdge
+
+```cpp
+template<typename T, int N> void ImFusion::Math::Interpolation::linearClampToEdge (const TypedImage < T > & img, const vecNd< N > & position, double * output)
+```
+
+Convenience overload for N-dimensional linear interpolation with clamping of a [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage).
+
+The N-cells are assumed to be centered on integer coordinates and have a diameter of 1. This version clamps the lookup position to end up inside the volume.
+
+**Parameters:**
+
+- `nCellData` — Raw N-cell data in the shape of *dimensions* and *nChannels*
+- `position` — Lookup coordinate in N-cell space
+- `output` — Output buffer for interpolated value, buffer needs to be able to hold *nChannels* values
+
+**Template Parameters:** | T | Type of the N-cell data to interpolate |
+| --- | --- |
+| N | Dimensionality of the image to interpolate |
+
+### linearClampToEdge
+
+```cpp
+template<typename T, int N> void ImFusion::Math::Interpolation::linearClampToEdge (const T * nCellData, const vecNi< N > & dim, int nChannels, const vecNd< N > & position, double * output, bool & wasInside)
+```
+
+N-dimensional linear interpolation with clamping.
+
+The N-cells are assumed to be centered on integer coordinates and have a diameter of 1. This version clamps the lookup position to end up inside the volume and additionally outputs whether the original position was valid. Note that there is computational overhead for this additional output and that a version without it is available as well.
+
+**Parameters:**
+
+- `nCellData` — Raw N-cell data in the shape of *dimensions* and *nChannels*
+- `dimensions` — Number of N-cells in each dimension in input data
+- `nChannels` — Number of color channels in input data
+- `position` — Lookup coordinate in N-cell space
+- `output` — Output buffer for interpolated value, buffer needs to be able to hold *nChannels* values
+- `wasInside` — Output variable whether the coordinate in *position* was inside the volume and did not have to be clamped
+
+**Template Parameters:** | T | Type of the N-cell data to interpolate |
+| --- | --- |
+| N | Dimensionality of the image to interpolate |
+
+### linearClampToEdge
+
+```cpp
+template<typename T> void ImFusion::Math::Interpolation::linearClampToEdge (const T * nCellData, int dim, int nChannels, double position, double * output, bool & wasInside)
+```
+
+Convenience overload for 1D linear interpolation with clamping.
+
+N-dimensional linear interpolation with clamping.
+
+The N-cells are assumed to be centered on integer coordinates and have a diameter of 1. This version clamps the lookup position to end up inside the volume and additionally outputs whether the original position was valid. Note that there is computational overhead for this additional output and that a version without it is available as well.
+
+**Parameters:**
+
+- `nCellData` — Raw N-cell data in the shape of *dimensions* and *nChannels*
+- `dimensions` — Number of N-cells in each dimension in input data
+- `nChannels` — Number of color channels in input data
+- `position` — Lookup coordinate in N-cell space
+- `output` — Output buffer for interpolated value, buffer needs to be able to hold *nChannels* values
+- `wasInside` — Output variable whether the coordinate in *position* was inside the volume and did not have to be clamped
+
+**Template Parameters:** | T | Type of the N-cell data to interpolate |
+| --- | --- |
+| N | Dimensionality of the image to interpolate |
+
+### linearClampToEdge
+
+```cpp
+template<typename T, int N> void ImFusion::Math::Interpolation::linearClampToEdge (const TypedImage < T > & img, const vecNd< N > & position, double * output, bool & insideVolume)
+```
+
+Convenience overload for N-dimensional linear interpolation with clamping of a [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage).
+
+The N-cells are assumed to be centered on integer coordinates and have a diameter of 1. This version clamps the lookup position to end up inside the volume and additionally outputs whether the original position was valid. Note that there is computational overhead for this additional output and that a version without it is available as well.
+
+**Parameters:**
+
+- `nCellData` — Raw N-cell data in the shape of *dimensions* and *nChannels*
+- `position` — Lookup coordinate in N-cell space
+- `output` — Output buffer for interpolated value, buffer needs to be able to hold *nChannels* values
+- `wasInside` — Output variable whether the coordinate in *position* was inside the volume and did not have to be clamped
+
+**Template Parameters:** | T | Type of the N-cell data to interpolate |
+| --- | --- |
+| N | Dimensionality of the image to interpolate |
+
+### linearLegacy
+
+```cpp
+template<typename T, int N> bool ImFusion::Math::Interpolation::linearLegacy (const T * nCellData, const vecNi< N > & dim, int nChannels, const vecNd< N > & position, double * output, const double * borderVal, bool clamp)
+```
+
+N-dimensional linear interpolation with same clamping behavior as the deprecated Math::interp functions.
+
+Interpolates using N-cell coordinates.
+
+The N-cells are assumed to be centered on integer coordinates and have a diameter of 1. The boundary behavior is as follows:
+
+- If the target is more than half a N-cell out of bounds, the clamp param is ignored and the border value is returned. This includes close cases where OpenGL would still interpolate with the edge N-cells.
+- If the target is less than half a N-cell out of bounds and clamp is disabled, the border value is returned as well.
+- If instead *clamp* is enabled, the method clamps to the edge N-cells in this case. Note that as a consequence of the behavior above, the borderVal is never interpolated.
+- If clamp=true the return value specifies whether the operation did not require clamping to edge.
+- If clamp=false the return value instead specifies whether the operation did not interpolate with the border. Note that for N-cells close to the boundary but still within the volume this is not equivalent.
+
+**Parameters:**
+
+- `v` — N-cell data
+- `dim` — [Data](/cpp-sdk/4.5/api/classes/imfusion-data) size in N-cells
+- `nChannels` — Number of color channels in input data
+- `x` — Lookup coordinate in N-cells
+- `output` — Interpolated value, buffer needs to be able to hold nChannels values
+- `borderVal` — Intensity value outside the volume, buffer needs to hold nChannels values
+- `clamp` — Controls out of bounds clamping behavior, see above

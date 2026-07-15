@@ -1,0 +1,17 @@
+---
+title: "ImFusion::FrameSelector"
+sidebarTitle: "FrameSelector"
+---
+
+## Public Types
+
+- enum **Options** &#123; **ShowSingleFrame** = 1 &lt;&lt; 0 , **ShowPrevious** = 1 &lt;&lt; 1 , **ShowNext** = 1 &lt;&lt; 2 , **ShowCustomRange** = 1 &lt;&lt; 3 , **ShowAllFrames** = 1 &lt;&lt; 4 , **ShowEverything** = ShowSingleFrame | ShowAllFrames | ShowCustomRange | ShowPrevious | ShowNext &#125;
+
+## Public Member Functions
+
+- **FrameSelector** ([Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; Options &gt; options=ShowEverything, QWidget \*parent=nullptr)
+- void **setSize** (int size)
+- bool **useful** () const
+- [std::pair](http://en.cppreference.com/w/cpp/utility/pair.html)&lt; int, int &gt; **range** (int current)
+- int **mode** ()
+- void **setMode** (int)

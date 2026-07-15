@@ -1,0 +1,67 @@
+---
+title: "ImFusion::DisplayWidgetMultiAdapter"
+sidebarTitle: "DisplayWidgetMultiAdapter"
+description: "Helper class providing the API of DisplayWidgetMulti while wrapping around either a DisplayWidgetMulti or a GUI::RadiologyDisplay ."
+---
+
+`#include <ImFusion/GUI/DisplayWidgetMultiAdapter.h>`
+
+## Overview
+
+Helper class providing the API of [DisplayWidgetMulti](/cpp-sdk/4.5/api/classes/imfusion-displaywidgetmulti) while wrapping around either a [DisplayWidgetMulti](/cpp-sdk/4.5/api/classes/imfusion-displaywidgetmulti) or a [GUI::RadiologyDisplay](/cpp-sdk/4.5/api/classes/imfusion-gui-radiologydisplay).
+
+It is mainly intended as a temporary drop-in replacement for [DisplayWidgetMulti](/cpp-sdk/4.5/api/classes/imfusion-displaywidgetmulti) objects in Controllers that shall work with both display layers during the transition period while migrating from the old Qt-based display framework to the new ImFusion::GUI framework.
+
+**Warning:** To mimic existing use cases this adapter class has nullable/pointer semantics and can be 'null'. If it is null conversion to bool will yield false and comparison to nullptr will be true, and you must not call any of its other member functions.
+
+## Public Types
+
+- using **ViewFilter** = [DisplayWidgetMulti::ViewFilter](/cpp-sdk/4.5/api/classes/imfusion-displaywidgetmulti)
+
+## Public Member Functions
+
+- **DisplayWidgetMultiAdapter** ([DisplayWidgetMulti](/cpp-sdk/4.5/api/classes/imfusion-displaywidgetmulti) \*disp)
+- **DisplayWidgetMultiAdapter** ([GUI::RadiologyDisplay](/cpp-sdk/4.5/api/classes/imfusion-gui-radiologydisplay) \*disp)
+- DisplayWidgetMultiAdapter \* **operator-&gt;** ()
+- const DisplayWidgetMultiAdapter \* **operator-&gt;** () const
+- **operator bool** () const
+- bool **operator==** ([std::nullptr_t](http://en.cppreference.com/w/cpp/types/nullptr_t.html)) const
+- bool **operator!=** ([std::nullptr_t](http://en.cppreference.com/w/cpp/types/nullptr_t.html)) const
+- [DisplayWidgetMulti](/cpp-sdk/4.5/api/classes/imfusion-displaywidgetmulti) \* **displayWidgetMulti** () const
+- [GUI::RadiologyDisplay](/cpp-sdk/4.5/api/classes/imfusion-gui-radiologydisplay) \* **radiologyDisplay** () const
+- [ImageView2DAdapter](/cpp-sdk/4.5/api/classes/imfusion-imageview2dadapter) **addView2D** (bool algorithmView=true, bool defaultOverlays=true)
+- bool **removeView** ([GUI::View](/cpp-sdk/4.5/api/classes/imfusion-gui-view) \*view)
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [InteractiveViewAdapter](/cpp-sdk/4.5/api/classes/imfusion-interactiveviewadapter) &gt; **views** ([ViewFilter](/cpp-sdk/4.5/api/classes/imfusion-displaywidgetmulti) viewFilter=ViewFilter::AllViews) const
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [InteractiveViewAdapter](/cpp-sdk/4.5/api/classes/imfusion-interactiveviewadapter) &gt; **dataViews** (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data, [ViewFilter](/cpp-sdk/4.5/api/classes/imfusion-displaywidgetmulti) viewFilter=ViewFilter::AllViews) const
+- void **setVisibleData** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data)
+- [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) **visibleData** ([DisplayWidgetMulti::ViewFilter](/cpp-sdk/4.5/api/classes/imfusion-displaywidgetmulti) viewFilter=[DisplayWidgetMulti::ViewFilter::AllViews](/cpp-sdk/4.5/api/classes/imfusion-displaywidgetmulti)) const
+- bool **isVisible** (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data, [DisplayWidgetMulti::ViewFilter](/cpp-sdk/4.5/api/classes/imfusion-displaywidgetmulti) viewFilter=[DisplayWidgetMulti::ViewFilter::AllViews](/cpp-sdk/4.5/api/classes/imfusion-displaywidgetmulti)) const
+- bool **showData** ([Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data)
+- void **hideData** (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data, [DisplayWidgetMulti::ViewFilter](/cpp-sdk/4.5/api/classes/imfusion-displaywidgetmulti) viewFilter=[DisplayWidgetMulti::ViewFilter::AllViews](/cpp-sdk/4.5/api/classes/imfusion-displaywidgetmulti))
+- void **replaceData** ([Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*which, [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*with, [DisplayWidgetMulti::ViewFilter](/cpp-sdk/4.5/api/classes/imfusion-displaywidgetmulti) viewFilter=[DisplayWidgetMulti::ViewFilter::AllViews](/cpp-sdk/4.5/api/classes/imfusion-displaywidgetmulti))
+- [ImageView2DAdapter](/cpp-sdk/4.5/api/classes/imfusion-imageview2dadapter) **view2D** (int which=0)
+- int **number2DViews** () const
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [ImageView2DAdapter](/cpp-sdk/4.5/api/classes/imfusion-imageview2dadapter) &gt; **views2d** ()
+- [ImageView2DAdapter](/cpp-sdk/4.5/api/classes/imfusion-imageview2dadapter) **viewSlice** (int which=0)
+- int **numberSliceViews** () const
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [ImageView2DAdapter](/cpp-sdk/4.5/api/classes/imfusion-imageview2dadapter) &gt; **viewsSlice** ()
+- [ImageView3DAdapter](/cpp-sdk/4.5/api/classes/imfusion-imageview3dadapter) **view3D** (int which=0)
+- int **number3DViews** () const
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [ImageView3DAdapter](/cpp-sdk/4.5/api/classes/imfusion-imageview3dadapter) &gt; **views3d** ()
+- [ViewGroupAdapter](/cpp-sdk/4.5/api/classes/imfusion-viewgroupadapter) **viewGroup** (int which=0)
+- int **numberViewGroups** () const
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [ViewGroupAdapter](/cpp-sdk/4.5/api/classes/imfusion-viewgroupadapter) &gt; **viewGroups** ()
+- int **numAlgorithmViews** () const
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [InteractiveViewAdapter](/cpp-sdk/4.5/api/classes/imfusion-interactiveviewadapter) &gt; **algorithmViews** ()
+- bool **isAlgorithmView** ([GUI::View](/cpp-sdk/4.5/api/classes/imfusion-gui-view) \*view) const
+- void **hideView** ([GUI::View](/cpp-sdk/4.5/api/classes/imfusion-gui-view) \*view)
+- void **show2DView** (bool show)
+- void **showMPRViews** (bool show)
+- void **show3DView** (bool show)
+- void **showAlgorithmViews** (bool show)
+- void **maximizeView** ([GUI::View](/cpp-sdk/4.5/api/classes/imfusion-gui-view) \*view)
+- void **unMaximizeView** ()
+- void **setLayoutMode** (DisplayWidgetMulti::LayoutMode mode)
+- void **update** () const
+- void **configuration** ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const
+- void **configure** (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p)

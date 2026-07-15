@@ -1,0 +1,28 @@
+---
+title: "ImFusion::Utils::ScopeGuard< ReleaseFunc >"
+sidebarTitle: "ScopeGuard< ReleaseFunc >"
+description: "Templated proxy class to implement generic scope guards."
+---
+
+`#include <ImFusion/Core/Utils/ScopeGuard.h>`
+
+## Overview
+
+template&lt;class ReleaseFunc&gt;
+
+class ImFusion::Utils::ScopeGuard&lt; ReleaseFunc &gt;
+Templated proxy class to implement generic scope guards.
+
+[ScopeGuard](/cpp-sdk/4.5/api/classes/imfusion-utils-scopeguard) ensures that the function given during initialization is executed when the [ScopeGuard](/cpp-sdk/4.5/api/classes/imfusion-utils-scopeguard) instance is destroyed (i.e. leaves its scope) unless the guard is dismissed before.
+
+**Note:** Implementation inspired by Andrei Alexandrescu's talk on Systematic [Error](/cpp-sdk/4.5/api/structs/imfusion-dicom-error) Handling in C++.
+
+**See also:** makeScopeGuard()
+
+## Public Member Functions
+
+- **ScopeGuard** (ReleaseFunc f)
+- **ScopeGuard** (const ScopeGuard &)=delete
+- ScopeGuard & **operator=** (const ScopeGuard &)=delete
+- **ScopeGuard** (ScopeGuard &&rhs) noexcept
+- void **dismiss** ()

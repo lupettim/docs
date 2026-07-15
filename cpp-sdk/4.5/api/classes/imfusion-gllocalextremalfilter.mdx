@@ -1,0 +1,80 @@
+---
+title: "ImFusion::GlLocalExtremalFilter"
+sidebarTitle: "GlLocalExtremalFilter"
+description: "Local extremal Filter."
+---
+
+`#include <ImFusion/GL/GlLocalExtremalFilter.h>`
+
+## Overview
+
+Local extremal Filter.
+
+## Public Types
+
+- enum class Submode &#123; **MIN** = 0 , **MAX** = 1 &#125; — Filter submode.
+
+## Public Member Functions
+
+- **GlLocalExtremalFilter** ([GL::Framebuffer](/cpp-sdk/4.5/api/classes/imfusion-gl-framebuffer) \*fbo=0)
+- bool [setKernelSize](#setkernelsize) (int size, double k) override
+- void **setSubmode** (Submode mode) — Set the filter submode.
+- void [compute](#compute) (const [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) &imgIn, [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) &imgOut) override — Execute the filter on the image.
+- bool [good](#good) () const override — Return true if the filter can be used, in particular if the shaders are available.
+
+## Protected Attributes
+
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [GL::ImageProgram](/cpp-sdk/4.5/api/classes/imfusion-gl-imageprogram) &gt; **m_program**
+- int [m_kernelSize](#m-kernelsize) = 3 — Kernel size in pixels.
+- Submode **m_submode** = Submode::MAX — Filter submode.
+
+## Member Function Documentation
+
+### setKernelSize
+
+```cpp
+bool ImFusion::GlLocalExtremalFilter::setKernelSize (int size, double k)
+```
+
+*override, virtual*
+
+**Parameters:**
+
+- `size` — Size of quadratic kernel. Currently supported sizes are 3 and 5.
+- `k` — Threshold value. Note that this is the slider value multiplied by 0.01
+
+**Warning:** Filtering a 3D image using the 5x5x5 kernel is costly. Computation time is about 1min for a 512^3 image.
+
+### compute
+
+```cpp
+void ImFusion::GlLocalExtremalFilter::compute (const GlImage & imgIn, GlImage & imgOut)
+```
+
+*override, virtual*
+
+Execute the filter on the image.
+
+### good
+
+```cpp
+bool ImFusion::GlLocalExtremalFilter::good () const
+```
+
+*override, virtual*
+
+Return true if the filter can be used, in particular if the shaders are available.
+
+## Member Data Documentation
+
+### m_kernelSize
+
+```cpp
+int ImFusion::GlLocalExtremalFilter::m_kernelSize = 3
+```
+
+*protected*
+
+Kernel size in pixels.
+
+**Note:** Default values for [GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui) elements representing these member variables are set in GlFilterSet::initParamInfo().

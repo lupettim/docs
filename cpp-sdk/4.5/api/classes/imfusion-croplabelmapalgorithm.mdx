@@ -1,0 +1,114 @@
+---
+title: "ImFusion::CropLabelMapAlgorithm"
+sidebarTitle: "CropLabelMapAlgorithm"
+description: "Class for cropping a label map around the targets with certain label values."
+---
+
+`#include <ImFusion/Base/CropLabelMapAlgorithm.h>`
+
+## Overview
+
+Class for cropping a label map around the targets with certain label values.
+
+If cropping the original volume of the label map at the same time is desired, the optional auxiliary image input allows cropping the volume the very same way. This algorithm allows for setting the desired label values, the margin (in pixels) around the object and whether to crop the image in place or create a new image when single label value is selected. When the input label map has one single frame, an additional functionality for splitting the label map and storing all the individual label images in one [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) is available.
+
+## Public Member Functions
+
+- **CropLabelMapAlgorithm** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &labelMap, [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*auxImage=nullptr)
+- **CropLabelMapAlgorithm** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &labelMap, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* &gt; auxImages)
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+- void [compute](#compute) () override — Execute the algorithm.
+- void **setAuxImages** ([std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* &gt; auxImages)
+- [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) [takeOutput](#takeoutput) () override — Return any new [Data](/cpp-sdk/4.5/api/classes/imfusion-data) that was created by the [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) during the last call to [compute()](#compute).
+
+## Static Public Member Functions
+
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=0)
+
+## Public Attributes
+
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; int &gt; &gt; [p_labelValues](#p-labelvalues) &#123;"labelValues", [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&#123;1&#125;, \*this&#125; — Parameters If p_splitAndCropLabelMap is true, the parameters p_labelValues and p_inPlace will become irrelevant to the algorithm, all the labels in the label map will be selected and a new [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) will be created for output.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; int &gt; **p_margin** = &#123;"margin", 1, \*this&#125; — Margin in pixels on each side.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; bool &gt; **p_inPlace** = &#123;"inPlace", false, \*this&#125; — If true, the image is cropped in place. This flag is only valid when a single label value is selected.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; bool &gt; **p_oneImagePerLabel** = &#123;"oneImagePerLabel", false, \*this&#125; — If true, a single image is created per selected label value. If false, an image that crops around the selected label values together is performed.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; bool &gt; **p_splitAndCropLabelMap** = &#123;"splitAndCropLabelMap", false, \*this&#125; — If true, the result contains all individual labels in a multi-label map (i.e. a label map taking multiple non-zero values), cropped around the label values.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; bool &gt; **p_ignoreSingleLabelInSplit** = &#123;"ignoreSingleLabelInSplit", false, \*this&#125; — If true, the computation for splitAndCropLabelMap is terminated when the input label map has only one single label.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; bool &gt; [p_allowMissingLabel](#p-allowmissinglabel) = &#123;"allowMissingLabel", false, \*this&#125; — If a label is not found, return a clone of the input image instead of an error.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; bool &gt; **p_reorderLabelValues** = &#123;"reorderLabelValues", false, \*this&#125; — Label-values are reordered to have values 1,2,3,..., and label-values not selected are set to zero.
+
+## Member Function Documentation
+
+### configure
+
+```cpp
+void ImFusion::CropLabelMapAlgorithm::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### configuration
+
+```cpp
+void ImFusion::CropLabelMapAlgorithm::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality
+
+### compute
+
+```cpp
+void ImFusion::CropLabelMapAlgorithm::compute ()
+```
+
+*override, virtual*
+
+Execute the algorithm.
+
+### takeOutput
+
+```cpp
+OwningDataList ImFusion::CropLabelMapAlgorithm::takeOutput ()
+```
+
+*override, virtual*
+
+Return any new [Data](/cpp-sdk/4.5/api/classes/imfusion-data) that was created by the [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) during the last call to [compute()](#compute).
+
+The default implementation will return an empty list.
+
+**Note:** Since ownership of the data is transferred, you can call this method only once between calls to [compute()](#compute).
+
+## Member Data Documentation
+
+### p_labelValues
+
+```cpp
+Parameter < std::vector <int> > ImFusion::CropLabelMapAlgorithm::p_labelValues {"labelValues", std::vector {1}, *this}
+```
+
+Parameters If p_splitAndCropLabelMap is true, the parameters p_labelValues and p_inPlace will become irrelevant to the algorithm, all the labels in the label map will be selected and a new [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) will be created for output.
+
+Label values of the cropping target.
+
+### p_allowMissingLabel
+
+```cpp
+Parameter <bool> ImFusion::CropLabelMapAlgorithm::p_allowMissingLabel = {"allowMissingLabel", false, *this}
+```
+
+If a label is not found, return a clone of the input image instead of an error.
+
+Only applicable if p_splitAndCropLabelMap is false

@@ -1,0 +1,81 @@
+---
+title: "ImFusion::MatrixParameterWrapper< T >"
+sidebarTitle: "MatrixParameterWrapper< T >"
+description: "Wrap a matrix into a ParameterWrapperBase instance."
+---
+
+`#include <ImFusion/Base/ParameterOptimization.h>`
+
+## Overview
+
+template&lt;typename T&gt;
+
+class ImFusion::MatrixParameterWrapper&lt; T &gt;
+Wrap a matrix into a [ParameterWrapperBase](/cpp-sdk/4.5/api/classes/imfusion-parameterwrapperbase) instance.
+
+This class is templated to allow for mat3 (rotation matrices), mat4 (6-dof rigid transformations), [std::vector&lt;\*&gt;](http://en.cppreference.com/w/cpp/container/vector.html) of such, and the corresponding [Parameter&lt;\*&gt;](/cpp-sdk/4.5/api/classes/imfusion-parameter) type.
+
+**Note:** : Scaling of angles is in degrees.
+
+**Warning:** : For [Parameter&lt;\*&gt;](/cpp-sdk/4.5/api/classes/imfusion-parameter) types, each deserialize may trigger a signalChanged
+
+## Public Member Functions
+
+- **MatrixParameterWrapper** (T &value, [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; [name](#name)=std::nullopt)
+- int [dim](#dim) () const override — The number of (scalar) parameters wrapped by this object.
+- void [deserialize](#deserialize) (const double \*v) override — Update the stored references from a double representation.
+- void [serialize](#serialize) (double \*v) const override — Updates a double representation from the stored references.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [name](#name) (int i) const override — Name of the ith parameter, used for display purposes.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; ParameterWrapperBase &gt; [clone](#clone) () const override — Clone function.
+
+## Member Function Documentation
+
+### dim
+
+```cpp
+template<typename T> int ImFusion::MatrixParameterWrapper < T >::dim () const
+```
+
+*override, virtual*
+
+The number of (scalar) parameters wrapped by this object.
+
+### deserialize
+
+```cpp
+template<typename T> void ImFusion::MatrixParameterWrapper < T >::deserialize (const double * v)
+```
+
+*override, virtual*
+
+Update the stored references from a double representation.
+
+### serialize
+
+```cpp
+template<typename T> void ImFusion::MatrixParameterWrapper < T >::serialize (double * v) const
+```
+
+*override, virtual*
+
+Updates a double representation from the stored references.
+
+### name
+
+```cpp
+template<typename T> std::string ImFusion::MatrixParameterWrapper < T >::name (int i) const
+```
+
+*override, virtual*
+
+Name of the ith parameter, used for display purposes.
+
+### clone
+
+```cpp
+template<typename T> std::unique_ptr < ParameterWrapperBase > ImFusion::MatrixParameterWrapper < T >::clone () const
+```
+
+*override, virtual*
+
+Clone function.

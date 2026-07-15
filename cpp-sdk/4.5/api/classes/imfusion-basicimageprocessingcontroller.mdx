@@ -1,0 +1,117 @@
+---
+title: "ImFusion::BasicImageProcessingController"
+sidebarTitle: "BasicImageProcessingController"
+description: "Controller for basic image processing tasks."
+---
+
+`#include <ImFusion/GUI/BasicImageProcessingController.h>`
+
+## Overview
+
+[Controller](/cpp-sdk/4.5/api/classes/imfusion-controller) for basic image processing tasks.
+
+## Public Slots
+
+- void **onApply** () — Apply the chosen processing.
+- void **onSetProcessing** (int val) — Change of selected processing.
+- void **onUpdateCropping** () — Called to update the visualization of the cropping.
+- void **onCroppingSize** (bool flag) — Called when the way of specifying cropping changes.
+- void **onGradationModeChanged** (int idx)
+- void **onUpdateThreshold** () — Called to update the visualization of thresholding.
+
+## Public Member Functions
+
+- **BasicImageProcessingController** ([BasicImageProcessing](/cpp-sdk/4.5/api/classes/imfusion-basicimageprocessing) \*[algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithmcontroller)) — Constructor with the algorithm instance.
+- **~BasicImageProcessingController** () override — Destructor.
+- void [onAlgorithmParametersChanged](#onalgorithmparameterschanged) () override — Callback called when the [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm)'s signalParametersChanged signal was emitted.
+- void [init](#init) () override — Initializes the widget.
+
+## Protected Member Functions
+
+- void [draw](#draw) (const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &view) override — Draw the object in 3D space.
+- [Geometry::AlignedBox](/cpp-sdk/4.5/api/classes/imfusion-geometry-alignedbox) [bounds](#bounds) () const override — Get the axis-aligned bounding box of this [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) in world space.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [typeName](#typename) () const override — Return unique identifier for this object class used for serialization.
+- void [onManipulatorEvent](#onmanipulatorevent) ([Manipulator](/cpp-sdk/4.5/api/classes/imfusion-manipulator) \*src, void \*eventData) override — Called when an event occurs.
+- void [onSelectedDataChanged](#onselecteddatachanged) (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data) override — Called by [MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase) in the case that the selection in the data model has changed.
+- void **updateGradationMap** ()
+- void **updateCroppingBoxVisibility** ()
+- void **removeCroppingBox** ()
+
+## Member Function Documentation
+
+### onAlgorithmParametersChanged
+
+```cpp
+void ImFusion::BasicImageProcessingController::onAlgorithmParametersChanged ()
+```
+
+*override, virtual*
+
+Callback called when the [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm)'s signalParametersChanged signal was emitted.
+
+### init
+
+```cpp
+void ImFusion::BasicImageProcessingController::init ()
+```
+
+*override, virtual*
+
+Initializes the widget.
+
+### draw
+
+```cpp
+void ImFusion::BasicImageProcessingController::draw (const GlView & view)
+```
+
+*override, protected, virtual*
+
+Draw the object in 3D space.
+
+### bounds
+
+```cpp
+Geometry::AlignedBox ImFusion::BasicImageProcessingController::bounds () const
+```
+
+*override, protected, virtual*
+
+Get the axis-aligned bounding box of this [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) in world space.
+
+Return an empty (default-constructed) AlignedBox object if the [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) does not reside in world space.
+
+### typeName
+
+```cpp
+std::string ImFusion::BasicImageProcessingController::typeName () const
+```
+
+*override, protected, virtual*
+
+Return unique identifier for this object class used for serialization.
+
+### onManipulatorEvent
+
+```cpp
+void ImFusion::BasicImageProcessingController::onManipulatorEvent (Manipulator * src, void * eventData)
+```
+
+*override, protected, virtual*
+
+Called when an event occurs.
+
+**Parameters:**
+
+- `src` — source of the event
+- `eventData` — pointer to event data. Zero if no event data is provided.
+
+### onSelectedDataChanged
+
+```cpp
+void ImFusion::BasicImageProcessingController::onSelectedDataChanged (const DataList &)
+```
+
+*override, protected, virtual*
+
+Called by [MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase) in the case that the selection in the data model has changed.

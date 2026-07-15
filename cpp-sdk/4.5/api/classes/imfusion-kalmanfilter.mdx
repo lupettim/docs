@@ -1,0 +1,26 @@
+---
+title: "ImFusion::KalmanFilter< StateSize, MeasurementSize >"
+sidebarTitle: "KalmanFilter< StateSize, MeasurementSize >"
+description: "Generic Kalman filter."
+---
+
+`#include <ImFusion/Base/KalmanFilter.h>`
+
+## Overview
+
+template&lt;int StateSize, int MeasurementSize&gt;
+
+class ImFusion::KalmanFilter&lt; StateSize, MeasurementSize &gt;
+Generic Kalman filter.
+
+## Public Member Functions
+
+- **KalmanFilter** () — Constructor.
+- void **init** (const Eigen::Matrix&lt; double, StateSize, 1 &gt; &x, const Eigen::Matrix&lt; double, StateSize, StateSize &gt; &P) — Initializes the Kalman filter with an initial state estimate and an initial measurement covariance.
+- Eigen::Matrix&lt; double, StateSize, 1 &gt; **getState** () const — Returns the state vector.
+- void **setProcessNoiseCovariance** (const Eigen::Matrix&lt; double, StateSize, StateSize &gt; &Q) — Sets the process noise covariance.
+- void **setMeasurementNoiseCovariance** (const Eigen::Matrix&lt; double, MeasurementSize, MeasurementSize &gt; &R) — Sets the measurement noise covariance.
+- Eigen::Matrix&lt; double, StateSize, 1 &gt; & **update** (const Eigen::Matrix&lt; double, MeasurementSize, 1 &gt; &measurement, const Eigen::Matrix&lt; double, StateSize, StateSize &gt; &F, const Eigen::Matrix&lt; double, MeasurementSize, StateSize &gt; &H) — Linear Kalman filter prediction and correction step.
+- Eigen::Matrix&lt; double, StateSize, 1 &gt; & **update** (const Eigen::Matrix&lt; double, StateSize, StateSize &gt; &F, const Eigen::Matrix&lt; double, MeasurementSize, StateSize &gt; &H) — Linear Kalman filter prediction step.
+- Eigen::Matrix&lt; double, StateSize, 1 &gt; & **update** (const Eigen::Matrix&lt; double, MeasurementSize, 1 &gt; &measurement, StatePredictionFunc f, MeasurementPredictionFunc h) — Extended Kalman filter prediction and correction step.
+- Eigen::Matrix&lt; double, StateSize, 1 &gt; & **update** (StatePredictionFunc f, MeasurementPredictionFunc h) — Extended Kalman filter prediction step.

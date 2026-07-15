@@ -1,0 +1,238 @@
+---
+title: "ImFusion::SubPropertyList< T >"
+sidebarTitle: "SubPropertyList< T >"
+description: "The SubPropertyList class represents nested records of Configurable entities."
+---
+
+`#include <ImFusion/Core/SubPropertyList.h>`
+
+## Overview
+
+template&lt;typename T&gt;
+
+class ImFusion::SubPropertyList&lt; T &gt;
+The [SubPropertyList](/cpp-sdk/4.5/api/classes/imfusion-subpropertylist) class represents nested records of [Configurable](/cpp-sdk/4.5/api/classes/imfusion-configurable) entities.
+
+It is very similar to [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty), with the addition that you can store multiple [Configurable](/cpp-sdk/4.5/api/classes/imfusion-configurable) entities for which it also offers functionality to conveniently access them. The [SubPropertyList](/cpp-sdk/4.5/api/classes/imfusion-subpropertylist) class provides functions like the index operator, for easy access of the nested elements:
+
+```cpp
+struct InnerStruct : public Configurable {
+ Parameter<int> p_count = {"count", 0, this};
+}
+struct OuterStruct : public Configurable {
+    SubPropertyList<InnerStruct> p_innerStructList = {"InnerStructList", {InnerStruct()}, this};
+}
+
+OuterStruct o;
+o.p_innerStructList[0].p_count = 42;
+```
+ fragment
+The nested objects are stored as multiple [sub-properties](/cpp-sdk/4.5/api/classes/imfusion-properties) inside the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) preserving the order and using the name of the [SubPropertyList](/cpp-sdk/4.5/api/classes/imfusion-subpropertylist).
+
+The signal [signalValueChanged](/cpp-sdk/4.5/api/classes/imfusion-parameterbase) is only emitted whenever the nested objects are changed using setValue(), [configure()](#configure), or if one of their [Configurable::signalParametersChanged](/cpp-sdk/4.5/api/classes/imfusion-configurable) was emitted.
+
+Note: In contrast to [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty), [SubPropertyList](/cpp-sdk/4.5/api/classes/imfusion-subpropertylist) currently only supports T being a regular value type implementing [Configurable](/cpp-sdk/4.5/api/classes/imfusion-configurable).
+
+**Template Parameters:** | T | Underlying type of the parameter, must be default-constructible, copyable and implement the [Configurable](/cpp-sdk/4.5/api/classes/imfusion-configurable) interface. |
+| --- | --- |
+
+**See also:** [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter), [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty)
+
+## Public Types
+
+- using **Iterator** = typename [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt;T&gt;::iterator
+- using **ConstIterator** = typename [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt;T&gt;::const_iterator
+
+## Public Member Functions
+
+- [SubPropertyList](#subpropertylist) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &[name](/cpp-sdk/4.5/api/classes/imfusion-parameterbase), const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; T &gt; &init, Configurable \*[parent](/cpp-sdk/4.5/api/classes/imfusion-parameterbase)=nullptr) — Creates a [SubPropertyList](/cpp-sdk/4.5/api/classes/imfusion-subpropertylist) that will be configured under the given name and with the given initial value.
+- **SubPropertyList** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &[name](/cpp-sdk/4.5/api/classes/imfusion-parameterbase), const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; T &gt; &init, Configurable &[parent](/cpp-sdk/4.5/api/classes/imfusion-parameterbase))
+- **SubPropertyList** (const SubPropertyList&lt; T &gt; &other)
+- **SubPropertyList** (SubPropertyList&lt; T &gt; &&other) noexcept
+- [SubPropertyList](#subpropertylist)&lt; T &gt; & [operator=](#operator-1-3) (const [SubPropertyList](#subpropertylist)&lt; T &gt; &other) — Assigns the value and attributes from another [SubPropertyList](/cpp-sdk/4.5/api/classes/imfusion-subpropertylist) instance of the same type and emits signalValueChanged.
+- [SubPropertyList](#subpropertylist)&lt; T &gt; & [operator=](#operator-2-3) ([SubPropertyList](#subpropertylist)&lt; T &gt; &other) — Assigns the value and attributes from another [SubPropertyList](/cpp-sdk/4.5/api/classes/imfusion-subpropertylist) instance of the same type and emits signalValueChanged.
+- [SubPropertyList](#subpropertylist)&lt; T &gt; & [operator=](#operator-3-3) ([SubPropertyList](#subpropertylist)&lt; T &gt; &&other) noexcept — Assigns the value and attributes from another [SubPropertyList](/cpp-sdk/4.5/api/classes/imfusion-subpropertylist) instance of the same type and emits signalValueChanged.
+- [SubPropertyList](#subpropertylist)&lt; T &gt; & **operator=** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; T &gt; &value) — Assign a new value to this [SubPropertyList](/cpp-sdk/4.5/api/classes/imfusion-subpropertylist), emits signalValueChanged.
+- void **setValue** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; T &gt; &value) — Assign a new value to this [SubPropertyList](/cpp-sdk/4.5/api/classes/imfusion-subpropertylist), emits signalValueChanged.
+- [SubPropertyList](#subpropertylist)&lt; T &gt; & **append** (T &&value) — Append a new value to this [SubPropertyList](/cpp-sdk/4.5/api/classes/imfusion-subpropertylist), emits signalValueChanged.
+- [SubPropertyList](#subpropertylist)&lt; T &gt; & **insert** (Iterator position, T &&value) — Inserts a new value into this [SubPropertyList](/cpp-sdk/4.5/api/classes/imfusion-subpropertylist) before position, emits signalValueChanged.
+- Iterator [erase](#erase-1-2) (Iterator position) — Erases the element at position.
+- Iterator **erase** (ConstIterator position)
+- Iterator [erase](#erase-2-2) (Iterator first, Iterator last) — Erases the elements in the range [first, last).
+- Iterator **erase** (ConstIterator first, ConstIterator last)
+- void [clear](#clear) () — Removes all elements from the container.
+- auto **begin** () const noexcept — Returns an iterator to the first element.
+- auto **begin** () noexcept
+- ConstIterator **cbegin** () const noexcept — Returns a const iterator to the first element.
+- auto **end** () const noexcept — Returns an iterator to one past the last element.
+- auto **end** () noexcept
+- ConstIterator **cend** () const noexcept — Returns a const iterator to one past the last element.
+- T & [front](#front-1-2) () noexcept — Returns a reference to the first element in the container.
+- const T & [front](#front-2-2) () const noexcept — Returns a const reference to the first element in the container.
+- T & [back](#back-1-2) () noexcept — Returns a reference to the last element in the container.
+- const T & [back](#back-2-2) () const noexcept — Returns a const reference to the last element in the container.
+- const auto & **operator[]** (size_t pos) const
+- auto & **operator[]** (size_t pos)
+- bool **empty** () const
+- size_t **size** () const
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this parameter/sub property by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current parameter/sub property state into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+## Protected Attributes
+
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; T &gt; **m_value**
+
+## Constructor & Destructor Documentation
+
+### SubPropertyList
+
+```cpp
+template<typename T> ImFusion::SubPropertyList < T >::SubPropertyList (const std::string & name, const std::vector < T > & init, Configurable * parent = nullptr)
+```
+
+Creates a [SubPropertyList](/cpp-sdk/4.5/api/classes/imfusion-subpropertylist) that will be configured under the given name and with the given initial value.
+
+If parent != nullptr creates a [SubPropertyList](/cpp-sdk/4.5/api/classes/imfusion-subpropertylist) that is directly registered to the parent [Configurable](/cpp-sdk/4.5/api/classes/imfusion-configurable) instance. The parent instance is stored and thus must have a lifetime longer than this object.
+
+## Member Function Documentation
+
+### operator
+
+```cpp
+template<typename T> SubPropertyList < T > & ImFusion::SubPropertyList < T >::operator= (const SubPropertyList < T > & other)
+```
+
+Assigns the value and attributes from another [SubPropertyList](/cpp-sdk/4.5/api/classes/imfusion-subpropertylist) instance of the same type and emits signalValueChanged.
+
+Expects name and deprecated names to be the same and will not change the parent relationship.
+
+### operator
+
+```cpp
+template<typename T> SubPropertyList < T > & ImFusion::SubPropertyList < T >::operator= (SubPropertyList < T > & other)
+```
+
+Assigns the value and attributes from another [SubPropertyList](/cpp-sdk/4.5/api/classes/imfusion-subpropertylist) instance of the same type and emits signalValueChanged.
+
+Expects name and deprecated names to be the same and will not change the parent relationship.
+
+**Note:** This implementation is required as otherwise [operator=(SubPropertyList&lt;T&gt;&&)](#operator-3-3) will be picked up as non-const assign operator.
+
+### operator
+
+```cpp
+template<typename T> SubPropertyList < T > & ImFusion::SubPropertyList < T >::operator= (SubPropertyList < T > && other)
+```
+
+*noexcept*
+
+Assigns the value and attributes from another [SubPropertyList](/cpp-sdk/4.5/api/classes/imfusion-subpropertylist) instance of the same type and emits signalValueChanged.
+
+Expects name and deprecated names to be the same and will not change the parent relationship.
+
+### erase
+
+```cpp
+template<typename T> Iterator ImFusion::SubPropertyList < T >::erase (Iterator position)
+```
+
+*inline*
+
+Erases the element at position.
+
+This function behaves like std::vector::erase(position). The iterator position must refer to a valid element within this container. Passing an invalid iterator or an iterator from a different container results in undefined behavior (as for standard library containers). Returns an iterator to the element that follows the erased element, or end() if the erased element was the last one. Emits signalValueChanged once.
+
+### erase
+
+```cpp
+template<typename T> Iterator ImFusion::SubPropertyList < T >::erase (Iterator first, Iterator last)
+```
+
+*inline*
+
+Erases the elements in the range [first, last).
+
+This function behaves like std::vector::erase(first, last). The iterators first and last must refer to a valid range within this container. Passing invalid iterators, iterators from a different container, or an invalid range results in undefined behavior (as for standard library containers). Returns an iterator to the element that follows the last removed element, or end() if last == end(). If first == last, no elements are erased, the container is not modified, and first is returned. Emits signalValueChanged once if at least one element is erased.
+
+### clear
+
+```cpp
+template<typename T> void ImFusion::SubPropertyList < T >::clear ()
+```
+
+Removes all elements from the container.
+
+This function behaves like [std::vector::clear()](http://en.cppreference.com/w/cpp/container/vector/clear.html). After the call, size() == 0 and empty() == true. Emits signalValueChanged once if the container was non-empty.
+
+### front
+
+```cpp
+template<typename T> T & ImFusion::SubPropertyList < T >::front ()
+```
+
+*noexcept*
+
+Returns a reference to the first element in the container.
+
+This function behaves like the standard library containers (e.g. [std::vector::front()](http://en.cppreference.com/w/cpp/container/vector/front.html)). The container must not be empty. Calling [front()](#front-1-2) on an empty container results in undefined behavior (as with standard library containers). It is the caller's responsibility to ensure the container is non-empty, typically by checking empty() before calling [front()](#front-1-2).
+
+### front
+
+```cpp
+template<typename T> const T & ImFusion::SubPropertyList < T >::front () const
+```
+
+*noexcept*
+
+Returns a const reference to the first element in the container.
+
+This function behaves like the standard library containers (e.g. [std::vector::front()](http://en.cppreference.com/w/cpp/container/vector/front.html)). The container must not be empty. Calling [front()](#front-1-2) on an empty container results in undefined behavior (as with standard library containers). It is the caller's responsibility to ensure the container is non-empty, typically by checking empty() before calling [front()](#front-1-2).
+
+### back
+
+```cpp
+template<typename T> T & ImFusion::SubPropertyList < T >::back ()
+```
+
+*noexcept*
+
+Returns a reference to the last element in the container.
+
+This function behaves like the standard library containers (e.g. [std::vector::back()](http://en.cppreference.com/w/cpp/container/vector/back.html)). The container must not be empty. Calling [back()](#back-1-2) on an empty container results in undefined behavior (as with standard library containers). It is the caller's responsibility to ensure the container is non-empty, typically by checking empty() before calling [back()](#back-1-2).
+
+### back
+
+```cpp
+template<typename T> const T & ImFusion::SubPropertyList < T >::back () const
+```
+
+*noexcept*
+
+Returns a const reference to the last element in the container.
+
+This function behaves like the standard library containers (e.g. [std::vector::back()](http://en.cppreference.com/w/cpp/container/vector/back.html)). The container must not be empty. Calling [back()](#back-1-2) on an empty container results in undefined behavior (as with standard library containers). It is the caller's responsibility to ensure the container is non-empty, typically by checking empty() before calling [back()](#back-1-2).
+
+### configure
+
+```cpp
+template<typename T> void ImFusion::SubPropertyList < T >::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this parameter/sub property by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The behavior of [configure()](#configure) is as follows:
+
+- Configure will clear and resize the payload to the number of present sub-properties in p, i.e. delete all elements of the payload and append default-constructed T if there are sub-properties present in p. Therefore, T must be default-constructible.
+- Subsequently, the elements in the payload will get configured by calling their [configure()](#configure) method in order with the sub-properties in p. Thus, the order of the sub-properties is preserved.
+
+### configuration
+
+```cpp
+template<typename T> void ImFusion::SubPropertyList < T >::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current parameter/sub property state into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.

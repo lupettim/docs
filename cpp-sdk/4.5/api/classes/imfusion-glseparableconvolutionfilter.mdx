@@ -1,0 +1,67 @@
+---
+title: "ImFusion::GlSeparableConvolutionFilter"
+sidebarTitle: "GlSeparableConvolutionFilter"
+description: "Separable Convolution filter."
+---
+
+`#include <ImFusion/GL/GlSeparableConvolutionFilter.h>`
+
+## Overview
+
+Separable Convolution filter.
+
+## Public Member Functions
+
+- **GlSeparableConvolutionFilter** ([GL::Framebuffer](/cpp-sdk/4.5/api/classes/imfusion-gl-framebuffer) \*fbo=0)
+- bool **setKernels** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; const [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) \* &gt; &imgKernels) — Set kernels.
+- void **setSubVolume** (const [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [Geometry::AlignedBox](/cpp-sdk/4.5/api/classes/imfusion-geometry-alignedbox) &gt; &subVolume) — Specify an area of the image on which the filter is applied By default the filter is applied to the entire image Note that the values outside of the area in the output texture are unspecified.
+- void **setSubVolume** (const [GL::ImageProgram::Cuboid](/cpp-sdk/4.5/api/classes/imfusion-gl-imageprogram-cuboid) &subVolume)
+- void **setNormalizeKernel** (bool flag) — Specify whether to normalize kernel Set this false when using an antisymmetric function (the user must take care of the correct kernel values).
+- bool **normalizeKernel** () const
+- void [compute](#compute-1-2) (const [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) &imgIn, [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) &imgOut) override — Execute the filter on the image.
+- void [compute](#compute-2-2) ([SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) &imgIn, [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) &imgOut) override
+- bool [good](#good) () const override — Return if the filter can be used.
+- [GL::Sampler](/cpp-sdk/4.5/api/classes/imfusion-gl-sampler) & **samplingParameters** ()
+
+## Protected Member Functions
+
+- void **computeInternal** (const [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) &imgIn, [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) &imgOut, [Mask](/cpp-sdk/4.5/api/classes/imfusion-mask) \*mask)
+
+## Protected Attributes
+
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [GL::ImageProgram](/cpp-sdk/4.5/api/classes/imfusion-gl-imageprogram) &gt; **m_program**
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) &gt; &gt; **m_kernels** — kernels for each component, order: x,y,z. Size MUST be 1 or 3.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) &gt; **m_auxTexture**
+- bool **m_normalizeKernel** = true
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [Geometry::AlignedBox](/cpp-sdk/4.5/api/classes/imfusion-geometry-alignedbox) &gt; **m_subVolume**
+- [GL::Sampler](/cpp-sdk/4.5/api/classes/imfusion-gl-sampler) **m_samplingParameters**
+
+## Member Function Documentation
+
+### compute
+
+```cpp
+void ImFusion::GlSeparableConvolutionFilter::compute (const GlImage & imgIn, GlImage & imgOut)
+```
+
+*override, virtual*
+
+Execute the filter on the image.
+
+### compute
+
+```cpp
+void ImFusion::GlSeparableConvolutionFilter::compute (SharedImage & imgIn, SharedImage & imgOut)
+```
+
+*override, virtual*
+
+### good
+
+```cpp
+bool ImFusion::GlSeparableConvolutionFilter::good () const
+```
+
+*inline, override, virtual*
+
+Return if the filter can be used.

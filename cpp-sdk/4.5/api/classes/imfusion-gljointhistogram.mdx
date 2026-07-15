@@ -1,0 +1,141 @@
+---
+title: "ImFusion::GlJointHistogram"
+sidebarTitle: "GlJointHistogram"
+description: "Provides an interface to calculate the joint histogram of an image either on the CPU or on the GPU."
+---
+
+`#include <ImFusion/GL/GlJointHistogram.h>`
+
+## Overview
+
+Provides an interface to calculate the joint histogram of an image either on the CPU or on the GPU.
+
+The GPU implementation supports two modes:
+
+- If your hardware/driver combination supports OpenGL 4.3 (more precisely the ARB_shader_image_load_store and ARB_compute_shader extensions), [GlHistogram](/cpp-sdk/4.5/api/classes/imfusion-glhistogram) will use OpenGL compute shaders.
+- If your hardware/driver combination does not support OpenGL 4.3, [GlHistogram](/cpp-sdk/4.5/api/classes/imfusion-glhistogram) will fall back to an OpenGL 3.3 implementation based on "Efficient Histogram Generation Using Scattering on GPUs" (Scheuermann, Hensley). Please be aware that this implementation is slower and may be less precise due to float arithmetic.
+
+Usage Example:
+
+```cpp
+GlJointHistogram histogrammer;
+histogrammer.setBinCount({128, 128});
+if (!histogrammer.update(img1, img2))
+ return error();
+const TypedImage<float>* histogram = histogrammer.typedData();
+```
+ fragment
+
+**Note:** - This class can calculate histograms for images with up to 4 channels.
+- Due to using float as internal representation the histogram counts may become inaccurate or even saturate for values beyond 2^24.
+- Due to the needed shaders and buffers, the instantiation of a [GlJointHistogram](/cpp-sdk/4.5/api/classes/imfusion-gljointhistogram) instance is rather expensive. You should cache it if possible.
+
+**See also:** [GlHistogram](/cpp-sdk/4.5/api/classes/imfusion-glhistogram)
+
+## Public Types
+
+- enum [Device](#device) &#123; Device_CPU = 0 , Device_GPU = 1 &#125;
+
+## Public Member Functions
+
+- [GlJointHistogram](#gljointhistogram) () — Creates a new [GlJointHistogram](/cpp-sdk/4.5/api/classes/imfusion-gljointhistogram) instance with default settings.
+
+## Configure Joint Histogram Computation
+
+- vec2i **binCount** () const — Returns the number of histogram bins.
+- void **setBinCount** (vec2i bins) — Sets the number of histogram bins.
+
+## Run Joint Histogram Computation
+
+- bool [update](#update-1-3) ([SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*image1, [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*image2, [Device](#device) device=Device_GPU) — Computes the joint histogram of the given images and returns true on success.
+- bool [update](#update-2-3) (const [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) \*image1, const [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) \*image2, const mat4 &matrix=mat4::Identity()) — Computes the joint histogram of the given images on the GPU and returns true on success.
+- bool [update](#update-3-3) (const [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) \*image1, const [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) \*image2, const mat4 &matrix=mat4::Identity()) — Computes the joint histogram of the given images on the CPU and returns true on success.
+
+## Access Results of the Computation
+
+- const [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \* **data** () const — Returns the joint histogram data stored as a single channel 2D float image while maintaining its ownership.
+- const [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; float &gt; \* **typedData** () const — Returns the histogram data as single channel 2D float image while maintaining its ownership.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) &gt; **releaseData** () — Returns the histogram data as a single channel 2D float image and passes ownership of the returned pointer to the caller.
+- [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \* [dataUint](#datauint) () const — **Internal:** Returns the histogram data as a 2D unsigned integer image.
+- double **entropy** () — Return the image entropy based on the computed histogram.
+
+## Member Enumeration Documentation
+
+### Device
+
+```cpp
+enum ImFusion::GlJointHistogram::Device
+```
+
+**Enumerator:**
+
+- `Device_CPU` — Compute the histogram on the CPU.
+- `Device_GPU` — Compute the histogram on the GPU, automatically detect OpenGL version to use.
+
+## Constructor & Destructor Documentation
+
+### GlJointHistogram
+
+```cpp
+ImFusion::GlJointHistogram::GlJointHistogram ()
+```
+
+Creates a new [GlJointHistogram](/cpp-sdk/4.5/api/classes/imfusion-gljointhistogram) instance with default settings.
+
+**Exceptions:**
+
+- `std::runtime_error` — if initialization of the OpenGL resources fails.
+
+## Member Function Documentation
+
+### update
+
+```cpp
+bool ImFusion::GlJointHistogram::update (SharedImage * image1, SharedImage * image2, Device device = Device_GPU)
+```
+
+Computes the joint histogram of the given images and returns true on success.
+
+**Parameters:**
+
+- `image1` — First input image
+- `image2` — Second input image
+- `device` — [Device](#device) to use for computation
+
+### update
+
+```cpp
+bool ImFusion::GlJointHistogram::update (const GlImage * image1, const GlImage * image2, const mat4 & matrix = mat4::Identity())
+```
+
+Computes the joint histogram of the given images on the GPU and returns true on success.
+
+**Parameters:**
+
+- `image1` — First input image
+- `image2` — Second input image
+- `matrix` — Relative pose matrix of *image2* wrt. *image1*
+
+### update
+
+```cpp
+bool ImFusion::GlJointHistogram::update (const MemImage * image1, const MemImage * image2, const mat4 & matrix = mat4::Identity())
+```
+
+Computes the joint histogram of the given images on the CPU and returns true on success.
+
+**Parameters:**
+
+- `image1` — First input image
+- `image2` — Second input image
+- `matrix` — Relative pose matrix of *image2* wrt. *image1*
+
+### dataUint
+
+```cpp
+SharedImage * ImFusion::GlJointHistogram::dataUint () const
+```
+
+**Internal:** Returns the histogram data as a 2D unsigned integer image.
+
+**Warning:** Contains valid data *only* when using the modern OpenGL 4.3 implementation.

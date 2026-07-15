@@ -1,0 +1,48 @@
+---
+title: "ImFusion::WatershedComputer"
+sidebarTitle: "WatershedComputer"
+---
+
+## Public Types
+
+- enum **State** &#123; **Idle** , **Computing** , **Exited** &#125;
+- enum **StopReason** &#123; **NoSource** , **NoSeeds** , **IncompatibleSourceSeeds** , **CheckFailed** , **CancelRequest** , **PostProcessFailed** , **Success** &#125;
+- using **GenerateImageFunction** = [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt;[std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt;[TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt;unsigned char&gt;&gt;([Progress](/cpp-sdk/4.5/api/classes/imfusion-progress)\*)&gt;
+- using **CheckFunction** = [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt;int(const [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt;unsigned char&gt;& source, const [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt;unsigned char&gt;& seeds)&gt;
+- using **PostProcessFunction** = [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt;bool([std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt;[TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt;unsigned char&gt;&gt;&)&gt; — Enumeration of possible invariants that should be ensured by [NestedProgress](/cpp-sdk/4.5/api/classes/imfusion-nestedprogress).
+
+## Public Member Functions
+
+- void **setSource** ([std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; unsigned char &gt; &gt; source)
+- void **setSeeds** ([std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; unsigned char &gt; &gt; seeds)
+- void **setROI** (const vec3i &lowerLeftFront, const vec3i &upperRightBack)
+- void **setSourceFunc** (GenerateImageFunction func)
+- void **setSeedsFunc** (GenerateImageFunction func)
+- void **setCheckFunction** (CheckFunction func)
+- void **setPostProcess** (PostProcessFunction func)
+- void **start** (bool wait=false) — if wait is true, blocks until the worker thread has acknowledged the start
+- bool **cancel** (bool wait=false) — returns false if the worker thread was not Computing if wait is true, blocks until the worker thread has acknowledged the cancellation
+- State **state** () const
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; unsigned char &gt; &gt; **getResult** (bool wait=false) — returns the result of the past watershed computation
+
+## Public Attributes
+
+- Signal **started** — these signals are executed from the worker thread, synchronization is up to the user
+- Signal&lt; int, int &gt; **progress**
+- Signal&lt; StopReason, int &gt; **stopped**
+
+## Protected Member Functions
+
+- void [onTaskUpdated](#ontaskupdated) (const [Task](/cpp-sdk/4.5/api/classes/imfusion-progress-task) \*task) override — Function is called whenever the state of a [Task](/cpp-sdk/4.5/api/classes/imfusion-progress-task) has changed and the reporter should update its UI.
+
+## Member Function Documentation
+
+### onTaskUpdated
+
+```cpp
+void ImFusion::WatershedComputer::onTaskUpdated (const Task * task)
+```
+
+*override, protected, virtual*
+
+Function is called whenever the state of a [Task](/cpp-sdk/4.5/api/classes/imfusion-progress-task) has changed and the reporter should update its UI.

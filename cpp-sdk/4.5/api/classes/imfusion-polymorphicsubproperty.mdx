@@ -1,0 +1,158 @@
+---
+title: "ImFusion::PolymorphicSubProperty< T >"
+sidebarTitle: "PolymorphicSubProperty< T >"
+description: "This class extends SubProperty to represent a nested record of a polymorphic Configurable entity."
+---
+
+`#include <ImFusion/Core/PolymorphicSubProperty.h>`
+
+## Overview
+
+template&lt;typename T&gt;
+
+class ImFusion::PolymorphicSubProperty&lt; T &gt;
+This class extends [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) to represent a nested record of a *polymorphic*[Configurable](/cpp-sdk/4.5/api/classes/imfusion-configurable) entity.
+
+In contrast to a regular [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) (modeling value semantics for the nested entities), this class enables you to model polymorphic semantics where the template type of [PolymorphicSubProperty](/cpp-sdk/4.5/api/classes/imfusion-polymorphicsubproperty) defines a base interface but you can also store, serialize and deserialize derived classes. Therefore, you must meet the following requirements:
+
+- The base interface T must provide a method with the signature [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt;T&gt; clone() const to duplicate instances.
+- The base interface T must provide a method with the signature [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) id() const that returns a unique identifier (ID) for the concrete class specialization type of an runtime instance.
+- You must provide a factory function with the signature [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt;T&gt; (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html)& id) to the [PolymorphicSubProperty](/cpp-sdk/4.5/api/classes/imfusion-polymorphicsubproperty) constructor that can create instances of the concrete classes based on the IDs returned by id(). This factory function will be used during deserialization.
+
+Example usage:
+
+```cpp
+// Base interface providing id() and clone() as pure virtual methods
+struct Shape : public Configurable {
+ virtual ~Shape() = default;
+ virtual std::string id() const = 0;
+ virtual std::unique_ptr<Shape> clone() const = 0;
+};
+
+// Specializations of the base interface, each implementing id() and clone()
+struct Circle : public Shape {
+ std::string id() const override { return "Circle"; }
+ std::unique_ptr<Shape> clone() const override {
+ return std::make_unique<Circle>(*this);
+    }
+    Parameter<double> radius = {"radius", 1.0, this};
+};
+struct Rectangle : public Shape {
+    std::string id() const override { return "Rectangle"; }
+    std::unique_ptr<Shape> clone() const override {
+ return std::make_unique<Rectangle>(*this);
+    }
+    Parameter<double> width = {"width", 1.0, this};
+    Parameter<double> height = {"height", 1.0, this};
+};
+
+// Factory function to create Shape instances from their IDs
+std::unique_ptr<Shape> createShapeFromId(const std::string& id) {
+ if (id == "Circle") return std::make_unique<Circle>();
+ if (id == "Rectangle") return std::make_unique<Rectangle>();
+ return nullptr;
+}
+
+// Configurable class containing a PolymorphicSubProperty of type Shape
+struct Document : public Configurable {
+    PolymorphicSubProperty<Shape> p_shape;
+
+    Document()
+        : shape("shape", std::make_unique<Circle>(), *this, createShapeFromId)
+    {
+    }
+};
+```
+ fragment
+The signal [signalValueChanged](/cpp-sdk/4.5/api/classes/imfusion-parameterbase) is only emitted whenever the nested object is changed using setValue(), [configure()](#configure), or if its [Configurable::signalParametersChanged](/cpp-sdk/4.5/api/classes/imfusion-configurable) was emitted.
+
+By convention, public SubProperties members use the p_ prefix for the variable name (instead of the common m_ prefix) in order to make their semantics easier to identify in code.
+
+**Note:** Due to the way deserialization is implemented, you can not have multiple [PolymorphicSubProperty](/cpp-sdk/4.5/api/classes/imfusion-polymorphicsubproperty) instances with the same name next to each other.
+
+**Warning:** The id &lt;nullptr&gt; is reserved by the system for representing null pointer values during serialization. Objects must not return &lt;nullptr&gt; from their id() method, as this will cause conflicts with the internal null handling mechanism. When a [PolymorphicSubProperty](/cpp-sdk/4.5/api/classes/imfusion-polymorphicsubproperty) contains a null pointer, it will be serialized with the special ID &lt;nullptr&gt; and properly restored as nullptr during deserialization.
+
+**Template Parameters:** | T | Underlying element type that will be wrapped in a [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html). T must implement [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) id() const and [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt;T&gt; clone() const methods. |
+| --- | --- |
+
+**See also:** [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter), [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty), [SubPropertyList](/cpp-sdk/4.5/api/classes/imfusion-subpropertylist)
+
+## Public Types
+
+- using **CreateFromId** = [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt;[std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt;T&gt;(const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html)&)&gt;
+- using **Base** = [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty)&lt;[std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt;T&gt;&gt;
+
+## Public Member Functions
+
+- [PolymorphicSubProperty](#polymorphicsubproperty) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &[name](/cpp-sdk/4.5/api/classes/imfusion-parameterbase), U &&value, [Configurable](/cpp-sdk/4.5/api/classes/imfusion-configurable) &[parent](/cpp-sdk/4.5/api/classes/imfusion-parameterbase), CreateFromId createFromId) — Creates a [PolymorphicSubProperty](/cpp-sdk/4.5/api/classes/imfusion-polymorphicsubproperty).
+- **PolymorphicSubProperty** (const PolymorphicSubProperty &other)
+- **PolymorphicSubProperty** (PolymorphicSubProperty &&)=default
+- [PolymorphicSubProperty](#polymorphicsubproperty) & **operator=** (const [PolymorphicSubProperty](#polymorphicsubproperty) &other)
+- [PolymorphicSubProperty](#polymorphicsubproperty) & **operator=** ([PolymorphicSubProperty](#polymorphicsubproperty) &&)=default
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this parameter/sub property by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current parameter/sub property state into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+- [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty)&lt; T &gt; & [operator=](#operator-1-2) (const [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty)&lt; T &gt; &other) — Assigns the value and attributes from another [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instance of the same type and emits signalValueChanged.
+- [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty)&lt; T &gt; & [operator=](#operator-2-2) ([SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty)&lt; T &gt; &&other) — Assigns the value and attributes from another [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instance of the same type and emits signalValueChanged.
+- [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty)&lt; T &gt; & **operator=** (U &&value) — Assign a new value to this [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty), emits signalValueChanged.
+- void **setValue** (U &&value) — Assign a new value to this [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty), emits signalValueChanged.
+- const T & **value** () const — Access the underlying value.
+- T & **value** ()
+
+## Constructor & Destructor Documentation
+
+### PolymorphicSubProperty
+
+```cpp
+template<typename T> template<typename U> ImFusion::PolymorphicSubProperty < T >::PolymorphicSubProperty (const std::string & name, U && value, Configurable & parent, CreateFromId createFromId)
+```
+
+Creates a [PolymorphicSubProperty](/cpp-sdk/4.5/api/classes/imfusion-polymorphicsubproperty).
+
+**Parameters:**
+
+- `name` — The name under which this property will be serialized
+- `value` — Initial value for the property
+- `parent` — Parent [Configurable](/cpp-sdk/4.5/api/classes/imfusion-configurable) instance for registration
+- `createFromId` — Factory function that creates objects from id strings. Note: The id &lt;nullptr&gt; is handled automatically by the system and should not be handled by this factory function.
+
+## Member Function Documentation
+
+### configure
+
+```cpp
+template<typename T> void ImFusion::PolymorphicSubProperty < T >::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this parameter/sub property by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+### configuration
+
+```cpp
+template<typename T> void ImFusion::PolymorphicSubProperty < T >::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current parameter/sub property state into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+### operator
+
+```cpp
+template<typename T> SubProperty < T > & ImFusion::SubProperty < T >::operator= (const SubProperty < T > & other)
+```
+
+Assigns the value and attributes from another [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instance of the same type and emits signalValueChanged.
+
+Expects name and deprecated names to be the same and will not change the parent relationship. Use \*this = other.value() if you want to assign *only* the value from *other*
+
+### operator
+
+```cpp
+template<typename T> SubProperty < T > & ImFusion::SubProperty < T >::operator= (SubProperty < T > && other)
+```
+
+Assigns the value and attributes from another [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instance of the same type and emits signalValueChanged.
+
+Expects name and deprecated names to be the same and will not change the parent relationship. Use \*this = other.value() if you want to assign *only* the value from *other*

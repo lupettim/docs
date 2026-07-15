@@ -1,0 +1,69 @@
+---
+title: "ImFusion::Seg::Structure"
+sidebarTitle: "Structure"
+description: "A Structure is a helper class providing a view onto a single label value within a label map."
+---
+
+`#include <ImFusion/Seg/Structure.h>`
+
+## Overview
+
+A [Structure](/cpp-sdk/4.5/api/classes/imfusion-seg-structure) is a helper class providing a view onto a single label value within a label map.
+
+This class only serves as convenience interface to manage the metadata of a structure. The actual label map (pixel data) and the majority of its metadata (color, name, visibility) is stored elsewhere. Usually, instances of this class are not created manually but fully managed by the [StructuresView](/cpp-sdk/4.5/api/classes/imfusion-seg-structuresview).
+
+**See also:** [StructuresView](/cpp-sdk/4.5/api/classes/imfusion-seg-structuresview), [LabelDataComponent](/cpp-sdk/4.5/api/classes/imfusion-labeldatacomponent), [LabelDataComponent::LabelConfig](/cpp-sdk/4.5/api/structs/imfusion-labeldatacomponent-labelconfig)
+
+## Public Member Functions
+
+- [Structure](#structure) ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &labelMap, int labelIndex) — Instantiates a new [Structure](/cpp-sdk/4.5/api/classes/imfusion-seg-structure) providing a view onto an existing label map.
+- **Structure** (Structure &&rhs)=default
+- [Structure](#structure) & **operator=** ([Structure](#structure) &&rhs)=default
+- [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* **labelMap** () — Returns the label map storing the actual segmentation information.
+- const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* **labelMap** () const
+- int **labelIndex** () const — Returns the storage value in labelMap() corresponding to this structure.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **name** () const — Returns the name of this structure to be shown in the UI.
+- void **setName** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name) — Sets the name of this structure to be shown in the UI.
+- vec4 **color** () const — Returns the color to render this structure in.
+- void **setColor** (const vec4 &color) — Sets the color to render this structure in.
+- bool **isVisible** () const — Returns whether this structure is shown in 2d or 3d visualization.
+- void **setVisible** (bool value) — Sets whether this structure shall be shown in both 2d and 3d visualization.
+- bool **isVisible2d** () const — Returns the flag whether this structure shall be shown in 2d visualizations.
+- void **setVisible2d** (bool value) — Sets the flag whether this structure shall be shown in 2d visualizations.
+- bool **isVisible3d** () const — Returns the flag whether this structure shall be shown in 3d visualizations.
+- void **setVisible3d** (bool value) — Sets the flag whether this structure shall be shown in 3d visualizations.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) &gt; **extractMesh** () const — Extracts a mesh from the underlying label map representing this structure.
+- [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; const [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) &gt; **mesh** () const — Returns the optional reference to a mesh extracted from the label map (needs to be managed from the outside).
+- void **setMesh** ([std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; const [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) &gt; value) — Sets the optional reference to a mesh extracted from the label map (needs to be managed from the outside).
+
+## Public Attributes
+
+- Signal [signalChanged](#signalchanged) — Signal emitted when any of the properties has changed.
+- Signal **signalMeshChanged** — Signal emitted when a new mesh has been assigned.
+
+## Constructor & Destructor Documentation
+
+### Structure
+
+```cpp
+ImFusion::Seg::Structure::Structure (SharedImageSet & labelMap, int labelIndex)
+```
+
+Instantiates a new [Structure](/cpp-sdk/4.5/api/classes/imfusion-seg-structure) providing a view onto an existing label map.
+
+**Parameters:**
+
+- `labelMap` — Label image storing the actual segmentation pixel data, must stay alive as long as this [Structure](/cpp-sdk/4.5/api/classes/imfusion-seg-structure) exists
+- `labelIndex` — Storage value index in labelMap corresponding to this structure
+
+## Member Data Documentation
+
+### signalChanged
+
+```cpp
+Signal ImFusion::Seg::Structure::signalChanged
+```
+
+Signal emitted when any of the properties has changed.
+
+Will not trigger if the underlying label map or the mesh has changed.

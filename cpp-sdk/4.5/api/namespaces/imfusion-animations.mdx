@@ -1,0 +1,58 @@
+---
+title: "ImFusion::Animations"
+sidebarTitle: "Animations"
+description: "Animating objects within the ImFusion SDK."
+---
+
+## Overview
+
+Animating objects within the ImFusion SDK.
+
+**See also:** Animations
+
+## Classes
+
+- class [AnimationBackendQt](/cpp-sdk/4.5/api/classes/imfusion-animations-animationbackendqt) — Concrete implementation of [AnimationBackendBase](/cpp-sdk/4.5/api/classes/imfusion-animations-animationbackendbase) using the Qt event loop for dispatching the animation updates.
+- struct [UniqueId](/cpp-sdk/4.5/api/structs/imfusion-animations-uniqueid) — Helper struct to uniquely describe a type of annotation.
+- class [ScopedEnabler](/cpp-sdk/4.5/api/classes/imfusion-animations-scopedenabler) — A scope guard to set the globally available `enabled` property for animations.
+- class [Animation](/cpp-sdk/4.5/api/classes/imfusion-animations-animation) — Helper class to define an animation, that is an interpolated transition between two states.
+- class [AnimationBackendBase](/cpp-sdk/4.5/api/classes/imfusion-animations-animationbackendbase) — [Base](/cpp-sdk/4.5/api/structs/imfusion-dicom-base) interface for managing and dispatching animations.
+- class [AnimationBackendDummy](/cpp-sdk/4.5/api/classes/imfusion-animations-animationbackenddummy) — Dummy implementation of the [AnimationBackendBase](/cpp-sdk/4.5/api/classes/imfusion-animations-animationbackendbase) interface that will not execute any animation but only call its update() function exactly once with t=1.0.
+- class [BlendingAnimation](/cpp-sdk/4.5/api/classes/imfusion-animations-blendinganimation) — Animates the blendFactor of an [ImageView2D](/cpp-sdk/4.5/api/classes/imfusion-imageview2d).
+
+## Enumerations
+
+- enum class [EasingCurve](#easingcurve) &#123; Linear , InCubic , OutCubic , InOutCubic , Sinusoid &#125; — Enumeration of built-in easing curves describing the rate of change of the interpolation between 0.0 and 1.0.
+
+## Functions
+
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [AnimationBackendBase](/cpp-sdk/4.5/api/classes/imfusion-animations-animationbackendbase) &gt; setBackend ([std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [AnimationBackendBase](/cpp-sdk/4.5/api/classes/imfusion-animations-animationbackendbase) &gt; backend) — Install a global animation backend that is used by the set of free functions in this namespace.
+- void runAnimation ([std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [Animation](/cpp-sdk/4.5/api/classes/imfusion-animations-animation) &gt; animation, const [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [UniqueId](/cpp-sdk/4.5/api/structs/imfusion-animations-uniqueid) &gt; &uniqueId=std::nullopt) — Run the given animation on the globally installed backend.
+- [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [Animation](/cpp-sdk/4.5/api/classes/imfusion-animations-animation) &gt; runAnimation ([std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; void(double t)&gt; &&updateFunc, [std::chrono::milliseconds](http://en.cppreference.com/w/cpp/chrono/duration.html) duration=[std::chrono::milliseconds](http://en.cppreference.com/w/cpp/chrono/duration.html)(500), [EasingCurve](#easingcurve) easingCurve=EasingCurve::InOutCubic, const [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [UniqueId](/cpp-sdk/4.5/api/structs/imfusion-animations-uniqueid) &gt; &uniqueId=std::nullopt) — Create and run a one-shot animation with the given configuration on the globally installed backend.
+- [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [Animation](/cpp-sdk/4.5/api/classes/imfusion-animations-animation) &gt; runLoopedAnimation ([std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; void(double)&gt; &&updateFunc, [std::chrono::milliseconds](http://en.cppreference.com/w/cpp/chrono/duration.html) duration=[std::chrono::milliseconds](http://en.cppreference.com/w/cpp/chrono/duration.html)(500), [EasingCurve](#easingcurve) easingCurve=EasingCurve::InOutCubic, const [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [UniqueId](/cpp-sdk/4.5/api/structs/imfusion-animations-uniqueid) &gt; &uniqueId=std::nullopt) — Create and run a looped animation with the given configuration on the globally installed backend.
+- bool **animationsEnabled** () — Check whether the animations are globally enabled within the application.
+- void **enableAnimations** (bool enabled) — Globally enable or disable animations within the application.
+- double **animationDurationFactor** () — Returns the duration multiplier for run animations; enables you to change the speed of all animations consistently.
+- void **setAnimationDurationFactor** (double value) — Sets the duration multiplier for run animations, must be &gt;= 0; enables you to change the speed of all animations consistently.
+- void **cancelAnimation** (const [UniqueId](/cpp-sdk/4.5/api/structs/imfusion-animations-uniqueid) &id) — Cancels the animation with the given *id*.
+- void **cancelAllAnimations** () — Cancels all animations currently in flight.
+
+## Enumeration Type Documentation
+
+### EasingCurve
+
+```cpp
+enum class ImFusion::Animations::EasingCurve
+```
+
+*strong*
+
+Enumeration of built-in easing curves describing the rate of change of the interpolation between 0.0 and 1.0.
+
+**Enumerator:**
+
+- `Linear` — Constant velocity.
+- `InCubic` — Cubic function accelerating from zero velocity.
+- `OutCubic` — Cubic function decelerating to zero velocity.
+- `InOutCubic` — Cubic function accelerating from zero velocity until halfway, then decelerating to zero velocity.
+- `Sinusoid` — Sinusoid acceleration from zero velocity until halfway, then sinusoid deceleration to zero velocity.

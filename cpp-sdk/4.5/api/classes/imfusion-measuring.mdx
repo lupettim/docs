@@ -1,0 +1,88 @@
+---
+title: "ImFusion::Measuring"
+sidebarTitle: "Measuring"
+description: "Measure primitives from 2D and 3D volume."
+---
+
+`#include <ImFusion/Seg/Measuring.h>`
+
+## Overview
+
+Measure primitives from 2D and 3D volume.
+
+## Public Types
+
+- enum **Mode** &#123; **Rectangle** , **Cube** , **CircleGradientOut** , **CircleGradientIn** , **CircleGradientBoth** &#125; — [Status](/cpp-sdk/4.5/api/classes/imfusion-algorithm) codes.
+
+## Public Member Functions
+
+- **Measuring** ([SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*volume)
+- void **setContrast** (double v)
+- double **contrast** () const
+- void **setMode** (Measuring::Mode mode)
+- Mode **mode** () const
+- void **setInlierThreshold** (double threshold)
+- double **inlierThreshold** () const
+- void **setSlice** (int slice)
+- int **slice** () const
+- void **setShowGradientImage** (bool show)
+- bool **showGradientImage** () const
+- void **setInitialCircle** (const vec3 &center, double radius)
+- void [compute](#compute) () override — Execute the algorithm.
+- [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) [takeOutput](#takeoutput) () override — Return any new [Data](/cpp-sdk/4.5/api/classes/imfusion-data) that was created by the [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) during the last call to [compute()](#compute).
+- const [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \* **volume** () const
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; & **corners** () const
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; & **edgeSamples** () const
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; & **inliers** () const
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Set one or multiple properties.
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Retrieve the properties of this object.
+
+## Static Public Member Functions
+
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=0) — If data is compatible with algorithm return true. If a is not zero, create algorithm with input data.
+
+## Member Function Documentation
+
+### compute
+
+```cpp
+void ImFusion::Measuring::compute ()
+```
+
+*override, virtual*
+
+Execute the algorithm.
+
+### takeOutput
+
+```cpp
+OwningDataList ImFusion::Measuring::takeOutput ()
+```
+
+*override, virtual*
+
+Return any new [Data](/cpp-sdk/4.5/api/classes/imfusion-data) that was created by the [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) during the last call to [compute()](#compute).
+
+The default implementation will return an empty list.
+
+**Note:** Since ownership of the data is transferred, you can call this method only once between calls to [compute()](#compute).
+
+### configure
+
+```cpp
+void ImFusion::Measuring::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Set one or multiple properties.
+
+### configuration
+
+```cpp
+void ImFusion::Measuring::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Retrieve the properties of this object.

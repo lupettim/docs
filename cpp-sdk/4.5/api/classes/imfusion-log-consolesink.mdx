@@ -1,0 +1,78 @@
+---
+title: "ImFusion::Log::ConsoleSink"
+sidebarTitle: "ConsoleSink"
+description: "Default implementation for a Logger that prints to the attached console/terminal."
+---
+
+`#include <ImFusion/Core/Log/ConsoleSink.h>`
+
+## Overview
+
+Default implementation for a Logger that prints to the attached console/terminal.
+
+Color output supports both Windows and POSIX terminals.
+
+## Public Types
+
+- enum [Options](#options) &#123; None = 0 , UseColor = 1 &lt;&lt; 0 , Utf8ConsoleCodepage = 1 &lt;&lt; 1 , PrintSourceInfo = 1 &lt;&lt; 2 , PrintDateTime = 1 &lt;&lt; 3 &#125; — Configuration options.
+
+## Public Member Functions
+
+- **ConsoleSink** ([Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; [Options](#options) &gt; options=Options::None) — Instantiates a new ConsoleLogger with the given *options*.
+
+## Protected Member Functions
+
+- void [logImpl](#logimpl) (const [LogCapture](/cpp-sdk/4.5/api/structs/imfusion-log-sink-logcapture) &capture) override — Performs the actual logging of the given message.
+- void [flush](#flush) () override — Ensure that all log captures are fully committed/written.
+
+## Protected Attributes
+
+- bool **m_useColor** = false
+- bool **m_printSourceInfo** = false
+- bool **m_printDateTime** = false
+
+## Member Enumeration Documentation
+
+### Options
+
+```cpp
+enum ImFusion::Log::ConsoleSink::Options
+```
+
+Configuration options.
+
+**Enumerator:**
+
+- `None` — Default.
+- `UseColor` — Use colored console output.
+- `Utf8ConsoleCodepage` — Set console code page to UTF-8 (Windows only, ignored on Linux) [https://docs.microsoft.com/en-us/windows/console/setconsoleoutputcp](https://docs.microsoft.com/en-us/windows/console/setconsoleoutputcp).
+- `PrintSourceInfo` — Print information on origin of log event (source file + line).
+- `PrintDateTime` — Print date-time of logging event in current time zone.
+
+## Member Function Documentation
+
+### logImpl
+
+```cpp
+void ImFusion::Log::ConsoleSink::logImpl (const LogCapture & capture)
+```
+
+*override, protected, virtual*
+
+Performs the actual logging of the given message.
+
+Called by [log()](/cpp-sdk/4.5/api/classes/imfusion-log-sink) after filtering.
+
+**Parameters:**
+
+- `capture` — [Log](/cpp-sdk/4.5/api/namespaces/imfusion-log) capture
+
+### flush
+
+```cpp
+void ImFusion::Log::ConsoleSink::flush ()
+```
+
+*override, protected, virtual*
+
+Ensure that all log captures are fully committed/written.

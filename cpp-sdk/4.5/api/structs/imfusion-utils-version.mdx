@@ -1,0 +1,99 @@
+---
+title: "ImFusion::Utils::Version"
+sidebarTitle: "Version"
+description: "Utility class to work with version information following the SemVer format."
+---
+
+`#include <ImFusion/Core/Utils/Version.h>`
+
+## Overview
+
+Utility class to work with version information following the [SemVer](https://semver.org/) format.
+
+A valid version always contains of numeric major, minor, and patch components, as well as an optional suffix (called "pre-release version" in SemVer) and optional metadata component. In addition to storing the above-mentioned information this class offers member functions for semantic comparison, and conversion from/to strings. When represented as textual string they are written as &lt;major&gt;.&lt;minor&gt;.&lt;patch&gt;[-&lt;suffix&gt;][+&lt;metadata&gt;].
+
+**Note:** This class is modeled after the [SemVer](https://semver.org/) definition and implements the majority of its aspects. However, it does not promise to implement all of them. For instance:
+- the version 0.0.0 is considered valid
+- the logic for ordering suffixes is slightly simplified (no support for multiple fields delimited by .)
+- it does not constrain the allowed characters in the suffix and metadata components
+
+## Public Member Functions
+
+- [Version](#version) (int major=0, int minor=0, int patch=0, [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) suffix="", [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) metadata="") — Creates a new [Version](/cpp-sdk/4.5/api/structs/imfusion-utils-version) instance.
+- bool [isValid](#isvalid) () const noexcept — Return whether all version parts are &gt;= 0.
+- bool **isValidAndNotZero** () const noexcept — Return whether all version parts are &gt;= 0 and at least one of them is &gt; 0.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [toString](#tostring) () const — Format version as string &lt;major&gt;.
+
+## Static Public Member Functions
+
+- static [Version](#version) [fromString](#fromstring) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &versionString) — Parses version information from a string.
+
+## Public Attributes
+
+- int **major** = 0 — Major version component.
+- int **minor** = 0 — Minor version component.
+- int **patch** = 0 — Patch version component.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **suffix** — Optional suffix string indicating a pre-release.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **metadata** — Optional build metadata string to store additional information about the version.
+
+## Constructor & Destructor Documentation
+
+### Version
+
+```cpp
+ImFusion::Utils::Version::Version (int major = 0, int minor = 0, int patch = 0, std::string suffix = "", std::string metadata = "")
+```
+
+*inline*
+
+Creates a new [Version](/cpp-sdk/4.5/api/structs/imfusion-utils-version) instance.
+
+**Parameters:**
+
+- `major` — Major version component
+- `minor` — Minor version component
+- `patch` — Patch version component
+- `suffix` — Optional suffix string indicating a pre-release
+- `metadata` — Optional metadata string to store additional information about the version
+
+## Member Function Documentation
+
+### fromString
+
+```cpp
+Version ImFusion::Utils::Version::fromString (const std::string & versionString)
+```
+
+*static*
+
+Parses version information from a string.
+
+The string is expected to have the format &lt;major&gt;[.&lt;minor&gt;][.&lt;patch&gt;][-&lt;suffix&gt;][+&lt;metadata&gt;]. Absent components will have their default value (0 or empty string, respectively). Leading and trailing whitespace, as well as any other content after the parsed version string will be ignored.
+
+If parsing fails the returned [Version](/cpp-sdk/4.5/api/structs/imfusion-utils-version) will be invalid (i.e. components &lt; 0).
+
+**See also:** [toString()](#tostring)
+
+### isValid
+
+```cpp
+bool ImFusion::Utils::Version::isValid () const
+```
+
+*noexcept*
+
+Return whether all version parts are &gt;= 0.
+
+**See also:** isValidAndNotZero()
+
+### toString
+
+```cpp
+std::string ImFusion::Utils::Version::toString () const
+```
+
+Format version as string &lt;major&gt;.
+
+&lt;minor&gt;.&lt;patch&gt;[-&lt;suffix&gt;][+&lt;metadata&gt;] or invalid if it is not valid.
+
+**See also:** [fromString()](#fromstring)

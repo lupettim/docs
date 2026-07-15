@@ -1,0 +1,129 @@
+---
+title: "ImFusion::GL::ObjectPicking"
+sidebarTitle: "ObjectPicking"
+description: "Helper class to consolidate functionality for implementing object picking of rendered geometry."
+---
+
+`#include <ImFusion/Core/GL/ObjectPicking.h>`
+
+## Overview
+
+Helper class to consolidate functionality for implementing object picking of rendered geometry.
+
+The term "object picking" refers to the process of attaching an additional helper texture to the used FBO in which you can encode per-pixel object ownership information. Then, in the fragment shader in addition to the regular color output you write to this texture to encode the currently rendered object/element. The OpenGL rendering pipeline will use the same per-fragment processing for all attachments so that the picking texture is correctly filled wrt. the scissor, stencil, and depth tests. Finally, after the rendering you can use the picking texture to lookup the object identity for each pixel, for instance to determine on which object a user has clicked.
+
+[GL::ObjectPicking](/cpp-sdk/4.5/api/classes/imfusion-gl-objectpicking) implements this using a 2-channel texture to store picking information in terms of Object ID (to distinguish multiple objects rendered into the same scene) and [Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element) ID (to distinguish individual parts of a single rendered object):
+
+- The Object ID is managed by the [ObjectPicking](/cpp-sdk/4.5/api/classes/imfusion-gl-objectpicking) instance: all known objects must first be registered either during [reset()](#reset) or using registerObject(). This will generate a unique ID for each object so that it can be assigned automatically inside the picking shader include.
+- In contrast, the [Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element) ID is managed by the user and has to be passed to the shader manually. Depending on the use case you can decide if you use a constant ID for the entire object or if you need to distinguish different parts within one object (e.g. faces of a mesh).
+
+Multiple actors collaborate in order to implement the functionality:
+
+1. An entity that hosts and manages the [GL::ObjectPicking](/cpp-sdk/4.5/api/classes/imfusion-gl-objectpicking) instance. At the beginning of the render loop this entity must reset/initialize the data structure by calling [reset()](#reset).
+2. Every entity that wants to store picking information needs to include the [ObjectPicking](/cpp-sdk/4.5/api/classes/imfusion-gl-objectpicking) shader include and then call picking_writeIndex(uint elementId):
+  ```cpp
+  #pragma include "ImFusionGL/ObjectPicking.glh"
+
+  uint elementId = [...];
+  picking_writeIndex(elementId);
+  ```
+   fragment  On the client side, you must setup your shader so that it has access to the object picking data structures. Therefore, call [enable()](#enable-1-2) after enabling your shader and before rendering any geometry.
+3. If an entity has finished rendering picking information and a subsequent render call does not write picking information, you must call disable(). Otherwise, your GPU might write random data into the picking buffer later.
+4. After all geometry has been rendered you can access the [ObjectPicking](/cpp-sdk/4.5/api/classes/imfusion-gl-objectpicking) instance and query the picking info for the pixels of your choice.
+
+In the ImFusion view framework, step 1 will be implemented for instance by a [GlVolumeView](/cpp-sdk/4.5/api/classes/imfusion-glvolumeview). Step 2 is implemented by selected [GlObjects](/cpp-sdk/4.5/api/classes/imfusion-globject). Since the [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) is passed to void [GlObject::draw()](/cpp-sdk/4.5/api/classes/imfusion-globject) it can access the view's [ObjectPicking](/cpp-sdk/4.5/api/classes/imfusion-gl-objectpicking) instance in order to support writing picking info.
+
+**Note:** [GL::ObjectPicking](/cpp-sdk/4.5/api/classes/imfusion-gl-objectpicking) will always use framebuffer attachment/output location 1 for writing picking information. Unfortunately, there is no viable way to provide a customization point for this. Thus, users of this class and its shader include must not use that attachment point themselves.
+
+**Warning:** Due to the nature of its implementation [GL::ObjectPicking](/cpp-sdk/4.5/api/classes/imfusion-gl-objectpicking) does not work with deferred rendering/compositing techniques and can therefore for instance not be combined with [GL::OrderIndependentTransparency](/cpp-sdk/4.5/api/classes/imfusion-gl-orderindependenttransparency).
+
+## Classes
+
+- struct [PickingInfo](/cpp-sdk/4.5/api/structs/imfusion-gl-objectpicking-pickinginfo) — Structure encoding picking information for a single pixel.
+
+## Public Member Functions
+
+- void [reset](#reset) ([GL::Framebuffer](/cpp-sdk/4.5/api/classes/imfusion-gl-framebuffer) &fbo, vec2i viewportSize, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; const void \* &gt; knownObjects) — Initializes and resets object picking data structures.
+- void **registerObject** (const void \*object) — Register an object instance so that it receives its own unique ID and is known to the picking backend.
+- void [enable](#enable-1-2) ([GL::Program](/cpp-sdk/4.5/api/classes/imfusion-gl-program) &program, const void \*object) const — Bind all object picking structures to the given shader so that you can use the shader include.
+- void [enable](#enable-2-2) ([GL::Program](/cpp-sdk/4.5/api/classes/imfusion-gl-program) &program, uint32_t objectId) const — Bind all object picking structures to the given shader so that you can use the shader include.
+- void **disable** () const — Disable object picking by detaching the picking texture from the FBO passed during [reset()](#reset) and issuing a glDrawBuffers() call.
+- uint32_t **objectId** (const void \*object) const — Return the object ID for the given void. Unknown objects have an ID of 0xFFFFFFFF.
+- const void \* **objectWithId** (uint32_t id) const — Return void for the given ID. Returns nullptr for unknown id.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [PickingInfo](/cpp-sdk/4.5/api/structs/imfusion-gl-objectpicking-pickinginfo) &gt; [getPickingInfo](#getpickinginfo) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec2i &gt; &pixels, const void \*object=nullptr) const — Return the picking information for the given pixels with optional filtering.
+- const [Texture](/cpp-sdk/4.5/api/classes/imfusion-gl-texture) \* [pickingTexture](#pickingtexture) () const — Getter for m_pickingTexture.
+
+## Member Function Documentation
+
+### reset
+
+```cpp
+void ImFusion::GL::ObjectPicking::reset (GL::Framebuffer & fbo, vec2i viewportSize, std::vector < const void * > knownObjects)
+```
+
+Initializes and resets object picking data structures.
+
+This function must be called every time at the beginning of the render loop.
+
+**Parameters:**
+
+- `fbo` — [Framebuffer](/cpp-sdk/4.5/api/classes/imfusion-gl-framebuffer) object to attach the picking texture to. [ObjectPicking](/cpp-sdk/4.5/api/classes/imfusion-gl-objectpicking) will keep a reference to it and use it during [enable()](#enable-1-2)/disable().
+- `viewportSize` — [Viewport](/cpp-sdk/4.5/api/structs/imfusion-gl-viewport) size in pixels
+- `knownObjects` — Set of all objects that are known to render, used to assign unique object ids. If you don't know all object yet you can later call registerObject().
+
+### enable
+
+```cpp
+void ImFusion::GL::ObjectPicking::enable (GL::Program & program, const void * object) const
+```
+
+Bind all object picking structures to the given shader so that you can use the shader include.
+
+**Note:** This function attaches the picking texture to the FBO passed during [reset()](#reset) and issues a glDrawBuffers() call.
+
+**Parameters:**
+
+- `program` — Shader to prepare for writing object picking info.
+- `object` — Pointer to the object that the shader belongs to, will use objectId() to generate the ID for it.
+
+### enable
+
+```cpp
+void ImFusion::GL::ObjectPicking::enable (GL::Program & program, uint32_t objectId) const
+```
+
+Bind all object picking structures to the given shader so that you can use the shader include.
+
+This overload lets the user choose an arbitrary ID to be written. For objects that were registered during [reset()](#reset) or with registerObject() it can be used in connection with objectId() to get a valid ID. Otherwise the user has to track the used IDs and map the return value of [getPickingInfo()](#getpickinginfo) themselves.
+
+**Warning:** No measures are taken to assert uniqueness of the given *objectId*.
+
+**Note:** This function attaches the picking texture to the FBO passed during [reset()](#reset) and issues a glDrawBuffers() call.
+
+**Parameters:**
+
+- `program` — Shader to prepare for writing object picking info.
+- `objectId` — A numeric ID used for rendering this object
+
+### getPickingInfo
+
+```cpp
+std::vector < PickingInfo > ImFusion::GL::ObjectPicking::getPickingInfo (const std::vector < vec2i > & pixels, const void * object = nullptr) const
+```
+
+Return the picking information for the given pixels with optional filtering.
+
+**Parameters:**
+
+- `pixels` — Set of pixels to query picking information for.
+- `object` — Optional object to filter picking information for; no filtering will be performed if this is null.
+
+### pickingTexture
+
+```cpp
+const Texture * ImFusion::GL::ObjectPicking::pickingTexture () const
+```
+
+Getter for m_pickingTexture.
+
+**Warning:** Use with care as the internal format of the texture may be changed at any time.

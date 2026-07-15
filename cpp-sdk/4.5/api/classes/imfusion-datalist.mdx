@@ -1,0 +1,166 @@
+---
+title: "ImFusion::DataList"
+sidebarTitle: "DataList"
+description: "Container for any number of Data instances such as image or meshes."
+---
+
+`#include <ImFusion/Base/DataList.h>`
+
+## Overview
+
+Container for any number of [Data](/cpp-sdk/4.5/api/classes/imfusion-data) instances such as image or meshes.
+
+The [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) is merely a wrapper around a [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt;Data\*&gt; that provides various convenience functions to query certain types of [Data](/cpp-sdk/4.5/api/classes/imfusion-data). In particular, [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) will **not** take any ownership of its contents. Use [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) to model ownership of the underlying data.
+
+It is safe to access and modify the underlying container directly (e.g. if you want to apply STL algorithms on it).
+
+**See also:** [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist)
+
+**Examples:** [ExampleAlgorithm.cpp](/cpp-sdk/4.5/api/examples/example-algorithm-8cpp), [ExampleAlgorithm.h](/cpp-sdk/4.5/api/examples/example-algorithm-8h), [SqrtAlgorithm.cpp](/cpp-sdk/4.5/api/examples/sqrt-algorithm-8cpp), and [SqrtAlgorithm.h](/cpp-sdk/4.5/api/examples/sqrt-algorithm-8h).
+
+## Public Member Functions
+
+- **DataList** () — Default Constructor to create an empty list.
+- **DataList** ([std::initializer_list](http://en.cppreference.com/w/cpp/utility/initializer_list.html)&lt; [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \* &gt; l) — Constructor with a set of data.
+- [DataList](#datalist) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; T \* &gt; &data) — Constructor from a vector of data.
+- **DataList** (const DataList &)=default
+- DataList & **operator=** (const DataList &)=default
+- **DataList** (DataList &&) noexcept=default
+- DataList & **operator=** (DataList &&) noexcept=default
+- int **size** () const — Return the size of the list.
+- bool **isEmpty** () const — Return whether this list is empty.
+- int **indexOf** (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data) const — Returns the index of *data* within the list or -1 if it is not present.
+- void **clear** () — Clear all data.
+- bool **contains** (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data) const — Returns true when data is part of data list.
+- bool **operator==** (const DataList &other) const — Returns true if the both [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) have the same elements in the same order, false otherwise.
+- bool **operator!=** (const DataList &other) const — Returns false if the both [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) have the same elements in the same order, true otherwise.
+
+## Modifying a DataList
+
+- void **add** ([Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data) — Add data to the list.
+- void **add** (const DataList &dataList)
+- void **remove** (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data) — Remove data from the list.
+
+## Retrieving items from a DataList
+
+- [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \* **operator[]** (int idx) const — Array access; returns the data located in the underlying vector at the given index.
+- [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \* **getItem** (int which) const — Return data item via list index.
+- [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \* [getFirst](#getfirst-1-2) ([Data::Kind](/cpp-sdk/4.5/api/classes/imfusion-data) kind=[Data::UNKNOWN](/cpp-sdk/4.5/api/classes/imfusion-data)) const — Return the first [Data](/cpp-sdk/4.5/api/classes/imfusion-data) instance of the given kind.
+- T \* [getFirst](#getfirst-2-2) ([Data::Kind](/cpp-sdk/4.5/api/classes/imfusion-data) kind=[Data::UNKNOWN](/cpp-sdk/4.5/api/classes/imfusion-data)) const — Return the first [Data](/cpp-sdk/4.5/api/classes/imfusion-data) instance of the given type and kind.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \* &gt; [getAll](#getall-1-2) ([Data::Kind](/cpp-sdk/4.5/api/classes/imfusion-data) kind=[Data::UNKNOWN](/cpp-sdk/4.5/api/classes/imfusion-data)) const — Retrieve all [Data](/cpp-sdk/4.5/api/classes/imfusion-data) instances of given kind.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; T \* &gt; [getAll](#getall-2-2) ([Data::Kind](/cpp-sdk/4.5/api/classes/imfusion-data) kind=[Data::UNKNOWN](/cpp-sdk/4.5/api/classes/imfusion-data)) const — Retrieve all [Data](/cpp-sdk/4.5/api/classes/imfusion-data) instances of given type and kind.
+- [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* **getImage** ([Data::Kind](/cpp-sdk/4.5/api/classes/imfusion-data) kind=[Data::UNKNOWN](/cpp-sdk/4.5/api/classes/imfusion-data), [Data::Modality](/cpp-sdk/4.5/api/classes/imfusion-data) modality=[Data::NA](/cpp-sdk/4.5/api/classes/imfusion-data)) const — Return first image data with the requested properties [Data::UNKNOWN](/cpp-sdk/4.5/api/classes/imfusion-data) will match all kinds and [Data::NA](/cpp-sdk/4.5/api/classes/imfusion-data) will match all modalities.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* &gt; **getImages** ([Data::Kind](/cpp-sdk/4.5/api/classes/imfusion-data) kind=[Data::UNKNOWN](/cpp-sdk/4.5/api/classes/imfusion-data), [Data::Modality](/cpp-sdk/4.5/api/classes/imfusion-data) modality=[Data::NA](/cpp-sdk/4.5/api/classes/imfusion-data)) const — Return all image data sets with the requested properties [Data::UNKNOWN](/cpp-sdk/4.5/api/classes/imfusion-data) will match all kinds and [Data::NA](/cpp-sdk/4.5/api/classes/imfusion-data) will match all modalities.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [PointCloud](/cpp-sdk/4.5/api/classes/imfusion-pointcloud) \* &gt; [getPointClouds](#getpointclouds) () const — Return all point clouds data.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) \* &gt; [getSurfaces](#getsurfaces) () const — Return all surfaces data.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [TrackingSequence](/cpp-sdk/4.5/api/classes/imfusion-trackingsequence) \* &gt; [getTrackingSequences](#gettrackingsequences) () const — Return all tracking sequences.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Tree](/cpp-sdk/4.5/api/classes/imfusion-tree) \* &gt; [getTrees](#gettrees) () const — Return all trees data.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \* &gt; **getAnnotationData** () const — Return all entries which have an associated annotation ([Data::isAnnotationType()](/cpp-sdk/4.5/api/classes/imfusion-data) is true).
+
+## Access to the underlying std::vector holding the data.
+
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \* &gt; & **container** () — Return the underlying [std::vector](http://en.cppreference.com/w/cpp/container/vector.html).
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \* &gt; & **container** () const — Return the underlying [std::vector](http://en.cppreference.com/w/cpp/container/vector.html).
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \* &gt;::const_iterator **begin** () const — Const iterators to the underlying datasets.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \* &gt;::const_iterator **end** () const
+
+## Constructor & Destructor Documentation
+
+### DataList
+
+```cpp
+template<typename T> ImFusion::DataList::DataList (const std::vector < T * > & data)
+```
+
+Constructor from a vector of data.
+
+**Note:** This constructor is deliberately implicit to allow for easy assignment of [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) queries (i.e. get-accessors) to DataLists. For instance, you can write dataList2 = dataList1.getAll&lt;[SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset)&gt;(); to filter all SharedImageSets from dataList1 and assign them to dataList2.
+
+**Template Parameters:** | T | [Data](/cpp-sdk/4.5/api/classes/imfusion-data) type stored in the vector, must inherit from [Data](/cpp-sdk/4.5/api/classes/imfusion-data). |
+| --- | --- |
+
+## Member Function Documentation
+
+### getFirst
+
+```cpp
+Data * ImFusion::DataList::getFirst (Data::Kind kind = Data::UNKNOWN) const
+```
+
+Return the first [Data](/cpp-sdk/4.5/api/classes/imfusion-data) instance of the given kind.
+
+[Data::UNKNOWN](/cpp-sdk/4.5/api/classes/imfusion-data) will match all kinds.
+
+**Note:** This is a shortcut for [getFirst](#getfirst-1-2)&lt;[Data](/cpp-sdk/4.5/api/classes/imfusion-data)&gt;(kind).
+
+### getFirst
+
+```cpp
+template<typename T> T * ImFusion::DataList::getFirst (Data::Kind kind = Data::UNKNOWN) const
+```
+
+Return the first [Data](/cpp-sdk/4.5/api/classes/imfusion-data) instance of the given type and kind.
+
+[Data::UNKNOWN](/cpp-sdk/4.5/api/classes/imfusion-data) will match all kinds.
+
+### getAll
+
+```cpp
+std::vector < Data * > ImFusion::DataList::getAll (Data::Kind kind = Data::UNKNOWN) const
+```
+
+Retrieve all [Data](/cpp-sdk/4.5/api/classes/imfusion-data) instances of given kind.
+
+[Data::UNKNOWN](/cpp-sdk/4.5/api/classes/imfusion-data) will match all kinds.
+
+**Note:** This is a shortcut for [getAll](#getall-1-2)&lt;[Data](/cpp-sdk/4.5/api/classes/imfusion-data)&gt;(kind).
+
+### getAll
+
+```cpp
+template<typename T> std::vector < T * > ImFusion::DataList::getAll (Data::Kind kind = Data::UNKNOWN) const
+```
+
+Retrieve all [Data](/cpp-sdk/4.5/api/classes/imfusion-data) instances of given type and kind.
+
+[Data::UNKNOWN](/cpp-sdk/4.5/api/classes/imfusion-data) will match all kinds.
+
+### getPointClouds
+
+```cpp
+std::vector < PointCloud * > ImFusion::DataList::getPointClouds () const
+```
+
+Return all point clouds data.
+
+**Note:** This is a shortcut for [getAll](#getall-1-2)&lt;[PointCloud](/cpp-sdk/4.5/api/classes/imfusion-pointcloud)&gt;([Data::POINTSET](/cpp-sdk/4.5/api/classes/imfusion-data)).
+
+### getSurfaces
+
+```cpp
+std::vector < Mesh * > ImFusion::DataList::getSurfaces () const
+```
+
+Return all surfaces data.
+
+**Note:** This is a shortcut for [getAll](#getall-1-2)&lt;[Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh)&gt;([Data::SURFACE](/cpp-sdk/4.5/api/classes/imfusion-data)).
+
+### getTrackingSequences
+
+```cpp
+std::vector < TrackingSequence * > ImFusion::DataList::getTrackingSequences () const
+```
+
+Return all tracking sequences.
+
+**Note:** This is a shortcut for [getAll](#getall-1-2)&lt;[TrackingSequence](/cpp-sdk/4.5/api/classes/imfusion-trackingsequence)&gt;([Data::TRACKINGDATA](/cpp-sdk/4.5/api/classes/imfusion-data)).
+
+### getTrees
+
+```cpp
+std::vector < Tree * > ImFusion::DataList::getTrees () const
+```
+
+Return all trees data.
+
+**Note:** This is a shortcut for [getAll](#getall-1-2)&lt;[Tree](/cpp-sdk/4.5/api/classes/imfusion-tree)&gt;([Data::TREE](/cpp-sdk/4.5/api/classes/imfusion-data)).

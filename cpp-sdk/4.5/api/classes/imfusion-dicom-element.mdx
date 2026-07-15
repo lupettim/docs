@@ -1,0 +1,140 @@
+---
+title: "ImFusion::Dicom::Element< T >"
+sidebarTitle: "Element< T >"
+description: "Dicom Element with a concrete value type."
+---
+
+`#include <ImFusion/Dicom/DicomElement.h>`
+
+## Overview
+
+template&lt;typename T&gt;
+
+class ImFusion::Dicom::Element&lt; T &gt;
+[Dicom](/cpp-sdk/4.5/api/namespaces/imfusion-dicom)[Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element) with a concrete value type.
+
+Currently the following template specializations are implemented:
+
+- [Data::Modality](/cpp-sdk/4.5/api/classes/imfusion-data)
+- Dicom::PhotometricInterpretation bool
+- int
+- double
+- vec2
+- [std::vector&lt;int&gt;](http://en.cppreference.com/w/cpp/container/vector.html)
+- [std::vector&lt;double&gt;](http://en.cppreference.com/w/cpp/container/vector.html)
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html)
+- QString
+
+```cpp
+DcmDataset& dataset = ...
+Dicom::Element<int> rowsEl(dataset, DCM_Rows);
+int rows = rowsEl.value(0);
+
+Dicom::Element<std::string> modalityEl(dataset, DCM_Modality);
+try {
+ std::string modality = modality.value();
+} catch (const Dicom::value_error&) {
+ LOG_ERROR("Modality is missing or has invalid value");
+}
+
+Dicom::Element<std::vector<double>> privateEl(dataset, DcmTag(DcmTagKey(0x2000, 0x5000), EVR_UL));
+std::vector<double> something = privateEl.value({0.0, 1.0});
+```
+ fragment
+
+**Examples:** [DicomExtensionExample2.cpp](/cpp-sdk/4.5/api/examples/dicom-extension2-8cpp).
+
+## Public Member Functions
+
+- [Element](#element-1-2) ([ElementList](/cpp-sdk/4.5/api/classes/imfusion-dicom-elementlist) &module, DcmTag [tag](/cpp-sdk/4.5/api/classes/imfusion-dicom-elementbase), [Type](/cpp-sdk/4.5/api/classes/imfusion-dicom-elementbase) type=[ElementBase::Conditional](/cpp-sdk/4.5/api/classes/imfusion-dicom-elementbase), bool searchIntoSubs=false) — Creates a new [Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element) instance, to be used from a [Module](/cpp-sdk/4.5/api/classes/imfusion-dicom-module) (or other [ElementList](/cpp-sdk/4.5/api/classes/imfusion-dicom-elementlist) as parent).
+- [Element](#element-2-2) (DcmItem &item, DcmTag [tag](/cpp-sdk/4.5/api/classes/imfusion-dicom-elementbase), [Type](/cpp-sdk/4.5/api/classes/imfusion-dicom-elementbase) type=[ElementBase::Conditional](/cpp-sdk/4.5/api/classes/imfusion-dicom-elementbase), bool searchIntoSubs=false) — Creates a new [Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element) instance, to be used from anywhere which is not a [ElementList](/cpp-sdk/4.5/api/classes/imfusion-dicom-elementlist).
+- T [value](#value-1-2) () const — Retrieves the value from the dataset.
+- T [value](#value-2-2) (const T &defaultValue) const — Tries retrieving the value from the dataset.
+- void [setValue](#setvalue) (T [value](#value-1-2)) — Sets the value in the dataset.
+- void [setValidator](#setvalidator) ([std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; bool(const T &)&gt; [isValid](#isvalid)) — Assigns an optional callback function to determine if the element's value is valid in the current context.
+- bool [isValid](#isvalid) () const override — Returns whether the element contains valid data (wrt. to the set validator).
+- void **insertEmptyElement** () — Inserts an empty element, forcing the tag to be written into the dataset.
+
+## Constructor & Destructor Documentation
+
+### Element
+
+```cpp
+template<typename T> ImFusion::Dicom::Element < T >::Element (ElementList & module, DcmTag tag, Type type = ElementBase::Conditional, bool searchIntoSubs = false)
+```
+
+Creates a new [Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element) instance, to be used from a [Module](/cpp-sdk/4.5/api/classes/imfusion-dicom-module) (or other [ElementList](/cpp-sdk/4.5/api/classes/imfusion-dicom-elementlist) as parent).
+
+**Parameters:**
+
+- `module` — Parent Module/ElementList holding this element.
+- `tag` — DICOM tag the [Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element) refers to.
+- `type` — Conditionality of the [Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element).
+- `searchIntoSubs` — Flag whether to search into sub sequences or not.
+
+### Element
+
+```cpp
+template<typename T> ImFusion::Dicom::Element < T >::Element (DcmItem & item, DcmTag tag, Type type = ElementBase::Conditional, bool searchIntoSubs = false)
+```
+
+Creates a new [Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element) instance, to be used from anywhere which is not a [ElementList](/cpp-sdk/4.5/api/classes/imfusion-dicom-elementlist).
+
+**Parameters:**
+
+- `item` — DICOM data set/parent item to retrieve element data from.
+- `tag` — DICOM tag the [Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element) refers to.
+- `type` — Conditionality of the [Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element).
+- `searchIntoSubs` — Flag whether to search into sub sequences or not.
+
+## Member Function Documentation
+
+### value
+
+```cpp
+template<typename T> T ImFusion::Dicom::Element < T >::value () const
+```
+
+Retrieves the value from the dataset.
+
+Throws a [value_error](/cpp-sdk/4.5/api/classes/imfusion-dicom-value-error) if the value could not be retrieved from the dataset (e.g. when it does not exist).
+
+### value
+
+```cpp
+template<typename T> T ImFusion::Dicom::Element < T >::value (const T & defaultValue) const
+```
+
+Tries retrieving the value from the dataset.
+
+In contrast to the [value()](#value-1-2) overload, this method returns *defaultValue* instead of throwing an exception if the value could not be retrieved from the dataset (e.g. when it does not exist).
+
+### setValue
+
+```cpp
+template<typename T> void ImFusion::Dicom::Element < T >::setValue (T value)
+```
+
+Sets the value in the dataset.
+
+Overrides existing values or creates new element in dataset otherwise.
+
+### setValidator
+
+```cpp
+template<typename T> void ImFusion::Dicom::Element < T >::setValidator (std::function < bool(const T &)> isValid)
+```
+
+Assigns an optional callback function to determine if the element's value is valid in the current context.
+
+The default validator (nullptr) always returns true (i.e. element is always valid).
+
+### isValid
+
+```cpp
+template<typename T> bool ImFusion::Dicom::Element < T >::isValid () const
+```
+
+*override, virtual*
+
+Returns whether the element contains valid data (wrt. to the set validator).

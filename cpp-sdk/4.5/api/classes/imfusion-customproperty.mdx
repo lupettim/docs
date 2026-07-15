@@ -1,0 +1,52 @@
+---
+title: "ImFusion::CustomProperty< T >"
+sidebarTitle: "CustomProperty< T >"
+description: "Interface for a custom typed property, allowing access to the values at individual elements."
+---
+
+`#include <ImFusion/Mesh/MeshCustomProperties.h>`
+
+## Overview
+
+template&lt;typename T&gt;
+
+class ImFusion::CustomProperty&lt; T &gt;
+Interface for a custom typed property, allowing access to the values at individual elements.
+
+## Public Member Functions
+
+- [CustomPropertyElement](/cpp-sdk/4.5/api/classes/imfusion-custompropertyelement)&lt; T &gt; & **operator[]** (size_t idx) — Typed access to the property of vertex idx.
+- const [CustomPropertyElement](/cpp-sdk/4.5/api/classes/imfusion-custompropertyelement)&lt; T &gt; & **operator[]** (size_t idx) const
+- [CustomPropertyElementBase](/cpp-sdk/4.5/api/classes/imfusion-custompropertyelementbase) & [element](#element) (size_t idx) const override — Untyped access to the property of vertex idx.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [name](#name) () const override — Returns name that uniquely identifies the property on this mesh.
+
+## Protected Member Functions
+
+- **CustomProperty** ([std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [CustomPropertyElement](/cpp-sdk/4.5/api/classes/imfusion-custompropertyelement)&lt; T &gt; &gt; &data, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &[name](#name))
+
+## Protected Attributes
+
+- [CustomPropertyDescriptor](/cpp-sdk/4.5/api/structs/imfusion-custompropertydescriptor)&lt; T &gt; **m_descriptor**
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [CustomPropertyElement](/cpp-sdk/4.5/api/classes/imfusion-custompropertyelement)&lt; T &gt; &gt; & **m_data**
+
+## Member Function Documentation
+
+### element
+
+```cpp
+template<typename T> CustomPropertyElementBase & ImFusion::CustomProperty < T >::element (size_t idx) const
+```
+
+*override, virtual*
+
+Untyped access to the property of vertex idx.
+
+### name
+
+```cpp
+template<typename T> std::string ImFusion::CustomProperty < T >::name () const
+```
+
+*override, virtual*
+
+Returns name that uniquely identifies the property on this mesh.

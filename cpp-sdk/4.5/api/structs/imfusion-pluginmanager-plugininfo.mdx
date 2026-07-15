@@ -1,0 +1,20 @@
+---
+title: "ImFusion::PluginManager::PluginInfo"
+sidebarTitle: "PluginInfo"
+description: "Record collecting metadata about registered plugins."
+---
+
+`#include <ImFusion/Core/PluginManager.h>`
+
+## Overview
+
+Record collecting metadata about registered plugins.
+
+## Public Attributes
+
+- [PluginStatus](/cpp-sdk/4.5/api/classes/imfusion-pluginmanager) **status** = [PluginStatus::Unknown](/cpp-sdk/4.5/api/classes/imfusion-pluginmanager) — [Status](/cpp-sdk/4.5/api/classes/imfusion-pluginmanager) of the plugin.
+- [Filesystem::Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path) **filename** — Filename of the corresponding shared library.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **pluginId** — Unique plugin ID.
+- [Utils::Version](/cpp-sdk/4.5/api/structs/imfusion-utils-version) **pluginVersion** — Version of the plugin (0.0.0 if plugin does not have a dedicated version).
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [Platform::DynamicLib](/cpp-sdk/4.5/api/classes/imfusion-platform-dynamiclib) &gt; **library** — Handle to shared library to keep it in process memory.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [PluginBase](/cpp-sdk/4.5/api/classes/imfusion-pluginbase) &gt; **instance** — Instance of the plugin base interface.

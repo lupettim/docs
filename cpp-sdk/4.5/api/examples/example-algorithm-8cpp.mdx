@@ -1,0 +1,86 @@
+---
+title: "ExampleAlgorithm.cpp"
+---
+
+```cpp
+#include "ExampleAlgorithm.h"
+
+using namespace ImFusion;
+
+ExampleAlgorithm::ExampleAlgorithm(SharedImageSet* image)
+    : m_image(image)
+    , m_output(nullptr)
+{
+    configureDefaults();    // Initializes the algorithm with default values in configuration
+}
+
+ExampleAlgorithm::~ExampleAlgorithm() = default;
+
+bool ExampleAlgorithm::createCompatible(const DataList& data, Algorithm** a)
+{
+ // Algorithm only supports 1 input
+ if (data.size() == 1)
+    {
+ // Check if the data is a 2D image
+ if (data[0]->kind() == Data::IMAGE)
+        {
+ // All 2D images are SharedImageSet objects
+ SharedImageSet* img = dynamic_cast<SharedImageSet*>(data[0]);
+ if (img)    // Only allow valid 2D images
+            {
+ // If pointer is provided, create a new instance
+ if (a)
+                    *a = new ExampleAlgorithm(img);
+ return true;
+            }
+        }
+    }
+ return false;
+}
+
+void ExampleAlgorithm::compute()
+{
+    m_output = std::make_unique<SharedImageSet>();
+ //... Add actual image data to m_output
+}
+
+OwningDataList ExampleAlgorithm::takeOutput()
+{
+ // Transfer the algorithm output to the caller
+ OwningDataList result;
+    result.add(std::move(m_output));
+ return result;
+}
+
+void ExampleAlgorithm::configure(const Properties* p)
+{
+ if (!p)
+ return;
+ // Make sure Configuration::configure is called so all members of type Parameter are
+ // automatically deserialized.
+ Algorithm::configure(p);
+
+ // Parameters can have any name and can be accessed in any order
+    p->param("paramVec", m_paramVec);
+    p->param("firstParameter", m_paramDouble);
+
+ // Only update the parameters but try to keep additional computation to a minimum
+}
+
+void ExampleAlgorithm::configuration(Properties* p) const
+{
+ if (!p)
+ return;
+ // Make sure Configuration::configuration is called so all members of type Parameter are
+ // automatically serialized.
+ Algorithm::configuration(p);
+
+ // Use the same names in both configure and configuration
+    p->setParam("firstParameter", m_paramDouble);
+ // Parameters can have default values
+    p->setParam("paramVec", m_paramVec, vec2(1, 0));
+
+ // Don't save Data, e.g. m_image, in the configuration
+}
+```
+ fragment

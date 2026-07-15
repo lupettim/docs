@@ -1,0 +1,94 @@
+---
+title: "ImFusion::GL"
+sidebarTitle: "GL"
+description: "Low-level OpenGL Wrappers."
+---
+
+## Overview
+
+Low-level OpenGL Wrappers.
+
+**See also:** ImFusionGL
+
+## Namespaces
+
+- namespace [Debug](/cpp-sdk/4.5/api/namespaces/imfusion-gl-debug) — The [GL::Debug](/cpp-sdk/4.5/api/namespaces/imfusion-gl-debug) namespace contains functions and class to help with debugging OpenGL calls.
+
+## Classes
+
+- class [AbstractInclude](/cpp-sdk/4.5/api/classes/imfusion-gl-abstractinclude) — [Base](/cpp-sdk/4.5/api/structs/imfusion-dicom-base) class for abstract GLSL includes.
+- class [Blending](/cpp-sdk/4.5/api/classes/imfusion-gl-blending) — Helper class to configure the OpenGL blending stage.
+- class [Buffer](/cpp-sdk/4.5/api/classes/imfusion-gl-buffer) — Wrapper class for OpenGL [Buffer](/cpp-sdk/4.5/api/classes/imfusion-gl-buffer) Objects.
+- class [OpenGLNotFoundException](/cpp-sdk/4.5/api/classes/imfusion-gl-openglnotfoundexception) — Specialization of [std::runtime_error](http://en.cppreference.com/w/cpp/error/runtime_error.html) indicating that OpenGL was not able to initialize correctly.
+- class [Context](/cpp-sdk/4.5/api/classes/imfusion-gl-context) — [Base](/cpp-sdk/4.5/api/structs/imfusion-dicom-base) class for low-level OpenGL context handling within the ImFusion SDK.
+- class [ContextManager](/cpp-sdk/4.5/api/classes/imfusion-gl-contextmanager) — [Singleton](/cpp-sdk/4.5/api/classes/imfusion-singleton) class to manage access to OpenGL contexts.
+- class [FixedFunctionPipeline](/cpp-sdk/4.5/api/classes/imfusion-gl-fixedfunctionpipeline) — Convenience class for a shader implementing a basic fixed function rendering pipeline.
+- class [Framebuffer](/cpp-sdk/4.5/api/classes/imfusion-gl-framebuffer) — Wrapper class for OpenGL Framebuffer Objects (FBO).
+- class [FullscreenSquare](/cpp-sdk/4.5/api/classes/imfusion-gl-fullscreensquare) — Helper class to easily render a full-screen quad.
+- class [ImageProgram](/cpp-sdk/4.5/api/classes/imfusion-gl-imageprogram) — Convenience class to execute a GLSL fragment shader on an image or volume.
+- class [IndexBuffer](/cpp-sdk/4.5/api/classes/imfusion-gl-indexbuffer) — Specialization of [Buffer](/cpp-sdk/4.5/api/classes/imfusion-gl-buffer) to store vertex index data (GL_ELEMENT_ARRAY_BUFFER).
+- class [InstanceManagerBase](/cpp-sdk/4.5/api/classes/imfusion-gl-instancemanagerbase) — [Base](/cpp-sdk/4.5/api/structs/imfusion-dicom-base) class for context-aware caching of OpenGL object instances.
+- class [InstanceManager](/cpp-sdk/4.5/api/classes/imfusion-gl-instancemanager) — Concrete CRTP class for context-aware caching of OpenGL object instances.
+- class [InternalFormat](/cpp-sdk/4.5/api/classes/imfusion-gl-internalformat) — Describes an internal texture format that you can request from OpenGL.
+- class [LineRenderer](/cpp-sdk/4.5/api/classes/imfusion-gl-linerenderer) — Convenience class for a shader implementing thick and stippled line rendering.
+- class [MultiAbstractInclude](/cpp-sdk/4.5/api/classes/imfusion-gl-multiabstractinclude) — Concrete type for an instance of a Multi-AbstractInclude.
+- class [MultiIncludable](/cpp-sdk/4.5/api/classes/imfusion-gl-multiincludable) — Multi-AbstractIncludes allow for using multiple instances of the same [AbstractInclude](/cpp-sdk/4.5/api/classes/imfusion-gl-abstractinclude) type in one shader.
+- class [MultiAbstractIncludeBase](/cpp-sdk/4.5/api/classes/imfusion-gl-multiabstractincludebase) — Non-templated base class of [MultiIncludable](/cpp-sdk/4.5/api/classes/imfusion-gl-multiincludable) to implement polymorphic interface.
+- class [ObjectPicking](/cpp-sdk/4.5/api/classes/imfusion-gl-objectpicking) — Helper class to consolidate functionality for implementing object picking of rendered geometry.
+- class [OffscreenRenderHelper](/cpp-sdk/4.5/api/classes/imfusion-gl-offscreenrenderhelper) — Helper class to perform deferred off-screen rendering.
+- class [Program](/cpp-sdk/4.5/api/classes/imfusion-gl-program) — OpenGL GLSL program with a fragment and optional vertex and geometry shader.
+- class [ProgramCache](/cpp-sdk/4.5/api/classes/imfusion-gl-programcache) — Helper class to manage instances of the same base shader with different abstract includes and/or defines.
+- class [ProgramDecorator](/cpp-sdk/4.5/api/classes/imfusion-gl-programdecorator) — Interface to apply custom arguments to a shader program.
+- class [Sampler](/cpp-sdk/4.5/api/classes/imfusion-gl-sampler) — Sets texture sampling parameters for a specific texture unit.
+- class [StateGuard](/cpp-sdk/4.5/api/classes/imfusion-gl-stateguard) — Guard to easily save and restore critical (modern) OpenGL state.
+- class [SyncObject](/cpp-sdk/4.5/api/classes/imfusion-gl-syncobject) — Helper class to synchronize between multiple OpenGL contexts or a context and the application.
+- class [TextRenderer](/cpp-sdk/4.5/api/classes/imfusion-gl-textrenderer) — Utility class to perform text rendering with OpenGL.
+- class [Texture](/cpp-sdk/4.5/api/classes/imfusion-gl-texture) — Wrapper of an OpenGL Texture to store image data on the GPU.
+- struct [PlatformInfo](/cpp-sdk/4.5/api/structs/imfusion-gl-platforminfo) — Structure storing information on the GPU/driver/OpenGL context configuration.
+- struct [MemoryInfo](/cpp-sdk/4.5/api/structs/imfusion-gl-memoryinfo) — Structure storing information about the available video memory as reported by OpenGL.
+- struct [Viewport](/cpp-sdk/4.5/api/structs/imfusion-gl-viewport) — Structure describing an OpenGL viewport.
+- class [VertexBuffer](/cpp-sdk/4.5/api/classes/imfusion-gl-vertexbuffer) — Specialization of [Buffer](/cpp-sdk/4.5/api/classes/imfusion-gl-buffer) to store vertex array data.
+- class [VertexArrayObject](/cpp-sdk/4.5/api/classes/imfusion-gl-vertexarrayobject) — Wrapper around an OpenGL Vertex Array Object (VAO) to define the vertex attribute specification for rendering.
+- class [ViewState](/cpp-sdk/4.5/api/classes/imfusion-gl-viewstate) — Encapsulates the OpenGL view state defined by the viewport, a projection matrix and a model-view matrix.
+- class [AtomicCounterBuffer](/cpp-sdk/4.5/api/classes/imfusion-gl-atomiccounterbuffer) — Specialization of [Buffer](/cpp-sdk/4.5/api/classes/imfusion-gl-buffer) for OpenGL Atomic Counter Objects.
+- class [ShaderStorageBuffer](/cpp-sdk/4.5/api/classes/imfusion-gl-shaderstoragebuffer) — Specialization of [Buffer](/cpp-sdk/4.5/api/classes/imfusion-gl-buffer) for OpenGL Shader Storage [Buffer](/cpp-sdk/4.5/api/classes/imfusion-gl-buffer) Object.
+- class [OrderIndependentTransparency](/cpp-sdk/4.5/api/classes/imfusion-gl-orderindependenttransparency) — Helper class to consolidate functionality for implementing order-independent transparency of rendered geometry.
+- class [ContextMacOS](/cpp-sdk/4.5/api/classes/imfusion-gl-contextmacos) — OpenGL context using NSOpenGLContext as backend.
+
+## Enumerations
+
+- enum class ShaderTextReplacement &#123; ShaderTextReplacement::ExactMatch = 1 &lt;&lt; 0 , ShaderTextReplacement::AllUppercase = 1 &lt;&lt; 1 , ShaderTextReplacement::AllLowercase = 1 &lt;&lt; 2 &#125; — Bitfield enum describing how to perform text replacement in a shader when using the [MultiIncludable](/cpp-sdk/4.5/api/classes/imfusion-gl-multiincludable) interface.
+- enum class PixelFormat : uint32_t &#123; PixelFormat::Red = 0x1903 , PixelFormat::RG = 0x8227 , PixelFormat::RGB = 0x1907 , PixelFormat::RGBA = 0x1908 , PixelFormat::RedInteger = 0x8D94 , PixelFormat::RGInteger = 0x8228 , PixelFormat::RGBInteger = 0x8D98 , PixelFormat::RGBAInteger = 0x8D99 , PixelFormat::DepthComponent = 0x1902 , PixelFormat::DepthStencil = 0x84F9 , PixelFormat::BGRA = 0x80E1 , PixelFormat::BGRAInteger = 0x8D9B , PixelFormat::StencilIndex = 0x1901 &#125; — Describes the host pixel format during OpenGL texture upload/download.
+- enum class PixelType : uint32_t &#123; PixelType::Byte = 0x1400 , PixelType::UByte = 0x1401 , PixelType::Short = 0x1402 , PixelType::UShort = 0x1403 , PixelType::Int = 0x1404 , PixelType::UInt = 0x1405 , PixelType::Float = 0x1406 , PixelType::HFloat = 0x140B , PixelType::Double = 0x140A &#125; — Describes the host pixel type during OpenGL texture upload/download.
+- enum class Primitive : uint32_t &#123; Primitive::Points = 0x0000 , Primitive::Lines = 0x0001 , Primitive::LineLoop = 0x0002 , Primitive::LineStrip = 0x0003 , Primitive::Triangles = 0x0004 , Primitive::TriangleStrip = 0x0005 , Primitive::TriangleFan = 0x0006 , Primitive::LinesAdjacency = 0x000A , Primitive::LineStripAdjacency = 0x000B , Primitive::TrianglesAdjacency = 0x000C , Primitive::TriangleStripAdjacency = 0x000D &#125; — Primitive type to render, to be used with [GL::VertexBuffer::draw()](/cpp-sdk/4.5/api/classes/imfusion-gl-vertexbuffer).
+- enum class Barrier : uint32_t &#123; Barrier::VertexAttribArray = 0x00000001 , Barrier::ElementArray = 0x00000002 , Barrier::Uniform = 0x00000004 , Barrier::TextureFetch = 0x00000008 , Barrier::ShaderImageAccess = 0x00000020 , Barrier::Command = 0x00000040 , Barrier::PixelBuffer = 0x00000080 , Barrier::TextureUpdate = 0x00000100 , Barrier::BufferUpdate = 0x00000200 , Barrier::Framebuffer = 0x00000400 , Barrier::TransformFeedback = 0x00000800 , Barrier::AtomicCounter = 0x00001000 , Barrier::ShaderStorage = 0x00002000 , Barrier::ClientMappedBuffer = 0x00004000 , Barrier::QueryBuffer = 0x00008000 , Barrier::All = 0xFFFFFFFF &#125; — Bitflag enum to describe how you intend to *use* the data after issuing the memoryBarrier() command.
+- enum class GraphicsResetStatus &#123; GraphicsResetStatus::NoError = 0 , GraphicsResetStatus::GuiltyContextReset = 0x8253 , GraphicsResetStatus::InnocentContextReset = 0x8254 , GraphicsResetStatus::UnknownContextReset = 0x8255 &#125; — Return value of GL::getGraphicsResetStatus().
+
+## Functions
+
+- void init ([std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [Context](/cpp-sdk/4.5/api/classes/imfusion-gl-context) &gt;=nullptr) — Initializes the OpenGL backend.
+- void deinit () — Properly deinitializes all OpenGL resources.
+- bool **getBool** (uint32_t param) — Convenience wrapper for glGetBoolean_v() that directly returns the result.
+- int32_t **getInt** (uint32_t param) — Convenience wrapper for glGetInteger_v() that directly returns the result.
+- int32_t **getIntIndexed** (uint32_t param, uint32_t index) — Convenience wrapper for indexed glGetIntegeri_v() that directly returns the result.
+- float **getFloat** (uint32_t param) — Convenience wrapper for glGetFloat_v() that directly returns the result.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **getString** (uint32_t param) — Convenience wrapper for glGetString() that directly returns the result.
+- GraphicsResetStatus getGraphicsResetStatus () — Checks if the current context has been lost due to software or hardware issues.
+- void **clearColorBuffer** (const vec4f &color) — Clears all color buffers attached to the current framebuffer by calling glClearColor(color) and glClear(GL_COLOR_BUFFER_BIT);.
+- void **clearDepthBuffer** (double value) — Clears the depth buffer attached to the current framebuffer by calling glClearDepth(value) and glClear(GL_DEPTH_BUFFER_BIT);.
+- void memoryBarrier ([Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; Barrier &gt; barriers) — Inserts a barrier into the OpenGL command stream to order memory transactions.
+- void **flush** () — Calls glFlush() to block until all OpenGL commands have been transferred to the GPU.
+- void **finish** () — Calls glFinish() to block until all OpenGL execution is complete.
+- mat4 **createOrtho** (double left, double right, double bottom, double top, double pnear, double pfar) — Generates an orthographic projection matrix, the same as glOrtho() would do.
+- mat4 createOrtho2d (int width, int height) — Generates a pixel-perfect 2D orthographic projection matrix for the given viewport size.
+- mat4 **createPerspective** (double fov, double aspect, double pnear, double pfar) — Generates an perspective projection matrix, the same as glPerspective() would do.
+- [PlatformInfo](/cpp-sdk/4.5/api/structs/imfusion-gl-platforminfo) **platformInfo** () — Returns information about the currently active OpenGL platform.
+- [MemoryInfo](/cpp-sdk/4.5/api/structs/imfusion-gl-memoryinfo) memoryInfo () — Returns information about the currently available and total GPU memory.
+- [Utils::Version](/cpp-sdk/4.5/api/structs/imfusion-utils-version) versionInfo () — Returns the available OpenGL version of the current context.
+- void setDpiScale (double dpiScale) — Sets the global DPI scaling factor that should be used by DPI-sensitive OpenGL renderings.
+- double dpiScale () — Queries the global DPI scaling factor that should be used by DPI-sensitive OpenGL renderings.
+- [Framebuffer::Attachment](/cpp-sdk/4.5/api/classes/imfusion-gl-framebuffer) **operator+** ([Framebuffer::Attachment](/cpp-sdk/4.5/api/classes/imfusion-gl-framebuffer) lhs, int rhs)
+- bool **operator==** ([InternalFormat](/cpp-sdk/4.5/api/classes/imfusion-gl-internalformat) lhs, [InternalFormat](/cpp-sdk/4.5/api/classes/imfusion-gl-internalformat) rhs)
+- bool **operator!=** ([InternalFormat](/cpp-sdk/4.5/api/classes/imfusion-gl-internalformat) lhs, [InternalFormat](/cpp-sdk/4.5/api/classes/imfusion-gl-internalformat) rhs)
+- [std::ostream](http://en.cppreference.com/w/cpp/io/basic_ostream.html) & **operator&lt;&lt;** ([std::ostream](http://en.cppreference.com/w/cpp/io/basic_ostream.html) &os, const PixelFormat &format)
+- [std::ostream](http://en.cppreference.com/w/cpp/io/basic_ostream.html) & **operator&lt;&lt;** ([std::ostream](http://en.cppreference.com/w/cpp/io/basic_ostream.html) &os, const PixelType &type)

@@ -1,0 +1,26 @@
+---
+title: "ImFusion::Filesystem::Url::Subquery"
+sidebarTitle: "Subquery"
+description: "A Subquery represents part of a query delimited by '&' or ';'."
+---
+
+`#include <ImFusion/Core/Filesystem/Url.h>`
+
+## Overview
+
+A [Subquery](/cpp-sdk/4.5/api/structs/imfusion-filesystem-url-subquery) represents part of a query delimited by '&' or ';'.
+
+## Public Member Functions
+
+- **Subquery** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &subquery)
+- **Subquery** (const char \*subquery)
+- **Subquery** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &key, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &value)
+- **Subquery** (const char \*key, const char \*value)
+- **operator std::string** () const
+- bool **hasKey** () const — Checks if the subquery is a key-value pair.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **key** () const — Returns the key if this is a key-value pair, or an empty string.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **value** () const — Returns the value if this is a key-value pair, or the whole subquery.
+
+## Public Attributes
+
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **subquery**

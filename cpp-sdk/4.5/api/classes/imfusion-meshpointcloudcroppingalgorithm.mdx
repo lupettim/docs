@@ -1,0 +1,66 @@
+---
+title: "ImFusion::MeshPointCloudCroppingAlgorithm"
+sidebarTitle: "MeshPointCloudCroppingAlgorithm"
+description: "Algorithm for cropping point clouds or/and meshes."
+---
+
+`#include <ImFusion/Mesh/MeshPointCloudCroppingAlgorithm.h>`
+
+## Overview
+
+[Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) for cropping point clouds or/and meshes.
+
+## Public Member Functions
+
+- **MeshPointCloudCroppingAlgorithm** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \* &gt; &pcsAndMeshes) — Creates the algorithm instance with a data.
+- **~MeshPointCloudCroppingAlgorithm** () override — Deletes owned resources.
+- void [compute](#compute) () override — Performs the computation.
+- void **setCropParam** (const vec3 &boxCenter, const vec3 &boxExtent, bool discardInside, const mat4 &T, bool capHole) — Set cropping parameters.
+- void **cropParam** (vec3 &boxCenter, vec3 &boxExtent, bool &discardInside, mat4 &T, bool &capHole) const — Get cropping parameters.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \* &gt; **data** () const
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+## Static Public Member Functions
+
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=0) — Factory method to check for applicability or to create the algorithm.
+
+## Member Function Documentation
+
+### compute
+
+```cpp
+void ImFusion::MeshPointCloudCroppingAlgorithm::compute ()
+```
+
+*override, virtual*
+
+Performs the computation.
+
+### configure
+
+```cpp
+void ImFusion::MeshPointCloudCroppingAlgorithm::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### configuration
+
+```cpp
+void ImFusion::MeshPointCloudCroppingAlgorithm::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality

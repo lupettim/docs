@@ -1,0 +1,27 @@
+---
+title: "ImFusion::Math::BisectionSearch< T, U >"
+sidebarTitle: "BisectionSearch< T, U >"
+description: "Templated bisection search algorithm, finds the interval in a sorted array in which any given value falls."
+---
+
+`#include <ImFusion/Base/Math.h>`
+
+## Overview
+
+template&lt;class T, class U&gt;
+
+class ImFusion::Math::BisectionSearch&lt; T, U &gt;
+Templated bisection search algorithm, finds the interval in a sorted array in which any given value falls.
+
+**Parameters:**
+
+- `data` — Array to search position in, must be sorted in ascending order
+- `value` — The value whose approximate position in the array we want to determine
+- `less` — Any suitable less-than comparison function
+
+**Returns:** Lower index of the lower-inclusive interval the value falls into (e.g. 2 if searching for 2.7 in &#123;0, 1, 2, 3, 4, 5&#125; with trivial comparison function)
+
+## Public Member Functions
+
+- **BisectionSearch** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; T &gt; &data, const U &value, const [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; bool(const T &, const U &)&gt; &lessOrEqual=[](const T &a, const U &b) &#123; return a&lt;=b;&#125;)
+- int **search** ()

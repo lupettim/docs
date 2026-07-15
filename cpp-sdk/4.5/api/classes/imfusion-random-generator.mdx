@@ -1,0 +1,263 @@
+---
+title: "ImFusion::Random::Generator"
+sidebarTitle: "Generator"
+description: "Convenience class for generating random numbers from various distributions."
+---
+
+`#include <ImFusion/Core/Random.h>`
+
+## Overview
+
+Convenience class for generating random numbers from various distributions.
+
+Auto-seeded by default (with a relatively high quality seed), but can be explicitly seeded for reproducibility. Uses the [Pcg64Engine](/cpp-sdk/4.5/api/classes/imfusion-random-pcg64engine) class as the underlying random engine. The implicit copy-constructor and copy-assignment operators copy the engine's state. This means the outputs of copies are the same as that of the copied.
+
+**See also:** [https://www.pcg-random.org/](https://www.pcg-random.org/)
+
+## Public Types
+
+- using **Seed** = Pcg64Engine::result_type
+
+## Public Member Functions
+
+- **Generator** ()=default — Default constructor, auto-seeds the engine.
+- **Generator** (Seed seed) — Constructor with a low quality seed (use for tests if you need reproducibility).
+- void **reseed** () — Re-seeds the engine with an automatically generated seed.
+- void [reseed](#reseed) (Seed seed) — Re-seeds the engine with a low quality seed.
+- T [getUniformInteger](#getuniforminteger) (T lower, T upper) — Returns a uniformly random integer between lower and upper, both included.
+- T [getUniformReal](#getuniformreal) (T lower, T upper) — Returns a uniformly random floating-point number between lower and upper, upper excluded.
+- T [getNormal](#getnormal) (T mean, T sigma) — Returns a normally-distributed random number with given mean and sigma.
+- T [getBeta](#getbeta) (T alpha, T beta) — Returns a value distributed according to the Beta distribution with positive parameters alpha and beta.
+- T **pick** ([std::initializer_list](http://en.cppreference.com/w/cpp/utility/initializer_list.html)&lt; T &gt; list) — Picks one item at random in the list (all items have equal chances to be picked).
+- auto **pick** (InputIt begin, InputIt end) -&gt; decltype(\*begin) — Picks one item at random within the range (all items have equal chances to be picked).
+- auto [pick](#pick) (Range &&range) -&gt; decltype(\*[std::begin](http://en.cppreference.com/w/cpp/iterator/begin.html)(range)) — Picks one item at random within the range (all items have equal chances to be picked).
+- InputIt **choose** (InputIt begin, InputIt end) — Chooses one iterator at random within the range (similar to pick; returns the iterator instead of the item).
+- auto [choose](#choose) (Range &&range) -&gt; decltype([std::begin](http://en.cppreference.com/w/cpp/iterator/begin.html)(range)) — Chooses one iterator at random within the range (similar to pick; returns the iterator instead of the item).
+- T [getVariate](#getvariate) (Params &&... params) — Returns a random number from a given distribution and with given parameters.
+- void [fillUniformInteger](#filluniforminteger-1-2) (InputIt begin, InputIt end, T lower, T upper) — Fills given range with uniformly-distributed random integers between lower and upper, both included.
+- void [fillUniformInteger](#filluniforminteger-2-2) (Range &&range, T lower, T upper) — Fills given range with uniformly-distributed random integers between lower and upper, both included.
+- void [fillUniformReal](#filluniformreal-1-2) (InputIt begin, InputIt end, T lower, T upper) — Fills given range with uniformly-distributed random floating-point numbers, between lower and upper.
+- void [fillUniformReal](#filluniformreal-2-2) (Range &&range, T lower, T upper) — Fills given range with uniformly-distributed random floating-point numbers between lower and upper.
+- void **fillNormal** (InputIt begin, InputIt end, T mean, T sigma) — Fills given range with normally-distributed random numbers with given mean and sigma.
+- void **fillNormal** (Range &&range, T mean, T sigma) — Fills given range with normally-distributed random numbers with given mean and sigma.
+- void **fillBeta** (InputIt begin, InputIt end, T mean, T sigma) — Fills given range with Beta-distributed random numbers with Beta distribution parameters alpha and beta.
+- void **fillBeta** (Range &&range, T alpha, T beta) — Fills given range with Beta-distributed random numbers with Beta distribution parameters alpha and beta.
+- void [fillVariate](#fillvariate-1-2) (InputIt begin, InputIt end, Params &&... params) — Fills given range with random numbers from a given distribution and with given parameters.
+- void [fillVariate](#fillvariate-2-2) (Range &&range, Params &&... params) — Fills given range with random numbers from a given distribution and with given parameters.
+- void **shuffle** (InputIt begin, InputIt end) — Shuffles a range. All items within the range have equal chances to end up at each position.
+- void [shuffle](#shuffle) (Range &&range) — Shuffles a range.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; T &gt; **pickN** ([std::size_t](http://en.cppreference.com/w/cpp/types/size_t.html) n, [std::initializer_list](http://en.cppreference.com/w/cpp/utility/initializer_list.html)&lt; T &gt; list) — Picks n different items at random in the list and returns them as a vector (all items have equal chances to be picked).
+- auto **pickN** ([std::size_t](http://en.cppreference.com/w/cpp/types/size_t.html) n, InputIt begin, InputIt end) -&gt; [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; detail::RemoveCVRef&lt; decltype(\*begin)&gt; &gt; — Picks n different items at random within the range and returns them as a vector (all items have equal chances to be picked).
+- auto [pickN](#pickn) ([std::size_t](http://en.cppreference.com/w/cpp/types/size_t.html) n, Range &&range) -&gt; [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; detail::RemoveCVRef&lt; decltype(\*[std::begin](http://en.cppreference.com/w/cpp/iterator/begin.html)(range))&gt; &gt; — Picks n different items at random within the range (all items have equal chances to be picked).
+- InputIt [partition](#partition-1-2) ([std::size_t](http://en.cppreference.com/w/cpp/types/size_t.html) size, InputIt begin, InputIt end) — Samples *size* items from the range.
+- auto [partition](#partition-2-2) ([std::size_t](http://en.cppreference.com/w/cpp/types/size_t.html) size, Range &&range) -&gt; decltype([std::begin](http://en.cppreference.com/w/cpp/iterator/begin.html)(range)) — Samples *size* items from the range.
+- vec3 **getUnitVector** () — Generates a random unit vector (uniformly distributed on the sphere).
+- mat3 [getRotationMatrix](#getrotationmatrix) () — Generates a random rotation matrix.
+
+## Member Function Documentation
+
+### reseed
+
+```cpp
+void ImFusion::Random::Generator::reseed (Seed seed)
+```
+
+Re-seeds the engine with a low quality seed.
+
+Note that instead of using the same seed multiple times for reproducible processes, you may want to keep a default-constructed main generator instance and copy-construct a new instance to be used in the reproducible process. Copy-construction and copy-assignment guarantee the same output for the copy and the original.
+
+### getUniformInteger
+
+```cpp
+template<typename T> T ImFusion::Random::Generator::getUniformInteger (T lower, T upper)
+```
+
+Returns a uniformly random integer between lower and upper, both included.
+
+If lower coincides with upper, this value is returned.
+
+**Note:** This template member function is implemented for the following types T:
+- uint8_t and int8_t
+- uint16_t and int16_t
+- uint32_t and int32_t
+- uint64_t and int64_t
+
+**See also:** [https://www.boost.org/doc/libs/1_80_0/doc/html/boost/random/uniform_int_distribution.html](https://www.boost.org/doc/libs/1_80_0/doc/html/boost/random/uniform_int_distribution.html)
+
+### getUniformReal
+
+```cpp
+template<typename T> T ImFusion::Random::Generator::getUniformReal (T lower, T upper)
+```
+
+Returns a uniformly random floating-point number between lower and upper, upper excluded.
+
+Lower needs to be strictly smaller than upper. If needed, use previousReal() or nextReal() to include or exclude upper (or lower - or both).
+
+**Note:** This template member function is implemented for the following types T:
+- float
+- double
+
+**See also:** [https://www.boost.org/doc/libs/1_80_0/doc/html/boost/random/uniform_real_distribution.html](https://www.boost.org/doc/libs/1_80_0/doc/html/boost/random/uniform_real_distribution.html)
+
+### getNormal
+
+```cpp
+template<typename T> T ImFusion::Random::Generator::getNormal (T mean, T sigma)
+```
+
+Returns a normally-distributed random number with given mean and sigma.
+
+Instantiated for types float and double.
+
+### getBeta
+
+```cpp
+template<typename T> T ImFusion::Random::Generator::getBeta (T alpha, T beta)
+```
+
+Returns a value distributed according to the Beta distribution with positive parameters alpha and beta.
+
+If alpha and beta are 1, a uniform distribution U(0,1) is used. Instantiated for types float and double.
+
+**See also:** [https://en.wikipedia.org/wiki/Beta_distribution](https://en.wikipedia.org/wiki/Beta_distribution)
+
+### pick
+
+```cpp
+template<typename Range> auto ImFusion::Random::Generator::pick (Range && range) -> decltype(* std::begin (range))
+```
+
+Picks one item at random within the range (all items have equal chances to be picked).
+
+*range* must work with [std::begin](http://en.cppreference.com/w/cpp/iterator/begin.html) and [std::end](http://en.cppreference.com/w/cpp/iterator/end.html).
+
+### choose
+
+```cpp
+template<typename Range> auto ImFusion::Random::Generator::choose (Range && range) -> decltype(std::begin (range))
+```
+
+Chooses one iterator at random within the range (similar to pick; returns the iterator instead of the item).
+
+*range* must work with [std::begin](http://en.cppreference.com/w/cpp/iterator/begin.html) and [std::end](http://en.cppreference.com/w/cpp/iterator/end.html).
+
+### getVariate
+
+```cpp
+template<typename T, template< typename > class Distribution, typename... Params> T ImFusion::Random::Generator::getVariate (Params &&... params)
+```
+
+Returns a random number from a given distribution and with given parameters.
+
+*params* is forwarded to the distribution's constructor. For example, this will return a random integer according to the binomial distribution with 5 trials, each with a 70% chance of success: generator.getVariate&lt;int, [std::binomial_distribution](http://en.cppreference.com/w/cpp/numeric/random/binomial_distribution.html)&gt;(5, 0.7);
+
+### fillUniformInteger
+
+```cpp
+template<typename InputIt, typename T> void ImFusion::Random::Generator::fillUniformInteger (InputIt begin, InputIt end, T lower, T upper)
+```
+
+Fills given range with uniformly-distributed random integers between lower and upper, both included.
+
+lower &lt;= upper is required. The produced values are uniformly distributed before being fed into the iterator, caller is responsible for making sure values are not changed at this point (by e.g. overflow). For a fixed seed the result does not depend on the type of iterator.
+
+### fillUniformInteger
+
+```cpp
+template<typename Range, typename T> void ImFusion::Random::Generator::fillUniformInteger (Range && range, T lower, T upper)
+```
+
+Fills given range with uniformly-distributed random integers between lower and upper, both included.
+
+*range* must work with [std::begin](http://en.cppreference.com/w/cpp/iterator/begin.html) and [std::end](http://en.cppreference.com/w/cpp/iterator/end.html).
+
+### fillUniformReal
+
+```cpp
+template<typename InputIt, typename T> void ImFusion::Random::Generator::fillUniformReal (InputIt begin, InputIt end, T lower, T upper)
+```
+
+Fills given range with uniformly-distributed random floating-point numbers, between lower and upper.
+
+Upper may or may not be included (see getUniformReal).
+
+### fillUniformReal
+
+```cpp
+template<typename Range, typename T> void ImFusion::Random::Generator::fillUniformReal (Range && range, T lower, T upper)
+```
+
+Fills given range with uniformly-distributed random floating-point numbers between lower and upper.
+
+Upper may or may not be included (see getUniformReal). *range* must work with [std::begin](http://en.cppreference.com/w/cpp/iterator/begin.html) and [std::end](http://en.cppreference.com/w/cpp/iterator/end.html).
+
+### fillVariate
+
+```cpp
+template<template< typename > class Distribution, typename InputIt, typename... Params> void ImFusion::Random::Generator::fillVariate (InputIt begin, InputIt end, Params &&... params)
+```
+
+Fills given range with random numbers from a given distribution and with given parameters.
+
+*params* is forwarded to the distribution's constructor. For example, this will generate random values into the range (from begin to end), according to the gamma distribution with parameters alpha = 1 and beta = 2.3: generator.generate&lt;[std::gamma_distribution](http://en.cppreference.com/w/cpp/numeric/random/gamma_distribution.html)&gt;(begin, end, 1, 2.3); Note that the distribution functions in std are not platform independent.
+
+### fillVariate
+
+```cpp
+template<template< typename > class Distribution, typename Range, typename... Params> void ImFusion::Random::Generator::fillVariate (Range && range, Params &&... params)
+```
+
+Fills given range with random numbers from a given distribution and with given parameters.
+
+*range* must work with [std::begin](http://en.cppreference.com/w/cpp/iterator/begin.html) and [std::end](http://en.cppreference.com/w/cpp/iterator/end.html). *params* is forwarded to the distribution's constructor. For example, this will generate random values into values (a floating-point container), according to the normal distribution with a mean of 6 and a standard deviation of 2.3: generator.generate&lt;[std::normal_distribution](http://en.cppreference.com/w/cpp/numeric/random/normal_distribution.html)&gt;(values, 6, 2.3); Note that the distribution functions in std are not platform independent.
+
+### shuffle
+
+```cpp
+template<typename Range> void ImFusion::Random::Generator::shuffle (Range && range)
+```
+
+Shuffles a range.
+
+All items within the range have equal chances to end up at each position. *range* must work with [std::begin](http://en.cppreference.com/w/cpp/iterator/begin.html) and [std::end](http://en.cppreference.com/w/cpp/iterator/end.html).
+
+### pickN
+
+```cpp
+template<typename Range> auto ImFusion::Random::Generator::pickN (std::size_t n, Range && range) -> std::vector < detail::RemoveCVRef< decltype(* std::begin (range))> >
+```
+
+Picks n different items at random within the range (all items have equal chances to be picked).
+
+*range* must work with [std::begin](http://en.cppreference.com/w/cpp/iterator/begin.html) and [std::end](http://en.cppreference.com/w/cpp/iterator/end.html).
+
+### partition
+
+```cpp
+template<typename InputIt> InputIt ImFusion::Random::Generator::partition (std::size_t size, InputIt begin, InputIt end)
+```
+
+Samples *size* items from the range.
+
+Returns and iterator to the first element that wasn't sampled. In other words, picks *size* different items at random within the range and places them at the beginning, partitionning the range (all items have equal chances to be picked).
+
+### partition
+
+```cpp
+template<typename Range> auto ImFusion::Random::Generator::partition (std::size_t size, Range && range) -> decltype(std::begin (range))
+```
+
+Samples *size* items from the range.
+
+Returns and iterator to the first element that wasn't sampled. In other words, picks *size* different items at random within the range and places them at the beginning, making a partition (all items have equal chances to be picked). *range* must work with [std::begin](http://en.cppreference.com/w/cpp/iterator/begin.html) and [std::end](http://en.cppreference.com/w/cpp/iterator/end.html).
+
+### getRotationMatrix
+
+```cpp
+mat3 ImFusion::Random::Generator::getRotationMatrix ()
+```
+
+Generates a random rotation matrix.
+
+Equivalent to three orthogonal unit vectors (all uniformly distributed on the sphere).

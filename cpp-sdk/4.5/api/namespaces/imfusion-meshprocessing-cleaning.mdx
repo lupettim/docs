@@ -1,0 +1,149 @@
+---
+title: "ImFusion::MeshProcessing::Cleaning"
+sidebarTitle: "Cleaning"
+description: "Mesh processing algorithms related to cleaning of the mesh."
+---
+
+## Overview
+
+[Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) processing algorithms related to cleaning of the mesh.
+
+## Classes
+
+- struct [ImFusionOriginProperty](/cpp-sdk/4.5/api/structs/imfusion-meshprocessing-cleaning-imfusionoriginproperty) — Vertex and / or face property indicating the origin of a vertex or face in the mesh, added to the mesh by cropMesh.
+
+## Enumerations
+
+- enum class [CropType](#croptype) &#123; InfrontUnion , InfrontIntersection , BehindUnion , BehindIntersection &#125; — [CropType](#croptype) for cropMesh method.
+
+## Functions
+
+- void [mergeCloseVertices](#mergeclosevertices) ([Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) &mesh, double delta=0.0, bool allowFaceReordering=false) — Remove close mesh vertices.
+- void **removeIsolatedVertices** ([Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) &mesh) — Remove vertices not belonging to any face.
+- void [crop](#crop-1-3) ([Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) &mesh, const [Geometry::AlignedBox](/cpp-sdk/4.5/api/classes/imfusion-geometry-alignedbox) &box, bool discardPointsInside, const mat4 &T=mat4::Identity(), bool cap=false, [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) \*progress=nullptr) — Deletes all faces that are not inside the given box.
+- void [crop](#crop-2-3) ([Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) &mesh, const vec3 &boxCenter, const vec3 &boxExtent, const bool discardPointsInside, const mat4 &transformation, bool cap=false, [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) \*progress=nullptr) — Deletes all faces that are not inside the given box.
+- void [crop](#crop-3-3) ([Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) &mesh, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Geometry::Plane](/cpp-sdk/4.5/api/classes/imfusion-geometry-plane) &gt; &planes, [CropType](#croptype) cropType, bool cap=false, [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) \*progress=nullptr) — Crops a mesh using a set of planes.
+
+## Enumeration Type Documentation
+
+### CropType
+
+```cpp
+enum class ImFusion::MeshProcessing::Cleaning::CropType
+```
+
+*strong*
+
+[CropType](#croptype) for cropMesh method.
+
+Defines the desired output of the mesh cropping, i.e. which. parts of the mesh are to be *kept* after cropping.
+
+**Enumerator:**
+
+- `InfrontUnion` — The union of the regions on the normal side of the planes.
+- `InfrontIntersection` — The intersection of the regions on the normal side of the planes.
+- `BehindUnion` — The union of the regions on the opposite side of the planes normal.
+- `BehindIntersection` — The intersection of the regions on the opposite side of the planes normal.
+
+## Function Documentation
+
+### mergeCloseVertices
+
+```cpp
+void ImFusion::MeshProcessing::Cleaning::mergeCloseVertices (Mesh & mesh, double delta = 0.0, bool allowFaceReordering = false)
+```
+
+Remove close mesh vertices.
+
+This function merges vertices in a mesh that are closer than *delta* (using the L2 norm). To do so it builds a graph whose nodes $V = &#123;\mathbf&#123;v&#125;_0,...,\mathbf&#123;v&#125;_n&#125;$ represent the vertices of the mesh and whose edges $E$ contain $e_&#123;i,j&#125; \in E \Leftrightarrow ||v_i-v_j|| &lt; \delta$. Connected components in this graph are subsequentially merged into one representative vertex before faces are reassigned to the new vertices. This means that the total circumference of a merged cluster might exceed *delta* if there is a long "chain" of vertices which are pairwise closer than *delta*.
+
+**Note:** This function keeps properties of unique vertices and faces, but the properties of vertices and faces resulting from a merge are copied from the vertex with maximum index in the cluster and from the face with minimum index, respectively.
+
+**Note:** For vertex colors, normals, and texture coordinates a respective halfedge property will be added if the properties do not match at any vertex. The vertex property *will then be removed*.
+
+**Warning:** Merging vertices might change the topology of the mesh, in particular small holes might be closed in the process.
+
+**Parameters:**
+
+- `mesh` — [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh)
+- `delta` — threshold for the distance between vertices. If distance between vertices is smaller than the threshold, vertices will be merged (optional, default is 0.0)
+
+### crop
+
+```cpp
+void ImFusion::MeshProcessing::Cleaning::crop (Mesh & mesh, const Geometry::AlignedBox & box, bool discardPointsInside, const mat4 & T = mat4::Identity(), bool cap = false, Progress * progress = nullptr)
+```
+
+Deletes all faces that are not inside the given box.
+
+Operates directly on the input mesh without making a copy
+
+For a detailed explanation and the handling of properties see
+
+**See also:** cropMesh(Mesh&, const std::vector&lt;Geometry::Plane&gt;&, CropType, bool, Progress\*);
+
+**Parameters:**
+
+- `mesh` — [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh)
+- `box` — the cropping box
+- `discardPointsInside` — should the points inside or outside the box be discarded
+- `T` — a transformation that is applied to the cropping box
+- `cap` — (optional) should cap the cropped mesh, default is false
+- `progress` — (optional) a pointer to a progress handler, default is nullptr
+
+### crop
+
+```cpp
+void ImFusion::MeshProcessing::Cleaning::crop (Mesh & mesh, const vec3 & boxCenter, const vec3 & boxExtent, const bool discardPointsInside, const mat4 & transformation, bool cap = false, Progress * progress = nullptr)
+```
+
+Deletes all faces that are not inside the given box.
+
+Operates directly on the input mesh without making a copy
+
+For a detailed explanation and the handling of properties see
+
+**See also:** cropMesh(Mesh&, const std::vector&lt;Geometry::Plane&gt;&, CropType, bool, Progress\*);
+
+**Parameters:**
+
+- `mesh` — [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh)
+- `boxCenter` — center of the cropping box
+- `boxExtent` — the extent in all axes of the cropping box
+- `discardPointsInside` — should the points inside or outside the box be discarded
+- `transformation` — a transformation that is applied to the cropping box
+- `cap` — (optional) should cap the cropped mesh, default is false
+- `progress` — (optional) a pointer to a progress handler, default is nullptr
+
+### crop
+
+```cpp
+void ImFusion::MeshProcessing::Cleaning::crop (Mesh & mesh, const std::vector < Geometry::Plane > & planes, CropType cropType, bool cap = false, Progress * progress = nullptr)
+```
+
+Crops a mesh using a set of planes.
+
+The crop parameter defines the desired output of the mesh cropping. Operates directly on the input mesh without making a copy
+
+[Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) attributes will be handled in the following way:
+
+- A vertex property of type ImFusionOriginProperty::element_type is added to the mesh describing the origin of each mesh vertex in the result, see
+
+  **See also:** ImFusionOriginProperty for an explanation
+- Normal, color, and texture coordinate vertex properties are linear interpolated on the intersection curves between *planes* and *mesh*
+- Other vertex properties on the intersection curves and vertex properties in the filled regions (if *cap`* == true) are undefined (except normals, see below).
+- If \a mesh has the vertex normal property the vertex normals in the filled regions are computed.
+             Additionally the halfedge normal property is added and set accordingly to support shading the
+             sharp cropping edges.
+- If \a mesh has vertex color or texture coordinate properties the respective halfedge properties
+             are added and set.
+- If \a mesh has the face normal property all face normals are recomputed.
+- All other existing vertex, face, edge, and halfedge properties are kept at vertices and faces
+             with ImFusionOriginProperty::Original property, at other vertices and faces they are undefined.
+  \note    If the mesh is not watertight and the cropping planes cross some boundary, the resulting hole will
+           only be filled between the newly created vertices, i.e. vertices on the planes
+  \param [in,out] mesh [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh)
+  \param [in] planes the cropping planes
+  \param [in] cropType type of cropping
+  \param [in] cap (optional) should the cropped mesh be capped. Default is false.
+  \param [in] progress (optional) a pointer to a progress handler. Default is nullptr`.

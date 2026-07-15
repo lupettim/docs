@@ -1,0 +1,88 @@
+---
+title: "ImFusion::OptimizationDialog"
+sidebarTitle: "OptimizationDialog"
+---
+
+## Public Slots
+
+- void **onParsAll** ()
+- void **onParsOne** ()
+- void **onUpdateAlgorithmList** ()
+- void **onModeChanged** ()
+- void **onReload** (bool flag)
+- void **onSelectionChanged** ()
+- void **onSelectedAlgorithmChanged** ()
+- void **onIndividualBounds** (bool flag)
+- void **onBoundsChanged** (double val)
+- void **onBoundsEnabled** (bool val)
+- void **onRun** ()
+- void **onAddResult** ()
+- void **onClearResults** ()
+- void **onSelectResult** (int which)
+- void **onUpdateStudyScatterPlot** ()
+- void **onResultSorted** (int which)
+
+## Signals
+
+- void **run** () — Emitted if the run button is pressed.
+- void **addResult** () — Emitted if the add result button is pressed.
+- void **clearResults** () — Emitted if the clear results button is pressed.
+- void [selectResult](#selectresult) (int which) — Emitted if a different result is selected.
+
+## Public Member Functions
+
+- **OptimizationDialog** (QWidget \*parent=0)
+- **OptimizationDialog** ([std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [Optimizer](/cpp-sdk/4.5/api/classes/imfusion-optimizer) &gt; opt, QWidget \*parent=0) — Creates an optimizer dialog with the parameters from opt.
+- void **clear** () — Clear the list of optimization parameters.
+- void **setOptimizer** ([std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [Optimizer](/cpp-sdk/4.5/api/classes/imfusion-optimizer) &gt; opt) — Initialize control with parameters from opt and set it as the optimizer.
+- [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [Optimizer](/cpp-sdk/4.5/api/classes/imfusion-optimizer) &gt; **optimizer** () const — Return optimizer.
+- void **addParameter** (const QString &name, bool clear=false, bool checked=true) — Add an entry to the list of optimization parameters.
+- void **addRigidParameters** (bool clear=false) — Add the 6 parameters of a rigid transformation, optionally clearing the parameter list before.
+- void [addAffineParameters](#addaffineparameters) (bool clear=false) — Add the 12 parameters of an affine transformation (including the rigid ones), optionally clearing the parameter list before.
+- void **setParameterChecked** (int i, bool checked) — Sets the checked state of a given parameter.
+- double [evaluate](#evaluate) (int n, const double \*x, double \*dx=0) override — Evaluation of the test function.
+- void **setShowRunButton** (bool flag) — Shows or hides the run button.
+- void **setGlobal** (bool flag, double bounds, int population=0) — Enable global optimization as preset with given bounds.
+- void **setAlwaysUpdateGUI** (bool flag) — Change the flag for [GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui) update.
+- void **setPlotView** ([PlotView](/cpp-sdk/4.5/api/classes/imfusion-plotview) \*pv) — Set plot view instance in order to display results after a plot.
+- void **updatePlot** () — Update the plot view from the last optimizer plot run.
+- void **evaluateStudyResult** (int which) — Evaluate the cost function with a result of a prior run random study.
+- bool **alwaysUpdateGUI** () const — Return checkbox value if [GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui) should be updated during optimization.
+- void **setOnlyUpdateIfBetter** (bool flag) — Change the flag for [GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui) update only if better value found.
+- int **algorithm** () const — Return the selected optimization algorithm.
+- QString **parName** (int which) const — Return the name of an optimization parameter.
+- [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [Optimizer](/cpp-sdk/4.5/api/classes/imfusion-optimizer) &gt; **createOptimizer** (bool createNew=true) — Create and return optimizer based on settings in this dialog.
+
+## Member Function Documentation
+
+### addAffineParameters
+
+```cpp
+void ImFusion::OptimizationDialog::addAffineParameters (bool clear = false)
+```
+
+Add the 12 parameters of an affine transformation (including the rigid ones), optionally clearing the parameter list before.
+
+The affine parameters will be unchecked by default.
+
+### evaluate
+
+```cpp
+double ImFusion::OptimizationDialog::evaluate (int n, const double * x, double * dx = 0)
+```
+
+*override, virtual*
+
+Evaluation of the test function.
+
+### selectResult
+
+```cpp
+void ImFusion::OptimizationDialog::selectResult (int which)
+```
+
+*signal*
+
+Emitted if a different result is selected.
+
+If this signal is not connected from outside, the results of an optimization study are automatically set by calling the evaluate method of the last used optimizer with the corresponding parameters.

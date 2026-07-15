@@ -1,0 +1,86 @@
+---
+title: "ImFusion::CpuFFT"
+sidebarTitle: "CpuFFT"
+description: "Fast Fourier Transform on the CPU."
+---
+
+## Overview
+
+Fast Fourier [Transform](/cpp-sdk/4.5/api/classes/imfusion-transform) on the CPU.
+
+For version 1.6, a complete redesign of this functionality occurred:
+
+- Amplitudes of forward transform result are now normalized w.r.t signal duration
+- Forward and backward transform are now their respective inver\*ses (stable round trip)
+- Does not pad the buffer size beyond what is required for the [FFT](/cpp-sdk/4.5/api/classes/imfusion-fft) by default anymore
+- [Buffer](/cpp-sdk/4.5/api/classes/imfusion-gl-buffer) allocation no longer makes any assumptions about order of transformations
+- Uses [std::complex](http://en.cppreference.com/w/cpp/numeric/complex.html) of either floats or doubles instead of naked float pointers
+- Forward transform can provide an additional output with the frequencies of the bins in units of input signal duration
+- Is now a namespace instead of a class, since all of the methods work independently anyway
+- Consequently does not inherit from the [FFT](/cpp-sdk/4.5/api/classes/imfusion-fft) base class anymore Migrating from the previous implementation typically requires adapting to the normalization of the forward transform, which so far had to be done outside of [CpuFFT](/cpp-sdk/4.5/api/namespaces/imfusion-cpufft) itself.
+
+## Functions
+
+- bool [toFrequencyDomain](#tofrequencydomain-1-2) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; T &gt; &in, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::complex](http://en.cppreference.com/w/cpp/numeric/complex.html)&lt; T &gt; &gt; &out, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; \*frequencies=nullptr, T \*suppressZero=nullptr) — Forward transformation of a real-valued 1D signal.
+- bool **toFrequencyDomain** (const [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; T &gt; &in, [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; T &gt; \*&outReal, [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; T &gt; \*&outImag, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; \*frequenciesX=nullptr, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; \*frequenciesY=nullptr)
+- bool [toTimeDomain](#totimedomain-1-2) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::complex](http://en.cppreference.com/w/cpp/numeric/complex.html)&lt; T &gt; &gt; &in, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; T &gt; &out) — Backwards transformation to a real-valued 1D signal.
+- bool [toFrequencyDomain](#tofrequencydomain-2-2) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::complex](http://en.cppreference.com/w/cpp/numeric/complex.html)&lt; T &gt; &gt; &in, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::complex](http://en.cppreference.com/w/cpp/numeric/complex.html)&lt; T &gt; &gt; &out, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; \*frequencies=nullptr) — Forward transformation of a 1D signal.
+- bool [toTimeDomain](#totimedomain-2-2) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::complex](http://en.cppreference.com/w/cpp/numeric/complex.html)&lt; T &gt; &gt; &in, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::complex](http://en.cppreference.com/w/cpp/numeric/complex.html)&lt; T &gt; &gt; &out) — Backwards transformation of a 1D signal.
+- bool **toTimeDomain** (const [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; T &gt; &inReal, const [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; T &gt; &inImag, [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; T &gt; \*&outReal, [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; T &gt; \*&outImag)
+- bool **toTimeDomain** (const [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; T &gt; &inReal, const [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; T &gt; &inImag, [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; T &gt; \*&outAmp)
+- bool [inplaceTransform1D](#inplacetransform1d) ([std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::complex](http://en.cppreference.com/w/cpp/numeric/complex.html)&lt; T &gt; &gt; &workbuffer, bool forward) — Transforms a suitably padded buffer in either direction, without normalization or any other convenience.
+- void **constructFrequencyAxis** ([std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; &freqs, int signalDuration, int transformDuration) — Computes the frequency values of the bins for a forward transformation, in units of signal length base frequency.
+- bool **sizeIsFine** (int size) — Checks if a buffer size is compatible, i.e. of length 2^n.
+- int **nextValidSize** (int size) — Returns the smallest padded buffer size for any given input size, or -1 if the input size cannot not yield any useful [FFT](/cpp-sdk/4.5/api/classes/imfusion-fft) result.
+
+## Function Documentation
+
+### toFrequencyDomain
+
+```cpp
+template<typename T> bool ImFusion::CpuFFT::toFrequencyDomain (const std::vector < T > & in, std::vector < std::complex < T > > & out, std::vector < double > * frequencies = nullptr, T * suppressZero = nullptr)
+```
+
+Forward transformation of a real-valued 1D signal.
+
+Can optionally compute the frequencies for the resulting bins in units of the input duration base frequency, i.e. the frequency of a single full oscillation with the length of the input array is 1. Can also subtract (and return) the average signal intensity before executing the transformation. Supported data types are float and double.
+
+### toTimeDomain
+
+```cpp
+template<typename T> bool ImFusion::CpuFFT::toTimeDomain (const std::vector < std::complex < T > > & in, std::vector < T > & out)
+```
+
+Backwards transformation to a real-valued 1D signal.
+
+Note that this method performs no checks on whether the result is truly real-valued, the imaginary parts are simply dumped. Supported data types are float and double.
+
+### toFrequencyDomain
+
+```cpp
+template<typename T> bool ImFusion::CpuFFT::toFrequencyDomain (const std::vector < std::complex < T > > & in, std::vector < std::complex < T > > & out, std::vector < double > * frequencies = nullptr)
+```
+
+Forward transformation of a 1D signal.
+
+Can optionally compute the frequencies for the resulting bins in units of the input duration base frequency, i.e. the frequency of a single full oscillation with the length of the input array is 1. Supported data types are float and double.
+
+### toTimeDomain
+
+```cpp
+template<typename T> bool ImFusion::CpuFFT::toTimeDomain (const std::vector < std::complex < T > > & in, std::vector < std::complex < T > > & out)
+```
+
+Backwards transformation of a 1D signal.
+
+Supported data types are float and double.
+
+### inplaceTransform1D
+
+```cpp
+template<typename T> bool ImFusion::CpuFFT::inplaceTransform1D (std::vector < std::complex < T > > & workbuffer, bool forward)
+```
+
+Transforms a suitably padded buffer in either direction, without normalization or any other convenience.
+
+Intended for advanced users and internal usage by the other methods of this class. Supported data types are float and double.

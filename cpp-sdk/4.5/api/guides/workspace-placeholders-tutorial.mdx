@@ -1,0 +1,58 @@
+---
+title: "Placeholders in Workspace Files"
+description: "Workspace files allow the user to restore a session or automate the execution of a series of data loading and algorithms."
+---
+
+[Workspace](/cpp-sdk/4.5/api/classes/imfusion-workspace) files allow the user to restore a session or automate the execution of a series of data loading and algorithms.
+
+When parts of this process depends on a varying parameter or data location, placeholders can be used to avoid creating multiple copies of the workspace.
+
+A placeholder is a sequence of characters in an .iws file that will be replaced at runtime by values indicated by the user. Each placeholder is uniquely defined by its key and should be used within brackets, preceded by a percent sign: **%(MyKey)**.
+
+For instance, resampling an image with varying resolutions and interpolation mode can be done with the following piece of workspace:
+
+```cpp
+<property name="Image Resampling">
+    <param name="resamplingMode">2</param>
+    <param name="targetSpacing">%(Spacing) %(Spacing) %(Spacing)</param>
+    <param name="createNewImage">1</param>
+    <param name="forceCPU">0</param>
+    <param name="interpolationMode">%(InterpMode)</param>
+    <param name="input">0</param>
+    <param name="execute">1</param>
+</property>
+```
+ fragment
+If a workspace containing placeholders is loaded from the ImFusion Suite or the ImFusion Console, the user will be prompted to define the value of each of these placeholders. After such values have been indicated, the workspace will be executed.
+
+The value of the placeholders can also automatically be defined though the command arguments, for instance:
+
+```cpp
+ImFusionSuite MyWorkspace.iws Spacing=2.0 InterpMode=0
+```
+ fragment
+In some cases, the user needs to execute a lot of times the same workspace with different placeholders values. While it is always possible to create a script file that executes the ImFusion Suite with various command arguments, this method is not cross-platform. An alternative is to directly load the .iws file from the ImFusion Suite and, when asked for the values of the placeholders, click on the button **Load Batch File...** and select a text file with the following structure
+
+```cpp
+InterpMode;Spacing
+0;1.0
+1;1.0
+0;2.0
+0;3.0
+```
+ fragment
+For each line of this file, the workspace will be executed with the specified placeholders values. Note that the order of the placeholders is defined by the first header line. This example is therefore equivalent to
+
+```cpp
+ImFusionSuite MyWorkspace.iws Spacing=1.0 InterpMode=0
+ImFusionSuite MyWorkspace.iws Spacing=1.0 InterpMode=1
+ImFusionSuite MyWorkspace.iws Spacing=2.0 InterpMode=0
+ImFusionSuite MyWorkspace.iws Spacing=3.0 InterpMode=0
+```
+ fragment
+In order to run the ImFusion Console with such a file, its path should be indicated as follows:
+
+```cpp
+ImFusionConsole MyWorkspace.iws batch=BatchList.txt
+```
+ fragment

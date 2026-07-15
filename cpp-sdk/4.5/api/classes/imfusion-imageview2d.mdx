@@ -1,0 +1,430 @@
+---
+title: "ImFusion::ImageView2D"
+sidebarTitle: "ImageView2D"
+description: "High-level wrapper class for 2D/MPR rendering of one or multiple images."
+---
+
+`#include <ImFusion/GUI/ImageView2D.h>`
+
+## Overview
+
+High-level wrapper class for 2D/MPR rendering of one or multiple images.
+
+Serves as Qt wrapper of the [GlSliceView](/cpp-sdk/4.5/api/classes/imfusion-glsliceview) and [GlSlice](/cpp-sdk/4.5/api/classes/imfusion-glslice) classes for 2D/MPR rendering. Depending on the displayOptionsSource property of [ImageView2D](/cpp-sdk/4.5/api/classes/imfusion-imageview2d) the [DisplayOptions2d](/cpp-sdk/4.5/api/classes/imfusion-displayoptions2d) used during rendering are either individual for each image (stored in the images' DataComponents) or shared for all shown images (stored in [ImageView2D](/cpp-sdk/4.5/api/classes/imfusion-imageview2d)).
+
+This class offers a couple of additional convenience interfaces/functionality over the underlying hierarchy of [GlSliceView](/cpp-sdk/4.5/api/classes/imfusion-glsliceview), [GlSlice](/cpp-sdk/4.5/api/classes/imfusion-glslice), and [GlSliceRenderer](/cpp-sdk/4.5/api/classes/imfusion-glslicerenderer):
+
+- High-level interface to generically set the shown [Data](/cpp-sdk/4.5/api/classes/imfusion-data) (cf. [setVisibleData()](/cpp-sdk/4.5/api/classes/imfusion-gui-view), [showData()](/cpp-sdk/4.5/api/classes/imfusion-gui-view), [hideData()](/cpp-sdk/4.5/api/classes/imfusion-gui-view), and setDisplayOptionsSource())
+- Automatic zoom to fit the viewport (cf. setZoomMode())
+- Automatic configuration of view settings based on the shown data (cf. [setAutomaticViewSettingsEnabled()](#setautomaticviewsettingsenabled))
+- Animation support for actions such as changing the view matrix
+
+**Note:** Due to the potential external storage of display options, the Qt signals for changes of individual display options (i.e. windowChanged, levelChanged, gammaChanged, invertedChanged, and blendFactorChanged) are only emitted when using their corresponding Qt property setter. If the underlying [DisplayOptions2d](/cpp-sdk/4.5/api/classes/imfusion-displayoptions2d) have changed by somebody else in the background, this is not detected. If you need to be notified reliably in all occasions you need to register to the [DisplayOptions2d](/cpp-sdk/4.5/api/classes/imfusion-displayoptions2d) changed signal directly.
+
+## Public Types
+
+- enum class [ZoomMode](#zoommode) &#123; FitToView = 0 , Fixed = 1 , OriginalPixelSize &#125; — Enumeration to describe the zooming mode used for a 2D view.
+- enum class [DisplayOptionsSource](#displayoptionssource) &#123; View = 0 , Data = 1 &#125; — Describes from where to take the DisplayOptions for rendering.
+
+## Public Slots
+
+- void **setCenter** (const vec3 &c, mat3 \*rot=nullptr, bool suppressAnimation=false) — Will re-center the view on the given position, can optionally also apply some rotation.
+- void **setMatrix** (const mat4 &mat, bool suppressAnimation=false, [Pose::TransformationConvention](/cpp-sdk/4.5/api/namespaces/imfusion-pose) convention=[Pose::TOWORLD](/cpp-sdk/4.5/api/namespaces/imfusion-pose)) — Set the matrix of this view.
+- void **reset** () override — Reset the image view.
+- void **reset** (bool suppressAnimation) — Reset the image view ensuring that no animation will be performed, even if the animations are enabled globally.
+- void **setSliceCenter** (const vec3 &center, bool suppressAnimation=false) — Re-center the slice view.
+- void **setSliceMatrix** (const mat4 &matrix, bool suppressAnimation=false) — Set the slice view's position and orientation.
+- void **setDefaultInterpolationMode** (int interpolationMode) — Set the interpolation mode that will be used as default, for instance when resetting the view (see [GlSliceRendererImage::InterpolationMode](/cpp-sdk/4.5/api/classes/imfusion-glslicerendererimage)).
+- void **setUseBilateralFilter** (bool enable) — Enables or disables the bilateral filter on the view.
+- bool **useBilateralFilter** () const — Returns whether the bilateral filter is enabled.
+- void **setBilateralFilterRadius** (int radius) — Sets the radius of the bilateral filter.
+- void **setBilateralFilterIntensitySigma** (double sigma) — Sets the bilateral filter intensity sigma.
+- void **setBilateralFilterSpatialSigma** (double sigma) — Sets the bilateral filter spatial sigma.
+
+## Public Member Functions
+
+- **ImageView2D** ([std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [GlSliceView](/cpp-sdk/4.5/api/classes/imfusion-glsliceview) &gt; sliceView) — Default constructor.
+- **ImageView2D** (bool is3d, [Slice::AnatomicalPlane](/cpp-sdk/4.5/api/classes/imfusion-slice) plane)
+- **~ImageView2D** () override — Destructor.
+- const [GlSliceView](/cpp-sdk/4.5/api/classes/imfusion-glsliceview) \* **view** () const — Read-only access to OpenGL view.
+- [GlSliceView](/cpp-sdk/4.5/api/classes/imfusion-glsliceview) \* **view** () — Read-write access to OpenGL view.
+- void [render](#render) () override — Will render the view into the [viewport()](/cpp-sdk/4.5/api/classes/imfusion-gui-view) of the current framebuffer by drawing the optional background color, the optional border, the underlying [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview), and finally all [overlays()](/cpp-sdk/4.5/api/classes/imfusion-gui-view).
+- void **setImageData** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*is) — Set image data. Convenience function which calls corresponding function in slice.
+- [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* **imageData** () const
+- [ImFusion::ImageView2D::DisplayOptionsSource](#displayoptionssource) **displayOptionsSource** () const — Returns where to take display options from.
+- [ImFusion::ImageView2D::ZoomMode](#zoommode) **zoomMode** () const — Returns the zoom mode.
+- const [DisplayOptions2d](/cpp-sdk/4.5/api/classes/imfusion-displayoptions2d) & [displayOptions](#displayoptions) (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data=nullptr) const — Return the DisplayOptions used for the given data wrt.
+- [DisplayOptions2d](/cpp-sdk/4.5/api/classes/imfusion-displayoptions2d) & **displayOptions** (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data=nullptr)
+- void [setAutomaticViewSettingsEnabled](#setautomaticviewsettingsenabled) (bool value) — Sets the flag whether [ImageView2D](/cpp-sdk/4.5/api/classes/imfusion-imageview2d) should automatically configure settings of the underlying [GlSliceView](/cpp-sdk/4.5/api/classes/imfusion-glsliceview) based on the shown data.
+- bool **isAutomaticViewSettingsEnabled** () const — Returns the flag whether [ImageView2D](/cpp-sdk/4.5/api/classes/imfusion-imageview2d) should automatically configure settings of the underlying [GlSliceView](/cpp-sdk/4.5/api/classes/imfusion-glsliceview) based on the shown data.
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Restore view state from properties.
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Save view state to properties.
+- [InteractionView2D](/cpp-sdk/4.5/api/classes/imfusion-interactionview2d) \* **interaction2D** () const — Convenience function to return the first interaction of type [InteractionView2D](/cpp-sdk/4.5/api/classes/imfusion-interactionview2d) if present.
+- void **setColormap** ([GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) \*colormap) — Set the color map.
+- const [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) \* **colormap** () const — Get the color map, or nullptr if no color mapping is used.
+- void **transformationChanged** (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data) — Enables show zoom if a shown image has a new transformation.
+- void [setRect](#setrect) (const QRect &rect) override — Set position and size of view in scene coordinates.
+- void **onDisplayOptionsChanged** ([DisplayOptions2d](/cpp-sdk/4.5/api/classes/imfusion-displayoptions2d) \*dop)
+- void **updateScale** ()
+- int **bilateralFilterRadius** () const — Returns the bilateral filter radius.
+- bool **bilateralFilterEnabled** () const — Returns whether the bilateral filter is enabled.
+- float **bilateralFilterIntensitySigma** () const — Returns the bilateral filter intensity sigma.
+- float **bilateralFilterSpatialSigma** () const — Returns the bilateral filter spatial sigma.
+- void [setImage](#setimage-1-2) ([SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*image) — Convenience method to display a single image.
+- void [setImage](#setimage-2-2) ([Image](/cpp-sdk/4.5/api/classes/imfusion-image) \*image) — Convenience method to display a single image.
+
+## Protected Member Functions
+
+- bool [handleObjectEvent](#handleobjectevent) (QEvent \*qtEvent, const [GUI::InputEvent](/cpp-sdk/4.5/api/classes/imfusion-gui-inputevent) &inputEvent) override — Override event handling code for objects.
+- void **onVisibleDataChanged** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &oldData, const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &newData) — Removes move images which are not in newData from the [GlImageHighlighter](/cpp-sdk/4.5/api/classes/imfusion-glimagehighlighter).
+- void [showDataImpl](#showdataimpl) ([Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data) override — Override this function to implement custom logic whenever a dataset is added to the list of visible data.
+- void [hideDataImpl](#hidedataimpl) (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data) override — Override this function to implement custom logic whenever a dataset is removed from the list of visible data.
+
+## Protected Attributes
+
+- [GlSliceView](/cpp-sdk/4.5/api/classes/imfusion-glsliceview) \* **m_view2D** — Internal OpenGL view instance.
+- [ZoomMode](#zoommode) **m_zoomMode** = ZoomMode::FitToView
+- [DisplayOptionsSource](#displayoptionssource) **m_displayOptionsSource** = DisplayOptionsSource::View
+- [DisplayOptions2d](/cpp-sdk/4.5/api/classes/imfusion-displayoptions2d) **m_displayOptionsView**
+
+## Properties
+
+- int **interpolation**
+- bool **flip**
+- [ImFusion::GlSlice::BlendingMode](/cpp-sdk/4.5/api/classes/imfusion-glslice) **blendingMode**
+- double **blendFactor**
+- double **zoom**
+- [ImFusion::ImageView2D::ZoomMode](#zoommode) **zoomMode**
+- bool **showZoom**
+- bool **pixelZoom**
+- int **showIn3D**
+- double **window**
+- double **level**
+- double **gamma**
+- bool **inverted**
+- double **thickness**
+- bool **useBilateralFilter**
+- int **bilateralFilterRadius**
+- float **bilateralFilterIntensitySigma**
+- float **bilateralFilterSpatialSigma**
+- bool **showOrientationMarkers**
+- [ImFusion::ImageView2D::DisplayOptionsSource](#displayoptionssource) **displayOptionsSource**
+
+## Property read methods
+
+- int **interpolation** () const
+- bool **flip** () const
+- [ImFusion::GlSlice::BlendingMode](/cpp-sdk/4.5/api/classes/imfusion-glslice) **blendingMode** () const
+- double **blendFactor** () const — View blending alpha value setting of the given data. If data is 0, returns the global setting.
+- double **zoom** () const — View zoom.
+- double **window** () const — View window setting of the given data. If data is 0, returns the global setting.
+- double **level** () const — View level setting of the given data. If data is 0, returns the global setting.
+- double **gamma** () const — View gamma setting of the given data. If data is 0, returns the global setting.
+- bool **isInverted** () const — View color inversion setting of the given data. If data is 0, returns the global setting.
+- double **thickness** () const — [Slice](/cpp-sdk/4.5/api/classes/imfusion-slice) thickness in case of a 3D MPR.
+- bool **showZoom** () const — Show zoom flag.
+- bool **showIntersectionLines** () const — Show slice intersection lines flag.
+- bool **showThickness** () const — Show slice thickness flag.
+- bool **showOrientationMarkers** () const — Returns the whether to draw orientation markers next to the MPR cross section lines.
+- int **showIn3D** () const — 3D visualization of the slice
+- bool **pixelZoom** () const — Pixel zoom.
+
+## Property write methods
+
+- void **setInterpolation** (int val)
+- void **setFlip** (bool val)
+- void **setBlendingMode** ([ImFusion::GlSlice::BlendingMode](/cpp-sdk/4.5/api/classes/imfusion-glslice) val)
+- void **setBlendFactor** (double val) — Set blending alpha value setting of the given data. If data is 0, returns the global setting.
+- void [addMoveImage](#addmoveimage) ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*img) — Adds the given image to the list of images to which the "move image" feature is applied.
+- void [removeMoveImage](#removemoveimage) (const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*img) — Removes the given image from the list of images to which the "move image" feature is applied.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* &gt; [moveImages](#moveimages) () const — Returns the list of images that should be moved if interactionTarget() is InteractionTarget::Image.
+- void **setZoom** (double val) — Set view zoom.
+- void **setPixelZoom** (bool val) — Set pixel zoom.
+- void **setShowZoom** (bool flag) — Specify if the view zoom shall be shown on the slice itself (affecting other views).
+- void **setShowIntersectionLines** (bool flag) — Specify if the intersection lines with other slices shall be drawn.
+- void **setShowThickness** (bool flag) — Specify if the slice thickness shall be drawn.
+- void **setShowOrientationMarkers** (bool value) — Sets the whether to draw orientation markers next to the MPR cross section lines.
+- void **setDefaultOrientationMarkerTypeToQuadruped** (bool value) — Sets the default type of the orientation markers to Quadruped.
+- void [setShowIn3D](#setshowin3d) (int mode) — Specify the 3D visualization of this slice.
+- void **setWindow** (double val) — Set view window of the given data. If data is 0, sets the global setting.
+- void **setLevel** (double val) — Set view level of the given data. If data is 0, sets the global setting.
+- void **setGamma** (double val) — Set view gamma of the given data. If data is 0, sets the global setting.
+- void **setInverted** (bool inverted) — Set color inversion of the given data. If data is 0, sets the global setting.
+- void **setThickness** (double val) — Set the 3D MPR slice thickness.
+- void **setDisplayOptionsSource** ([ImFusion::ImageView2D::DisplayOptionsSource](#displayoptionssource) value) — Sets where to take display options from.
+- void **setZoomMode** ([ImFusion::ImageView2D::ZoomMode](#zoommode) value) — Sets the zoom mode.
+
+## Property notifiers
+
+- void **interpolationChanged** (int val)
+- void **flipChanged** (bool val)
+- void **blendingModeChanged** ([ImFusion::GlSlice::BlendingMode](/cpp-sdk/4.5/api/classes/imfusion-glslice) val)
+- void **blendFactorChanged** (double val)
+- void **imageDataChanged** () — Emitted when the image data has changed.
+- void **zoomChanged** (double val) — Emitted when zoom changed.
+- void **pixelZoomChanged** (bool val) — Emitted when pixel zoom changed.
+- void **showZoomChanged** (bool flag)
+- void **showIn3DChanged** (int val)
+- void **showOrientationMarkersChanged** (bool value)
+- void [windowChanged](#windowchanged) (double val) — Emitted when window changed.
+- void [levelChanged](#levelchanged) (double val) — Emitted when level changed.
+- void [gammaChanged](#gammachanged) (double val) — Emitted when gamma changed.
+- void [invertedChanged](#invertedchanged) (bool inv) — Emitted when inverted changed.
+- void **thicknessChanged** (double val) — Emitted when slice thickness changes.
+- void **displayOptionsSourceChanged** ([ImFusion::ImageView2D::DisplayOptionsSource](#displayoptionssource) value)
+- void **zoomModeChanged** ([ImFusion::ImageView2D::ZoomMode](#zoommode) value)
+- void **bilateralFilterRadiusChanged** (int radius)
+- void **bilateralFilterIntensitySigmaChanged** (float sigma)
+- void **bilateralFilterSpatialSigmaChanged** (float sigma)
+- void **useBilateralFilterChanged** (bool enable)
+
+## Member Enumeration Documentation
+
+### ZoomMode
+
+```cpp
+enum class ImFusion::ImageView2D::ZoomMode
+```
+
+*strong*
+
+Enumeration to describe the zooming mode used for a 2D view.
+
+**Enumerator:**
+
+- `FitToView` — A zoom factor of 1 will fit the shown image to the viewport.
+- `Fixed` — A zoom factor of 1 will show 1mm per viewport pixel.
+- `OriginalPixelSize` — A zoom factor of 1 will show 1 image pixel (of the first visible image) per viewport pixel.
+
+### DisplayOptionsSource
+
+```cpp
+enum class ImFusion::ImageView2D::DisplayOptionsSource
+```
+
+*strong*
+
+Describes from where to take the DisplayOptions for rendering.
+
+**Enumerator:**
+
+- `View` — All visible data will be rendered using the same view's display options.
+- `Data` — Every visible data will be rendered using its own display options.
+
+## Member Function Documentation
+
+### render
+
+```cpp
+void ImFusion::ImageView2D::render ()
+```
+
+*override, virtual*
+
+Will render the view into the [viewport()](/cpp-sdk/4.5/api/classes/imfusion-gui-view) of the current framebuffer by drawing the optional background color, the optional border, the underlying [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview), and finally all [overlays()](/cpp-sdk/4.5/api/classes/imfusion-gui-view).
+
+### displayOptions
+
+```cpp
+const DisplayOptions2d & ImFusion::ImageView2D::displayOptions (const Data * data = nullptr) const
+```
+
+Return the DisplayOptions used for the given data wrt.
+
+to the views' display options source setting. If the display options source is set to View, this function will return the view's display options. If the display options source is set to Modality, this function will return the global display options wrt. to *data*. If the display options source is set to [Data](/cpp-sdk/4.5/api/classes/imfusion-data), this function will return the display options of *data*. If *data* is 0 but required, it will use the first visible data of this view instead.
+
+### setAutomaticViewSettingsEnabled
+
+```cpp
+void ImFusion::ImageView2D::setAutomaticViewSettingsEnabled (bool value)
+```
+
+*inline*
+
+Sets the flag whether [ImageView2D](/cpp-sdk/4.5/api/classes/imfusion-imageview2d) should automatically configure settings of the underlying [GlSliceView](/cpp-sdk/4.5/api/classes/imfusion-glsliceview) based on the shown data.
+
+This can be aspects such as the "vertical flip" flag ([GlSliceView::setFlip()](/cpp-sdk/4.5/api/classes/imfusion-glsliceview)), the "show zoom extent" flag ([GlSliceView::showZoom()](/cpp-sdk/4.5/api/classes/imfusion-glsliceview)), and the "ignore image matrix" flag ([GlSliceRendererImage::setIgnoreMatrix()](/cpp-sdk/4.5/api/classes/imfusion-glslicerendererimage)).
+
+### configure
+
+```cpp
+void ImFusion::ImageView2D::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Restore view state from properties.
+
+### configuration
+
+```cpp
+void ImFusion::ImageView2D::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Save view state to properties.
+
+### setRect
+
+```cpp
+void ImFusion::ImageView2D::setRect (const QRect & rect)
+```
+
+*override, virtual*
+
+Set position and size of view in scene coordinates.
+
+### addMoveImage
+
+```cpp
+void ImFusion::ImageView2D::addMoveImage (SharedImageSet * img)
+```
+
+*slot*
+
+Adds the given image to the list of images to which the "move image" feature is applied.
+
+Will also enable the "move image" feature by setting the InteractionTarget flag to [Image](/cpp-sdk/4.5/api/classes/imfusion-image).
+
+### removeMoveImage
+
+```cpp
+void ImFusion::ImageView2D::removeMoveImage (const SharedImageSet * img)
+```
+
+*slot*
+
+Removes the given image from the list of images to which the "move image" feature is applied.
+
+If there are no move images left it will also disable the "move image" feature again by setting the InteractionTarget flag to [Slice](/cpp-sdk/4.5/api/classes/imfusion-slice).
+
+### moveImages
+
+```cpp
+std::vector < SharedImageSet * > ImFusion::ImageView2D::moveImages () const
+```
+
+*slot*
+
+Returns the list of images that should be moved if interactionTarget() is InteractionTarget::Image.
+
+### setShowIn3D
+
+```cpp
+void ImFusion::ImageView2D::setShowIn3D (int mode)
+```
+
+*slot*
+
+Specify the 3D visualization of this slice.
+
+**Parameters:**
+
+- `mode` — Integer representation of the GlSlice::ObjectRenderModes bitfield.
+
+### windowChanged
+
+```cpp
+void ImFusion::ImageView2D::windowChanged (double val)
+```
+
+*signal*
+
+Emitted when window changed.
+
+**Warning:** Do not rely on this signal since it may not be triggered under all circumstances.
+
+### levelChanged
+
+```cpp
+void ImFusion::ImageView2D::levelChanged (double val)
+```
+
+*signal*
+
+Emitted when level changed.
+
+**Warning:** Do not rely on this signal since it may not be triggered under all circumstances.
+
+### gammaChanged
+
+```cpp
+void ImFusion::ImageView2D::gammaChanged (double val)
+```
+
+*signal*
+
+Emitted when gamma changed.
+
+**Warning:** Do not rely on this signal since it may not be triggered under all circumstances.
+
+### invertedChanged
+
+```cpp
+void ImFusion::ImageView2D::invertedChanged (bool inv)
+```
+
+*signal*
+
+Emitted when inverted changed.
+
+**Warning:** Do not rely on this signal since it may not be triggered under all circumstances.
+
+### handleObjectEvent
+
+```cpp
+bool ImFusion::ImageView2D::handleObjectEvent (QEvent * qtEvent, const GUI::InputEvent & inputEvent)
+```
+
+*override, protected, virtual*
+
+Override event handling code for objects.
+
+### showDataImpl
+
+```cpp
+void ImFusion::ImageView2D::showDataImpl (Data * data)
+```
+
+*override, protected, virtual*
+
+Override this function to implement custom logic whenever a dataset is added to the list of visible data.
+
+The default implementation will call DataDisplayDispatcher::show() and add *data* to m_visibleData.
+
+### hideDataImpl
+
+```cpp
+void ImFusion::ImageView2D::hideDataImpl (const Data * data)
+```
+
+*override, protected, virtual*
+
+Override this function to implement custom logic whenever a dataset is removed from the list of visible data.
+
+The default implementation will call DataDisplayDispatcher::hide() and remove *data* to m_visibleData.
+
+### setImage
+
+```cpp
+void ImFusion::ImageView2D::setImage (SharedImage * image)
+```
+
+Convenience method to display a single image.
+
+Internally, creates a container [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) holding *image* and then calls [setVisibleData()](/cpp-sdk/4.5/api/classes/imfusion-gui-view). [InteractiveView](/cpp-sdk/4.5/api/classes/imfusion-interactiveview) will not take ownership of *image*. If *image* is 0, will remove all data from this view.
+
+****Deprecated**:** This function has problematic ownership semantics. Use [setVisibleData()](/cpp-sdk/4.5/api/classes/imfusion-gui-view) instead.
+
+### setImage
+
+```cpp
+void ImFusion::ImageView2D::setImage (Image * image)
+```
+
+Convenience method to display a single image.
+
+Internally, creates a container [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) holding *image* and then calls [setVisibleData()](/cpp-sdk/4.5/api/classes/imfusion-gui-view). [InteractiveView](/cpp-sdk/4.5/api/classes/imfusion-interactiveview) will not take ownership of *image*, it must stay alive as long as the image is shown. If *image* is 0, will remove all data from this view.
+
+****Deprecated**:** This function has problematic ownership semantics. Use [setVisibleData()](/cpp-sdk/4.5/api/classes/imfusion-gui-view) instead.

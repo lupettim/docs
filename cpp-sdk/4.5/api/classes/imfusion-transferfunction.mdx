@@ -1,0 +1,168 @@
+---
+title: "ImFusion::TransferFunction"
+sidebarTitle: "TransferFunction"
+description: "Modern 1D transfer function for classification during rendering."
+---
+
+`#include <ImFusion/GL/TransferFunction.h>`
+
+## Overview
+
+Modern 1D transfer function for classification during rendering.
+
+A 1D transfer function describes a mapping from image intensities to the optical properties of color and opacity. In this implementation, the transfer function is either described by a set of tissues - each consisting of a set of key points - or a look-up-table (LUT). Keypoint mode: each key point defines an RGBA color for a given intensity. Colors are linearly interpolated between key points of the same tissue. LUT mode: the transfer function is directly defined by a texture in form of a 1D [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) of type float.
+
+Both image intensities and colors are defined in normalized [0..1] space. The windowing is defined in original pixel value domain (e.g. Hounsfield units).
+
+**See also:** [TransferFunctionTissue](/cpp-sdk/4.5/api/classes/imfusion-transferfunctiontissue) ,
+
+## Public Types
+
+- enum class Mode &#123; **Keypoint** = 0 , **LUT** = 1 &#125; — Mode for rendering the TF from a set of keypoints or from a look-up-table.
+
+## Public Member Functions
+
+- [TransferFunction](#transferfunction) (vec2 windowingRange=vec2(0.0, 1.0), int textureSize=256) — Default constructor.
+- **TransferFunction** (const TransferFunction &rhs)
+- [TransferFunction](#transferfunction) & **operator=** ([TransferFunction](#transferfunction) rhs)
+- bool **operator==** (const [TransferFunction](#transferfunction) &other) const
+- bool **operator!=** (const [TransferFunction](#transferfunction) &other) const
+- void **invert** () — Inverts this transfer function.
+- void [setDirty](#setdirty) () — Marks the textures of this transfer function as dirty.
+- const [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \* **standardTexture** () const — Returns the image storing the standard 1D TF. [TransferFunction](/cpp-sdk/4.5/api/classes/imfusion-transferfunction) owns this pointer; it may be invalidated as soon as the TF changes.
+- const [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \* **preIntTexture** () const — Returns the image storing the pre-integrated TF. [TransferFunction](/cpp-sdk/4.5/api/classes/imfusion-transferfunction) owns this pointer; it may be invalidated as soon as the TF changes.
+- vec2 **opaqueRange** () const — Returns the range of intensities where this transfer function is opaque.
+- void [addTissue](#addtissue) ([std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [TransferFunctionTissue](/cpp-sdk/4.5/api/classes/imfusion-transferfunctiontissue) &gt; tissue) — Adds the given texture to this TF.
+- void [removeTissue](#removetissue) (int index) — Removes the given texture from this TF.
+- void **clearTissues** () — Removes all tissues from this TF.
+- void [pushTissueToFront](#pushtissuetofront) (int tissueIndex) — Pushes the given tissue to the front of the list.
+- void **deriveFrom** (const [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) &img, int maxKeypoints=12) — Derives a custom TF from a [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage).
+
+## Public Attributes
+
+- Signal **signalChanged**
+
+## Getters/Setters
+
+- bool [empty](#empty) () const
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [TransferFunctionTissue](/cpp-sdk/4.5/api/classes/imfusion-transferfunctiontissue) &gt; &gt; & **tissues** () const — Returns the list of all tissues.
+- [TransferFunctionTissue](/cpp-sdk/4.5/api/classes/imfusion-transferfunctiontissue) \* **tissue** (int index) — Returns the tissue at the given index.
+- void **setLUT** ([std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) &gt; lut) — Set 1D standard TF with an image as look-up-table and clear all tissues.
+- void **removeLUT** () — Remove the 1D standard TF and change mode to keypoints.
+- Mode **mode** () — Returns the mode which defines the rendering of the TF.
+- vec2 **windowingRange** () const — Convenience function to return the range of intensities of the applied windowing (original values).
+- void **setWindowingRange** (const vec2 &newRange) — Convenience function to set the range of intensities of the applied windowing to *newRange* (original values).
+- double **window** () const — Return the size of the windowing window.
+- void **setWindow** (double value) — Set the size of the windowing window.
+- double **level** () const — Return the center of the windowing window (level).
+- void **setLevel** (double value) — Set the center of the windowing window (level).
+- void **setWindowLevel** (double window, double level) — Convenience method for setting the windowing range based on window and level.
+- const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) & **presetName** () const — Gets the name of the original preset when this transfer function was created (may be the preset name, name of the file).
+- void **setPresetName** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &presetName) — Sets the name of the original preset when this transfer function was created (may be the preset name, name of the file).
+- void **setTextureSize** (int value) — Sets the size of the transfer function texture.
+
+## Configurable interface
+
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+## Constructor & Destructor Documentation
+
+### TransferFunction
+
+```cpp
+ImFusion::TransferFunction::TransferFunction (vec2 windowingRange = vec2(0.0, 1.0), int textureSize = 256)
+```
+
+*explicit*
+
+Default constructor.
+
+**Parameters:**
+
+- `windowingRange` — Range of intensities (original value domain) of the applied windowing
+- `textureSize` — Size of the transfer function texture (optional)
+
+## Member Function Documentation
+
+### empty
+
+```cpp
+bool ImFusion::TransferFunction::empty () const
+```
+
+Returns whether the TF is empty: -&gt; keypoint mode: does not have any tissues. -&gt; lut mode: standard TF is empty.
+
+### setDirty
+
+```cpp
+void ImFusion::TransferFunction::setDirty ()
+```
+
+Marks the textures of this transfer function as dirty.
+
+The next time someone will retrieve one of the TF textures, they will be recomputed. Call this method every time, you change one of the transfer function's tissues directly.
+
+### addTissue
+
+```cpp
+void ImFusion::TransferFunction::addTissue (std::unique_ptr < TransferFunctionTissue > tissue)
+```
+
+Adds the given texture to this TF.
+
+**Parameters:**
+
+- `tissue` — Tissue to add, [TransferFunction](/cpp-sdk/4.5/api/classes/imfusion-transferfunction) will take ownership of the pointer.
+
+### removeTissue
+
+```cpp
+void ImFusion::TransferFunction::removeTissue (int index)
+```
+
+Removes the given texture from this TF.
+
+**Parameters:**
+
+- `index` — Index of the tissue to remove, the corresponding pointer will be deleted.
+
+### pushTissueToFront
+
+```cpp
+void ImFusion::TransferFunction::pushTissueToFront (int tissueIndex)
+```
+
+Pushes the given tissue to the front of the list.
+
+**Parameters:**
+
+- `tissueIndex` — Index of the tissue to move to the front.
+
+### configure
+
+```cpp
+void ImFusion::TransferFunction::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### configuration
+
+```cpp
+void ImFusion::TransferFunction::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality

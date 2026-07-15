@@ -1,0 +1,76 @@
+---
+title: "ImFusion::Huffman"
+sidebarTitle: "Huffman"
+description: "Huffman code for data compression."
+---
+
+`#include <ImFusion/Base/Huffman.h>`
+
+## Overview
+
+[Huffman](/cpp-sdk/4.5/api/classes/imfusion-huffman) code for data compression.
+
+## Public Member Functions
+
+- unsigned long long **compute** (unsigned int \*occurrences, unsigned int size) — Compute code from a raw buffer of occurrences and return resulting byte size.
+- int [storeTree](#storetree) (unsigned char \*buffer) const — Stores the huffman tree in the buffer and returns the number of bytes used.
+- bool [loadTree](#loadtree) (const unsigned char \*buffer) — Loads the huffman tree from the buffer.
+- void **clear** () — Clear everything.
+- unsigned char [bits](#bits) (unsigned short symbol) const — Return the number of bits for a given symbol.
+- unsigned long long **code** (unsigned short symbol) const — Return the code for a given symbol.
+- int [encode](#encode) (const T \*bufIn, unsigned int size, unsigned char \*bufOut, unsigned int bufOutSize, unsigned int &bitPos) — Encode data, sizes of both input and output buffer are given, along with the latter's bit position.
+- int [decode](#decode) (const unsigned char \*bufIn, int size, T \*bufOut) const — Decode data.
+- void **debugTree** ([std::ostream](http://en.cppreference.com/w/cpp/io/basic_ostream.html) &osObject, bool leavesOnly=false, bool charSymbols=false) const — Output a tabular representation of the huffman tree for debugging purposes.
+- unsigned long long **numBytesForBits** (const unsigned long long bitSize) const — Computes the number of bytes that are needed to store n bits.
+
+## Member Function Documentation
+
+### storeTree
+
+```cpp
+int ImFusion::Huffman::storeTree (unsigned char * buffer) const
+```
+
+Stores the huffman tree in the buffer and returns the number of bytes used.
+
+Returns 0 in case of too small buffer
+
+### loadTree
+
+```cpp
+bool ImFusion::Huffman::loadTree (const unsigned char * buffer)
+```
+
+Loads the huffman tree from the buffer.
+
+Returns true if successful
+
+### bits
+
+```cpp
+unsigned char ImFusion::Huffman::bits (unsigned short symbol) const
+```
+
+Return the number of bits for a given symbol.
+
+This method is written for speed, no checking whatsoever is performed.
+
+### encode
+
+```cpp
+template<typename T> int ImFusion::Huffman::encode (const T * bufIn, unsigned int size, unsigned char * bufOut, unsigned int bufOutSize, unsigned int & bitPos)
+```
+
+Encode data, sizes of both input and output buffer are given, along with the latter's bit position.
+
+The bit position will be updated by this method. The number of encoded bytes is returned, if it is smaller than the specified size, the encoded data did not fit into the output buffer, hence this method has to be called again with an increased output buffer size.
+
+### decode
+
+```cpp
+template<typename T> int ImFusion::Huffman::decode (const unsigned char * bufIn, int size, T * bufOut) const
+```
+
+Decode data.
+
+Both input and output buffers need to contain sufficient memory to accommodate the size of the data.

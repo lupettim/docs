@@ -1,0 +1,278 @@
+---
+title: "ImFusion::QtHelpers"
+sidebarTitle: "QtHelpers"
+description: "Some Qt convenience functions."
+---
+
+## Overview
+
+Some Qt convenience functions.
+
+## Classes
+
+- class [ScheduledMainThreadCommand](/cpp-sdk/4.5/api/classes/imfusion-qthelpers-scheduledmainthreadcommand)
+
+## Functions
+
+- void [disableUnfocusedScrolling](#disableunfocusedscrolling) (QWidget \*widget) — Helper method to disable scrolling on a widget when the widget is not in focus.
+- QStringList [askForFiles](#askforfiles) (const QString &name, const QString &caption, const QString &filter=QString(), QString \*selectedFilter=0, QWidget \*parent=0, QWidget \*additionalWidget=nullptr, [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; bool &gt; dontUseNativeDialog=std::nullopt) — Helper method to display a QFileDialog and ask the user for *multiple* file to open.
+- QString [getSaveFilename](#getsavefilename) (QWidget \*parent, const QString &name, const QString &caption=QString(), const QString &filter=QString(), QString \*selectedFilter=0, const QString &defaultDir=QString(), QWidget \*additionalWidget=nullptr, const QString &fileName=QString(), [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; bool &gt; dontUseNativeDialog=std::nullopt) — Helper method to display a QFileDialog and ask the user for a file name to save data.
+- QString [getOpenFilename](#getopenfilename) (QWidget \*parent, const QString &name, const QString &caption=QString(), const QString &filter=QString(), QString \*selectedFilter=0, const QString &defaultDir=QString(), QWidget \*additionalWidget=nullptr, [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; bool &gt; dontUseNativeDialog=std::nullopt) — Helper method to display a QFileDialog and ask the user for a *single* file to open.
+- QString **getExistingDirectory** (QWidget \*parent, const QString &name, const QString &caption=QString(), const QString &defaultDir=QString(), QWidget \*additionalWidget=nullptr, [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; bool &gt; dontUseNativeDialog=std::nullopt)
+- QString **modality** ([Data::Modality](/cpp-sdk/4.5/api/classes/imfusion-data) m) — Return the name of an image modality.
+- QString **describe** (const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*is) — Return a description string for an image data set.
+- QString **describe** (const [TrackingSequence](/cpp-sdk/4.5/api/classes/imfusion-trackingsequence) \*ts) — Return a description string for a tracking sequence.
+- QStringList **describePair** (const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*is1, const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*is2) — Return brief names for a pair of images, by using their modalities in case they are set and different, and the data names otherwise.
+- [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \* **createImage** (const QImage &image) — Create a [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) from a QT QImage.
+- int **filesInFolder** (const QString &folder, const QString &filename) — Check how many files with the given filename wildcard reside in a folder.
+- void **setCurrentText** (QComboBox \*element, const QString &value) — Qt 4 compatible method to set the current text of a QComboBox.
+- void **walkItemModel** (QAbstractItemModel \*model, [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; void(QModelIndex)&gt; func) — Calls func for ever index in model.
+- void [makeExpandable](#makeexpandable) (QGroupBox \*box) — Makes the QGroupBox expandable.
+- QWidget \* [makeTabWidget](#maketabwidget) (QTabBar \*tabBar, const QList&lt; QPair&lt; QString, QWidget \* &gt; &gt; &tabs) — Creates a tab widget of the 'tabBar' and a list of 'tabs'.
+- QProgressDialog \* **createProgressDialog** (const QString &labelText, const QString &titleText, QWidget \*parent=0)
+- void **runInBackground** (Class \*object, void(Class::\*fn)(), const QString &labelText, const QString &titleText, QWidget \*parent=0)
+- void **runInBackground** ([std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; void()&gt; fn, const QString &labelText, const QString &titleText, QWidget \*parent=0)
+- void **runInBackgroundWithCancel** ([std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; void()&gt; fn, [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; void()&gt; cancelFn, const QString &labelText, const QString &titleText, QWidget \*parent=0)
+- T **runInBackgroundAndReturn** ([std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; T()&gt; fn, const QString &labelText, const QString &titleText, QWidget \*parent=0)
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **toRelativePath** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &absolutePath, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &basePath="", int keepAbsoluteIfDepthExceeds=-1)
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **toAbsolutePath** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &relativePath, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &basePath="")
+- QString **focusedElideMiddle** (const QFont &font, int maxWidth, const QString &left, const QString &middle, const QString &right)
+- void **setDontUseNativeDialogs** (bool value)
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [ScheduledMainThreadCommand](/cpp-sdk/4.5/api/classes/imfusion-qthelpers-scheduledmainthreadcommand) &gt; **runOnMainThread** ([std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; void()&gt; &&function, int waitMs=0) — Executes the given function asynchronously on the main Qt thread. Waits at least waitMs milliseconds before running it.
+- void **tableHeightToContent** (QTableView \*tableView, int minHeight=100, int maxHeight=400) — Sets the height of a QTableView to the height of its content.
+- bool **askForUsernamePassword** (QWidget \*parent, QString &username, QString &password) — Shows a simple username/password dialog. Returns true when OK was clicked.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; QMouseEvent &gt; **touchEventToMouseEvent** (QEvent \*event) — Converts a touch event to a mouse equivalent.
+- bool **warnIfPoseLinked** ([Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data1, [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data2, [MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase) \*mainWindow) — Checks if the data is pose-linked and if yes opens a warning dialog. Returns true if the dialog was accepted.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **base64Encode** (const QByteArray &byteArray) — Encode a QByteArray using base64 encoding.
+- QByteArray **base64Decode** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &base64) — Decode a base64 encoded string to a QByteArray.
+- QIcon [generateMultiSizeIcon](#generatemultisizeicon) (const char \*name, const char \*nameOff=nullptr, const char \*nameDisabled=nullptr) — Generate a QIcon object with multiple version of an icon (different sizes).
+- void **updateUiScalingFromSettings** () — Checks the current settings if a custom scale is to be applied.
+- double **customUiScaling** () — Returns the custom Ui scale factor (1.0 means no scaling).
+- double **dpiScale** () — Returns the DPI scaling factor of the application (1.0 means no scaling).
+- double **devicePixelRatio** () — Returns the devicePixelRatio (1.0 for most displays but 2.0 for Apple retina displays).
+- void [setPrimaryScreen](#setprimaryscreen) (const QScreen \*primaryScreen) — Sets the optional reference screen to use to determine DPI scaling/device pixel ratio.
+- QColor **convertToQColor** (const vec4 &color) — Converts a vec4 to a QColor.
+- QMap&lt; QString, QString &gt; [convertStyleSheet](#convertstylesheet) (QString &style) — Converts a CSS stylesheet from our extended CSS syntax to regular CSS that Qt understands.
+- QDate [convertDICOMDate](#convertdicomdate) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &str) — Converts the string to a date.
+- QTime [convertDICOMTime](#convertdicomtime) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &str, [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [Dicom::Error](/cpp-sdk/4.5/api/structs/imfusion-dicom-error) &gt; \*errorOut=nullptr) — Converts the string to a time.
+- QDateTime [convertDICOMDateTime](#convertdicomdatetime) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &str, [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [Dicom::Error](/cpp-sdk/4.5/api/structs/imfusion-dicom-error) &gt; \*errorOut=nullptr) — Converts the string to a date time.
+- QString [convertDICOMSex](#convertdicomsex) (const QString &str) — Converts the DICOM sex string M, F or O to male, female or other.
+- QString **formatStr** (const QString &str)
+- QImage [generateThumbnail](#generatethumbnail) (DcmDataset &dataset, bool copyDataset=false, [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [std::uint32_t](http://en.cppreference.com/w/cpp/types/integer.html) &gt; frame=std::nullopt) — Generates a thumbnail of the given DICOM or a null image if no thumbnail can be generated.
+
+## Set values of GUI elements without having them emit signals
+
+- void [setSilent](#setsilent) (QCheckBox \*element, bool value)
+- void **setSilent** (QGroupBox \*element, bool value) — Silently set the value of a group box.
+- void **setSilent** (QAction \*element, bool value) — Silently set the checked status of an Action.
+- void **setSilent** (QAbstractSlider \*element, int value) — Silently set the value of a slider.
+- void **setSilent** (QSpinBox \*element, int value) — Silently set the value of a spin box.
+- void **setSilent** (QDoubleSpinBox \*element, double value) — Silently set the value of a double spin box.
+- void **setSilent** (QComboBox \*element, int value) — Silently set the current index of a combo box.
+- void **setSilent** (QAbstractButton \*element, bool value) — Silently set the 'checked' value of a checkable push button.
+- void **setSilent** (QLineEdit \*element, const QString &value) — Silently set the text of a line edit.
+- void **setSilent** ([IntAdjusterWidget](/cpp-sdk/4.5/api/classes/imfusion-intadjusterwidget) \*element, int value) — Silently set the value of an AdjusterWidget.
+- void **setSilent** ([DoubleAdjusterWidget](/cpp-sdk/4.5/api/classes/imfusion-doubleadjusterwidget) \*element, double value) — Silently set the value of an AdjusterWidget.
+- void **setSilent** ([Vec3Widget](/cpp-sdk/4.5/api/classes/imfusion-vec3widget) \*element, const vec3 &value) — Silently set the value of an [Vec3Widget](/cpp-sdk/4.5/api/classes/imfusion-vec3widget).
+
+## Function Documentation
+
+### disableUnfocusedScrolling
+
+```cpp
+void ImFusion::QtHelpers::disableUnfocusedScrolling (QWidget * widget)
+```
+
+Helper method to disable scrolling on a widget when the widget is not in focus.
+
+I.E. if the user scrolls over a QComboBox, QSpinBox or similar, they will not accidentally change the value
+
+**Parameters:**
+
+- `widget` — The widget on which to disable unfocused scrolling.
+
+### askForFiles
+
+```cpp
+QStringList ImFusion::QtHelpers::askForFiles (const QString & name, const QString & caption, const QString & filter = QString(), QString * selectedFilter = 0, QWidget * parent = 0, QWidget * additionalWidget = nullptr, std::optional < bool > dontUseNativeDialog = std::nullopt)
+```
+
+Helper method to display a QFileDialog and ask the user for *multiple* file to open.
+
+The selected folder will be remembered.
+
+**Parameters:**
+
+- `parent` — Parent widget.
+- `name` — Identifier for the file type to open. This name will be used to remember the selected folder.
+- `caption` — Caption of the dialog.
+- `filter` — Filter to use for the file dialog.
+- `selectedFilter` — Optionally selected filter.
+- `defaultDir` — Default directory to use if there is no remembered directory.
+- `additionalWidget` — Optional QWidget to display next to the file dialog and enable the user to do additional configuration.
+- `dontUseNativeDialog` — If set this parameter overrides the global setDontUseNative flag
+
+### getSaveFilename
+
+```cpp
+QString ImFusion::QtHelpers::getSaveFilename (QWidget * parent, const QString & name, const QString & caption = QString(), const QString & filter = QString(), QString * selectedFilter = 0, const QString & defaultDir = QString(), QWidget * additionalWidget = nullptr, const QString & fileName = QString(), std::optional < bool > dontUseNativeDialog = std::nullopt)
+```
+
+Helper method to display a QFileDialog and ask the user for a file name to save data.
+
+The selected folder will be remembered.
+
+**Parameters:**
+
+- `parent` — Parent widget.
+- `name` — Identifier for the file type to open. This name will be used to remember the selected folder.
+- `caption` — Caption of the dialog.
+- `filter` — Filter to use for the file dialog.
+- `selectedFilter` — Optionally selected filter.
+- `defaultDir` — Default directory to use if there is no remembered directory.
+- `additionalWidget` — Optional QWidget to display next to the file dialog and enable the user to do additional configuration.
+- `defaultName` — Default file name to show in file dialog
+- `dontUseNativeDialog` — If set this parameter overrides the global setDontUseNative flag
+
+### getOpenFilename
+
+```cpp
+QString ImFusion::QtHelpers::getOpenFilename (QWidget * parent, const QString & name, const QString & caption = QString(), const QString & filter = QString(), QString * selectedFilter = 0, const QString & defaultDir = QString(), QWidget * additionalWidget = nullptr, std::optional < bool > dontUseNativeDialog = std::nullopt)
+```
+
+Helper method to display a QFileDialog and ask the user for a *single* file to open.
+
+The selected folder will be remembered.
+
+**Parameters:**
+
+- `parent` — Parent widget.
+- `name` — Identifier for the file type to open. This name will be used to remember the selected folder.
+- `caption` — Caption of the dialog.
+- `filter` — Filter to use for the file dialog.
+- `selectedFilter` — Optionally selected filter.
+- `defaultDir` — Default directory to use if there is no remembered directory.
+- `additionalWidget` — Optional QWidget to display next to the file dialog and enable the user to do additional configuration.
+- `dontUseNativeDialog` — If set this parameter overrides the global setDontUseNative flag
+
+### setSilent
+
+```cpp
+void ImFusion::QtHelpers::setSilent (QCheckBox * element, bool value)
+```
+
+Silently set the value of a check box
+
+### makeExpandable
+
+```cpp
+void ImFusion::QtHelpers::makeExpandable (QGroupBox * box)
+```
+
+Makes the QGroupBox expandable.
+
+An expandable QGroupBox becomes checkable and receives a special style. When it is unchecked, the widgets inside the QGroupBox are not visible. This can be used to, for example, group and hide advanced settings.
+
+### makeTabWidget
+
+```cpp
+QWidget * ImFusion::QtHelpers::makeTabWidget (QTabBar * tabBar, const QList< QPair< QString, QWidget * > > & tabs)
+```
+
+Creates a tab widget of the 'tabBar' and a list of 'tabs'.
+
+Each item in 'tabs' contains the title of the tab and the widget representing the tab content. The returned widget contains the tabBar and all tab widgets, and must be deleted by the caller (or added to a layout). The 'tabBar' and 'tabs' are removed from their current layout (if they have any) and are re-parented to the returned widget. Contrary to a QTabWidget, the vertical size of the tab widget depends on the current tab and not on the tab with the largest vertical size.
+
+NOTE: This is currently only styled correctly with a documentMode QTabBar.
+
+### generateMultiSizeIcon
+
+```cpp
+QIcon ImFusion::QtHelpers::generateMultiSizeIcon (const char * name, const char * nameOff = nullptr, const char * nameDisabled = nullptr)
+```
+
+Generate a QIcon object with multiple version of an icon (different sizes).
+
+The name will be automatically resolved to multiple resource paths. For example IconClose.png becomes :/icons/16/IconClose.png, :/icons/32/IconClose.png... The returned icons will be cached internally.
+
+### setPrimaryScreen
+
+```cpp
+void ImFusion::QtHelpers::setPrimaryScreen (const QScreen * primaryScreen)
+```
+
+Sets the optional reference screen to use to determine DPI scaling/device pixel ratio.
+
+If this is null, will use what the Qt backend considers the primary screen.
+
+### convertStyleSheet
+
+```cpp
+QMap< QString, QString > ImFusion::QtHelpers::convertStyleSheet (QString & style)
+```
+
+Converts a CSS stylesheet from our extended CSS syntax to regular CSS that Qt understands.
+
+The extended CSS syntax supports variables using @ (similar to Less):
+
+```cpp
+/* define a variable */
+@grey: #101114;
+
+QWidget {
+ /* use variable */
+    background-color: @grey;
+}
+```
+ fragment
+Additionally it will scale all px values with customUiScaling() \* dpiScale() for better support in high dpi displays.
+
+### convertDICOMDate
+
+```cpp
+QDate ImFusion::QtHelpers::convertDICOMDate (const std::string & str)
+```
+
+Converts the string to a date.
+
+Aside from the standard DICOM format yyyyMMdd, it will also try the following formats (in that order): yyMMdd, ddMMyyyy, ddMMyy The first format producing a valid QDate is used. If no format is working an invalid QDate is returned. [http://dicom.nema.org/dicom/2013/output/chtml/part05/sect_6.2.html](http://dicom.nema.org/dicom/2013/output/chtml/part05/sect_6.2.html)
+
+### convertDICOMTime
+
+```cpp
+QTime ImFusion::QtHelpers::convertDICOMTime (const std::string & str, std::optional < Dicom::Error > * errorOut = nullptr)
+```
+
+Converts the string to a time.
+
+If a non-standardised time is parsed, an InvalidElementValue warning will be added to errorOut. If a time cannot be parsed at all, an InvalidElementValue error will be added to errorOut and an invalid QTime is returned. [http://dicom.nema.org/dicom/2013/output/chtml/part05/sect_6.2.html](http://dicom.nema.org/dicom/2013/output/chtml/part05/sect_6.2.html)
+
+### convertDICOMDateTime
+
+```cpp
+QDateTime ImFusion::QtHelpers::convertDICOMDateTime (const std::string & str, std::optional < Dicom::Error > * errorOut = nullptr)
+```
+
+Converts the string to a date time.
+
+We currently don't support all allowed combinations. Especially omitting parts but still specify a timezone is not well supported. The timezone is always converted to UTC. [http://dicom.nema.org/dicom/2013/output/chtml/part05/sect_6.2.html](http://dicom.nema.org/dicom/2013/output/chtml/part05/sect_6.2.html)
+
+### convertDICOMSex
+
+```cpp
+QString ImFusion::QtHelpers::convertDICOMSex (const QString & str)
+```
+
+Converts the DICOM sex string M, F or O to male, female or other.
+
+Any other string is returned unchanged.
+
+### generateThumbnail
+
+```cpp
+QImage ImFusion::QtHelpers::generateThumbnail (DcmDataset & dataset, bool copyDataset = false, std::optional < std::uint32_t > frame = std::nullopt)
+```
+
+Generates a thumbnail of the given DICOM or a null image if no thumbnail can be generated.
+
+Optionally clones the given dataset. This is recommended when this function is called from another thread since DcmDataset isn't entirely thread-safe. For multi-frame dicom a specific frame can be optionally selected

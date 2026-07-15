@@ -1,0 +1,46 @@
+---
+title: "ImFusion::MaskEditorController"
+sidebarTitle: "MaskEditorController"
+---
+
+## Public Slots
+
+- void **addMask** ()
+- void **removeMask** ()
+- void **extractMask** ()
+- void **attachMask** ()
+- void **attachMaskImage** (QAction \*action)
+- void **changeMask** (const QString &type)
+- void **setUseMaskRange** (bool enable)
+- void **setValueRange** ()
+- void **setValueRangeEI** ()
+- void **onUpdateCropping** ()
+- void **onCroppingSize** (bool flag)
+- void **resetCroppingBox** ()
+- void **onClampToBorder** (bool flag)
+- void **onBorderColor** (bool flag)
+- void **onUpdateSkipping** ()
+
+## Signals
+
+- void **maskEdited** ()
+
+## Public Member Functions
+
+- **MaskEditorController** ([MaskEditor](/cpp-sdk/4.5/api/classes/imfusion-maskeditor) \*alg, QWidget \*parent=nullptr)
+- void [init](#init) () override — Two-step initialization function to be implemented by subclasses.
+- void **selectionChanged** () — Used to update [GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui) in case of individual masks per frame.
+
+## Member Function Documentation
+
+### init
+
+```cpp
+void ImFusion::MaskEditorController::init ()
+```
+
+*override, virtual*
+
+Two-step initialization function to be implemented by subclasses.
+
+This function is called by [setMainWindowBase()](/cpp-sdk/4.5/api/classes/imfusion-controller) after the [m_disp](/cpp-sdk/4.5/api/classes/imfusion-controller) and [m_main](/cpp-sdk/4.5/api/classes/imfusion-controller) attributes have been set and hence a complete initialization of the controller is possible at this point.

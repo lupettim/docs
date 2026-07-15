@@ -1,0 +1,91 @@
+---
+title: "ImFusion::SplineLabelPainterAlgorithm"
+sidebarTitle: "SplineLabelPainterAlgorithm"
+description: "Algorithm for executing the label painter on an image guided by a spline."
+---
+
+`#include <ImFusion/Seg/SplineLabelPainterAlgorithm.h>`
+
+## Overview
+
+[Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) for executing the label painter on an image guided by a spline.
+
+## Public Member Functions
+
+- **SplineLabelPainterAlgorithm** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*imgIn) — [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) constructor.
+- **~SplineLabelPainterAlgorithm** () override — Destructor.
+- [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* **inputImage** () const — Return the input image.
+- void **setSpline** (const [Spline](/cpp-sdk/4.5/api/classes/imfusion-spline) \*s) — Sets the spline.
+- const [Spline](/cpp-sdk/4.5/api/classes/imfusion-spline) \* **spline** () const — Retrieves the spline.
+- void [compute](#compute) () override — Compute the result.
+- [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) [takeOutput](#takeoutput) () override — If the algorithm creates new image data, it has to be transferred here.
+- void **setLabel** (unsigned char lab) — Set the label value.
+- void **setNumSplintPoints** (int numPoints) — Set the number of spline points.
+- void **setRadius** (double radius) — Set the radius.
+- void **setAdaptiveness** (double adaptiveness) — Set the adaptiveness.
+
+## Static Public Member Functions
+
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a) — If data is compatible with algorithm return true. If a is not zero, create algorithm with input data.
+
+## Public Attributes
+
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; unsigned char &gt; **p_label** = &#123;"label", 1, \*this&#125; — The label value that will be written to the labelmap.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; int &gt; [p_numSplinePoints](#p-numsplinepoints) = &#123;"numSplinePts", 1000, \*this&#125; — The number of points used to interpolate the spline.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; double &gt; **p_radius** = &#123;"radius", 20, \*this&#125; — Radius in pixels that will be filled around the spline.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; double &gt; [p_adaptiveness](#p-adaptiveness) = &#123;"adaptiveness", 0.8, \*this&#125; — How strong the labels adopt to the pixel intensities inside the radius.
+
+## Protected Member Functions
+
+- void **computeSweep** ([TrackedSharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-trackedsharedimageset) \*inputTsis)
+- void **computeVolume** ()
+
+## Protected Attributes
+
+- [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* **m_img** — Input image.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &gt; **m_imgOut** — Output label image.
+- const [Spline](/cpp-sdk/4.5/api/classes/imfusion-spline) \* **m_spline** — [Spline](/cpp-sdk/4.5/api/classes/imfusion-spline).
+
+## Member Function Documentation
+
+### compute
+
+```cpp
+void ImFusion::SplineLabelPainterAlgorithm::compute ()
+```
+
+*override, virtual*
+
+Compute the result.
+
+### takeOutput
+
+```cpp
+OwningDataList ImFusion::SplineLabelPainterAlgorithm::takeOutput ()
+```
+
+*override, virtual*
+
+If the algorithm creates new image data, it has to be transferred here.
+
+## Member Data Documentation
+
+### p_numSplinePoints
+
+```cpp
+Parameter <int> ImFusion::SplineLabelPainterAlgorithm::p_numSplinePoints = {"numSplinePts", 1000, *this}
+```
+
+The number of points used to interpolate the spline.
+
+A value of 0 or less, disables interpolation and treats the spline as a polyline.
+
+### p_adaptiveness
+
+```cpp
+Parameter <double> ImFusion::SplineLabelPainterAlgorithm::p_adaptiveness = {"adaptiveness", 0.8, *this}
+```
+
+How strong the labels adopt to the pixel intensities inside the radius.
+
+A value of 0 disables this.

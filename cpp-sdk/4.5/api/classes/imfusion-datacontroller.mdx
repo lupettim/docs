@@ -1,0 +1,119 @@
+---
+title: "ImFusion::DataController"
+sidebarTitle: "DataController"
+description: "Specialization of the Controller interface to be used with Data instances."
+---
+
+`#include <ImFusion/GUI/DataController.h>`
+
+## Overview
+
+Specialization of the [Controller](/cpp-sdk/4.5/api/classes/imfusion-controller) interface to be used with [Data](/cpp-sdk/4.5/api/classes/imfusion-data) instances.
+
+A [DataController](/cpp-sdk/4.5/api/classes/imfusion-datacontroller) is supposed to provide a [GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui) enabling the user to configure and control [Data](/cpp-sdk/4.5/api/classes/imfusion-data) instances of the parent [MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase). In contrast to AlgorithmControllers, a [DataController](/cpp-sdk/4.5/api/classes/imfusion-datacontroller) should be selection-sensitive meaning that it controls the currently selected [Data](/cpp-sdk/4.5/api/classes/imfusion-data) instance. Therefore, you can use the following callbacks from the base class:
+
+- [onSelectedDataChanged()](/cpp-sdk/4.5/api/classes/imfusion-controller) is called whenever the selection in the [DataWidget](/cpp-sdk/4.5/api/classes/imfusion-datawidget) changes.
+- [onVisibleDataChanged()](/cpp-sdk/4.5/api/classes/imfusion-controller) is called whenever the visible data in the [DisplayWidgetMulti](/cpp-sdk/4.5/api/classes/imfusion-displaywidgetmulti) changes.
+
+Since a [Controller](/cpp-sdk/4.5/api/classes/imfusion-controller) has access to [MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase) it can also react to all kinds of events but this should be used sparingly. The main purpose of a [DataController](/cpp-sdk/4.5/api/classes/imfusion-datacontroller) is to provide a custom [GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui) for [Data](/cpp-sdk/4.5/api/classes/imfusion-data) instances. Logic regarding how to display a particular type of [Data](/cpp-sdk/4.5/api/classes/imfusion-data) should be implemented using the [DataDisplayHandler](/cpp-sdk/4.5/api/classes/imfusion-datadisplayhandler) interface where possible!
+
+DataControllers are a very powerful tool and can serve as customization point to provide an additional user interface. Assume you have a custom [Data](/cpp-sdk/4.5/api/classes/imfusion-data) type where you would like to offer a custom [GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui) to change properties of the [Data](/cpp-sdk/4.5/api/classes/imfusion-data) instance and/or launch any kind of functionality. In [DataController::createCompatible()](#createcompatible) you would check for the presence of that [DataComponent](/cpp-sdk/4.5/api/classes/imfusion-datacomponent) and create a [DataController](/cpp-sdk/4.5/api/classes/imfusion-datacontroller) instance accordingly. In [DataController::onSelectedDataChanged()](/cpp-sdk/4.5/api/classes/imfusion-controller) you get notified about the currently selected data and can update [GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui) state/internal bookkeeping. In cases where the [DataDisplayHandler](/cpp-sdk/4.5/api/classes/imfusion-datadisplayhandler) interface is not sufficient you could implement functionality for managing custom renderers in [DataController::onVisibleDataChanged()](/cpp-sdk/4.5/api/classes/imfusion-controller).
+
+**Note:** DataControllers should be registered with the [AlgorithmControllerFactory](/cpp-sdk/4.5/api/classes/imfusion-algorithmcontrollerfactory) interface so that [MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase) can instantiate them when needed. A [DataController](/cpp-sdk/4.5/api/classes/imfusion-datacontroller) is created the first time a dataset is loaded that is accepted by [createCompatible()](#createcompatible). It stays alive as long as at least one such dataset is still in the [DataModel](/cpp-sdk/4.5/api/classes/imfusion-datamodel).
+
+**See also:** [Data](/cpp-sdk/4.5/api/classes/imfusion-data), [DataDisplayHandler](/cpp-sdk/4.5/api/classes/imfusion-datadisplayhandler), [AlgorithmControllerFactory](/cpp-sdk/4.5/api/classes/imfusion-algorithmcontrollerfactory), [MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase), [ControllerDecorator](/cpp-sdk/4.5/api/classes/imfusion-controllerdecorator), [AlgorithmController](/cpp-sdk/4.5/api/classes/imfusion-algorithmcontroller)
+
+## Public Member Functions
+
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [title](#title) () const override — Returns the shown widget title if the controller is shown in a mode that supports this (e.g.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **factoryName** () const — Returns the name used to identify this [DataController](/cpp-sdk/4.5/api/classes/imfusion-datacontroller) in the factory.
+- void **setFactoryName** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &factoryName) — Sets the name used to identify this [DataController](/cpp-sdk/4.5/api/classes/imfusion-datacontroller) in the factory.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Location](/cpp-sdk/4.5/api/classes/imfusion-controller) &gt; [supportedLocations](#supportedlocations) () const override — Returns the list of locations in which this controller is allowed to be placed by the parent [MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase).
+- [Location](/cpp-sdk/4.5/api/classes/imfusion-controller) [preferredLocation](#preferredlocation) () const override — Returns the preferred location in which the parent [MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase) should place this controller.
+
+## Static Public Member Functions
+
+- static bool [createCompatible](#createcompatible) (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &, DataController \*\*=0) — Factory interface for DataControllers: If data is compatible with data controller return true.
+
+## Protected Member Functions
+
+- virtual bool [supportsToolBar](#supportstoolbar) () const — Subclasses can return true if they support showing their [GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui) in [Location::ToolBar](/cpp-sdk/4.5/api/classes/imfusion-controller).
+- void [init](#init) () override — Two-step initialization function to be implemented by subclasses.
+
+## Protected Attributes
+
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **m_factoryName**
+
+## Member Function Documentation
+
+### createCompatible
+
+```cpp
+bool ImFusion::DataController::createCompatible (const DataList &, DataController ** = 0)
+```
+
+*inline, static*
+
+Factory interface for DataControllers: If data is compatible with data controller return true.
+
+If a is not zero, create data controller with input data.
+
+### title
+
+```cpp
+std::string ImFusion::DataController::title () const
+```
+
+*override, virtual*
+
+Returns the shown widget title if the controller is shown in a mode that supports this (e.g.
+
+when in dock). Unless overridden, it returns the factory name.
+
+### supportedLocations
+
+```cpp
+std::vector < Location > ImFusion::DataController::supportedLocations () const
+```
+
+*override, virtual*
+
+Returns the list of locations in which this controller is allowed to be placed by the parent [MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase).
+
+If the controller should not be placed/wrapped by the host but stand by itself you should return a list containing only [Location::Naked](/cpp-sdk/4.5/api/classes/imfusion-controller).
+
+### preferredLocation
+
+```cpp
+Location ImFusion::DataController::preferredLocation () const
+```
+
+*override, virtual*
+
+Returns the preferred location in which the parent [MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase) should place this controller.
+
+If the controller should not be placed/wrapped by the host but stand by itself you should return [Location::Naked](/cpp-sdk/4.5/api/classes/imfusion-controller).
+
+### supportsToolBar
+
+```cpp
+virtual bool ImFusion::DataController::supportsToolBar () const
+```
+
+*inline, protected, virtual*
+
+Subclasses can return true if they support showing their [GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui) in [Location::ToolBar](/cpp-sdk/4.5/api/classes/imfusion-controller).
+
+This interface is used by the default implementation of [supportedLocations()](#supportedlocations) and [preferredLocation()](#preferredlocation) to decide whether to use [Location::ToolBar](/cpp-sdk/4.5/api/classes/imfusion-controller).
+
+### init
+
+```cpp
+void ImFusion::DataController::init ()
+```
+
+*override, protected, virtual*
+
+Two-step initialization function to be implemented by subclasses.
+
+This function is called by [setMainWindowBase()](/cpp-sdk/4.5/api/classes/imfusion-controller) after the [m_disp](/cpp-sdk/4.5/api/classes/imfusion-controller) and [m_main](/cpp-sdk/4.5/api/classes/imfusion-controller) attributes have been set and hence a complete initialization of the controller is possible at this point.

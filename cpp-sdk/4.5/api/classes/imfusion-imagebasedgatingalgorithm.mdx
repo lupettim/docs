@@ -1,0 +1,175 @@
+---
+title: "ImFusion::ImageBasedGatingAlgorithm"
+sidebarTitle: "ImageBasedGatingAlgorithm"
+description: "Compute cardiac or respiratory gating parameters by detecting periodic structural change in the images."
+---
+
+`#include <ImFusion/Reg/ImageBasedGatingAlgorithm.h>`
+
+## Overview
+
+Compute cardiac or respiratory gating parameters by detecting periodic structural change in the images.
+
+## Public Member Functions
+
+- **ImageBasedGatingAlgorithm** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*img)
+- void [compute](#compute) () override — Execute the algorithm.
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+- [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) [takeOutput](#takeoutput) () override — Return any new [Data](/cpp-sdk/4.5/api/classes/imfusion-data) that was created by the [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) during the last call to [compute()](#compute).
+- void **setUseForwardImage** (bool v)
+
+## Static Public Member Functions
+
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=nullptr)
+
+## Protected Member Functions
+
+- void **findJointSimilarityMinima** (const [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; float &gt; &backwardSimilarityBand, const [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; float &gt; &forwardSimilarityBand, [GatingMetadata](/cpp-sdk/4.5/api/classes/imfusion-gatingmetadata) &meta)
+- void **findMatchingFrameCandidates** (const [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; float &gt; &bandImg, int kernelSize, int filterRange, [std::map](http://en.cppreference.com/w/cpp/container/map.html)&lt; int, [std::map](http://en.cppreference.com/w/cpp/container/map.html)&lt; int, int &gt; &gt; &matchingFrames, bool centeredKernel)
+- void **findNumberOfMinimalPhases** ([TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; float &gt; \*forwardSimImage, int bandSize)
+- void **estimateSimilarityBandWidth** ()
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &gt; **computeBackwardsSimilarity** ()
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::array](http://en.cppreference.com/w/cpp/container/array.html)&lt; int, 2 &gt; &gt; **findMatchingFrames** ([TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; float &gt; \*backwardSimImage, [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; float &gt; \*forwardSimImage)
+
+## Protected Attributes
+
+- int [m_simBandWidth](#m-simbandwidth) = 0 — Size of the similarity band used for the computation.
+- bool [m_correctSmoothingShift](#m-correctsmoothingshift) = true — Whether to correct the slight offset in the gating delta signal caused by smoothing of the similarity signal.
+- bool **m_createDebugData** = false — Turning this on causes various debug data to be added to the algorithm output (which is usually empty).
+- bool [m_skipNeighbourFrames](#m-skipneighbourframes) = false — Whether to ignore the frames immediately before and after when computing local similarity.
+- bool [m_optimizeCandidateGrid](#m-optimizecandidategrid) = true — Whether to use numerical optimization when determining which delta peaks to keep.
+- int [m_minimaMatchingDistance](#m-minimamatchingdistance) = 5 — Matching distance used when determining where both the backwards and forwards similarity have joint minima, in frames.
+- int [m_minimalPhases](#m-minimalphases) = 0 — How many low similarity parts the movement goes through per cycle.
+- bool **m_useForwardSim** = true
+- vec2 **m_cyclesPerMinSearchRange** = vec2(20.0, 120.0)
+- [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* **m_img**
+- [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) **m_out**
+
+## Member Function Documentation
+
+### compute
+
+```cpp
+void ImFusion::ImageBasedGatingAlgorithm::compute ()
+```
+
+*override, virtual*
+
+Execute the algorithm.
+
+### configure
+
+```cpp
+void ImFusion::ImageBasedGatingAlgorithm::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### configuration
+
+```cpp
+void ImFusion::ImageBasedGatingAlgorithm::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality
+
+### takeOutput
+
+```cpp
+OwningDataList ImFusion::ImageBasedGatingAlgorithm::takeOutput ()
+```
+
+*override, virtual*
+
+Return any new [Data](/cpp-sdk/4.5/api/classes/imfusion-data) that was created by the [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) during the last call to [compute()](#compute).
+
+The default implementation will return an empty list.
+
+**Note:** Since ownership of the data is transferred, you can call this method only once between calls to [compute()](#compute).
+
+## Member Data Documentation
+
+### m_simBandWidth
+
+```cpp
+int ImFusion::ImageBasedGatingAlgorithm::m_simBandWidth = 0
+```
+
+*protected*
+
+Size of the similarity band used for the computation.
+
+The algorithm becomes unstable if this value is not greater than half a cycle duration of the target motion, in frames. A value of 0 will cause this to be detected automatically via frequency analysis, aiming for 60% cycle duration.
+
+### m_correctSmoothingShift
+
+```cpp
+bool ImFusion::ImageBasedGatingAlgorithm::m_correctSmoothingShift = true
+```
+
+*protected*
+
+Whether to correct the slight offset in the gating delta signal caused by smoothing of the similarity signal.
+
+If this is off, the delta signal will have a pretty much constant offset relative to inhale events. Requires localized use of the unfiltered similarity and can fail if that signal is very noisy.
+
+### m_skipNeighbourFrames
+
+```cpp
+bool ImFusion::ImageBasedGatingAlgorithm::m_skipNeighbourFrames = false
+```
+
+*protected*
+
+Whether to ignore the frames immediately before and after when computing local similarity.
+
+This can be used to attempt to reduce the effect of tearing produces by frame grabbers.
+
+### m_optimizeCandidateGrid
+
+```cpp
+bool ImFusion::ImageBasedGatingAlgorithm::m_optimizeCandidateGrid = true
+```
+
+*protected*
+
+Whether to use numerical optimization when determining which delta peaks to keep.
+
+This usually increases accuracy, especially when data is noisy. Also increases computation time though.
+
+### m_minimaMatchingDistance
+
+```cpp
+int ImFusion::ImageBasedGatingAlgorithm::m_minimaMatchingDistance = 5
+```
+
+*protected*
+
+Matching distance used when determining where both the backwards and forwards similarity have joint minima, in frames.
+
+Effects like probe movement can cause these 2 curves to be consistently offset, so some leeway is needed. Increase this number if not enough joint minima are detected (or the delta signal just looks too weird).
+
+### m_minimalPhases
+
+```cpp
+int ImFusion::ImageBasedGatingAlgorithm::m_minimalPhases = 0
+```
+
+*protected*
+
+How many low similarity parts the movement goes through per cycle.
+
+Leave at 0 to attempt automatic detection.

@@ -1,0 +1,172 @@
+---
+title: "ImFusion::DicomLoader"
+sidebarTitle: "DicomLoader"
+description: "The DicomLoader class loads images from DICOM files."
+---
+
+`#include <ImFusion/Dicom/DicomLoader.h>`
+
+## Overview
+
+The [DicomLoader](/cpp-sdk/4.5/api/classes/imfusion-dicomloader) class loads images from DICOM files.
+
+A [DicomLoader](/cpp-sdk/4.5/api/classes/imfusion-dicomloader) instance can be created from a single file or multiple files. Images with the same series instance UID are combined to volumes if possible. Each image is represented by a [Dicom::IOD](/cpp-sdk/4.5/api/classes/imfusion-dicom-iod) that structures all image related dicom tags. When loading multiple images, be aware that all images are loaded into the main memory at once. Therefore, it can be more efficient to load individual series with separate [DicomLoader](/cpp-sdk/4.5/api/classes/imfusion-dicomloader) objects. A single series can be loaded by setting a series UID filter. However, this still needs to load all files first.
+
+Example:
+
+```cpp
+DicomLoader io("test.dcm");
+// load all series:
+auto images = io.loadImages();
+
+// load only specific UID
+io.setSeriesUIDFilter("1.2.392.200036.9116.2.5.1.48.1216111735.1427333783.608709");
+images = io.loadImages();
+```
+ fragment
+Paths passed to the constructor can be either local paths or URLs. Only the schemes "file:" and "pacs:" are supported. All others are handled as "file:". Paths to folders will be ignored.
+
+If all frames in a series have the same SeriesInstanceUID, ImageType and SOP class, they are loaded as a single [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset). Otherwise a single series might be split into multiple SharedImageSets. A DICOM file that contains a NumberOfFrames value larger than 1, is always loaded as an individual [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset).
+
+The [DicomLoader](/cpp-sdk/4.5/api/classes/imfusion-dicomloader) uses [Dicom::IOD_Registry](/cpp-sdk/4.5/api/classes/imfusion-dicom-iod-registry) to generate the [Dicom::IOD](/cpp-sdk/4.5/api/classes/imfusion-dicom-iod) instance(s) used for loading the image data. It also runs any enabled [Extension](/cpp-sdk/4.5/api/classes/imfusion-dicom-extension) that are part of the [Dicom::IOD_Registry](/cpp-sdk/4.5/api/classes/imfusion-dicom-iod-registry).
+
+**Error handling:** Errors are generated via the [Dicom::ErrorRecorder](/cpp-sdk/4.5/api/classes/imfusion-dicom-errorrecorder) interface. To retrieve errors that are generated during loading, register one or multiple custom handlers with registerErrorHandler. By default no handler is registered.
+
+Example:
+
+```cpp
+DicomLoader io("test.dcm");
+io.registerErrorHandler([](const Dicom::Error& e) { LOG_INFO(e.details); }
+auto images = io.loadImages();
+```
+ fragment
+
+## Classes
+
+- struct [RawBuffer](/cpp-sdk/4.5/api/structs/imfusion-dicomloader-rawbuffer)
+
+## Public Types
+
+- using **SharedImageSetDescriptor** = [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt;[ImageDescriptor](/cpp-sdk/4.5/api/structs/imfusion-imagedescriptor)&gt;
+
+## Public Member Functions
+
+- **DicomLoader** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &path, [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) \*progress=nullptr, Dicom::SharedDatasetCache cache=nullptr, [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [Dicom::IOD_Registry](/cpp-sdk/4.5/api/classes/imfusion-dicom-iod-registry) &gt; registry=nullptr) — Creates a [DicomLoader](/cpp-sdk/4.5/api/classes/imfusion-dicomloader) instance from a single file.
+- **DicomLoader** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; &paths, [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) \*progress=nullptr, Dicom::SharedDatasetCache cache=nullptr, [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [Dicom::IOD_Registry](/cpp-sdk/4.5/api/classes/imfusion-dicom-iod-registry) &gt; registry=nullptr) — Creates a [DicomLoader](/cpp-sdk/4.5/api/classes/imfusion-dicomloader) instance from multiple files.
+- [DicomLoader](#dicomloader-1-2) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; DcmDataset &gt; &gt; &datasets, [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) \*progress=nullptr, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; &paths=[std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt;(), [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [Dicom::IOD_Registry](/cpp-sdk/4.5/api/classes/imfusion-dicom-iod-registry) &gt; registry=nullptr) — Creates a [DicomLoader](/cpp-sdk/4.5/api/classes/imfusion-dicomloader) instance from existing DcmDatasets.
+- **DicomLoader** ([std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; DcmDataset &gt; dataset, [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) \*progress=nullptr, [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [Dicom::IOD_Registry](/cpp-sdk/4.5/api/classes/imfusion-dicom-iod-registry) &gt; registry=&#123;&#125;) — Creates a [DicomLoader](/cpp-sdk/4.5/api/classes/imfusion-dicomloader) instance from an existing DcmDataset.
+- [DicomLoader](#dicomloader-2-2) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [RawBuffer](/cpp-sdk/4.5/api/structs/imfusion-dicomloader-rawbuffer) &gt; &buffers, [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) \*progress=nullptr, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; &paths=[std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt;(), [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [Dicom::IOD_Registry](/cpp-sdk/4.5/api/classes/imfusion-dicom-iod-registry) &gt; registry=nullptr) — Creates a [DicomLoader](/cpp-sdk/4.5/api/classes/imfusion-dicomloader) instance from buffers of DcmDatasets.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &gt; &gt; [loadImages](#loadimages) () — Loads all images of all series.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::pair](http://en.cppreference.com/w/cpp/utility/pair.html)&lt; [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [ImFusion::SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &gt;, [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) &gt; &gt; **loadImagesWithAdditionalData** () — Loads all images of all series plus additional data (such as segmentations).
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; SharedImageSetDescriptor &gt; [loadDescriptors](#loaddescriptors) () — Similar to loadImages but does not load any pixel data but only the ImageDescriptors.
+- void **setSeriesUidFilter** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &filter) — Only loads series that contain the given series UID.
+- void [setSplitVolumes](#setsplitvolumes) (bool enable) — Sets the flag whether loaded data should be split up for best support in the ImFusionSuite.
+- bool **splitsVolumes** () const — Returns the flag weather loaded data is prepared for best support in the ImFusionSuite.
+- void [setReconstructVolumes](#setreconstructvolumes) (bool enable) — Sets the flag whether loaded data should be reconstructed to volumes if possible.
+- bool **reconstructionVolumes** () const — Returns whether loaded data will be reconstructed to volumes if possible.
+- void [setIgnoreDuplicateFrames](#setignoreduplicateframes) (bool enable) — Sets the flag whether frames that are consider duplicates of other frames are ignored.
+- bool **ignoreDuplicateFrames** () const — Returns whether duplicated frames are ignored.
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Dicom::DatasetIodPair](/cpp-sdk/4.5/api/structs/imfusion-dicom-datasetiodpair) &gt; & **datasets** () const — List of DcmDatasets and corresponding IODs for each loaded file.
+
+## Static Public Member Functions
+
+- static [std::multimap](http://en.cppreference.com/w/cpp/container/multimap.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html), [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Dicom::IOD](/cpp-sdk/4.5/api/classes/imfusion-dicom-iod) \* &gt; &gt; [groupSeries](#groupseries) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Dicom::DatasetIodPair](/cpp-sdk/4.5/api/structs/imfusion-dicom-datasetiodpair) &gt; &datasets, const [Dicom::ErrorRecorder](/cpp-sdk/4.5/api/classes/imfusion-dicom-errorrecorder) &recorder) — Groups datasets by series instance UID.
+- static [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Dicom::IOD](/cpp-sdk/4.5/api/classes/imfusion-dicom-iod) \* &gt; &gt; [splitDuplicatedFrames](#splitduplicatedframes) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Dicom::IOD](/cpp-sdk/4.5/api/classes/imfusion-dicom-iod) \* &gt; &series, const [Dicom::ErrorRecorder](/cpp-sdk/4.5/api/classes/imfusion-dicom-errorrecorder) &recorder) — Splits duplicated IODs from the list of series into separate lists.
+
+## Constructor & Destructor Documentation
+
+### DicomLoader
+
+```cpp
+ImFusion::DicomLoader::DicomLoader (const std::vector < std::shared_ptr < DcmDataset > > & datasets, Progress * progress = nullptr, const std::vector < std::string > & paths = std::vector < std::string >(), std::shared_ptr < Dicom::IOD_Registry > registry = nullptr)
+```
+
+Creates a [DicomLoader](/cpp-sdk/4.5/api/classes/imfusion-dicomloader) instance from existing DcmDatasets.
+
+If paths has the same size as datasets, they will be used as DicomIOD::pathInfo.
+
+### DicomLoader
+
+```cpp
+ImFusion::DicomLoader::DicomLoader (const std::vector < RawBuffer > & buffers, Progress * progress = nullptr, const std::vector < std::string > & paths = std::vector < std::string >(), std::shared_ptr < Dicom::IOD_Registry > registry = nullptr)
+```
+
+Creates a [DicomLoader](/cpp-sdk/4.5/api/classes/imfusion-dicomloader) instance from buffers of DcmDatasets.
+
+The buffers are assumed to be directly retrieved from DICOM files. The loader does not take ownership and the buffers can be safely deleted after the constructor is executed. If paths has the same size as datasets, they will be used as DicomIOD::pathInfo.
+
+## Member Function Documentation
+
+### loadImages
+
+```cpp
+std::vector < std::unique_ptr < SharedImageSet > > ImFusion::DicomLoader::loadImages ()
+```
+
+Loads all images of all series.
+
+Usually one image corresponds to one series but there are exceptions such as series that contain both 2D and 3D data or Ultrasound [Series](/cpp-sdk/4.5/api/structs/imfusion-dicom-series).
+
+### loadDescriptors
+
+```cpp
+std::vector < SharedImageSetDescriptor > ImFusion::DicomLoader::loadDescriptors ()
+```
+
+Similar to loadImages but does not load any pixel data but only the ImageDescriptors.
+
+So a [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) is represented by a [ImageDescriptor](/cpp-sdk/4.5/api/structs/imfusion-imagedescriptor) and a [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) (i.e. a list of [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage)) therefore by a list of ImageDescriptors.
+
+### setSplitVolumes
+
+```cpp
+void ImFusion::DicomLoader::setSplitVolumes (bool enable)
+```
+
+Sets the flag whether loaded data should be split up for best support in the ImFusionSuite.
+
+If enabled, splits SharedImageSets that contain both 2D and 3D images into a single 2D image set. This usually happens when a volume could not be reconstructed correctly e.g. due to missing slices. Enabled by default.
+
+### setReconstructVolumes
+
+```cpp
+void ImFusion::DicomLoader::setReconstructVolumes (bool enable)
+```
+
+Sets the flag whether loaded data should be reconstructed to volumes if possible.
+
+Disabling this will load all series as image sets. Enabled by default.
+
+### setIgnoreDuplicateFrames
+
+```cpp
+void ImFusion::DicomLoader::setIgnoreDuplicateFrames (bool enable)
+```
+
+Sets the flag whether frames that are consider duplicates of other frames are ignored.
+
+Frames are considered the equal if they have the same SOP Instance UID, patient ID and position/orientation. This can happen if a dataset was copied and a folder containing both copies is loaded. When this option is disabled, duplicated frames will be loaded as separate images. E.g. if a folder contains every file twice, one image will be loaded is this option is enabled, but two images when this option is disabled. Enabled by default.
+
+### groupSeries
+
+```cpp
+std::multimap < std::string, std::vector < Dicom::IOD * > > ImFusion::DicomLoader::groupSeries (const std::vector < Dicom::DatasetIodPair > & datasets, const Dicom::ErrorRecorder & recorder)
+```
+
+*static*
+
+Groups datasets by series instance UID.
+
+All IODs in one list will be of the same class. In case a series would end up with mixed IODs, it will be split according to their class types. Therefore, a single series instance UID can consist of multiple grouped dataset (hence the [std::multimap](http://en.cppreference.com/w/cpp/container/multimap.html)).
+
+### splitDuplicatedFrames
+
+```cpp
+std::vector < std::vector < Dicom::IOD * > > ImFusion::DicomLoader::splitDuplicatedFrames (const std::vector < Dicom::IOD * > & series, const Dicom::ErrorRecorder & recorder)
+```
+
+*static*
+
+Splits duplicated IODs from the list of series into separate lists.
+
+If no duplicated IODs have been detected, the returned list will only have one element. If a [IOD](/cpp-sdk/4.5/api/classes/imfusion-dicom-iod) has duplicates, the first found duplicate will be placed into the second list, the second found duplicate in the third list and so on. The order of IODs is retained. IODs are considered duplicates if certain tag values contain identical values (e.g. SOP Instance UID or [Patient](/cpp-sdk/4.5/api/structs/imfusion-dicom-patient) ID among others).

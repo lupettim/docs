@@ -1,0 +1,24 @@
+---
+title: "ImFusion::Dicom::RTStructureRenderingDataComponent"
+sidebarTitle: "RTStructureRenderingDataComponent"
+description: "Internal rendering data that represent a RT Structure."
+---
+
+`#include <ImFusion/Dicom/RTStructureDataComponent.h>`
+
+## Overview
+
+Internal rendering data that represent a RT Structure.
+
+See RTStructureSliceRenderer and [RTStructureDataController](/cpp-sdk/4.5/api/classes/imfusion-dicom-rtstructuredatacontroller).
+
+## Classes
+
+- struct [Polyline](/cpp-sdk/4.5/api/structs/imfusion-dicom-rtstructurerenderingdatacomponent-polyline)
+
+## Public Attributes
+
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [Polyline](/cpp-sdk/4.5/api/structs/imfusion-dicom-rtstructurerenderingdatacomponent-polyline) &gt; &gt; **polylines** — List of all the original contours in the DICOM.
+- [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) &gt; **meshParent** — The internal mesh referenced by [GlMesh](/cpp-sdk/4.5/api/classes/imfusion-glmesh). Must not be deleted while the mesh is using it!
+- [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [GlMesh](/cpp-sdk/4.5/api/classes/imfusion-glmesh) &gt; **mesh** — A mesh represent an approximated enclosing surface of the combined contours.
+- bool **meshIsGenerated** = false — Whether a mesh is currently generated asynchronously.

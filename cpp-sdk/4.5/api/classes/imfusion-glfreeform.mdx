@@ -1,0 +1,47 @@
+---
+title: "ImFusion::GlFreeform"
+sidebarTitle: "GlFreeform"
+description: "Freeform annotation."
+---
+
+`#include <ImFusion/GL/GlFreeform.h>`
+
+## Overview
+
+Freeform annotation. Draw whatever you want.
+
+## Public Member Functions
+
+- **GlFreeform** () — Creates the annotation.
+- **~GlFreeform** () override — Destroy the annotation.
+- void [draw](#draw) (const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &[view](/cpp-sdk/4.5/api/classes/imfusion-glannotation)) override — Render annotation.
+- bool **hitTestLine** (int, int, const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &) const
+- void **mergeWithOther** (const GlFreeform \*other, int startIndex, int endIndex) — Merges a second freeform annotation into this one, connecting at the indicated control points.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [typeName](#typename) () const override — Return unique identifier for this object class used for serialization.
+
+## Public Attributes
+
+- bool **m_isDrawing**
+- vec3 **m_cursorPos**
+
+## Member Function Documentation
+
+### draw
+
+```cpp
+void ImFusion::GlFreeform::draw (const GlView & view)
+```
+
+*override, virtual*
+
+Render annotation.
+
+### typeName
+
+```cpp
+std::string ImFusion::GlFreeform::typeName () const
+```
+
+*inline, override, virtual*
+
+Return unique identifier for this object class used for serialization.

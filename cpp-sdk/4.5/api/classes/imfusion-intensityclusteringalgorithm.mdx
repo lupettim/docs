@@ -1,0 +1,83 @@
+---
+title: "ImFusion::IntensityClusteringAlgorithm"
+sidebarTitle: "IntensityClusteringAlgorithm"
+description: "Algorithm for intensity-based clustering using k-means."
+---
+
+`#include <ImFusion/Seg/IntensityClusteringAlgorithm.h>`
+
+## Overview
+
+[Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) for intensity-based clustering using k-means.
+
+## Classes
+
+- class [GaussianCluster](/cpp-sdk/4.5/api/classes/imfusion-intensityclusteringalgorithm-gaussiancluster) — Struct to represent clusters.
+
+## Public Member Functions
+
+- **IntensityClusteringAlgorithm** ([SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*imgIn, [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*maskIn=nullptr) — Creates the algorithm.
+- **~IntensityClusteringAlgorithm** () override — Destroy the algorithm.
+- [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \* **retrieveResult** (bool transferOwnership) — Retrieve the result and possibly transfers ownership.
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Set one or multiple properties.
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Retrieve the properties of this object.
+- void [compute](#compute) () override — Compute the result.
+- [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) [takeOutput](#takeoutput) () override — If the algorithm creates new image data, it has to be transferred here.
+- void **setClusters** ([std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::pair](http://en.cppreference.com/w/cpp/utility/pair.html)&lt; double, double &gt; &gt; &clusters) — Set the list of Gaussian clusters. First component of each pair must be the mean, and second one the std of a cluster.
+- void **setFilterParam** (int size, double eps) — Set the filter parameters.
+
+## Static Public Member Functions
+
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=0) — If data is compatible with algorithm return true. If a is not zero, create algorithm with input data.
+
+## Protected Attributes
+
+- [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \* **m_img**
+- [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \* **m_mask**
+- [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \* **m_output**
+- int **m_filterSize**
+- double **m_filterEpsilon**
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [GaussianCluster](/cpp-sdk/4.5/api/classes/imfusion-intensityclusteringalgorithm-gaussiancluster) &gt; **m_clusters**
+- int **m_nbIterations**
+
+## Member Function Documentation
+
+### configure
+
+```cpp
+void ImFusion::IntensityClusteringAlgorithm::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Set one or multiple properties.
+
+### configuration
+
+```cpp
+void ImFusion::IntensityClusteringAlgorithm::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Retrieve the properties of this object.
+
+### compute
+
+```cpp
+void ImFusion::IntensityClusteringAlgorithm::compute ()
+```
+
+*override, virtual*
+
+Compute the result.
+
+### takeOutput
+
+```cpp
+OwningDataList ImFusion::IntensityClusteringAlgorithm::takeOutput ()
+```
+
+*override, virtual*
+
+If the algorithm creates new image data, it has to be transferred here.

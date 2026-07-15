@@ -1,0 +1,172 @@
+---
+title: "ImFusionGL Migration Guide"
+description: "With SDK version 2.32 we moved the low-level OpenGL wrapper classes and interfaces to the newly introduced ImFusionGL library."
+---
+
+With SDK version 2.32 we moved the low-level OpenGL wrapper classes and interfaces to the newly introduced ImFusionGL library.
+
+This opportunity was used to address a couple of issues of the existing classes and clean up the interfaces where needed. We introduced the new ImFusion::GL namespace so that all affected GlFooBar classes in ImFusionLib (header ImFusion/GL/GlFooBar.h) have their new counterpart in GL::FooBar (header ImFusion/Core/GL/FooBar.h). For many classes, it is sufficient to simply change the include and use the new class name. However, for some classes there are breaking changes (both in API and in behavior). Please follow this document to get detailed information on what has changed.
+
+See also: Context management
+
+### Context Creation
+
+We introduced the new [GL::Context::CreateInfo](/cpp-sdk/4.5/api/structs/imfusion-gl-context-createinfo) struct to encapsulate the configuration options for new OpenGL contexts to create. As a result, constructors/factory functions no longer take a series of arguments but a single instance of that struct. Furthermore, you can now configure whether you want to create a [Debug Context](https://www.khronos.org/opengl/wiki/Debug_Output) if supported (see also Debugging).
+
+```cpp
+GL::Context::CreateInfo createInfo;
+createInfo.requestedVersion = {4, 2};   // request at least OpenGL 4.2
+createInfo.useDebugContext = true;      // request a debug context if available
+
+// will create an offscreen context with the given specifications
+std::unique_ptr<GL::Context> ctx = GL::Context::create(createInfo);
+```
+ fragment
+
+### GlContext Helper Functions
+
+A series of static helper functions of the GlContext class has not been migrated to [GL::Context](/cpp-sdk/4.5/api/classes/imfusion-gl-context). Instead, their functionality has been moved to free functions with an improved interface in the [GL](/cpp-sdk/4.5/api/namespaces/imfusion-gl) namespace, see Utilities. You can use the GlContextDeprecationLayer namespace as a temporary workaround to keep the old API.
+
+### GLCHECK and GL_CALL() Macros
+
+The GLCHECK and GL_CALL() have been migrated to ImFusionGL (now in Core/GL/Debug.h). However, we discourage relying on this kind of explicit error checking because it's cumbersome and rather ineffective. Instead, we recommend to use the OpenGL Debug Context facilities to track OpenGL errors.
+
+See also. Texture management
+
+### Textures
+
+Originally, OpenGL texture objects were solely handled by the [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) class, which had some disadvantages such as such as doing certain opaque format conversions or not supporting special targets such as array textures. ImFusionGL introduces the new [GL::Texture](/cpp-sdk/4.5/api/classes/imfusion-gl-texture) class to more closesly model the API of OpenGL texture objects independent of the [ImFusion Image API](/cpp-sdk/4.5/api/guides/image-data-tutorial). The [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) class now holds a Gl::Texture internally and provides an implicit conversion to a [GL::Texture](/cpp-sdk/4.5/api/classes/imfusion-gl-texture) reference so that you can pass it easily to other ImFusionGL classes expecting a [GL::Texture](/cpp-sdk/4.5/api/classes/imfusion-gl-texture) as input.
+
+**Note:** [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) will remain the general purpose class for dealing with high-level images backed by OpenGL and you should continue using them if you like. However, if you need a less high-level abstraction of an OpenGL texture and/or more flexibility use the new [GL::Texture](/cpp-sdk/4.5/api/classes/imfusion-gl-texture) class.
+
+Finally, we introduced the [GL::InternalFormat](/cpp-sdk/4.5/api/classes/imfusion-gl-internalformat) class serving as scoped enumeration with a couple of convenience functions for working with texture formats.
+
+### Samplers
+
+GlSamplingParameters has been renamed to [GL::Sampler](/cpp-sdk/4.5/api/classes/imfusion-gl-sampler). It's enumerations have been made scoped, thus code like this
+
+```cpp
+GlSamplingParameters sampler;
+sampler.setWrapping(GlSamplingParameters::ClampToEdge);
+sampler.setFiltering(GlSamplingParameters::MinNearest, GlSamplingParameters::MagNearest);
+```
+ fragment
+becomes
+
+```cpp
+GL::Sampler sampler;
+sampler.setWrapping(GL::Sampler::Wrap::ClampToEdge);
+sampler.setFiltering(GL::Sampler::MinFilter::Nearest, GL::Sampler::MagFilter::Nearest);
+```
+ fragment
+The following changes apply when migrating from GlFramebuffer to [GL::Framebuffer](/cpp-sdk/4.5/api/classes/imfusion-gl-framebuffer):
+
+- Use the new [GL::Framebuffer::Attachment](/cpp-sdk/4.5/api/classes/imfusion-gl-framebuffer) enumeration to specify the attachment point.
+- The behavior of GlFramebuffer::attachTexture() was split into [GL::Framebuffer::attach()](/cpp-sdk/4.5/api/classes/imfusion-gl-framebuffer) and [GL::Framebuffer::attachLayer()](/cpp-sdk/4.5/api/classes/imfusion-gl-framebuffer). This makes the different effect more explicit and avoid relying on an opaque implementation logic in the original function.
+- We introduced GL::Debug::checkFramebufferStatus() and [GL::Framebuffer::isComplete()](/cpp-sdk/4.5/api/classes/imfusion-gl-framebuffer) in order to check for the completeness of the current framebuffer. The old GlFramebuffer::check() function was not migrated due to its questionable semantics and exception throwing behavior.
+
+See also: GLSL Shaders
+
+The following changes apply when migrating from GlProgram to [GL::Program](/cpp-sdk/4.5/api/classes/imfusion-gl-program):
+
+- The constructor now requests an explicit mapping of shader stage &lt;-&gt; shader name to avoid accidental mixups:
+  ```cpp
+  GL::Program prog({
+    {GL::Program::Stage::Vertex, "MyModule/MyShader.vert"},
+    {GL::Program::Stage::Fragment, "MyModule/MyShader.frag"},
+  });
+  ```
+   fragment  If this is too verbose for your liking or you want to use [std::make_unique()](http://en.cppreference.com/w/cpp/memory/unique_ptr/make_unique.html) (which doesn't play well with initializer lists), you can use the following family of factory functions instead:
+  ```cpp
+  std::unique_ptr<GL::Program> = GL::Program::createVertexFragment("MyModule/MyShader.vert", "MyModule/MyShader.frag");
+  ```
+   fragment
+- [GL::Program](/cpp-sdk/4.5/api/classes/imfusion-gl-program) uses [GL::Texture](/cpp-sdk/4.5/api/classes/imfusion-gl-texture) and [GL::Sampler](/cpp-sdk/4.5/api/classes/imfusion-gl-sampler) pointers/references instead of [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) and GlSamplingParameters to bind textures to shaders.
+- bindAttributeLocation() and bindFragDataLocation() have been removed, use explicit input/output mapping instead.
+- finish() has been moved to a free function in the [GL](/cpp-sdk/4.5/api/namespaces/imfusion-gl) namespace because it was often used needlessly. If the implicit synchronization of shader executions is not sufficient, use OpenGL memory barriers instead.
+
+### Loading Shader Source Code
+
+The DeviceCodeRepository infrastructure has been deprecated for GLSL shaders and OpenCL kernels. Instead, [GL::Program](/cpp-sdk/4.5/api/classes/imfusion-gl-program) will load shader code from through the ImFusion Resource System. If a shader name contains a path prefix this will be interpreted as repository name to allow for more specific source code queries and resolve potential ambiguities. For instance the identifier MyPlugin/MyShader.frag will first search to find the resource MyShader.frag in a repository with the name MyPlugin. Only if this can not be resolved, it will continue searching for a resource with the name MyPlugin/MyShader.frag in any registered repository.
+
+**Note:** [GL::Program](/cpp-sdk/4.5/api/classes/imfusion-gl-program) will no longer try adding "default" extensions such as .gl to shader names if they don't have one.
+
+### Abstract Shader Includes
+
+The GlAbstractInclude interface was split into the [GL::AbstractInclude](/cpp-sdk/4.5/api/classes/imfusion-gl-abstractinclude) base interface and the templated [GL::MultiIncludable](/cpp-sdk/4.5/api/classes/imfusion-gl-multiincludable) interface. If you require the functionality of both polymorphic shader includes and having multiple includes of the same type in one shader, you must now inherit from both interfaces. This enables us to disentagle it from ImFusionLib dependencies (such as [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage)) and furthermore make the text replacement happening with multi-includable shader includes explicit. This has implications on the [GlMask](/cpp-sdk/4.5/api/classes/imfusion-glmask) and [Deformation](/cpp-sdk/4.5/api/classes/imfusion-deformation) interfaces (see below)!
+
+### Changes to the GlMask and Deformation interfaces
+
+Due to the refactoring of abstract shader includes (see above), the [GlMask](/cpp-sdk/4.5/api/classes/imfusion-glmask) and [Deformation](/cpp-sdk/4.5/api/classes/imfusion-deformation) interfaces exhibit partially breaking API changes:
+
+- The signature of the setIncludeArguments() function was changed:
+  - It takes a [GL::Program](/cpp-sdk/4.5/api/classes/imfusion-gl-program)& instead of a GlProgram\*
+  - [GlMask::setIncludeArguments()](/cpp-sdk/4.5/api/classes/imfusion-glmask) no longer expects a const SharedImage\* as input: This argument was never considered anyway and was merely there for technical reasons.
+- The specialization functions GlMask::createMultiMaskInclude() and Deformation::createDeformationMultiInclude() are no longer needed. Use createMultiInclude() instead.
+- The specialization functions GlMultiAbstractInclude::defineName&lt;GlMask&gt; and GlMultiAbstractInclude::defineName&lt;Deformation&gt; are deprecated. Use [GlMask::multiIncludeDefine()](/cpp-sdk/4.5/api/classes/imfusion-glmask) and [Deformation::multiIncludeDefine()](/cpp-sdk/4.5/api/classes/imfusion-deformation) instead.
+
+**Note:** There is a deprication layer so that existing code *using* these interfaces (e.g. attaching a mask/deformation to a shader) should continue to work without changes. However, custom masks/deformations (i.e. if you *inherited* from these interfaces) will require small changes in order for them to compile.
+
+See also: Buffers
+
+The following changes apply when migrating from GlBuffer to [GL::Buffer](/cpp-sdk/4.5/api/classes/imfusion-gl-buffer):
+
+- The enumerations for buffer target and usage have been made scoped.
+- The buffer usage hint is now a property of [GL::Buffer](/cpp-sdk/4.5/api/classes/imfusion-gl-buffer) that can be set during construction and later changed via [GL::Buffer::setUsageHint()](/cpp-sdk/4.5/api/classes/imfusion-gl-buffer). Since usage patterns of an OpenGL buffer change rarely, calls to GL::Buffer::setData() no longer require specifying the usage pattern but it will use the one that was configured previously.
+
+```cpp
+std::vector<vec3f> vertices = ...;
+GlVertexBuffer vbo;
+vbo.bind();
+vbo.setData(GlBuffer::StaticDraw, vertices);
+vbo.draw(GlVertexBuffer::Triangles);
+```
+ fragment
+becomes
+
+```cpp
+std::vector<vec3f> vertices ...;
+VertexBuffer vbo(GL::Buffer::Usage::StaticDraw);  // `StaticDraw` is the default argument and could be omitted
+vbo.bind();
+vbo.setData(vertices);
+vbo.draw(GL::VertexBuffer::Primitive::Triangles);
+```
+ fragment
+
+### General API
+
+Since our font rendering has matured, the polymorphic aspect of GlTextRenderer is discontinued and ImFusionGL provides only the non-virtual [GL::TextRenderer](/cpp-sdk/4.5/api/classes/imfusion-gl-textrenderer) class. The GlContextManager singleton is no longer required since [GL::TextRenderer](/cpp-sdk/4.5/api/classes/imfusion-gl-textrenderer) inherits from [GL::InstanceManager](/cpp-sdk/4.5/api/classes/imfusion-gl-instancemanager) so that you can easily access a cached instance from anywhere in a thread-safe fashion.
+
+The [GL::TextRenderer::Font](/cpp-sdk/4.5/api/structs/imfusion-gl-textrenderer-font) structure has been changed/extended to include the font color as well as [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags) to select font face and decoration, so that you do not need to pass them as extra parameters to the renderText() overloads. Furthermore, our font rendering now finally support all combinations of decoration options. The 3D overload of renderText() has been renamed to renderTextWorld() to yield more explicit code on the call-site.
+
+```cpp
+GlTextRenderer& renderer = GlTextManager::renderer();
+GlTextRenderer::Font myFont(12, true)
+renderer.renderText(viewState, positionWorld, text, color, true, myFont);
+```
+ fragment
+becomes
+
+```cpp
+GL::TextRenderer& renderer = GL::TextRenderer::cachedInstance();
+GL::TextRenderer::Font myFont(12, color, GL::TextRenderer::Bold, GL::TextRenderer::Shadow);
+renderer.renderTextWorld(viewState, positionWorld, text, myFont);
+```
+ fragment
+
+### Viewport-based (2D) Rendering
+
+**Warning:** The behavior of [GL::TextRenderer::renderText()](/cpp-sdk/4.5/api/classes/imfusion-gl-textrenderer) is different from the one of GlTextRenderer::renderText()!
+
+We fixed an (undocumented) inconsistency of where the position passed to GlTextRenderer::renderText() was not considered wrt. the viewport passed to the same function but wrt. the viewport of the current global OpenGL context state. The new [GL::TextRenderer::renderText()](/cpp-sdk/4.5/api/classes/imfusion-gl-textrenderer) function will always use the viewport passed as argument. Thus, if after migration to the new API your text does not end up where you expect (or not at all) make sure that you pass the correct viewport and do not rely on the current OpenGL context state.
+
+### Font Family Registration
+
+The default font family ([Deja Vu Sans](https://dejavu-fonts.github.io/)) is now fully included/embedded in ImFusionGL. You no longer need to register a default family yourself. When registering extra font families, you should provide a fourth face (italic+bold) so that [GL::TextRenderer](/cpp-sdk/4.5/api/classes/imfusion-gl-textrenderer) is capable of rendering all combinations of faces.
+
+- The [GL::StateGuard](/cpp-sdk/4.5/api/classes/imfusion-gl-stateguard) class dropped support for the legacy OpenGL aspects ServerState and ClientAttrib (wrapping glPush/PopAttrib() and glPush/PopClientAttrib()).
+- The [GL::ViewState](/cpp-sdk/4.5/api/classes/imfusion-gl-viewstate) class dropped support for manipulating the legacy OpenGL fixed function matrix stack. Furthermore, the project() and unproject() family of functions now return the result instead of taking an out parameter. [GL::ViewState::unprojectPixelIncrement()](/cpp-sdk/4.5/api/classes/imfusion-gl-viewstate) now distinguished between orthographic mode (where the pixel increment is independent of pixel location) and perspective mode (where this is not the case).
+- The majority of the free functions in [GlUtils](/cpp-sdk/4.5/api/namespaces/imfusion-glutils) was moved to the [GL](/cpp-sdk/4.5/api/namespaces/imfusion-gl) namespace. Helper functions for working with texture formats have been moved to the [GL::InternalFormat](/cpp-sdk/4.5/api/classes/imfusion-gl-internalformat) class.
+
+  **Warning:** The behavior of GL::createOrtho2d() was changed/fixed in the process as it does no longer apply a half-pixel offset!
+- The GlLineWidth and GlLineSmooth classes have been dropped because they do not have any effect on OpenGL core contexts. Furthermore, we dropped the GlPointSize helper class because you can never assume a default state for this property anyways so resetting it does not make sense. You can [GL::FixedFunctionPipeline::setPointSize()](/cpp-sdk/4.5/api/classes/imfusion-gl-fixedfunctionpipeline) if you don't want to call glPointSize() yourself.

@@ -1,0 +1,101 @@
+---
+title: "ImFusion::GUI::InputEvent"
+sidebarTitle: "InputEvent"
+description: "Base class for user input events in a graphical user interface (GUI)."
+---
+
+`#include <ImFusion/GUI/InputEvent.h>`
+
+## Overview
+
+[Base](/cpp-sdk/4.5/api/structs/imfusion-dicom-base) class for user input events in a graphical user interface (GUI).
+
+By design, all InputEvents are immutable to make reasoning over the program logic easier. In contrast to many other event messaging frameworks the back-channel for notifying a sender whether a receiver "accepted" an event and/or how it should continue propagation is not the event itself but the [EventResult](/cpp-sdk/4.5/api/structs/imfusion-gui-eventresult) struct serving as return value of a handleInputEvent() function.
+
+**Note:** All coordinates/positions held by an [InputEvent](/cpp-sdk/4.5/api/classes/imfusion-gui-inputevent) are in the rendering coordinate system of the [Display](/cpp-sdk/4.5/api/classes/imfusion-gui-display) instance emitting the event. This means that the origin is in the lower left corner of the viewport, in the same fashion as done by OpenGL.
+
+**See also:** [InputEventHelpers](/cpp-sdk/4.5/api/namespaces/imfusion-gui-inputeventhelpers)
+
+## Public Types
+
+- enum class [KeyboardModifier](#keyboardmodifier) &#123; None = 0 , Shift = 1 &lt;&lt; 0 , Control = 1 &lt;&lt; 1 , Alt = 1 &lt;&lt; 2 , Meta = 1 &lt;&lt; 3 &#125; — Bitfield enumeration to describe modifier keys on the keyboard.
+- using **LocalToGlobalCoordMapping** = [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt;vec2(const vec2&)&gt; — Typedef for a function to map from event coordinates to global coordinates if applicable.
+
+## Public Member Functions
+
+- [InputEvent](#inputevent) ([Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; [KeyboardModifier](#keyboardmodifier) &gt; modifiers, LocalToGlobalCoordMapping mappingFunction=nullptr) — Constructor for the [InputEvent](/cpp-sdk/4.5/api/classes/imfusion-gui-inputevent) base class.
+- const [KeyEvent](/cpp-sdk/4.5/api/classes/imfusion-gui-keyevent) \* **asKeyEvent** () const — Convenience function to dynamic_cast this instance to a [KeyEvent](/cpp-sdk/4.5/api/classes/imfusion-gui-keyevent).
+- const [MouseEvent](/cpp-sdk/4.5/api/classes/imfusion-gui-mouseevent) \* **asMouseEvent** () const — Convenience function to dynamic_cast this instance to a [MouseEvent](/cpp-sdk/4.5/api/classes/imfusion-gui-mouseevent).
+- const [TouchEvent](/cpp-sdk/4.5/api/classes/imfusion-gui-touchevent) \* **asTouchEvent** () const — Convenience function to dynamic_cast this instance to a [TouchEvent](/cpp-sdk/4.5/api/classes/imfusion-gui-touchevent).
+- const [ContextMenuEvent](/cpp-sdk/4.5/api/classes/imfusion-gui-contextmenuevent) \* **asContextMenuEvent** () const — Convenience function to dynamic_cast this instance to a [ContextMenuEvent](/cpp-sdk/4.5/api/classes/imfusion-gui-contextmenuevent).
+- const [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; [KeyboardModifier](#keyboardmodifier) &gt; & **modifiers** () const — Returns the list of pressed keyboard modifier keys.
+- vec2 [mapToGlobalCoord](#maptoglobalcoord) (const vec2 &localCoord) const — Converts the given *localCoord* to the global coordinate system of the underlying windowing system if applicable.
+- const LocalToGlobalCoordMapping & [localToGlobalMappingFunction](#localtoglobalmappingfunction) () const
+
+## Protected Attributes
+
+- [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; [KeyboardModifier](#keyboardmodifier) &gt; **m_modifiers** = KeyboardModifier::None
+- LocalToGlobalCoordMapping **m_localToGlobalMappingFunction**
+
+## Member Enumeration Documentation
+
+### KeyboardModifier
+
+```cpp
+enum class ImFusion::GUI::InputEvent::KeyboardModifier
+```
+
+*strong*
+
+Bitfield enumeration to describe modifier keys on the keyboard.
+
+**Note:** According to the [Apple Human Interface Guidelines](https://developer.apple.com/design/human-interface-guidelines/keyboards) the *Command* key is to be used for almost all keyboard shortcuts. All other platforms use the *Control* key instead. Therefore, this enumeration swaps the meaning of Control and Meta for MacOS where the Control modifier corresponds to the *Command* key and the Meta modifier to the *Control* keys.
+
+**Enumerator:**
+
+- `None` — None of the modifier keys is pressed.
+- `Shift` — Shift key is pressed.
+- `Control` — Control key is pressed; except for MacOS: Command key is pressed.
+- `Alt` — Alt key is pressed.
+- `Meta` — Meta key is pressed; except for MacOS: Control key is pressed.
+
+## Constructor & Destructor Documentation
+
+### InputEvent
+
+```cpp
+ImFusion::GUI::InputEvent::InputEvent (Flags < KeyboardModifier > modifiers, LocalToGlobalCoordMapping mappingFunction = nullptr)
+```
+
+*explicit*
+
+Constructor for the [InputEvent](/cpp-sdk/4.5/api/classes/imfusion-gui-inputevent) base class.
+
+**Parameters:**
+
+- `modifiers` — List of pressed keyboard modifier keys.
+- `mappingFunction` — Optional mapping function used by [mapToGlobalCoord()](#maptoglobalcoord) to convert event coordinates to global coordinates if the underlying windowing system supports it; [mapToGlobalCoord()](#maptoglobalcoord) will use the identity function if empty.
+
+## Member Function Documentation
+
+### mapToGlobalCoord
+
+```cpp
+vec2 ImFusion::GUI::InputEvent::mapToGlobalCoord (const vec2 & localCoord) const
+```
+
+Converts the given *localCoord* to the global coordinate system of the underlying windowing system if applicable.
+
+If the original source of the event does not support global coordinates it will return the input value unchanged.
+
+****Deprecated**:** This function is merely provided as a deprecation layer to make the Qt-based view framework work with the new ImFusion::GUI framework. Do not rely on this functionality in new code because it may be removed in the future.
+
+### localToGlobalMappingFunction
+
+```cpp
+const LocalToGlobalCoordMapping & ImFusion::GUI::InputEvent::localToGlobalMappingFunction () const
+```
+
+*inline*
+
+****Deprecated**:** This function is merely provided as a deprecation layer to make the Qt-based view framework work with the new ImFusion::GUI framework. Do not rely on this functionality in new code because it may be removed in the future.

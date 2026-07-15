@@ -1,0 +1,67 @@
+---
+title: "ImFusion::Network::StaticAuthorizationProvider"
+sidebarTitle: "StaticAuthorizationProvider"
+description: "A most basic AuthorizationProvider that only tracks a static list of authorization headers."
+---
+
+`#include <ImFusion/Base/AuthorizationProvider.h>`
+
+## Overview
+
+A most basic [AuthorizationProvider](/cpp-sdk/4.5/api/classes/imfusion-network-authorizationprovider) that only tracks a static list of authorization headers.
+
+Authorization headers need to be added manually and are neither refreshed nor can be acquired.
+
+## Public Member Functions
+
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [authorization](#authorization) (const [Filesystem::Url](/cpp-sdk/4.5/api/classes/imfusion-filesystem-url) &url) const override — Get the Authorization header for the given url.
+- bool [refreshAuthorization](#refreshauthorization) (const [Filesystem::Url](/cpp-sdk/4.5/api/classes/imfusion-filesystem-url) &url, int numFailedRequests) override — Does nothing if numFailedRequests is 0, otherwise calls removeAuthorization.
+- bool [acquireAuthorization](#acquireauthorization) (const [Filesystem::Url](/cpp-sdk/4.5/api/classes/imfusion-filesystem-url) &url, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &message) override — Returns whether there is a header for the given url.
+- void [removeAuthorization](#removeauthorization) (const [Filesystem::Url](/cpp-sdk/4.5/api/classes/imfusion-filesystem-url) &url) override — Removes the url from the headers.
+- void **addAuthorization** ([Filesystem::Url](/cpp-sdk/4.5/api/classes/imfusion-filesystem-url) url, [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) header) — Adds a new header for the given url.
+
+## Member Function Documentation
+
+### authorization
+
+```cpp
+std::string ImFusion::Network::StaticAuthorizationProvider::authorization (const Filesystem::Url & url) const
+```
+
+*override, virtual*
+
+Get the Authorization header for the given url.
+
+The url is the complete url for the request that is going to be performed. Implementation should cache the value according to the server URL (see extractServerUrl). When an empty string is returned, no Authorization header should be send. This method will be called from multiple threads.
+
+### refreshAuthorization
+
+```cpp
+bool ImFusion::Network::StaticAuthorizationProvider::refreshAuthorization (const Filesystem::Url & url, int numFailedRequests)
+```
+
+*override, virtual*
+
+Does nothing if numFailedRequests is 0, otherwise calls removeAuthorization.
+
+### acquireAuthorization
+
+```cpp
+bool ImFusion::Network::StaticAuthorizationProvider::acquireAuthorization (const Filesystem::Url & url, const std::string & message)
+```
+
+*override, virtual*
+
+Returns whether there is a header for the given url.
+
+Does nothing else.
+
+### removeAuthorization
+
+```cpp
+void ImFusion::Network::StaticAuthorizationProvider::removeAuthorization (const Filesystem::Url & url)
+```
+
+*override, virtual*
+
+Removes the url from the headers.

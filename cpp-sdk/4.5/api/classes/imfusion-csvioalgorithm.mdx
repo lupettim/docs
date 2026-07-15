@@ -1,0 +1,63 @@
+---
+title: "ImFusion::CsvIoAlgorithm"
+sidebarTitle: "CsvIoAlgorithm"
+description: "IO algorithm for moving tensors to and from CSV files."
+---
+
+`#include <ImFusion/IO/CsvIoAlgorithm.h>`
+
+## Overview
+
+IO algorithm for moving tensors to and from CSV files.
+
+Input needs to be rank 1 and will be converted to double internally. Supports multiple tensors at once, as long as all have the same size. Each column is one tensor, separated by semicolon.
+
+## Public Member Functions
+
+- **CsvIoAlgorithm** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Tensor](/cpp-sdk/4.5/api/classes/imfusion-tensor)&lt; 1 &gt; \* &gt; &data)
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; [supportedFileExtensions](#supportedfileextensions) () const override — Return supported file extensions (for file based IO).
+- void [compute](#compute) () override — Execute the algorithm.
+- [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) [takeOutput](#takeoutput) () override — Return any new [Data](/cpp-sdk/4.5/api/classes/imfusion-data) that was created by the [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) during the last call to [compute()](#compute).
+- void **setSeparator** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &sep)
+
+## Static Public Member Functions
+
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=0)
+- static [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Tensor](/cpp-sdk/4.5/api/classes/imfusion-tensor)&lt; 1 &gt; \* &gt; **load** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &path, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &separator="")
+- static bool **save** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Tensor](/cpp-sdk/4.5/api/classes/imfusion-tensor)&lt; 1 &gt; \* &gt; &data, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &path, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &separator=";")
+
+## Member Function Documentation
+
+### supportedFileExtensions
+
+```cpp
+std::vector < std::string > ImFusion::CsvIoAlgorithm::supportedFileExtensions () const
+```
+
+*override, virtual*
+
+Return supported file extensions (for file based IO).
+
+### compute
+
+```cpp
+void ImFusion::CsvIoAlgorithm::compute ()
+```
+
+*override, virtual*
+
+Execute the algorithm.
+
+### takeOutput
+
+```cpp
+OwningDataList ImFusion::CsvIoAlgorithm::takeOutput ()
+```
+
+*override, virtual*
+
+Return any new [Data](/cpp-sdk/4.5/api/classes/imfusion-data) that was created by the [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) during the last call to [compute()](#compute).
+
+The default implementation will return an empty list.
+
+**Note:** Since ownership of the data is transferred, you can call this method only once between calls to [compute()](#compute).

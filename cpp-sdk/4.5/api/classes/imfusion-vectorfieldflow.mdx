@@ -1,0 +1,52 @@
+---
+title: "ImFusion::VectorFieldFlow"
+sidebarTitle: "VectorFieldFlow"
+description: "Class for computing solutions to (autonomous) ordinary differential equations (ODEs) Currently only supports the classical 4th-order explicit Runge-Kutta method"
+---
+
+`#include <ImFusion/GL/VectorFieldFlow.h>`
+
+## Overview
+
+Class for computing solutions to (autonomous) ordinary differential equations (ODEs) Currently only supports the classical 4th-order explicit Runge-Kutta method with fixed stepsize.
+
+## Public Member Functions
+
+- [VectorFieldFlow](#vectorfieldflow) (int dim, int numSteps, float dt) — Constructor.
+- bool [flow](#flow) ([GlDenseDeformation](/cpp-sdk/4.5/api/classes/imfusion-gldensedeformation) &vectorField, [GlDenseDeformation](/cpp-sdk/4.5/api/classes/imfusion-gldensedeformation) &displacementFieldOut, [GlDenseDeformation](/cpp-sdk/4.5/api/classes/imfusion-gldensedeformation) \*initialValues=nullptr, [GlDenseDeformation](/cpp-sdk/4.5/api/classes/imfusion-gldensedeformation) \*other=nullptr) — Solve the ODE with rhs given by.
+
+## Public Attributes
+
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; int &gt; **p_numSteps** &#123;"numSteps", 10, this&#125;
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; float &gt; **p_dt** &#123;"dt", 0.1f, this&#125;
+
+## Constructor & Destructor Documentation
+
+### VectorFieldFlow
+
+```cpp
+ImFusion::VectorFieldFlow::VectorFieldFlow (int dim, int numSteps, float dt)
+```
+
+Constructor.
+
+****Deprecated**:** "Use VectorFieldFlowAlgorithm class instead."
+
+## Member Function Documentation
+
+### flow
+
+```cpp
+bool ImFusion::VectorFieldFlow::flow (GlDenseDeformation & vectorField, GlDenseDeformation & displacementFieldOut, GlDenseDeformation * initialValues = nullptr, GlDenseDeformation * other = nullptr)
+```
+
+Solve the ODE with rhs given by.
+
+**Parameters:**
+
+- `vectorField` — and initial values
+- `initialValues` — Result is stored in
+- `displacementFieldOut` — Optionally post-compose the vector field with the deformation in
+- `other.` — All in all, this function can be thought of as implementing (an approximation to) the operator other \* exp(vectorField) \* initialValues, where \* denotes composition of deformations and exp() is the time-1 flow operator.
+
+****Deprecated**:** "Use VectorFieldFlowAlgorithm class instead."

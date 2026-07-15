@@ -1,0 +1,128 @@
+---
+title: "Rendering Custom Graphics"
+description: "This tutorial will explain how to render simple primitives using OpenGL and the helper classes of the ImFusionLib."
+---
+
+This tutorial will explain how to render simple primitives using OpenGL and the helper classes of the ImFusionLib.
+
+You will not need an in-depth understanding of how OpenGL works, however basic knowledge is beneficial. A good starting point to learn about OpenGL is [https://www.khronos.org/opengl/wiki/](https://www.khronos.org/opengl/wiki/).
+
+**See also:** OpenGL Wrapper Library, OpenGL
+
+Before we start diving into code we will have a look at the general building blocks required for rendering something onto the screen:
+
+- Projection and view settings that define how world coordinates are transformed to screen coordinates. This is usually represented by a projection matrix, a model-view matrix, and a viewport configuration. The [GL::ViewState](/cpp-sdk/4.5/api/classes/imfusion-gl-viewstate) class combines all this information into a single entity.
+- Geometry information that is defined by a set of vertices in world coordinates and a primitive type that specifies how to build a geometric primitive from the vertices. You can also attach per-vertex informations such as custom colors or texture coordinates. This data has to be uploaded to the GPU, which is wrapped by the [GL::VertexBuffer](/cpp-sdk/4.5/api/classes/imfusion-gl-vertexbuffer) class.
+- An OpenGL shader, a piece of GLSL code that tells the GPU what to do with the input data. In this SDK, shaders are wrapped in the [GL::Program](/cpp-sdk/4.5/api/classes/imfusion-gl-program) class. For basic rendering tasks you can use the [GL::FixedFunctionPipeline](/cpp-sdk/4.5/api/classes/imfusion-gl-fixedfunctionpipeline) class that provides a fully-functional shader.
+
+The most idiomatic way of adding custom rendering into the ImFusionLib View Architecture is to implement a custom [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject). For this you create a new class inheriting from [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject). There are three pure virtual member functions that must be implemented.
+
+```cpp
+class MyCustomGlObject : public ImFusion::GlObject
+{
+public:
+ // This function implements the actual rendering code
+ virtual void draw(const ImFusion::GlView& view) override;
+
+ // This function returns the world extent of the rendered object so that the
+ // view architecture can automatically determine proper scaling etc.
+ // For now we return a default (empty) extent.
+ virtual ImFusion::Geometry::AlignedBox bounds() const override { return ImFusion::Geometry::AlignedBox(); }
+
+ // Return a string ID of this class that can be used for serialization.
+ virtual std::string typeName() const override { return "MyCustomGlObject"; }
+};
+```
+ fragment
+We want our custom [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) to only render standard primitives. The [GL::FixedFunctionPipeline](/cpp-sdk/4.5/api/classes/imfusion-gl-fixedfunctionpipeline) shader provides all we need for this. Since OpenGL shader creation is expensive, we do not want to create an instance during every render call. Instead we use the caching feature of this class.
+
+```cpp
+ GL::FixedFunctionPipeline& ffp = GL::FixedFunctionPipeline::cachedInstance();
+```
+ fragment
+If you are using a custom shader that does not provide this caching functionality, you can make the shader a member variable of the class and initialize it in the constructor.
+
+First, we want to render a line in a solid color. We start with defining the vertex coordinates of the line in world space and create a [GL::VertexBuffer](/cpp-sdk/4.5/api/classes/imfusion-gl-vertexbuffer) holding this information on the GPU.
+
+```cpp
+ // define vertex data on the CPU
+ std::vector<vec3f> lineVertices{vec3f(-10.f, 10.f, 0.f), vec3f(10.f, 10.f, 0.f), vec3f(10.f, -10.f, 0.f)};
+ // upload vertex data to the GPU using the utility function of GL::FixedFunctionPipeline.
+ std::unique_ptr<GL::VertexBuffer> vbo = GL::FixedFunctionPipeline::makeVertexData(lineVertices);
+```
+ fragment
+Now we enable the line rendering shader and configure the rendering options. When the shader is completely configured, we issue the draw call on the vertex buffer.
+
+```cpp
+ // Select the line rendering shader and initialize it with the GlViewState of the view passed as argument
+    ffp.enable(view.state(), GL::FixedFunctionPipeline::ShaderSelection::LineRendering);
+ // Set line color and width
+    ffp.setDefaultColor(vec4(1.0, 0.5, 0.0, 1.0));
+    ffp.setLineWidth(4);
+
+ // When the shader is completely configured, issue the draw call on the vertex buffer
+    vbo->draw(GL::Primitive::LineStrip);
+```
+ fragment
+As a second primitive we want to render a filled triangle with rainbow colors. We again start with defining vertex coordinates and per-vertex colors. OpenGL will automatically interpolate per-vertex attributes between the vertices.
+
+```cpp
+ // define vertex data
+ std::vector<vec3f> triangleVertices{vec3f(-10.f, 8.f, 0.f), vec3f(-10.f, -10.f, 0.f), vec3f(8.f, -10.f, 0.f)};
+ std::vector<vec3f> triangleColors{vec3f(1.f, 0.f, 0.f), vec3f(0.f, 1.f, 0.f), vec3f(0.f, 0.f, 1.f)};
+ // update the vertex buffer with the new data for the triangle
+ GL::FixedFunctionPipeline::makeVertexData(triangleVertices).useColors(triangleColors).assign(*vbo);
+```
+ fragment
+Now switch to the default (non-line rendering) shader and issue the draw call
+
+```cpp
+    ffp.enable(view.state(), GL::FixedFunctionPipeline::ShaderSelection::Default);
+    vbo->draw(GL::Primitive::Triangles);
+```
+ fragment
+Finally, disable the rendering shader.
+
+```cpp
+    ffp.disable();
+```
+ fragment
+This completes our implementation of the `MyCustomGlObject::draw()` function.
+
+**Note:** Small exercise: What would be the correct implementation of the `bounds()` w.r.t. the above rendering?
+
+**Note:** The [GlObject::bounds()](/cpp-sdk/4.5/api/classes/imfusion-globject) function returns the full extent of the rendered scene in world coordinates. Therefore, we build the componentwise minimum and maximum over all vertices:
+```cpp
+return Geometry::AlignedBox(vec3(-10.f, -10.f, 0.f), vec3(10.f, 10.f, 0.f));
+```
+ fragment
+
+In order to have a [DisplayWidget](/cpp-sdk/4.5/api/classes/imfusion-displaywidget) render our custom [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) we have to register it with the views where it shall be shown. All views work with the same world coordinate system so that you can assign the same [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) to multiple views.
+
+```cpp
+// Instantiate custom GlObject. Instance must be kept alive as long as it is assigned to any view
+auto myGlObject = std::make_unique<MyCustomGlObject>();
+
+// retrieve DisplayWidget
+DisplayWidgetMulti& display = ...;
+
+// Add custom object to all MPR views and to the 3D view
+for (int i = 0; i < 3; ++i)
+{
+    display.viewSlice(i)->view()->addObject(myGlObject.get());
+}
+display.view3D()->view()->addObject(myGlObject.get());
+```
+ fragment
+The resulting rendering looks like this. Note that both the line and the triangle are infinitesimally slim along the Z axis and therefore only appear in the axial MPR view and in the 3D view.
+
+![](/images/cpp-api/MyCustomGlObjectRendering.png)
+
+*Rendering of MyCustomGlObject in MPR and 3D views.*
+
+The full code can be found here:
+
+- [MyCustomGlObject.h](/cpp-sdk/4.5/api/examples/my-custom-gl-object-8h)
+- [MyCustomGlObject.cpp](/cpp-sdk/4.5/api/examples/my-custom-gl-object-8cpp)
+
+This tutorial only scratches the surface of what is possible. For a more detailed overview of the rendering interfaces provided by the ImFusion SDK, have a look at the OpenGL Wrapper Library and OpenGL module pages.

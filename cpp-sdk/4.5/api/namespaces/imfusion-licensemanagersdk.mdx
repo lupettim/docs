@@ -1,0 +1,100 @@
+---
+title: "ImFusion::LicenseManagerSDK"
+sidebarTitle: "LicenseManagerSDK"
+description: "LicenseManagerSDK provide an interface to our license system for SDK users."
+---
+
+## Overview
+
+[LicenseManagerSDK](/cpp-sdk/4.5/api/namespaces/imfusion-licensemanagersdk) provide an interface to our license system for SDK users.
+
+Note: You must call [Framework::init()](/cpp-sdk/4.5/api/namespaces/imfusion-framework) before calling any function of [LicenseManagerSDK](/cpp-sdk/4.5/api/namespaces/imfusion-licensemanagersdk) (except for addCustomToken()). The earliest you are allowed to call any function of [LicenseManagerSDK](/cpp-sdk/4.5/api/namespaces/imfusion-licensemanagersdk) is in [Framework::InitConfig::licenseInitFunction](/cpp-sdk/4.5/api/structs/imfusion-framework-initconfig).
+
+## Functions
+
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [ImFusion::Licensing::Error](/cpp-sdk/4.5/api/structs/imfusion-licensing-error) &gt; [activateKeyOnline](#activatekeyonline) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &key) — Perform regular online license activation of the SDK.
+- bool [writeOfflineActivationRequestFile](#writeofflineactivationrequestfile) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &key, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &outputPath) — Write offline activation request file to disk.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **offlineActivationURL** () — Returns the URL to the offline activation portal.
+- bool [readOfflineActivationUnlockFile](#readofflineactivationunlockfile) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &path) — Read offline activation unlock file and activate license.
+- bool [setProxy](#setproxy) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &host) — Set proxy to use for connecting to license server.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **key** () — Return currently used license key.
+- bool **isActivated** () — Check whether a valid license is installed.
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; std::chrono::system_clock::time_point &gt; [expirationDate](#expirationdate) () — Returns an optional point in time at which the license will expire. The optional will be empty if the license does not expire.
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [DateTime::TimePoint](/cpp-sdk/4.5/api/classes/imfusion-datetime-timepoint) &gt; **expirationDateTimePoint** () — Returns an optional point in time at which the license will expire. The optional will be empty if the license does not expire.
+
+## Function Documentation
+
+### activateKeyOnline
+
+```cpp
+std::optional < ImFusion::Licensing::Error > ImFusion::LicenseManagerSDK::activateKeyOnline (const std::string & key)
+```
+
+Perform regular online license activation of the SDK.
+
+**Parameters:**
+
+- `key` — License key
+
+**Returns:** [Error](/cpp-sdk/4.5/api/structs/imfusion-dicom-error) struct with further details in case of failure, empty otherwise
+
+**Note:** This method needs to be called as part of [Framework::InitConfig::licenseInitFunction](/cpp-sdk/4.5/api/structs/imfusion-framework-initconfig). See Framework.h for details. Usually there is no need to call this method if isActivated() returns true.
+
+### writeOfflineActivationRequestFile
+
+```cpp
+bool ImFusion::LicenseManagerSDK::writeOfflineActivationRequestFile (const std::string & key, const std::string & outputPath)
+```
+
+Write offline activation request file to disk.
+
+**Parameters:**
+
+- `key` — License key
+- `outputPath` — [Filesystem](/cpp-sdk/4.5/api/namespaces/imfusion-filesystem) path for create license request file
+
+**Returns:** true on success, false otherwise (which usually means the outputPath was not writable)
+
+**Note:** The resulting file needs to be uploaded to offlineActivationURL() to perform an offline activation. This method needs to be called as part of [Framework::InitConfig::licenseInitFunction](/cpp-sdk/4.5/api/structs/imfusion-framework-initconfig). See Framework.h for details.
+
+### readOfflineActivationUnlockFile
+
+```cpp
+bool ImFusion::LicenseManagerSDK::readOfflineActivationUnlockFile (const std::string & path)
+```
+
+Read offline activation unlock file and activate license.
+
+**Parameters:**
+
+- `path` — Path to the unlock file produced by the portal at offlineActivationURL
+
+**Returns:** true on success, false otherwise
+
+**Note:** The input file of this function is produced by uploading the result of writeOfflineActivationRequestFile to offlineActivationURL. The request file must have been created by the same machine making this call, but upload to the portal can be done anywhere. Uploading the request file to the portal already consumed an activation for the license on the backend, which this function lets the SDK know about. This method needs to be called as part of [Framework::InitConfig::licenseInitFunction](/cpp-sdk/4.5/api/structs/imfusion-framework-initconfig). See Framework.h for details.
+
+### setProxy
+
+```cpp
+bool ImFusion::LicenseManagerSDK::setProxy (const std::string & host)
+```
+
+Set proxy to use for connecting to license server.
+
+To disable a previously set proxy pass in an empty string.
+
+**Parameters:**
+
+- `host` — Host address of proxy server. Optionally can contain port in form :[port] at the end and a specific proxy type in the front (e.g. [http://](http://)). If no port or proxy type is given 1080 and http are used.
+
+**Returns:** True if proxy was set, false if proxy could not be set or is not supported
+
+### expirationDate
+
+```cpp
+std::optional < std::chrono::system_clock::time_point > ImFusion::LicenseManagerSDK::expirationDate ()
+```
+
+Returns an optional point in time at which the license will expire. The optional will be empty if the license does not expire.
+
+****Deprecated**:** "Use expirationDateTimePoint instead"

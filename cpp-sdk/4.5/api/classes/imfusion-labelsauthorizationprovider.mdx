@@ -1,0 +1,80 @@
+---
+title: "ImFusion::LabelsAuthorizationProvider"
+sidebarTitle: "LabelsAuthorizationProvider"
+description: "Provides authorization for the remote project as well as DICOMweb and other web resources."
+---
+
+`#include <ImFusionLabels/lib/include/ImFusion/Labels/Core/LabelsAuthorizationProvider.h>`
+
+## Overview
+
+Provides authorization for the remote project as well as DICOMweb and other web resources.
+
+It automatically fetches a potential Keycloak configuration. Each server can have its own authorization flows. Those are discovered automatically for the Labels remote server. For all other servers, Basic auth is assumed.
+
+## Classes
+
+- struct [OIDCConfig](/cpp-sdk/4.5/api/structs/imfusion-labelsauthorizationprovider-oidcconfig)
+
+## Public Member Functions
+
+- **LabelsAuthorizationProvider** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &projectUrl, [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [OIDCConfig](/cpp-sdk/4.5/api/structs/imfusion-labelsauthorizationprovider-oidcconfig) &gt; oidcConfig)
+- bool [refreshAuthorization](#refreshauthorization) (const [Filesystem::Url](/cpp-sdk/4.5/api/classes/imfusion-filesystem-url) &url, int numFailedRequests) override — Try to refresh the authorization without user interaction.
+- void **addOAuth2DeviceFlow** (const [Filesystem::Url](/cpp-sdk/4.5/api/classes/imfusion-filesystem-url) &url, [Network::OAuth2::DeviceFlowConfig](/cpp-sdk/4.5/api/structs/imfusion-network-oauth2-deviceflowconfig) config)
+- void **addOAuth2AuthCodeFlow** (const [Filesystem::Url](/cpp-sdk/4.5/api/classes/imfusion-filesystem-url) &url, [Network::OAuth2::AuthorizationCodeFlowConfig](/cpp-sdk/4.5/api/structs/imfusion-network-oauth2-authorizationcodeflowconfig) config)
+- void **addOAuth2PasswordFlow** (const [Filesystem::Url](/cpp-sdk/4.5/api/classes/imfusion-filesystem-url) &url, [Network::OAuth2::PasswordFlowConfig](/cpp-sdk/4.5/api/structs/imfusion-network-oauth2-passwordflowconfig) config)
+- void [addOAuth2AuthCodeFlow](#addoauth2authcodeflow) ([Network::OAuth2::AuthorizationCodeFlowConfig](/cpp-sdk/4.5/api/structs/imfusion-network-oauth2-authorizationcodeflowconfig) config)
+- void [addOAuth2DeviceFlow](#addoauth2deviceflow) ([Network::OAuth2::DeviceFlowConfig](/cpp-sdk/4.5/api/structs/imfusion-network-oauth2-deviceflowconfig) config)
+
+## Static Public Member Functions
+
+- static [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; LabelsAuthorizationProvider &gt; [acquireProjectAuthorization](#acquireprojectauthorization) (const [Filesystem::Url](/cpp-sdk/4.5/api/classes/imfusion-filesystem-url) &serverUrl, QWidget \*parent) — Tries to get a KeycloakConfig from the given server and shows a login dialog.
+- static [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [OIDCConfig](/cpp-sdk/4.5/api/structs/imfusion-labelsauthorizationprovider-oidcconfig) &gt; **getOIDCConfig** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &serverUrl) — Gets the keycloak configuration from a Labels server.
+
+## Member Function Documentation
+
+### acquireProjectAuthorization
+
+```cpp
+std::shared_ptr < LabelsAuthorizationProvider > ImFusion::LabelsAuthorizationProvider::acquireProjectAuthorization (const Filesystem::Url & serverUrl, QWidget * parent)
+```
+
+*static*
+
+Tries to get a KeycloakConfig from the given server and shows a login dialog.
+
+Returns nullptr if the user did not login successfully.
+
+### refreshAuthorization
+
+```cpp
+bool ImFusion::LabelsAuthorizationProvider::refreshAuthorization (const Filesystem::Url & url, int numFailedRequests)
+```
+
+*override, virtual*
+
+Try to refresh the authorization without user interaction.
+
+Implementations should stop retrying after a certain number of failed attempts. This method will be called from multiple threads. If an auth scheme does not support refreshing without user interaction, implementations should return false after the first failed attempt.
+
+Implementations that cache authorization according to the url, should remove entries from the cache that cannot be refreshed after one failed request.
+
+This method can also be called without a previously failed request (numFailedRequests == 0) in case the token should be refreshed before it expires.
+
+E.g. if this method fails, the authorization method should return an empty string until acquireAuthorization was called again.
+
+### addOAuth2AuthCodeFlow
+
+```cpp
+void ImFusion::QtAuthorizationProvider::addOAuth2AuthCodeFlow (Network::OAuth2::AuthorizationCodeFlowConfig config)
+```
+
+**See also:** [Network::LoginDialog::addOAuth2AuthCodeFlow](/cpp-sdk/4.5/api/classes/imfusion-network-logindialog)
+
+### addOAuth2DeviceFlow
+
+```cpp
+void ImFusion::QtAuthorizationProvider::addOAuth2DeviceFlow (Network::OAuth2::DeviceFlowConfig config)
+```
+
+**See also:** [Network::LoginDialog::addOAuth2DeviceFlow](/cpp-sdk/4.5/api/classes/imfusion-network-logindialog)

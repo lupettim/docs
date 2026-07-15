@@ -1,0 +1,76 @@
+---
+title: "ImFusion::Dicom::Module"
+sidebarTitle: "Module"
+description: "Base class for Dicom Modules."
+---
+
+`#include <ImFusion/Dicom/DicomModule.h>`
+
+## Overview
+
+[Base](/cpp-sdk/4.5/api/structs/imfusion-dicom-base) class for [Dicom](/cpp-sdk/4.5/api/namespaces/imfusion-dicom) Modules.
+
+A module is a logical group of elements. Modules are not directly part of a [Dicom](/cpp-sdk/4.5/api/namespaces/imfusion-dicom) file but the standard structures all elements that are part of an [IOD](/cpp-sdk/4.5/api/classes/imfusion-dicom-iod) into modules. The module description contains the exact specification of an element. The same element can be specified differently in multiple modules, e.g. the samplesPerPixel element in the [ImagePixel](/cpp-sdk/4.5/api/classes/imfusion-dicom-imagepixel) module allows values 1 and 3, but the CT [Image](/cpp-sdk/4.5/api/structs/imfusion-dicom-image) module only allows a value of 1.
+
+The [Module](/cpp-sdk/4.5/api/classes/imfusion-dicom-module) class represents a single [Dicom](/cpp-sdk/4.5/api/namespaces/imfusion-dicom) module definition and provides all relevant elements. It also applies certain restriction to its elements in order to check if mandatory elements are missing or if the element value is in a valid range. Additionally, most modules provide helper methods to apply the module content to the actual image data.
+
+A module is best be implemented by following the corresponding table in the [Dicom](/cpp-sdk/4.5/api/namespaces/imfusion-dicom) standard (e.g. for the [ImagePixel](/cpp-sdk/4.5/api/classes/imfusion-dicom-imagepixel)[Module](/cpp-sdk/4.5/api/classes/imfusion-dicom-module): [http://dicom.nema.org/medical/dicom/current/output/chtml/part03/sect_C.7.6.3.html](http://dicom.nema.org/medical/dicom/current/output/chtml/part03/sect_C.7.6.3.html)) and adding an [Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element) per (relevant) attribute (see also PS 3.6 6 and PS 3.5 6.2 to derive a suitable element template type).
+
+**See also:** PS 3.3.C [http://dicom.nema.org/medical/dicom/current/output/chtml/part03/chapter_C.html](http://dicom.nema.org/medical/dicom/current/output/chtml/part03/chapter_C.html)
+
+## Public Types
+
+- enum Type &#123; **Mandatory** , **UserOption** , **Conditional** &#125; — Conditionality of the module.
+
+## Public Member Functions
+
+- **Module** ([ModuleList](/cpp-sdk/4.5/api/classes/imfusion-dicom-modulelist) &parent, Type type) — Creates a new [Dicom](/cpp-sdk/4.5/api/namespaces/imfusion-dicom) [Module](/cpp-sdk/4.5/api/classes/imfusion-dicom-module), registers it with the given parent and sets the given type/conditionality.
+- virtual bool **isMandatory** () const — Evaluates whether this module is mandatory (based on the specified type and optionally condition).
+- void [setCondition](#setcondition) ([std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; bool()&gt; predicate) — Sets a callback function that determines if a conditional module is mandatory.
+- virtual void [checkErrors](#checkerrors) (bool ignoreMandatory=false) const — Checks the module for errors.
+- DcmItem & [dataset](#dataset) () override — Returns the data set this module corresponds to.
+
+## Protected Attributes
+
+- [ModuleList](/cpp-sdk/4.5/api/classes/imfusion-dicom-modulelist) & **m_parent** — List this module is part of.
+- DcmItem & **m_dataset** — The data set this module corresponds to.
+- Type **m_type** — Conditionality of this module.
+- [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; bool()&gt; **m_typeCondition** — Optional predicate function to evaluate mandatoriness.
+
+## Member Function Documentation
+
+### setCondition
+
+```cpp
+void ImFusion::Dicom::Module::setCondition (std::function < bool()> predicate)
+```
+
+Sets a callback function that determines if a conditional module is mandatory.
+
+It is ignored if the type is set to `Mandatory` or `UserOption`.
+
+**Parameters:**
+
+- `predicate` — Predicate callback function to determine whether the element has to be present or not. If set to nullptr, the condition is always false (i.e. never mandatory). The default value is nullptr (correlates to DICOM's 'User Option' type).
+
+### checkErrors
+
+```cpp
+virtual void ImFusion::Dicom::Module::checkErrors (bool ignoreMandatory = false) const
+```
+
+*virtual*
+
+Checks the module for errors.
+
+This assures that all mandatory and conditional elements are present and that all existing elements have a valid value. If *ignoreMandatory* is true, missing mandatory elements are not counted as errors (e.g. useful when the [Module](/cpp-sdk/4.5/api/classes/imfusion-dicom-module) itself is optional).
+
+### dataset
+
+```cpp
+DcmItem & ImFusion::Dicom::Module::dataset ()
+```
+
+*override, virtual*
+
+Returns the data set this module corresponds to.

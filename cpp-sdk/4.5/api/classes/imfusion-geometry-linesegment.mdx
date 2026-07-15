@@ -1,0 +1,79 @@
+---
+title: "ImFusion::Geometry::LineSegment"
+sidebarTitle: "LineSegment"
+description: "Class representing a line segment, i.e."
+---
+
+`#include <ImFusion/Core/Geometry/Line.h>`
+
+## Overview
+
+Class representing a line segment, i.e.
+
+a finite line defined by points at either end
+
+**See also:** Intersections between geometry primitives can be computed using the sets of free functions Geometry::intersection() and Geometry::intersects().
+
+## Public Member Functions
+
+- [LineSegment](#linesegment) (const vec3 &start, const vec3 &end) — Creates a line segment from start to end.
+- **LineSegment** (const LineSegment &)=default
+- [LineSegment](#linesegment) & **operator=** (const [LineSegment](#linesegment) &)=default
+- const vec3 & **start** () const — Returns the start point, equivalent to [LineBase::point](/cpp-sdk/4.5/api/classes/imfusion-geometry-linebase).
+- const vec3 & **end** () const — Returns the end point.
+- vec3 [direction](#direction) () const override — Returns the normalized direction from start to end or NANs if those are the same point.
+- double **length** () const — Returns the distance between start and end points.
+- bool **isApprox** (const [LineSegment](#linesegment) &) const — Comparison using the same epsilon as Eigen::isApprox.
+- double [clampLambda](#clamplambda) (double lambda) const override — Clamps the input to [0, length()].
+
+## Protected Attributes
+
+- vec3 **m_end** — End of the line segment.
+- bool **operator==** (const [LineSegment](#linesegment) &) const — Exact comparisons.
+- bool **operator!=** (const [LineSegment](#linesegment) &) const
+- [Utils::Variant](/cpp-sdk/4.5/api/structs/imfusion-utils-variant)&lt; [LineSegment](#linesegment), vec3, [std::nullptr_t](http://en.cppreference.com/w/cpp/types/nullptr_t.html) &gt; [shortestConnectingLine](#shortestconnectingline) (const [Line](/cpp-sdk/4.5/api/classes/imfusion-geometry-line) &l) const — Shortest connections to other lines.
+- [Utils::Variant](/cpp-sdk/4.5/api/structs/imfusion-utils-variant)&lt; [LineSegment](#linesegment), vec3, [std::nullptr_t](http://en.cppreference.com/w/cpp/types/nullptr_t.html) &gt; **shortestConnectingLine** (const [LineSegment](#linesegment) &l) const
+
+## Constructor & Destructor Documentation
+
+### LineSegment
+
+```cpp
+ImFusion::Geometry::LineSegment::LineSegment (const vec3 & start, const vec3 & end)
+```
+
+Creates a line segment from start to end.
+
+If those points are the same, the line segment will mostly behave like a very inefficient point.
+
+## Member Function Documentation
+
+### direction
+
+```cpp
+vec3 ImFusion::Geometry::LineSegment::direction () const
+```
+
+*override, virtual*
+
+Returns the normalized direction from start to end or NANs if those are the same point.
+
+### shortestConnectingLine
+
+```cpp
+Utils::Variant < LineSegment, vec3, std::nullptr_t > ImFusion::Geometry::LineSegment::shortestConnectingLine (const Line & l) const
+```
+
+Shortest connections to other lines.
+
+Returns the shortest connection to l as a [LineSegment](/cpp-sdk/4.5/api/classes/imfusion-geometry-linesegment). If the objects intersect or overlap, a point on both lines is returned instead. Empty return indicates that either object is not well defined, i.e. contains NAN.
+
+### clampLambda
+
+```cpp
+double ImFusion::Geometry::LineSegment::clampLambda (double lambda) const
+```
+
+*override, virtual*
+
+Clamps the input to [0, length()].

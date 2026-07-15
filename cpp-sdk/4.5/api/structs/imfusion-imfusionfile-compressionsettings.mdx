@@ -1,0 +1,40 @@
+---
+title: "ImFusion::ImFusionFile::CompressionSettings"
+sidebarTitle: "CompressionSettings"
+description: "Compression settings for nested ImFusionFile save operations."
+---
+
+`#include <ImFusion/Base/ImFusionFile.h>`
+
+## Overview
+
+[Compression](/cpp-sdk/4.5/api/namespaces/imfusion-compression) settings for nested ImFusionFile save operations.
+
+Used to pass compression configuration to plugins that save nested data. Different datasets inside the same ImFusionFile can have very different size, structure, and compressibility, so a single global compression choice may be suboptimal. This struct allow defining compression settings for heterogeneous content where a one-mode-fits-all compression approach can either bloat storage/transfer or slow down save/load unnecessarily.
+
+## Public Member Functions
+
+- [CompressionMode](/cpp-sdk/4.5/api/classes/imfusion-imfusionfile) [compressionFor](#compressionfor) (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) &data, [CompressionMode](/cpp-sdk/4.5/api/classes/imfusion-imfusionfile) fallback) const — Get compression for a specific [Data](/cpp-sdk/4.5/api/classes/imfusion-data) item.
+
+## Public Attributes
+
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [CompressionMode](/cpp-sdk/4.5/api/classes/imfusion-imfusionfile) &gt; **defaultCompression** — Default compression mode (nullopt = inherit from ImFusionFile).
+- [CompressionOverride](/cpp-sdk/4.5/api/classes/imfusion-imfusionfile) **compressionOverride** — Per-data compression override by name.
+
+## Member Function Documentation
+
+### compressionFor
+
+```cpp
+CompressionMode ImFusion::ImFusionFile::CompressionSettings::compressionFor (const Data & data, CompressionMode fallback) const
+```
+
+*inline*
+
+Get compression for a specific [Data](/cpp-sdk/4.5/api/classes/imfusion-data) item.
+
+Checks compressionOverride for data name, then "&lt;ALL&gt;" wildcard, then defaultCompression.
+
+**Parameters:**
+
+- `fallback` — [Compression](/cpp-sdk/4.5/api/namespaces/imfusion-compression) mode to use if neither override nor default is set

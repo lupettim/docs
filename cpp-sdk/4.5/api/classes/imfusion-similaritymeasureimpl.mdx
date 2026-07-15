@@ -1,0 +1,186 @@
+---
+title: "ImFusion::SimilarityMeasureImpl"
+sidebarTitle: "SimilarityMeasureImpl"
+description: "Base class of a similarity measure between two images."
+---
+
+`#include <ImFusion/Reg/SimilarityMeasureBase.h>`
+
+## Overview
+
+[Base](/cpp-sdk/4.5/api/structs/imfusion-dicom-base) class of a similarity measure between two images.
+
+A similarity measure computes an estimated similarity between two images. Derived classes must provide the actual computation of the similarity value and should either use a pure CPU or a GPU implementation (see also [SimilarityMeasureFactory](/cpp-sdk/4.5/api/classes/imfusion-similaritymeasurefactory)) If a derived class implements its own configurable methods it should always call the one from the base class as well.
+
+## Public Member Functions
+
+- [SimilarityMeasureImpl](#similaritymeasureimpl) ([SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*img1, [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*img2) — Sets the two images that should be compared. Does not transfer ownership.
+- virtual bool [setImage1](#setimage1) ([SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*img1) — Replaces the image1 that was set in the constructor with the given image.
+- virtual bool [setImage2](#setimage2) ([SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*img2) — Replaces the image2 that was set in the constructor with the given image.
+- virtual [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \* **image1** () const
+- virtual [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \* **image2** () const
+- void **enableImage1Mask** (bool enable) — Specify whether a mask on the first image shall be used if available (true by default).
+- void **enableImage2Mask** (bool enable) — Specify whether a mask on the second image shall be used if available (true by default).
+- virtual double [compute](#compute) (const [ImageTransformer](/cpp-sdk/4.5/api/classes/imfusion-imagetransformer) \*t, size_t \*overlap=nullptr)=0 — Computes and returns the similarity measure.
+- virtual bool [supportsWeights](#supportsweights) () const =0 — Queries the capability whether this similarity measure supports pixel-wise weights.
+- virtual void [setWeights](#setweights) (const [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*weights1, const [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*weights2) — Sets the images to use as weights for the similarity metric.
+- bool **image1MaskEnabled** () const — Return the flag for using the mask of the first image.
+- bool **image2MaskEnabled** () const — Return the flag for using the mask of the second image.
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Set one or multiple properties.
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Retrieve the properties of this object.
+
+## Static Public Member Functions
+
+- static void [defaultConfiguration](#defaultconfiguration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) — Retrieve the default properties of this class.
+
+## Protected Member Functions
+
+- double [callTyped](#calltyped) (T \*obj, const [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) &img1, const [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) &img2, const [ImageTransformer](/cpp-sdk/4.5/api/classes/imfusion-imagetransformer) \*t, size_t \*overlap=nullptr) — Helper method to transform the MemImages to TypedImages.
+- void **setMaskIncludeArguments** ([GL::Program](/cpp-sdk/4.5/api/classes/imfusion-gl-program) \*program) — Sets all uniforms for SimilarityMeasureMask.glh.
+- void [initMaskInclude](#initmaskinclude) ([GL::Program](/cpp-sdk/4.5/api/classes/imfusion-gl-program) \*program) — Initializes the code for the SimilarityMeasureMask.glh code.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **glDefines** (bool patchBased) const — Return shared [GL](/cpp-sdk/4.5/api/namespaces/imfusion-gl) program defines for patch-based and weights, used in LNCC and [LC2](/cpp-sdk/4.5/api/classes/imfusion-lc2) OpenGL subclasses.
+
+## Protected Attributes
+
+- [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \* **m_img1**
+- [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \* **m_img2**
+- bool **m_useImg1Mask**
+- bool **m_useImg2Mask**
+- [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [GlMask::MultiIncludeType](/cpp-sdk/4.5/api/classes/imfusion-gl-multiincludable) &gt; **m_maskImg1**
+- [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [GlMask::MultiIncludeType](/cpp-sdk/4.5/api/classes/imfusion-gl-multiincludable) &gt; **m_maskImg2**
+- const [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \* **m_weights1**
+- const [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \* **m_weights2**
+
+## Constructor & Destructor Documentation
+
+### SimilarityMeasureImpl
+
+```cpp
+ImFusion::SimilarityMeasureImpl::SimilarityMeasureImpl (SharedImage * img1, SharedImage * img2)
+```
+
+Sets the two images that should be compared. Does not transfer ownership.
+
+During the livetime of this similarity measure, both images are allowed to change there content but NOT their size, type or number of channels.
+
+## Member Function Documentation
+
+### setImage1
+
+```cpp
+virtual bool ImFusion::SimilarityMeasureImpl::setImage1 (SharedImage * img1)
+```
+
+*virtual*
+
+Replaces the image1 that was set in the constructor with the given image.
+
+img1 must have the same size and type as the current image1. The content is allowed to be different. Returns true if the image could be set or false otherwise (in which case nothing changes)
+
+### setImage2
+
+```cpp
+virtual bool ImFusion::SimilarityMeasureImpl::setImage2 (SharedImage * img2)
+```
+
+*virtual*
+
+Replaces the image2 that was set in the constructor with the given image.
+
+img2 must have the same size and type as the current image2. The content is allowed to be different. Returns true if the image could be set or false otherwise (in which case nothing changes)
+
+### compute
+
+```cpp
+virtual double ImFusion::SimilarityMeasureImpl::compute (const ImageTransformer * t, size_t * overlap = nullptr)
+```
+
+*pure virtual*
+
+Computes and returns the similarity measure.
+
+The higher the value the higher the similarity between the two images. The returned value does not need to be normalized, therefore values from different similarity measures should not be compared directly. The computation always iterates each pixel of img1 and compares it to the related pixel of img2. If no [ImageTransformer](/cpp-sdk/4.5/api/classes/imfusion-imagetransformer) is supplied, the image coordinates of a pixel in img1 are used directly to lookup the value in img2, no transformation is assumed. In this case it's usually advisable that img1 and img2 have the same dimensions, but this is not enforced. If an [ImageTransformer](/cpp-sdk/4.5/api/classes/imfusion-imagetransformer) is given, it will be used to transfer from img1 pixel coordinates to img2 pixel coordinates including any world transformations. In this case the dimensions of the two images can be unrelated. The optional argument overlap contains the overlap of the two images in pixels.
+
+### supportsWeights
+
+```cpp
+virtual bool ImFusion::SimilarityMeasureImpl::supportsWeights () const
+```
+
+*pure virtual*
+
+Queries the capability whether this similarity measure supports pixel-wise weights.
+
+### setWeights
+
+```cpp
+virtual void ImFusion::SimilarityMeasureImpl::setWeights (const SharedImage * weights1, const SharedImage * weights2)
+```
+
+*virtual*
+
+Sets the images to use as weights for the similarity metric.
+
+Setting weights only has effect if the similarity measure supports weights.
+
+**See also:** [supportsWeights()](#supportsweights)
+
+### configure
+
+```cpp
+void ImFusion::SimilarityMeasureImpl::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Set one or multiple properties.
+
+The default implementation retrieves the mask mode (param names "maskModeImg1" and "maskModeImg2")
+
+### configuration
+
+```cpp
+void ImFusion::SimilarityMeasureImpl::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Retrieve the properties of this object.
+
+The default implementation stores the mask mode (param names "maskModeImg1" and "maskModeImg2")
+
+### defaultConfiguration
+
+```cpp
+void ImFusion::SimilarityMeasureImpl::defaultConfiguration (Properties * p)
+```
+
+*static*
+
+Retrieve the default properties of this class.
+
+This includes all properties that are set in configuration.
+
+### callTyped
+
+```cpp
+template<typename T> double ImFusion::SimilarityMeasureImpl::callTyped (T * obj, const MemImage & img1, const MemImage & img2, const ImageTransformer * t, size_t * overlap = nullptr)
+```
+
+*protected*
+
+Helper method to transform the MemImages to TypedImages.
+
+This method will a method in T with the following signature and name (the name must match exactly!) template&lt;typename V, typename U&gt; double computeTyped(const TypedImage&lt;V&gt; &img1, const TypedImage&lt;U&gt; &img2, const ImageTransformer\* t); V and U are the type of the [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) img1 and img2 respectively.
+
+### initMaskInclude
+
+```cpp
+void ImFusion::SimilarityMeasureImpl::initMaskInclude (GL::Program * program)
+```
+
+*protected*
+
+Initializes the code for the SimilarityMeasureMask.glh code.
+
+Subclasses that support mask should call this after creating the initial program. Also has to be called everytime the [Mask](/cpp-sdk/4.5/api/classes/imfusion-mask) type changes, however, it can be assumed that this does not happen during compute.

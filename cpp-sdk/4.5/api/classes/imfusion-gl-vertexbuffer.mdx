@@ -1,0 +1,146 @@
+---
+title: "ImFusion::GL::VertexBuffer"
+sidebarTitle: "VertexBuffer"
+description: "Specialization of Buffer to store vertex array data."
+---
+
+`#include <ImFusion/Core/GL/VertexBuffer.h>`
+
+## Overview
+
+Specialization of [Buffer](/cpp-sdk/4.5/api/classes/imfusion-gl-buffer) to store vertex array data.
+
+Vertex array data specifies the input attributes (coordinates, normals, colors, texture coordinates) of the vertices when rendering primitives. The location of an attribute makes it accessible to the vertex shader. The layout of these attributes are managed by the VertexAttrib interface and automatically evaluated by the [VertexBuffer](/cpp-sdk/4.5/api/classes/imfusion-gl-vertexbuffer) when rendering. The [setData()](#setdata-1-2) overloads will take care of extracting the correct attribute specification from the input data.
+
+The draw() and drawInstanced() overloads will issue rendering commands for primitives formed by the vertex data in the vertex buffer. You can use indexed rendering by using the overloads taking a reference to a [IndexBuffer](/cpp-sdk/4.5/api/classes/imfusion-gl-indexbuffer).
+
+Example uploading and rendering a triangle:
+
+```cpp
+std::vector<vec3f> vertices = {
+    vec3f(-1.0, -1.0, 0.0),
+    vec3f(1.0, -1.0, 0.0),
+    vec3f(-1.0, 1.0, 0.0)
+};
+VertexBuffer vbo;
+vbo.bind();
+vbo.setData(vertices);
+vbo.draw(Primitive::Triangles);
+```
+ fragment
+
+**Note:** Since [VertexBuffer](/cpp-sdk/4.5/api/classes/imfusion-gl-vertexbuffer) uses a default Vertex Array Object (VAO) for rendering, the VertexBuffer::draw() overloads are **not** bind-sensitive, i.e. both vertex buffer and index buffer (if needed) are bound automatically. The buffer bind state after a draw call is undefined/driver implementation- specific. All other member functions remain bind-sensitive as specified in the base class.
+
+**See also:** - [IndexBuffer](/cpp-sdk/4.5/api/classes/imfusion-gl-indexbuffer)
+- [VertexArrayObject](/cpp-sdk/4.5/api/classes/imfusion-gl-vertexarrayobject)
+- [https://www.khronos.org/opengl/wiki/Vertex_Specification#Vertex_Buffer_Object](https://www.khronos.org/opengl/wiki/Vertex_Specification#Vertex_Buffer_Object)
+- [https://www.khronos.org/opengl/wiki/Vertex_Specification#Vertex_Array_Object](https://www.khronos.org/opengl/wiki/Vertex_Specification#Vertex_Array_Object)
+
+## Public Member Functions
+
+- [VertexBuffer](#vertexbuffer) ([Usage](/cpp-sdk/4.5/api/classes/imfusion-gl-buffer) [usageHint](/cpp-sdk/4.5/api/classes/imfusion-gl-buffer)=[Buffer::Usage::StaticDraw](/cpp-sdk/4.5/api/classes/imfusion-gl-buffer)) — Instantiate a new vertex buffer.
+- void [setData](#setdata-1-2) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; Ts &gt; &... arrays) — Upload data to the buffer.
+- void [setData](#setdata-2-2) ([Utils::Span](/cpp-sdk/4.5/api/classes/imfusion-utils-span)&lt; Ts &gt;... arrays) — Upload data to the buffer.
+- void [setVertexAttribNormalization](#setvertexattribnormalization) (int index, bool isNormalized) — Sets whether fixed-point/integral data values in the attribute at *index* should be normalized to or converted directly as fixed-point values keeping their original value in the shader.
+- size_t **numVertices** () const — Returns the number of vertices in attribute 0 as specified in the last call to [setData()](#setdata-1-2).
+- void **draw** (Primitive mode) const — Renders a single primitive using all vertices of this VBO.
+- void **draw** (Primitive mode, const [IndexBuffer](/cpp-sdk/4.5/api/classes/imfusion-gl-indexbuffer) &ibo) const — Renders a single primitive using the given index buffer referencing the vertices of this VBO.
+- void **drawInstanced** (Primitive mode, int32_t count) const — Renders multiple instances of the same primitive using all vertices of this VBO.
+- void **drawInstanced** (Primitive mode, int32_t, const [IndexBuffer](/cpp-sdk/4.5/api/classes/imfusion-gl-indexbuffer) &ibo) const — Renders multiple instances of the same primitive using the given index buffer referencing the vertices of this VBO.
+- void [drawMultiRestart](#drawmultirestart) (Primitive mode, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; size_t &gt; &primitiveRestartIndices) const — Renders multiple primitives using all vertices of this VBO and a list of restart indices.
+
+## Static Public Member Functions
+
+- static [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [VertexBuffer](#vertexbuffer) &gt; [createFullscreenSquare](#createfullscreensquare) () — Factory method to create a default rectangle with position and texture coordinates.
+- static void **unbind** () — Unbind any bound vertex buffer.
+
+## Constructor & Destructor Documentation
+
+### VertexBuffer
+
+```cpp
+ImFusion::GL::VertexBuffer::VertexBuffer (Usage usageHint = Buffer::Usage::StaticDraw)
+```
+
+*explicit*
+
+Instantiate a new vertex buffer.
+
+**Parameters:**
+
+- `usageHint` — Expected usage pattern of the buffer
+
+**Exceptions:**
+
+- `std::runtime_error` — if the corresponding OpenGL buffer object could not be created.
+
+## Member Function Documentation
+
+### createFullscreenSquare
+
+```cpp
+std::unique_ptr < VertexBuffer > ImFusion::GL::VertexBuffer::createFullscreenSquare ()
+```
+
+*static*
+
+Factory method to create a default rectangle with position and texture coordinates.
+
+The rectangle is created as a triangle strip with 4 vertices with the position ([-1..1], [-1..1], 0) and the texture coordinates ([0..1], [0..1], 0). Position attributes are always at location 0 and texture coordinate attributes at location 1 to be compatible with [GL::FixedFunctionPipeline](/cpp-sdk/4.5/api/classes/imfusion-gl-fixedfunctionpipeline).
+
+**See also:** [GL::FullscreenSquare](/cpp-sdk/4.5/api/classes/imfusion-gl-fullscreensquare)
+
+### setData
+
+```cpp
+template<typename... Ts> void ImFusion::GL::VertexBuffer::setData (const std::vector < Ts > &... arrays)
+```
+
+Upload data to the buffer.
+
+The buffer needs to be bound before this method is called. Any previous data will be deleted.
+
+**Parameters:**
+
+- `arrays` — Pack of vertex data arrays that should be uploaded to the buffer. If you provide multiple arrays their data will be concatenated and end up next to each other without any padding. Unless using custom locations via [VertexArrayObject](/cpp-sdk/4.5/api/classes/imfusion-gl-vertexarrayobject), the vertex data will end up in vertex attribute locations 0..N where N is the size of the *arrays* template parameter pack (i.e. number of parameters passed).
+
+### setData
+
+```cpp
+template<typename... Ts> void ImFusion::GL::VertexBuffer::setData (Utils::Span < Ts >... arrays)
+```
+
+Upload data to the buffer.
+
+The buffer needs to be bound before this method is called. Any previous data will be deleted.
+
+**Parameters:**
+
+- `arrays` — Pack of vertex data arrays that should be uploaded to the buffer. If you provide multiple arrays their data will be concatenated and end up next to each other without any padding. Unless using custom locations via [VertexArrayObject](/cpp-sdk/4.5/api/classes/imfusion-gl-vertexarrayobject), the vertex data will end up in vertex attribute locations 0..N where N is the size of the *arrays* template parameter pack (i.e. number of parameters passed).
+
+### setVertexAttribNormalization
+
+```cpp
+void ImFusion::GL::VertexBuffer::setVertexAttribNormalization (int index, bool isNormalized)
+```
+
+Sets whether fixed-point/integral data values in the attribute at *index* should be normalized to or converted directly as fixed-point values keeping their original value in the shader.
+
+By default all vertex attributes are considered as not normalized (false) after calling [setData()](#setdata-1-2). You can enable normalization by setting it to true for instance if you have color data in uint8 format on the CPU but want to see the values in [0..1] range in the shader.
+
+**Note:** This setting is not sticky and must be reconfigured after every call to [setData()](#setdata-1-2).
+
+**See also:** [https://www.khronos.org/opengl/wiki/GLAPI/glVertexAttribPointer](https://www.khronos.org/opengl/wiki/GLAPI/glVertexAttribPointer)
+
+### drawMultiRestart
+
+```cpp
+void ImFusion::GL::VertexBuffer::drawMultiRestart (Primitive mode, const std::vector < size_t > & primitiveRestartIndices) const
+```
+
+Renders multiple primitives using all vertices of this VBO and a list of restart indices.
+
+**Parameters:**
+
+- `mode` — Primitive to render
+- `primitiveRestartIndices` — List of vertex indices for which to restart the primitive. The first primitive will start at 0, the last primitive will end at the last vertex.

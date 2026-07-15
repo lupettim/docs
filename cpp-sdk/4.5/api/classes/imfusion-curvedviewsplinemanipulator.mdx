@@ -1,0 +1,85 @@
+---
+title: "ImFusion::CurvedViewSplineManipulator"
+sidebarTitle: "CurvedViewSplineManipulator"
+description: "Manipulator setting the direction of spline based curved views."
+---
+
+`#include <ImFusion/GUI/CurvedViewSplineManipulator.h>`
+
+## Overview
+
+[Manipulator](/cpp-sdk/4.5/api/classes/imfusion-manipulator) setting the direction of spline based curved views.
+
+## Public Types
+
+- enum **InteractionMode** &#123; **InteractionNone** = 0 , **InteractionCreate** = 1 , **InteractionMoveCorner** = 2 , **InteractionMoveEdge** = 4 , **InteractionMoveSide** = 8 , **InteractionMoveCenter** = 16 , **InteractionScale** = 32 , **InteractionRotate** = 64 , **InteractionDirectionChange** = 128 &#125; — Enumeration to describe when [PointBasedAnnotationManipulator](/cpp-sdk/4.5/api/classes/imfusion-pointbasedannotationmanipulator) should perform 3D position picking in GlVolumeViews.
+
+## Public Member Functions
+
+- void **setInteractionMode** (CurvedViewSplineManipulator::InteractionMode mode, bool finalize=true)
+- **CurvedViewSplineManipulator** ([GlCurvedViewSpline](/cpp-sdk/4.5/api/classes/imfusion-glcurvedviewspline) &annotation)
+- bool [sceneEvent](#sceneevent) (QEvent \*event, const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &view) override
+- void [setVisible](#setvisible) (bool visible) override — Set object visibility.
+- bool **visible** ()
+- void [draw](#draw) (const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &view) override — Draw the object in 3D space.
+- void **draw2D** (const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &view)
+- void **draw3D** (const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &view)
+- void **drawCircle** ([GL::FixedFunctionPipeline](/cpp-sdk/4.5/api/classes/imfusion-gl-fixedfunctionpipeline) &ffp, const [GL::ViewState](/cpp-sdk/4.5/api/classes/imfusion-gl-viewstate) &state)
+- void **drawHandle** ([GL::FixedFunctionPipeline](/cpp-sdk/4.5/api/classes/imfusion-gl-fixedfunctionpipeline) &ffp, const [GL::ViewState](/cpp-sdk/4.5/api/classes/imfusion-gl-viewstate) &state)
+- void **setCircle** (const vec3 &pos)
+- [Geometry::AlignedBox](/cpp-sdk/4.5/api/classes/imfusion-geometry-alignedbox) [bounds](#bounds) () const override — Get the axis-aligned bounding box of this [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) in world space.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [typeName](#typename) () const override — Return unique identifier for this object class used for serialization.
+- void **setMainWindow** ([MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase) \*mw)
+- void **setInteractive** ([InteractiveObject](/cpp-sdk/4.5/api/classes/imfusion-interactiveobject) \*obj)
+
+## Member Function Documentation
+
+### sceneEvent
+
+```cpp
+bool ImFusion::CurvedViewSplineManipulator::sceneEvent (QEvent * event, const GlView & view)
+```
+
+*override, virtual*
+
+### setVisible
+
+```cpp
+void ImFusion::CurvedViewSplineManipulator::setVisible (bool visible)
+```
+
+*override, virtual*
+
+Set object visibility.
+
+### draw
+
+```cpp
+void ImFusion::CurvedViewSplineManipulator::draw (const GlView & view)
+```
+
+*override, virtual*
+
+Draw the object in 3D space.
+
+### bounds
+
+```cpp
+Geometry::AlignedBox ImFusion::CurvedViewSplineManipulator::bounds () const
+```
+
+*inline, override, virtual*
+
+Get the axis-aligned bounding box of this [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) in world space.
+
+Return an empty (default-constructed) AlignedBox object if the [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) does not reside in world space.
+
+### typeName
+
+```cpp
+std::string ImFusion::CurvedViewSplineManipulator::typeName () const
+```
+
+*inline, override, virtual*
+
+Return unique identifier for this object class used for serialization.

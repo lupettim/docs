@@ -1,0 +1,62 @@
+---
+title: "ImFusion::PureGyro"
+sidebarTitle: "PureGyro"
+description: "Basic sensor fusion."
+---
+
+`#include <ImFusion/Base/IMUPoseIntegration.h>`
+
+## Overview
+
+Basic sensor fusion.
+
+Basic version, plain integration of the gyro without any magnetometer information. Requires a recently zeroed in gyro, or will run away rather quickly
+
+## Public Member Functions
+
+- void [update](#update) (const vec3 &angularVelocityDegPerSec, const vec3 &linAcc, const vec3 &mag, double timestampSeconds) override — Propagates the physical state using a new measurement. Ignores mag.
+- Eigen::Quaterniond [orientationQuaternion](#orientationquaternion) () const override — Returns the orientation of the most recent state.
+- vec3 [position](#position) () const override — Returns the position in world coords.
+- void [reset](#reset) () override — Restores the initial state.
+
+## Member Function Documentation
+
+### update
+
+```cpp
+void ImFusion::PureGyro::update (const vec3 & angularVelocityDegPerSec, const vec3 & linAcc, const vec3 & mag, double timestampSeconds)
+```
+
+*override, virtual*
+
+Propagates the physical state using a new measurement. Ignores mag.
+
+### orientationQuaternion
+
+```cpp
+Eigen::Quaterniond ImFusion::PureGyro::orientationQuaternion () const
+```
+
+*override, virtual*
+
+Returns the orientation of the most recent state.
+
+### position
+
+```cpp
+vec3 ImFusion::PureGyro::position () const
+```
+
+*override, virtual*
+
+Returns the position in world coords.
+
+### reset
+
+```cpp
+void ImFusion::PureGyro::reset ()
+```
+
+*override, virtual*
+
+Restores the initial state.

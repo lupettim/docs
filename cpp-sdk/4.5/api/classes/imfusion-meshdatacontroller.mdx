@@ -1,0 +1,96 @@
+---
+title: "ImFusion::MeshDataController"
+sidebarTitle: "MeshDataController"
+description: "GUI controller for adjusting visualization of meshes."
+---
+
+`#include <ImFusion/GUI/MeshDataController.h>`
+
+## Overview
+
+[GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui) controller for adjusting visualization of meshes.
+
+## Public Slots
+
+- void **onChangeRenderMode** ()
+- void **onChangeRenderMode** (QAbstractButton \*button)
+- void **onChangeManipulation** ()
+- void **onChangeManipulation** (QAbstractButton \*button)
+- void **onChangeLighting** ()
+- void **onChangeFaceNormals** ()
+- void **onCenterInteraction** ()
+- void **onViewMeshInfo** ()
+- void **onChangeMaterialMode** ()
+- void **onUpdateMaterialModeOptions** ()
+
+## Public Member Functions
+
+- **MeshDataController** () — Constructor with mesh data instance.
+- **~MeshDataController** () override — Destructor.
+- void [init](#init) () override — Attach [GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui) to algorithm dock and initialize it.
+- void [onLocationChanged](#onlocationchanged) ([Location](/cpp-sdk/4.5/api/classes/imfusion-controller) newLocation) override — Callback function called by the parent MainWindowBase/ControllerDecorator whenever the place was changed.
+- void **setMesh** ([GlMesh](/cpp-sdk/4.5/api/classes/imfusion-glmesh) \*glMesh)
+- [GlMesh](/cpp-sdk/4.5/api/classes/imfusion-glmesh) \* **mesh** () const
+- void **setPointCloud** ([GlPointCloud](/cpp-sdk/4.5/api/classes/imfusion-glpointcloud) \*glPointCloud)
+- [GlPointCloud](/cpp-sdk/4.5/api/classes/imfusion-glpointcloud) \* **pointCloud** () const
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [title](#title) () const override — Returns the shown widget title if the controller is shown in a mode that supports this (e.g.
+- void **updateInput** ()
+
+## Static Public Member Functions
+
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, DataController \*\*a=0) — Factory method to check and create this controller if applicable.
+
+## Protected Member Functions
+
+- void **onDataDeleted** (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data)
+- void **setEnabled** (bool enabled)
+- void **updateWidgetsValue** ()
+- void **resetInput** ()
+- bool [supportsToolBar](#supportstoolbar) () const override — Subclasses can return true if they support showing their [GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui) in [Location::ToolBar](/cpp-sdk/4.5/api/classes/imfusion-controller).
+- [MeshManipulator](/cpp-sdk/4.5/api/classes/imfusion-meshmanipulator) \* **getMeshManipulator** ()
+
+## Member Function Documentation
+
+### init
+
+```cpp
+void ImFusion::MeshDataController::init ()
+```
+
+*override, virtual*
+
+Attach [GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui) to algorithm dock and initialize it.
+
+### onLocationChanged
+
+```cpp
+void ImFusion::MeshDataController::onLocationChanged (Location newLocation)
+```
+
+*override, virtual*
+
+Callback function called by the parent MainWindowBase/ControllerDecorator whenever the place was changed.
+
+### title
+
+```cpp
+std::string ImFusion::MeshDataController::title () const
+```
+
+*override, virtual*
+
+Returns the shown widget title if the controller is shown in a mode that supports this (e.g.
+
+when in dock). Unless overridden, it returns the factory name.
+
+### supportsToolBar
+
+```cpp
+bool ImFusion::MeshDataController::supportsToolBar () const
+```
+
+*inline, override, protected, virtual*
+
+Subclasses can return true if they support showing their [GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui) in [Location::ToolBar](/cpp-sdk/4.5/api/classes/imfusion-controller).
+
+This interface is used by the default implementation of [supportedLocations()](/cpp-sdk/4.5/api/classes/imfusion-datacontroller) and [preferredLocation()](/cpp-sdk/4.5/api/classes/imfusion-datacontroller) to decide whether to use [Location::ToolBar](/cpp-sdk/4.5/api/classes/imfusion-controller).

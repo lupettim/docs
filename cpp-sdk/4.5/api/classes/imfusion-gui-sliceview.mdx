@@ -1,0 +1,180 @@
+---
+title: "ImFusion::GUI::SliceView"
+sidebarTitle: "SliceView"
+description: "2D renderer for SharedImageSets that can be hosted inside a Display ."
+---
+
+`#include <ImFusion/GUI/SliceView.h>`
+
+## Overview
+
+2D renderer for SharedImageSets that can be hosted inside a [Display](/cpp-sdk/4.5/api/classes/imfusion-gui-display).
+
+This class wraps the [GlSliceView](/cpp-sdk/4.5/api/classes/imfusion-glsliceview) renderer that implements 2D/MPR rendering of one or multiple images with compositing and blending of any number of regular geometry-based [GlObjects](/cpp-sdk/4.5/api/classes/imfusion-globject). It is mostly a wrapper object to combine the plain OpenGL renderer with input event handling functionality and put it into the a [Display](/cpp-sdk/4.5/api/classes/imfusion-gui-display). Note that the [GlSlice::is3D()](/cpp-sdk/4.5/api/classes/imfusion-glslice) flag of the underlying renderer defines whether this view accepts 2D or 3D images.
+
+It comes with a [SliceViewDefaultEventHandler](/cpp-sdk/4.5/api/classes/imfusion-gui-sliceviewdefaulteventhandler) pre-installed so that it is ready to use directly after instantiation. Furthermore, it provides a couple of additional high-level member functions to configure the most important properties of the renderer.
+
+**See also:** [GlSliceView](/cpp-sdk/4.5/api/classes/imfusion-glsliceview), [GlSlice](/cpp-sdk/4.5/api/classes/imfusion-glslice), [GlSliceRenderer](/cpp-sdk/4.5/api/classes/imfusion-glslicerenderer)
+
+## Public Types
+
+- enum class [ZoomMode](#zoommode) &#123; FitToView = 0 , Fixed = 1 , OriginalPixelSize &#125; — Enumeration to describe the zooming mode used for a 2D view.
+- enum class ResetOptions &#123; **None** = 0 , **Everything** = 0xFFFF , **ViewMatrix** = 1 &lt;&lt; 0 , **Zoom** = 1 &lt;&lt; 1 , **BlendingMode** = 1 &lt;&lt; 2 , **InterpolationMode** = 1 &lt;&lt; 3 &#125; — Bitfield enumeration to specify what aspects of the view shall be reset.
+
+## Public Member Functions
+
+- [SliceView](#sliceview-1-2) ([std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [GlSliceView](/cpp-sdk/4.5/api/classes/imfusion-glsliceview) &gt; glSliceView) — Creates a new instance using the given [GlSliceView](/cpp-sdk/4.5/api/classes/imfusion-glsliceview) which must not be null.
+- [SliceView](#sliceview-2-2) (bool is3d, [Slice::AnatomicalPlane](/cpp-sdk/4.5/api/classes/imfusion-slice) plane=[Slice::AnatomicalPlane::Undefined](/cpp-sdk/4.5/api/classes/imfusion-slice)) — Creates a new instance default constructing a [GlSliceView](/cpp-sdk/4.5/api/classes/imfusion-glsliceview) with the given parameters.
+- const [GlSliceView](/cpp-sdk/4.5/api/classes/imfusion-glsliceview) & **glView** () const — Returns the underlying [GlSliceView](/cpp-sdk/4.5/api/classes/imfusion-glsliceview).
+- [GlSliceView](/cpp-sdk/4.5/api/classes/imfusion-glsliceview) & **glView** ()
+- RadiologyViewGroup \* **viewGroup** () const — Returns the optional [RadiologyViewGroup](/cpp-sdk/4.5/api/classes/imfusion-gui-radiologyviewgroup) this view can participate in.
+- const [DisplayOptions2d](/cpp-sdk/4.5/api/classes/imfusion-displayoptions2d) \* [displayOptions](#displayoptions) (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) &data) const — Returns the [DisplayOptions2d](/cpp-sdk/4.5/api/classes/imfusion-displayoptions2d) instance that is used for the given dataset by the underlying [GlSlice](/cpp-sdk/4.5/api/classes/imfusion-glslice).
+- [DisplayOptions2d](/cpp-sdk/4.5/api/classes/imfusion-displayoptions2d) \* **displayOptions** (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) &data)
+- [SliceViewDefaultEventHandler](/cpp-sdk/4.5/api/classes/imfusion-gui-sliceviewdefaulteventhandler) \* **defaultEventHandler** () const — Convenience function to return the first interaction of type [SliceViewDefaultEventHandler](/cpp-sdk/4.5/api/classes/imfusion-gui-sliceviewdefaulteventhandler) if present.
+- [ZoomMode](#zoommode) **zoomMode** () const — Returns the [ZoomMode](#zoommode) describing how the zoomFactor() is supposed to be interpreted.
+- void **setZoomMode** ([ZoomMode](#zoommode) value) — Sets the [ZoomMode](#zoommode) describing how the zoomFactor() is supposed to be interpreted.
+- double **zoomFactor** () const — Returns the zoom factor describing the amount of magnification of the shown image slice.
+- void **setZoomFactor** (double value) — Sets the zoom factor describing the amount of magnification of the shown image slice.
+- bool **flipsY** () const — Returns the flag whether to flip the display of the slice view vertically along the Y axis.
+- void **setFlipY** (bool value) — Sets the flag whether to flip the display of the slice view vertically along the Y axis.
+- [GlSliceRendererImage::InterpolationMode](/cpp-sdk/4.5/api/classes/imfusion-glslicerendererimage) **interpolationMode** () const — Returns the interpolation mode of the underlying [GlSlice](/cpp-sdk/4.5/api/classes/imfusion-glslice)'s default renderer.
+- void **setInterpolationMode** ([GlSliceRendererImage::InterpolationMode](/cpp-sdk/4.5/api/classes/imfusion-glslicerendererimage) value) — Sets the interpolation mode of the underlying [GlSlice](/cpp-sdk/4.5/api/classes/imfusion-glslice)'s default renderer.
+- [GlSlice::BlendingMode](/cpp-sdk/4.5/api/classes/imfusion-glslice) **blendingMode** () const — Returns the blending behavior of the underlying [GlSlice](/cpp-sdk/4.5/api/classes/imfusion-glslice) when rendering multiple images.
+- void **setBlendingMode** ([GlSlice::BlendingMode](/cpp-sdk/4.5/api/classes/imfusion-glslice) value) — Sets the blending behavior of the underlying [GlSlice](/cpp-sdk/4.5/api/classes/imfusion-glslice) when rendering multiple images.
+- double **blendingFactor** () const — Returns the blending factor in range 0..1 of the underlying [GlSlice](/cpp-sdk/4.5/api/classes/imfusion-glslice) if applicable to the current blendingMode().
+- void **setBlendingFactor** (double value) — Sets the blending factor in range 0..1 of the underlying [GlSlice](/cpp-sdk/4.5/api/classes/imfusion-glslice) if applicable to the current blendingMode().
+- bool **autoViewSettings** () const — Returns whether this class automatically configures settings of the underlying [GlSliceView](/cpp-sdk/4.5/api/classes/imfusion-glsliceview) based on the shown data.
+- void **setAutoViewSettings** (bool value) — Sets whether this class automatically configures settings of the underlying [GlSliceView](/cpp-sdk/4.5/api/classes/imfusion-glsliceview) based on the shown data.
+- void **setMatrix** (const mat4 &camToWorldMatrix, bool suppressAnimation=false) — Set camera-to-world matrix of the underlying [GlSliceView](/cpp-sdk/4.5/api/classes/imfusion-glsliceview) using a smooth animation if enabled/unless suppressed.
+- void **setMatrix** (const vec3 &center, [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; mat3 &gt; rotationMatrix=std::nullopt, bool suppressAnimation=false) — Set camera-to-world matrix of the underlying [GlSliceView](/cpp-sdk/4.5/api/classes/imfusion-glsliceview) based on the given center and optional rotation matrix.
+- void [setSliceDepth](#setslicedepth) (const vec3 &center, bool suppressAnimation=false) — Changes the slice matrix so that it matches *center* in Z direction but remains unchanged in X and Y direction (view space).
+- void **reset** ([Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; ResetOptions &gt; resetOptions=ResetOptions::Everything) — Reset selected parameters of this view to their default state.
+- void [setViewport](#setviewport) (const [GL::Viewport](/cpp-sdk/4.5/api/structs/imfusion-gl-viewport) &rect) override — Sets the area where this view is drawn in [render()](/cpp-sdk/4.5/api/classes/imfusion-gui-view) wrt. the attached framebuffer.
+- void [setBorderConfig](#setborderconfig) (const [BorderConfig](/cpp-sdk/4.5/api/structs/imfusion-gui-view-borderconfig) &value) override — Sets the [BorderConfig](/cpp-sdk/4.5/api/structs/imfusion-gui-view-borderconfig) struct defining if and how to render a border frame surrounding the view.
+
+## Public Attributes
+
+- Signal [signalSettingsChanged](#signalsettingschanged) — Signal emitted whenever one of the view settings changed which can be linked by ViewGroup3D.
+
+## Protected Member Functions
+
+- void **updateScale** ()
+- void **updateViewSettings** ()
+- void [showDataImpl](#showdataimpl) ([Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data) override — Override this function to implement custom logic whenever a dataset is added to the list of visible data.
+
+## Protected Attributes
+
+- [GlSliceView](/cpp-sdk/4.5/api/classes/imfusion-glsliceview) \* **m_glSliceView**
+- RadiologyViewGroup \* **m_viewGroup** = nullptr
+- [ZoomMode](#zoommode) **m_zoomMode** = ZoomMode::FitToView
+- bool **m_autoSetViewSettings** = true
+
+## Member Enumeration Documentation
+
+### ZoomMode
+
+```cpp
+enum class ImFusion::GUI::SliceView::ZoomMode
+```
+
+*strong*
+
+Enumeration to describe the zooming mode used for a 2D view.
+
+**Enumerator:**
+
+- `FitToView` — A zoom factor of 1 will fit the shown image to the viewport.
+- `Fixed` — A zoom factor of 1 will show 1mm per viewport pixel.
+- `OriginalPixelSize` — A zoom factor of 1 will show 1 image pixel (of the first visible image) per viewport pixel.
+
+## Constructor & Destructor Documentation
+
+### SliceView
+
+```cpp
+ImFusion::GUI::SliceView::SliceView (std::unique_ptr < GlSliceView > glSliceView)
+```
+
+*explicit*
+
+Creates a new instance using the given [GlSliceView](/cpp-sdk/4.5/api/classes/imfusion-glsliceview) which must not be null.
+
+Furthermore, the constructor will add a [SliceViewDefaultEventHandler](/cpp-sdk/4.5/api/classes/imfusion-gui-sliceviewdefaulteventhandler).
+
+### SliceView
+
+```cpp
+ImFusion::GUI::SliceView::SliceView (bool is3d, Slice::AnatomicalPlane plane = Slice::AnatomicalPlane::Undefined)
+```
+
+*explicit*
+
+Creates a new instance default constructing a [GlSliceView](/cpp-sdk/4.5/api/classes/imfusion-glsliceview) with the given parameters.
+
+Furthermore, the constructor will add a [SliceViewDefaultEventHandler](/cpp-sdk/4.5/api/classes/imfusion-gui-sliceviewdefaulteventhandler).
+
+## Member Function Documentation
+
+### displayOptions
+
+```cpp
+const DisplayOptions2d * ImFusion::GUI::SliceView::displayOptions (const Data & data) const
+```
+
+Returns the [DisplayOptions2d](/cpp-sdk/4.5/api/classes/imfusion-displayoptions2d) instance that is used for the given dataset by the underlying [GlSlice](/cpp-sdk/4.5/api/classes/imfusion-glslice).
+
+Returns nullptr in case *data* is not part of [glView()](/cpp-sdk/4.5/api/classes/imfusion-gui-view).slice()-&gt;data().
+
+### setSliceDepth
+
+```cpp
+void ImFusion::GUI::SliceView::setSliceDepth (const vec3 & center, bool suppressAnimation = false)
+```
+
+Changes the slice matrix so that it matches *center* in Z direction but remains unchanged in X and Y direction (view space).
+
+Essentially, it projects *center* onto the current slice plane and then translates the Z coordinate of the view matrix. This function is useful if you want to center a set of MPR views to show a particular point without changing the in-plane translation of each view.
+
+### setViewport
+
+```cpp
+void ImFusion::GUI::SliceView::setViewport (const GL::Viewport & rect)
+```
+
+*override, virtual*
+
+Sets the area where this view is drawn in [render()](/cpp-sdk/4.5/api/classes/imfusion-gui-view) wrt. the attached framebuffer.
+
+### setBorderConfig
+
+```cpp
+void ImFusion::GUI::SliceView::setBorderConfig (const BorderConfig & value)
+```
+
+*override, virtual*
+
+Sets the [BorderConfig](/cpp-sdk/4.5/api/structs/imfusion-gui-view-borderconfig) struct defining if and how to render a border frame surrounding the view.
+
+### showDataImpl
+
+```cpp
+void ImFusion::GUI::SliceView::showDataImpl (Data * data)
+```
+
+*override, protected, virtual*
+
+Override this function to implement custom logic whenever a dataset is added to the list of visible data.
+
+The default implementation will call DataDisplayDispatcher::show() and add *data* to m_visibleData.
+
+## Member Data Documentation
+
+### signalSettingsChanged
+
+```cpp
+Signal ImFusion::GUI::SliceView::signalSettingsChanged
+```
+
+Signal emitted whenever one of the view settings changed which can be linked by ViewGroup3D.
+
+**Warning:** This signal is part of the high-level [SliceView](/cpp-sdk/4.5/api/classes/imfusion-gui-sliceview) API, however it relates to settings of the underlying low-level GlSlice(View). This signal will only be emitted if changes are originate from the [SliceView](/cpp-sdk/4.5/api/classes/imfusion-gui-sliceview) API. Changes applied directly to the underlying GlSlice(View) may not reliably trigger this signal.

@@ -1,0 +1,128 @@
+---
+title: "ImFusion::LabelMapToContoursAlgorithm"
+sidebarTitle: "LabelMapToContoursAlgorithm"
+description: "Algorithm to generate a closed contour encompassing a label map."
+---
+
+`#include <ImFusion/Seg/LabelMapToContoursAlgorithm.h>`
+
+## Overview
+
+[Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) to generate a closed contour encompassing a label map.
+
+## Public Member Functions
+
+- **LabelMapToContoursAlgorithm** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*labelMap) — Creates the algorithm instance with a series of images.
+- **~LabelMapToContoursAlgorithm** () override — Destructor.
+
+## Static Public Member Functions
+
+- static void **mergeContoursAndApply** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; const [Seg::Contour](/cpp-sdk/4.5/api/structs/imfusion-seg-contour) \* &gt; &contours, [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; unsigned char &gt; &targetImage, [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &data) — Extracts the label map from each contour, computes the maximum label map value at each voxel and sets this as voxel value for the targetImage.
+
+## Methods implementing the algorithm interface
+
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; int &gt; [p_skipFactor](#p-skipfactor) — Skip factor for the contour resampling. 1 means a dense contour, 20 means a sparser contour.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; unsigned char &gt; &gt; **p_labelValues** &#123;"labelValues", [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&#123;(unsigned char)1&#125;, \*this&#125;
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; &gt; **p_labelNames** &#123;"labelNames", [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&#123;[std::string](http://en.cppreference.com/w/cpp/string/basic_string.html)("New contour")&#125;, \*this&#125;
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; int &gt; **p_framesBegin** = &#123;"framesBegin", -1, this&#125;
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; int &gt; **p_framesEnd** = &#123;"framesEnd", -1, this&#125;
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; bool &gt; [p_reapplySegmentation](#p-reapplysegmentation) — Whether the segmentation should be reapplied. A bit costly.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; bool &gt; **p_createNew** = &#123;"createNewImage", false, this&#125; — Whether the results should be attached to a cloned image.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; bool &gt; **p_refine** = &#123;"refine", true, this&#125; — Global optimization. It optimizes position of chosen points.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; bool &gt; [p_annotationMode](#p-annotationmode) — Creates annotations in addition to contours. Useful for development.
+- [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) [takeOutput](#takeoutput) () override — Return any new [Data](/cpp-sdk/4.5/api/classes/imfusion-data) that was created by the [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) during the last call to [compute()](#compute).
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [InteractiveObject](/cpp-sdk/4.5/api/classes/imfusion-interactiveobject) &gt; &gt; [outputAnnotations](#outputannotations) () override
+- void [compute](#compute) () override — Applies the processing.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Seg::Contour](/cpp-sdk/4.5/api/structs/imfusion-seg-contour) \* &gt; **takeContours** () — Get a list of the newly created contours.
+- static bool [createCompatible](#createcompatible) (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=0)
+
+## Member Function Documentation
+
+### createCompatible
+
+```cpp
+bool ImFusion::LabelMapToContoursAlgorithm::createCompatible (const DataList & data, Algorithm ** a = 0)
+```
+
+*static*
+
+Factory method to check for applicability or to create the algorithm
+
+### takeOutput
+
+```cpp
+OwningDataList ImFusion::LabelMapToContoursAlgorithm::takeOutput ()
+```
+
+*override, virtual*
+
+Return any new [Data](/cpp-sdk/4.5/api/classes/imfusion-data) that was created by the [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) during the last call to [compute()](#compute).
+
+The default implementation will return an empty list.
+
+**Note:** Since ownership of the data is transferred, you can call this method only once between calls to [compute()](#compute).
+
+### outputAnnotations
+
+```cpp
+std::vector < std::unique_ptr < InteractiveObject > > ImFusion::LabelMapToContoursAlgorithm::outputAnnotations ()
+```
+
+*override, virtual*
+
+### compute
+
+```cpp
+void ImFusion::LabelMapToContoursAlgorithm::compute ()
+```
+
+*override, virtual*
+
+Applies the processing.
+
+## Member Data Documentation
+
+### p_skipFactor
+
+```cpp
+Parameter <int> ImFusion::LabelMapToContoursAlgorithm::p_skipFactor
+```
+
+**Initial value:**
+```cpp
+= {"skipFactor",
+                1.0,
+ this}
+```
+ fragment
+Skip factor for the contour resampling. 1 means a dense contour, 20 means a sparser contour.
+
+### p_reapplySegmentation
+
+```cpp
+Parameter <bool> ImFusion::LabelMapToContoursAlgorithm::p_reapplySegmentation
+```
+
+**Initial value:**
+```cpp
+= {"reapplySegmentation",
+ true,
+ this}
+```
+ fragment
+Whether the segmentation should be reapplied. A bit costly.
+
+### p_annotationMode
+
+```cpp
+Parameter <bool> ImFusion::LabelMapToContoursAlgorithm::p_annotationMode
+```
+
+**Initial value:**
+```cpp
+= {"annotationMode",
+ false,
+ this}
+```
+ fragment
+Creates annotations in addition to contours. Useful for development.

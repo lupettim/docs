@@ -1,0 +1,151 @@
+---
+title: "ImFusion::GL::LineRenderer"
+sidebarTitle: "LineRenderer"
+description: "Convenience class for a shader implementing thick and stippled line rendering."
+---
+
+`#include <ImFusion/Core/GL/LineRenderer.h>`
+
+## Overview
+
+Convenience class for a shader implementing thick and stippled line rendering.
+
+[LineRenderer](/cpp-sdk/4.5/api/classes/imfusion-gl-linerenderer) is a stateless object which you can use to render high-quality lines with custom width and stipple pattern. The rendering is configured by passing an [Options](/cpp-sdk/4.5/api/structs/imfusion-gl-linerenderer-options) instance to the render function. The default usage is to call one of [renderLines()](#renderlines), [renderLineStrip()](#renderlinestrip) or [renderLineLoop()](#renderlineloop) with a set of vertices in world space:
+
+```cpp
+// renders a 3px wide red line strip consisting of *verticesWorld* using the given view state
+GL::LineRenderer::cachedInstance().renderLineStrip(verticesWorld,
+ GL::LineRenderer::Options(vec4(1, 0, 0), 3),
+                                                   view.state(),
+                                                   view.orderIndependentTransparency());
+```
+ fragment
+If your geometry is static you can optimize your render loop by calling [makeVertexData()](#makevertexdata-1-2) once to write the vertex data into a VBO of your choice, and then only call [render()](#render) inside the render loop.
+
+This class inherits from [GL::InstanceManager](/cpp-sdk/4.5/api/classes/imfusion-gl-instancemanager) so that you can request a cached instance of it from any valid OpenGL context to save on resources.
+
+**Note:** The functionality partially overlaps with [FixedFunctionPipeline](/cpp-sdk/4.5/api/classes/imfusion-gl-fixedfunctionpipeline) since both can render thick and stippled lines:
+- [FixedFunctionPipeline](/cpp-sdk/4.5/api/classes/imfusion-gl-fixedfunctionpipeline) is general purpose and allows for directly rendering any vertex buffer. However, it requires geometry shader support which is absent in OpenGL ES environments.
+- [LineRenderer](/cpp-sdk/4.5/api/classes/imfusion-gl-linerenderer) also works in OpenGL ES contexts as it only uses basic vertex and fragment shaders. However, it therefore requires some preprocessing of the input vertices on the CPU.
+
+**See also:** [GL::VertexBuffer](/cpp-sdk/4.5/api/classes/imfusion-gl-vertexbuffer), [GL::FixedFunctionPipeline](/cpp-sdk/4.5/api/classes/imfusion-gl-fixedfunctionpipeline)
+
+## Classes
+
+- struct [Options](/cpp-sdk/4.5/api/structs/imfusion-gl-linerenderer-options) — Helper struct to encapsulate all supported rendering options.
+
+## Public Member Functions
+
+- void [render](#render) (const [GL::VertexBuffer](/cpp-sdk/4.5/api/classes/imfusion-gl-vertexbuffer) &vbo, Primitive primitive, const [Options](/cpp-sdk/4.5/api/structs/imfusion-gl-linerenderer-options) &options, const [ViewState](/cpp-sdk/4.5/api/classes/imfusion-gl-viewstate) &viewState, const [OrderIndependentTransparency](/cpp-sdk/4.5/api/classes/imfusion-gl-orderindependenttransparency) \*oit=nullptr) — Renders a the given vertex buffer as connected line.
+- void [renderLines](#renderlines) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; &vertices, const [Options](/cpp-sdk/4.5/api/structs/imfusion-gl-linerenderer-options) &options, const [ViewState](/cpp-sdk/4.5/api/classes/imfusion-gl-viewstate) &viewState, const [OrderIndependentTransparency](/cpp-sdk/4.5/api/classes/imfusion-gl-orderindependenttransparency) \*oit=nullptr) — Renders a series of individual lines from the given *vertices*.
+- void [renderLineStrip](#renderlinestrip) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; &vertices, const [Options](/cpp-sdk/4.5/api/structs/imfusion-gl-linerenderer-options) &options, const [ViewState](/cpp-sdk/4.5/api/classes/imfusion-gl-viewstate) &viewState, const [OrderIndependentTransparency](/cpp-sdk/4.5/api/classes/imfusion-gl-orderindependenttransparency) \*oit=nullptr) — Renders a connected line strip of the given *vertices*.
+- void [renderLineLoop](#renderlineloop) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; &vertices, const [Options](/cpp-sdk/4.5/api/structs/imfusion-gl-linerenderer-options) &options, const [ViewState](/cpp-sdk/4.5/api/classes/imfusion-gl-viewstate) &viewState, const [OrderIndependentTransparency](/cpp-sdk/4.5/api/classes/imfusion-gl-orderindependenttransparency) \*oit=nullptr) — Renders a connected line loop of the given *vertices*.
+
+## Static Public Member Functions
+
+- static bool [makeVertexData](#makevertexdata-1-2) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; &vertices, Primitive primitive, [GL::VertexBuffer](/cpp-sdk/4.5/api/classes/imfusion-gl-vertexbuffer) &outputVBO) — Converts the given vertices to a suitable internal representation and uploads them to a [VertexBuffer](/cpp-sdk/4.5/api/classes/imfusion-gl-vertexbuffer) which can then be used with [render()](#render).
+- static bool [makeVertexData](#makevertexdata-2-2) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; &vertices, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec4 &gt; &colors, Primitive primitive, [GL::VertexBuffer](/cpp-sdk/4.5/api/classes/imfusion-gl-vertexbuffer) &outputVBO) — Converts the given vertices to a suitable internal representation and uploads them to a [VertexBuffer](/cpp-sdk/4.5/api/classes/imfusion-gl-vertexbuffer) which can then be used with [render()](#render).
+
+## Member Function Documentation
+
+### makeVertexData
+
+```cpp
+bool ImFusion::GL::LineRenderer::makeVertexData (const std::vector < vec3 > & vertices, Primitive primitive, GL::VertexBuffer & outputVBO)
+```
+
+*static*
+
+Converts the given vertices to a suitable internal representation and uploads them to a [VertexBuffer](/cpp-sdk/4.5/api/classes/imfusion-gl-vertexbuffer) which can then be used with [render()](#render).
+
+**Parameters:**
+
+- `vertices` — Vertices of the line in world coordinates
+- `primitive` — Line type to render, must be Primitive::Lines, Primitive::LineLoop, or Primitive::LineStrip.
+- `outputVBO` — Output vertex buffer into which the resulting vertex data should be written
+
+**Returns:** true if sufficient input vertices were provided; false if *vertices* does not contain enough data or *primitive* is invalid, in which case *outputVBO* will remain untouched.
+
+### makeVertexData
+
+```cpp
+bool ImFusion::GL::LineRenderer::makeVertexData (const std::vector < vec3 > & vertices, const std::vector < vec4 > & colors, Primitive primitive, GL::VertexBuffer & outputVBO)
+```
+
+*static*
+
+Converts the given vertices to a suitable internal representation and uploads them to a [VertexBuffer](/cpp-sdk/4.5/api/classes/imfusion-gl-vertexbuffer) which can then be used with [render()](#render).
+
+**Parameters:**
+
+- `vertices` — Vertices of the line in world coordinates
+- `colors` — Optional per-vertex colors of the line to override the static render color in [Options](/cpp-sdk/4.5/api/structs/imfusion-gl-linerenderer-options). Must either be empty or have the same size as *vertices*.
+- `primitive` — Line type to render, must be Primitive::Lines, Primitive::LineLoop, or Primitive::LineStrip.
+- `outputVBO` — Output vertex buffer into which the resulting vertex data should be written
+
+**Returns:** true if sufficient input vertices were provided; false if *vertices* does not contain enough data or *primitive* is invalid, in which case *outputVBO* will remain untouched.
+
+### render
+
+```cpp
+void ImFusion::GL::LineRenderer::render (const GL::VertexBuffer & vbo, Primitive primitive, const Options & options, const ViewState & viewState, const OrderIndependentTransparency * oit = nullptr)
+```
+
+Renders a the given vertex buffer as connected line.
+
+**Parameters:**
+
+- `vbo` — Vertex buffer that was previously generated with [makeVertexData()](#makevertexdata-1-2).
+- `primitive` — Line type to render, must be Primitive::Lines, Primitive::LineLoop, or Primitive::LineStrip.
+- `options` — Rendering options to use
+- `viewState` — View and projection matrix to use
+- `oit` — Optional order-independent transparency handling instance to use
+
+### renderLines
+
+```cpp
+void ImFusion::GL::LineRenderer::renderLines (const std::vector < vec3 > & vertices, const Options & options, const ViewState & viewState, const OrderIndependentTransparency * oit = nullptr)
+```
+
+Renders a series of individual lines from the given *vertices*.
+
+**Parameters:**
+
+- `vertices` — Vertices of the line in world coordinates
+- `options` — Rendering options to use
+- `viewState` — View and projection matrix to use
+- `oit` — Optional order-independent transparency handling instance to use GL::Primitive::Lines
+
+### renderLineStrip
+
+```cpp
+void ImFusion::GL::LineRenderer::renderLineStrip (const std::vector < vec3 > & vertices, const Options & options, const ViewState & viewState, const OrderIndependentTransparency * oit = nullptr)
+```
+
+Renders a connected line strip of the given *vertices*.
+
+**Parameters:**
+
+- `vertices` — Vertices of the line in world coordinates
+- `options` — Rendering options to use
+- `viewState` — View and projection matrix to use
+- `oit` — Optional order-independent transparency handling instance to use
+
+**See also:** GL::Primitive::LineStrip
+
+### renderLineLoop
+
+```cpp
+void ImFusion::GL::LineRenderer::renderLineLoop (const std::vector < vec3 > & vertices, const Options & options, const ViewState & viewState, const OrderIndependentTransparency * oit = nullptr)
+```
+
+Renders a connected line loop of the given *vertices*.
+
+**Parameters:**
+
+- `vertices` — Vertices of the line in world coordinates
+- `options` — Rendering options to use
+- `viewState` — View and projection matrix to use
+- `oit` — Optional order-independent transparency handling instance to use
+
+**See also:** GL::Primitive::LineLoop

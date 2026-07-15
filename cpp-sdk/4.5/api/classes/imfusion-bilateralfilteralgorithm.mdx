@@ -1,0 +1,153 @@
+---
+title: "ImFusion::BilateralFilterAlgorithm"
+sidebarTitle: "BilateralFilterAlgorithm"
+description: "Algorithm for edge-preserving image smoothening using the Bilateral filter."
+---
+
+`#include <ImFusion/GL/BilateralFilterAlgorithm.h>`
+
+## Overview
+
+[Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) for edge-preserving image smoothening using the Bilateral filter.
+
+Guide for general algorithm can be found in Szeliski's Computer Vision or at [http://people.csail.mit.edu/sparis/bf_course/](http://people.csail.mit.edu/sparis/bf_course/)
+
+## Public Types
+
+- enum ComputationMethod &#123; **CPU** , **OpenGL** , **OpenCL** , **NrMethods** &#125; — Specify how to perform computation.
+- enum AdaptiveMode &#123; **None** , **Linear** , **Exponential** &#125; — Selects function on how to compute adaptive intensity weights in shader.
+
+## Public Member Functions
+
+- **BilateralFilterAlgorithm** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &imgIn, [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*imgGuide) — Creates glPrograms and output and sets defaults.
+- **~BilateralFilterAlgorithm** () override — Destroy glPrograms and output.
+- void [setParameters](#setparameters) (double sigmaPosition, double sigmaIntensity, int computationMethod, bool inPlace, int adaptive=None) — Set the parameters for the bilateral filter.
+- void **setAdaptiveParameters** (double offset, double incline) — Set global parameters for adaptive computation.
+- bool [setAdaptiveParameters](#setadaptiveparameters) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; &offsets, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; &inclines) — Set image-specific parameters for adaptive computation.
+- void **setInPlace** (bool inplace) — Set whether the result should be computed in place.
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Set one or multiple properties.
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Retrieve the properties of this object.
+- void [compute](#compute) () override — Compute the result.
+- [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) [takeOutput](#takeoutput) () override — If the algorithm creates new image data, it has to be transferred here.
+- [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* **output** () — Access the output SIS.
+
+## Static Public Member Functions
+
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a) — If data is compatible with algorithm return true. If a is not zero, create algorithm with input data.
+
+## Protected Attributes
+
+- [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* **m_img** — Input, to be filtered.
+- [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* **m_guide** — optional guide
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &gt; **m_output** — Output.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; float &gt; &gt; **m_inImage** — The currently processed image.
+- [GL::ImageProgram](/cpp-sdk/4.5/api/classes/imfusion-gl-imageprogram) \* **m_glProgram** — [Program](/cpp-sdk/4.5/api/classes/imfusion-gl-program) for filtering with OpenGL.
+- [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) \* **m_spatialGpuKernel** — Precomputed spatial kernel on the GPU.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; float &gt; **m_spatialCpuKernel** — Precomputed spatial kernel in memory (optional in GPU mode).
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; **m_offsets** — Offset coefficients for computing adaptive intensity weights in shader.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; **m_inclines** — Incline coefficients.
+- double **m_sigmaPosition** — Defines width of spatial Gaussian [mm].
+- double **m_sigmaIntensity** — Defines width of intensity Gaussian.
+- double **m_kernelRadiusScaling** — Defines how to scale the spatial kernel radius with respect to sigmaPosition.
+- bool **m_inPlace** — True: replace input image with filtered image.
+- int **m_adaptiveMode** — Apply adaptive computation of sigmaIntensity in shader if != 0.
+- double **m_adaptiveIncline** — Defines global incline of linear sigmaSq-vs-mean relation.
+- double **m_adaptiveOffset** — Defines global y-offset of linear sigmaSq-vs-mean relation.
+- bool **m_precomputeSpatialKernel** — True: precompute spatial kernel on CPU.
+- int **m_computationMethod** — Defines method/device to compute algorithm.
+
+## Parameters of ROI for intensity sigma computation
+
+- int **m_roiCornerX** — top front left corner coordinate of square/cubic ROI
+- int **m_roiCornerY**
+- int **m_roiCornerZ** — Zero for single image.
+- int **m_roiWidth** — Width of ROI. If zero, m_sigmaIntensity will be used.
+- int **m_roiHeight** — Height of ROI. Set equal to width if zero.
+- int **m_roiDepth** — Depth of ROI. Set equal to width if zero and if the imageset contains multiple images.
+
+## OpenCL-specific members
+
+- ClEnvironment \* **m_env**
+- bool **m_ownEnv**
+- ClProgram \* **m_clProgram** — ClProgram holding two kernels for different computation methods.
+- ClKernel \* [m_clKernel](#m-clkernel) — ClKernel used for computation.
+- ClSampler \* **m_clSampler** — ClSampler instance for ClImage::IMAGE types. Only required for global computation method.
+- bool **m_clUseLocalMem** — True: perform caching to local memory before filtering. False: use global memory only.
+- unsigned int **m_gws** [3] — Global number of workitems.
+- unsigned int **m_lws** [3] — Local workgroup size.
+
+## Member Function Documentation
+
+### setParameters
+
+```cpp
+void ImFusion::BilateralFilterAlgorithm::setParameters (double sigmaPosition, double sigmaIntensity, int computationMethod, bool inPlace, int adaptive = None)
+```
+
+Set the parameters for the bilateral filter.
+
+**Note:** See the documentation of [GlBilateralFilter](/cpp-sdk/4.5/api/classes/imfusion-glbilateralfilter) for more information on how to set parameters.
+
+### setAdaptiveParameters
+
+```cpp
+bool ImFusion::BilateralFilterAlgorithm::setAdaptiveParameters (const std::vector < double > & offsets, const std::vector < double > & inclines)
+```
+
+Set image-specific parameters for adaptive computation.
+
+**Returns:** True on success, i.e. vector sizes match the input image set size.
+
+### configure
+
+```cpp
+void ImFusion::BilateralFilterAlgorithm::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Set one or multiple properties.
+
+### configuration
+
+```cpp
+void ImFusion::BilateralFilterAlgorithm::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Retrieve the properties of this object.
+
+### compute
+
+```cpp
+void ImFusion::BilateralFilterAlgorithm::compute ()
+```
+
+*override, virtual*
+
+Compute the result.
+
+### takeOutput
+
+```cpp
+OwningDataList ImFusion::BilateralFilterAlgorithm::takeOutput ()
+```
+
+*override, virtual*
+
+If the algorithm creates new image data, it has to be transferred here.
+
+## Member Data Documentation
+
+### m_clKernel
+
+```cpp
+ClKernel* ImFusion::BilateralFilterAlgorithm::m_clKernel
+```
+
+*protected*
+
+ClKernel used for computation.
+
+'computeFilter' uses only global GPU memory, 'computeFilterUsingLocalMem' caches an image patch into local workgroup memory before filtering

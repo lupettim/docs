@@ -1,0 +1,88 @@
+---
+title: "ImFusion::DataComponentBase"
+sidebarTitle: "DataComponentBase"
+description: "Data components provide a way to generically attach custom information objects."
+---
+
+`#include <ImFusion/Base/DataComponent.h>`
+
+## Overview
+
+[Data](/cpp-sdk/4.5/api/classes/imfusion-data) components provide a way to generically attach custom information objects.
+
+[Data](/cpp-sdk/4.5/api/classes/imfusion-data) and StreamData are the two main classes that hold a list of data components, allowing custom information (for example optional data or configuration settings) to be attached to instances of these classes. [Data](/cpp-sdk/4.5/api/classes/imfusion-data) components are meant to be used for information that is bound to a specific [Data](/cpp-sdk/4.5/api/classes/imfusion-data) instance and that can not be represented by the usual ImFusion data types.
+
+[Data](/cpp-sdk/4.5/api/classes/imfusion-data) components typically inherit from [DataComponent](/cpp-sdk/4.5/api/classes/imfusion-datacomponent) and should implement [DataComponentBase::id](#id) and the [Configurable](/cpp-sdk/4.5/api/classes/imfusion-configurable) methods, as well as be registered with the [DataComponentFactory](/cpp-sdk/4.5/api/classes/imfusion-datacomponentfactory) in order to support generic (de)serialization. Non-serializable data components (e.g. temporary metadata) should simply inherit from [TemporaryDataComponent](/cpp-sdk/4.5/api/classes/imfusion-temporarydatacomponent).
+
+The [DataComponentBase](/cpp-sdk/4.5/api/classes/imfusion-datacomponentbase) interface is neither copy-constructible nor assignable. However, it provides [clone()](#clone), [assign()](#assign) and [equals()](#equals) interfaces. This is by design to make the caveats of the polymorphic behavior of these functions explicit. You can implement these functions manually, but you most likely want to use one of these two specializations instead:
+
+- [DataComponent](/cpp-sdk/4.5/api/classes/imfusion-datacomponent): if you need serialization, make your data component copy-constructible, assignable, and equality-comparable (implement operator==), and use this specialization. It will automatically forward [clone()](#clone), [assign()](#assign), and [equals()](#equals) to the corresponding functions of your class.
+- [TemporaryDataComponent](/cpp-sdk/4.5/api/classes/imfusion-temporarydatacomponent): this specialization provides an empty implementation for all virtual functions of [DataComponentBase](/cpp-sdk/4.5/api/classes/imfusion-datacomponentbase), which effectively disables serialization, copying, assignment, and comparison. Use it, for example, to act as a temporary cache during runtime. As for LegacyDataComponent: this serialization implements [clone()](#clone), [assign()](#assign), and [equals()](#equals) through the [Configurable](/cpp-sdk/4.5/api/classes/imfusion-configurable) interface. While this may be convenient, it is also likely to be slow and inefficient, and it does not necessarily produce bitwise identical results. As the name implies, we discourage using it.
+
+**Note:** [Data](/cpp-sdk/4.5/api/classes/imfusion-data) components are supposed to act as generic storage for custom information. When subclassing [DataComponentBase](/cpp-sdk/4.5/api/classes/imfusion-datacomponentbase), you should not implement any heavy evaluation logic since this is the domain of Algorithms or other classes accessing the DataComponents.
+
+**See also:** [DataComponentFactory](/cpp-sdk/4.5/api/classes/imfusion-datacomponentfactory), [DataComponentList](/cpp-sdk/4.5/api/classes/imfusion-datacomponentlist), [Data](/cpp-sdk/4.5/api/classes/imfusion-data), StreamData, [LazyInstantiatedDataComponent](/cpp-sdk/4.5/api/classes/imfusion-lazyinstantiateddatacomponent)
+
+## Public Member Functions
+
+- virtual [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [id](#id) () const =0 — Returns a unique string identifier for this type of data component.
+- virtual [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; DataComponentBase &gt; [clone](#clone) () const =0 — Creates a clone of this data component.
+- virtual bool [assign](#assign) (const DataComponentBase &other)=0 — Assigns the content of *other* to this data component.
+- virtual bool [equals](#equals) (const DataComponentBase &other) const =0 — Compares this data component to *other* for equality.
+
+## Protected Member Functions
+
+- **DataComponentBase** (const DataComponentBase &)=default
+- DataComponentBase & **operator=** (const DataComponentBase &other)=default
+
+## Member Function Documentation
+
+### id
+
+```cpp
+virtual std::string ImFusion::DataComponentBase::id () const
+```
+
+*pure virtual*
+
+Returns a unique string identifier for this type of data component.
+
+**Note:** To avoid conflicts make sure to include potential plugin names into this ID. Due to the modular architecture of the ImFusion library, uniqueness of IDs cannot be checked at compile time. However, [DataComponentFactory](/cpp-sdk/4.5/api/classes/imfusion-datacomponentfactory) will check the uniqueness of the ID during registration.
+
+### clone
+
+```cpp
+virtual std::unique_ptr < DataComponentBase > ImFusion::DataComponentBase::clone () const
+```
+
+*pure virtual*
+
+Creates a clone of this data component.
+
+### assign
+
+```cpp
+virtual bool ImFusion::DataComponentBase::assign (const DataComponentBase & other)
+```
+
+*pure virtual*
+
+Assigns the content of *other* to this data component.
+
+**Parameters:**
+
+- `other` — Source data component for assignment.
+
+### equals
+
+```cpp
+virtual bool ImFusion::DataComponentBase::equals (const DataComponentBase & other) const
+```
+
+*pure virtual*
+
+Compares this data component to *other* for equality.
+
+**Parameters:**
+
+- `other` — Other data component to compare this one to.

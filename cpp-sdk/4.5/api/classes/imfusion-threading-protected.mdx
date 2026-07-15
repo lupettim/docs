@@ -1,0 +1,149 @@
+---
+title: "ImFusion::Threading::Protected< T >"
+sidebarTitle: "Protected< T >"
+description: "Thread-safe wrapper for a shared resource protected by a mutex."
+---
+
+`#include <ImFusion/Core/Threading/Protected.h>`
+
+## Overview
+
+template&lt;class T&gt;
+
+class ImFusion::Threading::Protected&lt; T &gt;
+Thread-safe wrapper for a shared resource protected by a mutex.
+
+This class provides synchronized access to a resource of type T by wrapping it with an internal mutex. Access to the resource is granted through [Locked&lt;T&gt;](/cpp-sdk/4.5/api/classes/imfusion-threading-protected-locked) objects, which ensure that the mutex is held for the duration of access.
+
+The [Protected](/cpp-sdk/4.5/api/classes/imfusion-threading-protected) class manages both the resource and its protecting mutex, ensuring they have the same lifetime and are correctly paired.
+
+**Template Parameters:** | T | The type of the resource to protect. Can be any copyable or movable type. |
+| --- | --- |
+
+**Note:** Protected&lt;shared_ptr&lt;T&gt;&gt; should not be used. Use SharedProtected&lt;T&gt; instead. Usage example:
+```cpp
+// Create a synchronized vector
+Protected<std::vector<int>> syncVec(std::vector<int>{});
+
+// Thread 1: Add elements safely
+{
+ auto locked = syncVec.lock();
+    locked->push_back(1);
+    locked->push_back(2);
+}  // Lock released
+
+// Thread 2: Read elements safely
+{
+ auto locked = syncVec.lock();
+ for (int val : *locked) {
+ std::cout << val << std::endl;
+    }
+}  // Lock released
+```
+ fragment
+
+## Classes
+
+- class [Locked](/cpp-sdk/4.5/api/classes/imfusion-threading-protected-locked) — RAII lock guard that provides exclusive access to a synchronized resource.
+
+## Public Types
+
+- using **LockedConst** = [Locked](/cpp-sdk/4.5/api/classes/imfusion-threading-protected-locked)&lt;true&gt;
+
+## Public Member Functions
+
+- [Protected](#protected-1-3) (T resource) — Constructs a [Protected](/cpp-sdk/4.5/api/classes/imfusion-threading-protected) by copying or moving the resource.
+- [Protected](#protected-2-3) ([std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; T &gt; resource) — Constructs a [Protected](/cpp-sdk/4.5/api/classes/imfusion-threading-protected) by taking ownership of a unique_ptr.
+- [Protected](#protected-3-3) (const Protected &other) — Copy constructor.
+- [Protected](#protected-1-3) & [operator=](#operator) (const [Protected](#protected-1-3) &other) — Copy assignment operator.
+- [Locked](/cpp-sdk/4.5/api/classes/imfusion-threading-protected-locked) [lock](#lock) () — Acquires exclusive access to the protected resource.
+- LockedConst **lock** () const
+- T [copy](#copy) () const — Returns a copy of the protected resource.
+
+## Constructor & Destructor Documentation
+
+### Protected
+
+```cpp
+template<class T> ImFusion::Threading::Protected < T >::Protected (T resource)
+```
+
+*inline*
+
+Constructs a [Protected](/cpp-sdk/4.5/api/classes/imfusion-threading-protected) by copying or moving the resource.
+
+**Parameters:**
+
+- `resource` — The resource to protect. Will be moved or copied into managed storage.
+
+### Protected
+
+```cpp
+template<class T> ImFusion::Threading::Protected < T >::Protected (std::unique_ptr < T > resource)
+```
+
+*inline*
+
+Constructs a [Protected](/cpp-sdk/4.5/api/classes/imfusion-threading-protected) by taking ownership of a unique_ptr.
+
+**Parameters:**
+
+- `resource` — Unique pointer to the resource. Ownership is transferred.
+
+### U
+
+```cpp
+template<class T> template<typename U = T, std::enable_if_t < std::is_copy_constructible_v < U >, int > = 0> ImFusion::Threading::Protected < T >::Protected (const Protected< T > & other)
+```
+
+*inline*
+
+Copy constructor.
+
+Copies the resource and creates a new mutex. Only available if T is copy constructible.
+
+## Member Function Documentation
+
+### U
+
+```cpp
+template<class T> template<typename U = T, std::enable_if_t < std::is_copy_assignable_v < U >, int > = 0> Protected & ImFusion::Threading::Protected < T >::operator= (const Protected < T > & other)
+```
+
+*inline*
+
+Copy assignment operator.
+
+Copies the resource value. Only available if T is copy assignable.
+
+### lock
+
+```cpp
+template<class T> Locked ImFusion::Threading::Protected < T >::lock ()
+```
+
+*inline, nodiscard*
+
+Acquires exclusive access to the protected resource.
+
+Returns a [Locked&lt;T&gt;](/cpp-sdk/4.5/api/classes/imfusion-threading-protected-locked) object that holds the mutex lock and provides access to the underlying resource. The lock is held until the [Locked](/cpp-sdk/4.5/api/classes/imfusion-threading-protected-locked) object is destroyed.
+
+**Note:** This method will block if another thread currently holds the lock.
+
+**Note:** CAUTION: Calling two locking functions in the same scope can lead to deadlocks. Use lockAll(...) instead.
+
+**See also:** lockAll
+
+### U
+
+```cpp
+template<class T> template<typename U = T, std::enable_if_t < std::is_copy_constructible_v < U >, int > = 0> T ImFusion::Threading::Protected < T >::copy () const
+```
+
+*inline, nodiscard*
+
+Returns a copy of the protected resource.
+
+Acquires the mutex, copies the resource, and returns the copy. Only available if T is copy constructible.
+
+**Note:** This method will block if another thread currently holds the lock.

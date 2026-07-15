@@ -1,0 +1,140 @@
+---
+title: "ImFusion::GL::MultiIncludable< BaseIncludeType, IncludeArgumentsTypes >"
+sidebarTitle: "MultiIncludable< BaseIncludeType, IncludeArgumentsTypes >"
+description: "Multi-AbstractIncludes allow for using multiple instances of the same AbstractInclude type in one shader."
+---
+
+`#include <ImFusion/Core/GL/MultiAbstractInclude.h>`
+
+## Overview
+
+template&lt;typename BaseIncludeType, typename... IncludeArgumentsTypes&gt;
+
+class ImFusion::GL::MultiIncludable&lt; BaseIncludeType, IncludeArgumentsTypes &gt;
+Multi-AbstractIncludes allow for using multiple instances of the same [AbstractInclude](/cpp-sdk/4.5/api/classes/imfusion-gl-abstractinclude) type in one shader.
+
+Inherit from this class to enable multiple instances of your AbstractIncludes in one shader. To avoid symbol conflicts this interface will perform a simple text replacement in the corresponding shader code: all occurrences of a *baseToken* will be replaced with a token specified by the user when instantiating the Multi-Include.
+
+```cpp
+class Mask : public AbstractInclude, public MultiIncludable<Mask, Texture&>
+{
+ Mask()
+        : AbstractInclude("IMAGE_MASK", "Mask.glh")  // Mask is a regular AbstractInclude
+
+ // When requesting a Multi-include, all occurrences of `Mask` and `mask` will be replaced
+        , MultiIncludable<Mask, Texture&>(this, "mask", {ShaderTextReplacement::ExactMatch,
+ ShaderTextReplacement::AllLowercase})
+    {}
+};
+```
+ fragment
+Since using multiple instances of the same include type in one shader requires having unique uniform names per multi-include and these uniform names need to be referenced from the C++ side, this interface provides the virtual [setIncludeArguments()](#setincludearguments) function: Its function arguments are defined by second variadic template argument IncludeArgumentsTypes of this class. Its final argument token references the unique per-multi-include token and will automatically be computed by the Multi-Include logic, so that you can use it to define uniform names:
+
+```cpp
+// Note: the second function argument type matches the second MultiIncludable template type from above
+int Mask::setIncludeArguments(Program& p, Texture& texture, const std::string& token = "mask") override
+{
+ // token will automatically be set to `mask` or to it's replacement in case of a multi-include
+    p.setArgument("u_" + token + "Texture", texture);
+ return 1;
+}
+```
+ fragment
+A user can request a Multi-Include instance by calling createMultiInclude() and add those to the [Program](/cpp-sdk/4.5/api/classes/imfusion-gl-program) instead of the base include instance. This is the place where the user has to define a unique replacement token so that defines, uniforms, and functions of the multi-shader include instances are unique and the final shader does compile.
+
+```cpp
+Program p = ...;
+Mask m1, m2 = ...;
+auto multiMask1 = m1.createMultiInclude("Mask1");   // all occurrences of `Mask` will be replaced with `Mask1`
+auto multiMask2 = m2.createMultiInclude("Mask2");   // all occurrences of `Mask` will be replaced with `Mask2`
+
+p.addAbstractInclude(m1.get());
+p.addAbstractInclude(m2.get());
+m1->setIncludeArguments(p, texture1);   // automatically forwarded to Mask::setIncludeArguments(p, texture1, "Mask1");
+m2->setIncludeArguments(p, texture2);   // automatically forwarded to Mask::setIncludeArguments(p, texture2, "Mask2");
+```
+ fragment
+Given this original shader code:
+
+```cpp
+[Mask.glh]
+uniform sampler2D u_maskTexture;
+float getMaskValue(in vec2 coord) {
+ return texture(u_maskTexture, coord).r;
+}
+
+[Program.frag]
+#pragma abstract_include "MASK1"
+#pragma abstract_include "MASK2"
+```
+ fragment
+adding the two multi-includes will expand it to:
+
+```cpp
+uniform sampler2D u_mask1Texture;
+float getMask1Value(in vec2 coord) {
+ return texture(u_mask1Texture, coord).r;
+}
+uniform sampler2D u_mask2Texture;
+float getMask2Value(in vec2 coord) {
+ return texture(u_mask2Texture, coord).r;
+}
+```
+ fragment
+
+**Template Parameters:** | BaseIncludeType | Type of the concrete [AbstractInclude](/cpp-sdk/4.5/api/classes/imfusion-gl-abstractinclude) that implements this interface (CRTP pattern), must also implement the [AbstractInclude](/cpp-sdk/4.5/api/classes/imfusion-gl-abstractinclude) interface. |
+| --- | --- |
+| IncludeArgumentsTypes | Optional Template pack describing the arguments that the user needs to pass to [setIncludeArguments()](#setincludearguments) in order to configure the include/corresponding shader. |
+
+**See also:** [MultiAbstractInclude](/cpp-sdk/4.5/api/classes/imfusion-gl-multiabstractinclude)
+
+## Public Types
+
+- using **MultiIncludeType** = [MultiAbstractInclude](/cpp-sdk/4.5/api/classes/imfusion-gl-multiabstractinclude)&lt;BaseIncludeType, IncludeArgumentsTypes...&gt; — Alias for type of a multi-include instance of the original include.
+
+## Public Member Functions
+
+- [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; MultiIncludeType &gt; **createMultiInclude** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &replacementToken) — Instantiates a new [AbstractInclude](/cpp-sdk/4.5/api/classes/imfusion-gl-abstractinclude) instance where all occurrences of *baseToken* provided during construction are replaces with *replacementToken* according to the specified *replacementScheme*.
+- virtual int [setIncludeArguments](#setincludearguments) ([Program](/cpp-sdk/4.5/api/classes/imfusion-gl-program) &prog, IncludeArgumentsTypes... includeArgs, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &token) const =0 — Interface that multi includes should use to configure the shader include (such as setting uniforms, binding textures, etc).
+
+## Protected Member Functions
+
+- [MultiIncludable](#multiincludable) (BaseIncludeType \*crtpInstance, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &baseToken, [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; ShaderTextReplacement &gt; replacementScheme) — Instantiate and configure the [MultiIncludable](/cpp-sdk/4.5/api/classes/imfusion-gl-multiincludable) interface.
+
+## Constructor & Destructor Documentation
+
+### MultiIncludable
+
+```cpp
+template<typename BaseIncludeType, typename... IncludeArgumentsTypes> ImFusion::GL::MultiIncludable < BaseIncludeType, IncludeArgumentsTypes >::MultiIncludable (BaseIncludeType * crtpInstance, const std::string & baseToken, Flags < ShaderTextReplacement > replacementScheme)
+```
+
+*inline, protected*
+
+Instantiate and configure the [MultiIncludable](/cpp-sdk/4.5/api/classes/imfusion-gl-multiincludable) interface.
+
+**Parameters:**
+
+- `crtpInstance` — Pointer to the concrete instance implementing this interface (usually this)
+- `baseToken` — Text fragment that will be replaced with the token specified in createMultiInclude() in order to generate unique shader code/variables. Make sure that the token is part of the base include's define name and to choose a sufficiently unique token to avoid replacing unwanted code.
+- `replacementScheme` — Bitfield enumeration describing how to perform the text replacement in the include shader code. Text replacement of the include's define name is always performed using AllUppercase only.
+
+## Member Function Documentation
+
+### setIncludeArguments
+
+```cpp
+template<typename BaseIncludeType, typename... IncludeArgumentsTypes> virtual int ImFusion::GL::MultiIncludable < BaseIncludeType, IncludeArgumentsTypes >::setIncludeArguments (Program & prog, IncludeArgumentsTypes... includeArgs, const std::string & token) const
+```
+
+*pure virtual*
+
+Interface that multi includes should use to configure the shader include (such as setting uniforms, binding textures, etc).
+
+The return value shall indicate the number of textures bound to the program.
+
+**Parameters:**
+
+- `prog` — Shader instance to configure
+- `includeArgs` — List of custom arguments the user needs to provide in order to configure the include
+- `token` — Text fragment to distinguish multiple include instances: The [MultiIncludable](/cpp-sdk/4.5/api/classes/imfusion-gl-multiincludable) framework will ensure that this contains the replacement token of a concrete multi include instance.

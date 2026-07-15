@@ -1,0 +1,30 @@
+---
+title: "Setting Up a Build Environment"
+description: "In order to build custom applications with the ImFusion SDK you need to set up your build environment correctly."
+---
+
+In order to build custom applications with the ImFusion SDK you need to set up your build environment correctly.
+
+The installed version of the ImFusion SDK comes with package files for [CMake](https://cmake.org/) that enable straight-forward integration of the ImFusionLib and plugins into a CMake-based build.
+
+**Note:** The ImFusion SDK does not ship Qt. If you do not yet have a matching version of Qt, you can [download Qt from their web site](https://www.qt.io/download).
+
+The default location for installing the SDK is C:\[Program](/cpp-sdk/4.5/api/classes/imfusion-gl-program) Files\ImFusion\ImFusion Suite on Windows systems, the /usr folders on Linux systems, and the /Applications folder on MacOS. We denote this folder by $IMFUSION_SDK.
+
+[CMake](https://cmake.org/) is a cross-platform software for specifying the build process of executables and libraries. It will generate native project files (e.g. Visual Studio Solutions, Makefiles) so that you can develop your software in your preferred build environment. If you're not familiar with CMake, you can find an introduction to how to use CMake in the [official CMake documentation](https://cmake.org/cmake/help/latest/manual/cmake-buildsystem.7.html). We recommend to follow modern (target-based) practices when writing CMake builds.
+
+The ImFusion SDK ships a CMake package config with the installer, which is located in $(IMFUSION_SDK)\cmake (Windows) or $(IMFUSION_SDK)/lib/cmake/ (Linux and MacOS). If the ImFusion SDK was installed correctly, a CMake call to find_package(ImFusionLib) should locate the package config automatically. Optionally, use the COMPONENTS argument to specify additional ImFusion plugins.
+
+The CMake package defines targets for the ImFusionLib and all specified plugins. Linking your application/library against those targets using target_link_libraries(YourLibName PRIVATE ImFusionLib) will automatically add the needed include directories, etc. to your target.
+
+Since the ImFusion SDK does not ship Qt you will need to find_package(Qt6) or find_package(Qt5) (depending on the version your installer was built for) and link it yourself. If CMake does not locate Qt automatically, set Qt6_DIR or Qt5_DIR accordingly, e.g. &lt;Qt6 install dir&gt;/lib/cmake/Qt6.
+
+For using the ImFusion SDK within a custom build environment configure the following:
+
+**Required include Directories:** - includes of the ImFusion SDK: $(IMFUSION_SDK)/include/ImFusion (Windows and Linux) and $(IMFUSION_SDK)/Contents/Resources/include/ImFusion (MacOS)
+- 3rd-party includes of the ImFusion SDK: $(IMFUSION_SDK_INCLUDE_DIR)/Ext where IMFUSION_SDK_INCLUDE_DIR is the folder defined above
+- Qt5/Qt6 includes (not shipped)
+
+**Required linking targets:** - $(IMFUSION_SDK)\lib\ImFusionLib.lib (Windows) or $(IMFUSION_SDK)/lib/libImFusionLib.so (Linux and MacOS)
+- optionally also plugins in $(IMFUSION_SDK)\lib (Windows) or $(IMFUSION_SDK)/lib/ImFusionLib/plugins (Linux and MacOS)
+- Qt5/Qt6 (not shipped)

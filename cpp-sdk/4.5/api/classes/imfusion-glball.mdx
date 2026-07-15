@@ -1,0 +1,140 @@
+---
+title: "ImFusion::GlBall"
+sidebarTitle: "GlBall"
+description: "Ball annotation, based on GlCircle annotation (basically three circles in 3 orientations)."
+---
+
+`#include <ImFusion/GL/GlBall.h>`
+
+## Overview
+
+Ball annotation, based on [GlCircle](/cpp-sdk/4.5/api/classes/imfusion-glcircle) annotation (basically three circles in 3 orientations).
+
+## Public Member Functions
+
+- void [draw](#draw) (const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &[view](/cpp-sdk/4.5/api/classes/imfusion-glannotation)) override — Draw the object in 3D space.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [typeName](#typename) () const override — Return unique identifier for this object class used for serialization.
+- bool [sampleRenderPath](#samplerenderpath) (int samples, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; &out) const override — For annotations where the rendered shape differs from the stored points, this method returns true and a set of points on the rendered curve.
+- [Geometry::AlignedBox](/cpp-sdk/4.5/api/classes/imfusion-geometry-alignedbox) [bounds](#bounds) () const override — Get the axis-aligned bounding box of this [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) in world space.
+- void **setRadius** (double radius)
+- void **setCenter** (vec3 center)
+- void [setColor](#setcolor) (const vec3 &[color](/cpp-sdk/4.5/api/classes/imfusion-glannotation)) override — Set annotation color.
+- void [setLineWidth](#setlinewidth) (float width) override — Set annotation line width.
+- void **setOrientation** (vec3 forward, vec3 up)
+- vec3 **center** () const
+- void [setEditable](#seteditable) (bool [editable](#editable)) override — When a [GlAnnotation](/cpp-sdk/4.5/api/classes/imfusion-glannotation) is editable it may alter its visualization and render UI elements for its manipulation.
+- bool [editable](#editable) () const override — When a [GlAnnotation](/cpp-sdk/4.5/api/classes/imfusion-glannotation) is editable it may alter its visualization and render UI elements for its manipulation.
+- void [setPoints](#setpoints) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; &[points](/cpp-sdk/4.5/api/classes/imfusion-glpointbasedannotation)) override — Sets the annotation points.
+- void [setPointSize](#setpointsize) (float size) override — Set the point size.
+
+## Member Function Documentation
+
+### draw
+
+```cpp
+void ImFusion::GlBall::draw (const GlView & view)
+```
+
+*override, virtual*
+
+Draw the object in 3D space.
+
+### typeName
+
+```cpp
+std::string ImFusion::GlBall::typeName () const
+```
+
+*inline, override, virtual*
+
+Return unique identifier for this object class used for serialization.
+
+### sampleRenderPath
+
+```cpp
+bool ImFusion::GlBall::sampleRenderPath (int samples, std::vector < vec3 > & out) const
+```
+
+*override, virtual*
+
+For annotations where the rendered shape differs from the stored points, this method returns true and a set of points on the rendered curve.
+
+Otherwise it returns false and the control points.
+
+### bounds
+
+```cpp
+Geometry::AlignedBox ImFusion::GlBall::bounds () const
+```
+
+*override, virtual*
+
+Get the axis-aligned bounding box of this [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) in world space.
+
+Return an empty (default-constructed) AlignedBox object if the [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) does not reside in world space.
+
+### setColor
+
+```cpp
+void ImFusion::GlBall::setColor (const vec3 & color)
+```
+
+*inline, override, virtual*
+
+Set annotation color.
+
+### setLineWidth
+
+```cpp
+void ImFusion::GlBall::setLineWidth (float lineWidth)
+```
+
+*inline, override, virtual*
+
+Set annotation line width.
+
+### setEditable
+
+```cpp
+void ImFusion::GlBall::setEditable (bool editable)
+```
+
+*inline, override, virtual*
+
+When a [GlAnnotation](/cpp-sdk/4.5/api/classes/imfusion-glannotation) is editable it may alter its visualization and render UI elements for its manipulation.
+
+### editable
+
+```cpp
+bool ImFusion::GlBall::editable () const
+```
+
+*inline, override, virtual*
+
+When a [GlAnnotation](/cpp-sdk/4.5/api/classes/imfusion-glannotation) is editable it may alter its visualization and render UI elements for its manipulation.
+
+### setPoints
+
+```cpp
+void ImFusion::GlBall::setPoints (const std::vector < vec3 > & points)
+```
+
+*override, virtual*
+
+Sets the annotation points.
+
+Clears previous points.
+
+**Parameters:**
+
+- `points` — points
+
+### setPointSize
+
+```cpp
+void ImFusion::GlBall::setPointSize (float s)
+```
+
+*override, virtual*
+
+Set the point size.

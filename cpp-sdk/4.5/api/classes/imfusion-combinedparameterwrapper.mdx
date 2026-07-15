@@ -1,0 +1,90 @@
+---
+title: "ImFusion::CombinedParameterWrapper"
+sidebarTitle: "CombinedParameterWrapper"
+description: "Implementation of the ParameterOptimization interface to a combination of other ParameterOptimization interface values."
+---
+
+`#include <ImFusion/Base/ParameterOptimization.h>`
+
+## Overview
+
+Implementation of the [ParameterOptimization](/cpp-sdk/4.5/api/classes/imfusion-parameteroptimization) interface to a combination of other [ParameterOptimization](/cpp-sdk/4.5/api/classes/imfusion-parameteroptimization) interface values.
+
+## Public Member Functions
+
+- **CombinedParameterWrapper** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; ParameterWrapperBase &gt; &gt; &param)
+- **CombinedParameterWrapper** (Ts &&... params)
+- **CombinedParameterWrapper** (const CombinedParameterWrapper &)=delete
+- CombinedParameterWrapper & **operator=** (const CombinedParameterWrapper &)=delete
+- int [dim](#dim) () const override — The number of (scalar) parameters wrapped by this object.
+- void [deserialize](#deserialize) (const double \*x) override — Update the stored references from a double representation.
+- void [serialize](#serialize) (double \*x) const override — Updates a double representation from the stored references.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [name](#name) (int i) const override — Name of the ith parameter, used for display purposes.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; ParameterWrapperBase &gt; [clone](#clone) () const override — Clone function.
+- void **addWrappers** (Ts &&... params)
+- void **addParamWrapper** (double &v)
+- void **addParamWrapper** ([Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; double &gt; &v)
+- void **addParamWrapper** ([std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; &v)
+- void **addParamWrapper** (vec2 &v)
+- void **addParamWrapper** ([std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec2 &gt; &v)
+- void **addParamWrapper** ([Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; vec2 &gt; &v)
+- void **addParamWrapper** (vec3 &v)
+- void **addParamWrapper** ([std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; &v)
+- void **addParamWrapper** ([Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; vec3 &gt; &v)
+- void **addParamWrapper** (mat4 &m)
+- void **addParamWrapper** ([std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; mat4 &gt; &m)
+- void **addParamWrapper** ([Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; mat4 &gt; &v)
+- void **addParamWrapper** (const ParameterWrapperBase &w)
+- void **addParamWrapper** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; ParameterWrapperBase &gt; &gt; &w)
+
+## Member Function Documentation
+
+### dim
+
+```cpp
+int ImFusion::CombinedParameterWrapper::dim () const
+```
+
+*override, virtual*
+
+The number of (scalar) parameters wrapped by this object.
+
+### deserialize
+
+```cpp
+void ImFusion::CombinedParameterWrapper::deserialize (const double * v)
+```
+
+*override, virtual*
+
+Update the stored references from a double representation.
+
+### serialize
+
+```cpp
+void ImFusion::CombinedParameterWrapper::serialize (double * v) const
+```
+
+*override, virtual*
+
+Updates a double representation from the stored references.
+
+### name
+
+```cpp
+std::string ImFusion::CombinedParameterWrapper::name (int i) const
+```
+
+*override, virtual*
+
+Name of the ith parameter, used for display purposes.
+
+### clone
+
+```cpp
+std::unique_ptr < ParameterWrapperBase > ImFusion::CombinedParameterWrapper::clone () const
+```
+
+*inline, override, virtual*
+
+Clone function.

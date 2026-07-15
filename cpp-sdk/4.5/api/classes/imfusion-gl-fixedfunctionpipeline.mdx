@@ -1,0 +1,271 @@
+---
+title: "ImFusion::GL::FixedFunctionPipeline"
+sidebarTitle: "FixedFunctionPipeline"
+description: "Convenience class for a shader implementing a basic fixed function rendering pipeline."
+---
+
+`#include <ImFusion/Core/GL/FixedFunctionPipeline.h>`
+
+## Overview
+
+Convenience class for a shader implementing a basic fixed function rendering pipeline.
+
+[FixedFunctionPipeline](/cpp-sdk/4.5/api/classes/imfusion-gl-fixedfunctionpipeline) is a stateful object similar to an OpenGL context. Changes to any of its properties (e.g. matrices, default color, ...) apply to any subsequent draw call while the pipeline is enabled. Any call to [enable()](#enable) will automatically reset the state to its defaults.
+
+For desktop OpenGL this class supports different shader variants (default general purpose shader, wide and stippled line rendering shader). You select the shader to use during [enable()](#enable). In OpenGL ES contexts the line rendering shaders are not available due to the lack of geometry shader support. Use [GL::LineRenderer](/cpp-sdk/4.5/api/classes/imfusion-gl-linerenderer) as alternative.
+
+The default state of the rendering shader is as follows:
+
+- Projection matrix: as specified in the [GL::ViewState](/cpp-sdk/4.5/api/classes/imfusion-gl-viewstate) given on [enable()](#enable)
+- View matrix: as specified in the [GL::ViewState](/cpp-sdk/4.5/api/classes/imfusion-gl-viewstate) given on [enable()](#enable)
+- Model matrix: identity
+- Default color: black (0, 0, 0, 1)
+- Texturing: disabled
+- [Texture](/cpp-sdk/4.5/api/classes/imfusion-gl-texture) Coordinate Transformation: 1.0 scaling, 0.0 offset
+- Point smoothing: disabled
+- Line width: 1px (only for the LineRendering shader)
+- Stipple pattern: 0xFFFF (only for the LineRendering shader)
+- Stipple factor: 1.0 (only for the LineRendering shader)
+
+The shader expects the following inputs/vertex attributes during rendering
+
+- Attribute 0 (mandatory): Vertex positions
+- Attribute 1 (optional): Per-vertex texture coordinates to be used when texturing is enabled.
+- Attribute 2 (optional): Per-vertex colors. [FixedFunctionPipeline](/cpp-sdk/4.5/api/classes/imfusion-gl-fixedfunctionpipeline) will use the configured default color if no per-vertex colors are specified.
+
+You can use the [makeVertexData()](#makevertexdata) helper function to create a [GL::VertexBuffer](/cpp-sdk/4.5/api/classes/imfusion-gl-vertexbuffer) with the correct attribute bindings. Also, [FixedFunctionPipeline](/cpp-sdk/4.5/api/classes/imfusion-gl-fixedfunctionpipeline) inherits from [GL::InstanceManager](/cpp-sdk/4.5/api/classes/imfusion-gl-instancemanager) so that you can request a cached instance of this class from any valid OpenGL context.
+
+Example usage for rendering a textured quad:
+
+```cpp
+std::vector<vec2> vertices = ...;
+std::vector<vec2> texCoords = ...;
+std::unique_ptr<GL::VertexBuffer> vbo = GL::FixedFunctionPipeline::makeVertexData(vertices).useTexCoords(texCoords);
+
+auto& ffp = GL::FixedFunctionPipeline::cachedInstance();
+ffp.enable(state);
+ffp.setModelMatrix(matrix);
+ffp.enableTexturing(*texture);
+
+vbo->draw(GL::VertexBuffer::Triangles);
+
+ffp.disable();
+```
+ fragment
+
+**Note:** When trying to render pixel-perfect 2D lines, remember that the coordinates specify the center of the line while a standard orthographic projection (e.g. GL::createOrtho2d()) refers to the corner of a pixel. Thus, when using an odd line width you might need to offset the pixel location by half a pixel depending on your view state.
+
+**Note:** The functionality partially overlaps with [LineRenderer](/cpp-sdk/4.5/api/classes/imfusion-gl-linerenderer) since both can render thick and stippled lines:
+- [FixedFunctionPipeline](/cpp-sdk/4.5/api/classes/imfusion-gl-fixedfunctionpipeline) is general purpose and allows for directly rendering any vertex buffer. However, it requires geometry shader support which is absent in OpenGL ES environments.
+- [LineRenderer](/cpp-sdk/4.5/api/classes/imfusion-gl-linerenderer) also works in OpenGL ES contexts as it only uses basic vertex and fragment shaders. However, it therefore requires some preprocessing of the input vertices on the CPU.
+
+**See also:** [GL::VertexBuffer](/cpp-sdk/4.5/api/classes/imfusion-gl-vertexbuffer), [GL::LineRenderer](/cpp-sdk/4.5/api/classes/imfusion-gl-linerenderer), [Rendering Custom Graphics](/cpp-sdk/4.5/api/guides/rendering-tutorial)
+
+**Examples:** [MyCustomGlObject.cpp](/cpp-sdk/4.5/api/examples/my-custom-gl-object-8cpp).
+
+## Classes
+
+- struct [VertexData](/cpp-sdk/4.5/api/structs/imfusion-gl-fixedfunctionpipeline-vertexdata) — Utility struct to build a [VertexBuffer](/cpp-sdk/4.5/api/classes/imfusion-gl-vertexbuffer) to be used with [FixedFunctionPipeline](/cpp-sdk/4.5/api/classes/imfusion-gl-fixedfunctionpipeline) in a type-safe fashion.
+
+## Public Types
+
+- enum class [ShaderSelection](#shaderselection) &#123; Default , LineRendering , LineAdjacencyRendering &#125; — Enumeration for the available shaders.
+
+## Public Member Functions
+
+- [FixedFunctionPipeline](#fixedfunctionpipeline) () — Instantiates the rendering shader.
+- void [enable](#enable) (const [ViewState](/cpp-sdk/4.5/api/classes/imfusion-gl-viewstate) &state, [ShaderSelection](#shaderselection) shaderSelection=ShaderSelection::Default, const [OrderIndependentTransparency](/cpp-sdk/4.5/api/classes/imfusion-gl-orderindependenttransparency) \*oit=nullptr) — Enables the rendering shader and resets all state to the default settings.
+- void [enableWithoutReset](#enablewithoutreset) ([ShaderSelection](#shaderselection) shaderSelection, const [OrderIndependentTransparency](/cpp-sdk/4.5/api/classes/imfusion-gl-orderindependenttransparency) \*oit=nullptr) — Enables the rendering shader **without** resetting all state to the default.
+- void **disable** () — Disables the rendering shader.
+- void **reset** (const [ViewState](/cpp-sdk/4.5/api/classes/imfusion-gl-viewstate) &state) — Resets the rendering shader to the default settings.
+- void **setProjectionMatrix** (const mat4 &matrix) — Sets the projection matrix.
+- void **setViewMatrix** (const mat4 &matrix) — Sets the view matrix.
+- void **setModelMatrix** (const mat4 &matrix) — Sets the model matrix.
+- void **setDefaultColor** (const vec3 &color) — Sets the default color with full opacity to use in case no per-vertex colors are specified.
+- void **setDefaultColor** (const vec4 &color) — Sets the default color to use in case no per-vertex colors are specified.
+- void [enableTexturing](#enabletexturing-1-2) (const [Texture](/cpp-sdk/4.5/api/classes/imfusion-gl-texture) &texture) — Enables texturing using the given texture.
+- void [enableTexturing](#enabletexturing-2-2) (const [Texture](/cpp-sdk/4.5/api/classes/imfusion-gl-texture) &texture, const [Sampler](/cpp-sdk/4.5/api/classes/imfusion-gl-sampler) &samplingParameters) — Enables texturing using the given texture and sampling parameters.
+- void [setTexCoordTransform](#settexcoordtransform) (const vec3 &scaling, const vec3 &offset) — Configure an optional linear texture coordinate transformation to apply before texture lookup.
+- void **disableTexturing** () — Disables texturing.
+- void **setPointSize** (double widthPx) — Sets the diameter of the rendered points in px, will incorporate the GL::dpiScale().
+- void **enablePointSmoothing** () — Enables point smoothing.
+- void **disablePointSmoothing** () — Disables point smoothing.
+- void [setLineWidth](#setlinewidth) (double lineWidth) — Sets the width of the rendered lines in px, will incorporate the GL::dpiScale().
+- void [setStipplePattern](#setstipplepattern) (uint16_t stipplePattern) — Sets the stipple pattern of the rendered lines.
+- void [setStippleFactor](#setstipplefactor) (double stippleFactor) — Sets the factor determining the length of the rendered stipple pattern.
+
+## Static Public Member Functions
+
+- static [VertexData](/cpp-sdk/4.5/api/structs/imfusion-gl-fixedfunctionpipeline-vertexdata)&lt; T &gt; [makeVertexData](#makevertexdata) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; T &gt; &vertexPositions) — Factory function to create a [VertexData](/cpp-sdk/4.5/api/structs/imfusion-gl-fixedfunctionpipeline-vertexdata) object without the need to explicitly specify the template types.
+
+## Member Enumeration Documentation
+
+### ShaderSelection
+
+```cpp
+enum class ImFusion::GL::FixedFunctionPipeline::ShaderSelection
+```
+
+*strong*
+
+Enumeration for the available shaders.
+
+**Enumerator:**
+
+- `Default` — Default general purpose shader mimicking the fixed function pipeline.
+- `LineRendering` — Special shader that supports wide and stippled lines, do not use with other geometry than lines.
+- `LineAdjacencyRendering` — Special shader that supports wide and stippled line rendering for line primitives with adjacency information.
+
+## Constructor & Destructor Documentation
+
+### FixedFunctionPipeline
+
+```cpp
+ImFusion::GL::FixedFunctionPipeline::FixedFunctionPipeline ()
+```
+
+Instantiates the rendering shader.
+
+**Exceptions:**
+
+- `std::runtime_error` — Will throw if the shader can not be initialized.
+
+## Member Function Documentation
+
+### makeVertexData
+
+```cpp
+template<typename T> VertexData < T > ImFusion::GL::FixedFunctionPipeline::makeVertexData (const std::vector < T > & vertexPositions)
+```
+
+*static*
+
+Factory function to create a [VertexData](/cpp-sdk/4.5/api/structs/imfusion-gl-fixedfunctionpipeline-vertexdata) object without the need to explicitly specify the template types.
+
+**Parameters:**
+
+- `vertexPositions` — Vertex positions
+
+**Examples:** [MyCustomGlObject.cpp](/cpp-sdk/4.5/api/examples/my-custom-gl-object-8cpp).
+
+### enable
+
+```cpp
+void ImFusion::GL::FixedFunctionPipeline::enable (const ViewState & state, ShaderSelection shaderSelection = ShaderSelection::Default, const OrderIndependentTransparency * oit = nullptr)
+```
+
+Enables the rendering shader and resets all state to the default settings.
+
+**Parameters:**
+
+- `state` — View state to initialize the shader with
+- `shaderSelection` — Rendering shader to use
+- `oit` — Optional order-independent transparency handling instance to let shader make use of
+
+**Exceptions:**
+
+- `std::runtime_error` — if the instantiation of the requested shader fails.
+
+**Examples:** [MyCustomGlObject.cpp](/cpp-sdk/4.5/api/examples/my-custom-gl-object-8cpp).
+
+### enableWithoutReset
+
+```cpp
+void ImFusion::GL::FixedFunctionPipeline::enableWithoutReset (ShaderSelection shaderSelection, const OrderIndependentTransparency * oit = nullptr)
+```
+
+Enables the rendering shader **without** resetting all state to the default.
+
+The state will be the same as the last time the selected shader has been enabled.
+
+**Parameters:**
+
+- `shaderSelection` — Rendering shader to use
+- `oit` — Optional order-independent transparency handling instance to let shader make use of
+
+**Exceptions:**
+
+- `std::runtime_error` — if the instantiation of the requested shader fails.
+
+### enableTexturing
+
+```cpp
+void ImFusion::GL::FixedFunctionPipeline::enableTexturing (const Texture & texture)
+```
+
+Enables texturing using the given texture.
+
+Only texture types/targets 1D, 2D, and 3D are supported.
+
+**Note:** Per-vertex texture coordinates must be provided to get a meaningful output.
+
+### enableTexturing
+
+```cpp
+void ImFusion::GL::FixedFunctionPipeline::enableTexturing (const Texture & texture, const Sampler & samplingParameters)
+```
+
+Enables texturing using the given texture and sampling parameters.
+
+Only texture types/targets 1D, 2D, and 3D are supported.
+
+**Note:** Per-vertex texture coordinates must be provided to get a meaningful output.
+
+### setTexCoordTransform
+
+```cpp
+void ImFusion::GL::FixedFunctionPipeline::setTexCoordTransform (const vec3 & scaling, const vec3 & offset)
+```
+
+Configure an optional linear texture coordinate transformation to apply before texture lookup.
+
+**Parameters:**
+
+- `scaling` — Scaling factor multiplied to the original texture coordinate.
+- `offset` — Offset added to the texture coordinate after scaling.
+
+### setLineWidth
+
+```cpp
+void ImFusion::GL::FixedFunctionPipeline::setLineWidth (double lineWidth)
+```
+
+Sets the width of the rendered lines in px, will incorporate the GL::dpiScale().
+
+**Note:** Does not have any effect unless LineRendering shader was selected.
+
+**Note:** Does not have any effect when IMFUSION_GLES is defined.
+
+**Examples:** [MyCustomGlObject.cpp](/cpp-sdk/4.5/api/examples/my-custom-gl-object-8cpp).
+
+### setStipplePattern
+
+```cpp
+void ImFusion::GL::FixedFunctionPipeline::setStipplePattern (uint16_t stipplePattern)
+```
+
+Sets the stipple pattern of the rendered lines.
+
+**Parameters:**
+
+- `stipplePattern` — The given uint16_t will be interpreted as bit field defining which pixels to render.
+
+**Note:** Does not have any effect unless LineRendering shader was selected.
+
+**Note:** Does not have any effect when IMFUSION_GLES is defined.
+
+### setStippleFactor
+
+```cpp
+void ImFusion::GL::FixedFunctionPipeline::setStippleFactor (double stippleFactor)
+```
+
+Sets the factor determining the length of the rendered stipple pattern.
+
+**Parameters:**
+
+- `stippleFactor` — Length of each individual pattern, a factor of 1 will result in the stipple pattern to be repeated every 16 pixels.
+
+**Note:** Does not have any effect when IMFUSION_GLES is defined.
+
+**Note:** Does not have any effect unless LineRendering shader was selected.

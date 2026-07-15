@@ -1,0 +1,139 @@
+---
+title: "ImFusion::Tensor< Order >"
+sidebarTitle: "Tensor< Order >"
+description: "Data class for strongly typed dense tensors of fixed rank and data type."
+---
+
+`#include <ImFusion/Base/Tensor.h>`
+
+## Overview
+
+template&lt;int Order&gt;
+
+class ImFusion::Tensor&lt; Order &gt;
+[Data](/cpp-sdk/4.5/api/classes/imfusion-data) class for strongly typed dense tensors of fixed rank and data type.
+
+Unlike most [Data](/cpp-sdk/4.5/api/classes/imfusion-data) classes, this one notices content changes and notifies listeners. Any method in this class that changes the allocation of the underlying buffer may throw an exception on failure.
+
+## Classes
+
+- class [ConstAccess](/cpp-sdk/4.5/api/classes/imfusion-tensor-constaccess) — Helper class for read-only access to the data content of a [Tensor](/cpp-sdk/4.5/api/classes/imfusion-tensor).
+- class [Access](/cpp-sdk/4.5/api/classes/imfusion-tensor-access) — Helper class for read/write access to the data content of a [Tensor](/cpp-sdk/4.5/api/classes/imfusion-tensor).
+
+## Public Member Functions
+
+- **Tensor** () — Default constructor, initializes size to 0 on all dimensions.
+- **Tensor** (size_t s0, sizeT... s) — Creates a tensor of the given size and allocates the required storage space. Does not initialize content.
+- **Tensor** (const Tensor&lt; Order &gt; &other) — Deep copy constructor.
+- **~Tensor** () override — Deletes the tensor. This triggers an appropriate signal via the [Data](/cpp-sdk/4.5/api/classes/imfusion-data) base destructor.
+- Tensor&lt; Order &gt; & **operator=** (const Tensor&lt; Order &gt; &other) — Deep copy.
+- [std::enable_if](http://en.cppreference.com/w/cpp/types/enable_if.html)&lt;(U==1), Tensor&lt; Order &gt; & &gt;::type **operator=** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; &vec) — Convenience assignment operator from [std::vector](http://en.cppreference.com/w/cpp/container/vector.html) for 1st order tensors.
+- **Tensor** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; &vec) — Convenience constructor from a vector.
+- [std::enable_if](http://en.cppreference.com/w/cpp/types/enable_if.html)&lt;(U==2), Tensor&lt; Order &gt; & &gt;::type **operator=** (const [std::initializer_list](http://en.cppreference.com/w/cpp/utility/initializer_list.html)&lt; [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; &gt; &vec) — Convenience assignment from a list of row vectors.
+- **Tensor** (const [std::initializer_list](http://en.cppreference.com/w/cpp/utility/initializer_list.html)&lt; [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; &gt; &vec) — Convenience constructor from a list of row vectors.
+- int [order](#order) () const override — Returns the rank of the tensor.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; size_t &gt; [size](#size) () const override — Returns the size of the tensor.
+- size_t [bufferLength](#bufferlength) () const override — Returns the number of elements in this tensor's storage buffer.
+- size_t [bufferSize](#buffersize) () const override — Returns the number of bytes in this tensor's storage buffer.
+- void [resize](#resize-1-2) (sizeT... s) — Resizes the tensor and reallocates the storage if necessary.
+- void [resize](#resize-2-2) (const [std::array](http://en.cppreference.com/w/cpp/container/array.html)&lt; size_t, Order &gt; &[size](#size)) — Resizes the tensor and reallocates the storage if necessary.
+- bool [serialize](#serialize) ([std::ostream](http://en.cppreference.com/w/cpp/io/basic_ostream.html) &out) const override — Stores the tensor size and content (but not type and rank) in a stream.
+- bool [deserialize](#deserialize) ([std::istream](http://en.cppreference.com/w/cpp/io/basic_istream.html) &in) override — Restores the tensor size and content (but not type and rank) from a stream.
+- [Access](/cpp-sdk/4.5/api/classes/imfusion-tensor-access) **access** () — Provides scoped read&write access to the tensor data. Notifies listeners that content has changed when the returned object is deleted.
+- [ConstAccess](/cpp-sdk/4.5/api/classes/imfusion-tensor-constaccess) **constAccess** () const — Provides scoped read-only access to the tensor data.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [describe](#describe) () const override — Human readable description of the data for showing in the info bar.
+- const double & **operator()** (idxT... idx) const
+- const double \* **data** () const
+- **operator double** () const — Convenience conversion to double for cases where a more generalized method is known to return only 1 value.
+
+## Member Function Documentation
+
+### order
+
+```cpp
+template<int Order> int ImFusion::Tensor < Order >::order () const
+```
+
+*inline, override, virtual*
+
+Returns the rank of the tensor.
+
+### size
+
+```cpp
+template<int Order> std::vector < size_t > ImFusion::Tensor < Order >::size () const
+```
+
+*inline, override, virtual*
+
+Returns the size of the tensor.
+
+### bufferLength
+
+```cpp
+template<int Order> size_t ImFusion::Tensor < Order >::bufferLength () const
+```
+
+*override, virtual*
+
+Returns the number of elements in this tensor's storage buffer.
+
+### bufferSize
+
+```cpp
+template<int Order> size_t ImFusion::Tensor < Order >::bufferSize () const
+```
+
+*override, virtual*
+
+Returns the number of bytes in this tensor's storage buffer.
+
+### resize
+
+```cpp
+template<int Order> template<typename... sizeT, typename> void ImFusion::Tensor < Order >::resize (sizeT... s)
+```
+
+Resizes the tensor and reallocates the storage if necessary.
+
+If the storage size does not change, this just reshapes the tensor while keeping the data.
+
+### resize
+
+```cpp
+template<int Order> void ImFusion::Tensor < Order >::resize (const std::array < size_t, Order > & size)
+```
+
+Resizes the tensor and reallocates the storage if necessary.
+
+If the storage size does not change, this just reshapes the tensor while keeping the data.
+
+### serialize
+
+```cpp
+template<int Order> bool ImFusion::Tensor < Order >::serialize (std::ostream & out) const
+```
+
+*override, virtual*
+
+Stores the tensor size and content (but not type and rank) in a stream.
+
+### deserialize
+
+```cpp
+template<int Order> bool ImFusion::Tensor < Order >::deserialize (std::istream & in)
+```
+
+*override, virtual*
+
+Restores the tensor size and content (but not type and rank) from a stream.
+
+### describe
+
+```cpp
+template<int Order> std::string ImFusion::Tensor < Order >::describe () const
+```
+
+*override, virtual*
+
+Human readable description of the data for showing in the info bar.

@@ -1,0 +1,50 @@
+---
+title: "ImFusion::Licensing::Error"
+sidebarTitle: "Error"
+description: "Class for signaling all kinds of licensing error cases."
+---
+
+`#include <ImFusion/Licensing/LicensingError.h>`
+
+## Overview
+
+Class for signaling all kinds of licensing error cases.
+
+## Public Types
+
+- enum class [ErrorCode](#errorcode) &#123; **UnknownError** , NetworkError , ServerError , InternalError , FilesystemError , InvalidOrMissingLicenseFile , InvalidDevice , LicenseDisabled , LicenseDepleted , LicenseInvalid , NotSupported , MaxFloatingReached , FloatingTimeoutExpired , MaintenancePeriodExpired &#125;
+
+## Public Member Functions
+
+- **Error** ([ErrorCode](#errorcode) code=ErrorCode::UnknownError, [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) s="")
+
+## Public Attributes
+
+- const [ErrorCode](#errorcode) **errorCode**
+- const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **message**
+
+## Member Enumeration Documentation
+
+### ErrorCode
+
+```cpp
+enum class ImFusion::Licensing::Error::ErrorCode
+```
+
+*strong*
+
+**Enumerator:**
+
+- `NetworkError` — Could not reach server due to circumstances beyond our control.
+- `ServerError` — [Error](/cpp-sdk/4.5/api/structs/imfusion-licensing-error) inside the LicenseSpring server, i.e. they screwed up.
+- `InternalError` — [Error](/cpp-sdk/4.5/api/structs/imfusion-licensing-error) inside client code, i.e. we screwed up.
+- `FilesystemError` — Unable to read/write user supplied path.
+- `InvalidOrMissingLicenseFile` — Local license information cannot be read or is wrong.
+- `InvalidDevice` — Detected VM without allowing those, or explicitly blacklisted device.
+- `LicenseDisabled` — License expired or was otherwise disabled.
+- `LicenseDepleted` — No more activations, consumptions, floating licenses, etc left.
+- `LicenseInvalid` — No such license at all.
+- `NotSupported` — If the licensing system does not support a certain functionality (e.g. offline usage).
+- `MaxFloatingReached` — Reached max users count for floating license.
+- `FloatingTimeoutExpired` — Floating timeout expired.
+- `MaintenancePeriodExpired` — The application was released after the maintenance period of the license ended.

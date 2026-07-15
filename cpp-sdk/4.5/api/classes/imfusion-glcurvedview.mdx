@@ -1,0 +1,162 @@
+---
+title: "ImFusion::GlCurvedView"
+sidebarTitle: "GlCurvedView"
+description: "Curved slice view."
+---
+
+`#include <ImFusion/GL/GlCurvedView.h>`
+
+## Overview
+
+Curved slice view.
+
+## Classes
+
+- struct [OrthoSliceInfo](/cpp-sdk/4.5/api/structs/imfusion-glcurvedview-orthosliceinfo)
+
+## Public Member Functions
+
+- **GlCurvedView** ([CurvedViewPrimitive](/cpp-sdk/4.5/api/classes/imfusion-curvedviewprimitive) &primitive)
+- GlCurvedSlice \* **curvedSlice** () const
+- void **setShowIntersectionLines** (bool flag) — Specify if the intersection lines of slices shall be drawn.
+- bool **showIntersectionLines** () const — Return if intersection lines of slices are drawn.
+- bool [render](#render) () override — Render the view.
+- void **reset** () — Reset settings to their default values.
+- [Type](/cpp-sdk/4.5/api/classes/imfusion-glview) [type](#type) () const override — Return view type as 2D or 3D slice.
+- virtual [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **typeName** () const
+- void **setScale** (double scale) — Set scale.
+- double **scale** () const
+- void **setZoom** (double zoom) — Set zoom.
+- double **zoom** () const
+- double **arcLengthToPanoramaCoord** (double arcLength) const
+- double **panoramaCoordToArcLength** (double panoramaCoord) const
+- double **getCurveLength** () const
+- vec2 **viewportToPanoramaCoord** (const vec2 &point) const
+- vec3 **panoramaCoordToWorldCoords** (const vec2 &point) const
+- void **getPanoramaPixelExtent** (vec2 &topLeft, vec2 &bottomRight) const
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [GlSliceView](/cpp-sdk/4.5/api/classes/imfusion-glsliceview) \* &gt; & **orthoViews** () const
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [GlSliceView](/cpp-sdk/4.5/api/classes/imfusion-glsliceview) \* &gt; & **orthoViews** ()
+- bool **setOrthoViews** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [GlSliceView](/cpp-sdk/4.5/api/classes/imfusion-glsliceview) \* &gt; &views)
+- double **orthoSliceRefPos** () const — Return reference position in curve coordinates.
+- void **updateOrthoSlices** ()
+- void **updateOrthoViews** ()
+- void [setOrthoSliceRefPos](#setorthoslicerefpos) (double pos) — Updates reference position so that the given slice will be at pos (in curve coordinates).
+- void [moveOrthoSlicePos](#moveorthoslicepos) (double dp) — Move the reference position by a certain amount (in world coordinates).
+- int **addOrthoSlice** (double offset) — Add orthoslice which has a specified ofsset with respect to the refernce slice in world coordinates.
+- void [removeOrthoSlice](#removeorthoslice) (int slice) — Remove the given orthogonal slice.
+- int **numOrthoSlices** () const — Return the current number of orthogonal slices.
+- void [setOrthoSliceOffset](#setorthosliceoffset) (int slice, double offset) — Set the slice offset in world coordinates.
+- double [orthoSliceOffset](#orthosliceoffset) (int slice) — Get the slice offset in world coordinates.
+- double **orthoSlicePos** (int slice) const — Return slice position in curve coordinates.
+- void **computeAnnotationVertices** (vec2 &p1_, vec2 &p2_, int slice) const
+- [CurvedViewPrimitive](/cpp-sdk/4.5/api/classes/imfusion-curvedviewprimitive) & **curvedViewPrimitive** () const
+
+## Protected Attributes
+
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; GlCurvedSlice &gt; **m_curvedSlice**
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [GlSliceView](/cpp-sdk/4.5/api/classes/imfusion-glsliceview) \* &gt; **m_orthoViews**
+- double [m_orthoSliceRefPos](#m-orthoslicerefpos) = 0.0
+- [CurvedViewPrimitive](/cpp-sdk/4.5/api/classes/imfusion-curvedviewprimitive) & **m_curvedViewPrimitive**
+- double **m_scale** = 1.0
+- double **m_zoom** = 1.0
+- bool **m_showIntersectionLines** = true
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [OrthoSliceInfo](/cpp-sdk/4.5/api/structs/imfusion-glcurvedview-orthosliceinfo) &gt; **m_orthoSlicePositions**
+
+## Member Function Documentation
+
+### render
+
+```cpp
+bool ImFusion::GlCurvedView::render ()
+```
+
+*override, virtual*
+
+Render the view.
+
+### type
+
+```cpp
+Type ImFusion::GlCurvedView::type () const
+```
+
+*override, virtual*
+
+Return view type as 2D or 3D slice.
+
+### setOrthoSliceRefPos
+
+```cpp
+void ImFusion::GlCurvedView::setOrthoSliceRefPos (double pos)
+```
+
+Updates reference position so that the given slice will be at pos (in curve coordinates).
+
+The position will be automatically restricted so that no ortho slice leaves the curves.
+
+**Parameters:**
+
+- `pos` — new slice pos
+
+### moveOrthoSlicePos
+
+```cpp
+void ImFusion::GlCurvedView::moveOrthoSlicePos (double dp)
+```
+
+Move the reference position by a certain amount (in world coordinates).
+
+**Parameters:**
+
+- `dp` — amount to move
+
+### removeOrthoSlice
+
+```cpp
+void ImFusion::GlCurvedView::removeOrthoSlice (int slice)
+```
+
+Remove the given orthogonal slice.
+
+**Parameters:**
+
+- `slice` — slice id
+
+### setOrthoSliceOffset
+
+```cpp
+void ImFusion::GlCurvedView::setOrthoSliceOffset (int slice, double offset)
+```
+
+Set the slice offset in world coordinates.
+
+**Parameters:**
+
+- `slice` — slice id
+- `offset` — new slice offset
+
+### orthoSliceOffset
+
+```cpp
+double ImFusion::GlCurvedView::orthoSliceOffset (int slice)
+```
+
+Get the slice offset in world coordinates.
+
+**Parameters:**
+
+- `slice` — slice id
+
+**Returns:** slice offset
+
+## Member Data Documentation
+
+### m_orthoSliceRefPos
+
+```cpp
+double ImFusion::GlCurvedView::m_orthoSliceRefPos = 0.0
+```
+
+*protected*
+
+position of the reference ortho curve in world coordinates

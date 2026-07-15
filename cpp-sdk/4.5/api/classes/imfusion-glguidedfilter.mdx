@@ -1,0 +1,73 @@
+---
+title: "ImFusion::GlGuidedFilter"
+sidebarTitle: "GlGuidedFilter"
+description: "Guided Filter from the paper by He et al."
+---
+
+`#include <ImFusion/GL/GlGuidedFilter.h>`
+
+## Overview
+
+Guided Filter from the paper by He et al.
+
+([http://kaiminghe.com/eccv10/](http://kaiminghe.com/eccv10/))
+
+## Public Member Functions
+
+- **GlGuidedFilter** ([GL::Framebuffer](/cpp-sdk/4.5/api/classes/imfusion-gl-framebuffer) \*fbo=nullptr)
+- bool **setSmoothingKernelSize** (int size) — Set smoothing kernel size. Default is 15.
+- void **setEpsilon** (float val) — Set iterations. Default is 1.
+- void **setGuide** ([GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) \*gIm) — Set iterations. If null then guide will be the input image.
+- bool [setKernelSize](#setkernelsize) (int size, double k) override — Inherited function.
+- void [compute](#compute) (const [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) &imgIn, [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) &imgOut) override — Execute the filter on the image.
+- bool [good](#good) () const override — Return if the filter can be used, in particular if the shaders are available.
+
+## Protected Attributes
+
+- [GL::ImageProgram](/cpp-sdk/4.5/api/classes/imfusion-gl-imageprogram) \* **m_combProgram**
+- [GL::ImageProgram](/cpp-sdk/4.5/api/classes/imfusion-gl-imageprogram) \* **m_multProgram**
+- [GL::ImageProgram](/cpp-sdk/4.5/api/classes/imfusion-gl-imageprogram) \* **m_divProgram**
+- [GL::ImageProgram](/cpp-sdk/4.5/api/classes/imfusion-gl-imageprogram) \* **m_subtractProgram**
+- [GlSmoothingFilter](/cpp-sdk/4.5/api/classes/imfusion-glsmoothingfilter) \* **m_smoothingFilter**
+- [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) \* **m_guide**
+- [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) \* **m_coeffA**
+- [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) \* **m_coeffB**
+- [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) \* **m_filtGuide**
+- [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) \* **m_filtIm**
+- [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) \* **m_prodImGuide**
+- [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) \* **m_tmp**
+- [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) \* **m_imgAux**
+- int **m_kernelSize**
+- float **m_epsilon**
+
+## Member Function Documentation
+
+### setKernelSize
+
+```cpp
+bool ImFusion::GlGuidedFilter::setKernelSize (int size, double k)
+```
+
+*inline, override, virtual*
+
+Inherited function.
+
+### compute
+
+```cpp
+void ImFusion::GlGuidedFilter::compute (const GlImage & imgIn, GlImage & imgOut)
+```
+
+*override, virtual*
+
+Execute the filter on the image.
+
+### good
+
+```cpp
+bool ImFusion::GlGuidedFilter::good () const
+```
+
+*override, virtual*
+
+Return if the filter can be used, in particular if the shaders are available.

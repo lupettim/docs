@@ -1,0 +1,39 @@
+---
+title: "ImFusion::LogViewerWidget"
+sidebarTitle: "LogViewerWidget"
+description: "Logging sink that manifests itself as a Qt widget showing formatted log messages and allowing for basic filtering."
+---
+
+`#include <ImFusion/GUI/LogViewerWidget.h>`
+
+## Overview
+
+Logging sink that manifests itself as a Qt widget showing formatted log messages and allowing for basic filtering.
+
+Example usage:
+
+```cpp
+// Instantiate new LogViewerWidget and add it to the GUI
+m_logViewerWidget = new LogViewerWidget();
+m_ui.displayArea->addWidget(m_logViewerWidget);
+
+// configure the logging sink (optional)
+m_logViewerWidget->addBlacklistFilter(Log::Level::Debug, "Framework");
+m_logViewerWidget->addBlacklistFilter(Log::Level::Debug, "AlgorithmFactory");
+
+// register it with the logging system
+// CAREFUL: you're passing ownership to ImFusionLog here, so make sure that
+//          the Qt ownership model does not interfere with it.
+Log::addSink(std::unique_ptr<Log::Sink>(m_logViewerWidget));
+```
+ fragment
+
+## Signals
+
+- void **messageReceived** (int level, QString category, QString message, bool isMonospace)
+
+## Public Member Functions
+
+- **LogViewerWidget** (QWidget \*parent=nullptr) — Creates a new [LogViewerWidget](/cpp-sdk/4.5/api/classes/imfusion-logviewerwidget), however does not register it with the logging system.
+- void **clearMessages** () — Clears all log messages currently present in the widget.
+- void **onGlobalLogLevelChanged** ()

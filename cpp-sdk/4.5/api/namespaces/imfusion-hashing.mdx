@@ -1,0 +1,24 @@
+---
+title: "ImFusion::Hashing"
+sidebarTitle: "Hashing"
+description: "Tools and functions to compute non-cryptographics hashes, for instance to use them in std::unordered_map ."
+---
+
+## Overview
+
+Tools and functions to compute non-cryptographics hashes, for instance to use them in [std::unordered_map](http://en.cppreference.com/w/cpp/container/unordered_map.html).
+
+**See also:** Non-cryptographic Hashing
+
+## Classes
+
+- struct [EigenHasher](/cpp-sdk/4.5/api/structs/imfusion-hashing-eigenhasher) — STL-compatible hasher for dense Eigen types (matrices, vectors, arrays).
+- struct [GenericHasher](/cpp-sdk/4.5/api/structs/imfusion-hashing-generichasher) — STL-compatible hasher for custom classes where you list the members to be hashed as template parameters.
+
+## Functions
+
+- uint64_t murmur64 (const [ByteBufferView](/cpp-sdk/4.5/api/classes/imfusion-bytebufferview) &buffer) noexcept — Computes the non-cryptographic 64-bit MurmurHash2 on the input data.
+- uint64_t djb2 (const [ByteBufferView](/cpp-sdk/4.5/api/classes/imfusion-bytebufferview) &data) noexcept — Computes the djb2 hash value of the input data.
+- uint64_t combineHash (uint64_t seed, const T &object) noexcept — Computes the hash of object using [std::hash&lt;T&gt;](http://en.cppreference.com/w/cpp/utility/hash.html) and combines it with an already existing 64bit hash.
+- uint64_t combineHash (uint64_t seed, const uint64_t &hashToAdd) noexcept — Combines existing 64bit hashes.
+- uint64_t genericHash (const Ts &... objects) noexcept — Convenience function to compute the combined hash of an arbitrary number of inputs.

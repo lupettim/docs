@@ -1,0 +1,69 @@
+---
+title: "ImFusion::GL::InternalFormat"
+sidebarTitle: "InternalFormat"
+description: "Describes an internal texture format that you can request from OpenGL."
+---
+
+`#include <ImFusion/Core/GL/InternalFormat.h>`
+
+## Overview
+
+Describes an internal texture format that you can request from OpenGL.
+
+**See also:** [https://www.khronos.org/opengl/wiki/Image_Format](https://www.khronos.org/opengl/wiki/Image_Format)
+
+## Public Types
+
+- enum [Format](#format) &#123; **R8** = 0x8229 , **RG8** = 0x822B , **RGB8** = 0x8051 , **RGBA8** = 0x8058 , **R16** = 0x822A , **RG16** = 0x822C , **RGB16** = 0x8054 , **RGBA16** = 0x805B , **R16F** = 0x822D , **RG16F** = 0x822F , **RGB16F** = 0x881B , **RGBA16F** = 0x881A , **R32F** = 0x822E , **RG32F** = 0x8230 , **RGB32F** = 0x8815 , **RGBA32F** = 0x8814 , **R8SNorm** = 0x8F94 , **RG8SNorm** = 0x8F95 , **RGB8SNorm** = 0x8F96 , **RGBA8SNorm** = 0x8F97 , **R16SNorm** = 0x8F98 , **RG16SNorm** = 0x8F99 , **RGB16SNorm** = 0x8F9A , **RGBA16SNorm** = 0x8F9B , **R8UI** = 0x8232 , **RG8UI** = 0x8238 , **RGB8UI** = 0x8D7D , **RGBA8UI** = 0x8D7C , **R16UI** = 0x8234 , **RG16UI** = 0x823A , **RGB16UI** = 0x8D77 , **RGBA16UI** = 0x8D76 , **R32UI** = 0x8236 , **RG32UI** = 0x823C , **RGB32UI** = 0x8D71 , **RGBA32UI** = 0x8D70 , **R8I** = 0x8231 , **RG8I** = 0x8237 , **RGB8I** = 0x8D8F , **RGBA8I** = 0x8D8E , **R16I** = 0x8233 , **RG16I** = 0x8239 , **RGB16I** = 0x8D89 , **RGBA16I** = 0x8D88 , **R32I** = 0x8235 , **RG32I** = 0x823B , **RGB32I** = 0x8D83 , **RGBA32I** = 0x8D82 , **SRGB8** = 0x8C41 , **SRGB8Alpha8** = 0x8C43 , **DepthComponent** = 0x1902 , **DepthComponent16** = 0x81A5 , **DepthComponent24** = 0x81A6 , **DepthComponent32F** = 0x8CAC , **DepthComponent32** = 0x81A7 , **StencilIndex** = 0x1901 , **StencilIndex8** = 0x8D48 , **Depth24Stencil8** = 0x88F0 , **Depth32FStencil8** = 0x8CAD &#125; — List of all supported internal formats.
+
+## Public Member Functions
+
+- **InternalFormat** ([Format](#format) value)
+- bool **isDepthFormat** () const — Returns whether it is any of the DepthComponent[X] formats.
+- bool **isStencilFormat** () const — Returns whether it is any of the StencilIndex[X] formats.
+- bool **isDepthStencilFormat** () const — Returns whether it is any of the DepthXStencilY formats.
+- bool **isFloatingPointFormat** () const — Returns whether it is any of the floating point formats.
+- bool **isSignedIntegerFormat** () const — Returns whether it is any of the signed integer formats.
+- bool **isUnsignedIntegerFormat** () const — Returns whether it is any of the unsigned integer formats.
+- bool **isIntegerFormat** () const — Returns whether it is any of the (signed or unsigned) integer formats.
+- bool [isColorRenderable](#iscolorrenderable) () const — Returns whether the format can be used as a framebuffer attachment.
+- bool [isTextureFilterable](#istexturefilterable) () const — Returns whether the format supports linear filtering.
+- PixelFormat **matchingPixelFormat** () const — Returns a matching PixelFormat enumeration value.
+- PixelType **matchingPixelType** () const — Returns a matching PixelType enumeration value.
+- int **matchingNumChannels** () const — Returns the matching number of channels corresponding to this internal format.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **toString** () const — Returns a string representation for debugging.
+- [Format](#format) **value** () const
+
+## Member Enumeration Documentation
+
+### Format
+
+```cpp
+enum ImFusion::GL::InternalFormat::Format
+```
+
+List of all supported internal formats.
+
+These are essentially all non-special (e.g. packed, compressed) formats mandated by OpenGL 3.3. Using other OpenGL image formats than those of this enum is not supported by ImFusionGL.
+
+## Member Function Documentation
+
+### isColorRenderable
+
+```cpp
+bool ImFusion::GL::InternalFormat::isColorRenderable () const
+```
+
+Returns whether the format can be used as a framebuffer attachment.
+
+This limitation only exists with OpenGL ES. With regular OpenGL, all formats are color renderable.
+
+### isTextureFilterable
+
+```cpp
+bool ImFusion::GL::InternalFormat::isTextureFilterable () const
+```
+
+Returns whether the format supports linear filtering.
+
+This limitation only exists with OpenGL ES. With regular OpenGL, all formats support linear filtering.

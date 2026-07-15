@@ -1,0 +1,21 @@
+---
+title: "ImFusion::Dicom::DatasetIodPair"
+sidebarTitle: "DatasetIodPair"
+description: "Named pair of a DcmDataset and the corresponding IOD ."
+---
+
+`#include <ImFusion/Dicom/DicomUtils.h>`
+
+## Overview
+
+Named pair of a DcmDataset and the corresponding [IOD](/cpp-sdk/4.5/api/classes/imfusion-dicom-iod).
+
+## Public Member Functions
+
+- **DatasetIodPair** ([std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; DcmDataset &gt; ds, [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [Dicom::IOD](/cpp-sdk/4.5/api/classes/imfusion-dicom-iod) &gt; &&i)
+- **DatasetIodPair** (DatasetIodPair &&rhs)
+
+## Public Attributes
+
+- [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; DcmDataset &gt; **dataset** — DcmDataset for the loaded/saved file.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [Dicom::IOD](/cpp-sdk/4.5/api/classes/imfusion-dicom-iod) &gt; **iod** — Corresponding [IOD](/cpp-sdk/4.5/api/classes/imfusion-dicom-iod) instance (may be nullptr if no [IOD](/cpp-sdk/4.5/api/classes/imfusion-dicom-iod) exists for the SOP class).

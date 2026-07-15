@@ -1,0 +1,93 @@
+---
+title: "ImFusion::CurvedViewSettingsController"
+sidebarTitle: "CurvedViewSettingsController"
+description: "Simple dialog to modify parameters of the curved view."
+---
+
+`#include <ImFusion/GUI/CurvedViewSettingsController.h>`
+
+## Overview
+
+Simple dialog to modify parameters of the curved view.
+
+## Public Slots
+
+- void **onChangeFillSurface** ()
+- void **onChangeCentering** ()
+- void **onChangeSamplingDirectionTilt** ()
+- void **onChangeNumSlices** ()
+- void **onChangeSliceOffset** ()
+- void **onChangeSliceWidth** ()
+- void **onChangeSliceHeight** ()
+
+## Public Member Functions
+
+- **CurvedViewSettingsController** ([CurvedView](/cpp-sdk/4.5/api/classes/imfusion-curvedview) &cvp)
+- void [init](#init) () override — Two-step initialization function to be implemented by subclasses.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [title](#title) () const override — Returns the shown widget title if the controller is shown in a mode that supports this (e.g. when in dock).
+- [MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase) \* **mainWindowBase** ()
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+## Protected Member Functions
+
+- void **setDefaultSliceWidthAndHeight** ()
+- void **updateOrthoSliceOffset** ()
+
+## Protected Attributes
+
+- [CurvedView](/cpp-sdk/4.5/api/classes/imfusion-curvedview) & **m_curvedView**
+- Ui_CurvedViewSettingsController \* **m_ui**
+- [std::mutex](http://en.cppreference.com/w/cpp/thread/mutex.html) **m_mutex** — Mutex for protecting access to shared resources.
+
+## Member Function Documentation
+
+### init
+
+```cpp
+void ImFusion::CurvedViewSettingsController::init ()
+```
+
+*override, virtual*
+
+Two-step initialization function to be implemented by subclasses.
+
+This function is called by [setMainWindowBase()](/cpp-sdk/4.5/api/classes/imfusion-controller) after the [m_disp](/cpp-sdk/4.5/api/classes/imfusion-controller) and [m_main](/cpp-sdk/4.5/api/classes/imfusion-controller) attributes have been set and hence a complete initialization of the controller is possible at this point.
+
+### title
+
+```cpp
+std::string ImFusion::CurvedViewSettingsController::title () const
+```
+
+*override, virtual*
+
+Returns the shown widget title if the controller is shown in a mode that supports this (e.g. when in dock).
+
+### configure
+
+```cpp
+void ImFusion::CurvedViewSettingsController::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### configuration
+
+```cpp
+void ImFusion::CurvedViewSettingsController::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality

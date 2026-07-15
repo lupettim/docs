@@ -1,0 +1,185 @@
+---
+title: "ImFusion::NestedProgress"
+sidebarTitle: "NestedProgress"
+description: "Wrapper class to provide the Progress interface, ensure certain invariants for created tasks and/or optionally forward the progress information to an existing P"
+---
+
+`#include <ImFusion/Base/NestedProgress.h>`
+
+## Overview
+
+Wrapper class to provide the [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) interface, ensure certain invariants for created tasks and/or optionally forward the progress information to an existing [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress).
+
+The main use case of this class if you have a consumer accepting a [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) and want to achieve one of the following things:
+
+- You want to perform some custom action every time a progress update is reported, for instance:
+  ```cpp
+  // Forward progress updates to parent Progress instance
+  NestedProgress nestedProgress(m_progress);
+  // additionally call `refresh()` every time the algorithm reports a progress update
+  nestedProgres.signalTaskUpdated.connect([this](auto) { this->refresh(); });
+
+  algorithm.compute(&nestedProgress);
+  ```
+   fragment
+- You have an existing [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) instance that the consumer should report to but you need to ensure additional invariants that the consumer is not aware of. For instance you want to make sure that progress reporting is thread-safe even though the consumer is not.
+  ```cpp
+  // wrapping `m_progress` in a NestedProgress with `ThreadSafe` flag allows for access from other threads
+  NestedProgress asyncProgress(m_progress, NestedProgress::ThreadSafe);
+  std::thread thread([&asyncProgress]() {
+   // access to `asyncProgress` is thread-safe, access to `m_progress` not
+      compute(asyncProgress);
+  }
+
+  // ensure that `asyncProgress` outlives the lifetime of the thread
+  thread.join();
+  ```
+   fragment
+- You do not want to forward the progress updates to an existing reporter but use the [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) interface as back-channel in order to signal if the consumer should abort execution (cf. Task::wasCanceled()). Often such setups happen in a multi-threaded environment. In this case make sure to pass the ThreadSafe flag.
+  ```cpp
+  void compute() {
+   // creating a NestedProgress without parent will not show the progress updates
+   // but still provides a back-channel for the cancellation state
+      m_reporter = std::make_unique<NestedProgress>(nullptr, NestedProgress::ThreadSafe);
+   Threading::ThreadPool threadPool;
+   for (auto* element : m_elements)
+          threadPool.enqueue([element, &reporter]() { m_algorithm->run(element, reporter); });
+      threadPool.join();
+  }
+
+  void onCancelRequested() {
+   // use Progress interface to notify sub tasks that they shall abort their computation
+   if (m_reporter)
+          m_reporter->cancelAllTasks();
+  }
+  ```
+   fragment
+
+## Public Types
+
+- enum [TaskMode](#taskmode) &#123; Default = 0 , ThreadSafe = 1 &lt;&lt; 0 , Hidden = 1 &lt;&lt; 1 &#125; — Enumeration of possible invariants that should be ensured by [NestedProgress](/cpp-sdk/4.5/api/classes/imfusion-nestedprogress).
+
+## Public Member Functions
+
+- [NestedProgress](#nestedprogress) ([Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) \*parent=nullptr, [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; [TaskMode](#taskmode) &gt; taskFlags=TaskMode::Default) — Creates a new [NestedProgress](/cpp-sdk/4.5/api/classes/imfusion-nestedprogress) instance.
+- void **setParentProgress** ([Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) \*parent) — Updates the parent [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) instance to which progress updates should be forwarded to.
+- void **cancelAllTasks** () — Will cancel all tasks that were spawned from this [NestedProgress](/cpp-sdk/4.5/api/classes/imfusion-nestedprogress) instance.
+
+## Public Attributes
+
+- ProtectedSignal&lt; [Task](/cpp-sdk/4.5/api/classes/imfusion-progress-task) \* &gt; [signalTaskAdded](#signaltaskadded) — Signal emitted by the default implementation of [NestedProgress::onTaskAdded()](#ontaskadded).
+- ProtectedSignal&lt; const [Task](/cpp-sdk/4.5/api/classes/imfusion-progress-task) \* &gt; [signalTaskUpdated](#signaltaskupdated) — Signal emitted by the default implementation of [NestedProgress::onTaskUpdated()](#ontaskupdated).
+
+## Protected Member Functions
+
+- void [onTaskAdded](#ontaskadded) ([Task](/cpp-sdk/4.5/api/classes/imfusion-progress-task) \*task) override — Function is called whenever a new [Task](/cpp-sdk/4.5/api/classes/imfusion-progress-task) has been created.
+- void [onTaskUpdated](#ontaskupdated) (const [Task](/cpp-sdk/4.5/api/classes/imfusion-progress-task) \*task) override — Function is called whenever the state of a [Task](/cpp-sdk/4.5/api/classes/imfusion-progress-task) has changed and the reporter should update its UI.
+- bool [onTaskRequestsThreadSafety](#ontaskrequeststhreadsafety) (const [Task](/cpp-sdk/4.5/api/classes/imfusion-progress-task) \*task) override — Function is called by Task::requestThreadSafety() in order to check whether the parent reporter supports concurrent access.
+- void [onTaskRemoved](#ontaskremoved) (const [Task](/cpp-sdk/4.5/api/classes/imfusion-progress-task) \*task) override — Function is called whenever a [Task](/cpp-sdk/4.5/api/classes/imfusion-progress-task) is about to be destroyed and its pointer will become invalid.
+
+## Protected Attributes
+
+- [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) \* **m_parent**
+- const [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; [TaskMode](#taskmode) &gt; **m_taskFlags**
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [std::mutex](http://en.cppreference.com/w/cpp/thread/mutex.html) &gt; **m_mutex**
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [Task](/cpp-sdk/4.5/api/classes/imfusion-progress-task) &gt; **m_parentThreadSafetyGuard**
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Task](/cpp-sdk/4.5/api/classes/imfusion-progress-task) \* &gt; **m_tasks**
+
+## Member Enumeration Documentation
+
+### TaskMode
+
+```cpp
+enum ImFusion::NestedProgress::TaskMode
+```
+
+Enumeration of possible invariants that should be ensured by [NestedProgress](/cpp-sdk/4.5/api/classes/imfusion-nestedprogress).
+
+**Enumerator:**
+
+- `Default` — Tasks created from this reporter are kept as they are.
+- `ThreadSafe` — When creating tasks from this reporter it will call Task::requestThreadSafety() on them.
+- `Hidden` — When creating tasks from this reporter it will call Task::setVisible(false) on them.
+
+## Constructor & Destructor Documentation
+
+### NestedProgress
+
+```cpp
+ImFusion::NestedProgress::NestedProgress (Progress * parent = nullptr, Flags < TaskMode > taskFlags = TaskMode::Default)
+```
+
+*explicit*
+
+Creates a new [NestedProgress](/cpp-sdk/4.5/api/classes/imfusion-nestedprogress) instance.
+
+**Parameters:**
+
+- `parent` — Optional parent progress instance to which progress updates should be forwarded to.
+- `taskFlags` — Optional set of invariants that tasks created by this instance should adhere to.
+
+## Member Function Documentation
+
+### onTaskAdded
+
+```cpp
+void ImFusion::NestedProgress::onTaskAdded (Task * task)
+```
+
+*override, protected, virtual*
+
+Function is called whenever a new [Task](/cpp-sdk/4.5/api/classes/imfusion-progress-task) has been created.
+
+### onTaskUpdated
+
+```cpp
+void ImFusion::NestedProgress::onTaskUpdated (const Task * task)
+```
+
+*override, protected, virtual*
+
+Function is called whenever the state of a [Task](/cpp-sdk/4.5/api/classes/imfusion-progress-task) has changed and the reporter should update its UI.
+
+### onTaskRequestsThreadSafety
+
+```cpp
+bool ImFusion::NestedProgress::onTaskRequestsThreadSafety (const Task * task)
+```
+
+*override, protected, virtual*
+
+Function is called by Task::requestThreadSafety() in order to check whether the parent reporter supports concurrent access.
+
+Implementations are free to ignore this request and return false. Otherwise they must ensure that subsequent concurrent calls to any of the onTask...() callbacks are handled correctly without race conditions. Implementations are free to return to a unsynchronized implementation as soon as all multi-threaded tasks have been removed from the reporter.
+
+### onTaskRemoved
+
+```cpp
+void ImFusion::NestedProgress::onTaskRemoved (const Task * task)
+```
+
+*override, protected, virtual*
+
+Function is called whenever a [Task](/cpp-sdk/4.5/api/classes/imfusion-progress-task) is about to be destroyed and its pointer will become invalid.
+
+## Member Data Documentation
+
+### signalTaskAdded
+
+```cpp
+ProtectedSignal < Task *> ImFusion::NestedProgress::signalTaskAdded
+```
+
+Signal emitted by the default implementation of [NestedProgress::onTaskAdded()](#ontaskadded).
+
+Subscription to this signal is useful in case you want to customize progress tasks without inheriting from [NestedProgress](/cpp-sdk/4.5/api/classes/imfusion-nestedprogress).
+
+### signalTaskUpdated
+
+```cpp
+ProtectedSignal <const Task *> ImFusion::NestedProgress::signalTaskUpdated
+```
+
+Signal emitted by the default implementation of [NestedProgress::onTaskUpdated()](#ontaskupdated).
+
+Subscription to this signal is useful in case you want to perform custom action on progress updates without inheriting from [NestedProgress](/cpp-sdk/4.5/api/classes/imfusion-nestedprogress).

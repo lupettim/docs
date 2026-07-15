@@ -1,0 +1,67 @@
+---
+title: "ImFusion::Geometry::AlignedBox"
+sidebarTitle: "AlignedBox"
+description: "Class representing an axis aligned rectangular cuboid in 3D space."
+---
+
+`#include <ImFusion/Core/Geometry/Box.h>`
+
+## Overview
+
+Class representing an axis aligned rectangular cuboid in 3D space.
+
+The coordinate convention for this class is bottom &lt;= top, left &lt;= right, front &lt;= back, all of which are enforced in the constructor. Unless stated otherwise, all operations that involve comparisons use the same tolerance epsilon as vec3::isApprox() (which is 1e-12).
+
+A default-constructed [AlignedBox](/cpp-sdk/4.5/api/classes/imfusion-geometry-alignedbox) is considered "invalid" and represented by both lowerLeftFront() and upperRightBack() being NaN. Use isValid() to easily check for this.
+
+**See also:** Intersections between geometry primitives can be computed using the sets of free functions Geometry::intersection() and Geometry::intersects().
+
+**Examples:** [MyCustomGlObject.h](/cpp-sdk/4.5/api/examples/my-custom-gl-object-8h).
+
+## Public Member Functions
+
+- **AlignedBox** () — Creates an invalid box that does not contain any point and does not intersect with anything.
+- **AlignedBox** (const vec3 &point) — Creates a box that consists of the single given point; it has zero extent but is valid.
+- **AlignedBox** (const vec3 &lowerLeftFront, const vec3 &upperRightBack) — Creates a box that spans the two given points.
+- bool **operator==** (const AlignedBox &) const
+- bool **operator!=** (const AlignedBox &) const
+- bool **isApprox** (const AlignedBox &) const — Floating point comparison using the same epsilon as Eigen::isApprox.
+- void **addPoint** (const vec3 &point) — Extends this box to include the given *point*.
+- void **addBox** (const AlignedBox &other) — Extends this box to include the other [AlignedBox](/cpp-sdk/4.5/api/classes/imfusion-geometry-alignedbox).
+- void **reset** () — Reset to an invalid bounding box.
+- bool **isValid** () const — Returns whether this box is valid (i.e. none of the LLF/URB components is NaN).
+- bool **includesPoint** (const vec3 &point) const — Returns whether the box contains the given *point*.
+- vec3 **closestPoint** (const vec3 &point) const — Returns the point inside this box that is closest to *point*, NaN if isValid() is false.
+- double **distanceToPoint** (const vec3 &point) const — Returns the distance of *point* to the closest point inside this box, NaN if isValid() is false.
+- const vec3 & **lowerLeftFront** () const — Returns the lower-left-front corner (component-wise minimum) of the bounding box.
+- const vec3 & **upperRightBack** () const — Returns the upper-right-back corner (component-wise maximum) of the bounding box.
+- double **left** () const
+- double **right** () const
+- double **top** () const
+- double **bottom** () const
+- double **front** () const
+- double **back** () const
+- double **width** () const
+- double **height** () const
+- double **depth** () const
+- vec3 **center** () const — Returns the center of the bounding box.
+- vec3 **extent** () const — Returns the extent of the bounding box (URB - LLF).
+- double **volume** () const — Returns the volume of the bounding box.
+- [std::array](http://en.cppreference.com/w/cpp/container/array.html)&lt; vec3, 8 &gt; [corners](#corners) () const — Returns corner in order left to right, bottom to top, front to back, i.e.
+
+## Protected Attributes
+
+- vec3 **m_llf**
+- vec3 **m_urb**
+
+## Member Function Documentation
+
+### corners
+
+```cpp
+std::array < vec3, 8 > ImFusion::Geometry::AlignedBox::corners () const
+```
+
+Returns corner in order left to right, bottom to top, front to back, i.e.
+
+with a x-major order.

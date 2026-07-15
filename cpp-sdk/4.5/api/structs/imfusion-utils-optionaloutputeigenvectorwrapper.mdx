@@ -1,0 +1,27 @@
+---
+title: "ImFusion::Utils::OptionalOutputEigenVectorWrapper< InsideScalar, InsideDimension, FillValue >"
+sidebarTitle: "OptionalOutputEigenVectorWrapper< InsideScalar, InsideDimension, FillValue >"
+description: "Optional output argument."
+---
+
+`#include <ImFusion/Base/Utils/EigenVectorWrapper.h>`
+
+## Overview
+
+template&lt;typename InsideScalar, int InsideDimension, int FillValue = 1&gt;
+
+struct ImFusion::Utils::OptionalOutputEigenVectorWrapper&lt; InsideScalar, InsideDimension, FillValue &gt;
+Optional output argument.
+
+## Public Types
+
+- using **InsideType** = Eigen::Matrix&lt;InsideScalar, InsideDimension, 1&gt;
+
+## Public Member Functions
+
+- **OptionalOutputEigenVectorWrapper** ([std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; Eigen::Matrix&lt; OutsideScalar, OutsideDimension, 1 &gt; &gt; &vec, bool active=true)
+- **OptionalOutputEigenVectorWrapper** (OptionalOutputEigenVectorWrapper &&o) noexcept
+- **OptionalOutputEigenVectorWrapper** ([OutputEigenVectorWrapper](/cpp-sdk/4.5/api/structs/imfusion-utils-outputeigenvectorwrapper)&lt; InsideScalar, InsideDimension, FillValue &gt; &&o)
+- **OptionalOutputEigenVectorWrapper** ([std::nullptr_t](http://en.cppreference.com/w/cpp/types/nullptr_t.html))
+- **OptionalOutputEigenVectorWrapper** (const [std::initializer_list](http://en.cppreference.com/w/cpp/utility/initializer_list.html)&lt; void \* &gt; &)
+- void **operator=** ([std::nullptr_t](http://en.cppreference.com/w/cpp/types/nullptr_t.html))

@@ -1,0 +1,55 @@
+---
+title: "ImFusion::CustomPropertyElement< T >"
+sidebarTitle: "CustomPropertyElement< T >"
+description: "Wrapper for the value of a custom property on a specific element, with conversions to and from the underlying data type."
+---
+
+`#include <ImFusion/Mesh/MeshCustomProperties.h>`
+
+## Overview
+
+template&lt;typename T&gt;
+
+class ImFusion::CustomPropertyElement&lt; T &gt;
+Wrapper for the value of a custom property on a specific element, with conversions to and from the underlying data type.
+
+## Public Member Functions
+
+- **CustomPropertyElement** (const T &data)
+- **CustomPropertyElement** (const CustomPropertyElement&lt; T &gt; &other)
+- CustomPropertyElement&lt; T &gt; & **operator=** (const CustomPropertyElement&lt; T &gt; &other)
+- bool **operator==** (const CustomPropertyElement&lt; T &gt; &other) const
+- bool **operator==** (const T &value) const
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; CustomPropertyElementBase &gt; [clone](#clone) (bool withData=true) const override — Creates a copy of this object. If not cloning withData, the result will always be invalid.
+- T & **operator=** (const T &other)
+- **operator T** () const
+- CustomPropertyElementBase & [operator=](#operator) (const CustomPropertyElementBase &other) override
+- bool [operator==](#operator) (const CustomPropertyElementBase &other) const override
+
+## Member Function Documentation
+
+### clone
+
+```cpp
+template<typename T> std::unique_ptr < CustomPropertyElementBase > ImFusion::CustomPropertyElement < T >::clone (bool withData = true) const
+```
+
+*override, virtual*
+
+Creates a copy of this object. If not cloning withData, the result will always be invalid.
+
+### operator
+
+```cpp
+template<typename T> CustomPropertyElementBase & ImFusion::CustomPropertyElement < T >::operator= (const CustomPropertyElementBase & other)
+```
+
+*override, virtual*
+
+### operator
+
+```cpp
+template<typename T> bool ImFusion::CustomPropertyElement < T >::operator== (const CustomPropertyElementBase & other) const
+```
+
+*override, virtual*

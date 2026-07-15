@@ -1,0 +1,40 @@
+---
+title: "ImFusion::ApplyWindowLevelAlgorithm"
+sidebarTitle: "ApplyWindowLevelAlgorithm"
+description: "Clamps (in-place) the image values to the range [level-window/2; level+window/2]."
+---
+
+`#include <ImFusion/GL/ApplyWindowLevelAlgorithm.h>`
+
+## Overview
+
+Clamps (in-place) the image values to the range [level-window/2; level+window/2].
+
+The algorithm automatically retrieves the level/window value from the 2D display options of its input, but those values can be overriden.
+
+## Public Member Functions
+
+- **ApplyWindowLevelAlgorithm** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &sis)
+- void [compute](#compute) () override — Execute the algorithm.
+- void **setWindowLevelFromImage** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &sis) — Automatically configures the algorithm from the window/level of an image.
+
+## Static Public Member Functions
+
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a)
+
+## Public Attributes
+
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; double &gt; **p_window** = &#123;"window", 1.0, this&#125;
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; double &gt; **p_level** = &#123;"level", 0.5, this&#125;
+
+## Member Function Documentation
+
+### compute
+
+```cpp
+void ImFusion::ApplyWindowLevelAlgorithm::compute ()
+```
+
+*override, virtual*
+
+Execute the algorithm.

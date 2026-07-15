@@ -1,0 +1,51 @@
+---
+title: "ImFusion::ByteBufferMutableView"
+sidebarTitle: "ByteBufferMutableView"
+description: "Specialization of a ByteBufferView that additionally provides non-const access to the underlying data."
+---
+
+`#include <ImFusion/Core/ByteBuffer.h>`
+
+## Overview
+
+Specialization of a [ByteBufferView](/cpp-sdk/4.5/api/classes/imfusion-bytebufferview) that additionally provides non-const access to the underlying data.
+
+This class is usually used as argument type for processing functions that receive an output buffer to write into.
+
+**See also:** [ByteBufferStream](/cpp-sdk/4.5/api/classes/imfusion-bytebufferstream)
+
+## Public Member Functions
+
+- **ByteBufferMutableView** ()=default — Create an empty (invalid) buffer.
+- [ByteBufferMutableView](#bytebuffermutableview) (char \*data, size_t [size](/cpp-sdk/4.5/api/classes/imfusion-bytebufferview)) — Create a non-owning buffer of the given size wrapping around the given array.
+- **ByteBufferMutableView** ([std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &string) — Create a new buffer referencing the content from *string*.
+- **ByteBufferMutableView** (const ByteBufferMutableView &rhs)=default
+- **ByteBufferMutableView** (ByteBufferMutableView &&rhs) noexcept=default
+- ByteBufferMutableView & **operator=** (const ByteBufferMutableView &rhs)=default
+- ByteBufferMutableView & **operator=** (ByteBufferMutableView &&rhs) noexcept=default
+- ByteBufferMutableView **mutableView** () — Return a mutable view onto this buffer, same effect as calling the copy constructor.
+- ByteBufferMutableView **mutableSubView** (size_t offset, size_t [size](/cpp-sdk/4.5/api/classes/imfusion-bytebufferview)) const — Create a mutable view onto a subregion of this buffer.
+- char & **operator[]** (size_t which)
+- const char & **operator[]** (size_t which) const
+- char \* **data** () — Return the pointer to the buffer data.
+- const char \* **data** () const — Return the pointer to the buffer data.
+- char \* **begin** () — Return iterator to the beginning of the buffer.
+- const char \* **begin** () const — Return iterator to the beginning of the buffer.
+- char \* **end** () — Return iterator to one past the end of the buffer.
+- const char \* **end** () const — Return iterator to one past the end of the buffer.
+- **ByteBufferMutableView** ([ByteBuffer](/cpp-sdk/4.5/api/classes/imfusion-bytebuffer) &&rhs)=delete
+- ByteBufferMutableView & **operator=** ([ByteBuffer](/cpp-sdk/4.5/api/classes/imfusion-bytebuffer) &&rhs)=delete
+
+## Constructor & Destructor Documentation
+
+### ByteBufferMutableView
+
+```cpp
+ImFusion::ByteBufferMutableView::ByteBufferMutableView (char * data, size_t size)
+```
+
+*explicit*
+
+Create a non-owning buffer of the given size wrapping around the given array.
+
+**Note:** *data* must remain valid for the entire lifetime of this object instance.

@@ -1,0 +1,256 @@
+---
+title: "ImFusion::Dicom"
+sidebarTitle: "Dicom"
+description: "Low-level and intermediate-level interfaces for working with DICOM data."
+---
+
+## Overview
+
+Low-level and intermediate-level interfaces for working with DICOM data.
+
+## Namespaces
+
+- namespace [Utils](/cpp-sdk/4.5/api/namespaces/imfusion-dicom-utils) — Collection of utility functions to handle DICOM data.
+- namespace [ModalityWorklist](/cpp-sdk/4.5/api/namespaces/imfusion-dicom-modalityworklist) — Basic implementation of a Service Class User (SCU) for the DICOM Modality Worklist standard.
+- namespace [VolumeReconstruction](/cpp-sdk/4.5/api/namespaces/imfusion-dicom-volumereconstruction) — Namespace containing helper functions to reconstruct potential volumes from a set of individual DICOM frames.
+
+## Classes
+
+- class [ConfigurableSequenceItem](/cpp-sdk/4.5/api/classes/imfusion-dicom-configurablesequenceitem)
+- class [ConfigurableSequence](/cpp-sdk/4.5/api/classes/imfusion-dicom-configurablesequence)
+- class [ClinicalTrialSubjectDataComponent](/cpp-sdk/4.5/api/classes/imfusion-dicom-clinicaltrialsubjectdatacomponent) — Represents the Clinical Trial Subject [Module](/cpp-sdk/4.5/api/classes/imfusion-dicom-module) [https://dicom.nema.org/medical/dicom/current/output/chtml/part03/sect_C.7.html#table_C.7-2b](https://dicom.nema.org/medical/dicom/current/output/chtml/part03/sect_C.7.html#table_C.7-2b).
+- class [ClinicalTrialSubjectExtension](/cpp-sdk/4.5/api/classes/imfusion-dicom-clinicaltrialsubjectextension) — [Extension](/cpp-sdk/4.5/api/classes/imfusion-dicom-extension) that loads and saves the [ClinicalTrialSubjectDataComponent](/cpp-sdk/4.5/api/classes/imfusion-dicom-clinicaltrialsubjectdatacomponent).
+- class [DatasetHandler](/cpp-sdk/4.5/api/classes/imfusion-dicom-datasethandler) — Read access handler for proprietary / non-standard DICOM image formats, or non-image datasets.
+- class [GeneralEquipmentModuleDataComponent](/cpp-sdk/4.5/api/classes/imfusion-dicom-generalequipmentmoduledatacomponent) — [DataComponent](/cpp-sdk/4.5/api/classes/imfusion-datacomponent) mirroring the DICOM General Equipment [Module](/cpp-sdk/4.5/api/classes/imfusion-dicom-module).
+- class [SourceInfoComponent](/cpp-sdk/4.5/api/classes/imfusion-dicom-sourceinfocomponent) — [DataComponent](/cpp-sdk/4.5/api/classes/imfusion-datacomponent) to store the mapping of [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) to the DICOM URIs (such as file names) used for loading.
+- class [ReferencedInstancesComponent](/cpp-sdk/4.5/api/classes/imfusion-dicom-referencedinstancescomponent) — [DataComponent](/cpp-sdk/4.5/api/classes/imfusion-datacomponent) to store DICOM instances that are referenced by the dataset.
+- class [DatasetCache](/cpp-sdk/4.5/api/classes/imfusion-dicom-datasetcache) — The [DatasetCache](/cpp-sdk/4.5/api/classes/imfusion-dicom-datasetcache) class provides caching of DcmDataset loaded from different locations.
+- class [ElementList](/cpp-sdk/4.5/api/classes/imfusion-dicom-elementlist) — Interface for classes that consist of Elements.
+- class [value_error](/cpp-sdk/4.5/api/classes/imfusion-dicom-value-error) — Exception specialization for DICOM element retrieval.
+- class [ElementBase](/cpp-sdk/4.5/api/classes/imfusion-dicom-elementbase) — Abstract base class for DICOM Elements.
+- class [Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element) — [Dicom](/cpp-sdk/4.5/api/namespaces/imfusion-dicom) [Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element) with a concrete value type.
+- struct [TagProxy](/cpp-sdk/4.5/api/structs/imfusion-dicom-tagproxy)
+- struct [Error](/cpp-sdk/4.5/api/structs/imfusion-dicom-error) — Structure for storing errors occurring during loading/saving DICOM data.
+- class [ErrorRecorder](/cpp-sdk/4.5/api/classes/imfusion-dicom-errorrecorder) — [Error](/cpp-sdk/4.5/api/structs/imfusion-dicom-error) handling interface for the [Dicom](/cpp-sdk/4.5/api/namespaces/imfusion-dicom) module.
+- struct [FrameDescriptor](/cpp-sdk/4.5/api/structs/imfusion-dicom-framedescriptor) — Descriptor for a single DICOM frame that is used during the loading process as intermediate representation before eventually converting the image data to a [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset).
+- class [IOD](/cpp-sdk/4.5/api/classes/imfusion-dicom-iod) — [Base](/cpp-sdk/4.5/api/structs/imfusion-dicom-base) class of a [Dicom](/cpp-sdk/4.5/api/namespaces/imfusion-dicom) Information Object Definition ([IOD](/cpp-sdk/4.5/api/classes/imfusion-dicom-iod)).
+- class [MultiFrameImageIOD](/cpp-sdk/4.5/api/classes/imfusion-dicom-multiframeimageiod) — [Base](/cpp-sdk/4.5/api/structs/imfusion-dicom-base) [IOD](/cpp-sdk/4.5/api/classes/imfusion-dicom-iod) for classic DICOM files.
+- class [VolumetricImageIOD](/cpp-sdk/4.5/api/classes/imfusion-dicom-volumetricimageiod) — The [VolumetricImageIOD](/cpp-sdk/4.5/api/classes/imfusion-dicom-volumetricimageiod) is a generic [IOD](/cpp-sdk/4.5/api/classes/imfusion-dicom-iod) for volumetric data that is stored slice by slice.
+- class [EnhancedMultiFrameImageIOD](/cpp-sdk/4.5/api/classes/imfusion-dicom-enhancedmultiframeimageiod) — Class representing Enhanced CT [Image](/cpp-sdk/4.5/api/structs/imfusion-dicom-image) [IOD](/cpp-sdk/4.5/api/classes/imfusion-dicom-iod) (PS 3.3 A.38).
+- class [DicomGeSignaExciteIOD](/cpp-sdk/4.5/api/classes/imfusion-dicom-dicomgesignaexciteiod) — Extra [IOD](/cpp-sdk/4.5/api/classes/imfusion-dicom-iod) specialization for basic support of loading 4D MRI sequences created by GE Signa Excite devices.
+- class [IOD_Registry](/cpp-sdk/4.5/api/classes/imfusion-dicom-iod-registry) — A registry that assigns a [IOD](/cpp-sdk/4.5/api/classes/imfusion-dicom-iod) implementation to a SOP class UID.
+- class [SegmentItem](/cpp-sdk/4.5/api/classes/imfusion-dicom-segmentitem) — [Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element) in the (0062,0002) SegmentSequence.
+- class [SegmentationStorageIOD](/cpp-sdk/4.5/api/classes/imfusion-dicom-segmentationstorageiod) — Class representing Segmentation [IOD](/cpp-sdk/4.5/api/classes/imfusion-dicom-iod).
+- class [ModuleList](/cpp-sdk/4.5/api/classes/imfusion-dicom-modulelist) — Interface for classes that consist of modules.
+- class [DatasetModuleList](/cpp-sdk/4.5/api/classes/imfusion-dicom-datasetmodulelist) — A stub that allows to use a [Module](/cpp-sdk/4.5/api/classes/imfusion-dicom-module) with a DcmItem alone (without deriving some class from [ModuleList](/cpp-sdk/4.5/api/classes/imfusion-dicom-modulelist)).
+- class [Module](/cpp-sdk/4.5/api/classes/imfusion-dicom-module) — [Base](/cpp-sdk/4.5/api/structs/imfusion-dicom-base) class for [Dicom](/cpp-sdk/4.5/api/namespaces/imfusion-dicom) Modules.
+- class [CommonModule](/cpp-sdk/4.5/api/classes/imfusion-dicom-commonmodule) — Collection of the essential tags describing a [Dicom](/cpp-sdk/4.5/api/namespaces/imfusion-dicom) data set combining.
+- class [ImagePixel](/cpp-sdk/4.5/api/classes/imfusion-dicom-imagepixel) — [Image](/cpp-sdk/4.5/api/structs/imfusion-dicom-image) Pixel [Module](/cpp-sdk/4.5/api/classes/imfusion-dicom-module) (PS 3.3 C.7.6.3).
+- class [PixelSpacingCalibration](/cpp-sdk/4.5/api/classes/imfusion-dicom-pixelspacingcalibration) — Basic Pixel Spacing Calibration Macro (PS 3.3 [Table](/cpp-sdk/4.5/api/classes/imfusion-table) 10.7) Pixel Measures Macro (PS 3.3 [Table](/cpp-sdk/4.5/api/classes/imfusion-table) C.7.6.16-2).
+- class [ImagePlane](/cpp-sdk/4.5/api/classes/imfusion-dicom-imageplane) — [Image](/cpp-sdk/4.5/api/structs/imfusion-dicom-image) Plane [Module](/cpp-sdk/4.5/api/classes/imfusion-dicom-module) (PS 3.3 C.7.6.2).
+- class [ModalityLUT](/cpp-sdk/4.5/api/classes/imfusion-dicom-modalitylut) — Modality LUT [Module](/cpp-sdk/4.5/api/classes/imfusion-dicom-module) (PS 3.3 C.11.1).
+- class [OverlayAnnotation](/cpp-sdk/4.5/api/classes/imfusion-dicom-overlayannotation) — The [OverlayAnnotation](/cpp-sdk/4.5/api/classes/imfusion-dicom-overlayannotation) displays any DICOM overlay stored in a [OverlayDataComponent](/cpp-sdk/4.5/api/classes/imfusion-dicom-overlaydatacomponent).
+- class [OverlayDataComponent](/cpp-sdk/4.5/api/classes/imfusion-dicom-overlaydatacomponent) — [DataComponent](/cpp-sdk/4.5/api/classes/imfusion-datacomponent) providing DICOM overlays.
+- class [DicomParameterBase](/cpp-sdk/4.5/api/classes/imfusion-dicom-dicomparameterbase) — Internal type-erased base class for [DicomParameter&lt;T&gt;](/cpp-sdk/4.5/api/classes/imfusion-dicom-dicomparameter).
+- class [DicomParameter](/cpp-sdk/4.5/api/classes/imfusion-dicom-dicomparameter) — A specialized Parameter&lt;T&gt; class that can additionally serialize from and to DICOM.
+- class [DicomParameterHelper](/cpp-sdk/4.5/api/classes/imfusion-dicom-dicomparameterhelper) — Helper functions to load and save all DicomParameters of a [Configurable](/cpp-sdk/4.5/api/classes/imfusion-configurable).
+- class [DicomSegIoAlgorithm](/cpp-sdk/4.5/api/classes/imfusion-dicom-dicomsegioalgorithm)
+- class [SequenceItem](/cpp-sdk/4.5/api/classes/imfusion-dicom-sequenceitem) — [Base](/cpp-sdk/4.5/api/structs/imfusion-dicom-base) class for sequence items.
+- class [SequenceBase](/cpp-sdk/4.5/api/classes/imfusion-dicom-sequencebase) — Abstract base class for a sequence of elements.
+- class [Sequence](/cpp-sdk/4.5/api/classes/imfusion-dicom-sequence) — Concrete sequence of items of type T, which must be derived from [SequenceItem](/cpp-sdk/4.5/api/classes/imfusion-dicom-sequenceitem).
+- struct [DatasetIodPair](/cpp-sdk/4.5/api/structs/imfusion-dicom-datasetiodpair) — Named pair of a DcmDataset and the corresponding [IOD](/cpp-sdk/4.5/api/classes/imfusion-dicom-iod).
+- class [EncryptedAttributesExtension](/cpp-sdk/4.5/api/classes/imfusion-dicom-encryptedattributesextension)
+- class [Extension](/cpp-sdk/4.5/api/classes/imfusion-dicom-extension) — Interface for adding custom functionality to [DicomLoader](/cpp-sdk/4.5/api/classes/imfusion-dicomloader) and [DicomWriter](/cpp-sdk/4.5/api/classes/imfusion-dicomwriter) An [Extension](/cpp-sdk/4.5/api/classes/imfusion-dicom-extension) might be called in a thread that is not the main thread.
+- class [GeneralEquipmentExtension](/cpp-sdk/4.5/api/classes/imfusion-dicom-generalequipmentextension) — General Equipment [Module](/cpp-sdk/4.5/api/classes/imfusion-dicom-module) (PS 3.3 C.7.5) Only considers tags that are part of the [GeneralEquipmentModuleDataComponent](/cpp-sdk/4.5/api/classes/imfusion-dicom-generalequipmentmoduledatacomponent).
+- class [RealWorldValueMappingExtension](/cpp-sdk/4.5/api/classes/imfusion-dicom-realworldvaluemappingextension) — Real World Value Mapping Macro (PS 3.3 C.7.6.16.2.11).
+- class [RTStructureDataComponent](/cpp-sdk/4.5/api/classes/imfusion-dicom-rtstructuredatacomponent) — [DataComponent](/cpp-sdk/4.5/api/classes/imfusion-datacomponent) for PointClouds loaded from a DICOM RTStructureSet.
+- class [RTStructureRenderingDataComponent](/cpp-sdk/4.5/api/classes/imfusion-dicom-rtstructurerenderingdatacomponent) — Internal rendering data that represent a RT Structure.
+- class [RTStructureDataDisplayHandler](/cpp-sdk/4.5/api/classes/imfusion-dicom-rtstructuredatadisplayhandler) — [DataDisplayHandler](/cpp-sdk/4.5/api/classes/imfusion-datadisplayhandler) for PointClouds that represent DICOM RT Structs.
+- class [RTStructureDatasetHandler](/cpp-sdk/4.5/api/classes/imfusion-dicom-rtstructuredatasethandler) — A [DatasetHandler](/cpp-sdk/4.5/api/classes/imfusion-dicom-datasethandler) for loading DICOM RTStructureSet.
+- class [TagStoreDataComponent](/cpp-sdk/4.5/api/classes/imfusion-dicom-tagstoredatacomponent) — [Data](/cpp-sdk/4.5/api/classes/imfusion-data) component that preserves the raw DICOM datasets.
+- class [VOILUTExtension](/cpp-sdk/4.5/api/classes/imfusion-dicom-voilutextension) — VOI LUT [Module](/cpp-sdk/4.5/api/classes/imfusion-dicom-module) (PS 3.3 C.11.2) Loads and saves windowing related values to and from [DisplayOptions2d](/cpp-sdk/4.5/api/classes/imfusion-displayoptions2d).
+- class [WebClient](/cpp-sdk/4.5/api/classes/imfusion-dicom-webclient) — Interface for querying and retrieving objects from a DicomWeb compliant server.
+- class [DatasetPreviewLabel](/cpp-sdk/4.5/api/classes/imfusion-dicom-datasetpreviewlabel) — A widget that shows a preview image of a DICOM dataset.
+- class [RTStructureDataController](/cpp-sdk/4.5/api/classes/imfusion-dicom-rtstructuredatacontroller) — A [DataController](/cpp-sdk/4.5/api/classes/imfusion-datacontroller) for PointClouds that contain a [RTStructureDataComponent](/cpp-sdk/4.5/api/classes/imfusion-dicom-rtstructuredatacomponent).
+- struct [Base](/cpp-sdk/4.5/api/structs/imfusion-dicom-base)
+- struct [Image](/cpp-sdk/4.5/api/structs/imfusion-dicom-image)
+- struct [DimensionsInfo](/cpp-sdk/4.5/api/structs/imfusion-dicom-dimensionsinfo) — Describes with which dimensions a series will be loaded.
+- struct [Series](/cpp-sdk/4.5/api/structs/imfusion-dicom-series)
+- struct [PacsSeriesProxy](/cpp-sdk/4.5/api/structs/imfusion-dicom-pacsseriesproxy) — Proxy item to represent [Series](/cpp-sdk/4.5/api/structs/imfusion-dicom-series) that exist on the PACS but have not yet been downloaded completely.
+- struct [Study](/cpp-sdk/4.5/api/structs/imfusion-dicom-study)
+- struct [Patient](/cpp-sdk/4.5/api/structs/imfusion-dicom-patient)
+- class [Scanner](/cpp-sdk/4.5/api/classes/imfusion-dicom-scanner) — Scan different locations for DICOM files.
+- class [ScannerQt](/cpp-sdk/4.5/api/classes/imfusion-dicom-scannerqt) — A scanner with Qt interop.
+- class [SettingsWidget](/cpp-sdk/4.5/api/classes/imfusion-dicom-settingswidget) — Simple Qt widget to configure the [DicomPluginSettings](/cpp-sdk/4.5/api/classes/imfusion-dicompluginsettings).
+- class [TagsWidget](/cpp-sdk/4.5/api/classes/imfusion-dicom-tagswidget) — The [TagsWidget](/cpp-sdk/4.5/api/classes/imfusion-dicom-tagswidget) class provides a widget to display dicom tags.
+
+## Typedefs
+
+- typedef [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [FrameDescriptor](/cpp-sdk/4.5/api/structs/imfusion-dicom-framedescriptor) &gt; **FrameDescriptorSet** — This typedef indicates a semantic difference compared to [std::vector&lt;FrameDescriptor&gt;](http://en.cppreference.com/w/cpp/container/vector.html): A FrameDescriptorSet indicates that the frames resemble a (potential) volume, while a [std::vector&lt;FrameDescriptor&gt;](http://en.cppreference.com/w/cpp/container/vector.html) is just a list of (potential) unrelated frames.
+- typedef [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [DatasetCache](/cpp-sdk/4.5/api/classes/imfusion-dicom-datasetcache) &gt; **SharedDatasetCache**
+- using **DcmItemsResult** = [ImFusion::Utils::Expected](/cpp-sdk/4.5/api/classes/imfusion-utils-expected)&lt;[std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt;DcmItem&gt;, [Network::HttpError](/cpp-sdk/4.5/api/structs/imfusion-network-httperror)&gt;
+- using **DcmDatasetsResult** = [ImFusion::Utils::Expected](/cpp-sdk/4.5/api/classes/imfusion-utils-expected)&lt;[std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt;[std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt;DcmDataset&gt;&gt;, [Network::HttpError](/cpp-sdk/4.5/api/structs/imfusion-network-httperror)&gt;
+
+## Enumerations
+
+- enum class **AnonymizationProfile** : int &#123; **None** = 0 , **Relaxed** = 1 , **Strict** = 2 &#125;
+- enum class [ExportFileType](#exportfiletype) &#123; File , Folder , Auto &#125;
+- enum class Compression &#123; **LittleEndianImplicit** , **LittleEndianExplicit** , **DeflatedLittleEndianExplicit** , **BigEndianExplicit** , **JPEG** , **JPEG_lossless** , **JPEGLS_lossless** , **JPEGLS_lossy** , **JPEG2000** , **JPEG2000_lossless** &#125; — Enumeration of supported compression/transfer syntax when writing DICOM.
+- enum class [ReferenceModules](#referencemodules) &#123; **None** = 0 , CommonInstanceReference = 1 , ClinicalTrialSubject = 2 , **All** = CommonInstanceReference | ClinicalTrialSubject &#125;
+- enum class PhotometricInterpretation &#123; **Invalid** , **Monochrome1** , **Monochrome2** , **Palette** , **RGB** , **YbrFull** , **YbrFull422** &#125; — Enumeration describing the DICOM photometeric interpetration type.
+- enum class **WritePolicy** &#123; **Always** , **NonEmpty** &#125;
+- enum class [ROIGenerationAlgorithm](#roigenerationalgorithm) &#123; Unknown = 0 , Automatic = 1 , SemiAutomatic = 2 , Manual = 3 &#125;
+- enum class [SeriesDimensions](#seriesdimensions) &#123; **Unknown** , **Image** , **Volume** , **ImageSet** , **VolumeSet** , **Other** &#125; — Dimensions of this series.
+
+## Functions
+
+- const [std::map](http://en.cppreference.com/w/cpp/container/map.html)&lt; [TagProxy](/cpp-sdk/4.5/api/structs/imfusion-dicom-tagproxy), [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; & **tagDeidentificationActionBasicProfile** () — [Dicom](/cpp-sdk/4.5/api/namespaces/imfusion-dicom) De-identification Action Codes according to PS3.15 Annex E [Table](/cpp-sdk/4.5/api/classes/imfusion-table) E.1-1 ([http://dicom.nema.org/medical/dicom/current/output/chtml/part15/chapter_E.html](http://dicom.nema.org/medical/dicom/current/output/chtml/part15/chapter_E.html)).
+- const [std::map](http://en.cppreference.com/w/cpp/container/map.html)&lt; [TagProxy](/cpp-sdk/4.5/api/structs/imfusion-dicom-tagproxy), [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; & **tagDeidentificationActionRelaxedProfile** () — Like Basic, but keeps certains tags and all UIDs.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **toDecimalString** (double value, int maxChars=16)
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; DcmDataset &gt; &gt; [exportToDataset](#exporttodataset) ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &input, [ErrorRecorder](/cpp-sdk/4.5/api/classes/imfusion-dicom-errorrecorder) &errors, [ExportFileType](#exportfiletype) filetype=ExportFileType::Auto, [IOD_Registry](/cpp-sdk/4.5/api/classes/imfusion-dicom-iod-registry) \*registry=nullptr, [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) \*progress=nullptr) — Exports the given image to a DcmDatasets.
+- void [addReference](#addreference-1-2) ([Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; [ReferenceModules](#referencemodules) &gt; modules, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; DcmDataset \* &gt; &datasets, const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &reference, [ErrorRecorder](/cpp-sdk/4.5/api/classes/imfusion-dicom-errorrecorder) &errors) — Adds a reference to the given image to all datasets.
+- void [addReference](#addreference-2-2) ([Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; [ReferenceModules](#referencemodules) &gt; modules, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; DcmDataset \* &gt; &datasets, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; DcmDataset \* &gt; &reference, [ErrorRecorder](/cpp-sdk/4.5/api/classes/imfusion-dicom-errorrecorder) &errors) — Similar to the function above but add a reference to the given datasets.
+- bool [saveDatasets](#savedatasets) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; DcmDataset \* &gt; &datasets, const [Filesystem::Url](/cpp-sdk/4.5/api/classes/imfusion-filesystem-url) &url, [ErrorRecorder](/cpp-sdk/4.5/api/classes/imfusion-dicom-errorrecorder) &errors, Compression compression=Compression::LittleEndianImplicit, int compressionQuality=90, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &filenameFormat="", [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) \*progress=nullptr) — Saves the given datasets to the url.
+- bool **isLosslessCompression** (Compression compression) — Returns whether the compression is lossless or lossy.
+- bool **operator==** (const [DicomParameter](/cpp-sdk/4.5/api/classes/imfusion-dicom-dicomparameter)&lt; T &gt; &param, const T &value)
+- bool **operator==** (const T &value, const [DicomParameter](/cpp-sdk/4.5/api/classes/imfusion-dicom-dicomparameter)&lt; T &gt; &param)
+- bool **operator!=** (const [DicomParameter](/cpp-sdk/4.5/api/classes/imfusion-dicom-dicomparameter)&lt; T &gt; &param, const T &value)
+- bool **operator!=** (const T &value, const [DicomParameter](/cpp-sdk/4.5/api/classes/imfusion-dicom-dicomparameter)&lt; T &gt; &param)
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; DcmDataset &gt; [exportSegmentationsToDataset](#exportsegmentationstodataset) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* &gt; &labelmapLayers, [ErrorRecorder](/cpp-sdk/4.5/api/classes/imfusion-dicom-errorrecorder) &errors, bool cropToContent=false, [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) \*progress=nullptr) — Exports one or multiple segmentation layers as a single DICOM Segmentation object.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; DcmDataset &gt; [exportRTStructToDataset](#exportrtstructtodataset) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [PointCloud](/cpp-sdk/4.5/api/classes/imfusion-pointcloud) \* &gt; &pointClouds, [ErrorRecorder](/cpp-sdk/4.5/api/classes/imfusion-dicom-errorrecorder) &errors, [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) \*progress=nullptr) — Exports a [PointCloud](/cpp-sdk/4.5/api/classes/imfusion-pointcloud) with a [Dicom::RTStructureDataComponent](/cpp-sdk/4.5/api/classes/imfusion-dicom-rtstructuredatacomponent) as a DICOM RT Structure Set.
+
+## Enumeration Type Documentation
+
+### ExportFileType
+
+```cpp
+enum class ImFusion::Dicom::ExportFileType
+```
+
+*strong*
+
+**Enumerator:**
+
+- `File` — If possible, write all image data to a single file.
+- `Folder` — Write each frame as separate DICOM file to a folder.
+- `Auto` — Automatically determine storage type based on the image.
+
+### ReferenceModules
+
+```cpp
+enum class ImFusion::Dicom::ReferenceModules
+```
+
+*strong*
+
+**Enumerator:**
+
+- `CommonInstanceReference` — Requires the [ImageInfoDataComponent](/cpp-sdk/4.5/api/classes/imfusion-imageinfodatacomponent) and the SourceDataComponent.
+- `ClinicalTrialSubject` — Requires the [Dicom::ClinicalTrialSubjectDataComponent](/cpp-sdk/4.5/api/classes/imfusion-dicom-clinicaltrialsubjectdatacomponent).
+
+### ROIGenerationAlgorithm
+
+```cpp
+enum class ImFusion::Dicom::ROIGenerationAlgorithm
+```
+
+*strong*
+
+**Enumerator:**
+
+- `Unknown` — Unknown.
+- `Automatic` — Calculated ROI.
+- `SemiAutomatic` — ROI calculated with user assistance.
+- `Manual` — User-entered ROI.
+
+### SeriesDimensions
+
+```cpp
+enum class ImFusion::Dicom::SeriesDimensions
+```
+
+*strong*
+
+Dimensions of this series.
+
+This corresponds to the Kind of a [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) but with only the values we expect from DICOM.
+
+## Function Documentation
+
+### exportToDataset
+
+```cpp
+std::vector < std::unique_ptr < DcmDataset > > ImFusion::Dicom::exportToDataset (SharedImageSet & input, ErrorRecorder & errors, ExportFileType filetype = ExportFileType::Auto, IOD_Registry * registry = nullptr, Progress * progress = nullptr)
+```
+
+Exports the given image to a DcmDatasets.
+
+Depending on the filetype, this result contains a single dataset (File) or multiple (Folder). If no registry is provided, the default one is created.
+
+This function cannot export images with modality LABEL! Use [DicomSegIoAlgorithm](/cpp-sdk/4.5/api/classes/imfusion-dicom-dicomsegioalgorithm) instead.
+
+The transfer syntax of the returned datasets is always Little Endian (Implicit).
+
+### addReference
+
+```cpp
+void ImFusion::Dicom::addReference (Flags < ReferenceModules > modules, const std::vector < DcmDataset * > & datasets, const SharedImageSet & reference, ErrorRecorder & errors)
+```
+
+Adds a reference to the given image to all datasets.
+
+If enabled, this will add tags according to the Common Instance Reference [Module](/cpp-sdk/4.5/api/classes/imfusion-dicom-module) ([https://dicom.nema.org/medical/dicom/current/output/chtml/part03/sect_C.12.2.html#table_C.12-8](https://dicom.nema.org/medical/dicom/current/output/chtml/part03/sect_C.12.2.html#table_C.12-8)) The given [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) must provide a [ImageInfoDataComponent](/cpp-sdk/4.5/api/classes/imfusion-imageinfodatacomponent) and a [SourceInfoComponent](/cpp-sdk/4.5/api/classes/imfusion-dicom-sourceinfocomponent) for each [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage). Both are automatically created when the [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) was loaded from DICOM. If the image does not provide all necessary information, an error is recorded.
+
+If enabled, the Clinical Trial Subject [Module](/cpp-sdk/4.5/api/classes/imfusion-dicom-module) is also copied from the reference image to the datasets.
+
+### addReference
+
+```cpp
+void ImFusion::Dicom::addReference (Flags < ReferenceModules > modules, const std::vector < DcmDataset * > & datasets, const std::vector < DcmDataset * > & reference, ErrorRecorder & errors)
+```
+
+Similar to the function above but add a reference to the given datasets.
+
+This should be used when the reference image was already exported and a reference should be added to the exported dataset and not the original. During exportToDataset, certain UIDs are generated. If you would e.g. export a image and a labelmap together, you need to call this function when the labelmap is supposed to reference the image.
+
+This function requires that all reference datasets have the same SeriesInstanceUID and the same FrameOfReferenceUID. If you want to add references to multiple series, call this method for each series.
+
+### saveDatasets
+
+```cpp
+bool ImFusion::Dicom::saveDatasets (const std::vector < DcmDataset * > & datasets, const Filesystem::Url & url, ErrorRecorder & errors, Compression compression = Compression::LittleEndianImplicit, int compressionQuality = 90, const std::string & filenameFormat = "", Progress * progress = nullptr)
+```
+
+Saves the given datasets to the url.
+
+For local files, a folder is required if there is more than one dataset. If the path doesn't exist, it is created (including all subfolders).
+
+When exporting to PACS, the client config is determined via the global [Settings](/cpp-sdk/4.5/api/classes/imfusion-settings) but the server config is determined from the url.
+
+The compression quality is only used for lossy compressions and goes from 1 to 100, with 1 being the lowest quality and highest compression and 100 being the highest quality and the lowest compression. Values will be clamped to 1 and 100. JPEGLS_lossy currently ignores the quality and uses a hardcoded value.
+
+The input datasets will be converted to the given compression (transfer syntax) inplace.
+
+The filenameFormat defines how files exported to a folder are named. It expects a pattern of 'prefix$0..0$suffix'. The amount of '0' in between the two $ markers specifies the size the filename will be padded to. If no '0' are given, the number depends on the number of files (e.g. 10 files would use 2 digits, 100 would use 3). E.g. 'IMG_$0000$.dcm' would name files 'IMG_0001.dcm', 'IMG_0002.dcm', ... If only one '0' is given, the files are not padded with a 0, e.g. the pattern 'IMG_$0$' produces 'IMG_0', 'IMG_1', ..., 'IMG_9', 'IMG_10', ... If there are more than one '0', but the number of datasets would require more digits, a warning is issued and only the lower files are padded with '0', e.g. a pattern of 'IMG_$00$' and 120 files: 'IMG_00', 'IMG_01', ..., 'IMG_99', 'IMG_100', 'IMG_101'... The default pattern is 'IMG_$$' which results in 'IMG_001', 'IMG_002', ... for 100 to 999 datasets.
+
+Returns true if all datasets could be saved successfully. The first dataset that cannot be exported successfully will abort the export. In this case, any files already written will *not* be deleted!
+
+### exportSegmentationsToDataset
+
+```cpp
+std::unique_ptr < DcmDataset > ImFusion::Dicom::exportSegmentationsToDataset (const std::vector < SharedImageSet * > & labelmapLayers, ErrorRecorder & errors, bool cropToContent = false, Progress * progress = nullptr)
+```
+
+Exports one or multiple segmentation layers as a single DICOM Segmentation object.
+
+All labels present in the labelmaps will be exported. Labels that are missing from the [LabelDataComponent](/cpp-sdk/4.5/api/classes/imfusion-labeldatacomponent) will be assigned some default values. If multiple layers are passed, all layers must have the same [ImageDescriptor](/cpp-sdk/4.5/api/structs/imfusion-imagedescriptor). SharedImageSets with multiple images are currently not supported. cropToContent currently doesn't have an effect.
+
+### exportRTStructToDataset
+
+```cpp
+std::unique_ptr < DcmDataset > ImFusion::Dicom::exportRTStructToDataset (const std::vector < PointCloud * > & pointClouds, ErrorRecorder & errors, Progress * progress = nullptr)
+```
+
+Exports a [PointCloud](/cpp-sdk/4.5/api/classes/imfusion-pointcloud) with a [Dicom::RTStructureDataComponent](/cpp-sdk/4.5/api/classes/imfusion-dicom-rtstructuredatacomponent) as a DICOM RT Structure Set.
+
+To export labelmaps, use the [LabelMapToRTStructure](/cpp-sdk/4.5/api/classes/imfusion-labelmaptortstructure) before.

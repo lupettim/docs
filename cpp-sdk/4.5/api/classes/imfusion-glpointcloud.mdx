@@ -1,0 +1,203 @@
+---
+title: "ImFusion::GlPointCloud"
+sidebarTitle: "GlPointCloud"
+description: "Efficient point cloud renderer."
+---
+
+`#include <ImFusion/GL/GlPointCloud.h>`
+
+## Overview
+
+Efficient point cloud renderer.
+
+## Public Types
+
+- enum **MaterialMode** &#123; **Uniform** = 0 , **Texture** , **Color** , **Label** &#125; — Enumeration to determine rendering order of GlObjects in [GlSliceView](/cpp-sdk/4.5/api/classes/imfusion-glsliceview) and [GlVolumeView](/cpp-sdk/4.5/api/classes/imfusion-glvolumeview).
+
+## Public Member Functions
+
+- [GlPointCloud](#glpointcloud) ([PointCloud](/cpp-sdk/4.5/api/classes/imfusion-pointcloud) \*pointCloud, bool showIn2D=false) — Constructor with a point cloud (that is not owned), and option to enable 2D view visibility.
+- **~GlPointCloud** () override — Destructor.
+- [PointCloud](/cpp-sdk/4.5/api/classes/imfusion-pointcloud) \* **pointCloud** ()
+- const [PointCloud](/cpp-sdk/4.5/api/classes/imfusion-pointcloud) \* **pointCloud** () const
+- void **setPointCloud** ([PointCloud](/cpp-sdk/4.5/api/classes/imfusion-pointcloud) \*pointCloud)
+- void **setShowIn2D** (bool v)
+- bool **showIn2D** () const
+- void **setVisualizeCamera** (bool v) — Specify whether the camera pose should be visualized (makes a difference if the point cloud is dense).
+- bool **visualizeCamera** () const — Returns true if the camera pose should be visualized (makes a difference if the point cloud is dense).
+- void **setMaterialMode** (MaterialMode mode) — Specify the material mode.
+- MaterialMode **materialMode** () const — Get the material mode.
+- void [setColor](#setcolor) (const vec3 &[color](/cpp-sdk/4.5/api/classes/imfusion-glannotation)) override — Specify the uniform color used in Uniform material mode.
+- bool **setColors** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; &colors) — Specify individual colors per point used in Color material mode Returns false if the size of the color vector does not match the number of point cloud points.
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; & **colors** () const — Get individual point colors used in Color material mode.
+- bool **hasColors** () const — Return whether per-point colors have been set.
+- void **setLabel** (int idx, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &text) — Specify label text to show for a point. Setting the text to an empty string clears the label.
+- void **clearLabels** () — Clear all previously set labels.
+- void **setPointSize** (float val) — Specify the point size.
+- float **pointSize** () const — Retrieve the point size.
+- void **setDrawLines** (bool flag) — Specify whether a connected line shall be drawn instead of points.
+- bool **drawLines** () const
+- void **setDrawNormals** (bool flag) — Specify whether the normals should be drawn as lines (if available).
+- bool **drawNormals** () const
+- void **setDrawIds** (bool flag) — Specify whether the point ids should be displayed.
+- bool **drawIds** () const
+- void **setColorWithNormals** (bool flag) — Specify whether the points should be colored according to their normal orientation (if available).
+- bool **colorWithNormals** () const
+- void **enableIndexPicking** (bool v)
+- bool **indexPickingEnabled** () const
+- void [setMatrix](#setmatrix) (const mat4 &m) override — Set the modelview matrix of this object.
+- const mat4 & [matrix](#matrix) () const override — Return the modelview matrix.
+- vec3 [center](#center) () const override — Return the center of the object in local coordinates without considering any matrix.
+- vec3 [extent](#extent) () const override — Return the extent of the object in local coordinates without considering any matrix.
+- vec3 **centerOfMass** (bool withMatrix=false) const
+- bool **updateBuffers** ()
+- void [draw](#draw) (const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &[view](/cpp-sdk/4.5/api/classes/imfusion-glannotation)) override — Draw the object in 3D space.
+- void **draw3D** (const [GL::ViewState](/cpp-sdk/4.5/api/classes/imfusion-gl-viewstate) &state, const [GL::ObjectPicking](/cpp-sdk/4.5/api/classes/imfusion-gl-objectpicking) \*glObjectPicking=nullptr)
+- [Geometry::AlignedBox](/cpp-sdk/4.5/api/classes/imfusion-geometry-alignedbox) [bounds](#bounds) () const override — Get the axis-aligned bounding box of this [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) in world space.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [typeName](#typename) () const override — Return unique identifier for this object class used for serialization.
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Set one or multiple properties.
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Retrieve the properties of this object.
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [Geometry::Plane](/cpp-sdk/4.5/api/classes/imfusion-geometry-plane) &gt; [clipPlane](#clipplane) () const override — Returns the optional clip plane used during 3D rendering.
+- bool [setClipPlane](#setclipplane) ([std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [Geometry::Plane](/cpp-sdk/4.5/api/classes/imfusion-geometry-plane) &gt; value) override — Sets an optional clipping plane for 3D rendering. Any geometry on the back side of the plane, opposite to the normal vector, is clipped.
+
+## Public Attributes
+
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; vec4 &gt; &gt; **p_clipPlaneCVNF** = &#123;"clipPlaneCVNF", std::nullopt, this&#125;
+
+## Constructor & Destructor Documentation
+
+### GlPointCloud
+
+```cpp
+ImFusion::GlPointCloud::GlPointCloud (PointCloud * pointCloud, bool showIn2D = false)
+```
+
+*explicit*
+
+Constructor with a point cloud (that is not owned), and option to enable 2D view visibility.
+
+The rendering in 2D views is disabled by default, since it might yield wrong results based on whether the image matrices are set to be used or not. Therefore it has to be explicitly set, typically when a rendering of a 2D point set on an image is intended.
+
+## Member Function Documentation
+
+### setColor
+
+```cpp
+void ImFusion::GlPointCloud::setColor (const vec3 & color)
+```
+
+*override, virtual*
+
+Specify the uniform color used in Uniform material mode.
+
+### setMatrix
+
+```cpp
+void ImFusion::GlPointCloud::setMatrix (const mat4 & m)
+```
+
+*override, virtual*
+
+Set the modelview matrix of this object.
+
+### matrix
+
+```cpp
+const mat4 & ImFusion::GlPointCloud::matrix () const
+```
+
+*override, virtual*
+
+Return the modelview matrix.
+
+### center
+
+```cpp
+vec3 ImFusion::GlPointCloud::center () const
+```
+
+*override, virtual*
+
+Return the center of the object in local coordinates without considering any matrix.
+
+### extent
+
+```cpp
+vec3 ImFusion::GlPointCloud::extent () const
+```
+
+*override, virtual*
+
+Return the extent of the object in local coordinates without considering any matrix.
+
+### draw
+
+```cpp
+void ImFusion::GlPointCloud::draw (const GlView & view)
+```
+
+*override, virtual*
+
+Draw the object in 3D space.
+
+### bounds
+
+```cpp
+Geometry::AlignedBox ImFusion::GlPointCloud::bounds () const
+```
+
+*override, virtual*
+
+Get the axis-aligned bounding box of this [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) in world space.
+
+Return an empty (default-constructed) AlignedBox object if the [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) does not reside in world space.
+
+### typeName
+
+```cpp
+std::string ImFusion::GlPointCloud::typeName () const
+```
+
+*override, virtual*
+
+Return unique identifier for this object class used for serialization.
+
+### configure
+
+```cpp
+void ImFusion::GlPointCloud::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Set one or multiple properties.
+
+### configuration
+
+```cpp
+void ImFusion::GlPointCloud::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Retrieve the properties of this object.
+
+### clipPlane
+
+```cpp
+std::optional < Geometry::Plane > ImFusion::GlPointCloud::clipPlane () const
+```
+
+*override, virtual*
+
+Returns the optional clip plane used during 3D rendering.
+
+### setClipPlane
+
+```cpp
+bool ImFusion::GlPointCloud::setClipPlane (std::optional < Geometry::Plane > value)
+```
+
+*override, virtual*
+
+Sets an optional clipping plane for 3D rendering. Any geometry on the back side of the plane, opposite to the normal vector, is clipped.

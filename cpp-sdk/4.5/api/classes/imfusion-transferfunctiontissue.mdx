@@ -1,0 +1,122 @@
+---
+title: "ImFusion::TransferFunctionTissue"
+sidebarTitle: "TransferFunctionTissue"
+description: "Describes a single tissue of a transfer function."
+---
+
+`#include <ImFusion/GL/TransferFunctionTissue.h>`
+
+## Overview
+
+Describes a single tissue of a transfer function.
+
+A tissue is described by a unique name and a set of key points.
+
+**See also:** [TransferFunction](/cpp-sdk/4.5/api/classes/imfusion-transferfunction)
+
+## Classes
+
+- struct [KeyPoint](/cpp-sdk/4.5/api/structs/imfusion-transferfunctiontissue-keypoint) — Describes a single key point of a tissue.
+
+## Public Types
+
+- using **ID** = int — Alias for the type uniquely identifying a [KeyPoint](/cpp-sdk/4.5/api/structs/imfusion-transferfunctiontissue-keypoint) within a tissue.
+
+## Public Member Functions
+
+- **TransferFunctionTissue** () — Creates a new empty TF tissue.
+- [TransferFunctionTissue](#transferfunctiontissue-1-2) ([std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [KeyPoint](/cpp-sdk/4.5/api/structs/imfusion-transferfunctiontissue-keypoint) &gt; &&keyPoints) — Creates a new TF tissue with the given key points.
+- [TransferFunctionTissue](#transferfunctiontissue-2-2) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [KeyPoint](/cpp-sdk/4.5/api/structs/imfusion-transferfunctiontissue-keypoint) &gt; &keyPoints) — Creates a new TF tissue with the given key points.
+- bool **operator==** (const TransferFunctionTissue &other) const
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [KeyPoint](/cpp-sdk/4.5/api/structs/imfusion-transferfunctiontissue-keypoint) &gt; & **keyPoints** () — Returns the set of key points defining this tissue. Sorted by their absolute position.
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [KeyPoint](/cpp-sdk/4.5/api/structs/imfusion-transferfunctiontissue-keypoint) &gt; & **keyPoints** () const — Returns the set of key points defining this tissue. Sorted by their absolute position.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [KeyPoint](/cpp-sdk/4.5/api/structs/imfusion-transferfunctiontissue-keypoint) &gt;::iterator **find** (ID keyPoint) — Returns an iterator to the [KeyPoint](/cpp-sdk/4.5/api/structs/imfusion-transferfunctiontissue-keypoint) with the given ID.
+- ID [addKeyPoint](#addkeypoint) (double position, vec4 color, bool sort=true) — Adds a key point to this tissue.
+- void [moveKeyPoint](#movekeypoint) (ID keyPoint, double position) — Moves the key point to a new position.
+- void [removeKeyPoint](#removekeypoint) (ID keyPoint) — Removes the given key point.
+- void [sortKeyPoints](#sortkeypoints) () — Sorts all key points by their absolute position.
+
+## Constructor & Destructor Documentation
+
+### TransferFunctionTissue
+
+```cpp
+ImFusion::TransferFunctionTissue::TransferFunctionTissue (std::vector < KeyPoint > && keyPoints)
+```
+
+*explicit*
+
+Creates a new TF tissue with the given key points.
+
+**Parameters:**
+
+- `keyPoints` — Set of key points defining this tissue.
+
+### TransferFunctionTissue
+
+```cpp
+ImFusion::TransferFunctionTissue::TransferFunctionTissue (const std::vector < KeyPoint > & keyPoints)
+```
+
+*explicit*
+
+Creates a new TF tissue with the given key points.
+
+**Parameters:**
+
+- `keyPoints` — Set of key points defining this tissue.
+
+## Member Function Documentation
+
+### addKeyPoint
+
+```cpp
+ID ImFusion::TransferFunctionTissue::addKeyPoint (double position, vec4 color, bool sort = true)
+```
+
+Adds a key point to this tissue.
+
+**Parameters:**
+
+- `position` — Absolute position of the new key point in TF space.
+- `color` — Color of the new key point.
+- `sort` — Whether to resort the data structure, otherwise you have to trigger sortKeyPoints yourself when done
+
+**Returns:** ID of the newly created key point.
+
+### moveKeyPoint
+
+```cpp
+void ImFusion::TransferFunctionTissue::moveKeyPoint (ID keyPoint, double position)
+```
+
+Moves the key point to a new position.
+
+Please do not change a key point's position member directly and use this method instead, since it ensures the correct sorting of the key points.
+
+**Parameters:**
+
+- `keyPoint` — ID of the key point to move.
+- `position` — New position in TF space.
+
+### removeKeyPoint
+
+```cpp
+void ImFusion::TransferFunctionTissue::removeKeyPoint (ID keyPoint)
+```
+
+Removes the given key point.
+
+**Parameters:**
+
+- `keyPoint` — ID of the key point to remove.
+
+### sortKeyPoints
+
+```cpp
+void ImFusion::TransferFunctionTissue::sortKeyPoints ()
+```
+
+Sorts all key points by their absolute position.
+
+Should be called every time you change a key point's position directly.

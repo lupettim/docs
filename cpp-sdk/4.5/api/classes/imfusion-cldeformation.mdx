@@ -1,0 +1,17 @@
+---
+title: "ImFusion::ClDeformation"
+sidebarTitle: "ClDeformation"
+---
+
+## Public Member Functions
+
+- virtual [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **argumentDefinitions** () const =0
+- virtual [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **displacementCode** () const =0
+- virtual int **addArguments** (ClKernel &kernel, int pos, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; Eigen::VectorXd &gt; &paramsBatch, int firstIndex)=0
+- virtual [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [Deformation](/cpp-sdk/4.5/api/classes/imfusion-deformation) &gt; **getDeformation** ()=0
+- virtual vec3 **displacePoint** (const vec3 &pointWorld)=0
+- virtual void **setParameters** (const double \*params)=0
+- virtual void **getParameters** (double \*params) const =0
+- virtual [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **gradientCode** () const =0
+- virtual [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **functionsCode** () const =0
+- virtual [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [FeatureMapsRegistrationAlgorithm::OptimizationParameter](/cpp-sdk/4.5/api/structs/imfusion-featuremapsregistrationalgorithm-optimizationparameter) &gt; **parameters** () const =0

@@ -1,0 +1,150 @@
+---
+title: "ImFusion::GUI::ViewOverlay"
+sidebarTitle: "ViewOverlay"
+description: "Wraps a GlOverlay in order to display it at specific positions inside a View and handle input events."
+---
+
+`#include <ImFusion/GUI/ViewOverlay.h>`
+
+## Overview
+
+Wraps a [GlOverlay](/cpp-sdk/4.5/api/classes/imfusion-gloverlay) in order to display it at specific positions inside a [View](/cpp-sdk/4.5/api/classes/imfusion-gui-view) and handle input events.
+
+In contrast to a [ViewObject](/cpp-sdk/4.5/api/classes/imfusion-gui-viewobject) a [ViewOverlay](/cpp-sdk/4.5/api/classes/imfusion-gui-viewoverlay) resides in viewport space and is always rendered on top of the scene. The viewport() is automatically determined by the parent [View](/cpp-sdk/4.5/api/classes/imfusion-gui-view)'s ViewOverlayLayouter taking all registered overlays into account so that they don't overlap. The layouting is performed based on sizeHint() and minimalSizeHint() given by the underlying [GlOverlay](/cpp-sdk/4.5/api/classes/imfusion-gloverlay) and the configured margin().
+
+In order to react to user input events you need to override the [handleInputEvent()](#handleinputevent) member function.
+
+## Public Types
+
+- enum class [Anchor](#anchor) &#123; BottomLeft = 0 , BottomRight = 1 , TopLeft = 2 , TopRight = 3 , Top = 4 , Bottom = 5 , Left = 6 , Right = 7 , Fill = 8 &#125; — [Anchor](#anchor) point of the overlay in the parent [View](/cpp-sdk/4.5/api/classes/imfusion-gui-view).
+- enum class LayoutDirection &#123; **Horizontal** = 0 , **Vertical** = 1 &#125; — Layout direction when stacking multiple ViewOverlays at the same anchor.
+
+## Public Member Functions
+
+- [ViewOverlay](#viewoverlay) ([std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [GlOverlay](/cpp-sdk/4.5/api/classes/imfusion-gloverlay) &gt; glOverlay) — Instantiate a new [ViewOverlay](/cpp-sdk/4.5/api/classes/imfusion-gui-viewoverlay) taking ownership of the underlying [GlOverlay](/cpp-sdk/4.5/api/classes/imfusion-gloverlay) which must not be null.
+- virtual void [render](#render) () — Calls [GlOverlay::render()](/cpp-sdk/4.5/api/classes/imfusion-gloverlay) on the underlying glOverlay() using the current viewport() shrunk by margin().
+- virtual [EventResult](/cpp-sdk/4.5/api/structs/imfusion-gui-eventresult) [handleInputEvent](#handleinputevent) (const [InputEvent](/cpp-sdk/4.5/api/classes/imfusion-gui-inputevent) &event) — Handle a user event received from the parent [View](/cpp-sdk/4.5/api/classes/imfusion-gui-view).
+- const [GlOverlay](/cpp-sdk/4.5/api/classes/imfusion-gloverlay) & **glOverlay** () const — Get a pointer to the underlying overlay.
+- [GlOverlay](/cpp-sdk/4.5/api/classes/imfusion-gloverlay) & **glOverlay** () — Get a pointer to the underlying overlay.
+- const [GL::Viewport](/cpp-sdk/4.5/api/structs/imfusion-gl-viewport) & **viewport** () — Returns the area where this overlay is rendered.
+- bool **isVisible** () const — Returns the visibility of this overlay.
+- virtual void [setVisible](#setvisible) (bool value) — Sets the visibility of this overlay.
+- const vec2i & **margin** () const — Returns the margin in pixels between the border of the drawing area and the border of the overlay content.
+- void **setMargin** (const vec2i &value) — Sets the margin in pixels between the border of the drawing area and the border of the overlay content.
+- vec2i **minimalSizeHint** () const — Returns the underlying [GlOverlay](/cpp-sdk/4.5/api/classes/imfusion-gloverlay)'s minimal size hint plus the configured margin().
+- vec2i **sizeHint** () const — Returns the underlying [GlOverlay](/cpp-sdk/4.5/api/classes/imfusion-gloverlay)'s size hint plus the configured margin().
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+## Public Attributes
+
+- Signal **signalUpdateRequested** — Emitted in order to notify the parent [Display](/cpp-sdk/4.5/api/classes/imfusion-gui-display) that it's contents have changed and need to be re-rendered.
+- Signal **signalLayoutNeeded** — Emitted whenever the size hints or margin have changed to notify the parent [View](/cpp-sdk/4.5/api/classes/imfusion-gui-view) that it needs to perform overlay layouting.
+- Signal&lt; const [ViewOverlay](#viewoverlay) \* &gt; **signalDeleted** — Emitted during destruction. Pointer is for identification purposes, object is most likely no longer usable.
+
+## Protected Attributes
+
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [GlOverlay](/cpp-sdk/4.5/api/classes/imfusion-gloverlay) &gt; **m_glOverlay**
+- [GL::Viewport](/cpp-sdk/4.5/api/structs/imfusion-gl-viewport) **m_viewport** = &#123;&#125;
+- vec2i **m_margin** = vec2i::Zero()
+- bool **m_isVisible** = true
+
+## Member Enumeration Documentation
+
+### Anchor
+
+```cpp
+enum class ImFusion::GUI::ViewOverlay::Anchor
+```
+
+*strong*
+
+[Anchor](#anchor) point of the overlay in the parent [View](/cpp-sdk/4.5/api/classes/imfusion-gui-view).
+
+**Enumerator:**
+
+- `BottomLeft` — Bottom left corner.
+- `BottomRight` — Bottom right corner.
+- `TopLeft` — Top left corner.
+- `TopRight` — Top right corner.
+- `Top` — Top center.
+- `Bottom` — Bottom center.
+- `Left` — Left center.
+- `Right` — Right center.
+- `Fill` — Always fills the complete view; may overlap with any number of other overlays.
+
+## Constructor & Destructor Documentation
+
+### ViewOverlay
+
+```cpp
+ImFusion::GUI::ViewOverlay::ViewOverlay (std::unique_ptr < GlOverlay > glOverlay)
+```
+
+Instantiate a new [ViewOverlay](/cpp-sdk/4.5/api/classes/imfusion-gui-viewoverlay) taking ownership of the underlying [GlOverlay](/cpp-sdk/4.5/api/classes/imfusion-gloverlay) which must not be null.
+
+**Exceptions:**
+
+- `std::runtime_error` — if *glOverlay* is nullptr
+
+## Member Function Documentation
+
+### render
+
+```cpp
+virtual void ImFusion::GUI::ViewOverlay::render ()
+```
+
+*virtual*
+
+Calls [GlOverlay::render()](/cpp-sdk/4.5/api/classes/imfusion-gloverlay) on the underlying glOverlay() using the current viewport() shrunk by margin().
+
+### handleInputEvent
+
+```cpp
+virtual EventResult ImFusion::GUI::ViewOverlay::handleInputEvent (const InputEvent & event)
+```
+
+*virtual*
+
+Handle a user event received from the parent [View](/cpp-sdk/4.5/api/classes/imfusion-gui-view).
+
+The default implementation is empty.
+
+### setVisible
+
+```cpp
+virtual void ImFusion::GUI::ViewOverlay::setVisible (bool value)
+```
+
+*virtual*
+
+Sets the visibility of this overlay.
+
+### configure
+
+```cpp
+void ImFusion::GUI::ViewOverlay::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### configuration
+
+```cpp
+void ImFusion::GUI::ViewOverlay::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality

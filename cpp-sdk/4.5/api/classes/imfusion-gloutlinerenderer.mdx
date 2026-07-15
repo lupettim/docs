@@ -1,0 +1,101 @@
+---
+title: "ImFusion::GlOutlineRenderer"
+sidebarTitle: "GlOutlineRenderer"
+description: "Light-weight wrapper to render a colored outline around any rendered GlObject ."
+---
+
+`#include <ImFusion/GL/GlOutlineRenderer.h>`
+
+## Overview
+
+Light-weight wrapper to render a colored outline around any rendered [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject).
+
+Instantiate this class with any [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) you want to render the outline of and then add this instance instead of the wrapped [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) to the view. Rendering the wrapped object and rendering the contour is performed independently, thus you can setup any combination of showing object and outline.
+
+**Note:** [GlOutlineRenderer](/cpp-sdk/4.5/api/classes/imfusion-gloutlinerenderer) will only work with GlObjects that render directly to to framebuffer. It will not work if the [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) uses OIT to render semi-transparent fragments.
+
+## Public Types
+
+- enum class [RenderMode](#rendermode) &#123; ObjectOnly , OutlineOnly , Both &#125; — Enumeration for specifying what parts to show.
+
+## Public Member Functions
+
+- [GlOutlineRenderer](#gloutlinerenderer) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [GlMesh](/cpp-sdk/4.5/api/classes/imfusion-glmesh) \* &gt; &meshes) — Constructor for multiple GlMeshes.
+- **GlOutlineRenderer** (GlObject &object)
+- vec4 **contourColor** () const — Returns the color of the contour.
+- void **setContourColor** (vec4 value) — Sets the color of the contour.
+- int **contourWidthPx** () const — Returns the width of the contour in pixels.
+- void **setContourWidthPx** (int value) — Sets the width of the contour in pixels.
+- [RenderMode](#rendermode) **renderMode** () const — Returns the what parts to render.
+- void **setRenderMode** ([RenderMode](#rendermode) value) — Sets the what parts to render.
+- bool **isAlwaysOnTop** () const — Returns the flag whether the [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) shall always be renderd on top.
+- void **setAlwaysOnTop** (bool value) — Sets the flag whether the [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) shall always be renderd on top.
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; GlObject \* &gt; & **objects** () const — Getter for m_objects.
+- void **setObjects** ([std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; GlObject \* &gt; &obj) — Setter for m_objecsts.
+- void [draw](#draw) (const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &view) override — Draw the object in 3D space.
+- [Geometry::AlignedBox](/cpp-sdk/4.5/api/classes/imfusion-geometry-alignedbox) [bounds](#bounds) () const override — Get the axis-aligned bounding box of this [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) in world space.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [typeName](#typename) () const override — Return unique identifier for this object class used for serialization.
+
+## Member Enumeration Documentation
+
+### RenderMode
+
+```cpp
+enum class ImFusion::GlOutlineRenderer::RenderMode
+```
+
+*strong*
+
+Enumeration for specifying what parts to show.
+
+**Enumerator:**
+
+- `ObjectOnly` — Only render object, not the outline.
+- `OutlineOnly` — Only render outline, not the object.
+- `Both` — Render both object and outline.
+
+## Constructor & Destructor Documentation
+
+### GlOutlineRenderer
+
+```cpp
+ImFusion::GlOutlineRenderer::GlOutlineRenderer (const std::vector < GlMesh * > & meshes)
+```
+
+Constructor for multiple GlMeshes.
+
+If the [GlOutlineRenderer](/cpp-sdk/4.5/api/classes/imfusion-gloutlinerenderer) is created for multiple GlMeshes, the outline for each mesh will be computed from the parts which pass the depth test only. The order is considered in the following way. Assuming that two meshes are passed upon construction, then the outline of meshes[1] will override mesh[0].
+
+## Member Function Documentation
+
+### draw
+
+```cpp
+void ImFusion::GlOutlineRenderer::draw (const GlView & view)
+```
+
+*override, virtual*
+
+Draw the object in 3D space.
+
+### bounds
+
+```cpp
+Geometry::AlignedBox ImFusion::GlOutlineRenderer::bounds () const
+```
+
+*override, virtual*
+
+Get the axis-aligned bounding box of this [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) in world space.
+
+Return an empty (default-constructed) AlignedBox object if the [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) does not reside in world space.
+
+### typeName
+
+```cpp
+std::string ImFusion::GlOutlineRenderer::typeName () const
+```
+
+*override, virtual*
+
+Return unique identifier for this object class used for serialization.

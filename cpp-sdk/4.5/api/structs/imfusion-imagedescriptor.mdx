@@ -1,0 +1,132 @@
+---
+title: "ImFusion::ImageDescriptor"
+sidebarTitle: "ImageDescriptor"
+description: "Struct describing the essential properties of an image."
+---
+
+`#include <ImFusion/Base/ImageDescriptor.h>`
+
+## Overview
+
+Struct describing the essential properties of an image.
+
+The ImFusion framework distinguishes two main image pixel value domains, which are indicated by the *shift* and *scale* parameters of this image descriptor.
+
+- Original pixel value domain: Pixel values are the same as in their original source (e.g. when loaded from a file). Same as the storage pixel value domain if the image's scale is 1 and the shift is 0
+- Storage pixel value domain: Pixel values as they are stored in a [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage). The user may decide to apply such a rescaling in order to better use the available limits of the underlying type.
+
+The following conversion rules apply:
+
+```cpp
+OV = (SV / scale) - shift
+SV = (OV + shift) * scale
+```
+ fragment
+
+**See also:** [Pixel Value Domains](/cpp-sdk/4.5/api/guides/pixel-value-domains), [Using Image Data](/cpp-sdk/4.5/api/guides/image-data-tutorial)
+
+## Public Types
+
+- enum Comparison &#123; **Everything** = 0 , **IgnorePixelType** = 1 &lt;&lt; 0 , **IgnoreWidth** = 1 &lt;&lt; 1 , **IgnoreHeight** = 1 &lt;&lt; 2 , **IgnoreSlices** = 1 &lt;&lt; 3 , **IgnoreDimensions** = IgnoreWidth | IgnoreHeight | IgnoreSlices , **IgnoreChannels** = 1 &lt;&lt; 4 , **IgnoreSpacing** = 1 &lt;&lt; 5 , **IgnoreShiftScale** = 1 &lt;&lt; 6 &#125; — Bitflag enumeration to be used with [isApprox()](#isapprox) to select which aspects of the descriptor should be compared.
+
+## Public Member Functions
+
+- **ImageDescriptor** (PixelType type, const vec3i &dimensions, int channels=1) noexcept
+- **ImageDescriptor** (PixelType type, int width, int height, int slices=1, int channels=1) noexcept
+- void [setDimensions](#setdimensions) (const vec3i &dimensions, int channels=0) noexcept — Convenience function for specifying the image dimensions and channels at once.
+- void **setSpacing** (const vec3 &spacing, bool isMetric) noexcept — Convenience function for specifying spacing and metric flag at the same time.
+- size_t **index** (int x, int y, int z=0, int c=0) const noexcept — Returns a linear memory index for a pixel or voxel.
+- bool **hasIndex** (int x, int y, int z=0, int c=0) const noexcept — Returns true if the pixel at (x,y,z) exists, false otherwise.
+- vec4i **coord** (size_t index) const noexcept — Returns the pixel/voxel coordinate (x,y,z,c) for a given index.
+- size_t **size** () const noexcept — Returns the size (number of elements) of the image.
+- int **dimension** () const noexcept — Returns the spatial dimension of the image, either 1, 2, or 3.
+- vec3i **dimensions** () const noexcept — Returns the dimensions of the image in pixels as a vector.
+- vec3 **extent** () const noexcept — Returns the physical size of the image in millimeters as a vector.
+- int **typeSize** () const noexcept — Return the nominal size in bytes of the current component type, zero if unknown.
+- size_t **byteSize** () const noexcept — Returns the size of the image in bytes.
+- bool **isValid** () const noexcept — Return if the descriptor is valid (a size of one is allowed).
+- bool [isApprox](#isapprox) (const ImageDescriptor &other, [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; Comparison &gt; partsToCompare=Comparison::Everything) const — Convenience function to perform partial comparison of two image descriptors.
+- bool [isPixelBufferCompatible](#ispixelbuffercompatible) (const ImageDescriptor &other) const noexcept — Convenience function to check whether the pixel buffers of two descriptors are compatible.
+- double [storageToOriginal](#storagetooriginal) (double value) const noexcept — Applies the image's shift and scale in order to convert *value* from storage pixel value domain to original pixel value domain.
+- double [originalToStorage](#originaltostorage) (double value) const noexcept — Applies the image's shift and scale in order to convert *value* from original pixel value domain to storage pixel value domain.
+- vec3 **pixelToImage** (const vec3 &pixel) const noexcept — Convert a 3D pixel/voxel position to image coordinates.
+- vec3 **imageToPixel** (const vec3 &world) const noexcept — Convert 3D image coordinates to pixel/voxel position.
+- mat4 **imageToPixelMatrix** () const noexcept — Returns a 4x4 matrix to transform from image space to pixel space.
+- mat4 **pixelToImageMatrix** () const noexcept — Returns a 4x4 matrix to transform from pixel space to image space.
+- mat4 **imageToTextureMatrix** () const noexcept — Returns a 4x4 matrix to transform from image space to texture space.
+- mat4 **textureToImageMatrix** () const noexcept — Returns a 4x4 matrix to transform from texture space to image space.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **toString** () const — format the descriptor as a string
+- void **configure** (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) — Deserialize an image descriptor from [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void **configuration** ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const — Serialize an image descriptor to [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+## Public Attributes
+
+- PixelType **pixelType** = PixelType::UByte — The pixel/voxel data type.
+- int **width** = 0 — Width of the image in pixels.
+- int **height** = 0 — Height of the image in pixels.
+- int **slices** = 1 — Depth of the image in pixels, or the number of 2D image slices.
+- int **channels** = 1 — Number of channels per pixel/voxel.
+- vec3 **spacing** = &#123;1.0, 1.0, 1.0&#125; — Physical pixel/voxel spacing in mm.
+- bool **isMetric** = false — True if data is metric, you should not rely on any measuring tools if this is false.
+- double **shift** = 0.0 — Optional intensity shift wrt. the original image values, cf. [Pixel Value Domains](/cpp-sdk/4.5/api/guides/pixel-value-domains).
+- double **scale** = 1.0 — Optional scaling wrt. the original image values, after shift, cf. [Pixel Value Domains](/cpp-sdk/4.5/api/guides/pixel-value-domains).
+
+## Member Function Documentation
+
+### setDimensions
+
+```cpp
+void ImFusion::ImageDescriptor::setDimensions (const vec3i & dimensions, int channels = 0)
+```
+
+*noexcept*
+
+Convenience function for specifying the image dimensions and channels at once.
+
+If *channels* is 0, the number of channels will remain unchanged.
+
+### isApprox
+
+```cpp
+bool ImFusion::ImageDescriptor::isApprox (const ImageDescriptor & other, Flags < Comparison > partsToCompare = Comparison::Everything) const
+```
+
+Convenience function to perform partial comparison of two image descriptors.
+
+In contrast to operator== this function will use approximate comparison of floating point members. Use the bitflag *partsToCompare* to select which aspects of the [ImageDescriptor](/cpp-sdk/4.5/api/structs/imfusion-imagedescriptor) should be considered.
+
+### isPixelBufferCompatible
+
+```cpp
+bool ImFusion::ImageDescriptor::isPixelBufferCompatible (const ImageDescriptor & other) const
+```
+
+*noexcept*
+
+Convenience function to check whether the pixel buffers of two descriptors are compatible.
+
+This is the case if their type, dimensions, and number of channels are identical. Has the same effect as [isApprox](#isapprox)(other, &#123;ImageDescriptor::IgnoreSpacing, ImageDescriptor::IgnoreShiftScale&#125;).
+
+### storageToOriginal
+
+```cpp
+double ImFusion::ImageDescriptor::storageToOriginal (double value) const
+```
+
+*inline, noexcept*
+
+Applies the image's shift and scale in order to convert *value* from storage pixel value domain to original pixel value domain.
+
+**See also:** [Pixel Value Domains](/cpp-sdk/4.5/api/guides/pixel-value-domains)
+
+### originalToStorage
+
+```cpp
+double ImFusion::ImageDescriptor::originalToStorage (double value) const
+```
+
+*inline, noexcept*
+
+Applies the image's shift and scale in order to convert *value* from original pixel value domain to storage pixel value domain.
+
+**See also:** [Pixel Value Domains](/cpp-sdk/4.5/api/guides/pixel-value-domains)

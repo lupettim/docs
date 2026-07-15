@@ -1,0 +1,56 @@
+---
+title: "ImFusion::OptionalParamControl"
+sidebarTitle: "OptionalParamControl"
+description: "Composite control that wraps an existing ParamControl and adds a checkbox to the left of it."
+---
+
+`#include <ImFusion/GUI/PropertiesWidgetParamControls.h>`
+
+## Overview
+
+Composite control that wraps an existing [ParamControl](/cpp-sdk/4.5/api/classes/imfusion-paramcontrol) and adds a checkbox to the left of it.
+
+The checkbox controls the enabled-state of the sub control and represents the [std::optional::has_value()](http://en.cppreference.com/w/cpp/utility/optional/operator_bool.html) state
+
+## Public Member Functions
+
+- **OptionalParamControl** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name, [ParamControl](/cpp-sdk/4.5/api/classes/imfusion-paramcontrol) \*nestedControl, Properties::ParamType type)
+- void [updateValue](#updatevalue) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &value, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; Properties::Attribute &gt; &attributes) override — Updates the current value and adjusts the attributes.
+- void [retrieveValue](#retrievevalue) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Retrieves the value from the widget and writes it into the properties.
+- QWidget \* [widget](#widget) () const override — Returns the widget for this control.
+- QCheckBox \* **checkBox** () const
+- [ParamControl](/cpp-sdk/4.5/api/classes/imfusion-paramcontrol) \* **nestedControl** () const
+
+## Member Function Documentation
+
+### updateValue
+
+```cpp
+void ImFusion::OptionalParamControl::updateValue (const std::string & value, const std::vector < Properties::Attribute > & attributes)
+```
+
+*override, virtual*
+
+Updates the current value and adjusts the attributes.
+
+### retrieveValue
+
+```cpp
+void ImFusion::OptionalParamControl::retrieveValue (Properties * p) const
+```
+
+*override, virtual*
+
+Retrieves the value from the widget and writes it into the properties.
+
+### widget
+
+```cpp
+QWidget * ImFusion::OptionalParamControl::widget () const
+```
+
+*override, virtual*
+
+Returns the widget for this control.
+
+The [ParamControl](/cpp-sdk/4.5/api/classes/imfusion-paramcontrol) does not own this widget, e.g. it must be re-parented to some other QWidget or deleted manually.

@@ -1,0 +1,64 @@
+---
+title: "ImFusion::OptimizerDiRect"
+sidebarTitle: "OptimizerDiRect"
+description: "Global optimizer based on Dividing Rectangles algorithm."
+---
+
+`#include <ImFusion/Base/OptimizerDiRect.h>`
+
+## Overview
+
+Global optimizer based on Dividing Rectangles algorithm.
+
+See for instance "Modifications of the DiRect algorithm", Jorg M. Gablonsky.
+
+## Public Member Functions
+
+- **OptimizerDiRect** (int n, int [type](/cpp-sdk/4.5/api/classes/imfusion-optimizer)=0, [CostFunction](/cpp-sdk/4.5/api/classes/imfusion-costfunction) \*cf=nullptr, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; &paramNames=&#123;&#125;) — Constructor with dimension and optimization type For now, type has no influence.
+- **~OptimizerDiRect** () override — Destructor.
+- void [abort](#abort) () override — [Request](/cpp-sdk/4.5/api/classes/imfusion-request) to abort the optimization.
+
+## Implements the Configurable interface
+
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+## Member Function Documentation
+
+### abort
+
+```cpp
+void ImFusion::OptimizerDiRect::abort ()
+```
+
+*override, virtual*
+
+[Request](/cpp-sdk/4.5/api/classes/imfusion-request) to abort the optimization.
+
+### configure
+
+```cpp
+void ImFusion::OptimizerDiRect::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### configuration
+
+```cpp
+void ImFusion::OptimizerDiRect::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality

@@ -1,0 +1,66 @@
+---
+title: "ImFusion::AnatomyAlgorithm"
+sidebarTitle: "AnatomyAlgorithm"
+description: "Edits the list of anatomies of an image ( AnatomyDataComponent )."
+---
+
+`#include <ImFusion/Base/AnatomyAlgorithm.h>`
+
+## Overview
+
+Edits the list of anatomies of an image ([AnatomyDataComponent](/cpp-sdk/4.5/api/classes/imfusion-anatomydatacomponent)).
+
+## Public Member Functions
+
+- **AnatomyAlgorithm** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*image)
+- void [compute](#compute) () override — Execute the algorithm.
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+- [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* **image** () const
+- void **addAnatomy** ([Anatomy](/cpp-sdk/4.5/api/classes/imfusion-anatomy) anatomy)
+- void **removeAnatomy** ([Anatomy](/cpp-sdk/4.5/api/classes/imfusion-anatomy) anatomy)
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; int64_t &gt; & **anatomies** () const
+
+## Static Public Member Functions
+
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=0)
+
+## Member Function Documentation
+
+### compute
+
+```cpp
+void ImFusion::AnatomyAlgorithm::compute ()
+```
+
+*override, virtual*
+
+Execute the algorithm.
+
+### configure
+
+```cpp
+void ImFusion::AnatomyAlgorithm::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### configuration
+
+```cpp
+void ImFusion::AnatomyAlgorithm::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality

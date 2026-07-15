@@ -1,0 +1,166 @@
+---
+title: "ImFusion::PointsOnImageManipulator"
+sidebarTitle: "PointsOnImageManipulator"
+description: "Class that handles creation and manipulation of points on a volume or image."
+---
+
+`#include <ImFusion/GUI/PointsOnImageManipulator.h>`
+
+## Overview
+
+Class that handles creation and manipulation of points on a volume or image.
+
+It connects to the events emitted by PointsOnVolume and automatically update the displayed points It can also be used inside controllers to show/hide points on sharedImageSets depending on image focus
+
+## Public Member Functions
+
+- [PointsOnImageManipulator](#pointsonimagemanipulator) ([PointsOnImage](/cpp-sdk/4.5/api/classes/imfusion-pointsonimage) &[pointHandler](#pointhandler), bool ignoreMatrix=false) — If ignoreMatrix is set to true, it changes the behavior of the class so that it shows points on the [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset).
+- void [init](#init) ([DisplayWidgetMulti](/cpp-sdk/4.5/api/classes/imfusion-displaywidgetmulti) \*disp) override
+- bool **ignoreTransformationMatrix** () const
+- [PointsOnData](/cpp-sdk/4.5/api/classes/imfusion-pointsondata) & [pointHandler](#pointhandler) () const override — Gets the underlying PointsOnVolume.
+- void [setVisible](#setvisible) (bool visible) override — Shows or hides all the points.
+- void [showVisualGuideInViews](#showvisualguideinviews) ([InteractiveObject](/cpp-sdk/4.5/api/classes/imfusion-interactiveobject) &visualGuideIObj, [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &visualGuideImg, [TransferFunction](/cpp-sdk/4.5/api/classes/imfusion-transferfunction) \*tf=nullptr) override — Displays visual guide in views [GlSliceView](/cpp-sdk/4.5/api/classes/imfusion-glsliceview) can properly render the [InteractiveObject](/cpp-sdk/4.5/api/classes/imfusion-interactiveobject), while other views require the [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) with transfer function.
+
+## Protected Member Functions
+
+- void [onCreatePointInteraction](#oncreatepointinteraction) (const vec3 &point) override — This function is called when the user creates a point. The implementation should update of the underlying [PointsOnData](/cpp-sdk/4.5/api/classes/imfusion-pointsondata) structure.
+- void [onMovePointInteraction](#onmovepointinteraction) ([Manipulator](/cpp-sdk/4.5/api/classes/imfusion-manipulator) \*src) override — This function is called when the user moves a point. The implementation should update of the underlying [PointsOnData](/cpp-sdk/4.5/api/classes/imfusion-pointsondata) structure.
+- void [onPointsAdded](#onpointsadded) (int first, int last) override — These methods are called when the underlying [PointsOnImage](/cpp-sdk/4.5/api/classes/imfusion-pointsonimage) structure changes.
+- void [onPointsRemoved](#onpointsremoved) (int first, int last) override
+- void [onPointsChanged](#onpointschanged) (int first, int last) override
+- void [onPointsRenamed](#onpointsrenamed) (int first, int last) override
+- void [updatePointsVisibility](#updatepointsvisibility) () — This function is used in case ignoreMatrix was set to true.
+
+## Protected Attributes
+
+- [PointsOnImage](/cpp-sdk/4.5/api/classes/imfusion-pointsonimage) & **m_pointHandler**
+- bool **m_visible** = true
+- bool **m_ignoreMatrix** = false
+
+## Constructor & Destructor Documentation
+
+### PointsOnImageManipulator
+
+```cpp
+ImFusion::PointsOnImageManipulator::PointsOnImageManipulator (PointsOnImage & pointHandler, bool ignoreMatrix = false)
+```
+
+*explicit*
+
+If ignoreMatrix is set to true, it changes the behavior of the class so that it shows points on the [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset).
+
+by creating points interactive objects, which gets updated if the selected shown image is changed Preferably used inside a controller.
+
+## Member Function Documentation
+
+### init
+
+```cpp
+void ImFusion::PointsOnImageManipulator::init (DisplayWidgetMulti * disp)
+```
+
+*override, virtual*
+
+### pointHandler
+
+```cpp
+PointsOnData & ImFusion::PointsOnImageManipulator::pointHandler () const
+```
+
+*override, virtual*
+
+Gets the underlying PointsOnVolume.
+
+### setVisible
+
+```cpp
+void ImFusion::PointsOnImageManipulator::setVisible (bool visible)
+```
+
+*override, virtual*
+
+Shows or hides all the points.
+
+If ignoreTransformationMatrix is set to true, this function controls the visibility of the points on the current image within the [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset).
+
+### showVisualGuideInViews
+
+```cpp
+void ImFusion::PointsOnImageManipulator::showVisualGuideInViews (InteractiveObject & visualGuideIObj, SharedImageSet & visualGuideImg, TransferFunction * tf = nullptr)
+```
+
+*override, virtual*
+
+Displays visual guide in views [GlSliceView](/cpp-sdk/4.5/api/classes/imfusion-glsliceview) can properly render the [InteractiveObject](/cpp-sdk/4.5/api/classes/imfusion-interactiveobject), while other views require the [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) with transfer function.
+
+**Parameters:**
+
+- `visualGuideIObj` — The visual guide interactive object
+- `visualGuideImg` — The visual guide image
+- `tf` — The transfer function (optional)
+
+### onCreatePointInteraction
+
+```cpp
+void ImFusion::PointsOnImageManipulator::onCreatePointInteraction (const vec3 & point)
+```
+
+*override, protected, virtual*
+
+This function is called when the user creates a point. The implementation should update of the underlying [PointsOnData](/cpp-sdk/4.5/api/classes/imfusion-pointsondata) structure.
+
+### onMovePointInteraction
+
+```cpp
+void ImFusion::PointsOnImageManipulator::onMovePointInteraction (Manipulator * src)
+```
+
+*override, protected, virtual*
+
+This function is called when the user moves a point. The implementation should update of the underlying [PointsOnData](/cpp-sdk/4.5/api/classes/imfusion-pointsondata) structure.
+
+### onPointsAdded
+
+```cpp
+void ImFusion::PointsOnImageManipulator::onPointsAdded (int first, int last)
+```
+
+*override, protected, virtual*
+
+These methods are called when the underlying [PointsOnImage](/cpp-sdk/4.5/api/classes/imfusion-pointsonimage) structure changes.
+
+### onPointsRemoved
+
+```cpp
+void ImFusion::PointsOnImageManipulator::onPointsRemoved (int first, int last)
+```
+
+*override, protected, virtual*
+
+### onPointsChanged
+
+```cpp
+void ImFusion::PointsOnImageManipulator::onPointsChanged (int first, int last)
+```
+
+*override, protected, virtual*
+
+### onPointsRenamed
+
+```cpp
+void ImFusion::PointsOnImageManipulator::onPointsRenamed (int first, int last)
+```
+
+*override, protected, virtual*
+
+### updatePointsVisibility
+
+```cpp
+void ImFusion::PointsOnImageManipulator::updatePointsVisibility ()
+```
+
+*protected*
+
+This function is used in case ignoreMatrix was set to true.
+
+It hides points of all images except the one selected in [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset)

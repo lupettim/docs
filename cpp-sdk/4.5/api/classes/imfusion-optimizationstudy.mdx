@@ -1,0 +1,81 @@
+---
+title: "ImFusion::OptimizationStudy"
+sidebarTitle: "OptimizationStudy"
+description: "Holds optimization study results and offers methods for analyzing results."
+---
+
+`#include <ImFusion/Base/OptimizationStudy.h>`
+
+## Overview
+
+Holds optimization study results and offers methods for analyzing results.
+
+## Classes
+
+- struct [Record](/cpp-sdk/4.5/api/structs/imfusion-optimizationstudy-record) — Structure for a single optimization study record.
+
+## Public Member Functions
+
+- void **add** (const OptimizationStudy \*s) — Add multiple results.
+- void **add** (const [Record](/cpp-sdk/4.5/api/structs/imfusion-optimizationstudy-record) &r) — Add results for one optimization.
+- void [add](#add) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; &pInit, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; &pOpt, int eval, double time, double costInit, double costOpt, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; &errorInit, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; &errorOpt) — Add results for one optimization run to study.
+- void **add** (int dim, const double \*pInit, const double \*pOpt, int eval, double time, double costInit, double costOpt, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; &errorInit, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; &errorOpt) — Alternative way of adding study results with parameter pointers.
+- void **addError** (int run, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; &error) — Retrospectively add error values.
+- void **clear** () — Clear study.
+- int **size** () const — Return size (number of runs) in the study.
+- int **bestRun** (bool minimized, double \*valOut=0) const — Return the run index with the best cost function value.
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Record](/cpp-sdk/4.5/api/structs/imfusion-optimizationstudy-record) &gt; & **data** () const — Access the entire study data.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; [plotData](#plotdata) (int which) const — Return a single parameter for all study samples.
+- void **save** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &filename) const — Save the study to a text file.
+- int **computeInliers** (double parRangeThreshold, double &rangeOut, double &stdDevOut, double &errorOut, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; int &gt; \*sortingOut=0) const — Compute count of results in converged cluster and their average parameter range.
+- void **parRange** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; int &gt; &sorting, int first, double &rangeOut, double &stdDevOut, double &errorOut) const — Return final parameter range of a subset of the results.
+- double **evaluationsPerSecond** () const — Return the number of cost function evaluations per second over all runs.
+- void **setAllParameters** (int n, const double \*x) — If a selection is used, the [Optimizer](/cpp-sdk/4.5/api/classes/imfusion-optimizer) class sets the complete set of parameters here.
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; & **allParameters** () const — Return vector of all parameters if available.
+- void [setCustomDisplacements](#setcustomdisplacements) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; &gt; &disp) — Allows to set custom displacements to use by the [Optimizer](/cpp-sdk/4.5/api/classes/imfusion-optimizer) class (needs to be of selection dimension, not full parameter dimension).
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; &gt; & **customDisplacements** () const — Return the custom displacement vectors.
+- void **setSeed** (unsigned int val) — Set a custom seed for the pseudo-random number generator.
+- unsigned int **seed** () const — Return the pseudo-random number seed.
+
+## Member Function Documentation
+
+### add
+
+```cpp
+void ImFusion::OptimizationStudy::add (const std::vector < double > & pInit, const std::vector < double > & pOpt, int eval, double time, double costInit, double costOpt, const std::vector < double > & errorInit, const std::vector < double > & errorOpt)
+```
+
+Add results for one optimization run to study.
+
+**Parameters:**
+
+- `pInit` — start parameters
+- `pOpt` — optimized parameters
+- `eval` — number of optimizer evaluations
+- `time` — execution time of the optimization
+- `costInit` — initial cost function value
+- `costOpt` — cost function value at optimum
+- `errorInit` — initial vector of error measures
+- `errorOpt` — vector of error measures at optimum
+
+### plotData
+
+```cpp
+std::vector < double > ImFusion::OptimizationStudy::plotData (int which) const
+```
+
+Return a single parameter for all study samples.
+
+The numbering of parameters corresponds to the [OptimizationDialog](/cpp-sdk/4.5/api/classes/imfusion-optimizationdialog) study plot comboboxes.
+
+### setCustomDisplacements
+
+```cpp
+void ImFusion::OptimizationStudy::setCustomDisplacements (const std::vector < std::vector < double > > & disp)
+```
+
+*inline*
+
+Allows to set custom displacements to use by the [Optimizer](/cpp-sdk/4.5/api/classes/imfusion-optimizer) class (needs to be of selection dimension, not full parameter dimension).
+
+The range parameter in the [Optimizer](/cpp-sdk/4.5/api/classes/imfusion-optimizer) class will be multiplied upon the values here.

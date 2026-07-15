@@ -1,0 +1,55 @@
+---
+title: "ImFusion::Platform"
+sidebarTitle: "Platform"
+description: "Selection of platform-specific functions."
+---
+
+## Overview
+
+Selection of platform-specific functions.
+
+**See also:** Platform-specific functions
+
+## Classes
+
+- class [DynamicLib](/cpp-sdk/4.5/api/classes/imfusion-platform-dynamiclib) — Provides access to functions of a shared library.
+- struct [MemoryInfo](/cpp-sdk/4.5/api/structs/imfusion-platform-memoryinfo) — Structure storing information about the available main memory as reported Platform::memoryInfo().
+
+## Functions
+
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **stacktrace** () — Generates a platform-dependent call stack of the current execution environment.
+- bool **isDebuggerPresent** () — Returns true if the program is being run by a debuger.
+- void **signalDebugTrap** () — Generates a platform-dependent trap signal that can be caught by an attached debugger to interrupt the program.
+- [MemoryInfo](/cpp-sdk/4.5/api/structs/imfusion-platform-memoryinfo) memoryInfo () — Returns the currently available system memory and the total amount of memory.
+- [Filesystem::Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path) **executablePath** () — Returns the absolute path to the current executable (including the name of the executable).
+- [Filesystem::Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path) libraryPath (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &libName) — Returns the absolute path to the given library (including the full name of the library).
+- [Filesystem::Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path) libraryPathOfSymbol (const void \*symbolPtr) — Returns the absolute path to the library in which *symbolPtr* is located.
+
+## Helper functions for platform-specific Unicode conversion
+
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **narrow** (const char \*s, int64_t)
+- const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) & **narrow** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &s)
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **widen** (const char \*s, int64_t)
+- const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) & **widen** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &s)
+
+## Handling of Environment Variables
+
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) getEnvironmentVariable (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &variableName, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &defaultValue, bool reset=false) — Reads an environment variable passed to the program at launch.
+- void setEnvironmentVariable (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &variableName, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &newValue) — Writes an environment variable.
+
+## Handling of crashes
+
+- void installCrashHandler () — Install OS-specific hooks to catch and handle critical signals/exceptions.
+- void **resetCrashHandler** () — Remove crash hooks again.
+
+## Changing the byte order (endianness)
+
+- void **swapEndianness** (uint16_t \*buffer, int64_t numElements) — Reverses the order of bytes in the given buffer of 16-bit integers.
+- void **swapEndianness** (uint32_t \*buffer, int64_t numElements) — Reverses the order of bytes in the given buffer of 32-bit integers.
+- void **swapEndianness** (uint64_t \*buffer, int64_t numElements) — Reverses the order of bytes in the given buffer of 64-bit integers.
+- void swapEndianness (T \*buffer, int64_t numElements) — Reverses the order of bytes in the given buffer of integers.
+
+## Type names
+
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; demangleTypeName (const [std::type_info](http://en.cppreference.com/w/cpp/types/type_info.html) &typeInfo) — Returns the demangled name of the type represented by the given type_info object.
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; demangleTypeName () — Returns the demangled name of the type T.

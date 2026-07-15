@@ -1,0 +1,237 @@
+---
+title: "ImFusion::RANSAC< Dataset, Hypothesis >"
+sidebarTitle: "RANSAC< Dataset, Hypothesis >"
+description: "This class implements a more generalized form of 'Random Sample Consensus' algorithm."
+---
+
+`#include <ImFusion/Base/RANSAC.h>`
+
+## Overview
+
+template&lt;typename Dataset, typename Hypothesis&gt;
+
+class ImFusion::RANSAC&lt; Dataset, Hypothesis &gt;
+This class implements a more generalized form of "Random Sample Consensus" algorithm.
+
+It estimates parameters of a mathematical model from a set of observed data which contains outliers. Differences to regular [RANSAC](/cpp-sdk/4.5/api/classes/imfusion-ransac): Agreement of individual data points with the model is a continuous variable instead of boolean, allows assigning different importance to data points. Quality of a parameter set is measured by the sum of the agreement to individual points. This parameter quality measurement can be performed on a subset of the dataset to save computation time. Overall this version is more fuzzy/gray than the regular in-or-out [RANSAC](/cpp-sdk/4.5/api/classes/imfusion-ransac). For traditional [RANSAC](/cpp-sdk/4.5/api/classes/imfusion-ransac) have the model return either 1.0 or 0.0 for the agreement of a data point to the model and set the size of the validation set to the entire dataset.
+
+**Template Parameters:** | Dataset | has .size() |
+| --- | --- |
+| Hypothesis |  |
+
+## Classes
+
+- struct [Result](/cpp-sdk/4.5/api/structs/imfusion-ransac-result)
+
+## Public Types
+
+- typedef [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; bool(const Dataset &dataset, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; size_t &gt; &indices, Hypothesis &hypothesisOut)&gt; [FitFunction](#fitfunction) — Function that fits an hypothesis to a subset of the data.
+- typedef [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; double(const Dataset &dataset, size_t index, const Hypothesis &hypothesis, double eps)&gt; [ScoreFunction](#scorefunction) — A function that scores an hypothesis on a data point.
+- typedef [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; Hypothesis(const Dataset &dataset, const [Result](/cpp-sdk/4.5/api/structs/imfusion-ransac-result) &res, double eps)&gt; **RefineFunction** — A function that refines an hypothesis using the whole dataset.
+
+## Public Member Functions
+
+- [RANSAC](#ransac) (const Dataset &dataset, const [FitFunction](#fitfunction) &fit, const [ScoreFunction](#scorefunction) &score)
+- bool [compute](#compute) (int sampleSize, int keepBest=1, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; &weights=&#123;&#125;) — Computes the [RANSAC](/cpp-sdk/4.5/api/classes/imfusion-ransac) estimation.
+- void [refine](#refine-1-2) (double threshold=0.5) — Refines the current results over the whole dataset, scores and sort them again.
+- void [refine](#refine-2-2) (const RefineFunction &computeRefinement) — Refines the current results over the whole dataset, scores and sort them again.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; Hypothesis &gt; **hypotheses** () const — [Vector](/cpp-sdk/4.5/api/classes/imfusion-vector) of all the kept hypotheses ordered from best to worse.
+- Hypothesis **best** () const — Best hypothesis computed by the algorithm.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; bool &gt; [inliers](#inliers) (double threshold=0.5, int which=0) — Computes a vector of booleans where the i-th element is true if the i-th element of the dataset is an inlier.
+- size_t [numInliers](#numinliers) (double threshold=0.5, int which=0) — Returns the number of inliers.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Result](/cpp-sdk/4.5/api/structs/imfusion-ransac-result) &gt; **results** () const — [Vector](/cpp-sdk/4.5/api/classes/imfusion-vector) of results ordered from best to worse. Each result contains an hypothesis, the score for each tested item and the total score.
+- void **setMaxIterations** (size_t iterations) — Sets the maximum number of iterations (default: 100).
+- void [setRequiredMatchingQuality](#setrequiredmatchingquality) (double q) — Sets the required quality of the matching between parameters and testing set for an early acceptance (default: number of data points).
+- void [setRandomSeed](#setrandomseed) (uint32_t seed) — Sets the seed that is used to initialize the random generator (default: 0).
+- void **setEps** (double eps) — Set threshold for inliers (default: 0.1).
+- void [setStopValidationEarly](#setstopvalidationearly) (bool v) — If set to true, the algorithm will stop accumulating scores for the validation data as soon as it's clear that the total score will not be greater than the result with the worst score so far.
+- bool **stopValidationEarly** () const
+- void [setValidationSetSize](#setvalidationsetsize) (size_t size) — Controls how many of the data items are used to evaluate parameter quality (default: all available).
+- Hypothesis **fitEntireDataset** () const — Runs fitFunction on the entire dataset.
+
+## Protected Member Functions
+
+- void **computeScores** (int first=0, int last=-1) — Recomputes validation scores on all results that where not validated on the entire dataset.
+
+## Protected Attributes
+
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Result](/cpp-sdk/4.5/api/structs/imfusion-ransac-result) &gt; **m_results**
+- const Dataset \* **m_dataset**
+- [FitFunction](#fitfunction) **m_fit**
+- [ScoreFunction](#scorefunction) **m_score**
+- size_t **m_validationSetSize** = [std::numeric_limits](http://en.cppreference.com/w/cpp/types/numeric_limits.html)&lt;size_t&gt;::max()
+- double **m_eps** = 0.1
+- size_t **m_maxIterations** = 100
+- uint32_t **m_seed** = 42
+- double **m_requiredMatchingQuality** = -1
+- bool **m_stopValidationEarly** = true
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [Multinomial](/cpp-sdk/4.5/api/classes/imfusion-multinomial) &gt; **m_multinomial**
+
+## Member Typedef Documentation
+
+### bool
+
+```cpp
+template<typename Dataset, typename Hypothesis> typedef std::function <bool(const Dataset& dataset, const std::vector <size_t>& indices, Hypothesis& hypothesisOut)> ImFusion::RANSAC < Dataset, Hypothesis >::FitFunction
+```
+
+Function that fits an hypothesis to a subset of the data.
+
+**Parameters:**
+
+- `dataset` — reference to the entire dataset
+- `indices` — vector containing the indices of the elements that should be used to fit the hypothesis
+- `hypothesisOut` — reference that should be set to the fitted hypothesis
+
+**Returns:** true if fitting successful, false otherwise. If false is returned the scoring phase is skipped for this hypothesis
+
+### double
+
+```cpp
+template<typename Dataset, typename Hypothesis> typedef std::function <double(const Dataset& dataset, size_t index, const Hypothesis& hypothesis, double eps)> ImFusion::RANSAC < Dataset, Hypothesis >::ScoreFunction
+```
+
+A function that scores an hypothesis on a data point.
+
+**Parameters:**
+
+- `dataset` — reference to the entire dataset
+- `index` — the index of the data point that should be used for scoring
+- `hypothesis` — the hypothesis that is being scored
+- `eps` — the current value of the parameter eps of [RANSAC](/cpp-sdk/4.5/api/classes/imfusion-ransac)
+
+**Returns:** the score in range [0,1] or other custom range for the current data point. The higher scores indicate inliers, the lower - outliers. If the range is not [0,1], stopValidationEarly must be set to false!
+
+## Constructor & Destructor Documentation
+
+### RANSAC
+
+```cpp
+template<typename Dataset, typename Hypothesis> ImFusion::RANSAC < Dataset, Hypothesis >::RANSAC (const Dataset & dataset, const FitFunction & fit, const ScoreFunction & score)
+```
+
+*inline*
+
+**Parameters:**
+
+- `dataset`
+- `fit` — A function that fits a hypothesis to a subset of the data
+- `score` — A function that scores a hypothesis on a data point
+
+## Member Function Documentation
+
+### compute
+
+```cpp
+template<typename Dataset, typename Hypothesis> bool ImFusion::RANSAC < Dataset, Hypothesis >::compute (int sampleSize, int keepBest = 1, const std::vector < double > & weights = {})
+```
+
+Computes the [RANSAC](/cpp-sdk/4.5/api/classes/imfusion-ransac) estimation.
+
+**Parameters:**
+
+- `sampleSize` — Number of datapoints to sample at each iteration to fit an hypothesis
+- `keepBest` — Maximum number of best hypotheses that should be kept
+- `weights` — Optional weights for each element in the dataset
+
+**Returns:** true if fitting was possible, false if it failed. True doesn't mean that the RequiredMatchingQuality has been reached
+
+### refine
+
+```cpp
+template<typename Dataset, typename Hypothesis> void ImFusion::RANSAC < Dataset, Hypothesis >::refine (double threshold = 0.5)
+```
+
+Refines the current results over the whole dataset, scores and sort them again.
+
+By default calls [FitFunction](#fitfunction) with indices of all the inliers
+
+**Parameters:**
+
+- `threshold` — An element of the dataset is considered an inlier if its score is &gt; threshold
+
+### refine
+
+```cpp
+template<typename Dataset, typename Hypothesis> void ImFusion::RANSAC < Dataset, Hypothesis >::refine (const RefineFunction & computeRefinement)
+```
+
+Refines the current results over the whole dataset, scores and sort them again.
+
+**Parameters:**
+
+- `computeRefinement` — function that takes the dataset, the result to be refined and eps and returns the refined hypothesis
+
+### inliers
+
+```cpp
+template<typename Dataset, typename Hypothesis> std::vector < bool > ImFusion::RANSAC < Dataset, Hypothesis >::inliers (double threshold = 0.5, int which = 0)
+```
+
+Computes a vector of booleans where the i-th element is true if the i-th element of the dataset is an inlier.
+
+**Parameters:**
+
+- `threshold` — An element of the dataset is considered an inlier if its score is &gt; threshold
+- `which` — Specifies which hypothesis to use (0 = best)
+
+### numInliers
+
+```cpp
+template<typename Dataset, typename Hypothesis> size_t ImFusion::RANSAC < Dataset, Hypothesis >::numInliers (double threshold = 0.5, int which = 0)
+```
+
+Returns the number of inliers.
+
+**Parameters:**
+
+- `threshold` — An element of the dataset is considered an inlier if its score is &gt; threshold
+- `which` — Specifies which hypothesis to use (0 = best)
+
+### setRequiredMatchingQuality
+
+```cpp
+template<typename Dataset, typename Hypothesis> void ImFusion::RANSAC < Dataset, Hypothesis >::setRequiredMatchingQuality (double q)
+```
+
+*inline*
+
+Sets the required quality of the matching between parameters and testing set for an early acceptance (default: number of data points).
+
+Once this quality is reached, the iteration is aborted.
+
+### setRandomSeed
+
+```cpp
+template<typename Dataset, typename Hypothesis> void ImFusion::RANSAC < Dataset, Hypothesis >::setRandomSeed (uint32_t seed)
+```
+
+*inline*
+
+Sets the seed that is used to initialize the random generator (default: 0).
+
+This can be used to reproduce results.
+
+### setStopValidationEarly
+
+```cpp
+template<typename Dataset, typename Hypothesis> void ImFusion::RANSAC < Dataset, Hypothesis >::setStopValidationEarly (bool v)
+```
+
+*inline*
+
+If set to true, the algorithm will stop accumulating scores for the validation data as soon as it's clear that the total score will not be greater than the result with the worst score so far.
+
+Might speed up the computation. Warning: only works as expected if the score per sample is in [0,1] range. Should be set to false otherwise.
+
+### setValidationSetSize
+
+```cpp
+template<typename Dataset, typename Hypothesis> void ImFusion::RANSAC < Dataset, Hypothesis >::setValidationSetSize (size_t size)
+```
+
+*inline*
+
+Controls how many of the data items are used to evaluate parameter quality (default: all available).
+
+Can be used to restrict the computational load when comparing large datasets to fitted parameters. Setting the validation set size to 0 will reset it to use all available data.

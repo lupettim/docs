@@ -1,0 +1,72 @@
+---
+title: "ImFusion::GlVesselnessFilter"
+sidebarTitle: "GlVesselnessFilter"
+description: "Computes a multi-scale vesselness measure based on Frangi's filter."
+---
+
+`#include <ImFusion/GL/GlVesselnessFilter.h>`
+
+## Overview
+
+Computes a multi-scale vesselness measure based on Frangi's filter.
+
+The method is based on analysing the hessian eigenvalues computed at each voxel at multiple scales. The likelihood that a given voxel belongs to a vessel-like structure is formulated as a function of the hessian eigenvalues (Frangi's score).
+
+The multi-scale analysis is based on space-scale derivatives theory. Instead of resampling the image at the desired scale and computing the hessian, one smooths the image with a Gauss kernel with a size of the corresponding scale and then computes the derivative. Since Gauss convolutions commute with derivatives, one can simply filter the image with a derivative of the Gauss kernel at the desired scale.
+
+The final vesselness score is obtained by maxing the set of scores for each scale.
+
+A. Frangi et al. "Multiscale vessel enhancement filtering", MICCAI '98
+
+## Public Member Functions
+
+- **GlVesselnessFilter** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* &gt; &inputVolumes) — Constructor.
+- **~GlVesselnessFilter** () override — Destructor.
+- virtual void **compute** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) &gt; &imgsIn, [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) &imgOut) — Executes this algorithm on *imgIn* and writes the result to *imgOut*.
+
+## Parameters
+
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; vec2 &gt; **p_scaleRange** = &#123;"ScaleRange", vec2(1.0, 5.0), this&#125; — Range of scales the vesselness filter is computed for (each scale refers to the FWHM of a Gaussian kernel).
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; int &gt; **p_numScales** = &#123;"NumScales", 5, this&#125; — Number of scales the vesselness filter is computed for.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; float &gt; **p_alpha** = &#123;"Alpha", 1.f&#125; — Alpha parameter (sheetness).
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; float &gt; **p_beta** = &#123;"Beta", 1.f&#125; — Beta parameter (blobbiness).
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; float &gt; **p_gamma** = &#123;"Gamma", 1.f&#125; — Gamma parameter (second order structuredness).
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; bool &gt; **p_brightVessels** = &#123;"BrightVessels", false&#125; — Whether to find bright or dark vessels.
+
+## Algorithm Interface
+
+- void [compute](#compute) () override — Executes this algorithm on the currently set input data.
+- [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) [takeOutput](#takeoutput) () override — Writes the results computed in [compute()](#compute) to the provided [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist).
+- static bool [createCompatible](#createcompatible) (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a)
+
+## Member Function Documentation
+
+### createCompatible
+
+```cpp
+bool ImFusion::GlVesselnessFilter::createCompatible (const DataList & data, Algorithm ** a)
+```
+
+*static*
+
+If data is compatible with algorithm return true. If a is not zero, create algorithm with input data.
+
+### compute
+
+```cpp
+void ImFusion::GlVesselnessFilter::compute ()
+```
+
+*override, virtual*
+
+Executes this algorithm on the currently set input data.
+
+### takeOutput
+
+```cpp
+OwningDataList ImFusion::GlVesselnessFilter::takeOutput ()
+```
+
+*override, virtual*
+
+Writes the results computed in [compute()](#compute) to the provided [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist).

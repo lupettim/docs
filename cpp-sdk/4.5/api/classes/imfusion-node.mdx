@@ -1,0 +1,26 @@
+---
+title: "ImFusion::Node"
+sidebarTitle: "Node"
+description: "Class representing a tree node."
+---
+
+`#include <ImFusion/Base/Tree.h>`
+
+## Overview
+
+Class representing a tree node.
+
+## Public Member Functions
+
+- virtual void **reverse** ()
+- virtual Node \* **clone** () const =0
+- virtual [Geometry::AlignedBox](/cpp-sdk/4.5/api/classes/imfusion-geometry-alignedbox) **bounds** (const mat4 &m) const =0
+- virtual [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **typeName** () const =0
+- int **id** () const
+
+## Protected Attributes
+
+- int **m_id**
+- int **m_parentId**
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; int &gt; **m_childIds**
+- int **m_level** = 0

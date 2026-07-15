@@ -1,0 +1,27 @@
+---
+title: "ImFusion::DataSet::GeometricAnnotationData"
+sidebarTitle: "GeometricAnnotationData"
+---
+
+## Public Member Functions
+
+- **GeometricAnnotationData** (DataSet \*, [DataDescriptor::GeometricAnnotationData](/cpp-sdk/4.5/api/classes/imfusion-datadescriptor-geometricannotationdata) \*)
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [std::pair](http://en.cppreference.com/w/cpp/utility/pair.html)&lt; size_t, size_t &gt; &gt; **focus** () const
+- bool **setFocus** (size_t frame, size_t index)
+- void **clearFocus** ()
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [GeometricAnnotation](/cpp-sdk/4.5/api/structs/imfusion-geometricannotation) &gt; &gt; & **data** () const
+- void **setData** ([std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [GeometricAnnotation](/cpp-sdk/4.5/api/structs/imfusion-geometricannotation) &gt; &gt; data)
+- void **setFrameData** (size_t frame, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [GeometricAnnotation](/cpp-sdk/4.5/api/structs/imfusion-geometricannotation) &gt; frameData)
+- void **add** (size_t frame, [GeometricAnnotation](/cpp-sdk/4.5/api/structs/imfusion-geometricannotation) d)
+- void **change** (size_t frame, size_t index, [GeometricAnnotation](/cpp-sdk/4.5/api/structs/imfusion-geometricannotation) d)
+- void **remove** (size_t frame, size_t index)
+- void **clear** (size_t frame)
+- void **clear** ()
+
+## Public Attributes
+
+- Signal **dataChangedCoarse**
+- Signal&lt; const [GeometricAnnotation](/cpp-sdk/4.5/api/structs/imfusion-geometricannotation) &, size_t, size_t &gt; **dataAdded**
+- Signal&lt; const [GeometricAnnotation](/cpp-sdk/4.5/api/structs/imfusion-geometricannotation) &, size_t, size_t &gt; **dataChangedFine**
+- Signal&lt; [GeometricAnnotation](/cpp-sdk/4.5/api/structs/imfusion-geometricannotation), size_t, size_t &gt; **dataRemoved**
+- Signal **focusChanged**

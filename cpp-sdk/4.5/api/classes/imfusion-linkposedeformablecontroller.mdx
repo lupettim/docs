@@ -1,0 +1,32 @@
+---
+title: "ImFusion::LinkPoseDeformableController"
+sidebarTitle: "LinkPoseDeformableController"
+description: "Default algorithm controller for LinkPoseDeformable algorithm, with a slight modification to have GlMesh access."
+---
+
+`#include <ImFusion/GUI/LinkPoseDeformableController.h>`
+
+## Overview
+
+Default algorithm controller for [LinkPoseDeformable](/cpp-sdk/4.5/api/classes/imfusion-linkposedeformable) algorithm, with a slight modification to have [GlMesh](/cpp-sdk/4.5/api/classes/imfusion-glmesh) access.
+
+This controller will become obsolete once there is SharedMesh class to accommodate Mesh/GlMesh.
+
+## Public Member Functions
+
+- **LinkPoseDeformableController** ([Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*algo)
+- void [init](#init) () override — Two-step initialization function to be implemented by subclasses.
+
+## Member Function Documentation
+
+### init
+
+```cpp
+void ImFusion::LinkPoseDeformableController::init ()
+```
+
+*override, virtual*
+
+Two-step initialization function to be implemented by subclasses.
+
+This function is called by [setMainWindowBase()](/cpp-sdk/4.5/api/classes/imfusion-controller) after the [m_disp](/cpp-sdk/4.5/api/classes/imfusion-controller) and [m_main](/cpp-sdk/4.5/api/classes/imfusion-controller) attributes have been set and hence a complete initialization of the controller is possible at this point.

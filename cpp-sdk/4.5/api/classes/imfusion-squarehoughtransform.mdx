@@ -1,0 +1,46 @@
+---
+title: "ImFusion::SquareHoughTransform"
+sidebarTitle: "SquareHoughTransform"
+description: "Hough transform for detecting squares."
+---
+
+`#include <ImFusion/Base/SquareHoughTransform.h>`
+
+## Overview
+
+Hough transform for detecting squares.
+
+## Public Member Functions
+
+- **SquareHoughTransform** (const [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) \*img, const vec4i &roi=vec4i::Zero(), const vec2i &sideLengthRange=vec2i::Zero()) — Takes the image on which to perform the hough transform, the ROI in which to search (x,y,width,height) and the side length range (min,max) The image is normalized before running the hough transformation.
+- void [compute](#compute) (float gradientThreshold=0.1f, float gradientsAboveThreshold=0.0f) — Run hough detection The gradient threshold is wrt.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3i &gt; [detections](#detections) (float threshold=0.95f, bool combineDuplicates=true) const — Return all detected squares in the form [top left x, top left y, side length].
+
+## Protected Attributes
+
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; const [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; float &gt; &gt; **m_inputNorm** — Normalized input image.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; float &gt; &gt; **m_detectionMatrix**
+- vec4i **m_roi** — ROI in which square must be located in the format (x,y,width,height), default is entire image.
+- vec2i **m_sideLengthRange** — Allowed range for the side length of the square, default is a minimum of 10 pixels and up to the image size.
+
+## Member Function Documentation
+
+### compute
+
+```cpp
+void ImFusion::SquareHoughTransform::compute (float gradientThreshold = 0.1f, float gradientsAboveThreshold = 0.0f)
+```
+
+Run hough detection The gradient threshold is wrt.
+
+a normalized version of the image. When maxGradientsAboveThreshold is large 0 the threshold is increased until there are this many percent of gradients left. The gradient threshold is never decreased below gradientThreshold.
+
+### detections
+
+```cpp
+std::vector < vec3i > ImFusion::SquareHoughTransform::detections (float threshold = 0.95f, bool combineDuplicates = true) const
+```
+
+Return all detected squares in the form [top left x, top left y, side length].
+
+The score is normalized with respect to the number of pixels on the border of the square, so that an ideal square has score 1. Due to numerical accuracy even for perfect data a smaller threshold should be used.

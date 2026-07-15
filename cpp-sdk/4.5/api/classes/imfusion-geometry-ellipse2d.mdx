@@ -1,0 +1,75 @@
+---
+title: "ImFusion::Geometry::Ellipse2D"
+sidebarTitle: "Ellipse2D"
+description: "Class representing an ellipse in 2D space."
+---
+
+`#include <ImFusion/Core/Geometry/Ellipse.h>`
+
+## Overview
+
+Class representing an ellipse in 2D space.
+
+**See also:** Intersections between geometry primitives can be computed using the sets of free functions Geometry::intersection() and Geometry::intersects().
+
+## Public Member Functions
+
+- [Ellipse2D](#ellipse2d) (const vec2 &center, const vec2 &semiAxis, double lengthOtherSemiAxis) — Construct ellipse from center, a semi-axis (the radius equivalent) and the length of the second semi-axis.
+- const vec2 & **center** () const
+- const vec2 & **majorSemiAxis** () const
+- const vec2 & **minorSemiAxis** () const
+- bool **isApprox** (const [Ellipse2D](#ellipse2d) &other) — Comparison using the same epsilon as Eigen::isApprox.
+- bool [isEquivalent](#isequivalent) (const [Ellipse2D](#ellipse2d) &other) — Returns if both Ellipse objects desribe the same geometrical objects.
+- vec2 **closestPoint** (const vec2 &p) const — Returns the point on or inside the ellipse closest to p.
+- vec2 **closestPointOnBoundary** (const vec2 &p) const — Returns the point on the ellipse (excluding the enclosed area) closest to p.
+- double **distanceToPoint** (const vec2 &p) const — Returns the L2 distance between p and closestPoint(p).
+- bool **includesPoint** (const vec2 &p) const — Returns if p is part of the ellipse or enclosed area.
+- double [signedArcLength](#signedarclength) (double angleRadians) const — Computes the length of the arc between the given angle (in radians, relative to major semi-axis) and zero.
+- double **signedArcLength** (double startAngleRad, double endAngleRad) const — Like ellipticIntegral, but with specific starting angle instead of zero.
+- vec2 **getPoint** (double angleRad) const — Returns a point on the ellipse boundary identified by an angle (in radians, from major towards minor semi-axis).
+- bool [operator==](#operator) (const [Ellipse2D](#ellipse2d) &) const — Exact comparisons of Ellipse instances.
+- bool **operator!=** (const [Ellipse2D](#ellipse2d) &) const
+
+## Constructor & Destructor Documentation
+
+### Ellipse2D
+
+```cpp
+ImFusion::Geometry::Ellipse2D::Ellipse2D (const vec2 & center, const vec2 & semiAxis, double lengthOtherSemiAxis)
+```
+
+Construct ellipse from center, a semi-axis (the radius equivalent) and the length of the second semi-axis.
+
+The passed semi-axis should not be normalized. Whether the major or minor one is used does not matter. If the given axis has length zero the resulting ellipse causes undefined behaviour. The sign of lengthOtherSemiAxis is discarded, passing 0 effectively turns the ellipse into an inefficient line. Passing NAN into any argument also results in an undefined ellipse.
+
+## Member Function Documentation
+
+### operator
+
+```cpp
+bool ImFusion::Geometry::Ellipse2D::operator== (const Ellipse2D &) const
+```
+
+Exact comparisons of Ellipse instances.
+
+If you instead want to check if the represented geometric structures are the same, use isEquivalent.
+
+### isEquivalent
+
+```cpp
+bool ImFusion::Geometry::Ellipse2D::isEquivalent (const Ellipse2D & other)
+```
+
+Returns if both Ellipse objects desribe the same geometrical objects.
+
+Note that since this allows anti-parallel axes, the result of getPoint may differ between equivalent objects.
+
+### signedArcLength
+
+```cpp
+double ImFusion::Geometry::Ellipse2D::signedArcLength (double angleRadians) const
+```
+
+Computes the length of the arc between the given angle (in radians, relative to major semi-axis) and zero.
+
+Note that the result is signed, negative angles give negative arc length. Angles of magnitude 2 PI or more will do a full revolution, i.e. the integral from 0 to 2 PI is not zero.

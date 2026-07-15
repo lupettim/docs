@@ -1,0 +1,34 @@
+---
+title: "ImFusion::Seg::SegmentedLine2DStructure"
+sidebarTitle: "SegmentedLine2DStructure"
+---
+
+## Public Member Functions
+
+- **SegmentedLine2DStructure** (const [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*segmentation, unsigned char label=1, double margin=0.0)
+- **SegmentedLine2DStructure** ([Line2DReferenceShape](/cpp-sdk/4.5/api/classes/imfusion-seg-line2dreferenceshape) reference, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; &contour)
+- [std::pair](http://en.cppreference.com/w/cpp/utility/pair.html)&lt; vec3, vec3 &gt; [axis](#axis) (int id) const override
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; [contour](#contour) (int id) const override
+- const [Line2DReferenceShape](/cpp-sdk/4.5/api/classes/imfusion-seg-line2dreferenceshape) & **reference** () const
+
+## Protected Attributes
+
+- [Line2DReferenceShape](/cpp-sdk/4.5/api/classes/imfusion-seg-line2dreferenceshape) **m_ref**
+
+## Member Function Documentation
+
+### axis
+
+```cpp
+std::pair < vec3, vec3 > ImFusion::Seg::SegmentedLine2DStructure::axis (int id) const
+```
+
+*override, virtual*
+
+### contour
+
+```cpp
+std::vector < vec3 > ImFusion::Seg::SegmentedLine2DStructure::contour (int id) const
+```
+
+*override, virtual*

@@ -1,0 +1,62 @@
+---
+title: "ImFusion::ImFusionPlugin"
+sidebarTitle: "ImFusionPlugin"
+description: "Base class for plugins that can be loaded by the ImFusion SDK."
+---
+
+`#include <ImFusion/Base/ImFusionPlugin.h>`
+
+## Overview
+
+[Base](/cpp-sdk/4.5/api/structs/imfusion-dicom-base) class for plugins that can be loaded by the ImFusion SDK.
+
+This base class defines the interface so that the ImFusionLib and the plugin can interact with each other (e.g. add algorithm factories). If you need to do any initialization work (e.g. populate additional factories) you should do this in the constructor.
+
+**Note:** In order to be discoverable by the ImFusionLib you must further export an ImFusion::ImFusionPlugin\* createPlugin() C function that instantiates your derived class. This can be easily done with the IMFUSION_REGISTER_PLUGIN() macro.
+
+MyExamplePlugin.h
+
+```cpp
+#include <ImFusion/Base/ImFusionPlugin.h>
+class MyExamplePlugin : public ImFusion::ImFusionPlugin {
+    ...
+};
+```
+ fragment
+MyExamplePlugin.cpp
+
+```cpp
+#include <MyExamplePlugin.h>
+IMFUSION_REGISTER_PLUGIN(MyPlugin)
+...
+```
+ fragment
+
+**See also:** - [ImFusionPlugin Migration](/cpp-sdk/4.5/api/guides/plugin-migration)
+- Plugin Architecture
+- [PluginManager](/cpp-sdk/4.5/api/classes/imfusion-pluginmanager)
+- [ImFusionLibPlugin](/cpp-sdk/4.5/api/classes/imfusion-imfusionlibplugin)
+
+****Deprecated**:** "Use ImFusionLibPlugin instead"
+
+## Public Member Functions
+
+- virtual const [AlgorithmFactory](/cpp-sdk/4.5/api/classes/imfusion-algorithmfactory) \* **getAlgorithmFactory** ()=0 — Get algorithm factory for algorithms hosted by plugin.
+- virtual const [AlgorithmControllerFactory](/cpp-sdk/4.5/api/classes/imfusion-algorithmcontrollerfactory) \* **getAlgorithmControllerFactory** ()=0 — Get algorithm controller factory for algorithms hosted by plugin.
+- virtual const [DataAnnotationFactory](/cpp-sdk/4.5/api/classes/imfusion-dataannotationfactory) \* **getDataAnnotationFactory** () — Get data [GL](/cpp-sdk/4.5/api/namespaces/imfusion-gl) annotation factory for annotations hosted by plugin.
+- virtual [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [pluginName](#pluginname) () const — Return the name of the plugin.
+- virtual [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [WorkspaceConversionFunction](/cpp-sdk/4.5/api/structs/imfusion-workspaceconversionfunction) &gt; **getWorkspaceConversionFunctions** () — Return a list of workspace conversion functions and the corresponding workspace versions they apply to.
+
+## Member Function Documentation
+
+### pluginName
+
+```cpp
+virtual std::string ImFusion::ImFusionPlugin::pluginName () const
+```
+
+*inline, virtual*
+
+Return the name of the plugin.
+
+**Note:** When implementing this method, make sure to use a unique identifier to avoid conflicts with other plugins.

@@ -1,0 +1,130 @@
+---
+title: "ImFusion::TrackingSequenceIO"
+sidebarTitle: "TrackingSequenceIO"
+description: "IO class to (de)serialize TrackingSequence objects."
+---
+
+`#include <ImFusion/IO/TrackingSequenceIO.h>`
+
+## Overview
+
+IO class to (de)serialize [TrackingSequence](/cpp-sdk/4.5/api/classes/imfusion-trackingsequence) objects.
+
+## Public Member Functions
+
+- **TrackingSequenceIO** ([TrackingSequence](/cpp-sdk/4.5/api/classes/imfusion-trackingsequence) \*ts)
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; [supportedFileExtensions](#supportedfileextensions) () const override — Return supported file extensions (for file based IO).
+- void [compute](#compute) () override — If ioMode is set to read, it loads the tracking stream from a file.
+- [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) [takeOutput](#takeoutput) () override — Return any new [Data](/cpp-sdk/4.5/api/classes/imfusion-data) that was created by the [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) during the last call to [compute()](#compute).
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Set one or multiple properties.
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Retrieve the properties of this object.
+
+## Static Public Member Functions
+
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=nullptr)
+- static bool [load](#load-1-2) ([TrackingSequence](/cpp-sdk/4.5/api/classes/imfusion-trackingsequence) \*ts, const [Table](/cpp-sdk/4.5/api/classes/imfusion-table) &table, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; &poseColumnNames, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &timestampColumnName="", const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &qualityColumnName="", int skip=0, bool transposeMatrix=false, double translationScale=1.0, bool axisAngle=false) — Load tracking sequence from a [Table](/cpp-sdk/4.5/api/classes/imfusion-table) with known headers Expected poseColumnNames structures: Euler angles: Tx, Ty, Tz, Rz, Ry, Rx (rad) Quaternions: Tx, Ty, Tz, Qw, Qx, Qy, Qz Matrix: M00, M01 .
+- static bool [load](#load-2-2) ([TrackingSequence](/cpp-sdk/4.5/api/classes/imfusion-trackingsequence) \*ts, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &filename, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; &poseColumnNames, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &timestampColumnName="", const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &qualityColumnName="", int skip=0, bool transposeMatrix=false, double translationScale=1.0, bool axisAngle=false) — Load tracking sequence from CSV file with known headers Expected poseColumnNames structures: Euler angles: Tx, Ty, Tz, Rz, Ry, Rx (rad) Quaternions: Tx, Ty, Tz, Qw, Qx, Qy, Qz Matrix: M00, M01 .
+- static bool **load** ([TrackingSequence](/cpp-sdk/4.5/api/classes/imfusion-trackingsequence) \*ts, const char \*filename, int skip=0, bool transposeMatrix=false, bool noQuality=false, bool timestampFront=false, double translationScale=1.0) — Load tracking sequence from text file without headers.
+- static bool **loadTumFormat** ([TrackingSequence](/cpp-sdk/4.5/api/classes/imfusion-trackingsequence) \*ts, const char \*filename, int skip=0, bool transposeMatrix=false, double translationScale=1.0) — Load tracking stream from text file with TUM format, file specification: [https://cvg.cit.tum.de/data/datasets/rgbd-dataset/file_formats](https://cvg.cit.tum.de/data/datasets/rgbd-dataset/file_formats).
+- static bool **save** (const [TrackingSequence](/cpp-sdk/4.5/api/classes/imfusion-trackingsequence) \*ts, const char \*filename, bool transposeMatrix=false, bool noQuality=false, bool timestampFront=false, double translationScale=1.0, bool useTUMformat=false, bool noTimestamp=false, bool applyRegistrationMatrix=false, bool applyCalibrationMatrix=false) — Save tracking sequence to a text file.
+- static void **loadFromBuffer** ([TrackingSequence](/cpp-sdk/4.5/api/classes/imfusion-trackingsequence) \*ts, const char \*buffer, size_t size) — Retrieve the tracking sequence from a memory buffer.
+- static size_t **determineSaveSize** (const [TrackingSequence](/cpp-sdk/4.5/api/classes/imfusion-trackingsequence) \*ts, bool legacyMode=false) — Simulates writing and returns the number of required bytes.
+- static size_t [saveToBuffer](#savetobuffer) (const [TrackingSequence](/cpp-sdk/4.5/api/classes/imfusion-trackingsequence) \*ts, char \*buffer=nullptr, bool legacyMode=false) — Save all information in the tracking sequence to a memory buffer and return the number of bytes written.
+
+## Static Protected Member Functions
+
+- static int **saveBufferSizeLegayMode** (const [TrackingSequence](/cpp-sdk/4.5/api/classes/imfusion-trackingsequence) \*ts) — Query the size required to save this tracking sequence to a buffer.
+
+## Member Function Documentation
+
+### supportedFileExtensions
+
+```cpp
+std::vector < std::string > ImFusion::TrackingSequenceIO::supportedFileExtensions () const
+```
+
+*override, virtual*
+
+Return supported file extensions (for file based IO).
+
+### compute
+
+```cpp
+void ImFusion::TrackingSequenceIO::compute ()
+```
+
+*override, virtual*
+
+If ioMode is set to read, it loads the tracking stream from a file.
+
+It uses different load function depending on the file extension. Otherwise, if ioMode is set to write, then it saves the tracking stream to the file. In both cases, if the file extension is a .txt, then it uses the TUM format to load or save to the file.
+
+### takeOutput
+
+```cpp
+OwningDataList ImFusion::TrackingSequenceIO::takeOutput ()
+```
+
+*override, virtual*
+
+Return any new [Data](/cpp-sdk/4.5/api/classes/imfusion-data) that was created by the [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) during the last call to [compute()](#compute).
+
+The default implementation will return an empty list.
+
+**Note:** Since ownership of the data is transferred, you can call this method only once between calls to [compute()](#compute).
+
+### configure
+
+```cpp
+void ImFusion::TrackingSequenceIO::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Set one or multiple properties.
+
+### configuration
+
+```cpp
+void ImFusion::TrackingSequenceIO::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Retrieve the properties of this object.
+
+### load
+
+```cpp
+bool ImFusion::TrackingSequenceIO::load (TrackingSequence * ts, const Table & table, const std::vector < std::string > & poseColumnNames, const std::string & timestampColumnName = "", const std::string & qualityColumnName = "", int skip = 0, bool transposeMatrix = false, double translationScale = 1.0, bool axisAngle = false)
+```
+
+*static*
+
+Load tracking sequence from a [Table](/cpp-sdk/4.5/api/classes/imfusion-table) with known headers Expected poseColumnNames structures: Euler angles: Tx, Ty, Tz, Rz, Ry, Rx (rad) Quaternions: Tx, Ty, Tz, Qw, Qx, Qy, Qz Matrix: M00, M01 .
+
+. M32, M33 (16 elements)
+
+### load
+
+```cpp
+bool ImFusion::TrackingSequenceIO::load (TrackingSequence * ts, const std::string & filename, const std::vector < std::string > & poseColumnNames, const std::string & timestampColumnName = "", const std::string & qualityColumnName = "", int skip = 0, bool transposeMatrix = false, double translationScale = 1.0, bool axisAngle = false)
+```
+
+*static*
+
+Load tracking sequence from CSV file with known headers Expected poseColumnNames structures: Euler angles: Tx, Ty, Tz, Rz, Ry, Rx (rad) Quaternions: Tx, Ty, Tz, Qw, Qx, Qy, Qz Matrix: M00, M01 .
+
+. M32, M33 (16 elements)
+
+### saveToBuffer
+
+```cpp
+size_t ImFusion::TrackingSequenceIO::saveToBuffer (const TrackingSequence * ts, char * buffer = nullptr, bool legacyMode = false)
+```
+
+*static*
+
+Save all information in the tracking sequence to a memory buffer and return the number of bytes written.
+
+If argument is null, writing is only simulated.

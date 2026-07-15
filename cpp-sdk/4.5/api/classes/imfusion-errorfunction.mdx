@@ -1,0 +1,59 @@
+---
+title: "ImFusion::ErrorFunction"
+sidebarTitle: "ErrorFunction"
+description: "Interface for an error function returning one or multiple values."
+---
+
+`#include <ImFusion/Base/ErrorFunction.h>`
+
+## Overview
+
+Interface for an error function returning one or multiple values.
+
+## Public Member Functions
+
+- virtual void [evaluateError](#evaluateerror) ([std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; &out)=0 — Evaluate the error function.
+- virtual double **penalize** (double cost, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; &error) — Optionally override this method to penalize a cost function based on the error function result.
+
+## Static penalty tool methods that are useful elsewhere
+
+- static double [errorToMultPenalty](#errortomultpenalty) (double value, double range) — There is a margin of half the range within which the returned penalty value fades from 1 to 0 with a polynomial function, and extents below zero after 1.5x range, and is continuous in the derivative.
+- static double [errorsToMultPenalty](#errorstomultpenalty) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; &error, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; &range) — Return a number of error values to a combined penalty function, while properly housekeeping values &lt; 0.
+
+## Member Function Documentation
+
+### evaluateError
+
+```cpp
+virtual void ImFusion::ErrorFunction::evaluateError (std::vector < double > & out)
+```
+
+*pure virtual*
+
+Evaluate the error function.
+
+An implementation of this method shall resize the out array and store some values in there, based on the most recent evaluation of a cost function associated with it.
+
+### errorToMultPenalty
+
+```cpp
+double ImFusion::ErrorFunction::errorToMultPenalty (double value, double range)
+```
+
+*static*
+
+There is a margin of half the range within which the returned penalty value fades from 1 to 0 with a polynomial function, and extents below zero after 1.5x range, and is continuous in the derivative.
+
+Convert error value to a multiplicative penalty value, returning a value &lt; 1 if the range is exceeded
+
+### errorsToMultPenalty
+
+```cpp
+double ImFusion::ErrorFunction::errorsToMultPenalty (const std::vector < double > & error, const std::vector < double > & range)
+```
+
+*static*
+
+Return a number of error values to a combined penalty function, while properly housekeeping values &lt; 0.
+
+If one or more of the error values would result in a negative penalty, those values are added up and the remaining positive ones ignored; all positive ones are multiplied together.

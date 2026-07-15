@@ -1,0 +1,140 @@
+---
+title: "ImFusion::GUI::RadiologyDisplay"
+sidebarTitle: "RadiologyDisplay"
+description: "Specialization of a Display that provides an off-the-shelf setup typically present in radiology workstations."
+---
+
+`#include <ImFusion/GUI/RadiologyDisplay.h>`
+
+## Overview
+
+Specialization of a [Display](/cpp-sdk/4.5/api/classes/imfusion-gui-display) that provides an off-the-shelf setup typically present in radiology workstations.
+
+This class serves as convenience wrapper aggregating several helper classes and providing syntactic sugar:
+
+- It has a [RadiologyViewGroup](/cpp-sdk/4.5/api/classes/imfusion-gui-radiologyviewgroup) so that a 2D image view, as well as 3 MPR views and a [VolumeView](/cpp-sdk/4.5/api/classes/imfusion-gui-volumeview) are present.
+- It has a [RadiologyViewOverlays](/cpp-sdk/4.5/api/classes/imfusion-gui-radiologyviewoverlays) instance so that you can easily add and maintain common ViewOverlays. The [RadiologyDisplay](/cpp-sdk/4.5/api/classes/imfusion-gui-radiologydisplay) constructor will **not** ask it to create any overlays, thus this has to be done by the user.
+- It has a [DisplayAutoLayouter](/cpp-sdk/4.5/api/classes/imfusion-gui-displayautolayouter) so that all views are automatically shown in a useful default way.
+- You can optionally enable setAutomaticallyShowHideViews() so that only Views with active datasets are shown.
+- It provides a set of convenience getter functions to directly access important entities inside.
+
+```cpp
+GUI::RadiologyDisplay display;
+
+// create common ViewOverlays as needed
+display.mainViewOverlays().addOverlays(display.views(), RadiologyViewOverlays::OverlayType::AllOverlays);
+
+// select a particular view layout
+display.layouter().setCurrentMode(DisplayAutoLayouter::Mode::FocusPlusStack);
+display.layouter().setFocusedView(&display.main3dView());
+
+// show a dataset
+display.mainViewGroup().showData(image);
+```
+ fragment
+
+## Public Member Functions
+
+- **RadiologyDisplay** ([DataModel](/cpp-sdk/4.5/api/classes/imfusion-datamodel) \*dataModel)
+- bool **automaticallyShowsHidesViews** () const — Returns the flag whether to automatically show a view when it shows datasets and hide it when it becomes empty.
+- void **setAutomaticallyShowHideViews** (bool value) — Sets the flag whether to automatically show a view when it shows datasets and hide it when it becomes empty.
+- void [requestViewVisibility](#requestviewvisibility) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; const [View](/cpp-sdk/4.5/api/classes/imfusion-gui-view) \* &gt; [views](/cpp-sdk/4.5/api/classes/imfusion-gui-display), bool value) — Sets whether the given set of *views* should be shown by the layouter() if applicable or not.
+- [SliceView](/cpp-sdk/4.5/api/classes/imfusion-gui-sliceview) & **main2dView** () — Returns the [SliceView](/cpp-sdk/4.5/api/classes/imfusion-gui-sliceview) of mainViewGroup() for showing 2D data.
+- [SliceView](/cpp-sdk/4.5/api/classes/imfusion-gui-sliceview) & **mainAxialView** () — Returns the axial MPR [SliceView](/cpp-sdk/4.5/api/classes/imfusion-gui-sliceview) of mainViewGroup() for showing 3D data.
+- [SliceView](/cpp-sdk/4.5/api/classes/imfusion-gui-sliceview) & **mainCoronalView** () — Returns the sagittal MPR [SliceView](/cpp-sdk/4.5/api/classes/imfusion-gui-sliceview) of mainViewGroup() for showing 3D data.
+- [SliceView](/cpp-sdk/4.5/api/classes/imfusion-gui-sliceview) & **mainSagittalView** () — Returns the coronal MPR [SliceView](/cpp-sdk/4.5/api/classes/imfusion-gui-sliceview) of mainViewGroup() for showing 3D data.
+- [VolumeView](/cpp-sdk/4.5/api/classes/imfusion-gui-volumeview) & **main3dView** () — Returns the [VolumeView](/cpp-sdk/4.5/api/classes/imfusion-gui-volumeview) of mainViewGroup() for showing 3D data.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [SliceView](/cpp-sdk/4.5/api/classes/imfusion-gui-sliceview) \* &gt; **mainMprViews** () — Returns the three MPR views of mainViewGroup for showing 3D data.
+- [RadiologyViewGroup](/cpp-sdk/4.5/api/classes/imfusion-gui-radiologyviewgroup) & **mainViewGroup** () — Returns the main [RadiologyViewGroup](/cpp-sdk/4.5/api/classes/imfusion-gui-radiologyviewgroup) hosting the 2D view, the three MPR views, and the 3D [VolumeView](/cpp-sdk/4.5/api/classes/imfusion-gui-volumeview).
+- [RadiologyViewOverlays](/cpp-sdk/4.5/api/classes/imfusion-gui-radiologyviewoverlays) & **mainViewOverlays** () — Returns the [RadiologyViewOverlays](/cpp-sdk/4.5/api/classes/imfusion-gui-radiologyviewoverlays) instance enabling you to easily create and maintain common ViewOverlays.
+- [DisplayAutoLayouter](/cpp-sdk/4.5/api/classes/imfusion-gui-displayautolayouter) & **layouter** () — Returns the [DisplayAutoLayouter](/cpp-sdk/4.5/api/classes/imfusion-gui-displayautolayouter) used to perform automatic layouting of the views.
+- void [addView](#addview) ([std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [View](/cpp-sdk/4.5/api/classes/imfusion-gui-view) &gt; view) override — Adds the given *view* to this display surface.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [View](/cpp-sdk/4.5/api/classes/imfusion-gui-view) &gt; [removeView](#removeview) ([View](/cpp-sdk/4.5/api/classes/imfusion-gui-view) \*view) override — Remove *view* from this display surface again.
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+## Protected Member Functions
+
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [DisplayLayoutConfig](/cpp-sdk/4.5/api/classes/imfusion-gui-displaylayoutconfig) &gt; [defaultLayoutConfig](#defaultlayoutconfig) () const override
+- void **onViewVisibleDataChanged** ([View](/cpp-sdk/4.5/api/classes/imfusion-gui-view) &view, const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &before, const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &after)
+
+## Protected Attributes
+
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [DisplayAutoLayouter](/cpp-sdk/4.5/api/classes/imfusion-gui-displayautolayouter) &gt; **m_layouter**
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [RadiologyViewGroup](/cpp-sdk/4.5/api/classes/imfusion-gui-radiologyviewgroup) &gt; **m_rvg**
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [RadiologyViewOverlays](/cpp-sdk/4.5/api/classes/imfusion-gui-radiologyviewoverlays) &gt; **m_viewOverlays**
+- bool **m_automaticallyShowHideViews** = false
+
+## Member Function Documentation
+
+### requestViewVisibility
+
+```cpp
+void ImFusion::GUI::RadiologyDisplay::requestViewVisibility (const std::vector < const View * > views, bool value)
+```
+
+Sets whether the given set of *views* should be shown by the layouter() if applicable or not.
+
+This is a convenience function simply forwarding to layouter-&gt;setViewsHidden([views](/cpp-sdk/4.5/api/classes/imfusion-gui-display), !value).
+
+**Note:** The underlying layouting algorithm may still decide to not show a view even if it was set to visible here. See [DisplayAutoLayouter::setViewHidden()](/cpp-sdk/4.5/api/classes/imfusion-gui-displayautolayouter) for a detailed explanation.
+
+### addView
+
+```cpp
+void ImFusion::GUI::RadiologyDisplay::addView (std::unique_ptr < View > view)
+```
+
+*override, virtual*
+
+Adds the given *view* to this display surface.
+
+The default implementation will reset the [DisplayLayout](/cpp-sdk/4.5/api/classes/imfusion-gui-displaylayout) with the return value of defaultLayoutConfig() if valid.
+
+### removeView
+
+```cpp
+std::unique_ptr < View > ImFusion::GUI::RadiologyDisplay::removeView (View * view)
+```
+
+*override, virtual*
+
+Remove *view* from this display surface again.
+
+The default implementation will reset the [DisplayLayout](/cpp-sdk/4.5/api/classes/imfusion-gui-displaylayout) with the return value of defaultLayoutConfig() if valid.
+
+### configure
+
+```cpp
+void ImFusion::GUI::RadiologyDisplay::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### configuration
+
+```cpp
+void ImFusion::GUI::RadiologyDisplay::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality
+
+### defaultLayoutConfig
+
+```cpp
+std::optional < DisplayLayoutConfig > ImFusion::GUI::RadiologyDisplay::defaultLayoutConfig () const
+```
+
+*override, protected, virtual*

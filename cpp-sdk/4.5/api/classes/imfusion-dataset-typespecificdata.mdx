@@ -1,0 +1,31 @@
+---
+title: "ImFusion::DataSet::TypeSpecificData< DescriptorDataType >"
+sidebarTitle: "TypeSpecificData< DescriptorDataType >"
+---
+
+## Public Member Functions
+
+- **TypeSpecificData** (DataSet \*, DescriptorDataType \*)
+- bool **save** ([Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) \*progress)
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; bool &gt; & **hasData** () const
+- virtual void **setHasData** (size_t frame, bool hasData, bool isPropagated=false)
+- uint64_t **dataTimestamp** () const
+- void **incrementDataTimestamp** ()
+- const DescriptorDataType \* **descriptorData** () const
+- DescriptorDataType \* **descriptorData** ()
+
+## Public Attributes
+
+- Signal **hasLabelsChanged**
+- Signal&lt; uint64_t &gt; **timestampIncreased**
+
+## Protected Member Functions
+
+- virtual bool **saveData** ([Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) \*progress)=0
+
+## Protected Attributes
+
+- DataSet \* **m_dataSet** = nullptr
+- DescriptorDataType \* **m_descriptorData** = nullptr
+- uint64_t **m_timestamp**
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; bool &gt; **m_hasData**

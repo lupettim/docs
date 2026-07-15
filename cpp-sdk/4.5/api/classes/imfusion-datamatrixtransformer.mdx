@@ -1,0 +1,78 @@
+---
+title: "ImFusion::DataMatrixTransformer"
+sidebarTitle: "DataMatrixTransformer"
+---
+
+## Public Member Functions
+
+- **DataMatrixTransformer** ([Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data)
+- virtual void **init** ([ImageView3D](/cpp-sdk/4.5/api/classes/imfusion-imageview3d) \*view3D, bool visible)
+- void **reset** ()
+- void **setMatrix** (const isom3 &matrix)
+- bool **setVisibility** (bool show)
+- virtual bool **show** ()
+- virtual bool **hide** ()
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+## Protected Member Functions
+
+- void [onManipulatorEvent](#onmanipulatorevent) ([Manipulator](/cpp-sdk/4.5/api/classes/imfusion-manipulator) \*src, void \*eventData) override — Called when an event occurs.
+- virtual void **onHoverEvent** (TransformerManipulator \*manipulator, TransformerManipulatorEvent \*event)
+- virtual void **onStartEvent** (TransformerManipulator \*manipulator, TransformerManipulatorEvent \*event)
+- virtual void **onMoveEvent** (TransformerManipulator \*manipulator, TransformerManipulatorEvent \*event)
+- virtual void **onStopEvent** (TransformerManipulator \*manipulator, TransformerManipulatorEvent \*event)
+- virtual [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [GlRotationTransformer](/cpp-sdk/4.5/api/classes/imfusion-glrotationtransformer) &gt; **createRing** (int axis)
+- virtual [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [GlTranslationTransformer](/cpp-sdk/4.5/api/classes/imfusion-gltranslationtransformer) &gt; **createArrow** (int axis)
+- virtual [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [GlInPlaneTransformer](/cpp-sdk/4.5/api/classes/imfusion-glinplanetransformer) &gt; **createSphere** ()
+- void **addTransformerObject** ([std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [GlTransformerObject](/cpp-sdk/4.5/api/classes/imfusion-gltransformerobject) &gt; obj)
+
+## Protected Attributes
+
+- [ImageView3D](/cpp-sdk/4.5/api/classes/imfusion-imageview3d) \* **m_view** = nullptr
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [InteractiveObject](/cpp-sdk/4.5/api/classes/imfusion-interactiveobject) \* &gt; **m_objects**
+
+## Member Function Documentation
+
+### configure
+
+```cpp
+void ImFusion::DataMatrixTransformer::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### configuration
+
+```cpp
+void ImFusion::DataMatrixTransformer::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality
+
+### onManipulatorEvent
+
+```cpp
+void ImFusion::DataMatrixTransformer::onManipulatorEvent (Manipulator * src, void * eventData)
+```
+
+*override, protected, virtual*
+
+Called when an event occurs.
+
+**Parameters:**
+
+- `src` — source of the event
+- `eventData` — pointer to event data. Zero if no event data is provided.

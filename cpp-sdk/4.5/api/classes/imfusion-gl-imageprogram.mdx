@@ -1,0 +1,322 @@
+---
+title: "ImFusion::GL::ImageProgram"
+sidebarTitle: "ImageProgram"
+description: "Convenience class to execute a GLSL fragment shader on an image or volume."
+---
+
+`#include <ImFusion/Core/GL/ImageProgram.h>`
+
+## Overview
+
+Convenience class to execute a GLSL fragment shader on an image or volume.
+
+The fragment shader gets the voxel or pixel position of the fragment as input:
+
+```cpp
+in vec3 in_texCoord;
+```
+ fragment
+The output can be defined arbitrary, e.g.:
+
+```cpp
+layout (location = 0) out vec2 out_color;
+```
+ fragment
+The layout location corresponds to the list of texture passed to [ImageProgram::compute](#compute-1-2), e.g. the location 0 will write to the first texture, the location 1 to the second texture and so on. The out type does not need to exactly match the corresponding texture because OpenGL automatically converts the values (check the OpenGL Specification for details).
+
+A FBO is automatically created but can be replaced by a custom one.
+
+Optionally, a geometry shader can be used to improve performance when computing 3D volumes. The performance gain depends on the use-case and the driver. In general the geometry shader overhead is too large for 2D processing (but works nonetheless). In 3D, using the geometry shader seems to be always faster on Nvidia and AMD. The geometry shader will only be used if all output volumes combined have less than GL_MAX_FRAMEBUFFER_LAYERS slices. Otherwise, the geometry shader stage will be active, but will add a slight overhead instead of improving the performance. Also consider that the geometry shader cannot be removed/added once a [ImageProgram](/cpp-sdk/4.5/api/classes/imfusion-gl-imageprogram) has been created.
+
+## Classes
+
+- class [Cuboid](/cpp-sdk/4.5/api/classes/imfusion-gl-imageprogram-cuboid) — Utility class to specify the (sub-) region of the textures to execute the shader on.
+
+## Public Types
+
+- enum class [TexCoordMode](#texcoordmode) &#123; Image , Box &#125; — Applies if [compute()](#compute-1-2) is called with a [Cuboid](/cpp-sdk/4.5/api/classes/imfusion-gl-imageprogram-cuboid) defining a ROI of the textures.
+
+## Public Member Functions
+
+- [ImageProgram](#imageprogram) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &fragmentShaderName, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &[defines](/cpp-sdk/4.5/api/classes/imfusion-gl-program)="", bool useGeometryShader=false, [TexCoordMode](#texcoordmode) texCoordMode=TexCoordMode::Image, [Compilation](/cpp-sdk/4.5/api/classes/imfusion-gl-program) compileBehavior=[Compilation::ImmediateThrowOnFailure](/cpp-sdk/4.5/api/classes/imfusion-gl-program)) — Creates a new [ImageProgram](/cpp-sdk/4.5/api/classes/imfusion-gl-imageprogram) for the given GLSL shader.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [ImageProgram](#imageprogram) &gt; [clone](#clone) ([Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; [Cloning](/cpp-sdk/4.5/api/classes/imfusion-gl-program) &gt; cloneOptions, [Compilation](/cpp-sdk/4.5/api/classes/imfusion-gl-program) compileBehavior) const — Performs a deep copy of the shader with its sources, defines, and optionally also decorators and abstract includes.
+- void [setFBO](#setfbo) ([Framebuffer](/cpp-sdk/4.5/api/classes/imfusion-gl-framebuffer) \*[fbo](#fbo)) — Makes [ImageProgram](/cpp-sdk/4.5/api/classes/imfusion-gl-imageprogram) use *fbo* during computation instead of using an internal one.
+- [Framebuffer](/cpp-sdk/4.5/api/classes/imfusion-gl-framebuffer) \* [fbo](#fbo) () const — Returns the currently used FBO.
+- void **setClearOutputEnabled** (bool enabled, const vec4f &clearColor=vec4f::Zero()) — Sets whether the output images are cleared before rendering to them (disabled by default).
+- const [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; vec4f &gt; **isClearOutputEnabled** () const — Returns whether the output images are cleared before rendering to them, and if yes with which color.
+- void [compute](#compute-1-2) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Texture](/cpp-sdk/4.5/api/classes/imfusion-gl-texture) \* &gt; &output, const [Cuboid](/cpp-sdk/4.5/api/classes/imfusion-gl-imageprogram-cuboid) &box=&#123;&#125;) — Executes the program on each pixel or voxel and writes the result in the given output textures.
+- void [compute](#compute-2-2) ([Texture](/cpp-sdk/4.5/api/classes/imfusion-gl-texture) &output, const [Cuboid](/cpp-sdk/4.5/api/classes/imfusion-gl-imageprogram-cuboid) &box=&#123;&#125;) — Convenience overload to execute the program on a single texture.
+- void [computeReduceZ](#computereducez-1-2) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Texture](/cpp-sdk/4.5/api/classes/imfusion-gl-texture) \* &gt; &output, int numSlices=-1, int targetSlice=0, const [Cuboid](/cpp-sdk/4.5/api/classes/imfusion-gl-imageprogram-cuboid) &box=&#123;&#125;) — Executes the program on each pixel or voxel inside the box but writes only to a single slice.
+- void [computeReduceZ](#computereducez-2-2) ([Texture](/cpp-sdk/4.5/api/classes/imfusion-gl-texture) &output, int numSlices=-1, int targetSlice=0, const [Cuboid](/cpp-sdk/4.5/api/classes/imfusion-gl-imageprogram-cuboid) &box=&#123;&#125;) — Convenience overload to execute a reduction the program on a single texture.
+- void [setAvoidDriverTimeout](#setavoiddrivertimeout) (bool value) — Sets the flag whether execute the shader in batches to avoid driver timeouts.
+- bool **isAvoidingDriverTimeout** () const — Returns the flag whether execute the shader in batches to avoid driver timeouts.
+- bool [setDefines](#setdefines) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &[defines](/cpp-sdk/4.5/api/classes/imfusion-gl-program), [Compilation](/cpp-sdk/4.5/api/classes/imfusion-gl-program) compileBehavior=[Compilation::Immediate](/cpp-sdk/4.5/api/classes/imfusion-gl-program)) override — Sets the optional string of definitions that is pasted at the beginning of all shaders.
+
+## Static Public Member Functions
+
+- static [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [genericSamplerDefine](#genericsamplerdefine) (bool for3D) — Returns a string with 3 GLSL defines to help writing shaders that support both 2D and 3D samplers.
+
+## Protected Member Functions
+
+- [ImageProgram](#imageprogram) \* [cloneImpl](#cloneimpl) () const override — Virtual helper function to actually clone this type, may throw on error.
+- void **ensureFboIsBound** ()
+
+## Protected Attributes
+
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [VertexBuffer](/cpp-sdk/4.5/api/classes/imfusion-gl-vertexbuffer) &gt; **m_quad** — Full-screen quad used for rendering during [compute()](#compute-1-2).
+- [Framebuffer](/cpp-sdk/4.5/api/classes/imfusion-gl-framebuffer) \* **m_fbo** = nullptr — FBO used rendering to texture, ownership based on m_ownFbo.
+- const [TexCoordMode](#texcoordmode) [m_texCoordMode](#m-texcoordmode)
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; vec4f &gt; **m_clearColor** — Clear color for the output textures if enabled.
+- const bool **m_useGS** = false — Flag whether to use a [Geometry](/cpp-sdk/4.5/api/namespaces/imfusion-geometry) Shader for layered output textures.
+- bool **m_externalFbo** = false — Flag whether m_fbo points to an externally providided FBO.
+- bool **m_avoidTimeout** = false — Flag whether execute the shader in batches to avoid driver timeouts.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; Pimpl &gt; **m_pimpl**
+
+## Member Enumeration Documentation
+
+### TexCoordMode
+
+```cpp
+enum class ImFusion::GL::ImageProgram::TexCoordMode
+```
+
+*strong*
+
+Applies if [compute()](#compute-1-2) is called with a [Cuboid](/cpp-sdk/4.5/api/classes/imfusion-gl-imageprogram-cuboid) defining a ROI of the textures.
+
+**Enumerator:**
+
+- `Image` — The texture coordinates will be computed relative to the image, i.e., the ROI also applies to input images.
+- `Box` — The texture coordinates will be computed absolute wrt.
+the box, i.e., the dimensions of the ROI will map to \([0,1]^3\).
+
+## Constructor & Destructor Documentation
+
+### ImageProgram
+
+```cpp
+ImFusion::GL::ImageProgram::ImageProgram (const std::string & fragmentShaderName, const std::string & defines = "", bool useGeometryShader = false, TexCoordMode texCoordMode = TexCoordMode::Image, Compilation compileBehavior = Compilation::ImmediateThrowOnFailure)
+```
+
+*explicit*
+
+Creates a new [ImageProgram](/cpp-sdk/4.5/api/classes/imfusion-gl-imageprogram) for the given GLSL shader.
+
+**Parameters:**
+
+- `fragmentShaderName` — Name of the GLSL fragment shader. The shader's source code is resolved using the ImFusion::Resource infrastructure as described in [GL::Program](/cpp-sdk/4.5/api/classes/imfusion-gl-program).
+- `defines` — List of optional definitions that are to be pasted at the beginning of the source code of each participating shader.
+- `useGeometryShader` — Whether to utilize the geometry shader. This can be faster on 3D volumes with Nvidia or AMD cards, but this depends on the workload. [Settings](/cpp-sdk/4.5/api/classes/imfusion-settings) this option to true does *not* require any changes to the fragment shader.
+- `texCoordMode` — See [TexCoordMode](#texcoordmode)
+
+**Exceptions:**
+
+- `std::runtime_error` — if the OpenGL program could not be created, either due to an OpenGL error or due to the [Resource](/cpp-sdk/4.5/api/namespaces/imfusion-resource) system not being able to resolve all of the shader sources.
+
+## Member Function Documentation
+
+### clone
+
+```cpp
+std::unique_ptr < ImageProgram > ImFusion::GL::ImageProgram::clone (Flags < Cloning > cloneOptions, Compilation compileBehavior) const
+```
+
+Performs a deep copy of the shader with its sources, defines, and optionally also decorators and abstract includes.
+
+[GL::ProgramDecorator](/cpp-sdk/4.5/api/classes/imfusion-gl-programdecorator) instances are *not* deep-copied, thus you must make sure that they remain valid throughout the lifetime of all clones. In contrast, [GL::AbstractInclude](/cpp-sdk/4.5/api/classes/imfusion-gl-abstractinclude) instances are deep-copied.
+
+**Parameters:**
+
+- `cloneOptions` — Bitflag mask describing what aspects of the program are to be cloned.
+
+**Note:** This function does not copy any OpenGL state such as assigned uniform arguments/images/etc.
+
+**Exceptions:**
+
+- `std::runtime_error` — if the new OpenGL program could not be created
+
+### setFBO
+
+```cpp
+void ImFusion::GL::ImageProgram::setFBO (Framebuffer * fbo)
+```
+
+Makes [ImageProgram](/cpp-sdk/4.5/api/classes/imfusion-gl-imageprogram) use *fbo* during computation instead of using an internal one.
+
+When a custom FBO is set the compute method will not automatically bind or unbind the FBO, however, it will still change the attachments and draw buffers. This may provide a performance benefit in hot sections of the code where you need to minimize the amount of [GL](/cpp-sdk/4.5/api/namespaces/imfusion-gl) state changes.
+
+### fbo
+
+```cpp
+Framebuffer * ImFusion::GL::ImageProgram::fbo () const
+```
+
+Returns the currently used FBO.
+
+If no FBO was set explicitly, this returns the internal FBO generated by [ImageProgram](/cpp-sdk/4.5/api/classes/imfusion-gl-imageprogram) or nullptr in case no internal FBO was requested yet.
+
+### compute
+
+```cpp
+void ImFusion::GL::ImageProgram::compute (const std::vector < Texture * > & output, const Cuboid & box = {})
+```
+
+Executes the program on each pixel or voxel and writes the result in the given output textures.
+
+The viewport size (and the number of slices if 3D) is set to the size of the first non-zero texture.
+
+**Parameters:**
+
+- `output` — The outputs are bound to the locations depending on their position in the vector. If an entry is null, nothing is bound to that attachment.
+- `box` — Optional ROI in terms of pixels to restrict the shader execution to.
+
+### compute
+
+```cpp
+void ImFusion::GL::ImageProgram::compute (Texture & output, const Cuboid & box = {})
+```
+
+Convenience overload to execute the program on a single texture.
+
+Executes the program on each pixel or voxel and writes the result in the given output textures.
+
+The viewport size (and the number of slices if 3D) is set to the size of the first non-zero texture.
+
+**Parameters:**
+
+- `output` — The outputs are bound to the locations depending on their position in the vector. If an entry is null, nothing is bound to that attachment.
+- `box` — Optional ROI in terms of pixels to restrict the shader execution to.
+
+### computeReduceZ
+
+```cpp
+void ImFusion::GL::ImageProgram::computeReduceZ (const std::vector < Texture * > & output, int numSlices = -1, int targetSlice = 0, const Cuboid & box = {})
+```
+
+Executes the program on each pixel or voxel inside the box but writes only to a single slice.
+
+The viewport size is set to the size of the first non-zero textures. The user has to setup the OpenGL state accordingly so that intended reduction takes place, e.g.
+
+```cpp
+StateGuard guard(StateGuard::Blending);
+glEnable(GL_BLEND);
+glBlendFunc(GL_ONE, GL_ONE);
+program.computeReduceZ(texOut, texIn.slices(), reduceTo);
+```
+ fragment
+
+**Parameters:**
+
+- `output` — The outputs are bound to the locations depending on their position in the vector. If an entry is null, nothing is bound to that attachment.
+- `numSlices` — Number of slices of the output textures. If negative, slices of the first non-zero output will be used. If output is a 2D textures, numSlices can be set to the number of slices of an input volume. This way, the computation will be performed on all voxel of the input volume but the results will be accumulated in the 2D textures.
+- `targetSlice` — Index of the slice to write to if output is a volume.
+- `box` — Optional ROI in terms of pixels to restrict the shader execution to.
+
+### computeReduceZ
+
+```cpp
+void ImFusion::GL::ImageProgram::computeReduceZ (Texture & output, int numSlices = -1, int targetSlice = 0, const Cuboid & box = {})
+```
+
+Convenience overload to execute a reduction the program on a single texture.
+
+Executes the program on each pixel or voxel inside the box but writes only to a single slice.
+
+The viewport size is set to the size of the first non-zero textures. The user has to setup the OpenGL state accordingly so that intended reduction takes place, e.g.
+
+```cpp
+StateGuard guard(StateGuard::Blending);
+glEnable(GL_BLEND);
+glBlendFunc(GL_ONE, GL_ONE);
+program.computeReduceZ(texOut, texIn.slices(), reduceTo);
+```
+ fragment
+
+**Parameters:**
+
+- `output` — The outputs are bound to the locations depending on their position in the vector. If an entry is null, nothing is bound to that attachment.
+- `numSlices` — Number of slices of the output textures. If negative, slices of the first non-zero output will be used. If output is a 2D textures, numSlices can be set to the number of slices of an input volume. This way, the computation will be performed on all voxel of the input volume but the results will be accumulated in the 2D textures.
+- `targetSlice` — Index of the slice to write to if output is a volume.
+- `box` — Optional ROI in terms of pixels to restrict the shader execution to.
+
+### setAvoidDriverTimeout
+
+```cpp
+void ImFusion::GL::ImageProgram::setAvoidDriverTimeout (bool value)
+```
+
+Sets the flag whether execute the shader in batches to avoid driver timeouts.
+
+If true, [ImageProgram](/cpp-sdk/4.5/api/classes/imfusion-gl-imageprogram) will perform a micro-benchmark and estimate the full computation time. If this would exceed the common hard limit on how long a single OpenGL call can take depending on the platform (e.g. TDR on Windows or the nVidia Linux OpenGL driver watchdog), the computation will be split into chunks.
+
+### setDefines
+
+```cpp
+bool ImFusion::GL::ImageProgram::setDefines (const std::string & defines, Compilation compileBehavior = Compilation::Immediate)
+```
+
+*override, virtual*
+
+Sets the optional string of definitions that is pasted at the beginning of all shaders.
+
+Changing the defines will require recompilation of the shader and invalidate all configured uniforms, buffers, and images.
+
+### genericSamplerDefine
+
+```cpp
+std::string ImFusion::GL::ImageProgram::genericSamplerDefine (bool for3D)
+```
+
+*static*
+
+Returns a string with 3 GLSL defines to help writing shaders that support both 2D and 3D samplers.
+
+For 2D returns:
+
+```cpp
+#define SAMPLER_TYPE sampler2D
+#define SAMPLER_COORDS xy
+#define SAMPLER_2D
+```
+ fragment
+And for 3D returns:
+
+```cpp
+#define SAMPLER_TYPE sampler3D
+#define SAMPLER_COORDS xyz
+#define SAMPLER_3D
+```
+ fragment
+In a shader it can be used like this:
+
+```cpp
+uniform SAMPLER_TYPE tex;
+in vec3 texCoords;
+void main()
+{
+    vec4 color = texture(tex, texCoords.SAMPLER_COORDS);
+}
+```
+ fragment
+
+### cloneImpl
+
+```cpp
+ImageProgram * ImFusion::GL::ImageProgram::cloneImpl () const
+```
+
+*override, protected, virtual*
+
+Virtual helper function to actually clone this type, may throw on error.
+
+## Member Data Documentation
+
+### m_texCoordMode
+
+```cpp
+const TexCoordMode ImFusion::GL::ImageProgram::m_texCoordMode
+```
+
+*protected*
+
+**See also:** [TexCoordMode](#texcoordmode)

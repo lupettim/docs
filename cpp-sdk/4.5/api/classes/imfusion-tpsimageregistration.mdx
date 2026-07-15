@@ -1,0 +1,47 @@
+---
+title: "ImFusion::TPSImageRegistration"
+sidebarTitle: "TPSImageRegistration"
+description: "Registers two images with a non-linear deformation based on TPSs."
+---
+
+`#include <ImFusion/Reg/TPSImageRegistration.h>`
+
+## Overview
+
+Registers two images with a non-linear deformation based on TPSs.
+
+The algorithm modifies the [GlTPSDeformation](/cpp-sdk/4.5/api/classes/imfusion-gltpsdeformation) object attached to the moving image (see also setMoving). Because TPS deformations are generally not invertible, only one image can have a deformation at a time.
+
+```
+\ingroup    ImFusionRegImageRegistration
+```
+
+## Public Member Functions
+
+- **TPSImageRegistration** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*image1, [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*image2)
+- void [initializeTransformationModel](#initializetransformationmodel) () override
+- [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [ParametricDeformation](/cpp-sdk/4.5/api/classes/imfusion-parametricdeformation) &gt; [deformation](#deformation) () const — Returns the deformation object that is currently modified.
+
+## Static Public Member Functions
+
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=0) — Expects two Volumes/Images.
+
+## Member Function Documentation
+
+### initializeTransformationModel
+
+```cpp
+void ImFusion::TPSImageRegistration::initializeTransformationModel ()
+```
+
+*override, virtual*
+
+### deformation
+
+```cpp
+std::shared_ptr < ParametricDeformation > ImFusion::TPSImageRegistration::deformation () const
+```
+
+Returns the deformation object that is currently modified.
+
+This is a convenience method that casts moving to a [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset), retrieves its [deformation](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) and cast that to a [GlTPSDeformation](/cpp-sdk/4.5/api/classes/imfusion-gltpsdeformation). Returns 0, if any of the casts fail.

@@ -1,0 +1,105 @@
+---
+title: "ImFusion::GUI::VolumeView"
+sidebarTitle: "VolumeView"
+description: "Volumetric 3D renderer for SharedImageSets that can be hosted inside a Display ."
+---
+
+`#include <ImFusion/GUI/VolumeView.h>`
+
+## Overview
+
+Volumetric 3D renderer for SharedImageSets that can be hosted inside a [Display](/cpp-sdk/4.5/api/classes/imfusion-gui-display).
+
+This class wraps the [GlVolumeView](/cpp-sdk/4.5/api/classes/imfusion-glvolumeview) renderer that implements Direct Volume Rendering (DVR) of one or many 3D images with correct compositing and blending with any number of regular geometry-based [GlObjects](/cpp-sdk/4.5/api/classes/imfusion-globject). It is mostly a wrapper object to combine the plain OpenGL renderer with input event handling functionality and put it into the a [Display](/cpp-sdk/4.5/api/classes/imfusion-gui-display).
+
+It comes with a [VolumeViewDefaultEventHandler](/cpp-sdk/4.5/api/classes/imfusion-gui-volumeviewdefaulteventhandler) pre-installed so that it is ready to use directly after instantiation. Furthermore, it provides a couple of additional high-level member functions to configure the most important properties of the renderer.
+
+**See also:** [GlVolumeView](/cpp-sdk/4.5/api/classes/imfusion-glvolumeview), [GlVolumeRenderer](/cpp-sdk/4.5/api/classes/imfusion-glvolumerenderer)
+
+## Public Types
+
+- enum class [RenderMode](#rendermode) &#123; DRR , MIP , IsoSurface , UnshadedDVR , PhongDVR , GlobalIllumDVR , Unknown &#125; — Enumeration of built-in default render modes for image data, implemented by [GlVolumeRendererBasic](/cpp-sdk/4.5/api/classes/imfusion-glvolumerendererbasic) and [GlVolumeRendererGlobalIllum](/cpp-sdk/4.5/api/classes/imfusion-glvolumerendererglobalillum).
+- enum class ResetOptions &#123; **None** = 0 , **Everything** = 0xFFFF , **ViewMatrix** = 1 &lt;&lt; 0 , **ClipPlane** = 1 &lt;&lt; 2 &#125; — Bitfield enumeration to specify what aspects of the view shall be reset.
+
+## Public Member Functions
+
+- [VolumeView](#volumeview) ([std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [GlVolumeView](/cpp-sdk/4.5/api/classes/imfusion-glvolumeview) &gt; glVolumeView=nullptr) — Creates a new instance using the given [GlVolumeView](/cpp-sdk/4.5/api/classes/imfusion-glvolumeview).
+- const [GlVolumeView](/cpp-sdk/4.5/api/classes/imfusion-glvolumeview) & **glView** () const — Returns the underlying [GlVolumeView](/cpp-sdk/4.5/api/classes/imfusion-glvolumeview).
+- [GlVolumeView](/cpp-sdk/4.5/api/classes/imfusion-glvolumeview) & **glView** ()
+- RadiologyViewGroup \* **viewGroup** () const — Returns the optional [RadiologyViewGroup](/cpp-sdk/4.5/api/classes/imfusion-gui-radiologyviewgroup) this view can participate in.
+- const [DisplayOptions3d](/cpp-sdk/4.5/api/classes/imfusion-displayoptions3d) \* [displayOptions](#displayoptions) (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) &data) const — Returns the [DisplayOptions3d](/cpp-sdk/4.5/api/classes/imfusion-displayoptions3d) instance that is used for the given dataset by the underlying [GlVolumeRenderer](/cpp-sdk/4.5/api/classes/imfusion-glvolumerenderer).
+- [DisplayOptions3d](/cpp-sdk/4.5/api/classes/imfusion-displayoptions3d) \* **displayOptions** (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) &data)
+- [VolumeViewDefaultEventHandler](/cpp-sdk/4.5/api/classes/imfusion-gui-volumeviewdefaulteventhandler) \* **defaultEventHandler** () const — Convenience function to return the first interaction of type [VolumeViewDefaultEventHandler](/cpp-sdk/4.5/api/classes/imfusion-gui-volumeviewdefaulteventhandler) if present.
+- [RenderMode](#rendermode) **renderMode** () const — Returns the render mode of the underlying [GlVolumeRenderer](/cpp-sdk/4.5/api/classes/imfusion-glvolumerenderer).
+- void **setRenderMode** ([RenderMode](#rendermode) value) — Sets the render mode of the underlying [GlVolumeRenderer](/cpp-sdk/4.5/api/classes/imfusion-glvolumerenderer).
+- const [Camera](/cpp-sdk/4.5/api/classes/imfusion-camera) & **camera** () const — Returns the [Camera](/cpp-sdk/4.5/api/classes/imfusion-camera) of the underlying [GlVolumeView](/cpp-sdk/4.5/api/classes/imfusion-glvolumeview) defining view and projection matrix.
+- void **setCamera** (const [Camera](/cpp-sdk/4.5/api/classes/imfusion-camera) &camera, bool suppressAnimation=false) — Sets [Camera](/cpp-sdk/4.5/api/classes/imfusion-camera) of underlying [GlVolumeView](/cpp-sdk/4.5/api/classes/imfusion-glvolumeview) using a smooth animation if enabled/unless suppressed.
+- void [setMatrix](#setmatrix) (const mat4 &camToWorldMatrix, bool suppressAnimation=false) — Set camera-to-world matrix of the underlying [GlVolumeView](/cpp-sdk/4.5/api/classes/imfusion-glvolumeview) using a smooth animation if enabled/unless suppressed.
+- void **reset** ([Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; ResetOptions &gt; resetOptions=ResetOptions::Everything) — Reset selected parameters of this view to their default state.
+
+## Public Attributes
+
+- Signal&lt; [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; ResetOptions &gt; &gt; **signalResetted** — Emitted when reset() was called.
+
+## Protected Attributes
+
+- [GlVolumeView](/cpp-sdk/4.5/api/classes/imfusion-glvolumeview) \* **m_glVolumeView**
+- RadiologyViewGroup \* **m_viewGroup** = nullptr
+
+## Member Enumeration Documentation
+
+### RenderMode
+
+```cpp
+enum class ImFusion::GUI::VolumeView::RenderMode
+```
+
+*strong*
+
+Enumeration of built-in default render modes for image data, implemented by [GlVolumeRendererBasic](/cpp-sdk/4.5/api/classes/imfusion-glvolumerendererbasic) and [GlVolumeRendererGlobalIllum](/cpp-sdk/4.5/api/classes/imfusion-glvolumerendererglobalillum).
+
+**Enumerator:**
+
+- `DRR` — Digitally reconstructed radiograph.
+- `MIP` — Maximum intensity projection.
+- `IsoSurface` — Iso-surface rendering.
+- `UnshadedDVR` — Direct Volume Rendering without any shading.
+- `PhongDVR` — Direct Volume Rendering with local Phong shading.
+- `GlobalIllumDVR` — Direct Volume Rendering with global illumination shading.
+- `Unknown` — Unknown render mode (e.g. a custom renderer).
+
+## Constructor & Destructor Documentation
+
+### VolumeView
+
+```cpp
+ImFusion::GUI::VolumeView::VolumeView (std::unique_ptr < GlVolumeView > glVolumeView = nullptr)
+```
+
+*explicit*
+
+Creates a new instance using the given [GlVolumeView](/cpp-sdk/4.5/api/classes/imfusion-glvolumeview).
+
+If *glVolumeView* is null it will use a default-constructed one. Furthermore, the constructor will add a [VolumeViewDefaultEventHandler](/cpp-sdk/4.5/api/classes/imfusion-gui-volumeviewdefaulteventhandler).
+
+## Member Function Documentation
+
+### displayOptions
+
+```cpp
+const DisplayOptions3d * ImFusion::GUI::VolumeView::displayOptions (const Data & data) const
+```
+
+Returns the [DisplayOptions3d](/cpp-sdk/4.5/api/classes/imfusion-displayoptions3d) instance that is used for the given dataset by the underlying [GlVolumeRenderer](/cpp-sdk/4.5/api/classes/imfusion-glvolumerenderer).
+
+Returns nullptr in case *data* is not part of [glView()](/cpp-sdk/4.5/api/classes/imfusion-gui-view).vr()-&gt;data().
+
+### setMatrix
+
+```cpp
+void ImFusion::GUI::VolumeView::setMatrix (const mat4 & camToWorldMatrix, bool suppressAnimation = false)
+```
+
+Set camera-to-world matrix of the underlying [GlVolumeView](/cpp-sdk/4.5/api/classes/imfusion-glvolumeview) using a smooth animation if enabled/unless suppressed.
+
+This function has the same effect as calling setCamera() with the inverse of *camToWorldMatrix* as camera pose.

@@ -1,0 +1,40 @@
+---
+title: "ImFusion::GlImageParameters"
+sidebarTitle: "GlImageParameters"
+description: "Set texture parameters for the lifetime of the object and then restore old parameters."
+---
+
+`#include <ImFusion/GL/GlImageParameters.h>`
+
+## Overview
+
+Set texture parameters for the lifetime of the object and then restore old parameters.
+
+## Public Types
+
+- enum **Interpolation** &#123; **Nearest** = 0x2600 , **Linear** = 0x2601 &#125;
+- enum **WrapMode** &#123; **Clamp** = 0x2900 , **ClampToEdge** = 0x812F , **ClampToBorder** = 0x812D , **Repeat** = 0x2901 , **MirroredRepeat** = 0x8370 &#125;
+
+## Public Member Functions
+
+- **GlImageParameters** (const [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) &img, int interpolation, int wrapMode) — Constructor which binds texture and changes settings.
+- **GlImageParameters** (unsigned int target, int interpolation, int wrapMode) — Constructor which assumes a texture is bound to specified target.
+- **~GlImageParameters** () — Destructor, restores original settings.
+
+## Static Public Member Functions
+
+- static void **set** (unsigned int target, int interpolation, int wrapMode) — Static method to set texture parameters without any backup.
+
+## Protected Member Functions
+
+- void **set** (int interpolation, int wrapMode) — Backup and apply desired settings.
+
+## Protected Attributes
+
+- const [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) \* **m_img**
+- unsigned int **m_target**
+- int **m_interpolationMin**
+- int **m_interpolationMag**
+- int **m_wrapS**
+- int **m_wrapT**
+- int **m_wrapR**

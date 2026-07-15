@@ -1,0 +1,168 @@
+---
+title: "ImFusion::DescriptorsRegistrationAlgorithm"
+sidebarTitle: "DescriptorsRegistrationAlgorithm"
+description: "Class for performing image registration using local feature descriptors."
+---
+
+`#include <ImFusion/Reg/DescriptorsRegistrationAlgorithm.h>`
+
+## Overview
+
+Class for performing image registration using local feature descriptors.
+
+This algorithm performs the following steps: 1) Preprocess the fixed and moving images to prepare them for feature extraction. This consists of resampling to p_spacing and baking-in the rotation. 2) Extract feature descriptors using either DISAFeaturesAlgorithm or MINDDescriptorAlgorithm depending on p_descriptorType 3) Computes the weight for the moving image features according to p_weightType. See WeightType. 4) Instantiates and uses [FeatureMapsRegistrationAlgorithm](/cpp-sdk/4.5/api/classes/imfusion-featuremapsregistrationalgorithm) to register the feature descriptors images. The computed registration is then applied to the moving image.
+
+## Classes
+
+- struct [GlobalRegistrationConfig](/cpp-sdk/4.5/api/structs/imfusion-descriptorsregistrationalgorithm-globalregistrationconfig)
+
+## Public Types
+
+- enum class [DescriptorType](#descriptortype) &#123; DISA , MIND &#125;
+- enum class **WeightType** &#123; **None** , **ImageVariance** , **FeatureImportance** &#125;
+- enum class **Transformation** &#123; **Rigid** = 0 , **Affine** = 1 &#125; — [Status](/cpp-sdk/4.5/api/classes/imfusion-algorithm) codes.
+
+## Public Member Functions
+
+- [DescriptorsRegistrationAlgorithm](#descriptorsregistrationalgorithm) ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &fixed, [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &moving, [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*movingWeight=nullptr) — Constructor for [DescriptorsRegistrationAlgorithm](/cpp-sdk/4.5/api/classes/imfusion-descriptorsregistrationalgorithm).
+- void [compute](#compute) () override — Computes the feature descriptors and instantiates the feature registration algorithm.
+- void **initializePose** () — Centers the pose of the moving image wrt the fixed image.
+- void **localRegistration** () — High level method that performs local registration. Make use of registrationAlgorithm() to get low level controls on the registration.
+- void **globalRegistration** () — High level method that performs global registration. Make use of registrationAlgorithm() to get low level controls on the registration.
+- bool [setMovingVolume](#setmovingvolume) ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &moving, [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*movingWeight=nullptr) — Set a different moving volume and recomputes its feature descriptors.
+- [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) **takeDescriptors** ()
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [ImageRegistration](/cpp-sdk/4.5/api/classes/imfusion-imageregistration) &gt; **imageRegistration** (bool swapMoving=false)
+- [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* **moving** () — The moving unprocessed moving image.
+- [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* **fixed** () — The moving unprocessed fixed image.
+- [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* **weight** () const — The weight assigned to the moving image.
+- [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [FeatureMapsRegistrationAlgorithm](/cpp-sdk/4.5/api/classes/imfusion-featuremapsregistrationalgorithm) &gt; **registrationAlgorithm** () — Returns a shared pointer to the algorithm used for feature maps registration.
+- [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* **processedMoving** () const — Returns the processed (rotation baked-in, resampled, normalized) moving image.
+- [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* **processedFixed** () const — Returns the processed (rotation baked-in, resampled, normalized) fixed image.
+- const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* **featuresMoving** () const — Returns a pointer to the feature descriptors extracted from the moving image.
+- const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* **featuresFixed** () const — Returns a pointer to the feature descriptors extracted from the fixed image.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &gt; [heatmap](#heatmap) (const vec3 &pointWorld) — Heatmap describing how similar the point pointWorld on the moving image is to every point on the fixed image.
+- [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \* **disa** () — [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) used to compute DISA features.
+- void **setModelPaths** ([std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) fixedVolumeModelPath, [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) movingVolumeModelPath="") — Sets custom ML models for extracting descriptors.
+- [PoseHistory](/cpp-sdk/4.5/api/classes/imfusion-posehistory) & **poseHistory** ()
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+## Static Public Member Functions
+
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=nullptr)
+- static double **recommendedSpacing** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &fixed, [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &moving)
+
+## Public Attributes
+
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; double &gt; **p_spacing** = &#123;"spacing", 1.0, this&#125;
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; [DescriptorType](#descriptortype) &gt; **p_descriptorType** = &#123;"descriptorType", DescriptorType::DISA, this&#125;
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; Transformation &gt; **p_transformation** = &#123;"transformation", Transformation::Rigid, this&#125;
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; WeightType &gt; **p_weightType** = &#123;"weightType", WeightType::ImageVariance, this&#125;
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; bool &gt; **p_customWeightPremultiplied** = &#123;"customWeightPremultiplied", true, this&#125; — Whether the custom weight is pre-multiplied by the variance of the moving image.
+- [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty)&lt; [GlobalRegistrationConfig](/cpp-sdk/4.5/api/structs/imfusion-descriptorsregistrationalgorithm-globalregistrationconfig) &gt; **p_globalRegistration** = &#123;"globalRegistration", [GlobalRegistrationConfig](/cpp-sdk/4.5/api/structs/imfusion-descriptorsregistrationalgorithm-globalregistrationconfig)(), this&#125;
+
+## Protected Member Functions
+
+- void **setSimplifiedMode** (bool simplified)
+
+## Member Enumeration Documentation
+
+### DescriptorType
+
+```cpp
+enum class ImFusion::DescriptorsRegistrationAlgorithm::DescriptorType
+```
+
+*strong*
+
+**Enumerator:**
+
+- `DISA` — DISA (DIfferentiable Similarity Approximation).
+- `MIND` — MIND (Modality Independent Neighbourhood Descriptor).
+
+## Constructor & Destructor Documentation
+
+### DescriptorsRegistrationAlgorithm
+
+```cpp
+ImFusion::DescriptorsRegistrationAlgorithm::DescriptorsRegistrationAlgorithm (SharedImageSet & fixed, SharedImageSet & moving, SharedImageSet * movingWeight = nullptr)
+```
+
+Constructor for [DescriptorsRegistrationAlgorithm](/cpp-sdk/4.5/api/classes/imfusion-descriptorsregistrationalgorithm).
+
+**Parameters:**
+
+- `fixed` — The fixed image
+- `moving` — The moving image
+- `movingWeight` — (Optional) The weight for the moving image, defining the importance of local descriptors at every voxel.
+
+## Member Function Documentation
+
+### compute
+
+```cpp
+void ImFusion::DescriptorsRegistrationAlgorithm::compute ()
+```
+
+*override, virtual*
+
+Computes the feature descriptors and instantiates the feature registration algorithm.
+
+**Warning:** This doesn't compute the registration, use localRegistration() or globalRegistration() to do the registration
+
+### setMovingVolume
+
+```cpp
+bool ImFusion::DescriptorsRegistrationAlgorithm::setMovingVolume (SharedImageSet & moving, SharedImageSet * movingWeight = nullptr)
+```
+
+Set a different moving volume and recomputes its feature descriptors.
+
+**Parameters:**
+
+- `moving` — The new moving image.
+- `movingWeight` — (Optional) The weight for the new moving image.
+
+**Returns:** True if successful, false otherwise.
+
+### heatmap
+
+```cpp
+std::unique_ptr < SharedImageSet > ImFusion::DescriptorsRegistrationAlgorithm::heatmap (const vec3 & pointWorld)
+```
+
+Heatmap describing how similar the point pointWorld on the moving image is to every point on the fixed image.
+
+**Parameters:**
+
+- `pointWorld` — The world coordinates of the point on the moving image.
+
+**Returns:** Heatmap image having same size (in mm) and pose as the fixed image. The dimensions in voxel matches the dimension of the feature descriptor volume.
+
+### configure
+
+```cpp
+void ImFusion::DescriptorsRegistrationAlgorithm::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### configuration
+
+```cpp
+void ImFusion::DescriptorsRegistrationAlgorithm::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality

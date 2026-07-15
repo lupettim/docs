@@ -1,0 +1,424 @@
+---
+title: "ImFusion::TrackingSequence"
+sidebarTitle: "TrackingSequence"
+description: "Sequence of rigid tracking data with optional timestamps, quality values and flags."
+---
+
+`#include <ImFusion/Base/TrackingSequence.h>`
+
+## Overview
+
+[Sequence](/cpp-sdk/4.5/api/classes/imfusion-dicom-sequence) of rigid tracking data with optional timestamps, quality values and flags.
+
+By convention, TrackingSequences are either owned by the data model and thus shown in the data widget, or by some other class, for instance [TrackedSharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-trackedsharedimageset).
+
+All transformations map to the world coordinate system. The method matrix() without any arguments contains the registration matrix of the entire tracking sequence. This allows using common suite features, for instance linking the tracking sequence with images, moving everything coherently. Querying a specific matrix M (matrix(int) with an index or [matrix(double)](#matrix-1-2) with a time stamp) will obtain the following sequence of transformations: \(M = R \cdot M[i] \cdot C\), where R is the registration matrix, C the calibration matrix, and M[i] the specific matrix queried for.
+
+**Note:** In older versions of the SDK this class was called "TrackingStream" and was only later renamed to [TrackingSequence](/cpp-sdk/4.5/api/classes/imfusion-trackingsequence) in order to avoid confusion with the ImFusion::Stream interface. Therefore, at some places that have not yet been adapted, documentation or member names may still refer to a "tracking stream" even though it means a TrackingSequence.
+
+## Classes
+
+- class [TrackingTuple](/cpp-sdk/4.5/api/classes/imfusion-trackingsequence-trackingtuple) — Tuple returned by iterator, similar to [std::pair](http://en.cppreference.com/w/cpp/utility/pair.html) used when iterating over maps.
+- class [TrackingSequenceIterator](/cpp-sdk/4.5/api/classes/imfusion-trackingsequence-trackingsequenceiterator) — Iterator class for iteration over tracking sequence data, for instance in for-each loops.
+
+## Public Types
+
+- enum [FilterMode](#filtermode) &#123; **None** = 0 , **Position** , **PositionRotation** &#125; — Set spatial filtering of the tracking data (0=None, 1=Position, 2=Position+Rotation).
+- using **const_iterator** = [TrackingSequenceIterator](/cpp-sdk/4.5/api/classes/imfusion-trackingsequence-trackingsequenceiterator) — Typedef for standard naming convention.
+
+## Public Member Functions
+
+- **TrackingSequence** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &[name](/cpp-sdk/4.5/api/classes/imfusion-data)="")
+- [TrackingSequence](#trackingsequence) (const TrackingSequence &other) — Copy constructor.
+- TrackingSequence & [operator=](#operator) (const TrackingSequence &other) — Overloaded assignment operator to synchronize multi-thread accesses while copying.
+- [Kind](/cpp-sdk/4.5/api/classes/imfusion-data) [kind](#kind) () const override — Return the kind of this data.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [describe](#describe) () const override — Human readable description of the data for showing in the info bar.
+- [Geometry::AlignedBox](/cpp-sdk/4.5/api/classes/imfusion-geometry-alignedbox) [bounds](#bounds) () const override — Return the axis-aligned bounding box of all tracking poses in world space.
+- void [setMatrix](#setmatrix) (const mat4 &m) override — Set the registration matrix (matrix mapping from the tracker to the world coordinate origin).
+- bool [isAnnotationType](#isannotationtype) () const override — Return whether this data type is visualized through an annotation (e.g. mesh).
+- [Pose::TransformationConvention](/cpp-sdk/4.5/api/namespaces/imfusion-pose) [matrixConvention](#matrixconvention) () const override — Tracking sequence transformations map to the world coordinate system.
+- void **clear** () — Clear all tracking samples (including timestamps, quality and flags).
+- void [remove](#remove) (int pos, int count=1) — Remove the selected tracking entries.
+- void **setCalibration** (const mat4 &mat) — Set the calibration matrix (matrix mapping from the image center to the tracker).
+- void **setRegistration** (const mat4 &mat) — Set the registration matrix (matrix mapping from the tracker to the world coordinate origin).
+- void **setTemporalOffset** (double val) — Set the temporal offset (lag) value, in seconds.
+- void **setInvert** (bool flag) — Specify if inverted tracking matrices should be provided.
+- void [setRelativeTracking](#setrelativetracking) (const TrackingSequence \*sequence) — Specify another tracking sequence to which relative matrices should be provided.
+- void **setRelativeToFirst** (bool flag) — Specify whether a relative tracking sequence shall be used with respect to its first frame.
+- void **setFilterMode** (int val)
+- void **setFilterSize** (int val) — Specify half width of filter window.
+- void **setFilterGaussian** (bool flag) — If true, a Gaussian filter with 3 sigma cutoff will be used, a box filter otherwise.
+- void **setFilterConsiderTime** (bool flag) — If true, the filter will accommodate varying timestamps.
+- void **setFilterBalance** (bool flag) — If true, filtering balances the number of samples before and after the central one.
+- void **shiftTimestamps** (double shift) — Add the `shift` value to all timestamps.
+- mat4 **matrix** (int num) const — Return matrix (with registration and calibration applied) of a tracking sample.
+- mat4 [rawMatrix](#rawmatrix) (double time) const — Return raw tracking matrix without multiplying anything (registration, calibration, etc.) on it at a particular time.
+- mat4 **rawMatrix** (int num) const — Return raw tracking matrix without multiplying anything (registration, calibration, etc.) on it.
+- void **setRawMatrix** (int idx, const mat4 &value) — Set the raw tracking matrix (as retrieved from the tracking system, without registration, calibration, etc. considered).
+- mat4 **closestRawMatrix** (double time) const — Return closest raw matrix at the given timestamp. Does not perform interpolation.
+- double **closestTimestamp** (double time) const — Return closest timestamp at the given timestamp. Does not perform interpolation.
+- int **closestTimestampIndex** (double time) const — Return the index of the closest timestamp at the given timestamp. Does not perform interpolation.
+- mat4 [matrix](#matrix-1-2) (double time) const — Return matrix (with registration and calibration applied) at a particular time, in seconds.
+- bool **hasTimestamps** () const — Return true if the tracking sequence has correct timestamps.
+- bool [checkTimestamps](#checktimestamps) ([std::ostream](http://en.cppreference.com/w/cpp/io/basic_ostream.html) \*out=nullptr) — Sort all tracking frames by their timestamp, compute the median timestamp increment, and return true if there are gaps (i.e.
+- double **timestamp** (int num) const — Return the timestamp of a tracking sample in seconds.
+- void [setTimestamp](#settimestamp) (int idx, double value) — Set the timestamp of a tracking sample.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; **timestamps** () const — Returns all tracking sample timestamps.
+- void **setMaxTimestepBetweenSamples** (double val) — Set the maxtimestep between samples as the average of the time stamp between consecutive samples.
+- bool **isWithinTimestepLimit** (double timestamp1, double timestamp2) const — Return true if the timestep between the provided timestamps is within m_maxTimestepBetweenSamples.
+- double **rawQuality** (int num) const — Return the quality value of a tracking sample, without consideration of relative streams.
+- void **setRawQuality** (int idx, double value) — Set the quality of a tracking sample directly.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; **rawQualities** () const — Return all tracking sample qualities.
+- double **quality** (int num) const — Return the quality value of a tracking sample.
+- double [quality](#quality) (double time, bool checkDistance, bool ignoreRelative=false) const — Return the quality value at a particular time.
+- bool **hasQuality** () const — Return true if the tracking sequence has quality data.
+- int **flags** (int num) const — Return the flags of a tracking sample.
+- bool **hasFlags** () const — Return true if the tracking sequence has flags data.
+- const mat4 & **calibration** () const — Return the calibration matrix.
+- const mat4 & **registration** () const — Return the registration matrix.
+- double **temporalOffset** () const — Return the temporal offset (lag) value, in seconds.
+- bool **invert** () const — Return the inversion flag.
+- const TrackingSequence \* **relativeTracking** () const — Return relative tracking sequence if enabled. Can be pointer to itself.
+- bool **relativeToFirst** () const — Return whether a relative tracking sequence is used with respect to its first frame.
+- int **filterMode** () const — Return matrix filtering mode.
+- int **filterSize** () const — Return matrix filtering size.
+- bool **filterGaussian** () const — Return the Gaussian filtering flag.
+- bool **filterConsiderTime** () const — Return the filter consider time flag.
+- bool **filterBalance** () const — Return the filter balance flag.
+- double **maxTimestepBetweenSamples** () — Return the maxtimestep between samples expressed in sec.
+- void **printInfo** ([std::ostream](http://en.cppreference.com/w/cpp/io/basic_ostream.html) \*out=nullptr) const — Print some statistics about the tracking sequence.
+- vec3 **center** () const — Compute and return the 3D center of the tracking sequence.
+- int [size](#size) () const override — Return the size of the tracking sequence.
+- double **medianTimeStep** () const — Return the median time step between tracking samples in case there are gaps, and zero otherwise.
+- void [setInstrumentMetaData](#setinstrumentmetadata) (unsigned int id, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &[name](/cpp-sdk/4.5/api/classes/imfusion-data), const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &model)
+- void **setTrackerID** (const [TrackerID](/cpp-sdk/4.5/api/classes/imfusion-trackerid) &id) — Set the ID (should be unique), name, and model number of the tracking instrument at once.
+- unsigned int [instrumentID](#instrumentid) () const — Return the tracking instrument ID.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [instrumentName](#instrumentname) () const — Return the tracking instrument name.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [instrumentModelNumber](#instrumentmodelnumber) () const — Return the tracking instrument model number.
+- const [TrackerID](/cpp-sdk/4.5/api/classes/imfusion-trackerid) **trackerID** () const — Return the [TrackerID](/cpp-sdk/4.5/api/classes/imfusion-trackerid) containing info about the unique ID, the model number, and the name of the instrument.
+- bool **isRelativeSequenceCompatible** (const TrackingSequence \*ts) const — Return true of the provided tracking sequence fulfils the requirements obtained during loading.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **filename** () const — Return original filename the sequence was loaded from.
+- void **setFilename** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &file) — Set the original filename the sequence was loaded from.
+- void **emitTrackingChanged** () — Emits signalTrackingChanged.
+- bool [isRelativeStreamCompatible](#isrelativestreamcompatible) (const TrackingSequence \*ts) const
+- virtual mat4 [matrix](#matrix-2-2) () const — To prevent overloading warning.
+- const [DataComponentList](/cpp-sdk/4.5/api/classes/imfusion-datacomponentlist) & **components** () const — Returns the list of DataComponents for this data.
+- [DataComponentList](/cpp-sdk/4.5/api/classes/imfusion-datacomponentlist) & **components** ()
+- const [DataComponentList](/cpp-sdk/4.5/api/classes/imfusion-datacomponentlist) & **components** (int i) const — Returns the DataComponents associated to the element with that index.
+
+## Static Public Member Functions
+
+- static void **printTimeInfo** (const T &data, [std::ostream](http://en.cppreference.com/w/cpp/io/basic_ostream.html) \*out=nullptr) — Print information regarding the timestamp range and increments.
+
+## Public Attributes
+
+- Signal **signalTrackingChanged** — Signal emitted when the tracking sequence data has changed.
+- Signal & [signalTrackingStreamChanged](#signaltrackingstreamchanged) = signalTrackingChanged
+
+## Protected Member Functions
+
+- double [retrieveSampleForInterpolation](#retrievesampleforinterpolation) (double time, T(TrackingSequence::\*lookupFunc)(int) const, bool checkDistance, T &outSample1, T &outSample2) const — Internal helper method to perform a timestamp-based look-up of matrices, qualities, etc.
+
+## Static Protected Member Functions
+
+- static void **analyzeSeries** (const T &data, int mode, double &avg, double &[std](/cpp-sdk/4.5/api/namespaces/std), double &min, double &max) — Compute basic statistics on a scalar vector of data.
+
+## Protected Attributes
+
+- [Transform](/cpp-sdk/4.5/api/classes/imfusion-transform)&lt; [TrackingCS::Tracker](/cpp-sdk/4.5/api/namespaces/imfusion), [TrackingCS::Calibrated](/cpp-sdk/4.5/api/namespaces/imfusion) &gt; **m_calibration** — Calibration matrix (applied right of the tracking).
+- [Transform](/cpp-sdk/4.5/api/classes/imfusion-transform)&lt; GlobalCS::World, GlobalCS::Data &gt; **m_regOrig** — Original registration matrix in case of relative tracking.
+- double **m_temporalOfs** — Temporal offset (lag).
+- double **m_medianTimeStep** — Median time step if there are outliers.
+- double **m_maxTimestepBetweenSamples** — Max allowed timestep between two samples for non-zero quality, set to 0 for no limit.
+- [std::deque](http://en.cppreference.com/w/cpp/container/deque.html)&lt; [Transform](/cpp-sdk/4.5/api/classes/imfusion-transform)&lt; GlobalCS::Data, [TrackingCS::Tracker](/cpp-sdk/4.5/api/namespaces/imfusion) &gt; &gt; **m_matrices** — The rigid tracking matrices.
+- [std::deque](http://en.cppreference.com/w/cpp/container/deque.html)&lt; [Transform](/cpp-sdk/4.5/api/classes/imfusion-transform)&lt; GlobalCS::Data, [TrackingCS::Tracker](/cpp-sdk/4.5/api/namespaces/imfusion) &gt; &gt; **m_matOrig** — Original tracking matrices if filtering is enabled.
+- [std::deque](http://en.cppreference.com/w/cpp/container/deque.html)&lt; double &gt; **m_timestamps** — Timestamps, if available.
+- [std::deque](http://en.cppreference.com/w/cpp/container/deque.html)&lt; double &gt; **m_quality** — Quality values, if available.
+- [std::deque](http://en.cppreference.com/w/cpp/container/deque.html)&lt; int &gt; **m_flags** — Binary flags, if available.
+- [TrackerID](/cpp-sdk/4.5/api/classes/imfusion-trackerid) **m_trackerID** — ID of the tracking instrument.
+- int **m_filterMode** — Spatial filtering of tracking data (0 if disabled).
+- int **m_filterSize** — Size of the filter window (number of samples).
+- bool **m_filterSizeChanged** — If true, setFilterMode filters all samples and changes the flag to false.
+- bool **m_filterGauss** — Gaussian vs. box filter mode.
+- bool **m_filterTime** — Filtering considers timestamps.
+- bool **m_filterBalance** — Filtering balances before and after samples.
+- bool **m_invert** — Provide inverted tracking matrices.
+- bool **m_relToFirst** — Relative tracking sequence applied wrt. its first frame.
+- const TrackingSequence \* **m_relSequence** — Provide relative matrices wrt. another sequence.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **m_tempRelStreamInfo** — During loading, instrument ID, name, and model number are stored here to allow for later assignment of the relative tracking sequence.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **m_filename** — Stores file name the [TrackingSequence](/cpp-sdk/4.5/api/classes/imfusion-trackingsequence) was loaded from.
+- [std::recursive_mutex](http://en.cppreference.com/w/cpp/thread/recursive_mutex.html) **m_dataMtx** — Internally synchronizes access to data members.
+- [Geometry::AlignedBox](/cpp-sdk/4.5/api/classes/imfusion-geometry-alignedbox) **m_bounds** — axis-aligned bounding box of this data in world space
+- bool **m_updateBounds** — flag which indicates whether the bounds of this data should be re-computed
+
+## Adding a tracking sample, only one of these methods must be used
+
+- void **add** (const mat4 &mat) — Add a single tracking matrix.
+- void **add** (const mat4 &mat, double timestamp) — Add a tracking matrix with corresponding timestamp.
+- void **add** (const mat4 &mat, double timestamp, double quality) — Add a tracking matrix with timestamp and quality information.
+- void **add** (const mat4 &mat, double timestamp, double quality, int flags) — Add a tracking matrix with timestamp, quality and further flags such as button states.
+
+## Iterators for matrix traversal
+
+- const_iterator **begin** () const
+- const_iterator **end** () const
+
+## Member Enumeration Documentation
+
+### FilterMode
+
+```cpp
+enum ImFusion::TrackingSequence::FilterMode
+```
+
+Set spatial filtering of the tracking data (0=None, 1=Position, 2=Position+Rotation).
+
+The set of filtered matrices are computed in this method, and the original ones backed up. If a filter is set, new tracking data can only be added to the end of the sequence and old tracking data can only be removed from the beginning of the sequence. After adding or removing (one or multiple) samples this method must be called. Adding and removing samples must not be done together in between two calls.
+
+## Constructor & Destructor Documentation
+
+### TrackingSequence
+
+```cpp
+ImFusion::TrackingSequence::TrackingSequence (const TrackingSequence & other)
+```
+
+Copy constructor.
+
+If the relative tracking sequence of `other` is `other` itself, the intended recursion to the this-pointer is maintained.
+
+## Member Function Documentation
+
+### operator
+
+```cpp
+TrackingSequence & ImFusion::TrackingSequence::operator= (const TrackingSequence & other)
+```
+
+Overloaded assignment operator to synchronize multi-thread accesses while copying.
+
+If the relative tracking sequence of `other` is `other` itself, the intended recursion to the this-pointer is maintained.
+
+### kind
+
+```cpp
+Kind ImFusion::TrackingSequence::kind () const
+```
+
+*inline, override, virtual*
+
+Return the kind of this data.
+
+### describe
+
+```cpp
+std::string ImFusion::TrackingSequence::describe () const
+```
+
+*override, virtual*
+
+Human readable description of the data for showing in the info bar.
+
+### bounds
+
+```cpp
+Geometry::AlignedBox ImFusion::TrackingSequence::bounds () const
+```
+
+*override, virtual*
+
+Return the axis-aligned bounding box of all tracking poses in world space.
+
+### setMatrix
+
+```cpp
+void ImFusion::TrackingSequence::setMatrix (const mat4 & m)
+```
+
+*override, virtual*
+
+Set the registration matrix (matrix mapping from the tracker to the world coordinate origin).
+
+### isAnnotationType
+
+```cpp
+bool ImFusion::TrackingSequence::isAnnotationType () const
+```
+
+*inline, override, virtual*
+
+Return whether this data type is visualized through an annotation (e.g. mesh).
+
+### matrixConvention
+
+```cpp
+Pose::TransformationConvention ImFusion::TrackingSequence::matrixConvention () const
+```
+
+*inline, override, virtual*
+
+Tracking sequence transformations map to the world coordinate system.
+
+### remove
+
+```cpp
+void ImFusion::TrackingSequence::remove (int pos, int count = 1)
+```
+
+Remove the selected tracking entries.
+
+Will remove associated ElementwiseDataComponent as well.
+
+### setRelativeTracking
+
+```cpp
+void ImFusion::TrackingSequence::setRelativeTracking (const TrackingSequence * sequence)
+```
+
+Specify another tracking sequence to which relative matrices should be provided.
+
+The temporal offset value of the provided tracking sequence instance relates it to this instance, e.g. it should generally be set to zero (not the value in here). Note that it can be set to itself, which will result in all calls to matrix() return an identity matrix.
+
+### rawMatrix
+
+```cpp
+mat4 ImFusion::TrackingSequence::rawMatrix (double time) const
+```
+
+Return raw tracking matrix without multiplying anything (registration, calibration, etc.) on it at a particular time.
+
+If required, interpolation between neighboring tracking matrices is used.
+
+### matrix
+
+```cpp
+mat4 ImFusion::TrackingSequence::matrix (double time) const
+```
+
+Return matrix (with registration and calibration applied) at a particular time, in seconds.
+
+If required, interpolation between neighboring tracking matrices is used.
+
+### checkTimestamps
+
+```cpp
+bool ImFusion::TrackingSequence::checkTimestamps (std::ostream * out = nullptr)
+```
+
+Sort all tracking frames by their timestamp, compute the median timestamp increment, and return true if there are gaps (i.e.
+
+lost tracking). Will also remove data with unreasonable timestamps, and sort [ElementwiseDataComponentList](/cpp-sdk/4.5/api/classes/imfusion-elementwisedatacomponentlist) as well.
+
+### setTimestamp
+
+```cpp
+void ImFusion::TrackingSequence::setTimestamp (int idx, double value)
+```
+
+Set the timestamp of a tracking sample.
+
+Attention: Different parameter order than in [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset)!
+
+### quality
+
+```cpp
+double ImFusion::TrackingSequence::quality (double time, bool checkDistance, bool ignoreRelative = false) const
+```
+
+Return the quality value at a particular time.
+
+If checkDistance is enabled, a quality of zero is returned when the time is before or after the range of the timestamps, or within a gap. If ignoreRelative is enabled, the quality is calculated from this tracking sequence only and not multiplied with the tracking quality of the reference tracker (only relevant if relative tracking sequence is set).
+
+### size
+
+```cpp
+int ImFusion::TrackingSequence::size () const
+```
+
+*inline, override, virtual*
+
+Return the size of the tracking sequence.
+
+### setInstrumentMetaData
+
+```cpp
+void ImFusion::TrackingSequence::setInstrumentMetaData (unsigned int id, const std::string & name, const std::string & model)
+```
+
+****Deprecated**:** "Use setTrackerID(const TrackerID& id) instead"
+
+### instrumentID
+
+```cpp
+unsigned int ImFusion::TrackingSequence::instrumentID () const
+```
+
+Return the tracking instrument ID.
+
+****Deprecated**:** "Use trackerID().ID() instead"
+
+### instrumentName
+
+```cpp
+std::string ImFusion::TrackingSequence::instrumentName () const
+```
+
+*inline*
+
+Return the tracking instrument name.
+
+****Deprecated**:** "Use trackerID().name() instead"
+
+### instrumentModelNumber
+
+```cpp
+std::string ImFusion::TrackingSequence::instrumentModelNumber () const
+```
+
+*inline*
+
+Return the tracking instrument model number.
+
+****Deprecated**:** "Use trackerID().modelNumber() instead"
+
+### isRelativeStreamCompatible
+
+```cpp
+bool ImFusion::TrackingSequence::isRelativeStreamCompatible (const TrackingSequence * ts) const
+```
+
+*inline*
+
+****Deprecated**:**
+
+### retrieveSampleForInterpolation
+
+```cpp
+template<typename T> double ImFusion::TrackingSequence::retrieveSampleForInterpolation (double time, T(TrackingSequence::* lookupFunc)(int) const, bool checkDistance, T & outSample1, T & outSample2) const
+```
+
+*protected*
+
+Internal helper method to perform a timestamp-based look-up of matrices, qualities, etc.
+
+Returns the fraction between 0 and 1 for outSample1 and outSample2 to be interpolated. outSample2 might not be set of fraction == 0.0.
+
+### matrix
+
+```cpp
+virtual mat4 ImFusion::Data::matrix () const
+```
+
+*virtual*
+
+To prevent overloading warning.
+
+## Member Data Documentation
+
+### signalTrackingStreamChanged
+
+```cpp
+Signal & ImFusion::TrackingSequence::signalTrackingStreamChanged = signalTrackingChanged
+```
+
+****Deprecated**:** "Use signalTrackingChanged instead"

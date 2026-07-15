@@ -1,0 +1,48 @@
+---
+title: "ImFusion::MainView"
+sidebarTitle: "MainView"
+---
+
+## Public Member Functions
+
+- **MainView** ([Project](/cpp-sdk/4.5/api/classes/imfusion-project) &project, [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; void()&gt; close, [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; bool()&gt; save)
+- void **switchToGallery** ()
+- void **switchToEditor** ()
+- void **switchToExperiments** ()
+- void **switchToExport** ()
+- [Utils::Expected](/cpp-sdk/4.5/api/classes/imfusion-utils-expected)&lt; void, [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **saveProject** ()
+- void **showSettings** ()
+- void **loadInstructions** () — Reloads the instructions shown in the instructions side panel.
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- [ThumbnailLoader](/cpp-sdk/4.5/api/classes/imfusion-thumbnailloader) & **thumbnailLoader** ()
+
+## Member Function Documentation
+
+### configuration
+
+```cpp
+void ImFusion::MainView::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality
+
+### configure
+
+```cpp
+void ImFusion::MainView::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality

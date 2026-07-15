@@ -1,0 +1,88 @@
+---
+title: "ImFusion::ImageCompressionCodec"
+sidebarTitle: "ImageCompressionCodec"
+description: "Saving and loading of compressed image data through video codecs."
+---
+
+`#include <ImFusion/Base/ImageCompressionCodec.h>`
+
+## Overview
+
+Saving and loading of compressed image data through video codecs.
+
+This class supports asynchronous saving of images. You need to instantiate a new object of this class with an image container that already has at least one image inside.
+
+**Note:** This class requires libavcodec to be linked, which we don't do directly. Instead, we use [OpenCV](/cpp-sdk/4.5/api/namespaces/imfusion-opencv) with FFMPEG support on, which makes automatically takes care of the correct libraries to link. Make sure that you use an FFMPEG version of at least 3.0.
+
+## Public Types
+
+- enum [CompressionCodec](#compressioncodec) &#123; FFV1 , H264 &#125; — Enum of supported video codecs.
+
+## Public Member Functions
+
+- **ImageCompressionCodec** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*is, const [ImageDescriptor](/cpp-sdk/4.5/api/structs/imfusion-imagedescriptor) &desc) — Constructor for loading data with empty image set container.
+- **ImageCompressionCodec** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*is) — Constructor with an allocated image set container to save.
+- virtual **~ImageCompressionCodec** () — Destructor.
+- bool **load** ([std::istream](http://en.cppreference.com/w/cpp/io/basic_istream.html) &file) — Loads a compressed image set.
+- bool [save](#save) ([std::ostream](http://en.cppreference.com/w/cpp/io/basic_ostream.html) &file) — Saves a compressed image set in one go.
+- bool [startSaveAsync](#startsaveasync) ([std::ostream](http://en.cppreference.com/w/cpp/io/basic_ostream.html) &file) — Prepares the asynchronous saving of images.
+- bool **addFrameAsync** (const [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; unsigned char &gt; \*memImg) — After calling [startSaveAsync()](#startsaveasync), call this method to encode an image. Blocking.
+- bool [closeAsync](#closeasync) () — After calling [startSaveAsync()](#startsaveasync) and addFrameAsync() for each image, finalize the operation with this method.
+- void **setProgress** ([Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) \*p) — Set optional progress callback.
+- void **setCodec** ([CompressionCodec](#compressioncodec) c) — Sets the compression codec.
+- [CompressionCodec](#compressioncodec) **codec** () const — Returns the compression codec.
+
+## Static Public Member Functions
+
+- static void **registerAllCodecs** () — To be called from base factory.
+
+## Protected Member Functions
+
+- bool **encodeFrameInBuffer** ()
+
+## Member Enumeration Documentation
+
+### CompressionCodec
+
+```cpp
+enum ImFusion::ImageCompressionCodec::CompressionCodec
+```
+
+Enum of supported video codecs.
+
+**Enumerator:**
+
+- `FFV1` — FFV1, lossless.
+- `H264` — H264, not lossless, achieves high compression rates.
+
+## Member Function Documentation
+
+### save
+
+```cpp
+bool ImFusion::ImageCompressionCodec::save (std::ostream & file)
+```
+
+Saves a compressed image set in one go.
+
+Internally calls [startSaveAsync()](#startsaveasync), addFrameAsync() for each frame, and eventually [closeAsync()](#closeasync).
+
+### startSaveAsync
+
+```cpp
+bool ImFusion::ImageCompressionCodec::startSaveAsync (std::ostream & file)
+```
+
+Prepares the asynchronous saving of images.
+
+The [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) provided in the constructor must already at construction (!) be filled with at least one image to ensure correct encoder metadata. Does not save any images, call addFrameAsync() for each image.
+
+### closeAsync
+
+```cpp
+bool ImFusion::ImageCompressionCodec::closeAsync ()
+```
+
+After calling [startSaveAsync()](#startsaveasync) and addFrameAsync() for each image, finalize the operation with this method.
+
+Without it, the data will not be readable.

@@ -1,0 +1,21 @@
+---
+title: "ImFusion::MeshLaplacian"
+sidebarTitle: "MeshLaplacian"
+description: "Compute co-tangent laplacian of a mesh and its eigen decomposition."
+---
+
+`#include <ImFusion/Mesh/MeshLaplacian.h>`
+
+## Overview
+
+Compute co-tangent laplacian of a mesh and its eigen decomposition.
+
+The result is used in DiffusionNet architecture ([https://arxiv.org/abs/2012.00888](https://arxiv.org/abs/2012.00888)) for learning on 3D shapes.
+
+## Public Member Functions
+
+- **MeshLaplacian** (const [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) &mesh)
+- Eigen::VectorXd **getMass** () const
+- Eigen::SparseMatrix&lt; double &gt; **getLaplacian** () const
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; int &gt; &gt; **getLaplacianOffDiagIndices** () const
+- [std::pair](http://en.cppreference.com/w/cpp/utility/pair.html)&lt; Eigen::VectorXd, Eigen::MatrixXd &gt; **getEigenDecomposition** (const size_t num, const double tol=1e-8, const size_t maxIter=100)

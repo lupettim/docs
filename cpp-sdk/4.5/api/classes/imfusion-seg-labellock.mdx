@@ -1,0 +1,20 @@
+---
+title: "ImFusion::Seg::LabelLock"
+sidebarTitle: "LabelLock"
+description: "Convenience class for handling locked/unlocked state of labels."
+---
+
+`#include <ImFusion/Seg/Utils.h>`
+
+## Overview
+
+Convenience class for handling locked/unlocked state of labels.
+
+The flags can be set one-by-one, and passed to the shader as an array of uint32_t of size 8 (totalling 256 bits). The shader must still do the bit-manipulation to retrieve the individual locking status of each label
+
+## Public Member Functions
+
+- void **setLocked** (uint8_t labelIndex, bool locked)
+- bool **locked** (uint8_t labelIndex) const
+- void **setAll** (bool locked)
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; uint32_t &gt; & **flags** ()

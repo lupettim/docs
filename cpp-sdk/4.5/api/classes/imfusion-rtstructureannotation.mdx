@@ -1,0 +1,60 @@
+---
+title: "ImFusion::RTStructureAnnotation"
+sidebarTitle: "RTStructureAnnotation"
+description: "Annotation that renders a PointCloud with a RTStructureDataComponent ."
+---
+
+`#include <ImFusion/Dicom/RTStructureAnnotation.h>`
+
+## Overview
+
+Annotation that renders a [PointCloud](/cpp-sdk/4.5/api/classes/imfusion-pointcloud) with a [RTStructureDataComponent](/cpp-sdk/4.5/api/classes/imfusion-dicom-rtstructuredatacomponent).
+
+All the rendering data is stored in a [RTStructureRenderingDataComponent](/cpp-sdk/4.5/api/classes/imfusion-dicom-rtstructurerenderingdatacomponent), so this object is cheap to create. In a slice view, the annotation renders the original outline if the slice matches the plane of the outline. Otherwise it will render a mesh if available. In the 3D view, it will always render the mesh if available.
+
+## Public Member Functions
+
+- **RTStructureAnnotation** (const [PointCloud](/cpp-sdk/4.5/api/classes/imfusion-pointcloud) \*rtstruct)
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [typeName](#typename) () const override — Return unique identifier for this object class used for serialization.
+- [Geometry::AlignedBox](/cpp-sdk/4.5/api/classes/imfusion-geometry-alignedbox) [bounds](#bounds) () const override — Get the axis-aligned bounding box of this [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) in world space.
+- void [draw](#draw) (const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &view) override — Draw the object in 3D space.
+
+## Public Attributes
+
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; int &gt; **p_lineWidth** = &#123;"lineWidth", 5, this&#125;
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; bool &gt; **p_renderOriginalContours** = &#123;"renderOriginalContours", true, this&#125;
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; bool &gt; **p_renderMeshReconstruction** = &#123;"renderMeshReconstruction", true, this&#125;
+
+## Member Function Documentation
+
+### typeName
+
+```cpp
+std::string ImFusion::RTStructureAnnotation::typeName () const
+```
+
+*override, virtual*
+
+Return unique identifier for this object class used for serialization.
+
+### bounds
+
+```cpp
+Geometry::AlignedBox ImFusion::RTStructureAnnotation::bounds () const
+```
+
+*override, virtual*
+
+Get the axis-aligned bounding box of this [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) in world space.
+
+Return an empty (default-constructed) AlignedBox object if the [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) does not reside in world space.
+
+### draw
+
+```cpp
+void ImFusion::RTStructureAnnotation::draw (const GlView & view)
+```
+
+*override, virtual*
+
+Draw the object in 3D space.

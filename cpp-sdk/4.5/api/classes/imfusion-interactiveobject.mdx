@@ -1,0 +1,122 @@
+---
+title: "ImFusion::InteractiveObject"
+sidebarTitle: "InteractiveObject"
+description: "Wraps a GlObject pairing it with an optional Manipulator in order to attach it to an InteractiveView ."
+---
+
+`#include <ImFusion/GUI/InteractiveObject.h>`
+
+## Overview
+
+Wraps a [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) pairing it with an optional [Manipulator](/cpp-sdk/4.5/api/classes/imfusion-manipulator) in order to attach it to an [InteractiveView](/cpp-sdk/4.5/api/classes/imfusion-interactiveview).
+
+Attaching a [InteractiveObject](/cpp-sdk/4.5/api/classes/imfusion-interactiveobject) to a [InteractiveView](/cpp-sdk/4.5/api/classes/imfusion-interactiveview) (in contrast to attaching a [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) to a [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview)) allows for receiving and handling user input (e.g. mouse events). Usually, event handling logic is implemented by the [Manipulator](/cpp-sdk/4.5/api/classes/imfusion-manipulator) and the [InteractiveObject](/cpp-sdk/4.5/api/classes/imfusion-interactiveobject) is merely supposed to coordinate the interaction between the user input (via [Manipulator](/cpp-sdk/4.5/api/classes/imfusion-manipulator)) and the [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject).
+
+This class serves as a bridge between the Qt [GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui) Layer and the OpenGL Layer by forwarding the Qt events coming from an interactiveView to a [Manipulator](/cpp-sdk/4.5/api/classes/imfusion-manipulator) and holding a reference to the [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) which intended for interaction. Formally this class belongs to the Qt [GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui) Layer.
+
+Remark: By default, [InteractiveObject](/cpp-sdk/4.5/api/classes/imfusion-interactiveobject) does not own either the [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) or the [Manipulator](/cpp-sdk/4.5/api/classes/imfusion-manipulator); both must be managed externally (e.g., by the [Controller](/cpp-sdk/4.5/api/classes/imfusion-controller)). However, if constructed using InteractiveObject::InteractiveObject(GlObject\* object, Manipulator\* manipulator, bool own) with own set to true, [InteractiveObject](/cpp-sdk/4.5/api/classes/imfusion-interactiveobject) takes ownership and will delete the [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) and [Manipulator](/cpp-sdk/4.5/api/classes/imfusion-manipulator) in its destructor.
+
+An [InteractiveObject](/cpp-sdk/4.5/api/classes/imfusion-interactiveobject) must be referenced by an [InteractiveView](/cpp-sdk/4.5/api/classes/imfusion-interactiveview) to work properly. To achieve this bond, we can associate the [InteractiveObject](/cpp-sdk/4.5/api/classes/imfusion-interactiveobject) to the [InteractiveView](/cpp-sdk/4.5/api/classes/imfusion-interactiveview) via [InteractiveView::addObject](/cpp-sdk/4.5/api/classes/imfusion-interactiveview). For example, inside a [Controller](/cpp-sdk/4.5/api/classes/imfusion-controller) we can call
+
+```cpp
+m_disp->viewSlice(1)->addObject(myPointerToInteractiveObject);
+m_disp->view3D()->addObject(myPointerToAnotherInteractiveObject);
+```
+ fragment
+The [InteractiveView](/cpp-sdk/4.5/api/classes/imfusion-interactiveview) calls [InteractiveObject::sceneEvent](#sceneevent) to propagate input events. These events can then be handled by the user via an overridable [sceneEvent()](#sceneevent) method in a subclass, allowing the user to control of the [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject).
+
+#### Key Methods:
+
+- sceneEvent(QEvent\*): Forwards the Qt event to the [Manipulator](/cpp-sdk/4.5/api/classes/imfusion-manipulator) if the object is visible. The user must override this class to gather the events from the [InteractiveView](/cpp-sdk/4.5/api/classes/imfusion-interactiveview). When overriding, a good practice is to call [InteractiveObject::sceneEvent](#sceneevent) to forward events to the manipulator properly.
+- [goTo()](#goto): Moves the camera to center on the [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) and sets focus in the [InteractiveView](/cpp-sdk/4.5/api/classes/imfusion-interactiveview)[GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui).
+- [handleInputEvent()](#handleinputevent): Implements the interface of the non-qt base class GUI::Object and forwards the call to [sceneEvent()](#sceneevent).
+
+  #### Notes:
+
+- This class is referenced by [InteractiveView](/cpp-sdk/4.5/api/classes/imfusion-interactiveview).
+- Subclasses can override [sceneEvent()](#sceneevent) to customize how Qt events are handled.
+- Proper setup requires assigning the [InteractiveObject](/cpp-sdk/4.5/api/classes/imfusion-interactiveobject) to an [InteractiveView](/cpp-sdk/4.5/api/classes/imfusion-interactiveview) via reference.
+
+**See also:** [Interactive&lt;T, S&gt;](/cpp-sdk/4.5/api/classes/imfusion-interactive) for a templated version of this class
+
+## Public Member Functions
+
+- **InteractiveObject** ([GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) \*object, [Manipulator](/cpp-sdk/4.5/api/classes/imfusion-manipulator) \*manipulator=nullptr, bool own=true) — Instantiate a new [InteractiveOverlay](/cpp-sdk/4.5/api/classes/imfusion-interactiveoverlay), optionally taking ownership of the underlying [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) and [Manipulator](/cpp-sdk/4.5/api/classes/imfusion-manipulator).
+- const T \* **gl** () const — Get a typed pointer to the underlying [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject).
+- T \* **gl** () — Get a typed pointer to the underlying [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject).
+- const [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) \* **gl** () const — Get the underlying abstract [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject).
+- [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) \* **gl** () — Get the underlying abstract [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject).
+- const [Manipulator](/cpp-sdk/4.5/api/classes/imfusion-manipulator) \* **manipulator** () const — Get the underlying manipulator.
+- [Manipulator](/cpp-sdk/4.5/api/classes/imfusion-manipulator) \* **manipulator** () — Get the underlying manipulator.
+- virtual bool [sceneEvent](#sceneevent) (QEvent \*event, [InteractiveView](/cpp-sdk/4.5/api/classes/imfusion-interactiveview) \*view) — Called by the hosting [InteractiveView](/cpp-sdk/4.5/api/classes/imfusion-interactiveview) to notify on user input events.
+- virtual void [goTo](#goto) ([DisplayWidgetMulti](/cpp-sdk/4.5/api/classes/imfusion-displaywidgetmulti) \*display, [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data=nullptr, int frame=-1) const — Center the views contained in the passed display widget which show data on the object.
+- [GUI::EventResult](/cpp-sdk/4.5/api/structs/imfusion-gui-eventresult) [handleInputEvent](#handleinputevent) (const [GUI::InputEvent](/cpp-sdk/4.5/api/classes/imfusion-gui-inputevent) &event, const [GUI::View](/cpp-sdk/4.5/api/classes/imfusion-gui-view) &view) override — Gets called by the parent *view* in order to handle user input events.
+
+## Public Attributes
+
+- Signal&lt; const InteractiveObject \* &gt; [signalDeleted](#signaldeleted) — Signal emitted when this instance is deleted.
+
+## Protected Attributes
+
+- [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) \* **m_object**
+- [Manipulator](/cpp-sdk/4.5/api/classes/imfusion-manipulator) \* **m_manipulator** = nullptr
+- bool **m_own** = true
+
+## Member Function Documentation
+
+### sceneEvent
+
+```cpp
+virtual bool ImFusion::InteractiveObject::sceneEvent (QEvent * event, InteractiveView * view)
+```
+
+*virtual*
+
+Called by the hosting [InteractiveView](/cpp-sdk/4.5/api/classes/imfusion-interactiveview) to notify on user input events.
+
+Default implementation will forward the event to the [Manipulator](/cpp-sdk/4.5/api/classes/imfusion-manipulator) if the object is visible.
+
+**Returns:** true if the event has been handled and should no longer be passed to other objects.
+
+### goTo
+
+```cpp
+virtual void ImFusion::InteractiveObject::goTo (DisplayWidgetMulti * display, Data * data = nullptr, int frame = -1) const
+```
+
+*virtual*
+
+Center the views contained in the passed display widget which show data on the object.
+
+If no data is specified, the default view group is centered.
+
+### handleInputEvent
+
+```cpp
+GUI::EventResult ImFusion::InteractiveObject::handleInputEvent (const GUI::InputEvent & event, const GUI::View & view)
+```
+
+*override, virtual*
+
+Gets called by the parent *view* in order to handle user input events.
+
+It returns an EventResult to indicated if and how event propagation should continue.
+
+**Parameters:**
+
+- `event` — User input event to handle.
+- `view` — Parent View where the event originates from. This additional payload enables you to add the same ViewObject to multiple views and still implement view-specific handling logic.
+
+## Member Data Documentation
+
+### signalDeleted
+
+```cpp
+Signal <const InteractiveObject *> ImFusion::InteractiveObject::signalDeleted
+```
+
+Signal emitted when this instance is deleted.
+
+**Note:** This method is called from a [Data](/cpp-sdk/4.5/api/classes/imfusion-data) instance in the destructor of the very base class, therefore no type information for dynamic casts or other class attributes are available anymore.
+
+**Warning:** Use with caution, only pointer comparison is allowed!

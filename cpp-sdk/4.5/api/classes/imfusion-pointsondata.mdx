@@ -1,0 +1,167 @@
+---
+title: "ImFusion::PointsOnData"
+sidebarTitle: "PointsOnData"
+description: "Interface class for points linked to Data ."
+---
+
+`#include <ImFusion/Base/PointsOnData.h>`
+
+## Overview
+
+Interface class for points linked to [Data](/cpp-sdk/4.5/api/classes/imfusion-data).
+
+Implementations of this class handle the addition of points and update of such points when the data changes. This class supports selection of a subset of points. Be default all the points are selected, selection can be changed using the setSelected method
+
+## Public Member Functions
+
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; & [points](#points) () const — Return all the points in world coordinates whether they are selected or not.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; **selectedPoints** () const — Return the selected points in world coordinates.
+- virtual const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; & [allPoints](#allpoints) () const =0 — Return all the points in world coordinates whether they are selected or not.
+- virtual const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \* [data](#data) () const =0 — Return the underlying data.
+- virtual void [remove](#remove) (int first, int last)=0 — Remove the points in range [first,last).
+- void **remove** (int index) — Remove the point at index.
+- virtual int **size** () const — Number of stored points ignoring the selection.
+- virtual bool **empty** () const — Check if the list of points is empty.
+- virtual void **clear** () — Remove all the points.
+- virtual const vec3 & **point** (int which) const — Get a point in world coordinates. The index can be negative, in which case it is counted from the end.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **name** (int which) const — Get the name of a point.
+- void **setName** ([std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) name, int which) — Set the name of a point.
+- bool **isSelected** (int which) const — Checks whether a point is selected. By default all points are selected.
+- void **setSelected** (int which, bool selected) — Sets whether a point is selected or not. By default all points are selected.
+- int **find** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name, int start=0) const — Get the first index of a point with the given name, starting from index start. Return -1 if not found.
+- virtual void [configurePoint](#configurepoint) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p)=0 — Add the point described by the properties.
+- virtual void [pointConfiguration](#pointconfiguration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p, int which) const =0 — Extract the configuration of the point at index.
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+## Static Public Member Functions
+
+- static size_t [rank](#rank) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; &[points](#points), double eps=2.0) — Computes the rank (i.e.
+
+## Public Attributes
+
+- Signal&lt; int, int &gt; **signalPointsChanged** — Signal emitted when the points in range [first, last) are updated.
+- Signal&lt; int, int &gt; **signalPointsAdded** — Signal emitted when points are added. The range [first, last) contains the new points.
+- Signal&lt; int, int &gt; **signalPointsRemoved** — Signal emitted when the points in range [first, last) are removed.
+- Signal&lt; int, int &gt; **signalPointsRenamed** — Signal emitted when the points in range [first, last) are renamed.
+
+## Protected Attributes
+
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **m_names** — names of the points
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; bool &gt; **m_selection**
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **m_pointSetName** — Optional name of the point set.
+
+## Member Function Documentation
+
+### points
+
+```cpp
+const std::vector < vec3 > & ImFusion::PointsOnData::points () const
+```
+
+*inline*
+
+Return all the points in world coordinates whether they are selected or not.
+
+****Deprecated**:** "If you want to ignore selection use allPoints(), otherwise use selectedPoints()"
+
+### allPoints
+
+```cpp
+virtual const std::vector < vec3 > & ImFusion::PointsOnData::allPoints () const
+```
+
+*pure virtual*
+
+Return all the points in world coordinates whether they are selected or not.
+
+### data
+
+```cpp
+virtual const Data * ImFusion::PointsOnData::data () const
+```
+
+*pure virtual*
+
+Return the underlying data.
+
+### remove
+
+```cpp
+virtual void ImFusion::PointsOnData::remove (int first, int last)
+```
+
+*pure virtual*
+
+Remove the points in range [first,last).
+
+### rank
+
+```cpp
+size_t ImFusion::PointsOnData::rank (const std::vector < vec3 > & points, double eps = 2.0)
+```
+
+*static*
+
+Computes the rank (i.e.
+
+intrinsic dimensionality) of the given set of 3D points, considering the threshold eps
+
+The calculated rank can be interpreted as follows: 0: All points are located around a single point 1: All points are located on a single line 2: All points are located on a single plane 3: The points are spread out in 3D space
+
+Returns 0 if the points vector is empty
+
+**Parameters:**
+
+- `points` — A vector of 3D points to compute the rank of.
+- `eps` — An absolute threshold to determine significant singular values for rank calculation.
+
+**Returns:** The rank of the given set of 3D points.
+
+### configurePoint
+
+```cpp
+virtual void ImFusion::PointsOnData::configurePoint (const Properties * p)
+```
+
+*pure virtual*
+
+Add the point described by the properties.
+
+### pointConfiguration
+
+```cpp
+virtual void ImFusion::PointsOnData::pointConfiguration (Properties * p, int which) const
+```
+
+*pure virtual*
+
+Extract the configuration of the point at index.
+
+### configure
+
+```cpp
+void ImFusion::PointsOnData::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### configuration
+
+```cpp
+void ImFusion::PointsOnData::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality

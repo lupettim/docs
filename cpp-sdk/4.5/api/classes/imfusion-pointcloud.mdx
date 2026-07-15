@@ -1,0 +1,319 @@
+---
+title: "ImFusion::PointCloud"
+sidebarTitle: "PointCloud"
+description: "Data structure for point clouds."
+---
+
+`#include <ImFusion/Base/PointCloud.h>`
+
+## Overview
+
+[Data](/cpp-sdk/4.5/api/classes/imfusion-data) structure for point clouds.
+
+**Examples:** [ExamplePointCloudAlgorithm.cpp](/cpp-sdk/4.5/api/examples/example-point-cloud-algorithm-8cpp), and [ExamplePointCloudAlgorithm.h](/cpp-sdk/4.5/api/examples/example-point-cloud-algorithm-8h).
+
+## Classes
+
+- struct [PointCloudData](/cpp-sdk/4.5/api/structs/imfusion-pointcloud-pointclouddata) — Struct holding the underlying "heavy" data of a [PointCloud](/cpp-sdk/4.5/api/classes/imfusion-pointcloud) object.
+
+## Public Member Functions
+
+- **PointCloud** (int width=0, int height=0, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &[name](/cpp-sdk/4.5/api/classes/imfusion-data)="") — Constructs an empty point cloud.
+- **PointCloud** ([std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; points, int width=0, int height=0, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &[name](/cpp-sdk/4.5/api/classes/imfusion-data)="") — Constructs a point cloud with the specified vertices.
+- **PointCloud** ([std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; points, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; normals, int width=0, int height=0, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &[name](/cpp-sdk/4.5/api/classes/imfusion-data)="") — Constructs a point cloud with the specified vertices and normals.
+- **PointCloud** ([std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; points, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; normals, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; colors, int width=0, int height=0, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &[name](/cpp-sdk/4.5/api/classes/imfusion-data)="") — Constructs a point cloud with the specified vertices, normals and colors.
+- [PointCloud](#pointcloud) ([std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; points, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; normals, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; colors, const [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; int &gt; \*pixelToIndexMap, int width=0, int height=0, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &[name](/cpp-sdk/4.5/api/classes/imfusion-data)="") — Constructs a point cloud with the specified vertices, normals, colors and mapping from pixel (x, y) to a vertex index.
+- **PointCloud** (const PointCloud &other) — Copy constructor with another point cloud instance.
+- **PointCloud** (PointCloud &&other) noexcept — Move constructor with another point cloud instance.
+- **~PointCloud** () override — Destructor.
+- PointCloud & **operator=** (PointCloud) noexcept — Copy/Move assignment operator.
+- void [setMatrix](#setmatrix) (const mat4 &m) override — Set the transformation matrix.
+- bool [isAnnotationType](#isannotationtype) () const override — Return whether this data type is visualized through an annotation (e.g. mesh).
+- int **size** () const
+- void **clear** ()
+- bool **isValid** (bool runExtendedCheck=false) const — Check consistency of point cloud data structure. Set runExtendedCheck to true to also check pixelToIndexMap contents (slow).
+- int **width** () const — Return width.
+- void **setWidth** (int w) — Set width.
+- int **height** () const — Return height.
+- void **setHeight** (int h) — Set height.
+- void **setCameraIntrinsics** (const mat3 &K)
+- mat3 **cameraIntrinsics** () const
+- bool **isDense** () const — Return true when the point cloud is organized as an image.
+- bool [isDenseCalibrated](#isdensecalibrated) (bool reproject=false, unsigned int pixelTol=5) const — Return true when the point cloud is organized, the intrinsics are set When 'reproject' flag is set to true, we also check that points are given in the camera coordinate system.
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; & **points** () const — Const access to point coordinates.
+- void [setPoints](#setpoints) ([std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; &&points) — Set the points.
+- void **setPoints** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; &points)
+- bool **setPoint** (int idx, const vec3 &point)
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; & **normals** () const — Const access to normal coordinates.
+- bool [setNormals](#setnormals) ([std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; &&normals) — Set the normals.
+- bool **setNormals** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; &normals)
+- bool **setNormal** (int idx, const vec3 &normal)
+- bool **hasNormals** () const — Return true if point cloud has normals.
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; & **colors** () const — Const access to color coordinates.
+- bool [setColors](#setcolors) ([std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; &&colors) — Set the colors.
+- bool **setColors** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; &colors)
+- bool **setColor** (int idx, const vec3 &color)
+- bool **hasColors** () const — Return true if point cloud has colors.
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; & **weights** () const — Const access to weights.
+- bool **setWeights** ([std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; &&colors) — Set the weights. If the size of the weight vector is not equal to the point cloud size the method does nothing and returns false. Passing in an empty vector clears the weight information.
+- bool **setWeights** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; &colors)
+- bool **setWeight** (int idx, double color)
+- bool **hasWeights** () const — Return true if point cloud has weights.
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; int &gt; & **labels** () const — Const access to labels.
+- int [label](#label) (int idx) const — Get label of the point.
+- bool [setLabels](#setlabels) ([std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; int &gt; &&labels) — Set the labels.
+- bool **setLabels** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; int &gt; &labels)
+- bool **setLabel** (int idx, int [label](#label))
+- void **requestLabels** () — If point cloud doesn't have labels, assign zero labels to all points;.
+- void **resetLabels** () — Rest labels of all points to zero, if label information is present.
+- bool **hasLabels** () const — Returns true if point cloud contains point labels.
+- [PointCloudData](/cpp-sdk/4.5/api/structs/imfusion-pointcloud-pointclouddata) **takeData** () — Takes all the underlying data and clears the [PointCloud](/cpp-sdk/4.5/api/classes/imfusion-pointcloud) object.
+- [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) \* **labelTexture** () const — Returns the texture image used for colors of point labels.
+- const [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; int &gt; \* **pixelToIndexMap** () const — Access to pixel to index map.
+- void **setPixelToIndexMap** (const [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; int &gt; \*pixelToIndexMap) — Set pixel to index map. Internally a copy is made.
+- void **setLabelTexture** ([std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) &gt; tex) — Set texture for point labels. The image ownership is transferred to the point cloud class.
+- bool [densePointCloudIndex](#densepointcloudindex) (int x, int y, int &indexOut) const — Retrieves point cloud data associated with a given pixel for dense point clouds.
+- const mat4 & **matrixRef** () const
+- void **setFilename** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &[name](/cpp-sdk/4.5/api/classes/imfusion-data)) — Sets a filename from where this point cloud can be loaded.
+- const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) & **filename** () const — Returns the filename from where this point cloud can be loaded or an empty string if it's not on disk.
+- void **computeBoundingBox** (vec3 &origin, vec3 &extent, bool useMatrix) const — Computes the bounding box.
+- void **computeBoundingBox** () — Compute bounding box without matrices and store results in object.
+- vec3 **center** () — Return bounding box center computed by a previous call to computeBoundingBox.
+- vec3 **origin** () — Return bounding box origin computed by a previous call to computeBoundingBox.
+- vec3 **extent** () — Return bounding box extent computed by a previous call to computeBoundingBox.
+- virtual int [removePoints](#removepoints) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; int &gt; &indices) — Remove the points with the specified indices while keeping the point cloud consistent.
+- int **duplicatePoints** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; int &gt; &indices) — Duplicate the point with the specified indices while keeping the point cloud consistent. Invalidates m_pixelToIndexMap.
+- void [beginUpdate](#beginupdate) () — After this call no signals will be emitted if the point cloud data is changed.
+- void **endUpdate** () — End update and send point cloud changed signal.
+- bool [signalsBlocked](#signalsblocked) () const — Returns true if the signals are blocked.
+- void **transformPointCloud** (const mat4 &transformation) — Apply given matrix to point cloud.
+- void [convertColorsToLabels](#convertcolorstolabels) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::pair](http://en.cppreference.com/w/cpp/utility/pair.html)&lt; vec3, int &gt; &gt; \*colorToLabelMap=nullptr, double channelTol=0.1) — Resets point cloud labels.
+- void **swapWith** (PointCloud &other) — Swaps the data of with other point cloud and emits a changed signal for both.
+
+## Static Public Member Functions
+
+- static bool **convertFromPCL** (PointCloud \*&pcOut, const pcl::PCLPointCloud2 &headerIn, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &nameIn="", bool ignoreNanPoints=true, int versionImFusion=-1) — Convert PClPointCloud2 to [PointCloud](/cpp-sdk/4.5/api/classes/imfusion-pointcloud).
+- static bool **convertToPCL** (pcl::PCLPointCloud2 &headerOut, [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &nameOut, const PointCloud \*pcIn, bool applyMatrix) — Convert [PointCloud](/cpp-sdk/4.5/api/classes/imfusion-pointcloud) to PClPointCloud2.
+
+## Public Attributes
+
+- Signal **signalPointCloudChanged** — Signal emitted when the point cloud data has changed.
+
+## Protected Member Functions
+
+- void **emitPointCloudChangedSignal** ()
+- void **createDefaultLabelTexture** (int numLabels) — Create a default texture for point labels. Size of the texture is defined by input parameter 'numLabels'.
+
+## Protected Attributes
+
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; **m_points** — point cloud vertices
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; **m_normals** — point cloud vertex normals
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; **m_colors** — point cloud vertex colors
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; int &gt; **m_labels** — point cloud vertex labels
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; **m_weights**
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; int &gt; &gt; **m_pixelToIndexMap**
+- int **m_width** — width of the point cloud. In case of non-dense point clouds it should be equal to the number of vertices
+- int **m_height** — height of the point cloud. In case of non-dense point clouds it should be equal to 1
+- mat3 **m_K**
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **m_filename** — the path from where the point cloud was loaded or empty if not loaded from file
+- bool **m_updateBoundingBox**
+- vec3 **m_origin**
+- vec3 **m_extent**
+- bool **m_updateBoundingBoxWithMatrix** — flag which indicates whether the bounds of this data should be re-computed
+- [Geometry::AlignedBox](/cpp-sdk/4.5/api/classes/imfusion-geometry-alignedbox) **m_boundingBoxWithMatrix** — axis-aligned bounding box of this data in world space
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) &gt; **m_labelTexture**
+
+## Methods implementing the Data interface
+
+- [Kind](/cpp-sdk/4.5/api/classes/imfusion-data) [kind](#kind) () const override — Return the kind of this data.
+- [Geometry::AlignedBox](/cpp-sdk/4.5/api/classes/imfusion-geometry-alignedbox) [bounds](#bounds) () const override — Returns the axis-aligned bounding box of this data in world space.
+- [Geometry::AlignedBox](/cpp-sdk/4.5/api/classes/imfusion-geometry-alignedbox) **boundsLocal** () — Returns the axis-aligned bounding box of this data in local space.
+- [Pose::TransformationConvention](/cpp-sdk/4.5/api/namespaces/imfusion-pose) [matrixConvention](#matrixconvention) () const override — Matrices of point clouds map to world coordinate system.
+
+## Constructor & Destructor Documentation
+
+### PointCloud
+
+```cpp
+ImFusion::PointCloud::PointCloud (std::vector < vec3 > points, std::vector < vec3 > normals, std::vector < vec3 > colors, const TypedImage < int > * pixelToIndexMap, int width = 0, int height = 0, const std::string & name = "")
+```
+
+Constructs a point cloud with the specified vertices, normals, colors and mapping from pixel (x, y) to a vertex index.
+
+**Parameters:**
+
+- `points` — Vertices of the point cloud
+- `normals` — Normals of the point cloud
+- `colors` — Vertex colors of the point cloud
+- `pixelToIndexMap` — For dense point clouds (point clouds which are organized as an image) gives the index of the point for each pixel position. If no point is associated with a pixel the entry must be -1. An internal copy of the map is made.
+
+**Returns:** [PointCloud](/cpp-sdk/4.5/api/classes/imfusion-pointcloud) object
+
+## Member Function Documentation
+
+### setMatrix
+
+```cpp
+void ImFusion::PointCloud::setMatrix (const mat4 & m)
+```
+
+*override, virtual*
+
+Set the transformation matrix.
+
+**Note:** The matrix convention expected for `m` depends on the concrete derived class implementation, with either a matrix mapping to or from the world coordinate system being expected. Only use if convention is explicitly known. Use methods [setMatrixFromWorld](/cpp-sdk/4.5/api/classes/imfusion-data) or [setMatrixToWorld](/cpp-sdk/4.5/api/classes/imfusion-data) to avoid inconsistencies. The default implementation sets [m_matrix](/cpp-sdk/4.5/api/classes/imfusion-data).
+
+### isAnnotationType
+
+```cpp
+bool ImFusion::PointCloud::isAnnotationType () const
+```
+
+*inline, override, virtual*
+
+Return whether this data type is visualized through an annotation (e.g. mesh).
+
+### isDenseCalibrated
+
+```cpp
+bool ImFusion::PointCloud::isDenseCalibrated (bool reproject = false, unsigned int pixelTol = 5) const
+```
+
+Return true when the point cloud is organized, the intrinsics are set When 'reproject' flag is set to true, we also check that points are given in the camera coordinate system.
+
+The points are reprojected to the image and the error is checked with respect to the given pixel tolerance 'pixelTol'
+
+### kind
+
+```cpp
+Kind ImFusion::PointCloud::kind () const
+```
+
+*override, virtual*
+
+Return the kind of this data.
+
+### bounds
+
+```cpp
+Geometry::AlignedBox ImFusion::PointCloud::bounds () const
+```
+
+*override, virtual*
+
+Returns the axis-aligned bounding box of this data in world space.
+
+### matrixConvention
+
+```cpp
+Pose::TransformationConvention ImFusion::PointCloud::matrixConvention () const
+```
+
+*override, virtual*
+
+Matrices of point clouds map to world coordinate system.
+
+### setPoints
+
+```cpp
+void ImFusion::PointCloud::setPoints (std::vector < vec3 > && points)
+```
+
+Set the points.
+
+If normals and/or colors are available they will be cleared unless the size of the passed in vector is the same as the size of the existing points.
+
+### setNormals
+
+```cpp
+bool ImFusion::PointCloud::setNormals (std::vector < vec3 > && normals)
+```
+
+Set the normals.
+
+If the size of the normal vector is not equal to the point cloud size the method does nothing and returns false. Passing in an empty vector clears the normal information.
+
+### setColors
+
+```cpp
+bool ImFusion::PointCloud::setColors (std::vector < vec3 > && colors)
+```
+
+Set the colors.
+
+If the size of the color vector is not equal to the point cloud size the method does nothing and returns false. Passing in an empty vector clears the color information.
+
+### label
+
+```cpp
+int ImFusion::PointCloud::label (int idx) const
+```
+
+Get label of the point.
+
+Returns 0 if index is invalid or if point cloud does not contain label information. Query presence of labels by using hasLabels() method
+
+### setLabels
+
+```cpp
+bool ImFusion::PointCloud::setLabels (std::vector < int > && labels)
+```
+
+Set the labels.
+
+If the size of the label vector is not equal to the point cloud size the method does nothing and returns false. Passing in an empty vector clears the label information. If there is no texture for point label colors, a default one will be created. If the existing texture for point label colors does not have an entry for at least one of the new labels, the texture will be reset with a default one of appropriate size
+
+### densePointCloudIndex
+
+```cpp
+bool ImFusion::PointCloud::densePointCloudIndex (int x, int y, int & indexOut) const
+```
+
+Retrieves point cloud data associated with a given pixel for dense point clouds.
+
+**Parameters:**
+
+- `pixelIn` — Coordinate (x, y) of the image pixel
+- `indexOut` — Index of the vertex associated with the pixelIn
+
+**Returns:** True when successful, false otherwise (i.e. if the cloud is not dense or if the vertex doesn't exist at pixelIn)
+
+### removePoints
+
+```cpp
+virtual int ImFusion::PointCloud::removePoints (const std::vector < int > & indices)
+```
+
+*virtual*
+
+Remove the points with the specified indices while keeping the point cloud consistent.
+
+### beginUpdate
+
+```cpp
+void ImFusion::PointCloud::beginUpdate ()
+```
+
+After this call no signals will be emitted if the point cloud data is changed.
+
+This is useful if many update operations must be performed but it is not desired that the signal is emitted for every update. When done with the update operations call endUpdate to emit a single update signal
+
+### signalsBlocked
+
+```cpp
+bool ImFusion::PointCloud::signalsBlocked () const
+```
+
+Returns true if the signals are blocked.
+
+Useful to know whether the signals were blocked before calling beginUpdate - endUpdate. User might want not to call endUpdate, so that the signals remain blocked
+
+### convertColorsToLabels
+
+```cpp
+void ImFusion::PointCloud::convertColorsToLabels (const std::vector < std::pair < vec3, int > > * colorToLabelMap = nullptr, double channelTol = 0.1)
+```
+
+Resets point cloud labels.
+
+Converts point cloud colors to labels using the predefined colorToLabelMap if provided, otherwise random labels are assigned to colors. In case colorToLabelMap if provided, tolerance of channelTol is applied when comparing each channel of the point cloud colors to the channels in the map. Example: color of 1st point is &#123;0.52, 0.2, 0.7&#125;, one of the map entry contains &#123;0.5, 0.2, 0.7&#125; with corresponding label 2. In case of default channelTol parameter, the label of the 1st point will be assigned to 2. If channelTol was 0.01, the color of the point wouldn't correspond to the entry in the map, and therefore, its label would stay unchanged unless the other fitting map entry could be found

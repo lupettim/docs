@@ -1,0 +1,46 @@
+---
+title: "ImFusion::Seg::SegmentedStructure"
+sidebarTitle: "SegmentedStructure"
+description: "Interface class that offers methods to obtain measuring markers on a segmented object."
+---
+
+`#include <ImFusion/Seg/SegmentedStructure.h>`
+
+## Overview
+
+Interface class that offers methods to obtain measuring markers on a segmented object.
+
+## Public Member Functions
+
+- virtual [std::pair](http://en.cppreference.com/w/cpp/utility/pair.html)&lt; vec3, vec3 &gt; [markers](#markers) (int id, double position) const — Compute a pair of measuring markers at the specified position.
+- virtual [std::pair](http://en.cppreference.com/w/cpp/utility/pair.html)&lt; vec3, vec3 &gt; **axis** (int id) const
+- virtual [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; **contour** (int id) const
+- int **numMarkers** () const
+- int **numAxes** () const
+- int **numContours** () const
+- virtual bool **isOk** () const =0
+
+## Protected Attributes
+
+- int **m_segmentedStructureNumMarkers** = 0
+- int **m_segmentedStructureNumAxes** = 0
+- int **m_segmentedStructureNumContours** = 0
+
+## Member Function Documentation
+
+### markers
+
+```cpp
+virtual std::pair < vec3, vec3 > ImFusion::Seg::SegmentedStructure::markers (int id, double position) const
+```
+
+*virtual*
+
+Compute a pair of measuring markers at the specified position.
+
+**Parameters:**
+
+- `id` — integer in [0, numMarkers()) that identifies a marker
+- `position` — value in [-1, 1] that gives the position of the marker on the axis of the reference shape
+
+**Returns:** pair of points that lie on the contour of the segmentation

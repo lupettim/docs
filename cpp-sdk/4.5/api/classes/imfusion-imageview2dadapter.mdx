@@ -1,0 +1,48 @@
+---
+title: "ImFusion::ImageView2DAdapter"
+sidebarTitle: "ImageView2DAdapter"
+description: "Helper class providing the API of ImageView2D while wrapping around either a ImageView2D or a GUI::SliceView ."
+---
+
+`#include <ImFusion/GUI/DisplayWidgetMultiAdapter.h>`
+
+## Overview
+
+Helper class providing the API of [ImageView2D](/cpp-sdk/4.5/api/classes/imfusion-imageview2d) while wrapping around either a [ImageView2D](/cpp-sdk/4.5/api/classes/imfusion-imageview2d) or a [GUI::SliceView](/cpp-sdk/4.5/api/classes/imfusion-gui-sliceview).
+
+**Warning:** To mimic existing use cases this adapter class has nullable/pointer semantics and can be 'null'. If it is null conversion to bool will yield false and comparison to nullptr will be true, and you must not call any of its other member functions.
+
+## Public Types
+
+- using **ZoomMode** = [ImageView2D::ZoomMode](/cpp-sdk/4.5/api/classes/imfusion-imageview2d)
+
+## Public Member Functions
+
+- **ImageView2DAdapter** ([ImageView2D](/cpp-sdk/4.5/api/classes/imfusion-imageview2d) \*view)
+- **ImageView2DAdapter** ([GUI::SliceView](/cpp-sdk/4.5/api/classes/imfusion-gui-sliceview) \*view, [GUI::RadiologyDisplay](/cpp-sdk/4.5/api/classes/imfusion-gui-radiologydisplay) \*parentDisplay)
+- ImageView2DAdapter \* **operator-&gt;** ()
+- const ImageView2DAdapter \* **operator-&gt;** () const
+- **operator bool** () const
+- bool **operator==** ([std::nullptr_t](http://en.cppreference.com/w/cpp/types/nullptr_t.html)) const
+- bool **operator!=** ([std::nullptr_t](http://en.cppreference.com/w/cpp/types/nullptr_t.html)) const
+- void **setImageData** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*is)
+- [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* **imageData** () const
+- void **setInterpolation** (int val)
+- void **setFlip** (bool val)
+- void **setBlendingMode** ([GlSlice::BlendingMode](/cpp-sdk/4.5/api/classes/imfusion-glslice) val)
+- void **setBlendFactor** (double val)
+- void **setZoom** (double val)
+- void **setZoomMode** ([ZoomMode](/cpp-sdk/4.5/api/classes/imfusion-imageview2d) value)
+- void **setSliceRenderMode** ([GlSlice::ObjectRenderMode](/cpp-sdk/4.5/api/classes/imfusion-glslice) mode)
+- void **setMatrix** (const mat4 &matrixToWorld, bool suppressAnimation=false)
+- int **interpolation** () const
+- bool **flip** () const
+- [GlSlice::BlendingMode](/cpp-sdk/4.5/api/classes/imfusion-glslice) **blendingMode** () const
+- double **blendFactor** () const
+- double **zoom** () const
+- [ZoomMode](/cpp-sdk/4.5/api/classes/imfusion-imageview2d) **zoomMode** () const
+- [GlSlice::ObjectRenderMode](/cpp-sdk/4.5/api/classes/imfusion-glslice) **sliceRenderModeIndex** () const
+- [GlSliceView](/cpp-sdk/4.5/api/classes/imfusion-glsliceview) \* **view** ()
+- const [GlSliceView](/cpp-sdk/4.5/api/classes/imfusion-glsliceview) \* **view** () const
+- [ViewGroupAdapter](/cpp-sdk/4.5/api/classes/imfusion-viewgroupadapter) **viewGroup** ()
+- bool **isVisible** () const

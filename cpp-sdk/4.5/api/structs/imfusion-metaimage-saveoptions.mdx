@@ -1,0 +1,48 @@
+---
+title: "ImFusion::MetaImage::SaveOptions"
+sidebarTitle: "SaveOptions"
+description: "Most properties of a MetaImage header can be deduced from a SharedImageSet , the ones in SaveOptions can not."
+---
+
+`#include <ImFusion/IO/MetaImage.h>`
+
+## Overview
+
+Most properties of a [MetaImage](/cpp-sdk/4.5/api/namespaces/imfusion-metaimage) header can be deduced from a [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset), the ones in [SaveOptions](/cpp-sdk/4.5/api/structs/imfusion-metaimage-saveoptions) can not.
+
+## Public Attributes
+
+- bool [multiFile](#multifile) — Whether to use multi-file format. This option is set when saving multi-image SharedImageSets. For 3D data, if this is set, enabled splits along 3rd dimension.
+- bool [keepScaleAndOffset](#keepscaleandoffset) — If true, will save the image element data in the rescaled range used for display. Otherwise will save the image element data as originally loaded.
+- bool **compress** = false — If true, will use zlib compression when saving the image element data.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **customRawFile** = "" — Use a custom raw file when using single-file .mhd format.
+
+## Member Data Documentation
+
+### multiFile
+
+```cpp
+bool ImFusion::MetaImage::SaveOptions::multiFile
+```
+
+**Initial value:**
+```cpp
+=
+ false
+```
+ fragment
+Whether to use multi-file format. This option is set when saving multi-image SharedImageSets. For 3D data, if this is set, enabled splits along 3rd dimension.
+
+### keepScaleAndOffset
+
+```cpp
+bool ImFusion::MetaImage::SaveOptions::keepScaleAndOffset
+```
+
+**Initial value:**
+```cpp
+        =
+false
+```
+ fragment
+If true, will save the image element data in the rescaled range used for display. Otherwise will save the image element data as originally loaded.

@@ -1,0 +1,58 @@
+---
+title: "ImFusion::Dicom::DatasetPreviewLabel"
+sidebarTitle: "DatasetPreviewLabel"
+description: "A widget that shows a preview image of a DICOM dataset."
+---
+
+`#include <ImFusion/Dicom/GUI/DatasetPreviewLabel.h>`
+
+## Overview
+
+A widget that shows a preview image of a DICOM dataset.
+
+This widget only works together with a [DicomBrowserModel](/cpp-sdk/4.5/api/classes/imfusion-dicombrowsermodel). The dataset for the preview is determined by a QModelIndex through setCurrent. An index pointing to an [Image](/cpp-sdk/4.5/api/structs/imfusion-dicom-image) will use the [Image](/cpp-sdk/4.5/api/structs/imfusion-dicom-image)'s uri directly. If the index is a [Series](/cpp-sdk/4.5/api/structs/imfusion-dicom-series), the middle image is used by default. Additionally the user can scroll through the images of a series with the mouse wheel. The preview image is computed async and a placeholder is displayed until the image is available.
+
+## Public Slots
+
+- void [setCurrent](#setcurrent) (const QModelIndex &index) — An index which should be previewed.
+
+## Signals
+
+- void **imageIndexChanged** (int)
+
+## Public Member Functions
+
+- **DatasetPreviewLabel** (QWidget \*parent=nullptr)
+- **DatasetPreviewLabel** ([DicomBrowserModel](/cpp-sdk/4.5/api/classes/imfusion-dicombrowsermodel) \*model, QWidget \*parent)
+- void **setModel** ([DicomBrowserModel](/cpp-sdk/4.5/api/classes/imfusion-dicombrowsermodel) \*model) — The label will use the [DatasetCache](/cpp-sdk/4.5/api/classes/imfusion-dicom-datasetcache) of the model to load DICOMs.
+- int **thumbnailSize** () const — Size in pixels of the preview image.
+- QImage [thumbnail](#thumbnail) () const — Return the generated preview image.
+- void **setLoadingPlaceholder** (QMovie \*movie) — The placeholder that is displayed while the actual image is loaded, e.g. a spinner.
+- void **setErrorPlaceholder** (const QPixmap &image) — The placeholder that is displayed if no preview could be generated.
+- int **imageIndex** () const
+- int **framesCount** () const — If a series with multiple images is selected, returns the number of images If a series containing a single multi-frame image or a multi-frame image are selected, returns the number of frames in that image.
+- void **setImageIndex** (int index) — Sets the current image index.
+
+## Member Function Documentation
+
+### thumbnail
+
+```cpp
+QImage ImFusion::Dicom::DatasetPreviewLabel::thumbnail () const
+```
+
+Return the generated preview image.
+
+This will block until the preview image is available and will therefore never return the loadingPlaceholder. It might return the error placeholder.
+
+### setCurrent
+
+```cpp
+void ImFusion::Dicom::DatasetPreviewLabel::setCurrent (const QModelIndex & index)
+```
+
+*slot*
+
+An index which should be previewed.
+
+A preview is only generated for [Series](/cpp-sdk/4.5/api/structs/imfusion-dicom-series) and [Image](/cpp-sdk/4.5/api/structs/imfusion-dicom-image) indices, otherwise the error placeholder is displayed. This must be an index of a [DicomBrowserModel](/cpp-sdk/4.5/api/classes/imfusion-dicombrowsermodel) or a proxy that wraps a [DicomBrowserModel](/cpp-sdk/4.5/api/classes/imfusion-dicombrowsermodel).

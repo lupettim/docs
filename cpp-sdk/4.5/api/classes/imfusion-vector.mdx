@@ -1,0 +1,76 @@
+---
+title: "ImFusion::Vector< From, EigenType >"
+sidebarTitle: "Vector< From, EigenType >"
+description: "Class representing a vector, defined in a Frame ."
+---
+
+`#include <ImFusion/Core/Vector.h>`
+
+## Overview
+
+template&lt;auto From, typename EigenType = Eigen::Vector4d&gt;
+
+class ImFusion::Vector&lt; From, EigenType &gt;
+Class representing a vector, defined in a Frame.
+
+See [Transform](/cpp-sdk/4.5/api/classes/imfusion-transform) for documentation on Frames
+
+At compilation time, the validity of [Vector](/cpp-sdk/4.5/api/classes/imfusion-vector) operations is checked:
+
+- Assignment can only be from the same Frame
+- From Frame of the [Transform](/cpp-sdk/4.5/api/classes/imfusion-transform) right multiplied must match our Frame
+
+An example of [Vector](/cpp-sdk/4.5/api/classes/imfusion-vector) with [Transform](/cpp-sdk/4.5/api/classes/imfusion-transform):
+
+```cpp
+enum class Robot { Base = 0, Arm, EndEffector };
+
+Transform<Robot::Base, Robot::EndEffector> base_T_ef;
+Vector<Robot::EndEffector> tipPosition;
+Vector<Robot::Base> tipInBase = base_T_ef * tipPosition;
+```
+ fragment
+The following would **not** compile:
+
+```cpp
+enum class Robot { Base = 0, Arm, EndEffector };
+
+Transform<Robot::Base, Robot::EndEffector> base_T_ef;
+Vector<Robot::Arm> armPos;
+armPos = Vector<Robot::EndEffector>{}; // Frame does not match
+Vector<Robot::Base> armInBase = base_T_ef * armPos; // From-Frame does not match Vector Frame
+```
+ fragment
+By default the [Vector](http://en.cppreference.com/w/cpp/header/vector.html) uses an Eigen::Vector4d. A different Eigen vector can also be used as supporting type, such as Eigen::Vector3d for 2D coordinates.
+
+**Template Parameters:** | From | Frame where the vector originates from |
+| --- | --- |
+| EigenType | Underlying type of the [Vector](http://en.cppreference.com/w/cpp/header/vector.html), should be an Eigen type |
+
+**See also:** [Transform](/cpp-sdk/4.5/api/classes/imfusion-transform)
+
+## Public Types
+
+- using **TypeFrom** = decltype(From)
+
+## Public Member Functions
+
+- **Vector** (EigenType v)
+- **Vector** (const Vector&lt; OtherFrom, OtherEigenType &gt; &other)
+- **Vector** (Vector&lt; OtherFrom &gt; &&other)
+- Vector&lt; FrameFrom, EigenType &gt; & **operator=** (const Vector&lt; OtherFrom, EigenType &gt; &other)
+- Vector&lt; FrameFrom, EigenType &gt; & **operator=** (const Vector&lt; OtherFrom, OtherEigenType &gt; &other)
+- auto **operator+** (const Vector&lt; OtherFrom, EigenType &gt; &other) const
+- auto **operator-** (const Vector&lt; OtherFrom, EigenType &gt; &other) const
+- auto **operator\*** (const Operand &other) const
+- void **normalize** ()
+- auto **normalized** () const
+- double **dot** (const Vector&lt; OtherFrom, EigenType &gt; &other) const
+- auto **cross** (const Vector&lt; OtherFrom, EigenType &gt; &other) const
+- EigenType & **vector** ()
+- const EigenType & **vector** () const
+- **operator EigenType** () const
+
+## Static Public Attributes
+
+- static constexpr TypeFrom **FrameFrom** = From

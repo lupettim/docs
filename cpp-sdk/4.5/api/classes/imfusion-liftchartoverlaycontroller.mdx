@@ -1,0 +1,39 @@
+---
+title: "ImFusion::LiftChartOverlayController"
+sidebarTitle: "LiftChartOverlayController"
+description: "Controller with a dummy algorithm."
+---
+
+`#include <ImFusion/GUI/LiftChartOverlayController.h>`
+
+## Overview
+
+[Controller](/cpp-sdk/4.5/api/classes/imfusion-controller) with a dummy algorithm.
+
+Adds an [GUI::LiftChartOverlay](/cpp-sdk/4.5/api/classes/imfusion-gui-liftchartoverlay) ([GlLiftChartOverlay](/cpp-sdk/4.5/api/classes/imfusion-glliftchartoverlay)) to the views. Shows a list of annotations and controls which of these to show in the overlay, and with what color.
+
+## Public Slots
+
+- void **onSetVisible** (bool visible)
+- void **onBarItemChecked** (const [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) \*object, const vec3 &color)
+- void **onBarItemUnchecked** (const [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) \*object)
+- void **onBarItemColorChanged** (const [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) \*object, const vec3 &color)
+
+## Public Member Functions
+
+- **LiftChartOverlayController** ([LiftChartOverlayAlgorithm](/cpp-sdk/4.5/api/classes/imfusion-liftchartoverlayalgorithm) \*[algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithmcontroller))
+- void [init](#init) () override — Two-step initialization function to be implemented by subclasses.
+
+## Member Function Documentation
+
+### init
+
+```cpp
+void ImFusion::LiftChartOverlayController::init ()
+```
+
+*override, virtual*
+
+Two-step initialization function to be implemented by subclasses.
+
+This function is called by [setMainWindowBase()](/cpp-sdk/4.5/api/classes/imfusion-controller) after the [m_disp](/cpp-sdk/4.5/api/classes/imfusion-controller) and [m_main](/cpp-sdk/4.5/api/classes/imfusion-controller) attributes have been set and hence a complete initialization of the controller is possible at this point.

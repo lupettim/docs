@@ -1,0 +1,31 @@
+---
+title: "ImFusion::Animations::AnimationBackendDummy"
+sidebarTitle: "AnimationBackendDummy"
+description: "Dummy implementation of the AnimationBackendBase interface that will not execute any animation but only call its update() function exactly once with t=1.0."
+---
+
+`#include <ImFusion/GUI/Animations.h>`
+
+## Overview
+
+Dummy implementation of the [AnimationBackendBase](/cpp-sdk/4.5/api/classes/imfusion-animations-animationbackendbase) interface that will not execute any animation but only call its update() function exactly once with t=1.0.
+
+You can use this backend in the absence of a suitable event loop
+
+## Protected Member Functions
+
+- void [runImpl](#runimpl) ([std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [Animation](/cpp-sdk/4.5/api/classes/imfusion-animations-animation) &gt; animation) override — Called by the base interface once *animation* is fully configured and ready to dispatch.
+
+## Member Function Documentation
+
+### runImpl
+
+```cpp
+void ImFusion::Animations::AnimationBackendDummy::runImpl (std::shared_ptr < Animation > animation)
+```
+
+*override, protected, virtual*
+
+Called by the base interface once *animation* is fully configured and ready to dispatch.
+
+Derived classes must take care of actually dispatching the animation so that the interface invariants are met.

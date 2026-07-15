@@ -1,0 +1,88 @@
+---
+title: "ImFusion::ImageDescriptorUtils"
+sidebarTitle: "ImageDescriptorUtils"
+description: "Collection of functions for pixel grid aligned cropping Utilities to build pixel-aligned ImageDescriptorWorld regions: crops from axis-aligned bounds (world or"
+---
+
+## Overview
+
+Collection of functions for pixel grid aligned cropping Utilities to build pixel-aligned [ImageDescriptorWorld](/cpp-sdk/4.5/api/classes/imfusion-imagedescriptorworld) regions: crops from axis-aligned bounds (world or pixel coordinates) and resampling to new voxel spacing while remaining aligned with the input volume’s pixel grid.
+
+## Functions
+
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [ImageDescriptorWorld](/cpp-sdk/4.5/api/classes/imfusion-imagedescriptorworld) &gt; [gridAlignedCropWorld](#gridalignedcropworld) (const [ImageDescriptorWorld](/cpp-sdk/4.5/api/classes/imfusion-imagedescriptorworld) &input, const [Geometry::AlignedBox](/cpp-sdk/4.5/api/classes/imfusion-geometry-alignedbox) &boundsWorld, double paddingWorld=0) — Creates a descriptor for the smallest pixel grid aligned sub-volume that fully contains the given world axis-aligned box, relative to `input`.
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [ImageDescriptorWorld](/cpp-sdk/4.5/api/classes/imfusion-imagedescriptorworld) &gt; [gridAlignedCropPixel](#gridalignedcroppixel) (const [ImageDescriptorWorld](/cpp-sdk/4.5/api/classes/imfusion-imagedescriptorworld) &input, const [Geometry::AlignedBox](/cpp-sdk/4.5/api/classes/imfusion-geometry-alignedbox) &boundsPixel, int paddingPx=0) — Creates a descriptor for a pixel-aligned crop from bounds expressed in `input’s` pixel coordinates (same indexing as [ImageDescriptorWorld::worldToPixel](/cpp-sdk/4.5/api/classes/imfusion-imagedescriptorworld) / [ImageDescriptorWorld::pixelToWorld](/cpp-sdk/4.5/api/classes/imfusion-imagedescriptorworld)).
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [ImageDescriptorWorld](/cpp-sdk/4.5/api/classes/imfusion-imagedescriptorworld) &gt; [gridAlignedResample](#gridalignedresample) (const [ImageDescriptorWorld](/cpp-sdk/4.5/api/classes/imfusion-imagedescriptorworld) &input, const vec3 &newSpacing, [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [Geometry::AlignedBox](/cpp-sdk/4.5/api/classes/imfusion-geometry-alignedbox) &gt; boundsPixel=std::nullopt) — After optionally restricting to a grid sub-volume, resamples the pixel grid according to `newSpacing`.
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [ImageDescriptorWorld](/cpp-sdk/4.5/api/classes/imfusion-imagedescriptorworld) &gt; [gridAlignedResampleInteger](#gridalignedresampleinteger) (const [ImageDescriptorWorld](/cpp-sdk/4.5/api/classes/imfusion-imagedescriptorworld) &input, const vec3 &approxNewSpacing, [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [Geometry::AlignedBox](/cpp-sdk/4.5/api/classes/imfusion-geometry-alignedbox) &gt; boundsPixel=std::nullopt) — Like [gridAlignedResample](#gridalignedresample), but chooses a spacing that is an integer multiple or divisor of the original spacing (so that input and output grid are guaranteed to have the same bounds), as close as possible to `approxNewSpacing`.
+
+## Function Documentation
+
+### gridAlignedCropWorld
+
+```cpp
+std::optional < ImageDescriptorWorld > ImFusion::ImageDescriptorUtils::gridAlignedCropWorld (const ImageDescriptorWorld & input, const Geometry::AlignedBox & boundsWorld, double paddingWorld = 0)
+```
+
+Creates a descriptor for the smallest pixel grid aligned sub-volume that fully contains the given world axis-aligned box, relative to `input`.
+
+Padding expands the box symmetrically in world units before conversion to pixels.
+
+**Parameters:**
+
+- `input` — The input descriptor.
+- `boundsWorld` — The axis-aligned box in world coordinates.
+- `paddingWorld` — Optional, non-negative extra margin added on each side along each axis (world units).
+
+**Returns:** Descriptor for the crop, or std::nullopt, in case of invalid input.
+
+### gridAlignedCropPixel
+
+```cpp
+std::optional < ImageDescriptorWorld > ImFusion::ImageDescriptorUtils::gridAlignedCropPixel (const ImageDescriptorWorld & input, const Geometry::AlignedBox & boundsPixel, int paddingPx = 0)
+```
+
+Creates a descriptor for a pixel-aligned crop from bounds expressed in `input’s` pixel coordinates (same indexing as [ImageDescriptorWorld::worldToPixel](/cpp-sdk/4.5/api/classes/imfusion-imagedescriptorworld) / [ImageDescriptorWorld::pixelToWorld](/cpp-sdk/4.5/api/classes/imfusion-imagedescriptorworld)).
+
+The output keeps the input spacing.
+
+**Parameters:**
+
+- `input` — The input descriptor.
+- `boundsPixel` — Axis-aligned box in pixel coordinates of `input`.
+- `paddingPx` — Integer offset added to the bounds before cropping.
+
+**Returns:** Descriptor for the crop, or std::nullopt, in case of invalid input.
+
+### gridAlignedResample
+
+```cpp
+std::optional < ImageDescriptorWorld > ImFusion::ImageDescriptorUtils::gridAlignedResample (const ImageDescriptorWorld & input, const vec3 & newSpacing, std::optional < Geometry::AlignedBox > boundsPixel = std::nullopt)
+```
+
+After optionally restricting to a grid sub-volume, resamples the pixel grid according to `newSpacing`.
+
+If the new and old spacings are not integer multiples of each other, the output grid borders will slightly overshoot the input grid ones. i.e. the output grid will have the minimum amount of pixels (with the new spacing) to fully enclose the input grid.
+
+**Parameters:**
+
+- `input` — The input descriptor.
+- `newSpacing` — New voxel spacing along each axis (same units as `input’s` spacing).
+- `boundsPixel` — If set, crop to this pixel-space axis-aligned box first; if not set, uses the full index range ``[0, dim-1] on each axis.
+
+**Returns:** Descriptor with updated spacing and dimensions, or std::nullopt, in case of invalid input.
+
+### gridAlignedResampleInteger
+
+```cpp
+std::optional < ImageDescriptorWorld > ImFusion::ImageDescriptorUtils::gridAlignedResampleInteger (const ImageDescriptorWorld & input, const vec3 & approxNewSpacing, std::optional < Geometry::AlignedBox > boundsPixel = std::nullopt)
+```
+
+Like [gridAlignedResample](#gridalignedresample), but chooses a spacing that is an integer multiple or divisor of the original spacing (so that input and output grid are guaranteed to have the same bounds), as close as possible to `approxNewSpacing`.
+
+**Parameters:**
+
+- `input` — The input descriptor.
+- `approxNewSpacing` — Target voxel spacing along each axis (same units as `input’s` spacing).
+- `boundsPixel` — If set, crop to this pixel-space axis-aligned box first; if not set, uses the full index range ``[0, dim-1] on each axis.
+
+**Returns:** Descriptor with updated spacing and dimensions, or std::nullopt, in case of invalid input.

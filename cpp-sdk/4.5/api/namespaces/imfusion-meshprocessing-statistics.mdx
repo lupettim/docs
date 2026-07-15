@@ -1,0 +1,49 @@
+---
+title: "ImFusion::MeshProcessing::Statistics"
+sidebarTitle: "Statistics"
+description: "Methods for computing statistics on Meshes."
+---
+
+## Overview
+
+Methods for computing statistics on Meshes.
+
+## Functions
+
+- double [computeVolume](#computevolume) (const [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) &mesh) — Compute the volume of a watertight mesh.
+- double [computeDiceCoefficient](#computedicecoefficient) (const [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) &mesh1, const [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) &mesh2) — Compute the dice coefficient for two watertight mesh volumes.
+
+## Function Documentation
+
+### computeVolume
+
+```cpp
+double ImFusion::MeshProcessing::Statistics::computeVolume (const Mesh & mesh)
+```
+
+Compute the volume of a watertight mesh.
+
+**Parameters:**
+
+- `mesh` — [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh)
+
+**Returns:** Volume of the mesh, -1 if calculation could not be performed, i.e. mesh is not manifold and/or not closed
+
+**Warning:** [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) must not self-intersect, otherwise the result will be incorrect. If in doubt, use [Mesh::isSelfIntersecting](/cpp-sdk/4.5/api/classes/imfusion-mesh)
+
+### computeDiceCoefficient
+
+```cpp
+double ImFusion::MeshProcessing::Statistics::computeDiceCoefficient (const Mesh & mesh1, const Mesh & mesh2)
+```
+
+Compute the dice coefficient for two watertight mesh volumes.
+
+**Parameters:**
+
+- `mesh1` — First mesh
+- `mesh2` — Second mesh
+
+**Returns:** -1 if calculation could not be performed (i.e. at least one of the meshes is not manifold or/and not closed), otherwise dice = 2 \* volume(intersection(mesh1, mesh2))/(volume(mesh1) + volume(mesh2))
+
+**Warning:** Meshes must not self-intersect, otherwise the result will be incorrect. If in doubt, use [Mesh::isSelfIntersecting](/cpp-sdk/4.5/api/classes/imfusion-mesh)

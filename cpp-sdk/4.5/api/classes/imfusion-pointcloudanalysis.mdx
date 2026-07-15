@@ -1,0 +1,88 @@
+---
+title: "ImFusion::PointCloudAnalysis"
+sidebarTitle: "PointCloudAnalysis"
+description: "Geometric analysis of a point cloud."
+---
+
+`#include <ImFusion/Base/PointCloudAnalysis.h>`
+
+## Overview
+
+Geometric analysis of a point cloud.
+
+## Public Member Functions
+
+- **~PointCloudAnalysis** () override — Destructor.
+- int **size** () const — Return number of samples (point clounds).
+- double \* **statistics** (int which) — Return selected statistics over all samples.
+- double **correlation** (int which) — Return correlation for selected statistic.
+- double **spearmanRankCorrelation** (int which) — Return Spearman rank correlation for selected statistic.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; **pointCloud** (int which) — Return point cloud.
+- void **preprocessPointClouds** () — Pre-processing of the point clouds.
+- virtual bool **isPredictionAvailable** () — Return whether RF Prediction has been learnt.
+- bool **isSurfaceErrorAvailable** () — Return whether the surface error is available.
+
+## Protected Member Functions
+
+- void **updateCorrelations** ()
+
+## Protected Attributes
+
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; &gt; **m_pc** — [Vector](/cpp-sdk/4.5/api/classes/imfusion-vector) of point clouds to analyse.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; &gt; **m_stats** — Computed point cloud statistics.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; **m_error** — Reference error values to compare.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; **m_surfaceError** — Reference surface error values to compare.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; **m_corr** — Correlation of the different statistics with the error values.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; **m_spearmanCorr** — Spearman rank correlation of the different statistics with the error values.
+- int **m_preprocessPointClouds** — Pre-processing mode (0 none, 1 translation, 2 translation+eigenvectors).
+- int **m_skipFiles** — Skip files (e.g. distinguish Femur/Tibia).
+
+## Methods implementing the algorithm interface
+
+- void [compute](#compute) () override — Execute the algorithm.
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=0)
+
+## Methods implementing the Configurable interface
+
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+## Member Function Documentation
+
+### compute
+
+```cpp
+void ImFusion::PointCloudAnalysis::compute ()
+```
+
+*override, virtual*
+
+Execute the algorithm.
+
+### configure
+
+```cpp
+void ImFusion::PointCloudAnalysis::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### configuration
+
+```cpp
+void ImFusion::PointCloudAnalysis::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality

@@ -1,0 +1,85 @@
+---
+title: "ImFusion::LabelToMeshAlgorithm"
+sidebarTitle: "LabelToMeshAlgorithm"
+description: "Algorithm to convert label maps to meshes."
+---
+
+`#include <ImFusion/Seg/LabelToMeshAlgorithm.h>`
+
+## Overview
+
+[Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) to convert label maps to meshes.
+
+## Public Member Functions
+
+- **LabelToMeshAlgorithm** (const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*labelVolume, const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*labelMask=nullptr) — Main constructor.
+- **~LabelToMeshAlgorithm** () override — Destructor.
+
+## Public Attributes
+
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; bool &gt; **p_labelMapMode** = &#123;"Label Map Mode", false, \*this&#125; — Label map mode means that each label will be exported as a separate mesh.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; unsigned char &gt; &gt; **p_targetLabels** = &#123;"Target Labels", [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt;unsigned char&gt;&#123;&#125;, \*this&#125; — In label map mode, subset of values that will be used.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; bool &gt; [p_aboveIsoValue](#p-aboveisovalue) = &#123;"Threshold Above Iso-Value", true, \*this&#125; — If true, the interior of the resulting mesh is greater than the isovalue.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; double &gt; **p_isoValue** = &#123;"Iso-Value", 0.5, this&#125; — Threshold value for the label map.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; int &gt; **p_smoothing** = &#123;"Smoothing", 0, this&#125; — Amount of smoothing (radius in pixels).
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; bool &gt; **p_closeHolesAtImageBoundaries** = &#123;"closeHolesAtImageBoundaries", true, \*this&#125; — Flag signaling if the resulting mesh should be closed in case the corresponding label touches any of the image boundaries.
+
+## Protected Attributes
+
+- const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* **m_label** — Input label map.
+- const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* **m_mask** — Input optional mask.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) &gt; &gt; **m_meshes** — Output meshes.
+
+## Methods implementing the algorithm interface
+
+- [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) [takeOutput](#takeoutput) () override — If new data was created, make it available here.
+- void [compute](#compute) () override — Execute the algorithm.
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=nullptr) — If data is compatible with algorithm return true. If a is not zero, create algorithm with input data.
+
+## Methods implementing the Configurable interface
+
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Retrieve the properties of this object.
+
+## Member Function Documentation
+
+### takeOutput
+
+```cpp
+OwningDataList ImFusion::LabelToMeshAlgorithm::takeOutput ()
+```
+
+*override, virtual*
+
+If new data was created, make it available here.
+
+### compute
+
+```cpp
+void ImFusion::LabelToMeshAlgorithm::compute ()
+```
+
+*override, virtual*
+
+Execute the algorithm.
+
+### configuration
+
+```cpp
+void ImFusion::LabelToMeshAlgorithm::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Retrieve the properties of this object.
+
+## Member Data Documentation
+
+### p_aboveIsoValue
+
+```cpp
+Parameter <bool> ImFusion::LabelToMeshAlgorithm::p_aboveIsoValue = {"Threshold Above Iso-Value", true, *this}
+```
+
+If true, the interior of the resulting mesh is greater than the isovalue.
+
+Be aware that meshes which are "inside-out" may not behave as expected in some scenarions, including rendering.

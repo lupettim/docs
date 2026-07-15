@@ -1,0 +1,67 @@
+---
+title: "ImFusion::PointBasedAnnotationManipulator2"
+sidebarTitle: "PointBasedAnnotationManipulator2"
+description: "Manipulator for point-based annotations."
+---
+
+`#include <ImFusion/GUI/PointBasedAnnotationManipulator2.h>`
+
+## Overview
+
+[Manipulator](/cpp-sdk/4.5/api/classes/imfusion-manipulator) for point-based annotations.
+
+## Public Member Functions
+
+- **PointBasedAnnotationManipulator2** ([GlPointBasedAnnotation](/cpp-sdk/4.5/api/classes/imfusion-glpointbasedannotation) &annotation)
+- bool [sceneEvent](#sceneevent) (QEvent \*event, const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &view) override
+- void **beginCreation** ()
+- bool **endCreation** ()
+
+## Protected Member Functions
+
+- void **onHandleClicked** (int handle, Qt::MouseButton button)
+- void **onLineClicked** (QMouseEvent \*e, const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &view)
+- void **onMouseButtonRelease** ()
+- void **setOpenHand** () — Sets cursor to open hand.
+- void **setClosedHand** () — Sets cursor to closed (grabbing) hand.
+- void **resetCursor** () — Resets cursor to default.
+- void **setActive** (bool v) — Sets whether this annotation processes scene events.
+- bool **active** ()
+- void **moveHandle** (QMouseEvent \*e, const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &view) — Moves a single handle.
+- void **moveAllHandles** (QMouseEvent \*e, const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &view) — Moves the whole annotation.
+- void **moveStickyHandle** (QMouseEvent \*e, const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &view) — Moves the handle sticking to the cursor, used during creation of the annotation.
+- bool **placeHandle** (QMouseEvent \*e, const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &view) — Sets down the handle sticking to the cursor.
+- void **updateAnnotation** (const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &view) — Sets view of the annotation and calls its updatePoints method, should be used when at least 1 handle has changed.
+- bool [checkForParentView](#checkforparentview) (const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &view) — Checks if the given view fits the annotation (ie the points are in the plane spanned by the view).
+
+## Protected Attributes
+
+- [GlPointBasedAnnotation](/cpp-sdk/4.5/api/classes/imfusion-glpointbasedannotation) & **m_annotation**
+- int **m_selectedHandle**
+- bool **m_moveAll**
+- bool **m_creating**
+- bool **m_isActive**
+- bool **m_cursorChanged**
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; **m_pointOffsets**
+
+## Member Function Documentation
+
+### sceneEvent
+
+```cpp
+bool ImFusion::PointBasedAnnotationManipulator2::sceneEvent (QEvent * event, const GlView & view)
+```
+
+*override, virtual*
+
+### checkForParentView
+
+```cpp
+bool ImFusion::PointBasedAnnotationManipulator2::checkForParentView (const GlView & view)
+```
+
+*protected*
+
+Checks if the given view fits the annotation (ie the points are in the plane spanned by the view).
+
+If so, it sets the annotation's view to this one. Use for annotations loaded from workspaces.

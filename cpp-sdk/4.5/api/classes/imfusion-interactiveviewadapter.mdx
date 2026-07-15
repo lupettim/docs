@@ -1,0 +1,50 @@
+---
+title: "ImFusion::InteractiveViewAdapter"
+sidebarTitle: "InteractiveViewAdapter"
+description: "Helper class providing the API of InteractiveView while wrapping around either a InteractiveView or a GUI::View ."
+---
+
+`#include <ImFusion/GUI/DisplayWidgetMultiAdapter.h>`
+
+## Overview
+
+Helper class providing the API of [InteractiveView](/cpp-sdk/4.5/api/classes/imfusion-interactiveview) while wrapping around either a [InteractiveView](/cpp-sdk/4.5/api/classes/imfusion-interactiveview) or a [GUI::View](/cpp-sdk/4.5/api/classes/imfusion-gui-view).
+
+**Warning:** To mimic existing use cases this adapter class has nullable/pointer semantics and can be 'null'. If it is null conversion to bool will yield false and comparison to nullptr will be true, and you must not call any of its other member functions.
+
+## Public Member Functions
+
+- **InteractiveViewAdapter** ([InteractiveView](/cpp-sdk/4.5/api/classes/imfusion-interactiveview) \*view)
+- **InteractiveViewAdapter** ([GUI::View](/cpp-sdk/4.5/api/classes/imfusion-gui-view) \*view, [GUI::RadiologyDisplay](/cpp-sdk/4.5/api/classes/imfusion-gui-radiologydisplay) \*parentDisplay)
+- InteractiveViewAdapter \* **operator-&gt;** ()
+- const InteractiveViewAdapter \* **operator-&gt;** () const
+- **operator bool** () const
+- **operator GUI::View \*** () const
+- bool **operator==** ([std::nullptr_t](http://en.cppreference.com/w/cpp/types/nullptr_t.html)) const
+- bool **operator!=** ([std::nullptr_t](http://en.cppreference.com/w/cpp/types/nullptr_t.html)) const
+- bool **operator==** (const [InteractiveView](/cpp-sdk/4.5/api/classes/imfusion-interactiveview) \*view) const
+- bool **operator!=** (const [InteractiveView](/cpp-sdk/4.5/api/classes/imfusion-interactiveview) \*view) const
+- bool **acceptsData** (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data) const
+- void **setVisibleData** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data)
+- const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) & **visibleData** () const
+- bool **showData** ([Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data)
+- void **hideData** (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data)
+- void **addOverlay** ([std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [GUI::ViewOverlay](/cpp-sdk/4.5/api/classes/imfusion-gui-viewoverlay) &gt; overlay, [GUI::ViewOverlay::Anchor](/cpp-sdk/4.5/api/classes/imfusion-gui-viewoverlay) anchor, int position=-1)
+- void **addOverlay** ([std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [InteractiveOverlay](/cpp-sdk/4.5/api/classes/imfusion-interactiveoverlay) &gt; overlay, int position=-1)
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [GUI::ViewOverlay](/cpp-sdk/4.5/api/classes/imfusion-gui-viewoverlay) &gt; **removeOverlay** ([GUI::ViewOverlay](/cpp-sdk/4.5/api/classes/imfusion-gui-viewoverlay) \*overlay)
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [GUI::ViewOverlay](/cpp-sdk/4.5/api/classes/imfusion-gui-viewoverlay) \* &gt; **overlays** () const
+- void **addObject** ([GUI::ViewObject](/cpp-sdk/4.5/api/classes/imfusion-gui-viewobject) \*object)
+- void **removeObject** ([GUI::ViewObject](/cpp-sdk/4.5/api/classes/imfusion-gui-viewobject) \*object)
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [GUI::ViewObject](/cpp-sdk/4.5/api/classes/imfusion-gui-viewobject) \* &gt; **objects** () const
+- void **reset** ()
+- void **setVisible** (bool value)
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [GUI::View::EventHandler](/cpp-sdk/4.5/api/classes/imfusion-gui-view-eventhandler) \* &gt; **interactions** () const
+- T \* **findInteraction** () const
+- [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) \* **view** ()
+- const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) \* **view** () const
+
+## Protected Attributes
+
+- [Utils::Variant](/cpp-sdk/4.5/api/structs/imfusion-utils-variant)&lt; [InteractiveView](/cpp-sdk/4.5/api/classes/imfusion-interactiveview) \*, [GUI::View](/cpp-sdk/4.5/api/classes/imfusion-gui-view) \* &gt; **m_view** = static_cast&lt;[InteractiveView](/cpp-sdk/4.5/api/classes/imfusion-interactiveview)\*&gt;(nullptr)
+- [GUI::View](/cpp-sdk/4.5/api/classes/imfusion-gui-view) \* **m_viewBase** = nullptr
+- [GUI::RadiologyDisplay](/cpp-sdk/4.5/api/classes/imfusion-gui-radiologydisplay) \* **m_parentDisplay** = nullptr

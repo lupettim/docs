@@ -1,0 +1,279 @@
+---
+title: "ImFusion::FreeFormDeformation"
+sidebarTitle: "FreeFormDeformation"
+description: "The FreeFormDeformation provides deformations using a free-form deformation (FFD) based on B-splines."
+---
+
+`#include <ImFusion/GL/FreeFormDeformation.h>`
+
+## Overview
+
+The [FreeFormDeformation](/cpp-sdk/4.5/api/classes/imfusion-freeformdeformation) provides deformations using a free-form deformation (FFD) based on B-splines.
+
+The FFD is represented by a regular grid of control points (green). The location of the control points is determined by the spacing, the number of subdivisions and the overall transformation of the grid. Each control point can have a displacement in mm.
+
+200 The displacement of a point P inside the grid is determined by the sum of the displacements of the 4 nearest control points (black-rimmed) for each dimension weighted by the B-splines. If the 4 nearest control points contain control points that are outside the actual grid (yellow), these control points are always treated as control points with no displacement. More details can be found in: Rueckert et al., Nonrigid Registration Using Free-Form Deformations: Application to Breast MR Images, IEEE, 1999
+
+```
+The FreeFormDeformation also contains a shader include that computes the displacement for a given texture coordinate (see also
+```
+
+FreeFormDeformation::setIncludeArguments(GlProgram\*, SharedImage\*))
+
+## Public Member Functions
+
+- **FreeFormDeformation** (const vec3i &subdivisions=vec3i(1, 1, 1), const vec3 &spacing=vec3(1.0, 1.0, 1.0)) — Creates a FFD grid with the given number of subdivision and spacing.
+- [FreeFormDeformation](#freeformdeformation) (const vec3i &subdivisions, [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*img) — Creates a FFD grid with the given number of subdivisions and uses the given image to initialize the spacing.
+- **FreeFormDeformation** ([SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*img) — Similar to FreeFormDeformation(const vec3&, SharedImage\*) but sets the subdivisions to vec3(1,1,0) for 2D images and vec3(1,1,1) otherwise.
+- **FreeFormDeformation** (const FreeFormDeformation &other) — Copy constructor.
+- [Deformation](/cpp-sdk/4.5/api/classes/imfusion-deformation) \* [clone](#clone) () const override — Returns a copy of the deformation.
+- bool [isIdentity](#isidentity) () const override — Returns if the current state of the deformation transformations the image or not.
+- void [setIdentity](#setidentity) () override — Sets the displacement of all control points to zero.
+- vec3 [displacement](#displacement-1-3) (const vec3 &pos) const override — Returns the displacement for pos (in world coordinates).
+- vec3 [displacement](#displacement-2-3) (const vec2 &pos) const override — Returns the displacement at the world position pos.
+- virtual vec3 [displacement](#displacement-3-3) (const vec3i &pos) const — Returns the control point at the given index or vec3(0.0, 0.0, 0.0) if it is outside the grid.
+- int [setIncludeArguments](#setincludearguments) ([GL::Program](/cpp-sdk/4.5/api/classes/imfusion-gl-program) &p, const [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*img=nullptr, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &prefix="deform") const override — Initializes the FFDeformation shader header to deform the given image.
+- int [dimension](#dimension) () const override — Dimension of the grid, either 2 or 3.
+- void [setSubdivisions](#setsubdivisions) (const vec3i &n, bool updateSpacing=true) — Set number of subdivisions.
+- vec3i **subdivisions** () const — Get number of subdivisions.
+- void **setGridSpacing** (const vec3 &s) — Set grid spacing in mm.
+- vec3 **gridSpacing** () const — Get grid spacing in mm.
+- int [numberOfControlPoints](#numberofcontrolpoints) () const override — Returns the number of control points.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; [controlPoints](#controlpoints) () const override — Get current control point locations (including displacement).
+- vec3 **controlPoint** (const vec3i &d) const — Get current location (including displacement) of a single control point.
+- vec3i **gridSize** () const — Returns the size of the grid.
+- void **setGridTransformation** (const mat4 &T) — Set transformation to be applied to the control points in world coordinate system.
+- mat4 [gridTransformation](#gridtransformation) () const — Get control point transformation in world coordinate system.
+- void [fitGridToContent](#fitgridtocontent) ([SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*image) — Fits the grid to the content of the image.
+- void [setDisplacement](#setdisplacement) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3f &gt; &d) override — Set displacement in mm for every control points.
+- void **setDisplacement** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec2f &gt; &d) — Set displacement in mm for every control points. Convenience function for 2D grid.
+- bool **setDisplacement** ([SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*d)
+- bool **setDisplacement** (const [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; float &gt; \*d)
+- void **setDisplacement** (const vec3i &controlPoint, const vec3f &d) — Sets the displacement at the given control point.
+- void **setDisplacement** (const vec2i &controlPoint, const vec2f &d) — Sets the displacement at the given control point.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3f &gt; [displacements](#displacements) () const override — Get displacement in mm of all control points.
+- [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \* **displacementsImage** () const — Get displacement in mm of all control points.
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Set one or multiple properties.
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Retrieve the properties of this object.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [id](#id) () const override — Returns a unique string identifier for this type of deformation.
+
+## Protected Member Functions
+
+- double **bs** (int idx, double t) const
+
+## Protected Attributes
+
+- vec3 **m_spacing** — Control point spacing in mm.
+- vec3i **m_gridSize** — Size of control point grid.
+- mat4 **m_gridTransformation** — Control point transformation in world coordinate system.
+- [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \* **m_disp** — Displacement of control points in mm.
+
+## Constructor & Destructor Documentation
+
+### FreeFormDeformation
+
+```cpp
+ImFusion::FreeFormDeformation::FreeFormDeformation (const vec3i & subdivisions, SharedImage * img)
+```
+
+Creates a FFD grid with the given number of subdivisions and uses the given image to initialize the spacing.
+
+The spacing is set to the img extent divided by the number of subdivisions, so that the control points span over the complete image
+
+## Member Function Documentation
+
+### clone
+
+```cpp
+Deformation * ImFusion::FreeFormDeformation::clone () const
+```
+
+*override, virtual*
+
+Returns a copy of the deformation.
+
+### isIdentity
+
+```cpp
+bool ImFusion::FreeFormDeformation::isIdentity () const
+```
+
+*override, virtual*
+
+Returns if the current state of the deformation transformations the image or not.
+
+### setIdentity
+
+```cpp
+void ImFusion::FreeFormDeformation::setIdentity ()
+```
+
+*override, virtual*
+
+Sets the displacement of all control points to zero.
+
+### displacement
+
+```cpp
+vec3 ImFusion::FreeFormDeformation::displacement (const vec3 & pos) const
+```
+
+*override, virtual*
+
+Returns the displacement for pos (in world coordinates).
+
+The returned displacement is also in world coordinates. The displacement indicates where pos originated from before applying the deformation.
+
+### displacement
+
+```cpp
+vec3 ImFusion::FreeFormDeformation::displacement (const vec2 & pos) const
+```
+
+*override, virtual*
+
+Returns the displacement at the world position pos.
+
+The base implementation just calls displacement(vec3(pos,0.0))
+
+### displacement
+
+```cpp
+virtual vec3 ImFusion::FreeFormDeformation::displacement (const vec3i & pos) const
+```
+
+*virtual*
+
+Returns the control point at the given index or vec3(0.0, 0.0, 0.0) if it is outside the grid.
+
+The returned displacement is in world coordinates.
+
+### setIncludeArguments
+
+```cpp
+int ImFusion::FreeFormDeformation::setIncludeArguments (GL::Program & p, const SharedImage * img = nullptr, const std::string & prefix = "deform") const
+```
+
+*override, virtual*
+
+Initializes the FFDeformation shader header to deform the given image.
+
+The displacements are computed from the texture coordinates of the image and are returned in image coordinates, therefore this method should be called again when the displacement should be computed on an image with different extent.
+
+### dimension
+
+```cpp
+int ImFusion::FreeFormDeformation::dimension () const
+```
+
+*override, virtual*
+
+Dimension of the grid, either 2 or 3.
+
+### setSubdivisions
+
+```cpp
+void ImFusion::FreeFormDeformation::setSubdivisions (const vec3i & n, bool updateSpacing = true)
+```
+
+Set number of subdivisions.
+
+If updateSpacing is true, the spacing will be updated so that the existing control points will remain at their previous location, e.g. the grid will remain on the same world location.
+
+### numberOfControlPoints
+
+```cpp
+int ImFusion::FreeFormDeformation::numberOfControlPoints () const
+```
+
+*override, virtual*
+
+Returns the number of control points.
+
+### controlPoints
+
+```cpp
+std::vector < vec3 > ImFusion::FreeFormDeformation::controlPoints () const
+```
+
+*override, virtual*
+
+Get current control point locations (including displacement).
+
+### gridTransformation
+
+```cpp
+mat4 ImFusion::FreeFormDeformation::gridTransformation () const
+```
+
+Get control point transformation in world coordinate system.
+
+The transformation is applied on the control points and the displacements
+
+### fitGridToContent
+
+```cpp
+void ImFusion::FreeFormDeformation::fitGridToContent (SharedImage * image)
+```
+
+Fits the grid to the content of the image.
+
+This only modifies the grid transformation not the number of control points or the grid spacing. The content of the image is determined by the [MinimumBoundingBox](/cpp-sdk/4.5/api/classes/imfusion-minimumboundingbox) algorithm.
+
+### setDisplacement
+
+```cpp
+void ImFusion::FreeFormDeformation::setDisplacement (const std::vector < vec3f > & d)
+```
+
+*override, virtual*
+
+Set displacement in mm for every control points.
+
+For 2D images the z-coordinate of the displacement is ignored.
+
+### displacements
+
+```cpp
+std::vector < vec3f > ImFusion::FreeFormDeformation::displacements () const
+```
+
+*override, virtual*
+
+Get displacement in mm of all control points.
+
+### configure
+
+```cpp
+void ImFusion::FreeFormDeformation::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Set one or multiple properties.
+
+### configuration
+
+```cpp
+void ImFusion::FreeFormDeformation::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Retrieve the properties of this object.
+
+### id
+
+```cpp
+std::string ImFusion::FreeFormDeformation::id () const
+```
+
+*inline, override, virtual*
+
+Returns a unique string identifier for this type of deformation.
+
+Usually the name of the class.
+
+**Note:** To avoid conflicts make sure to include potential plugin names into this ID. Due to the modular architecture of the ImFusion library, uniqueness of IDs cannot be checked at compile time. However, [DeformationFactory](/cpp-sdk/4.5/api/classes/imfusion-deformationfactory) will check the uniqueness of the ID during registration.
+
+**See also:** [DeformationFactory](/cpp-sdk/4.5/api/classes/imfusion-deformationfactory)

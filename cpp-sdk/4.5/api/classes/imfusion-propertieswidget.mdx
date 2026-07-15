@@ -1,0 +1,200 @@
+---
+title: "ImFusion::PropertiesWidget"
+sidebarTitle: "PropertiesWidget"
+description: "The PropertiesWidget class provides a widget for Properties ."
+---
+
+`#include <ImFusion/GUI/PropertiesWidget.h>`
+
+## Overview
+
+The [PropertiesWidget](/cpp-sdk/4.5/api/classes/imfusion-propertieswidget) class provides a widget for [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+[PropertiesWidget](/cpp-sdk/4.5/api/classes/imfusion-propertieswidget) creates a input widget for each parameter in a [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) instance. Which kind of widget is created depends on the ParamType of the parameter, e.g. a double parameter is represented by a QDoubleSpinBox. The paramAttributes will be reflected by the widget (e.g. min/max values). [PropertiesWidget](/cpp-sdk/4.5/api/classes/imfusion-propertieswidget) creates a GroupBox holding a sub-PropertiesWidget for each subproperty of a [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) instance.
+
+As with other [Configurable](/cpp-sdk/4.5/api/classes/imfusion-configurable) classes, the [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) instance passed to the constructor or to configure is only used to initialize the widgets but will not be stored by the [PropertiesWidget](/cpp-sdk/4.5/api/classes/imfusion-propertieswidget). Therefore if the user changes a parameter, the corresponding value is NOT updated in the [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) instance. Instead the current values can be retrieved with the configuration method.
+
+By default, the [PropertiesWidget](/cpp-sdk/4.5/api/classes/imfusion-propertieswidget) arranges the parameters as a vertical list with a label containing the parameter name on the left and the widget for the value on the right. The sub-properties are represented by sub-PropertiesWidgets that are always inserted after the list of parameters. The parameters and sub-properties are sorted by the same order they are stored in the [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+Alternatively, the [PropertiesWidget](/cpp-sdk/4.5/api/classes/imfusion-propertieswidget) can also utilize an existing widget UI as a template and use specific widgets in this template as controls for parameters. The [PropertiesWidget](/cpp-sdk/4.5/api/classes/imfusion-propertieswidget) won't take ownership over the template, neither will the template be added to a layout. Each widget in the template that should represent a parameter, must have a dynamic property called 'param' that has the parameter name as a value. To assign a widget to a parameter in a sub-property, use the name of the sub-property as a prefix path, e.g. the parameter 'foo' in the sub-property 'bar' would be called 'bar/foo'. The widget must be of the same widget type as the default widget type of the parameter, e.g. a ParamType::Double requires a QDoubleSpinBox, while a ParamType::Enum requires a QComboBox. For a list of default widget types for each ParamType, see [createDefaultParamControl](/cpp-sdk/4.5/api/namespaces/imfusion). If a parameter does not have a matching widget in the template, the previous default behaviour will be used. The widgets used for parameters are not deleted or re-created by the [PropertiesWidget](/cpp-sdk/4.5/api/classes/imfusion-propertieswidget). Template widgets will not be assigned a label with the parameter name. When changing any of the template widget's 'param' properties *after* creating the [PropertiesWidget](/cpp-sdk/4.5/api/classes/imfusion-propertieswidget), make sure to call [updateUiTemplateParams()](#updateuitemplateparams).
+
+**See also:** Object Serialization
+
+Example:
+
+![](/images/cpp-api/PropertiesWidget.png)
+
+```cpp
+    QGridLayout* layout = new QGridLayout;
+
+ // create controls for Param1 and Param2 which are ParamType Double and String
+    QDoubleSpinBox* param1 = new QDoubleSpinBox;
+    param1->setProperty("param", "Param1");
+    layout->addWidget(param1, 0, 0);
+
+    QLineEdit* param2 = new QLineEdit;
+    param2->setProperty("param", "Param2");
+    layout->addWidget(param2, 0, 1);
+
+ // create a control for Param1 of the sub-properties Subprop
+    QSpinBox* subparam1 = new QSpinBox;
+    subparam1->setProperty("param", "Subprop/Param1");
+    layout->addWidget(subparam1, 1, 0, 1, 2);
+
+ // the template can include any widget
+    QPushButton* button = new QPushButton("A Button");
+    layout->addWidget(button, 2, 0, 1, 2);
+
+ // make sure that the widget you pass as a template is
+    setLayout(layout);
+
+ ImFusion::Properties p("");
+    m_algorithm->configuration(&p);
+
+ // create a new PropertiesWidget that uses this widget as template
+ ImFusion::PropertiesWidget* pw = new ImFusion::PropertiesWidget(&p, this);
+ // add the PropertiesWidget to this widget
+    layout->addWidget(pw, 3, 0, 1, 2);
+```
+ fragment
+With the following properties:
+
+```cpp
+    p->setParam("Param1", 1.0);
+    p->setParam("Param2", "Spam");
+    p->setParam("Param Outside", 1);
+    p->setParamAttributes("Param Outside", "min: 0, max: 10");
+
+ ImFusion::Properties* sub = p->addSubProperties("Subprop");
+    sub->setParam("Param1", 10);
+```
+ fragment
+
+## Signals
+
+- void [parameterChanged](#parameterchanged) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name) — Emitted when parameter 'name' was changed.
+
+## Public Member Functions
+
+- **PropertiesWidget** (QWidget \*parent=0) — Creates an empty [PropertiesWidget](/cpp-sdk/4.5/api/classes/imfusion-propertieswidget).
+- [PropertiesWidget](#propertieswidget) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p, QWidget \*uiTemplate=0, QWidget \*parent=0) — Creates a [PropertiesWidget](/cpp-sdk/4.5/api/classes/imfusion-propertieswidget) and initializes it with the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void [setSplitCamelCase](#setsplitcamelcase) (bool enable) — Splits parameter names into words for display.
+- virtual void [setCustomControl](#setcustomcontrol) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &parameter, [ParamControl](/cpp-sdk/4.5/api/classes/imfusion-paramcontrol) \*control) — Assigns a custom widget to the given parameter.
+- void [setCustomWidget](#setcustomwidget) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &subPropertyName, [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; QWidget &gt; widget) — Assign a custom widget to the subproperty.
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Updates the current widgets with the parameters from p.
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Retrieves the values from the widgets and stores them in p.
+- void [updateControls](#updatecontrols) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) — Updates existing controls with the parameters from p.
+- void [updateUiTemplateParams](#updateuitemplateparams) () — Re-scans the given UI template for widgets with 'param' properties.
+- void [setUpdateResetMatrix](#setupdateresetmatrix) (bool update) — Set this flag to indicate that EigenMatrixParamControls should update the reset-matrix or not.
+
+## Constructor & Destructor Documentation
+
+### PropertiesWidget
+
+```cpp
+ImFusion::PropertiesWidget::PropertiesWidget (const Properties * p, QWidget * uiTemplate = 0, QWidget * parent = 0)
+```
+
+Creates a [PropertiesWidget](/cpp-sdk/4.5/api/classes/imfusion-propertieswidget) and initializes it with the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+An optional QWidget can be passed as a UI template. The [PropertiesWidget](/cpp-sdk/4.5/api/classes/imfusion-propertieswidget) will use specific widgets in the UI template for parameters instead of creating new widgets by it's own. The widget belonging to a parameter is expected to have a QObject property with the name 'param' and the parameter name as value.
+
+## Member Function Documentation
+
+### setSplitCamelCase
+
+```cpp
+void ImFusion::PropertiesWidget::setSplitCamelCase (bool enable)
+```
+
+Splits parameter names into words for display.
+
+This only changes the displayed parameter name not the name in the properties. Example:
+
+someExampleParameter -&gt; Some example parameter
+
+### setCustomControl
+
+```cpp
+virtual void ImFusion::PropertiesWidget::setCustomControl (const std::string & parameter, ParamControl * control)
+```
+
+*virtual*
+
+Assigns a custom widget to the given parameter.
+
+The [PropertiesWidget](/cpp-sdk/4.5/api/classes/imfusion-propertieswidget) will claim ownership of the [ParamControl](/cpp-sdk/4.5/api/classes/imfusion-paramcontrol) and may re-parent its widget. The widget of the control will only be visible if the parameter is part of the [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties). The control object will remain valid throughout the lifetime of the [PropertiesWidget](/cpp-sdk/4.5/api/classes/imfusion-propertieswidget), independent of the visibility of the widget. The custom control will not be used until the widget is [configured](#configure) again
+
+### setCustomWidget
+
+```cpp
+void ImFusion::PropertiesWidget::setCustomWidget (const std::string & subPropertyName, std::unique_ptr < QWidget > widget)
+```
+
+Assign a custom widget to the subproperty.
+
+This widget will not be re-configured. If widget inherits from [Configurable](/cpp-sdk/4.5/api/classes/imfusion-configurable), then configure/configuration will be called on it for the given subProperty from [PropertiesWidget::configure](#configure)/configuration. In addition, in this case the widget's signalParametersChanged will be connected to the [PropertiesWidget](/cpp-sdk/4.5/api/classes/imfusion-propertieswidget)'s parameterChanged signal. Otherwise it is the responsibility of the widget to handle all signals and re-configure its parameters if present. To take an effect, the [PropertiesWidget](/cpp-sdk/4.5/api/classes/imfusion-propertieswidget) should get configured after calling this function. Note: if there are multiple subProperties with the same name, only one widget will be added for the last subProperty
+
+### configure
+
+```cpp
+void ImFusion::PropertiesWidget::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Updates the current widgets with the parameters from p.
+
+### configuration
+
+```cpp
+void ImFusion::PropertiesWidget::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Retrieves the values from the widgets and stores them in p.
+
+### updateControls
+
+```cpp
+void ImFusion::PropertiesWidget::updateControls (const Properties * p)
+```
+
+Updates existing controls with the parameters from p.
+
+**Note:** This will only update controls that were initially created by [configure()](#configure). That means that *p* must be a subset of the initial widget configuration for changes to take effect.
+
+### updateUiTemplateParams
+
+```cpp
+void ImFusion::PropertiesWidget::updateUiTemplateParams ()
+```
+
+Re-scans the given UI template for widgets with 'param' properties.
+
+**Note:** Since [PropertiesWidget](/cpp-sdk/4.5/api/classes/imfusion-propertieswidget) caches the param-widget map for the UI template, make sure to call this method when you change any of the 'param' properties of the UI template *after* you created the [PropertiesWidget](/cpp-sdk/4.5/api/classes/imfusion-propertieswidget).
+
+### setUpdateResetMatrix
+
+```cpp
+void ImFusion::PropertiesWidget::setUpdateResetMatrix (bool update)
+```
+
+*inline*
+
+Set this flag to indicate that EigenMatrixParamControls should update the reset-matrix or not.
+
+This flag is set in DefaultAlgorithmController::paramChanged and used by [PropertiesWidget](/cpp-sdk/4.5/api/classes/imfusion-propertieswidget) class to set the corresponding flag in EigenMatrixParamControls. This mechanism is used to avoid updating the reset-matrix when changes are [GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui) changes internal to EigenMatrixParamControls. See also SUITE-3626.
+
+### parameterChanged
+
+```cpp
+void ImFusion::PropertiesWidget::parameterChanged (const std::string & name)
+```
+
+*signal*
+
+Emitted when parameter 'name' was changed.
+
+Also emitted when a parameter in a sub-properties changes, in which case 'name' will be prefix with the sub-properties path (e.g. 'subprop/param').

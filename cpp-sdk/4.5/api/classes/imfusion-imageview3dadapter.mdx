@@ -1,0 +1,27 @@
+---
+title: "ImFusion::ImageView3DAdapter"
+sidebarTitle: "ImageView3DAdapter"
+description: "Helper class providing the API of ImageView3D while wrapping around either a ImageView3D or a GUI::VolumeView ."
+---
+
+`#include <ImFusion/GUI/DisplayWidgetMultiAdapter.h>`
+
+## Overview
+
+Helper class providing the API of [ImageView3D](/cpp-sdk/4.5/api/classes/imfusion-imageview3d) while wrapping around either a [ImageView3D](/cpp-sdk/4.5/api/classes/imfusion-imageview3d) or a [GUI::VolumeView](/cpp-sdk/4.5/api/classes/imfusion-gui-volumeview).
+
+**Warning:** To mimic existing use cases this adapter class has nullable/pointer semantics and can be 'null'. If it is null conversion to bool will yield false and comparison to nullptr will be true, and you must not call any of its other member functions.
+
+## Public Member Functions
+
+- **ImageView3DAdapter** ([ImageView3D](/cpp-sdk/4.5/api/classes/imfusion-imageview3d) \*view)
+- **ImageView3DAdapter** ([GUI::VolumeView](/cpp-sdk/4.5/api/classes/imfusion-gui-volumeview) \*view, [GUI::RadiologyDisplay](/cpp-sdk/4.5/api/classes/imfusion-gui-radiologydisplay) \*parentDisplay)
+- ImageView3DAdapter \* **operator-&gt;** ()
+- const ImageView3DAdapter \* **operator-&gt;** () const
+- **operator bool** () const
+- bool **operator==** ([std::nullptr_t](http://en.cppreference.com/w/cpp/types/nullptr_t.html)) const
+- bool **operator!=** ([std::nullptr_t](http://en.cppreference.com/w/cpp/types/nullptr_t.html)) const
+- void **setMatrix** (const mat4 &matrixToWorld, bool suppressAnimation=false)
+- bool **isVisible** () const
+- [GlVolumeView](/cpp-sdk/4.5/api/classes/imfusion-glvolumeview) \* **view** ()
+- const [GlVolumeView](/cpp-sdk/4.5/api/classes/imfusion-glvolumeview) \* **view** () const

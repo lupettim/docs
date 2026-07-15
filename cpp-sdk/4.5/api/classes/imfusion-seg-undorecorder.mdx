@@ -1,0 +1,88 @@
+---
+title: "ImFusion::Seg::UndoRecorder"
+sidebarTitle: "UndoRecorder"
+description: "Simple class to keep track of data changes in a SharedImageSet ."
+---
+
+`#include <ImFusion/Seg/UndoRecorder.h>`
+
+## Overview
+
+Simple class to keep track of data changes in a [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset).
+
+History is represented linearly, the class does not handle branching Nothing happens automatically, the [UndoRecorder](/cpp-sdk/4.5/api/classes/imfusion-seg-undorecorder) must be called explicitly to record the current state Best used with labelMaps, which compress well in memory
+
+## Public Member Functions
+
+- [UndoRecorder](#undorecorder) ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &sis, size_t maxSize=256 \*1024 \*1204, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; &dataComponentsId=&#123;&#125;)
+- **~UndoRecorder** () — Connects the finished signals for proper deletion of QThread and UndoSerializer, exits the thread.
+- void [recordUndoLevel](#recordundolevel-1-2) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &description, uint64_t timestamp) — Record the entire pixel data of the image and store it as an 'undo level' This 'undo level' can later be used to restore the state (= pixel data) of the image when it was recorded If the size limit is exceeded, previous data is automatically removed starting from the oldest, until either the total compressed size is below the limit, or only the undo level that was just recorded remains.
+- void [recordUndoLevel](#recordundolevel-2-2) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &description, uint64_t timestamp, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; size_t &gt; &framesToRecord) — Finer-grained version of the previous function.
+- int **restoreUndoLevel** (size_t index) — Restores the undo level and returns the index of the new focused frame Or -1 in case of failure.
+- void **deleteLevelsAfter** (size_t index) — Deletes all UndoLevel that are more recent than the one pointed by index This is useful in "branching" cases where the user undoes and then continues from the given state all pre-existing "redo" must then be removed.
+- size_t **currentSize** () const — Returns the size in bytes used by the [UndoRecorder](/cpp-sdk/4.5/api/classes/imfusion-seg-undorecorder).
+- void [setupSerializer](#setupserializer) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &filePath) — Sets up the serializer (UndoSerializer) for the given undo file-path.
+- void **setupSerializer** ([std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [internal::UndoSerializer](/cpp-sdk/4.5/api/classes/imfusion-seg-internal-undoserializer) &gt; serializer)
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [internal::UndoLevel](/cpp-sdk/4.5/api/structs/imfusion-seg-internal-undolevel) &gt; & [data](#data) () const — A single UndoLevel is a full snapshot of the image data.
+- void **setData** ([std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [internal::UndoLevel](/cpp-sdk/4.5/api/structs/imfusion-seg-internal-undolevel) &gt; &&undos) — Setter for undos, should move/copy the data.
+- void **deleteUndoFilesAsync** ([std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; &&undosToDelete, bool deleteEmptyUndoDir=false) const — Deletes asynchronously the passed undo-files If m_waitDeletingDone is true, this function blocks until deletion is over.
+- void **waitWritingDone** () const — Blocks the calling thread until all writing processes are done.
+- void **setWaitDeletingDone** (bool wait) — If set, the calling thread is blocked untile the deleting thread is done deleting (on deleteUndoFilesAsync).
+
+## Constructor & Destructor Documentation
+
+### UndoRecorder
+
+```cpp
+ImFusion::Seg::UndoRecorder::UndoRecorder (SharedImageSet & sis, size_t maxSize = 256 *1024 *1204, const std::vector < std::string > & dataComponentsId = {})
+```
+
+**Parameters:**
+
+- `sis` — the [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) whose data will be recorded and restored
+- `maxSize` — the size in bytes of the cache. 256MB by default
+- `dataComponentsId` — all the IDs of data components that shall be recorded in an undo level
+
+## Member Function Documentation
+
+### recordUndoLevel
+
+```cpp
+void ImFusion::Seg::UndoRecorder::recordUndoLevel (const std::string & description, uint64_t timestamp)
+```
+
+Record the entire pixel data of the image and store it as an 'undo level' This 'undo level' can later be used to restore the state (= pixel data) of the image when it was recorded If the size limit is exceeded, previous data is automatically removed starting from the oldest, until either the total compressed size is below the limit, or only the undo level that was just recorded remains.
+
+For multi-frame images, prefer using the overload where each frame to be recorded is specified.
+
+### recordUndoLevel
+
+```cpp
+void ImFusion::Seg::UndoRecorder::recordUndoLevel (const std::string & description, uint64_t timestamp, const std::vector < size_t > & framesToRecord)
+```
+
+Finer-grained version of the previous function.
+
+The framesToRecord argument is an explicit list of frame indices, indicating which frames of the image should be recorded. All other frames are automatically de-duplicated with those of previous undo levels, resulting in more efficient (speed and size) undo recording when only few frames are modified.
+
+### setupSerializer
+
+```cpp
+void ImFusion::Seg::UndoRecorder::setupSerializer (const std::string & filePath)
+```
+
+Sets up the serializer (UndoSerializer) for the given undo file-path.
+
+The serializer is moved inside a QThread.
+
+### data
+
+```cpp
+const std::vector < internal::UndoLevel > & ImFusion::Seg::UndoRecorder::data () const
+```
+
+*inline*
+
+A single UndoLevel is a full snapshot of the image data.
+
+Get the already recorded undo data

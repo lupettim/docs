@@ -1,0 +1,117 @@
+---
+title: "ImFusion::ViewGroup"
+sidebarTitle: "ViewGroup"
+description: "Non-owning container of multiple views that share and sync properties with each other."
+---
+
+`#include <ImFusion/GUI/ViewGroup.h>`
+
+## Overview
+
+Non-owning container of multiple views that share and sync properties with each other.
+
+[ViewGroup](/cpp-sdk/4.5/api/classes/imfusion-viewgroup) provides you with a set of convenience functions helpful for dealing with multiple views showing the same data. Furthermore, it enables you to specify Qt properties that shall automatically be synced between the views, such as zoom factor or blending mode if you have multiple MPR views.
+
+The [DisplayWidgetMulti](/cpp-sdk/4.5/api/classes/imfusion-displaywidgetmulti) will usually form a [ViewGroup](/cpp-sdk/4.5/api/classes/imfusion-viewgroup) consisting of 3 MPR views and one 3D view.
+
+## Signals
+
+- void **viewRemoved** ([InteractiveView](/cpp-sdk/4.5/api/classes/imfusion-interactiveview) \*view)
+- void **viewAdded** ([InteractiveView](/cpp-sdk/4.5/api/classes/imfusion-interactiveview) \*view)
+
+## Public Member Functions
+
+- **ViewGroup** (const QStringList &sharedProperties)
+- void **addView** ([InteractiveView](/cpp-sdk/4.5/api/classes/imfusion-interactiveview) \*view)
+- void **removeView** ([InteractiveView](/cpp-sdk/4.5/api/classes/imfusion-interactiveview) \*view)
+- bool **isInGroup** ([InteractiveView](/cpp-sdk/4.5/api/classes/imfusion-interactiveview) \*view) const
+- int **numViews** () const
+- void **addProperty** (const QString &name)
+- void **removeProperty** (const QString &name)
+- bool **isShared** (const QString &name) const
+- bool **acceptsData** (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data) — Returns whether any of the group's views is capable of displaying the given data.
+- void **setVisibleData** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data) — Calls setVisibleData() on all of the views comprising this group.
+- [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) **visibleData** () const — Returns the union of the visible data of all views comprising this group.
+- bool **showData** ([Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data) — Calls showData() on all of the views comprising this group.
+- void **hideData** ([Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data) — Calls hideData() on all of the views comprising this group.
+- void **addObject** ([GUI::ViewObject](/cpp-sdk/4.5/api/classes/imfusion-gui-viewobject) \*object)
+- void **removeObject** ([GUI::ViewObject](/cpp-sdk/4.5/api/classes/imfusion-gui-viewobject) \*object)
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [InteractiveView](/cpp-sdk/4.5/api/classes/imfusion-interactiveview) \* &gt; & **views** () const
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [ImageView2D](/cpp-sdk/4.5/api/classes/imfusion-imageview2d) \* &gt; **mprViews** () const — Returns only the [ImageView2D](/cpp-sdk/4.5/api/classes/imfusion-imageview2d) views of type [GlView::SLICE3D](/cpp-sdk/4.5/api/classes/imfusion-glview).
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [ImageView3D](/cpp-sdk/4.5/api/classes/imfusion-imageview3d) \* &gt; **volumeViews** () const — Returns only the [ImageView3D](/cpp-sdk/4.5/api/classes/imfusion-imageview3d) views of type [GlView::SPACE3D](/cpp-sdk/4.5/api/classes/imfusion-glview).
+- void **reset** () — Reset all member views to their default state.
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; vec3 &gt; **intersectionCenter** () const — Return the world coordinate where the 3 views intersect.
+- void **centerIntersection** () — Center slice views to their intersection.
+- void **centerSlices** (const vec3 &point) — Center slice views to a specific point.
+- void [centerSlices](#centerslices) (const vec3 &point, const vec3 &normal) — Center slice views to a specific point.
+- void **centerOnData** (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data) — Center both slice views and volume view on the provided data.
+- void [orthogonalizeSlices](#orthogonalizeslices) () — Rotates the 3 slice views to an orthogonal configuration.
+- void [setMprViewMatrices](#setmprviewmatrices) (const mat4 &matrix) — Sets the matrix of each MPR view according to their original plane.
+- void **alignMprViewsToVoxelGrid** () — Aligns all MPR views to the volume axes.
+- const QStringList & **sharedProperties** () const
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Set one or multiple properties.
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Retrieve the properties of this object.
+
+## Protected Member Functions
+
+- bool **connectProperty** (const char \*property, [InteractiveView](/cpp-sdk/4.5/api/classes/imfusion-interactiveview) \*src, [InteractiveView](/cpp-sdk/4.5/api/classes/imfusion-interactiveview) \*dst)
+- bool **disconnectProperty** (const char \*property, [InteractiveView](/cpp-sdk/4.5/api/classes/imfusion-interactiveview) \*src, [InteractiveView](/cpp-sdk/4.5/api/classes/imfusion-interactiveview) \*dst)
+- void **onDisplayOptionsChanged** ([DisplayOptions2d](/cpp-sdk/4.5/api/classes/imfusion-displayoptions2d) \*sender)
+
+## Protected Attributes
+
+- QStringList **m_sharedProperties**
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [InteractiveView](/cpp-sdk/4.5/api/classes/imfusion-interactiveview) \* &gt; **m_views**
+- bool **m_ignoreEvents**
+
+## Member Function Documentation
+
+### centerSlices
+
+```cpp
+void ImFusion::ViewGroup::centerSlices (const vec3 & point, const vec3 & normal)
+```
+
+Center slice views to a specific point.
+
+The second parameter additionally rotates the views, such that the normal on the first slice matches it.
+
+### orthogonalizeSlices
+
+```cpp
+void ImFusion::ViewGroup::orthogonalizeSlices ()
+```
+
+Rotates the 3 slice views to an orthogonal configuration.
+
+Requires exactly 3 slice views to be present. Will generally need additional rotation around view normals to look "nice". Use with care.
+
+### setMprViewMatrices
+
+```cpp
+void ImFusion::ViewGroup::setMprViewMatrices (const mat4 & matrix)
+```
+
+Sets the matrix of each MPR view according to their original plane.
+
+The rotation part of *matrix* sets the rotation of views with originalPlane() == 0. All MPR views will have the same position afterward (they will all intersect in their centers).
+
+### configure
+
+```cpp
+void ImFusion::ViewGroup::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Set one or multiple properties.
+
+### configuration
+
+```cpp
+void ImFusion::ViewGroup::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Retrieve the properties of this object.

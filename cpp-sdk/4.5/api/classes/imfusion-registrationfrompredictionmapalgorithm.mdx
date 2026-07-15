@@ -1,0 +1,97 @@
+---
+title: "ImFusion::RegistrationFromPredictionMapAlgorithm"
+sidebarTitle: "RegistrationFromPredictionMapAlgorithm"
+description: "Algorithm to register two images based on prediction maps."
+---
+
+`#include <ImFusion/Reg/RegistrationFromPredictionMapAlgorithm.h>`
+
+## Overview
+
+[Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) to register two images based on prediction maps.
+
+If the prediction maps are not provided, pixel-wise machine learning models are computed on both volumes, which have to output a multi-channel float prediction map. These are internally converted to a label map by thresholding; the reference image one will be converted to a distance volume, the moving one will be sampled as point cloud. Each channel/label will be added with the point-cloud distance to the cost function, which is minimized with a global optimizer.
+
+## Public Member Functions
+
+- **RegistrationFromPredictionMapAlgorithm** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*image, [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*imageRef, [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*pred, [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*predRef) — Constructor with moving and reference image, and optional pre-computed float prediction maps.
+- **~RegistrationFromPredictionMapAlgorithm** () override — Destructor.
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Set one or multiple properties.
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Retrieve the properties of this object.
+- [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [Optimizer](/cpp-sdk/4.5/api/classes/imfusion-optimizer) &gt; [createDefaultOptimizer](#createdefaultoptimizer) () const override — Creates and configures the global optimizer required for the registration.
+- [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) [takeOutput](#takeoutput) () override — Return the output data based on the export flags.
+- void **setErrorFunction** ([ErrorFunction](/cpp-sdk/4.5/api/classes/imfusion-errorfunction) \*ef) — Set an optional error function that is used to penalize cost function with e.g. a skin surface distance.
+- void **setTranslationOnly** (bool flag) — Set if only translation should be optimized.
+- double [evaluate](#evaluate) (int n, const double \*x, double \*dx=nullptr) override — Evaluate the multipe point cloud post function derived from the predictions.
+
+## Protected Member Functions
+
+- virtual void **processLabel** ([TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; unsigned char &gt; &label, int channel, bool isReference, [Data::Modality](/cpp-sdk/4.5/api/classes/imfusion-data) modality) — Analyze and process a single label of either reference or moving image, adding to the data to be exported.
+- [PointDistanceReg](/cpp-sdk/4.5/api/classes/imfusion-pointdistancereg) \* **createCostFunctionFromPredictions** (int classIndex, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; float &gt; &gt; &gt; &distMaps) — Convert machine learning model output to point-distance registration instances used for optimization.
+
+## Methods implementing the algorithm interface
+
+- void [compute](#compute) () override — Execute the algorithm.
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=0)
+
+## Member Function Documentation
+
+### configure
+
+```cpp
+void ImFusion::RegistrationFromPredictionMapAlgorithm::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Set one or multiple properties.
+
+### configuration
+
+```cpp
+void ImFusion::RegistrationFromPredictionMapAlgorithm::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Retrieve the properties of this object.
+
+### compute
+
+```cpp
+void ImFusion::RegistrationFromPredictionMapAlgorithm::compute ()
+```
+
+*override, virtual*
+
+Execute the algorithm.
+
+### createDefaultOptimizer
+
+```cpp
+std::shared_ptr < Optimizer > ImFusion::RegistrationFromPredictionMapAlgorithm::createDefaultOptimizer () const
+```
+
+*override, virtual*
+
+Creates and configures the global optimizer required for the registration.
+
+### takeOutput
+
+```cpp
+OwningDataList ImFusion::RegistrationFromPredictionMapAlgorithm::takeOutput ()
+```
+
+*override, virtual*
+
+Return the output data based on the export flags.
+
+### evaluate
+
+```cpp
+double ImFusion::RegistrationFromPredictionMapAlgorithm::evaluate (int n, const double * x, double * dx = nullptr)
+```
+
+*override, virtual*
+
+Evaluate the multipe point cloud post function derived from the predictions.

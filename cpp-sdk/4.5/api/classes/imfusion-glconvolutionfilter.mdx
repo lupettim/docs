@@ -1,0 +1,63 @@
+---
+title: "ImFusion::GlConvolutionFilter"
+sidebarTitle: "GlConvolutionFilter"
+description: "Convolution filter."
+---
+
+`#include <ImFusion/GL/GlConvolutionFilter.h>`
+
+## Overview
+
+Convolution filter.
+
+## Public Member Functions
+
+- **GlConvolutionFilter** ([GL::Framebuffer](/cpp-sdk/4.5/api/classes/imfusion-gl-framebuffer) \*fbo=0, bool properConvolution=false) — If properConvolution is true, the operation uses the mathematical convention (with a minus) and forces a finite input (by clamping with border value 0).
+- bool **setKernel** (const [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) &imgkernel) — Set kernel from a mem image Only kernels with an odd pixel size and a single channel are supported.
+- bool **setKernel** (const [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) &imgkernel)
+- void [compute](#compute-1-2) (const [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) &imgIn, [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) &imgOut) override — Execute the filter on the image.
+- void [compute](#compute-2-2) ([SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) &imgIn, [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) &imgOut) override
+- void **compute** ([SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) &imgIn, [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) &imgOut, ImageMath::GlExpr \*exprIn, ImageMath::GlExpr \*exprOut=nullptr, bool ignoreMask=false)
+- [GL::Sampler](/cpp-sdk/4.5/api/classes/imfusion-gl-sampler) & **samplingParameters** ()
+- bool [good](#good) () const override — Return true if the filter can be used, in particular if the shaders are available.
+
+## Protected Member Functions
+
+- void **computeInternal** (const [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) &imgIn, [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) &imgOut, [Mask](/cpp-sdk/4.5/api/classes/imfusion-mask) \*mask=nullptr, ImageMath::GlExpr \*exprIn=nullptr, ImageMath::GlExpr \*exprOut=nullptr)
+
+## Protected Attributes
+
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [GL::ProgramCache](/cpp-sdk/4.5/api/classes/imfusion-gl-programcache) &gt; **m_progManager**
+- [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) \* **m_kernel**
+- [GL::Sampler](/cpp-sdk/4.5/api/classes/imfusion-gl-sampler) **m_sampler**
+- bool **m_properConvolution** = false
+
+## Member Function Documentation
+
+### compute
+
+```cpp
+void ImFusion::GlConvolutionFilter::compute (const GlImage & imgIn, GlImage & imgOut)
+```
+
+*override, virtual*
+
+Execute the filter on the image.
+
+### compute
+
+```cpp
+void ImFusion::GlConvolutionFilter::compute (SharedImage & imgIn, SharedImage & imgOut)
+```
+
+*override, virtual*
+
+### good
+
+```cpp
+bool ImFusion::GlConvolutionFilter::good () const
+```
+
+*override, virtual*
+
+Return true if the filter can be used, in particular if the shaders are available.

@@ -1,0 +1,11 @@
+---
+title: "ImFusion::LinkPose::LinkHandler"
+sidebarTitle: "LinkHandler"
+---
+
+## Public Attributes
+
+- [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; bool(const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*)&gt; **isCompatible** — Returns whether the handler is compatible with the data.
+- [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; SignalConnection &gt;([LinkPose](/cpp-sdk/4.5/api/classes/imfusion-linkpose) \*linkPose, const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*, TransformationChangedFn func)&gt; **connectUpdateSignal** — Connect a signal to func to trigger updates.
+- [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; mat4(const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*)&gt; **getMatrix** — Returns the matrix for this kind of data.
+- [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; void([Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*, const mat4 &mat)&gt; **setMatrix** — Sets the matrix for this kind of data.

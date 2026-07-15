@@ -1,0 +1,76 @@
+---
+title: "ImFusion::MeshProcessing::Remeshing"
+sidebarTitle: "Remeshing"
+description: "Mesh processing algorithms related to mesh remeshing (smoothing, decimation, subdivision)."
+---
+
+## Overview
+
+[Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) processing algorithms related to mesh remeshing (smoothing, decimation, subdivision).
+
+## Classes
+
+- struct [SimplificationSettings](/cpp-sdk/4.5/api/structs/imfusion-meshprocessing-remeshing-simplificationsettings)
+
+## Enumerations
+
+- enum class SmoothMode &#123; **Laplacian** = 0 , **Taubin** &#125; — Smoothing method.
+
+## Functions
+
+- void [subdivide](#subdivide) ([Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) &mesh, unsigned int level) — Method to refine and smooth a mesh using Charles Loop method (it divides each triangle into 4 smaller ones).
+- void [smooth](#smooth) ([Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) &mesh, unsigned int iter, SmoothMode mode=SmoothMode::Laplacian) — [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) smoothing algorithm.
+- void [simplify](#simplify) ([Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) &mesh, const [SimplificationSettings](/cpp-sdk/4.5/api/structs/imfusion-meshprocessing-remeshing-simplificationsettings) &settings, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; int &gt; &blockedVertices=&#123;&#125;) — [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) simplification algorithm.
+
+## Function Documentation
+
+### subdivide
+
+```cpp
+void ImFusion::MeshProcessing::Remeshing::subdivide (Mesh & mesh, unsigned int level)
+```
+
+Method to refine and smooth a mesh using Charles Loop method (it divides each triangle into 4 smaller ones).
+
+**Parameters:**
+
+- `mesh` — [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh)
+- `level` — Number of refinement steps
+
+**Note:** Consider removing duplicated vertices by calling [Cleaning::mergeCloseVertices](/cpp-sdk/4.5/api/namespaces/imfusion-meshprocessing-cleaning) before this
+
+**Warning:** [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) properties will be outdated after this call
+
+### smooth
+
+```cpp
+void ImFusion::MeshProcessing::Remeshing::smooth (Mesh & mesh, unsigned int iter, SmoothMode mode = SmoothMode::Laplacian)
+```
+
+[Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) smoothing algorithm.
+
+**Parameters:**
+
+- `mesh` — [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh)
+- `iter` — Number of smoothing iterations
+- `mode` — Smoothing method
+
+**Note:** Consider removing duplicated vertices by calling [Cleaning::mergeCloseVertices](/cpp-sdk/4.5/api/namespaces/imfusion-meshprocessing-cleaning) before this
+
+### simplify
+
+```cpp
+void ImFusion::MeshProcessing::Remeshing::simplify (Mesh & mesh, const SimplificationSettings & settings, const std::vector < int > & blockedVertices = {})
+```
+
+[Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) simplification algorithm.
+
+Simplification stops after running out of valid edge collapse choices. Based mostly on triangle edge lengths, with optional preservation of mesh curvature, vertex colors and normals.
+
+**Parameters:**
+
+- `mesh` — [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh)
+- `settings` — [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) settings
+- `blockedVertices` — Vertices that should remain untouched during simplification
+
+**Note:** Consider removing duplicated vertices by calling [Cleaning::mergeCloseVertices](/cpp-sdk/4.5/api/namespaces/imfusion-meshprocessing-cleaning) before this

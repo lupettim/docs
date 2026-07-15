@@ -1,0 +1,95 @@
+---
+title: "ImFusion::Interaction3D"
+sidebarTitle: "Interaction3D"
+description: "Standard 3D view interaction."
+---
+
+`#include <ImFusion/GUI/Interaction3D.h>`
+
+## Overview
+
+Standard 3D view interaction.
+
+****Deprecated**:** "Use InteractionView3D instead"
+
+## Public Member Functions
+
+- **Interaction3D** ([InteractiveView](/cpp-sdk/4.5/api/classes/imfusion-interactiveview) &view)
+- void **reset** (bool animate)
+- void [reset](#reset) () override — Calls reset(true).
+- void **setSceneCenter** (const vec3 &center)
+- void **setTranslation** (double tx, double ty, double tz) — Set translation in degrees.
+- void **translation** (double &tx, double &ty, double &tz) — Get translation in degrees.
+- void **setRotation** (double rx, double ry, double rz) — Set rotation in degrees.
+- void **rotation** (double &rx, double &ry, double &rz) — Get rotation in degrees.
+- void **setSensitivity** (double sensitivityTranslation, double sensitivityRotation, double sensitivityDepth=-1) — Set sensitivity, i.e. the factor by which the mouse movement is multiplied to obtain the movement in 3D space.
+- void **sensitivity** (double &sensitivityTranslation, double &sensitivityRotation, double &sensitivityDepth) const — Get sensitivity, i.e. the factor by which the mouse movement is multiplied to obtain the movement in 3D space.
+- bool [sceneEvent](#sceneevent) (QEvent \*event) override — Modify the translation and rotation parameters based on the mouse events.
+- mat4 **transformation** () const — Return the transformation according to the current interaction state.
+- void **setTransformation** (const mat4 &mat)
+- **Interaction3D** ([GUI::VolumeView](/cpp-sdk/4.5/api/classes/imfusion-gui-volumeview) &view)
+- const mat4 & **matrix** () const
+- void **setMatrix** (const mat4 &mat)
+- void **setInteractionCenter** (const vec3 &center)
+- [GUI::EventResult](/cpp-sdk/4.5/api/structs/imfusion-gui-eventresult) [handleMouseEvent](#handlemouseevent) (const [GUI::MouseEvent](/cpp-sdk/4.5/api/classes/imfusion-gui-mouseevent) &event) override
+- [GUI::EventResult](/cpp-sdk/4.5/api/structs/imfusion-gui-eventresult) [handleContextMenuEvent](#handlecontextmenuevent) (const [GUI::ContextMenuEvent](/cpp-sdk/4.5/api/classes/imfusion-gui-contextmenuevent) &event) override
+
+## Public Attributes
+
+- Signal **resetPressed**
+- Signal&lt; vec3 &gt; **doubleClicked**
+
+## Protected Member Functions
+
+- void **applyIncrementalTransform** ()
+
+## Protected Attributes
+
+- [InteractiveView](/cpp-sdk/4.5/api/classes/imfusion-interactiveview) & **m_view**
+
+## Additional Inherited Members
+
+- static bool [addMappedViewAction](/cpp-sdk/4.5/api/classes/imfusion-viewinteraction) (ViewActionType viewAction, Qt::MouseButton button, Qt::KeyboardModifiers modifiers)
+- static bool **removeMappedViewAction** (ViewActionType viewAction, Qt::MouseButton button, Qt::KeyboardModifiers modifiers) — Removes mapping from `viewAction` to *MouseAction* defined by `button` and `modifiers` Returns true if removing succeeds, or false if this mapping does not exists.
+- static void **resetActionMapping** () — Loads the default view interaction mapping.
+- static const ViewActionMap & **globalViewActionMap** () — Const access to the global view action mapper.
+- static void **setGlobalViewActionMap** (const ViewActionMap &map) — Sets the global view action map.
+- static bool **hasConflicts** (const ViewActionMap &actionMap, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::pair](http://en.cppreference.com/w/cpp/utility/pair.html)&lt; ViewActionType, ViewActionType &gt; &gt; &conflictingActions) — Checks if the mapping defined in `actionMap` has any conflicts.
+
+## Member Function Documentation
+
+### reset
+
+```cpp
+void ImFusion::Interaction3D::reset ()
+```
+
+*override, virtual*
+
+Calls reset(true).
+
+### sceneEvent
+
+```cpp
+bool ImFusion::Interaction3D::sceneEvent (QEvent * event)
+```
+
+*override, virtual*
+
+Modify the translation and rotation parameters based on the mouse events.
+
+### handleMouseEvent
+
+```cpp
+GUI::EventResult ImFusion::Interaction3D::handleMouseEvent (const GUI::MouseEvent & event)
+```
+
+*override, virtual*
+
+### handleContextMenuEvent
+
+```cpp
+GUI::EventResult ImFusion::Interaction3D::handleContextMenuEvent (const GUI::ContextMenuEvent & event)
+```
+
+*override, virtual*

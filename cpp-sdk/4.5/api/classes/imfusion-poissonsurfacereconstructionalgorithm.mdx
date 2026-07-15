@@ -1,0 +1,344 @@
+---
+title: "ImFusion::PoissonSurfaceReconstructionAlgorithm"
+sidebarTitle: "PoissonSurfaceReconstructionAlgorithm"
+description: "Algorithm for computing poisson reconstruction from a point cloud with normals."
+---
+
+`#include <ImFusion/Mesh/PoissonSurfaceReconstructionAlgorithm.h>`
+
+## Overview
+
+[Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) for computing poisson reconstruction from a point cloud with normals.
+
+This is an [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) frontend for the low-level algorithm in [PoissonReconstruction](/cpp-sdk/4.5/api/namespaces/imfusion-poissonreconstruction), which can be used directly if the application does not rely on the [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) interface being used or if one needs fine control over all algorithm parameters.
+
+In this algorithm only the most relevant parameters of [PoissonReconstruction](/cpp-sdk/4.5/api/namespaces/imfusion-poissonreconstruction) are forwarded to the respective getters and setters, see [PoissonReconstruction::PoissonParams](/cpp-sdk/4.5/api/structs/imfusion-poissonreconstruction-poissonparams) for their documentation and for additional parameters that were omitted here.
+
+A common use case for this algorithm is creating a [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) out of a point cloud that was obtained from a 3D scanner (should there be multiple scans we need to register and merge them into a single point cloud first):
+
+```cpp
+std::unique_ptr<Mesh> createMesh(const PointCloud& pc)
+{
+    assert(pc.hasNormals());
+    PoissonSurfaceReconstructionAlgorithm algo(&pc);
+    algo.setSpacing(pc.bounds().extent().norm()*0.002); // triangle edge length approx 1/500th of object diameter
+    algo.setLevel(-1);                                  //else this overrides setSpacing
+ //alternative: algo.setLevel(9); //divide the point cloud bounding box 9 times, leading to minimum voxel side lengths of approx 0.002*cube side length
+    algo.compute();
+ if (algo.status() == static_cast<int>(Algorithm::Status::Success))
+ return algo.takeOutput().extractFirst<Mesh>(); //this algorithm only has one output
+ else
+ return nullptr;
+}
+```
+ fragment
+In addition to the usually watertight [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) produced by [PoissonReconstruction](/cpp-sdk/4.5/api/namespaces/imfusion-poissonreconstruction) this algorithm offers the option to filter the resulting mesh w.r.t distance to the original point cloud, allowing to keep gaps in the measurements open:
+
+```cpp
+// [...] see above
+algo.setSurfaceDistanceR1(pc.bounds().extent().norm()*0.002); // erase triangles that do not have a point as close to them as their minimum side length
+algo.compute();
+// [...] see above
+```
+ fragment
+[setSurfaceDistanceR2()](#setsurfacedistancer2) works together with setMaxAngleDegrees() to filter out faces by distance *if also* the angle between point and face normal falls below the given threshold.
+
+Colors are taken from the point cloud by default if the point cloud has colors. If this is not desired setColorSource() can be used. The other parameters have reasonable default values that should usually not need to be changed.
+
+## Public Types
+
+- enum [ColorSource](#colorsource) &#123; Color = 0 , NoColor = 1 , Density = 2 &#125; — Source of the color for the generated [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh).
+
+## Public Member Functions
+
+- **PoissonSurfaceReconstructionAlgorithm** (const [PointCloud](/cpp-sdk/4.5/api/classes/imfusion-pointcloud) \*pointCloud)
+- int [level](#level) () const — [Octree](/cpp-sdk/4.5/api/classes/imfusion-octree) level of the reconstruction.
+- void **setLevel** (int [level](#level)) — Sets [level()](#level).
+- double [spacing](#spacing) () const — Voxel spacing of the output volume.
+- void **setSpacing** (double [spacing](#spacing)) — Sets [spacing()](#spacing).
+- [std::array](http://en.cppreference.com/w/cpp/container/array.html)&lt; double, 2 &gt; [surfaceDistanceThresholds](#surfacedistancethresholds) () const — Thresholds for filtering generated triangles w.r.t their distance to the original point cloud.
+- void **setSurfaceDistanceThresholds** (double lowerBound, double upperBound) — Sets [surfaceDistanceThresholds()](#surfacedistancethresholds).
+- double [maxSurfaceDistance](#maxsurfacedistance) () const — Maximum distance of generated triangles to original point cloud. Set to 0 to obtain watertight mesh which interpolates all holes.
+- void [setMaxSurfaceDistance](#setmaxsurfacedistance) (double dist) — Sets [maxSurfaceDistance()](#maxsurfacedistance).
+- double [surfaceDistanceR1](#surfacedistancer1) () const — Maximum distance of generated triangles to original point cloud.
+- void [setSurfaceDistanceR1](#setsurfacedistancer1) (double dist) — Sets [surfaceDistanceR1()](#surfacedistancer1).
+- double [surfaceDistanceR2](#surfacedistancer2) () const — Maximum distance of generated triangles to original point cloud given similar normals.
+- void [setSurfaceDistanceR2](#setsurfacedistancer2) (double dist) — Sets [surfaceDistanceR2()](#surfacedistancer2).
+- double [maxAngleDegrees](#maxangledegrees) () const — Maximum normal deviation for [surfaceDistanceThresholds()](#surfacedistancethresholds).
+- void **setMaxAngleDegrees** (double angle) — Sets [maxAngleDegrees()](#maxangledegrees).
+- [ColorSource](#colorsource) [colorSource](#colorsource) () const — Source for mesh colors.
+- void **setColorSource** ([ColorSource](#colorsource) source) — Sets [colorSource()](#colorsource).
+- float [samplesPerNode](#samplespernode) () — Minimum number of sample points that should fall within an octree node as the octree construction is adapted to sampling density.
+- void **setSamplesPerNode** (float val) — Sets [samplesPerNode()](#samplespernode).
+- [PoissonReconstruction::DensityThresholdMode](/cpp-sdk/4.5/api/namespaces/imfusion-poissonreconstruction) [densityThresholdMode](#densitythresholdmode) () const — Mode of density thresholding.
+- void **setDensityThresholdMode** ([PoissonReconstruction::DensityThresholdMode](/cpp-sdk/4.5/api/namespaces/imfusion-poissonreconstruction) val) — Sets [densityThresholdMode()](#densitythresholdmode).
+- float [densityThreshold](#densitythreshold) () const — Threshold to be used for the respective [densityThresholdMode()](#densitythresholdmode).
+- void **setDensityThreshold** (float val) — Sets [densityThreshold()](#densitythreshold).
+- void [compute](#compute) () override — Execute the algorithm.
+- [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) [takeOutput](#takeoutput) () override — Return any new [Data](/cpp-sdk/4.5/api/classes/imfusion-data) that was created by the [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) during the last call to [compute()](#compute).
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+## Static Public Member Functions
+
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=0) — Factory method to check for applicability or to create the algorithm.
+
+## Member Enumeration Documentation
+
+### ColorSource
+
+```cpp
+enum ImFusion::PoissonSurfaceReconstructionAlgorithm::ColorSource
+```
+
+Source of the color for the generated [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh).
+
+**Enumerator:**
+
+- `Color` — Take the color information from point-cloud.
+- `NoColor` — Do not use any color information.
+- `Density` — Colormap the density information.
+
+## Member Function Documentation
+
+### level
+
+```cpp
+int ImFusion::PoissonSurfaceReconstructionAlgorithm::level () const
+```
+
+*inline*
+
+[Octree](/cpp-sdk/4.5/api/classes/imfusion-octree) level of the reconstruction.
+
+Overrides voxel spacing setting.
+
+Set to -1 to use voxel spacing.
+
+Default value is 7.
+
+### spacing
+
+```cpp
+double ImFusion::PoissonSurfaceReconstructionAlgorithm::spacing () const
+```
+
+*inline*
+
+Voxel spacing of the output volume.
+
+Ignored if level is not -1.
+
+Default value is 0.
+
+### surfaceDistanceThresholds
+
+```cpp
+std::array < double, 2 > ImFusion::PoissonSurfaceReconstructionAlgorithm::surfaceDistanceThresholds () const
+```
+
+*inline*
+
+Thresholds for filtering generated triangles w.r.t their distance to the original point cloud.
+
+The two thresholds form a pair of &lt;lower bound, upper bound&gt;, which work as follows: The lower bound determines a distance *below* which triangles are *always kept*, the upper bound determines a distance *above* which triangles are *always deleted*. Between the two bounds the decision is based on [maxAngleDegrees()](#maxangledegrees): triangles in this range are deleted only if their normal deviates from the closest point's normal by *more than*[maxAngleDegrees()](#maxangledegrees) degrees.
+
+Set both values to 0.0 to disable the filtering.
+
+Default values are &lt;2.0, 4.0&gt;.
+
+### maxSurfaceDistance
+
+```cpp
+double ImFusion::PoissonSurfaceReconstructionAlgorithm::maxSurfaceDistance () const
+```
+
+*inline*
+
+Maximum distance of generated triangles to original point cloud. Set to 0 to obtain watertight mesh which interpolates all holes.
+
+****Deprecated**:** "PoissonSurfaceReconstructionAlgorithm::maxSurfaceDistance is deprecated, instead use 'surfaceDistanceR1' and 'surfaceDistanceR2'"
+
+### setMaxSurfaceDistance
+
+```cpp
+void ImFusion::PoissonSurfaceReconstructionAlgorithm::setMaxSurfaceDistance (double dist)
+```
+
+*inline*
+
+Sets [maxSurfaceDistance()](#maxsurfacedistance).
+
+****Deprecated**:** "PoissonSurfaceReconstructionAlgorithm::setMaxSurfaceDistance is deprecated, instead use 'setSurfaceDistanceR1' and 'setSurfaceDistanceR2'"
+
+### surfaceDistanceR1
+
+```cpp
+double ImFusion::PoissonSurfaceReconstructionAlgorithm::surfaceDistanceR1 () const
+```
+
+*inline*
+
+Maximum distance of generated triangles to original point cloud.
+
+Set this and [surfaceDistanceR2()](#surfacedistancer2) to '0' to obtain watertight mesh which interpolates all holes.
+
+Default value is 2.
+
+****Deprecated**:** "PoissonSurfaceReconstructionAlgorithm::surfaceDistanceR1 is deprecated, instead use 'surfaceDistanceThresholds'"
+
+### setSurfaceDistanceR1
+
+```cpp
+void ImFusion::PoissonSurfaceReconstructionAlgorithm::setSurfaceDistanceR1 (double dist)
+```
+
+*inline*
+
+Sets [surfaceDistanceR1()](#surfacedistancer1).
+
+****Deprecated**:** "PoissonSurfaceReconstructionAlgorithm::setSurfaceDistanceR1 is deprecated, instead use 'setSurfaceDistanceThresholds'"
+
+### surfaceDistanceR2
+
+```cpp
+double ImFusion::PoissonSurfaceReconstructionAlgorithm::surfaceDistanceR2 () const
+```
+
+*inline*
+
+Maximum distance of generated triangles to original point cloud given similar normals.
+
+Works in connection with [maxAngleDegrees()](#maxangledegrees) to filter out triangles that exceed the distance threshold *and* have a sufficiently similar normal to the closest point.
+
+Set this and [surfaceDistanceR1()](#surfacedistancer1) to '0' to obtain watertight mesh which interpolates all holes.
+
+Default value is 4.
+
+****Deprecated**:** "PoissonSurfaceReconstructionAlgorithm::surfaceDistanceR2 is deprecated, instead use 'surfaceDistanceThresholds'"
+
+### setSurfaceDistanceR2
+
+```cpp
+void ImFusion::PoissonSurfaceReconstructionAlgorithm::setSurfaceDistanceR2 (double dist)
+```
+
+*inline*
+
+Sets [surfaceDistanceR2()](#surfacedistancer2).
+
+****Deprecated**:** "PoissonSurfaceReconstructionAlgorithm::setSurfaceDistanceR2 is deprecated, instead use 'setSurfaceDistanceThresholds'"
+
+### maxAngleDegrees
+
+```cpp
+double ImFusion::PoissonSurfaceReconstructionAlgorithm::maxAngleDegrees () const
+```
+
+*inline*
+
+Maximum normal deviation for [surfaceDistanceThresholds()](#surfacedistancethresholds).
+
+Works in connection with the two bounds to filter out triangles that have a distance between lower and upper bound *and* have a sufficiently different normal to the closest point.
+
+Default value is 180.
+
+### colorSource
+
+```cpp
+ColorSource ImFusion::PoissonSurfaceReconstructionAlgorithm::colorSource () const
+```
+
+*inline*
+
+Source for mesh colors.
+
+Default value is ColorSource::Color.
+
+### samplesPerNode
+
+```cpp
+float ImFusion::PoissonSurfaceReconstructionAlgorithm::samplesPerNode ()
+```
+
+*inline*
+
+Minimum number of sample points that should fall within an octree node as the octree construction is adapted to sampling density.
+
+Default value is 1.5.
+
+### densityThresholdMode
+
+```cpp
+PoissonReconstruction::DensityThresholdMode ImFusion::PoissonSurfaceReconstructionAlgorithm::densityThresholdMode () const
+```
+
+*inline*
+
+Mode of density thresholding.
+
+Default value is [PoissonReconstruction::DensityThresholdMode::None](/cpp-sdk/4.5/api/namespaces/imfusion-poissonreconstruction).
+
+### densityThreshold
+
+```cpp
+float ImFusion::PoissonSurfaceReconstructionAlgorithm::densityThreshold () const
+```
+
+*inline*
+
+Threshold to be used for the respective [densityThresholdMode()](#densitythresholdmode).
+
+Default value is 0.0.
+
+### compute
+
+```cpp
+void ImFusion::PoissonSurfaceReconstructionAlgorithm::compute ()
+```
+
+*override, virtual*
+
+Execute the algorithm.
+
+### takeOutput
+
+```cpp
+OwningDataList ImFusion::PoissonSurfaceReconstructionAlgorithm::takeOutput ()
+```
+
+*override, virtual*
+
+Return any new [Data](/cpp-sdk/4.5/api/classes/imfusion-data) that was created by the [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) during the last call to [compute()](#compute).
+
+The default implementation will return an empty list.
+
+**Note:** Since ownership of the data is transferred, you can call this method only once between calls to [compute()](#compute).
+
+### configure
+
+```cpp
+void ImFusion::PoissonSurfaceReconstructionAlgorithm::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### configuration
+
+```cpp
+void ImFusion::PoissonSurfaceReconstructionAlgorithm::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality

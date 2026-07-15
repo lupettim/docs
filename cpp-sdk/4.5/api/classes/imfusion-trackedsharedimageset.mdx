@@ -1,0 +1,329 @@
+---
+title: "ImFusion::TrackedSharedImageSet"
+sidebarTitle: "TrackedSharedImageSet"
+description: "Set of images with arbitrarily sampled tracking data."
+---
+
+`#include <ImFusion/GL/TrackedSharedImageSet.h>`
+
+## Overview
+
+Set of images with arbitrarily sampled tracking data.
+
+The class replaces the matrix assignment within [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) (each contained image uses its own matrix) by a look-up into [TrackingSequence](/cpp-sdk/4.5/api/classes/imfusion-trackingsequence) instances. Therefore, directly setting a matrix of an individual frame is deactivated, and the matrices of the individual images are ignored.
+
+Resolving which matrix of which tracking sequence is associated with a particular image depends on several options:
+
+1. In general, the main tracking sequence (trackingUsed) is used for look-up.
+2. Lookup strategy based on timestamps:
+  - If useTimestamps is false:
+    - A 1:1 lookup is performed: the frame \(i\) is associated directly with tracking matrix \(T_i\).
+  - If useTimestamps is true:
+    - The image timestamp \(t_i - t_&#123;off&#125;\) is used to find the matrix with the closest timestamp, where \(t_&#123;off&#125;\) denotes [TrackingSequence::temporalOffset](/cpp-sdk/4.5/api/classes/imfusion-trackingsequence).
+    - If that timestamp lies before the first or after the last in the tracking sequence, the first or last matrix is used, respectively.
+    - Otherwise, the matrix is interpolated (using quaternions for the rotation) between the two closest pose matrices.
+3. The final pose \(P\) for a given frame is computed using [TrackingSequence::registration](/cpp-sdk/4.5/api/classes/imfusion-trackingsequence) \(R\) and [TrackingSequence::calibration](/cpp-sdk/4.5/api/classes/imfusion-trackingsequence) \(C\) matrices:
+  \[P = R \cdot T \cdot C
+  \]
+4. If there is a relative Tracking [Sequence](/cpp-sdk/4.5/api/classes/imfusion-dicom-sequence) with matrices \(R'\), \(T'_j\), and \(C'\), the final pose becomes:
+  \[P_i = R \cdot \left( &#123;R'&#125; \cdot T'_j \cdot &#123;C'&#125; \right)^&#123;-1&#125; \cdot T_i \cdot C
+      = R \cdot &#123;C'&#125;^&#123;-1&#125; \cdot &#123;T'_j&#125;^&#123;-1&#125; \cdot &#123;R'&#125;^&#123;-1&#125; \cdot T_i \cdot C
+  \]
+
+  - The matrix \(T'_j\) is determined as in step 2, unless [TrackingSequence::relativeToFirst](/cpp-sdk/4.5/api/classes/imfusion-trackingsequence) is true, in which case it is simply the first matrix \(T'_0\).
+
+See [TrackingSequence](/cpp-sdk/4.5/api/classes/imfusion-trackingsequence) for details on the registration/calibration matrices and temporal offset. All matrices are natively stored in [Pose::TOWORLD](/cpp-sdk/4.5/api/namespaces/imfusion-pose) convention, and methods called "..FromWorld" will evualate a matrix inversion.
+
+**Note:** It is advised to only include calibration and registration matrices in the main tracking sequence.
+
+While the class does not strictly enforce identical type, pixel size, spacing, etc. across individual frames, unexpected behavior may result from noncompliance with these assumptions. In particular, all methods exposing size measures in any form (frame pixel or phyiscal size) only access the first frame and ignore all others. I/O operations with noncompliant images may not work.
+
+## Public Member Functions
+
+- **TrackedSharedImageSet** (const TrackedSharedImageSet &other)=delete
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; TrackedSharedImageSet &gt; **clone** ([Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; [CloneOptions](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &gt; cloneOptions=[Everything](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset)) const — Create a copy of this [TrackedSharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-trackedsharedimageset) instance.
+- void [add](#add) ([std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) &gt; [img](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset)) override — Add a shared image to the data set.
+- void [swapWithImageSet](#swapwithimageset) ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &is) — Swaps all images, timestamps, and properties from `is`, but does not create any tracking sequence.
+- [Geometry::AlignedBox](/cpp-sdk/4.5/api/classes/imfusion-geometry-alignedbox) [bounds](#bounds) () const override — Returns the axis-aligned bounding box of all images in world space.
+- [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) [children](#children) () const override — Exposes the tracking sequences if exposesTrackingAsChildren is on.
+- void [setTimestamp](#settimestamp) (double time, int which=-1) override — Set specific or focused timestamp in seconds.
+- void [remove](#remove) (int pos, int count=1) override — Adjusts tracking info when images are removed.
+- void **removeBefore** (double [timestamp](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset)) — Removes images and tracking samples before the passed timestamp.
+- void **addTracking** ([std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [TrackingSequence](/cpp-sdk/4.5/api/classes/imfusion-trackingsequence) &gt; ts) — Add a tracking sequence, transferring ownership.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [TrackingSequence](/cpp-sdk/4.5/api/classes/imfusion-trackingsequence) &gt; [removeTracking](#removetracking) (int num=-1) — Removes a tracking sequence from the set.
+- void **clearTrackings** () — Deletes all tracking sequences.
+- [TrackingSequence](/cpp-sdk/4.5/api/classes/imfusion-trackingsequence) \* **tracking** (int num=-1) — Returns a tracking sequence If the desired sequence number is not specified, the currently active one is returned.
+- const [TrackingSequence](/cpp-sdk/4.5/api/classes/imfusion-trackingsequence) \* **tracking** (int num=-1) const — Returns a tracking sequence If the desired sequence number is not specified, the currently active one is returned.
+- virtual void **setSize** (double sizeX, double sizeY, bool doClearCaches=true) — Set the physical image width and height in mm. Changes the spacing of each frame.
+- void **setUseTracking** (int val) — Specify which tracking sequence to use.
+- void **setUseTimestamps** (bool val) — Define if video-tracking timestamp synchronization is to be used.
+- int **numTracking** () const — Return the number of available tracking sequences.
+- bool [hasTransformations](#hastransformations) () const override — Return true if the images have transformations.
+- virtual bool [canSetMatricesIndividually](#cansetmatricesindividually) () const — Return true if it is possible to set image matrices individually, i.e.
+- int **width** () const — Return the width of an image in pixels.
+- int **height** () const — Return the height of an image in pixels.
+- double **sizeX** () const — Return the horizontal extent of an image in mm.
+- double **sizeY** () const — Return the vertical extent of an image in mm.
+- int **trackingUsed** () const — Return number of active tracking sequence.
+- bool **useTimestamps** () const — Return whether timestamps are used for tracking synchronization.
+- void **clearCaches** () — Will mark all caches as outdated. Called when the main tracking sequence updates.
+- bool **exposesTrackingAsChildren** () const — Returns whether the inner tracking sequences should be exposed through the [CompoundData](/cpp-sdk/4.5/api/classes/imfusion-compounddata) interface or not.
+- void **setExposeTrackingAsChildren** (bool value) — Sets whether the inner tracking sequences should be exposed through the [CompoundData](/cpp-sdk/4.5/api/classes/imfusion-compounddata) interface or not.
+- double **avgTimestepBetweenImageFrames** () const — Caclulate average timestep between frames.
+- double **medianTimestepBetweenImageFrames** () const — Calculate median timestep between frames.
+- void [clear](#clear) () override — Clears the tracking information and the cached information, resets all member variables to their default values.
+- void **clearSharedImageSet** () — Internally calls [SharedImageSet::clear](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset), clearing image-data, time-stamps, properties, signals.
+- void **add** ([std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [Image](/cpp-sdk/4.5/api/classes/imfusion-image) &gt; [img](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset)) — Add a single image to the data set.
+- void **add** ([std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [Image](/cpp-sdk/4.5/api/classes/imfusion-image) &gt; [img](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset), const mat4 &m) — Add a single image with its transformation matrix.
+- void **add** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) &gt; &gt; &[images](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset)) — Add a list of shared images.
+
+## Public Attributes
+
+- Signal&lt; const TrackedSharedImageSet \* &gt; **signalUsedTrackingSequenceChanged** — Signal emitted when the used tracking sequence changed or reset due to deletion.
+
+## Protected Member Functions
+
+- void **convertToGray** ([TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; unsigned char &gt; \*\*[img](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset)) const — Convert a 3 or 4-channel image to gray-scale, see [ImageProcessing::createGrayscale](/cpp-sdk/4.5/api/namespaces/imfusion-imageprocessing).
+- TrackedSharedImageSet \* [createCloneContainer](#createclonecontainer) () const override — Internal method for creating the container object holding the clone.
+- void [cloneInternal](#cloneinternal) ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &other, [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; [CloneOptions](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &gt; cloneFlags) const override — Internal method for cloning which should be called from derived container classes.
+
+## Image matrix access
+
+- [Pose::TransformationConvention](/cpp-sdk/4.5/api/namespaces/imfusion-pose) [matrixConvention](#matrixconvention) () const override
+- void [setMatrix](#setmatrix-1-2) (const mat4 &m, int which, bool updateAll=false) override — Attempts to update tracking matrices.
+- mat4 [matrix](#matrix-1-2) (int which) const override — Get specific (`which` &gt;=0) or focused (`which` ==-1) image matrix.
+- void [setMatrix](#setmatrix-2-2) (const mat4 &m) override — This method just issues a warning since matrices cannot be edited here.
+- mat4 [matrix](#matrix-2-2) () const override — Get the focused image matrix.
+- void [setMatrixFromWorld](#setmatrixfromworld) (const mat4 &m, int which, bool updateAll=false) override — Attempts to update tracking matrices.
+- void [setMatrixToWorld](#setmatrixtoworld) (const mat4 &m, int which, bool updateAll=false) override — Attempts to update tracking matrices, directly calls [setMatrix(const mat4&, int, bool)](#setmatrix-1-2).
+- mat4 [matrixFromWorld](#matrixfromworld) (int which) const override — Get specific (`which` &gt;=0) or focused (`which` ==-1) image matrix mapping from the world coordinate system. Inverse of [matrix](#matrix-1-2).
+- mat4 [matrixToWorld](#matrixtoworld) (int which) const override — Get specific (`which` &gt;=0) or focused (`which` ==-1) image matrix mapping to the world coordinate system. Same as [matrix](#matrix-1-2).
+- void **setRegistration** (const mat4 &m) — Sets the registration matrix on the active tracking sequence and invokes transformation listeners.
+
+## Member Function Documentation
+
+### add
+
+```cpp
+void ImFusion::TrackedSharedImageSet::add (std::shared_ptr < SharedImage > img)
+```
+
+*override, virtual*
+
+Add a shared image to the data set.
+
+This method checks if the added images have [SharedImage::matrix](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) different from identity, and if so, assumes that the user is deliberately adding these images with matrices and wants to retain them. In many cases it is not trivial to understand unambiguously what the users wants given the images and tracking samples already there, and to keep images and [TrackingSequence](/cpp-sdk/4.5/api/classes/imfusion-trackingsequence) instances synchronized, so the method will in such cases check the following conditions:
+
+- The image set is not using timestamps.
+- The image set is empty and there is no [TrackingSequence](/cpp-sdk/4.5/api/classes/imfusion-trackingsequence) there (it will be created), or there is exactly one [TrackingSequence](/cpp-sdk/4.5/api/classes/imfusion-trackingsequence) with as many matrices as images in the set. If both conditions are met, the matrix is added to the [TrackingSequence](/cpp-sdk/4.5/api/classes/imfusion-trackingsequence). It is taken as-is, and not inverted (note that [TrackedSharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-trackedsharedimageset) uses [Pose::TOWORLD](/cpp-sdk/4.5/api/namespaces/imfusion-pose) convention). Note that these criteria are stricter than [canSetMatricesIndividually](#cansetmatricesindividually).
+
+### swapWithImageSet
+
+```cpp
+void ImFusion::TrackedSharedImageSet::swapWithImageSet (SharedImageSet & is)
+```
+
+Swaps all images, timestamps, and properties from `is`, but does not create any tracking sequence.
+
+Used for transferring recorded sequence data into this data structure.
+
+### bounds
+
+```cpp
+Geometry::AlignedBox ImFusion::TrackedSharedImageSet::bounds () const
+```
+
+*override, virtual*
+
+Returns the axis-aligned bounding box of all images in world space.
+
+### children
+
+```cpp
+DataList ImFusion::TrackedSharedImageSet::children () const
+```
+
+*override, virtual*
+
+Exposes the tracking sequences if exposesTrackingAsChildren is on.
+
+### matrixConvention
+
+```cpp
+Pose::TransformationConvention ImFusion::TrackedSharedImageSet::matrixConvention () const
+```
+
+*inline, override, virtual*
+
+[Image](/cpp-sdk/4.5/api/classes/imfusion-image) matrices map from the coordinate system of the image frames to to the world coordinate system, internally using a [TrackingSequence](/cpp-sdk/4.5/api/classes/imfusion-trackingsequence).
+
+### setMatrix
+
+```cpp
+void ImFusion::TrackedSharedImageSet::setMatrix (const mat4 & m, int which, bool updateAll = false)
+```
+
+*override, virtual*
+
+Attempts to update tracking matrices.
+
+- If `updateAll` is true, will update the image set's registration matrix so that querying the matrix of image `which` (focus if -1) will return `m` afterwards.
+- If no timestamps are used, follows the same logic as [add(shared_ptr&lt;SharedImage&gt;)](#add) and adds the matrix to the (potentially newly created) tracking sequence if one-to-one mapping is unambiguous.
+- If [canSetMatricesIndividually](#cansetmatricesindividually) is true, updates the tracking sequence's raw matrix so that querying the matrix of image \which will return `m` afterwards.
+- Does nothing and issues a warning otherwise.
+
+### matrix
+
+```cpp
+mat4 ImFusion::TrackedSharedImageSet::matrix (int which) const
+```
+
+*override, virtual*
+
+Get specific (`which` &gt;=0) or focused (`which` ==-1) image matrix.
+
+### setMatrix
+
+```cpp
+void ImFusion::TrackedSharedImageSet::setMatrix (const mat4 & m)
+```
+
+*override, virtual*
+
+This method just issues a warning since matrices cannot be edited here.
+
+### matrix
+
+```cpp
+mat4 ImFusion::TrackedSharedImageSet::matrix () const
+```
+
+*override, virtual*
+
+Get the focused image matrix.
+
+### setMatrixFromWorld
+
+```cpp
+void ImFusion::TrackedSharedImageSet::setMatrixFromWorld (const mat4 & m, int which, bool updateAll = false)
+```
+
+*override, virtual*
+
+Attempts to update tracking matrices.
+
+Calls internally [setMatrix(const mat4&, int, bool)](#setmatrix-1-2) using the inverse of `m`.
+
+### setMatrixToWorld
+
+```cpp
+void ImFusion::TrackedSharedImageSet::setMatrixToWorld (const mat4 & m, int which, bool updateAll = false)
+```
+
+*override, virtual*
+
+Attempts to update tracking matrices, directly calls [setMatrix(const mat4&, int, bool)](#setmatrix-1-2).
+
+### matrixFromWorld
+
+```cpp
+mat4 ImFusion::TrackedSharedImageSet::matrixFromWorld (int which) const
+```
+
+*override, virtual*
+
+Get specific (`which` &gt;=0) or focused (`which` ==-1) image matrix mapping from the world coordinate system. Inverse of [matrix](#matrix-1-2).
+
+### matrixToWorld
+
+```cpp
+mat4 ImFusion::TrackedSharedImageSet::matrixToWorld (int which) const
+```
+
+*override, virtual*
+
+Get specific (`which` &gt;=0) or focused (`which` ==-1) image matrix mapping to the world coordinate system. Same as [matrix](#matrix-1-2).
+
+### setTimestamp
+
+```cpp
+void ImFusion::TrackedSharedImageSet::setTimestamp (double time, int which = -1)
+```
+
+*override, virtual*
+
+Set specific or focused timestamp in seconds.
+
+### remove
+
+```cpp
+void ImFusion::TrackedSharedImageSet::remove (int pos, int count = 1)
+```
+
+*override, virtual*
+
+Adjusts tracking info when images are removed.
+
+### removeTracking
+
+```cpp
+std::unique_ptr < TrackingSequence > ImFusion::TrackedSharedImageSet::removeTracking (int num = -1)
+```
+
+Removes a tracking sequence from the set.
+
+If no tracking number is specified, the currently active tracking is removed.
+
+### hasTransformations
+
+```cpp
+bool ImFusion::TrackedSharedImageSet::hasTransformations () const
+```
+
+*override, virtual*
+
+Return true if the images have transformations.
+
+### canSetMatricesIndividually
+
+```cpp
+virtual bool ImFusion::TrackedSharedImageSet::canSetMatricesIndividually () const
+```
+
+*virtual*
+
+Return true if it is possible to set image matrices individually, i.e.
+
+when there is a one-to-one mapping between images and matrices contained in the tracked shared image set. This is the case if there as as many images as tracking samples, and if either no timestamps are used at all, or the timestamps match, respectively.
+
+### clear
+
+```cpp
+void ImFusion::TrackedSharedImageSet::clear ()
+```
+
+*override, virtual*
+
+Clears the tracking information and the cached information, resets all member variables to their default values.
+
+Note: call TrackedSharedImageSet::clearSharedImageSet or [SharedImageSet::clear](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) to retain the legacy behavior
+
+### createCloneContainer
+
+```cpp
+TrackedSharedImageSet * ImFusion::TrackedSharedImageSet::createCloneContainer () const
+```
+
+*override, protected, virtual*
+
+Internal method for creating the container object holding the clone.
+
+### cloneInternal
+
+```cpp
+void ImFusion::TrackedSharedImageSet::cloneInternal (SharedImageSet & other, Flags < CloneOptions > cloneOptions) const
+```
+
+*override, protected, virtual*
+
+Internal method for cloning which should be called from derived container classes.

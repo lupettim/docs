@@ -1,0 +1,36 @@
+---
+title: "ImFusion::GUI::QualityBarOverlay"
+sidebarTitle: "QualityBarOverlay"
+description: "Wraps a GlQualityBarOverlay object in an InteractiveOverlay ."
+---
+
+`#include <ImFusion/GUI/QualityBarOverlay.h>`
+
+## Overview
+
+Wraps a GlQualityBarOverlay object in an [InteractiveOverlay](/cpp-sdk/4.5/api/classes/imfusion-interactiveoverlay).
+
+## Public Member Functions
+
+- const [GlScalarBarOverlay](/cpp-sdk/4.5/api/classes/imfusion-glscalarbaroverlay) & **glOverlay** () const — Get a typed pointer to the underlying overlay.
+- [GlScalarBarOverlay](/cpp-sdk/4.5/api/classes/imfusion-glscalarbaroverlay) & **glOverlay** ()
+- void **setRenderMode** ([GlScalarBarOverlay::RenderMode](/cpp-sdk/4.5/api/classes/imfusion-glscalarbaroverlay) mode) — Set the visibility mode.
+- [EventResult](/cpp-sdk/4.5/api/structs/imfusion-gui-eventresult) [handleInputEvent](#handleinputevent) (const [InputEvent](/cpp-sdk/4.5/api/classes/imfusion-gui-inputevent) &event) override — Handle a user event received from the parent [View](/cpp-sdk/4.5/api/classes/imfusion-gui-view).
+
+## Protected Attributes
+
+- [GlScalarBarOverlay](/cpp-sdk/4.5/api/classes/imfusion-glscalarbaroverlay) \* **m_typedOverlay** = nullptr
+
+## Member Function Documentation
+
+### handleInputEvent
+
+```cpp
+EventResult ImFusion::GUI::QualityBarOverlay::handleInputEvent (const InputEvent & event)
+```
+
+*override, virtual*
+
+Handle a user event received from the parent [View](/cpp-sdk/4.5/api/classes/imfusion-gui-view).
+
+The default implementation is empty.

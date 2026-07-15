@@ -1,0 +1,60 @@
+---
+title: "ImFusion::GlTextOverlay"
+sidebarTitle: "GlTextOverlay"
+description: "Renderer for displaying text as view overlay."
+---
+
+`#include <ImFusion/GL/GlTextOverlay.h>`
+
+## Overview
+
+Renderer for displaying text as view overlay.
+
+## Public Member Functions
+
+- void [render](#render) (const [GL::Viewport](/cpp-sdk/4.5/api/structs/imfusion-gl-viewport) &viewport) override — Render text overlay.
+- const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) & **text** () const — Returns the text to render.
+- void **setText** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &text) — Sets the text to render.
+- const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) & **hintingText** () const — Returns the optional text to use for computing size hints.
+- void **setHintingText** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &value) — Sets the optional text to use for computing size hints.
+- bool **isDrawBackgroundEnabled** () const — Returns whether a background is drawn below the text.
+- void **setDrawBackgroundEnabled** (bool draw) — Sets whether to draw background below the text.
+- int **backgroundMarginSize** () const — Returns the size of the background margin around the text.
+- void **setBackgroundMarginSize** (int size) — Sets the size of the background margin around the text.
+- vec4 **backgroundColor** () const — Returns the color of the background.
+- void **setBackgroundColor** (const vec4 &color) — Sets the color of the background.
+- const vec4 & **color** () const — Returns the text color.
+- void **setColor** (const vec4 &color) — Sets the text color.
+- const [GL::TextRenderer::Font](/cpp-sdk/4.5/api/structs/imfusion-gl-textrenderer-font) & **font** () const — Returns the font to use for rendering.
+- void [setFont](#setfont) (const [GL::TextRenderer::Font](/cpp-sdk/4.5/api/structs/imfusion-gl-textrenderer-font) &value) — Sets the font to use for rendering.
+- void **setFontSize** (int size) — Convenience function to set font size.
+- void **setHorizontalAlignment** ([GL::TextRenderer::AlignmentH](/cpp-sdk/4.5/api/classes/imfusion-gl-textrenderer) horizontalAlignment) — Sets the horizontal alignment of the rendered text.
+- [GL::TextRenderer::AlignmentH](/cpp-sdk/4.5/api/classes/imfusion-gl-textrenderer) **horizontalAlignment** () const — Returns the horizontal alignment of the rendered text.
+- void **setVerticalAlignment** ([GL::TextRenderer::AlignmentV](/cpp-sdk/4.5/api/classes/imfusion-gl-textrenderer) verticalAlignment) — Sets the vertical alignment of the rendered text.
+- [GL::TextRenderer::AlignmentV](/cpp-sdk/4.5/api/classes/imfusion-gl-textrenderer) **verticalAlignment** () const — Returns the vertical alignment of the rendered text.
+
+## Protected Attributes
+
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; Impl &gt; **m_impl**
+
+## Member Function Documentation
+
+### render
+
+```cpp
+void ImFusion::GlTextOverlay::render (const GL::Viewport & viewport)
+```
+
+*override, virtual*
+
+Render text overlay.
+
+### setFont
+
+```cpp
+void ImFusion::GlTextOverlay::setFont (const GL::TextRenderer::Font & value)
+```
+
+Sets the font to use for rendering.
+
+**Note:** Not all font faces and settings are necessarily supported by the underlying renderer. It may silently fall back to the default settings in such cases.

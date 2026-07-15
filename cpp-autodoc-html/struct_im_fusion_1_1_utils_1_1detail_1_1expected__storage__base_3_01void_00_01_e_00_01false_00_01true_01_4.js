@@ -1,0 +1,4 @@
+var struct_im_fusion_1_1_utils_1_1detail_1_1expected__storage__base_3_01void_00_01_e_00_01false_00_01true_01_4 =
+[
+    [ "dummy", "struct_im_fusion_1_1_utils_1_1detail_1_1expected__storage__base_3_01void_00_01_e_00_01false_00_01true_01_4_1_1dummy.html", null ]
+];

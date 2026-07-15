@@ -1,0 +1,32 @@
+---
+title: "ImFusion::RTStructureToLabelMapController"
+sidebarTitle: "RTStructureToLabelMapController"
+description: "Controller that allows to select a reference volume for the RTStructureToLabelMap algorithm."
+---
+
+`#include <ImFusion/Dicom/GUI/RTStructureToLabelMapController.h>`
+
+## Overview
+
+[Controller](/cpp-sdk/4.5/api/classes/imfusion-controller) that allows to select a reference volume for the [RTStructureToLabelMap](/cpp-sdk/4.5/api/classes/imfusion-rtstructuretolabelmap) algorithm.
+
+[Selectable](/cpp-sdk/4.5/api/classes/imfusion-selectable) reference volumes are all volumes in the [DataModel](/cpp-sdk/4.5/api/classes/imfusion-datamodel). The default selected volume will be either the parent dataset of the [GlPointCloud](/cpp-sdk/4.5/api/classes/imfusion-glpointcloud) representing RTStructureToLabelMap::rtStructureSet or the first volume if there is no parent.
+
+## Public Member Functions
+
+- **RTStructureToLabelMapController** ([RTStructureToLabelMap](/cpp-sdk/4.5/api/classes/imfusion-rtstructuretolabelmap) \*[algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithmcontroller))
+- void [init](#init) () override — Two-step initialization function to be implemented by subclasses.
+
+## Member Function Documentation
+
+### init
+
+```cpp
+void ImFusion::RTStructureToLabelMapController::init ()
+```
+
+*override, virtual*
+
+Two-step initialization function to be implemented by subclasses.
+
+This function is called by [setMainWindowBase()](/cpp-sdk/4.5/api/classes/imfusion-controller) after the [m_disp](/cpp-sdk/4.5/api/classes/imfusion-controller) and [m_main](/cpp-sdk/4.5/api/classes/imfusion-controller) attributes have been set and hence a complete initialization of the controller is possible at this point.

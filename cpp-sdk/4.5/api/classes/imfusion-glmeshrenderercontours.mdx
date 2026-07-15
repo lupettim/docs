@@ -1,0 +1,40 @@
+---
+title: "ImFusion::GlMeshRendererContours"
+sidebarTitle: "GlMeshRendererContours"
+description: "Renders the silhouette/contours of a mesh in a 3D view."
+---
+
+`#include <ImFusion/Mesh/Rendering/GlMeshRendererContours.h>`
+
+## Overview
+
+Renders the silhouette/contours of a mesh in a 3D view.
+
+This low-level renderer renders lines at every position where a face of the input mesh is perpendicular to the camera look direction.
+
+This class does not implement the [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) interface by design as it is meant to serve as a reusable component to be integrated into high-level classes.
+
+## Classes
+
+- struct [DisplayOptions](/cpp-sdk/4.5/api/structs/imfusion-glmeshrenderercontours-displayoptions) — Complete record of rendering options for MeshRendererOutline.
+
+## Public Member Functions
+
+- void [render](#render) (const [MeshGl](/cpp-sdk/4.5/api/classes/imfusion-meshgl) &mesh, const [DisplayOptions](/cpp-sdk/4.5/api/structs/imfusion-glmeshrenderercontours-displayoptions) &options, const [GL::ViewState](/cpp-sdk/4.5/api/classes/imfusion-gl-viewstate) &viewState, const [GL::OrderIndependentTransparency](/cpp-sdk/4.5/api/classes/imfusion-gl-orderindependenttransparency) \*oit=nullptr) const — Renders the intersection between *mesh* and *plane* into the currently active OpenGL context.
+
+## Member Function Documentation
+
+### render
+
+```cpp
+void ImFusion::GlMeshRendererContours::render (const MeshGl & mesh, const DisplayOptions & options, const GL::ViewState & viewState, const GL::OrderIndependentTransparency * oit = nullptr) const
+```
+
+Renders the intersection between *mesh* and *plane* into the currently active OpenGL context.
+
+**Parameters:**
+
+- `mesh` — The mesh to render.
+- `options` — The rendering options to use.
+- `viewState` — The [GL::ViewState](/cpp-sdk/4.5/api/classes/imfusion-gl-viewstate) to use.
+- `oit` — An optional pointer to a [GL::OrderIndependentTransparency](/cpp-sdk/4.5/api/classes/imfusion-gl-orderindependenttransparency) instance to use.

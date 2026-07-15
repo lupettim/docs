@@ -1,0 +1,104 @@
+---
+title: "ImFusion::Seg::LabelPainter"
+sidebarTitle: "LabelPainter"
+description: "Class for manually drawing to label maps."
+---
+
+`#include <ImFusion/Seg/LabelPainter.h>`
+
+## Overview
+
+Class for manually drawing to label maps.
+
+## Classes
+
+- struct [Segment](/cpp-sdk/4.5/api/structs/imfusion-seg-labelpainter-segment)
+
+## Public Member Functions
+
+- bool **setCurrent** (const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*inputImage, [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*labelMap) — Defines the images on which the [LabelPainter](/cpp-sdk/4.5/api/classes/imfusion-seg-labelpainter) operates inputImage is used for sampling, and labelMap for drawing Only both or neither of inputImage and labelMap should be set "labelMap" should be of modality [Data::LABEL](/cpp-sdk/4.5/api/classes/imfusion-data), have "unsigned char" type, 1 channel and otherwise have the same dimensions as "inputImage" Neither are owned by the class.
+- const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* **inputImage** ()
+- [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* **labelMap** ()
+- void [setMask](#setmask) ([GlMask](/cpp-sdk/4.5/api/classes/imfusion-glmask) \*mask) — Explicitly sets a mask.
+- void **setLabel** (int label) — Set the currently active label The "paint" function will draw to the labelMap using this value.
+- int **label** () const
+- void **setRadiusPixels** (float radiusPx) — Defines the radius of the paintbrush in pixels Note that if the inputImage is anisotropic, the radius will be adjusted such that it matches in the direction with the minimum spacing, In order to produce a sphere In the other directions fewer than radiusPx will be painted, following ratio of the spacing.
+- float **radiusPixels** () const
+- void **setRadiusMM** (float radiusMM) — Defines the radius of the paintbrush in mm The same warning as in setRadiusPixels() applies to anisotropic images.
+- float **radiusMM** () const
+- void **setIgnoreMatrix** (bool ignore) — Sets whether the painter should consider the image matrix, or ignore it and behave as if it were the identity matrix This is useful when 2d images are displayed without considering their matrix.
+- bool **isMatrixIgnored** () const
+- void **setAdaptiveness** (float adaptiveness) — Linear weighting between geometric distance and intensity distance, used when deciding if a pixel should be drawn to the geometric distance is the physical distance between the center pixel of the brush, and the target pixel (taking spacing into account) the intensity distance is the difference between the values (in inputImage) of the center pixel and the target pixel If this is 0, only the geometric distance is considered If this is 1, only the intensity distance is considered Practically speaking, with higher adaptiveness only neighbouring pixels that have a similar value will be drawn to.
+- float **adaptiveness** () const
+- void **setSampleOnPath** (bool sampleOnpath) — Defines whether the "adaptiveness" feature uses only the value of the target pixel Or whether it samples all values between the target pixel and the center of the brush When sampling along the path, the value with the biggest difference to the center one is considered Practically speaking, this means that the brush will not cross boundaries when this is true This only matters if adaptiveness &gt; 0.
+- bool **sampleOnPath** () const
+- void **setPreserveLabel** (unsigned char labelIndex, bool preserve) — Defines whether the given label can be erased by painting another label on top of it.
+- bool **preserveLabel** (unsigned char labelIndex) const
+- void **setUseWindowLevel** (bool useWindowLevel) — Defines whether the window/level of "inputImage" is considered when values are sampled for adaptiveness reasons This only matters if adaptiveness &gt; 0.
+- bool **useWindowLevel** () const
+- void **setFilter** (bool filter) — Defines whether the stencil is filtered before being applied to the label map Currently a simple smoothing filter is applied This Only matters if adaptiveness &gt; 0.
+- bool **filter** () const
+- void [setFilterInput](#setfilterinput) (bool filterInput) — Defines whether we filter the input before applying the stencil.
+- bool **filterInput** () const
+- void **setFilterInputIterations** (int filterInputIterations) — Defines the number of iterations of the anisotropic diffusion filter on the image as a proxy 'strength' of the filter.
+- int **filterInputIterations** () const
+- void **setFilterKernelSize** (int filterKernelSize) — Defines the radius of the smoothing filter applied to the stencil This only matters if filter == true and adaptiveness &gt; 0.
+- int **filterKernelSize** () const
+- [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \* [stencil](#stencil) () — The stencil image that will be drawn onto the label map by calling [paint()](#paint) This pointer may be null if [paint()](#paint) has not yet been called on the current image.
+- bool [paint](#paint) (vec3 from, vec3 to, bool erase=false, bool onlyPreview=false, [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; vec3 &gt; planeNormal=&#123;&#125;) — this signal is emitted after the pointer returned by [stencil()](#stencil) changes
+- bool **paintSegments** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Segment](/cpp-sdk/4.5/api/structs/imfusion-seg-labelpainter-segment) &gt; &segments, bool erase=false, bool onlyPreview=false, [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; vec3 &gt; planeNormal=&#123;&#125;) — Specialized variant of the previous function for drawing multiple segments at once Should produce the same outcome as calling [paint()](#paint) a loop, but more efficiently: It avoids constantly switching shaders and only runs the smoothing once at the end over the entire output.
+- void **clearStencil** () — Resets the stencil image.
+
+## Public Attributes
+
+- Signal **signalStencilAboutToChange**
+- Signal **signalStencilChanged** — this signal is emitted before the pointer returned by [stencil()](#stencil) changes
+- Signal **signalParametersChanged**
+
+## Member Function Documentation
+
+### setMask
+
+```cpp
+void ImFusion::Seg::LabelPainter::setMask (GlMask * mask)
+```
+
+*inline*
+
+Explicitly sets a mask.
+
+Masked pixels will not be painted to If no mask is set, but there is one attached to the image itself, the image mask will be used
+
+### setFilterInput
+
+```cpp
+void ImFusion::Seg::LabelPainter::setFilterInput (bool filterInput)
+```
+
+Defines whether we filter the input before applying the stencil.
+
+This can be beneficial in modalities like Ultrasound because of the high noise. Only matters if adaptiveness &gt; 0
+
+### stencil
+
+```cpp
+SharedImage * ImFusion::Seg::LabelPainter::stencil ()
+```
+
+*inline*
+
+The stencil image that will be drawn onto the label map by calling [paint()](#paint) This pointer may be null if [paint()](#paint) has not yet been called on the current image.
+
+It's a single image of unsigned char data with the same size as the label map Values are only 1 or 0, where 1 indicates that the value will be modified by painting Pairs nicely with the [GlIsolineRenderer](/cpp-sdk/4.5/api/classes/imfusion-glisolinerenderer)
+
+### paint
+
+```cpp
+bool ImFusion::Seg::LabelPainter::paint (vec3 from, vec3 to, bool erase = false, bool onlyPreview = false, std::optional < vec3 > planeNormal = {})
+```
+
+this signal is emitted after the pointer returned by [stencil()](#stencil) changes
+
+Draws a capsule in the labelMap "from" and "to" are defined in world coordinates, and represent the two ends of the cylinder part of the capsule The focus of the inputImage is used for sampling, and the focus of the labelMap is used for drawing If erase is true, values will be set to 0 instead of "label" If onlyPreview is true, the stencil (see [stencil()](#stencil)) will be updated, but not the labelMap If planeNormal is defined and the image is 3D, only the points in the slice defined by the point 'from' and the normal 'planeNormal' will be drawn If you just want to draw a sphere, you can call this with from == to
+
+Returns false if the capsule is definitely outside of the image's boundaries However returning true is not a guarantee that the labelMap was actually modified

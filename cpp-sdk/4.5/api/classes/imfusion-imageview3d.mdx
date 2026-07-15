@@ -1,0 +1,164 @@
+---
+title: "ImFusion::ImageView3D"
+sidebarTitle: "ImageView3D"
+description: "Qt widget for 3d rendering of one or multiple images."
+---
+
+`#include <ImFusion/GUI/ImageView3D.h>`
+
+## Overview
+
+Qt widget for 3d rendering of one or multiple images.
+
+Serves as Qt wrapper of the [GlVolumeView](/cpp-sdk/4.5/api/classes/imfusion-glvolumeview) and [GlVolumeRenderer](/cpp-sdk/4.5/api/classes/imfusion-glvolumerenderer) classes for 3D volume rendering. Depending on the displayOptionsSource property of [ImageView3D](/cpp-sdk/4.5/api/classes/imfusion-imageview3d) the [DisplayOptions3d](/cpp-sdk/4.5/api/classes/imfusion-displayoptions3d) used during rendering are either individual for each image (stored in the images' DataComponents) or shared for all shown images (stored in [ImageView3D](/cpp-sdk/4.5/api/classes/imfusion-imageview3d)).
+
+**Note:** Due to the potential external storage of display options, the Qt signals for changes of individual display options (i.e. windowChanged, levelChanged, alphaChanged are only emitted when using their corresponding Qt property setter. If the underlying [DisplayOptions3d](/cpp-sdk/4.5/api/classes/imfusion-displayoptions3d) have changed by somebody else in the background, this is not detected. If you need to be notified reliably in all occasions you need to register to the [DisplayOptions3d](/cpp-sdk/4.5/api/classes/imfusion-displayoptions3d) changed signal directly.
+
+## Public Types
+
+- enum class [DisplayOptionsSource](#displayoptionssource) &#123; View = 0 , Data = 1 &#125; — Describes from where to take the DisplayOptions for rendering.
+
+## Public Slots
+
+- void **reset** () override — Reset the view.
+
+## Public Member Functions
+
+- **ImageView3D** () — Default constructor.
+- **~ImageView3D** () override — Destructor.
+- const [GlVolumeView](/cpp-sdk/4.5/api/classes/imfusion-glvolumeview) \* **view** () const — Read-only access to OpenGL view.
+- [GlVolumeView](/cpp-sdk/4.5/api/classes/imfusion-glvolumeview) \* **view** () — Read-write access to OpenGL view.
+- void **setImageData** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*is) — Set image data. Convenience function which calls corresponding function in volume.
+- [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* **imageData** () const
+- [DisplayOptionsSource](#displayoptionssource) **displayOptionsSource** () const — Returns where to take display options from.
+- void **setDisplayOptionsSource** ([DisplayOptionsSource](#displayoptionssource) value) — Sets where to take display options from.
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Restore view state from properties.
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Save view state to properties.
+- [InteractionView3D](/cpp-sdk/4.5/api/classes/imfusion-interactionview3d) \* **interaction3D** () const — Convenience function to return the first interaction of type [InteractionView3D](/cpp-sdk/4.5/api/classes/imfusion-interactionview3d) if present.
+- void [setShowSlices](#setshowslices) (int mode) — Apply a visualization mode for all GlSlices shown in this view.
+- int **showSlices** () const — Return how slices are displayed.
+- void **setMatrix** (const mat4 &matrix, bool suppressAnimation=false) — Set matrix of underlying [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview).
+- void **setCenter** (const vec3 &c, mat3 \*rot=nullptr)
+- const [DisplayOptions3d](/cpp-sdk/4.5/api/classes/imfusion-displayoptions3d) & [displayOptions](#displayoptions) (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data=nullptr) const — Return the DisplayOptions used for the given data wrt.
+- [DisplayOptions3d](/cpp-sdk/4.5/api/classes/imfusion-displayoptions3d) & **displayOptions** (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data=nullptr)
+- void [setImage](#setimage-1-2) ([SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*image) — Convenience method to display a single image.
+- void [setImage](#setimage-2-2) ([Image](/cpp-sdk/4.5/api/classes/imfusion-image) \*image) — Convenience method to display a single image.
+
+## Protected Attributes
+
+- [GlVolumeView](/cpp-sdk/4.5/api/classes/imfusion-glvolumeview) \* **m_view3D** — Internal OpenGL view instance.
+- [DisplayOptionsSource](#displayoptionssource) **m_displayOptionsSource**
+- [DisplayOptions3d](/cpp-sdk/4.5/api/classes/imfusion-displayoptions3d) **m_displayOptionsView**
+
+## Properties
+
+- int **renderMode**
+- double **window**
+- double **level**
+- double **alpha**
+
+## Property read methods
+
+- int **renderMode** () const
+- double **window** () const — View window setting of the selected display options.
+- double **level** () const — View level setting of the selected display options.
+- double **alpha** () const — View alpha blending setting of the selected display options.
+
+## Property write methods
+
+- void **setRenderMode** (int val)
+- void **setWindow** (double val) — Set view window of the selected display options.
+- void **setLevel** (double val) — Set view level of the selected display options.
+- void **setAlpha** (double val) — Set view level of the selected display options.
+
+## Property notifiers
+
+- void **renderModeChanged** (int val)
+- void **windowChanged** (double val) — Emitted when window changed.
+- void **levelChanged** (double val) — Emitted when level changed.
+- void **alphaChanged** (double val) — Emitted when alpha blending changed.
+
+## Member Enumeration Documentation
+
+### DisplayOptionsSource
+
+```cpp
+enum class ImFusion::ImageView3D::DisplayOptionsSource
+```
+
+*strong*
+
+Describes from where to take the DisplayOptions for rendering.
+
+**Enumerator:**
+
+- `View` — All visible data will be rendered using the same view's display options.
+- `Data` — Every visible data will be rendered using its own display options.
+
+## Member Function Documentation
+
+### configure
+
+```cpp
+void ImFusion::ImageView3D::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Restore view state from properties.
+
+### configuration
+
+```cpp
+void ImFusion::ImageView3D::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Save view state to properties.
+
+### setShowSlices
+
+```cpp
+void ImFusion::ImageView3D::setShowSlices (int mode)
+```
+
+Apply a visualization mode for all GlSlices shown in this view.
+
+**Parameters:**
+
+- `mode` — Integer representation of the GlSlice::ObjectRenderModes bitfield.
+
+### displayOptions
+
+```cpp
+const DisplayOptions3d & ImFusion::ImageView3D::displayOptions (const Data * data = nullptr) const
+```
+
+Return the DisplayOptions used for the given data wrt.
+
+to the views' display options source setting. If the display options source is set to View, this function will return the view's display options. If the display options source is set to [Data](/cpp-sdk/4.5/api/classes/imfusion-data), this function will return the display options of *data*. If *data* is 0 but required, it will use the first visible data of this view instead.
+
+### setImage
+
+```cpp
+void ImFusion::ImageView3D::setImage (SharedImage * image)
+```
+
+Convenience method to display a single image.
+
+Internally, creates a container [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) holding *image* and then calls [setVisibleData()](/cpp-sdk/4.5/api/classes/imfusion-gui-view). [InteractiveView](/cpp-sdk/4.5/api/classes/imfusion-interactiveview) will not take ownership of *image*. If *image* is 0, will remove all data from this view.
+
+****Deprecated**:** This function has problematic ownership semantics. Use [setVisibleData()](/cpp-sdk/4.5/api/classes/imfusion-gui-view) instead.
+
+### setImage
+
+```cpp
+void ImFusion::ImageView3D::setImage (Image * image)
+```
+
+Convenience method to display a single image.
+
+Internally, creates a container [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) holding *image* and then calls [setVisibleData()](/cpp-sdk/4.5/api/classes/imfusion-gui-view). [InteractiveView](/cpp-sdk/4.5/api/classes/imfusion-interactiveview) will not take ownership of *image*, it must stay alive as long as the image is shown. If *image* is 0, will remove all data from this view.
+
+****Deprecated**:** This function has problematic ownership semantics. Use [setVisibleData()](/cpp-sdk/4.5/api/classes/imfusion-gui-view) instead.

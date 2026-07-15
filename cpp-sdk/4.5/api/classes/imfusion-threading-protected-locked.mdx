@@ -1,0 +1,103 @@
+---
+title: "ImFusion::Threading::Protected< T >::Locked< isConst >"
+sidebarTitle: "Locked< isConst >"
+description: "RAII lock guard that provides exclusive access to a synchronized resource."
+---
+
+`#include <ImFusion/Core/Threading/Protected.h>`
+
+## Overview
+
+template&lt;class T&gt;
+
+template&lt;bool isConst = false&gt;
+
+class ImFusion::Threading::Protected&lt; T &gt;::Locked&lt; isConst &gt;
+RAII lock guard that provides exclusive access to a synchronized resource.
+
+This class combines a lock acquisition with access to the protected resource. The lock is acquired on construction and automatically released on destruction, following the RAII ([Resource](/cpp-sdk/4.5/api/namespaces/imfusion-resource) Acquisition Is Initialization) pattern.
+
+[Locked](/cpp-sdk/4.5/api/classes/imfusion-threading-protected-locked) objects provide pointer-like semantics via operator\* and operator-&gt; to access the underlying resource while the lock is held.
+
+**Template Parameters:** | U | The type of the resource being protected |
+| --- | --- |
+
+Usage example:
+
+```cpp
+Protected<std::vector<int>> syncVec;
+{
+ auto locked = syncVec.lock();  // Lock acquired here
+    locked->push_back(42);        // Safe access while locked
+}  // Lock automatically released here
+```
+ fragment
+
+**Note:** This class is non-copyable and non-movable.
+
+## Public Types
+
+- using **value_type** = [std::conditional_t](http://en.cppreference.com/w/cpp/types/conditional.html)&lt;isConst, const T, T&gt;
+- using **return_reference** = [std::conditional_t](http://en.cppreference.com/w/cpp/types/conditional.html)&lt;isConst, const value_type&, value_type&&gt;
+- using **return_ptr** = [std::conditional_t](http://en.cppreference.com/w/cpp/types/conditional.html)&lt;isConst, const value_type\*, value_type\*&gt;
+
+## Public Member Functions
+
+- [Locked](#locked-1-3) ([std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; value_type &gt; value, [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [std::mutex](http://en.cppreference.com/w/cpp/thread/mutex.html) &gt; sharedMutex) — Constructs a [Locked](/cpp-sdk/4.5/api/classes/imfusion-threading-protected-locked) instance and acquires the mutex.
+- [Locked](#locked-2-3) ([std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; value_type &gt; resource, [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [std::mutex](http://en.cppreference.com/w/cpp/thread/mutex.html) &gt; sharedMutex, [std::adopt_lock_t](http://en.cppreference.com/w/cpp/thread/lock_tag_t.html)) — Constructs a [Locked](/cpp-sdk/4.5/api/classes/imfusion-threading-protected-locked) instance adopting an already-held lock.
+- [Locked](#locked-3-3) ([std::tuple](http://en.cppreference.com/w/cpp/utility/tuple.html)&lt; [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; value_type &gt;, [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [std::mutex](http://en.cppreference.com/w/cpp/thread/mutex.html) &gt;, [std::adopt_lock_t](http://en.cppreference.com/w/cpp/thread/lock_tag_t.html) &gt; t) — Constructs a [Locked](/cpp-sdk/4.5/api/classes/imfusion-threading-protected-locked) instance adopting an already-held lock.
+- **Locked** (Locked &&other)=delete
+- return_reference **operator\*** () — Provides mutable reference access to the locked resource.
+- return_ptr **operator-&gt;** () — Provides mutable pointer access to the locked resource.
+- const value_type & **operator\*** () const — Provides const reference access to the locked resource.
+- const value_type \* **operator-&gt;** () const — Provides const pointer access to the locked resource.
+
+## Constructor & Destructor Documentation
+
+### isConst
+
+```cpp
+template<class T> template<bool isConst = false> ImFusion::Threading::Protected < T >::Locked< isConst >::Locked (std::shared_ptr < value_type > value, std::shared_ptr < std::mutex > sharedMutex)
+```
+
+*inline*
+
+Constructs a [Locked](/cpp-sdk/4.5/api/classes/imfusion-threading-protected-locked) instance and acquires the mutex.
+
+**Parameters:**
+
+- `value` — Shared pointer to the resource to protect. Must not be null.
+- `sharedMutex` — Shared pointer to the mutex protecting the resource. Must not be null.
+
+**Note:** The lock is acquired immediately upon construction and held until the [Locked](/cpp-sdk/4.5/api/classes/imfusion-threading-protected-locked) object is destroyed.
+
+### isConst
+
+```cpp
+template<class T> template<bool isConst = false> ImFusion::Threading::Protected < T >::Locked< isConst >::Locked (std::shared_ptr < value_type > resource, std::shared_ptr < std::mutex > sharedMutex, std::adopt_lock_t)
+```
+
+*inline*
+
+Constructs a [Locked](/cpp-sdk/4.5/api/classes/imfusion-threading-protected-locked) instance adopting an already-held lock.
+
+**Parameters:**
+
+- `resource` — Shared pointer to the resource to protect. Must not be null.
+- `sharedMutex` — Shared pointer to the mutex protecting the resource. Must not be null. The mutex must already be locked by the calling thread.
+
+### isConst
+
+```cpp
+template<class T> template<bool isConst = false> ImFusion::Threading::Protected < T >::Locked< isConst >::Locked (std::tuple < std::shared_ptr < value_type >, std::shared_ptr < std::mutex >, std::adopt_lock_t > t)
+```
+
+*inline*
+
+Constructs a [Locked](/cpp-sdk/4.5/api/classes/imfusion-threading-protected-locked) instance adopting an already-held lock.
+
+Only required for constructing tuples of [Locked](/cpp-sdk/4.5/api/classes/imfusion-threading-protected-locked).
+
+**Parameters:**
+
+- `t` — input parameters packed as a tuple.

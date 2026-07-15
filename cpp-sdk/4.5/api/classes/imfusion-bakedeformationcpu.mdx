@@ -1,0 +1,38 @@
+---
+title: "ImFusion::BakeDeformationCPU"
+sidebarTitle: "BakeDeformationCPU"
+description: "Bakes in a deformation applied to an image using the CPU."
+---
+
+`#include <ImFusion/GL/BakeDeformationCPU.h>`
+
+## Overview
+
+Bakes in a deformation applied to an image using the CPU.
+
+## Public Types
+
+- enum OutboundStrategy &#123; **ClampToEdge** , **ClampToBorder** , **Repeat** , **MirroredRepeat** &#125; — Wraping strategy for coordinates outside the input image.
+
+## Public Member Functions
+
+- **BakeDeformationCPU** (const OutboundStrategy &outboundStrategy) — Creates an instance with an already defined OutboundStrategy.
+- void **setBounds** (const [Geometry::AlignedBox](/cpp-sdk/4.5/api/classes/imfusion-geometry-alignedbox) &pixelBounds) — Sets the original image boundaries previosuly calculated in pixel and world coordinates.
+- void **useNearestInterpolation** (bool value) — Linear interpolation will be used over nearest neighbours unless the value is true.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) &gt; [compute](#compute) ([SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*image, [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*ref=nullptr) — Bakes the input image.
+
+## Member Function Documentation
+
+### compute
+
+```cpp
+std::unique_ptr < SharedImage > ImFusion::BakeDeformationCPU::compute (SharedImage * image, SharedImage * ref = nullptr)
+```
+
+Bakes the input image.
+
+The ownership of the result is assigned to the caller.
+
+**Parameters:**
+
+- `ref` — - if not nullptr, the output image will have the same position as the reference image, else the output location is estimated.

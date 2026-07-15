@@ -1,0 +1,91 @@
+---
+title: "ImFusion::InteractiveViewOptionsOverlay"
+sidebarTitle: "InteractiveViewOptionsOverlay"
+description: "Button overlay for InteractiveView that allows for setting up the view or display options of the view."
+---
+
+`#include <ImFusion/GUI/InteractiveViewOptionsOverlay.h>`
+
+## Overview
+
+Button overlay for [InteractiveView](/cpp-sdk/4.5/api/classes/imfusion-interactiveview) that allows for setting up the view or display options of the view.
+
+The settings are shown in a custom styled popup menu when clicking the button. This class currently supports [ImageView2D](/cpp-sdk/4.5/api/classes/imfusion-imageview2d) and [ImageView3D](/cpp-sdk/4.5/api/classes/imfusion-imageview3d).
+
+## Public Types
+
+- enum class [Type](#type) &#123; ViewOptions , DisplayOptions &#125; — [Type](#type) of settings to display in popup menu.
+- using **DisplayOptionsWidgetCreator** = [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt;[std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt;QWidget&gt;([Data](/cpp-sdk/4.5/api/classes/imfusion-data)\* data, [GUI::DisplayBase](/cpp-sdk/4.5/api/classes/imfusion-gui-displaybase)& display, [GUI::View](/cpp-sdk/4.5/api/classes/imfusion-gui-view)& view)&gt; — [Anchor](/cpp-sdk/4.5/api/classes/imfusion-gui-viewoverlay) point of the overlay in the hosting [InteractiveView](/cpp-sdk/4.5/api/classes/imfusion-interactiveview).
+
+## Public Slots
+
+- void **click** () override
+
+## Public Member Functions
+
+- [InteractiveViewOptionsOverlay](#interactiveviewoptionsoverlay) ([Type](#type) type, [AnchorPoint](/cpp-sdk/4.5/api/classes/imfusion-interactiveoverlay) anchor, [GUI::DisplayBase](/cpp-sdk/4.5/api/classes/imfusion-gui-displaybase) &disp, [GUI::View](/cpp-sdk/4.5/api/classes/imfusion-gui-view) &view) — Instantiate a button overlay to setup the given view.
+- void [setDisplayOptionsWidgetCreator](#setdisplayoptionswidgetcreator) (DisplayOptionsWidgetCreator displayOptionsCreator) — Sets a callback for creating the QWidget instance that should edit the display options.
+- DisplayOptionsWidgetCreator **displayOptionsWidgetCreator** () const — Returns the current widget creator callback.
+- void **setVisibleDisplayOptions2dSections** ([Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; [DisplayOptions2dWidget::Sections](/cpp-sdk/4.5/api/classes/imfusion-displayoptions2dwidget) &gt; visibleSections) — Sets the list of all [DisplayOptions2d](/cpp-sdk/4.5/api/classes/imfusion-displayoptions2d) widget sections to show.
+- void **setVisibleDisplayOptions3dSections** ([Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; [DisplayOptions3dWidget::Sections](/cpp-sdk/4.5/api/classes/imfusion-displayoptions3dwidget) &gt; visibleSections) — Sets the list of all [DisplayOptions3d](/cpp-sdk/4.5/api/classes/imfusion-displayoptions3d) widget sections to show.
+- bool **eventFilter** (QObject \*watched, QEvent \*event) override
+- void **setViewOptions3dWidgetCreator** ([std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; QWidget \*()&gt; viewOpts3dWidget) — Sets a factory function to create a custom widget for the 3d view-options This custom widget is created and used instead of the default ViewOptions3dWidget.
+- void **set3dDisplayOptionsInvertVisible** (bool visible) — Sets the visibility of the "Invert" label and check-box of the 3d and 2d display options.
+- void **set2dDisplayOptionsInvertVisible** (bool visible)
+- [Type](#type) **type** () const
+
+## Protected Attributes
+
+- [Type](#type) **m_type** — [Type](#type) of the settings to display.
+- [GUI::DisplayBase](/cpp-sdk/4.5/api/classes/imfusion-gui-displaybase) & **m_disp** — [DisplayWidget](/cpp-sdk/4.5/api/classes/imfusion-displaywidget) hosting the view.
+- [GUI::View](/cpp-sdk/4.5/api/classes/imfusion-gui-view) \* **m_view** — The view to configure.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; QMenu &gt; **m_menu** — QMenu used for hosting the settings widget.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) &gt; **m_icon** — Icon used for the button overlay.
+- QWidget \* **m_displayOptionsWidget** = nullptr — pointer to current per-data display options [GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui) so that it can be replaced
+- [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; QWidget &gt;([Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data, [GUI::DisplayBase](/cpp-sdk/4.5/api/classes/imfusion-gui-displaybase) &display, [GUI::View](/cpp-sdk/4.5/api/classes/imfusion-gui-view) &view)&gt; **m_displayOptionsCreator**
+- [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; QWidget \*()&gt; **m_3dViewOptionsCreator** = nullptr
+- bool **m_3dDisplayOptionsInvertVisible** = true
+- bool **m_2dDisplayOptionsInvertVisible** = true
+- [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; [DisplayOptions2dWidget::Sections](/cpp-sdk/4.5/api/classes/imfusion-displayoptions2dwidget) &gt; **m_visibleSections2d** = DisplayOptions2dWidget::Sections::All
+- [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; [DisplayOptions3dWidget::Sections](/cpp-sdk/4.5/api/classes/imfusion-displayoptions3dwidget) &gt; **m_visibleSections3d** = DisplayOptions3dWidget::Sections::All
+
+## Member Enumeration Documentation
+
+### Type
+
+```cpp
+enum class ImFusion::InteractiveViewOptionsOverlay::Type
+```
+
+*strong*
+
+[Type](#type) of settings to display in popup menu.
+
+**Enumerator:**
+
+- `ViewOptions` — show the view options for the view
+- `DisplayOptions` — show the display options for the view
+
+## Constructor & Destructor Documentation
+
+### InteractiveViewOptionsOverlay
+
+```cpp
+ImFusion::InteractiveViewOptionsOverlay::InteractiveViewOptionsOverlay (Type type, AnchorPoint anchor, GUI::DisplayBase & disp, GUI::View & view)
+```
+
+Instantiate a button overlay to setup the given view.
+
+The overlay's icon will be determined automatically based on the given type.
+
+## Member Function Documentation
+
+### setDisplayOptionsWidgetCreator
+
+```cpp
+void ImFusion::InteractiveViewOptionsOverlay::setDisplayOptionsWidgetCreator (DisplayOptionsWidgetCreator displayOptionsCreator)
+```
+
+Sets a callback for creating the QWidget instance that should edit the display options.
+
+By default, DataDisplayDispatcher::createDisplayOptionsWidget for the view is used. nullptr is not a valid input.

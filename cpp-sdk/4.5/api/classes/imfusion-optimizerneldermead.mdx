@@ -1,0 +1,62 @@
+---
+title: "ImFusion::OptimizerNelderMead"
+sidebarTitle: "OptimizerNelderMead"
+description: "Local optimizer based on Neldea-Mead algorithm (also known as downhill simplex method) (see for instance https://en.wikipedia.org/wiki/Nelder%E2%80%93Mead_metho"
+---
+
+`#include <ImFusion/Base/OptimizerNelderMead.h>`
+
+## Overview
+
+Local optimizer based on Neldea-Mead algorithm (also known as downhill simplex method) (see for instance [https://en.wikipedia.org/wiki/Nelder%E2%80%93Mead_method](https://en.wikipedia.org/wiki/Nelder%E2%80%93Mead_method)).
+
+## Public Member Functions
+
+- **OptimizerNelderMead** (int n, int [type](/cpp-sdk/4.5/api/classes/imfusion-optimizer)=0, [CostFunction](/cpp-sdk/4.5/api/classes/imfusion-costfunction) \*cf=nullptr, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; &paramNames=&#123;&#125;) — Constructor with dimension and optimization type.
+- **~OptimizerNelderMead** () override — Destructor.
+- void [abort](#abort) () override — [Request](/cpp-sdk/4.5/api/classes/imfusion-request) to abort the optimization.
+
+## Implements the Configurable interface
+
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+## Member Function Documentation
+
+### abort
+
+```cpp
+void ImFusion::OptimizerNelderMead::abort ()
+```
+
+*override, virtual*
+
+[Request](/cpp-sdk/4.5/api/classes/imfusion-request) to abort the optimization.
+
+### configure
+
+```cpp
+void ImFusion::OptimizerNelderMead::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### configuration
+
+```cpp
+void ImFusion::OptimizerNelderMead::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality

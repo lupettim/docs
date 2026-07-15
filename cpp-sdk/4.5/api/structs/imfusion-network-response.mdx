@@ -1,0 +1,49 @@
+---
+title: "ImFusion::Network::Response"
+sidebarTitle: "Response"
+description: "Response of a HTTP request."
+---
+
+`#include <ImFusionLabels/lib/include/ImFusion/Labels/Core/NetworkUtils.h>`
+
+## Overview
+
+[Response](/cpp-sdk/4.5/api/structs/imfusion-network-response) of a HTTP request.
+
+## Public Member Functions
+
+- **Response** (Response &&other) noexcept=default
+- Response & **operator=** (Response &&other) noexcept=default
+- QJsonObject **json** () const — If Content-Type is 'application/json', returns the body as json.
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [HttpError](/cpp-sdk/4.5/api/structs/imfusion-network-httperror) &gt; [error](#error) () const — Returns an error if status is not a success value.
+
+## Public Attributes
+
+- HttpStatus [status](#status) = HttpStatus::Unknown — Status code of the response.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; char &gt; **body** — Complete body of the response without any processing done.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **contentType** — Content-Type header.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **contentDisposition** — Content-Disposition header.
+
+## Member Function Documentation
+
+### error
+
+```cpp
+std::optional < HttpError > ImFusion::Network::Response::error () const
+```
+
+Returns an error if status is not a success value.
+
+If the body contains json, it is used in the error message.
+
+## Member Data Documentation
+
+### status
+
+```cpp
+HttpStatus ImFusion::Network::Response::status = HttpStatus::Unknown
+```
+
+Status code of the response.
+
+Unknown means the request failed before a response was received (e.g. SSL error or some curl specific failure).

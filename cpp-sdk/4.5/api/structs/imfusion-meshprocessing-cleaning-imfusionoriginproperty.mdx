@@ -1,0 +1,22 @@
+---
+title: "ImFusion::MeshProcessing::Cleaning::ImFusionOriginProperty"
+sidebarTitle: "ImFusionOriginProperty"
+description: "Vertex and / or face property indicating the origin of a vertex or face in the mesh, added to the mesh by cropMesh."
+---
+
+`#include <ImFusion/Mesh/Processing/Cleaning.h>`
+
+## Overview
+
+Vertex and / or face property indicating the origin of a vertex or face in the mesh, added to the mesh by cropMesh.
+
+Vertices and Faces in the resulting mesh can either be preserved from the input mesh or added by the cropping algorithm. In the first case the attribute evaluates to ImFusionOriginProperty::Original. In the latter case there are two possibilities:
+
+1. The vertex or face stems from a direct intersection of the mesh with the cropping planes or volume. Then the attribute evaluates to ImFusionOriginProperty::Boundary.
+2. The vertex or face was added while filling the cropped holes. In this case the attribute evaluates to ImFusionOriginProperty::Filled.
+
+## Static Public Attributes
+
+- static constexpr data_type **Original** = 0
+- static constexpr data_type **Boundary** = 1
+- static constexpr data_type **Filled** = 2

@@ -1,0 +1,176 @@
+---
+title: "ImFusion::Container::SparseArray< T, BlockSize, Sentinel >"
+sidebarTitle: "SparseArray< T, BlockSize, Sentinel >"
+description: "A sparse paged array for memory-efficient storage of sparse data."
+---
+
+`#include <ImFusion/Core/SparseArray.h>`
+
+## Overview
+
+template&lt;typename T, size_t BlockSize = 1024, T Sentinel = T&#123;&#125;&gt;
+
+class ImFusion::Container::SparseArray&lt; T, BlockSize, Sentinel &gt;
+A sparse paged array for memory-efficient storage of sparse data.
+
+[SparseArray](/cpp-sdk/4.5/api/classes/imfusion-container-sparsearray) implements a two-level sparse array structure that only allocates memory for blocks that contain non-zero values. This is particularly useful for histogram computations, label remapping, or any scenario where you have a large index space but only a small fraction of indices are actually used.
+
+This data structure was designed to replace [std::unordered_map](http://en.cppreference.com/w/cpp/container/unordered_map.html) for integer-keyed sparse arrays, avoiding hash collision overhead and providing more predictable performance characteristics.
+
+The data structure divides the index space into fixed-size blocks (pages). Blocks are only allocated on-demand when an element within that block is first accessed. This provides:
+
+- O(1) random access time with no hash function overhead
+- Memory usage proportional to the number of non-zero elements (plus block overhead)
+- Cache-friendly sequential access within allocated blocks
+- No hash collisions or collision resolution overhead
+
+**Warning:** Sentinel Value Semantics: This data structure treats the sentinel value (default: T&#123;&#125;) as "not present" or "empty". When accessing an unallocated index via the const operator[], the sentinel value is returned. The [forEachNonZero()](#foreachnonzero) method skips all elements that compare equal to the sentinel. Storing the sentinel value explicitly is indistinguishable from not storing anything. You can customize the sentinel via template parameter, e.g., [SparseArray](/cpp-sdk/4.5/api/classes/imfusion-container-sparsearray)&lt;int, 1024, -1&gt; to use -1 as sentinel and allow 0 as a valid value.
+
+**Memory Complexity:**
+
+For N non-zero elements with maximum index M:
+
+- Best case: O(N) when elements are densely packed
+- Worst case: O(M) when elements are maximally scattered
+- Typical case: O(N + M/BlockSize \* sizeof(pointer))
+
+**Usage Examples:**
+
+```cpp
+// Basic histogram computation
+Container::SparseArray<uint32_t, 1024> histogram;
+for (const auto label : labels)
+{
+ if (label != 0)
+        histogram[label]++;  // Auto-allocates block on first access
+}
+
+// Iterate over non-zero entries
+histogram.forEachNonZero([](size_t label, uint32_t count) {
+ if (count >= minSize)
+ std::cout << "Label " << label << ": " << count << " pixels\n";
+});
+
+// Label remapping example
+Container::SparseArray<uint32_t, 512> labelMap;
+for (size_t i = 0; i < sortedLabels.size(); ++i)
+{
+    uint32_t oldLabel = sortedLabels[i];
+    labelMap[oldLabel] = static_cast<uint32_t>(i + 1);
+}
+
+// Apply remapping (use get() to avoid unnecessary block allocation)
+for (auto& label : labels)
+{
+ if (label != 0)
+        label = labelMap.get(label);  // Returns 0 if not in map
+}
+```
+ fragment
+**Performance Considerations:**
+
+- Choose BlockSize to balance memory overhead vs. allocation frequency
+- Smaller BlockSize (256-512): Better for very sparse data
+- Larger BlockSize (1024-4096): Better for moderately sparse data
+- Sequential access within blocks is cache-friendly
+- [Random](/cpp-sdk/4.5/api/namespaces/imfusion-random) access across blocks may cause cache misses
+
+**Template Parameters:** | T | The value type to store (e.g., uint32_t for counts, uint16_t for labels). Must be a valid non-type template parameter (integral, enum, or pointer type). |
+| --- | --- |
+| BlockSize | The number of elements per block. Larger blocks reduce pointer indirection overhead but may waste more memory for very sparse data. |
+| Sentinel | The value treated as "not present". Defaults to T&#123;&#125; (zero for numeric types). Use a different value if you need zero as a valid stored value, e.g., -1 for signed types. |
+
+## Public Member Functions
+
+- **SparseArray** ()=default — Default constructor. Creates an empty sparse array.
+- **~SparseArray** ()=default — Destructor. Automatically frees all allocated blocks.
+- **SparseArray** (const SparseArray &)=delete — Non-copyable. Use explicit copy or move semantics if needed.
+- SparseArray & **operator=** (const SparseArray &)=delete — Non-copyable. Use explicit copy or move semantics if needed.
+- **SparseArray** (SparseArray &&other) noexcept=default — Move constructor. Transfers ownership of blocks.
+- SparseArray & **operator=** (SparseArray &&other) noexcept=default — Move assignment. Transfers ownership of blocks.
+- T & [operator[]](#operator-1-2) (size_t index) — Mutable element access with automatic block allocation.
+- const T & [operator[]](#operator-2-2) (size_t index) const noexcept — Read-only element access without allocation.
+- const T & [get](#get) (size_t index) const noexcept — Read-only element access without allocation (convenience for non-const objects).
+- void [forEachNonZero](#foreachnonzero) (Func &&callback) const — Iterate over all non-sentinel entries in the sparse array.
+- void [clear](#clear) () noexcept — Clear all allocated blocks and free memory.
+- size_t [allocatedBlocks](#allocatedblocks) () const noexcept — Get the number of allocated blocks.
+- size_t **capacity** () const noexcept — Get the maximum index that could be addressed without reallocation.
+
+## Member Function Documentation
+
+### BlockSize
+
+```cpp
+template<typename T, size_t BlockSize = 1024, T Sentinel = T{}> T & ImFusion::Container::SparseArray < T, BlockSize, Sentinel >::operator[] (size_t index)
+```
+
+*inline*
+
+Mutable element access with automatic block allocation.
+
+Returns a reference to the element at the specified index. If the block containing this index doesn't exist, it will be allocated and zero-initialized.
+
+**Note:** This operator always allocates the block on first access, even for read. Use the const version if you want to avoid allocation.
+
+### BlockSize
+
+```cpp
+template<typename T, size_t BlockSize = 1024, T Sentinel = T{}> const T & ImFusion::Container::SparseArray < T, BlockSize, Sentinel >::operator[] (size_t index) const
+```
+
+*inline, noexcept*
+
+Read-only element access without allocation.
+
+Returns a const reference to the element at the specified index. If the block containing this index doesn't exist, returns a reference to the sentinel value.
+
+### BlockSize
+
+```cpp
+template<typename T, size_t BlockSize = 1024, T Sentinel = T{}> const T & ImFusion::Container::SparseArray < T, BlockSize, Sentinel >::get (size_t index) const
+```
+
+*inline, noexcept*
+
+Read-only element access without allocation (convenience for non-const objects).
+
+Equivalent to std::as_const(\*this)[index]. Prefer this over operator[] when you only need to read a value and want to avoid block allocation.
+
+### BlockSize
+
+```cpp
+template<typename T, size_t BlockSize = 1024, T Sentinel = T{}> template<typename Func> void ImFusion::Container::SparseArray < T, BlockSize, Sentinel >::forEachNonZero (Func && callback) const
+```
+
+*inline*
+
+Iterate over all non-sentinel entries in the sparse array.
+
+Efficiently iterates only over allocated blocks and non-sentinel values within them. The callback is invoked with (index, value) for each non-sentinel entry.
+
+**Template Parameters:** | Func | Callable with signature void(size_t index, T value) or compatible |
+| --- | --- |
+
+### BlockSize
+
+```cpp
+template<typename T, size_t BlockSize = 1024, T Sentinel = T{}> void ImFusion::Container::SparseArray < T, BlockSize, Sentinel >::clear ()
+```
+
+*inline, noexcept*
+
+Clear all allocated blocks and free memory.
+
+After calling [clear()](#clear), the sparse array is empty and all memory is freed. The object can still be reused for new insertions.
+
+### BlockSize
+
+```cpp
+template<typename T, size_t BlockSize = 1024, T Sentinel = T{}> size_t ImFusion::Container::SparseArray < T, BlockSize, Sentinel >::allocatedBlocks () const
+```
+
+*inline, noexcept*
+
+Get the number of allocated blocks.
+
+This is useful for diagnostics or memory usage estimation. Actual memory usage ≈ [allocatedBlocks()](#allocatedblocks) \* BlockSize \* sizeof(T)

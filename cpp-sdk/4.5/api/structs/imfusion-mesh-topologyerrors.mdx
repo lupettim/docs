@@ -1,0 +1,27 @@
+---
+title: "ImFusion::Mesh::TopologyErrors"
+sidebarTitle: "TopologyErrors"
+description: "Adds a new face, consisting of the 3 existing(!) vertices specified by their indices."
+---
+
+`#include <ImFusion/Mesh/Mesh.h>`
+
+## Overview
+
+Adds a new face, consisting of the 3 existing(!) vertices specified by their indices.
+
+Returns index of newly added face. If force is enabled, duplicate vertices will be created to patch up topology problems as needed. inputToAddedVertexIndices would contain the map from input vertex indices to the actual indices from which the added face consists of (note that the initial vertex index might be invalidated during the adding) Returns -1 if the face could not be added
+
+## Public Member Functions
+
+- void **report** () const
+- void **clear** ()
+
+## Public Attributes
+
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3i &gt; **degenerateFaces**
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; int &gt; **complexVertices**
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec2i &gt; **complexEdges**
+- int **unknownErrors** = 0
+- int **flippedWindingOrder** = 0
+- int **duplicatedVertices** = 0

@@ -1,0 +1,181 @@
+---
+title: "ImFusion::CroppingMask"
+sidebarTitle: "CroppingMask"
+description: "Simple axis-aligned cropping mask with optional roundness."
+---
+
+`#include <ImFusion/GL/CroppingMask.h>`
+
+## Overview
+
+Simple axis-aligned cropping mask with optional roundness.
+
+## Public Types
+
+- enum class RoundDims &#123; **XY** , **YZ** , **XZ** , **XYZ** &#125; — Enum to define to which dimensions/axes the roundness parameter should be applied.
+
+## Public Member Functions
+
+- **CroppingMask** (const vec3i &imageDimensions) — Construct the mask with image pixel dimensions.
+- **CroppingMask** (const CroppingMask &other)
+- CroppingMask & **operator=** (const CroppingMask &other)
+- const vec3i & **dimensions** () const — Return the assumed image pixel dimensions.
+- void [setBorder](#setborder) (const vec3i &lower, const vec3i &upper) — Set the number of pixels cropped away.
+- [std::pair](http://en.cppreference.com/w/cpp/utility/pair.html)&lt; vec3i, vec3i &gt; **border** () const — Retrieve the number of pixels cropped away starting from the lower-left-front corner and the upper-right-back corners (pixel coordinates).
+- void **border** (vec3i &lowerOut, vec3i &upperOut) const — Retrieve the number of pixels cropped away starting from the lower-left-front corner and the upper-right-back corners (pixel coordinates).
+- void [setRoundness](#setroundness) (float percent) — Define roundness in percent.
+- float **roundness** () const — Retrieve the roundness parameter.
+- void **setRoundnessDims** (RoundDims roundDims) — Define to which dimensions the roundness parameter should be applied.
+- RoundDims **roundnessDims** () const — Retrieve to which dimensions the roundness parameter is applied.
+- void **setIsInverted** (bool flag) — Inverts the mask.
+- bool **isInverted** () const — Retrieve if the mask is inverted.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; uint8_t &gt; &gt; [createExplicitMask](#createexplicitmask) (const [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) &image, [CreateOption](/cpp-sdk/4.5/api/classes/imfusion-mask) createOption=[CreateOption::DeepCopy](/cpp-sdk/4.5/api/classes/imfusion-mask)) const override — Creates an explicit mask representation of this mask for a given image.
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Set one or multiple properties.
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Retrieve the properties of this object.
+- uint8_t [maskValue](#maskvalue) (const vec3i &coord, const vec4f &) const override — Returns 0 if the given pixel is outside the mask (i.e.
+- bool [isCompatible](#iscompatible) (const [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*image) const override — Returns true if the mask can be used with the given image or false otherwise.
+- bool [requiresPixelValue](#requirespixelvalue) () const override — Returns true if the [maskValue()](#maskvalue) rely on the pixel value.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [Mask](/cpp-sdk/4.5/api/classes/imfusion-mask) &gt; [resizedMask](#resizedmask) (const [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) &original, const [Image](/cpp-sdk/4.5/api/classes/imfusion-image) &target) const override — Creates a copy of the current mask, resized to the dimensions of the target image.
+- int [setIncludeArguments](#setincludearguments) ([GL::Program](/cpp-sdk/4.5/api/classes/imfusion-gl-program) &p, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &prefix="mask") const override — Called by users of [GlMask](/cpp-sdk/4.5/api/classes/imfusion-glmask) in order to correctly setup the mask shader.
+- [GlMask](/cpp-sdk/4.5/api/classes/imfusion-glmask) \* [glMask](#glmask) () override — Returns the OpenGL-based implementation of the mask interface if available.
+
+## Member Function Documentation
+
+### setBorder
+
+```cpp
+void ImFusion::CroppingMask::setBorder (const vec3i & lower, const vec3i & upper)
+```
+
+Set the number of pixels cropped away.
+
+**Parameters:**
+
+- `lower` — Number of pixels cropped when starting from the lower-left-front corner (pixel coordinates)
+- `upper` — Number of pixels cropped when starting from the lower-left-front corner (pixel coordinates)
+
+### setRoundness
+
+```cpp
+void ImFusion::CroppingMask::setRoundness (float percent)
+```
+
+*inline*
+
+Define roundness in percent.
+
+A value of 100 yields an ellipse, a value of 0 yields a rectangle, and all values in between yield a rectangle with rounded edges.
+
+### createExplicitMask
+
+```cpp
+std::unique_ptr < TypedImage < uint8_t > > ImFusion::CroppingMask::createExplicitMask (const SharedImage & image, CreateOption createOption = CreateOption::DeepCopy) const
+```
+
+*override, virtual*
+
+Creates an explicit mask representation of this mask for a given image.
+
+The parameters are ignored in this specific overload, the dimensions used when constructing the cropping mask are used for the output
+
+### configure
+
+```cpp
+void ImFusion::CroppingMask::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Set one or multiple properties.
+
+### configuration
+
+```cpp
+void ImFusion::CroppingMask::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Retrieve the properties of this object.
+
+### maskValue
+
+```cpp
+uint8_t ImFusion::CroppingMask::maskValue (const vec3i & coord, const vec4f & color) const
+```
+
+*override, virtual*
+
+Returns 0 if the given pixel is outside the mask (i.e.
+
+invisible/to be ignored) or a non-zero value if it is inside the mask (i.e. visible/to be considered).
+
+This function takes both the pixel coordinate and pixel value as input. Concrete implementations of the [Mask](/cpp-sdk/4.5/api/classes/imfusion-mask) interface are free to use only either input for their decision if it makes sense. Also, it is up to the implementation whether it supports multi-channel images or not. Subclasses only supporting grayscale images should only use the first channel.
+
+**Parameters:**
+
+- `coord` — Pixel coordinate to be tested against the mask, can be outside of the image.
+- `color` — Pixel value (not normalized) to be tested against the mask. This parameter is only needed if [requiresPixelValue()](#requirespixelvalue) returns true, which can allow for optimizations where pixel lookup is expensive.
+
+### isCompatible
+
+```cpp
+bool ImFusion::CroppingMask::isCompatible (const SharedImage * image) const
+```
+
+*override, virtual*
+
+Returns true if the mask can be used with the given image or false otherwise.
+
+### requiresPixelValue
+
+```cpp
+bool ImFusion::CroppingMask::requiresPixelValue () const
+```
+
+*override, virtual*
+
+Returns true if the [maskValue()](#maskvalue) rely on the pixel value.
+
+If this method returns false, the [maskValue()](#maskvalue) method can be safely used with only the coordinate. This is useful to avoid an otherwise unnecessary and expensive pixel lookup.
+
+### resizedMask
+
+```cpp
+std::unique_ptr < Mask > ImFusion::CroppingMask::resizedMask (const SharedImage & original, const Image & target) const
+```
+
+*override, virtual*
+
+Creates a copy of the current mask, resized to the dimensions of the target image.
+
+The default implementation calls createExplicitMask and resamples the result. Returns nullptr if the mask cannot be resized.
+
+### setIncludeArguments
+
+```cpp
+int ImFusion::CroppingMask::setIncludeArguments (GL::Program & p, const std::string & prefix = "mask") const
+```
+
+*override, virtual*
+
+Called by users of [GlMask](/cpp-sdk/4.5/api/classes/imfusion-glmask) in order to correctly setup the mask shader.
+
+Subclasses should implement this function so that it correctly sets all needed uniforms and input textures to be used by the OpenGL shader instance. Make sure to use the given *prefix* argument instead of a hardcoded "mask" when defining uniform names to support multi-includes where the prefixes have been replaced with unique alternatives. Example:
+
+```cpp
+p.setArgument(prefix + "UseRange", m_useRange);
+```
+ fragment
+
+### glMask
+
+```cpp
+GlMask * ImFusion::CroppingMask::glMask ()
+```
+
+*override, virtual*
+
+Returns the OpenGL-based implementation of the mask interface if available.
+
+This function may return nullptr if this is not implemented (default).

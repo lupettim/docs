@@ -1,0 +1,74 @@
+---
+title: "ImFusion::CustomImage"
+sidebarTitle: "CustomImage"
+description: "Base interface for custom Image types that can be converted from/to MemImages and are supported by SharedImage ."
+---
+
+`#include <ImFusion/Base/CustomImage.h>`
+
+## Overview
+
+[Base](/cpp-sdk/4.5/api/structs/imfusion-dicom-base) interface for custom [Image](/cpp-sdk/4.5/api/classes/imfusion-image) types that can be converted from/to MemImages and are supported by [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage).
+
+Implementing the [CustomImage](/cpp-sdk/4.5/api/classes/imfusion-customimage) interface enables you to put custom [Image](/cpp-sdk/4.5/api/classes/imfusion-image) types into a [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) and make use of its automatic conversion between different image representations. In addition to the pure virtual convertToMem() function, you must implement the inverse conversion as a function with the following signature: static [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt;[Image](/cpp-sdk/4.5/api/classes/imfusion-image)&gt; convertFromSharedMem(const [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt;const [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage)&gt;&);. This function may increase the reference count of the input [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) shared_ptr, but must not modify it.
+
+Minimal example showcasing the compressed storage of pixel data:
+
+```cpp
+class CompressedImage : public CustomImage
+{
+public:
+ explicit CompressedImage(const MemImage& mem)
+        : CustomImage(mem.descriptor())
+        , compressedData(Compression::zstd::compress(ByteBufferView((char*)mem.data(), mem.byteSize())))
+    {}
+
+ static std::shared_ptr<Image> convertFromMem(const std::shared_ptr<const MemImage>& mem) {
+ return mem ? std::make_unique<CompressedImage>(*mem) : nullptr;
+    }
+
+ std::unique_ptr<MemImage> convertToMem() const override
+ {
+ std::unique_ptr<MemImage> mem = MemImage::create(m_descriptor);
+        Compression::zstd::Context().decompressTo(compressedData, ByteBufferView((char*)mem->data(), mem->byteSize()));
+ return mem;
+    }
+
+private:
+    ByteBuffer compressedData;
+};
+```
+ fragment
+
+**See also:** [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) ,
+
+## Public Member Functions
+
+- **CustomImage** (const [ImageDescriptor](/cpp-sdk/4.5/api/structs/imfusion-imagedescriptor) &desc) — Default constructor simply forwarding to Image(ImageDescriptor).
+- virtual [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) &gt; **convertToMem** () const =0 — Converts the custom representation to a [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage), returns nullptr on failure.
+- virtual [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) &gt; [convertToGl](#converttogl) () const — Optional fast path for converting the custom representation to a [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage), returns nullptr on failure.
+- [Location](/cpp-sdk/4.5/api/classes/imfusion-image) [location](#location) () const final — Returns the location of the image (e.g. none, host memory or a GPU device).
+
+## Member Function Documentation
+
+### convertToGl
+
+```cpp
+virtual std::unique_ptr < GlImage > ImFusion::CustomImage::convertToGl () const
+```
+
+*virtual*
+
+Optional fast path for converting the custom representation to a [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage), returns nullptr on failure.
+
+If you do not override this method, the default implementation will use convertToMem() to create a temporary [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) and create the [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) representation from there.
+
+### location
+
+```cpp
+Location ImFusion::CustomImage::location () const
+```
+
+*inline, final, virtual*
+
+Returns the location of the image (e.g. none, host memory or a GPU device).

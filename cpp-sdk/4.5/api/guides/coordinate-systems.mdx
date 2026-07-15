@@ -1,0 +1,59 @@
+---
+title: "Coordinate Systems"
+description: "In ImFusionLib, different coordinate systems are used, especially when dealing with images."
+---
+
+In ImFusionLib, different coordinate systems are used, especially when dealing with images.
+
+Depending on the type of [Data](/cpp-sdk/4.5/api/classes/imfusion-data), transformation matrices are also stored differently, regularly in a convention most suitable for efficient processing. This page provides an overview on the different coordinate systems, storage conventions and available conversions between them. In all cases, coordinate systems in the ImFusionLib are right-handed.
+
+Generally, there are three coordinate systems for images. The first one is only available for image data types ([Image](/cpp-sdk/4.5/api/classes/imfusion-image), [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage), [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset), and all base classes).
+
+![](/images/cpp-api/CoordinateSystemHierarchy.png)
+
+*Image coordinate system hierarchy*
+
+### Pixel Coordinates
+
+The pixel coordinate system maps directly to the pixels of an image. One unit corresponds to one pixel in the image. In general, the framework supports both the [OpenCV](/cpp-sdk/4.5/api/namespaces/imfusion-opencv) and OpenGL conventions for the origin of the pixel coordinate system. By default (OpenCV-style), the (0, 0) pixel is in the upper left corner. This is the case for most common formats (PNG, MHD, [Dicom](/cpp-sdk/4.5/api/namespaces/imfusion-dicom)) as well as all ultrasound or X-ray images. However, for specific applications, images with pixel data stored with respect to the bottom left corner can also be found.
+
+**Note:** The framework sets the topDown property (by default to true) when an image is loaded. After the first image is loaded, the ImFusionLib automatically flips the views so that it is rendered correctly. For subsequent images, the view flip is not changed anymore - the user has to flip manually through the view's context menu if desired.
+
+![](/images/cpp-api/PixelCoordinates.png)
+
+*Pixel Coordinates for an image of 5x4 pixels (top-down convention)*
+
+### Data Coordinates (Image Coordinates)
+
+The data coordinate system is the local coordinate system of every data element and uses millimeter as unit. For images, where the term image coordinate system is also commonly used, the origin of this coordinate system is always placed in the center of the image, which increases the numerical stability in the context of many optimization problems, including image registration. Pixel coordinates can be converted to image coordinates and back by using the [Image::pixelToImage](/cpp-sdk/4.5/api/classes/imfusion-image) and [Image::imageToPixel](/cpp-sdk/4.5/api/classes/imfusion-image) methods. The conversion between pixels and millimeters depends on the [Image::spacing](/cpp-sdk/4.5/api/classes/imfusion-image), which defines the space in millimeters between two pixels.
+
+![](/images/cpp-api/ImageCoordinates.png)
+
+*Image Coordinates of the previous image with a horizontal spacing of 0.2mm and a vertical one of 0.1mm.*
+
+### World Coordinates
+
+Finally, there is the world coordinate system. World coordinates are also defined in millimeters but the origin is the same for all data. The world transformation is mainly relevant for 3D data because most 2D images won't have a transformation matrix. For images, direct conversions to pixel space are available in the form of [SharedImage::worldToPixel](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) and [SharedImage::pixelToWorld](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) methods.
+
+The renderers/views employ a right-handed coordinate system with the following conventions wrt. patient space:
+
+- X: right to left (patient).
+- Y: front to back.
+- Z: feet to head.
+
+### SDK Interfaces to Convert Between Coordinate Systems
+
+The image API provides different interfaces and helper functions for converting between the three main coordinate systems. Pixel and [Image](/cpp-sdk/4.5/api/classes/imfusion-image) coordinates are handled by the base [Image](/cpp-sdk/4.5/api/classes/imfusion-image) interface. The transformation to convert from and to world coordinates is only part of the [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) interface.
+
+![](/images/cpp-api/CoordinateSystemCodeRelationship.png)
+
+*Conversion between coordinate systems and the corresponding class interfaces*
+
+For the transformations between the data (image) and world coordinate systems, each data element internally stores at least one transformation matrix, which is accessible through [Data::matrix](/cpp-sdk/4.5/api/classes/imfusion-data). Depending on the type of [Data](/cpp-sdk/4.5/api/classes/imfusion-data), these matrices may either map to or from the world coordinate system:
+
+- [Pose::TransformationConvention::FROMWORLD](/cpp-sdk/4.5/api/namespaces/imfusion-pose): The matrix maps from the world coordinate system to the data coordinate system, i.e. \(x_&#123;data&#125; = matrix \* x_&#123;world&#125;\). This is the general case for images, except UltrasoundSweep and ConeBeamData.
+- [Pose::TransformationConvention::TOWORLD](/cpp-sdk/4.5/api/namespaces/imfusion-pose): The matrix maps from the data coordinate system to the world coordinate system, i.e. \(x_&#123;world&#125; = matrix \* x_&#123;data&#125;\). This is used for all other data types.
+
+**Note:** The class UltrasoundSweep internally uses a [TrackingSequence](/cpp-sdk/4.5/api/classes/imfusion-trackingsequence) to store the transformations of individual ultrasound frames.
+
+Developers should use methods [Data::matrix](/cpp-sdk/4.5/api/classes/imfusion-data) and [Data::setMatrix](/cpp-sdk/4.5/api/classes/imfusion-data) if they only deal with a known data type for performance reasons. In cases where multiple or a priori unknown data types are used and inference of the internally used transformation convention is cumbersome, the convenience methods [Data::matrixToWorld](/cpp-sdk/4.5/api/classes/imfusion-data) and [Data::matrixFromWorld](/cpp-sdk/4.5/api/classes/imfusion-data) shall be used. Depending on the concrete base class implementation, either [Data::matrix](/cpp-sdk/4.5/api/classes/imfusion-data) or its inverse are retrieved.

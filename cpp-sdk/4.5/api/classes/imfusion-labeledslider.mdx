@@ -1,0 +1,53 @@
+---
+title: "ImFusion::LabeledSlider"
+sidebarTitle: "LabeledSlider"
+description: "This class wraps a QSlider and two QLabels."
+---
+
+`#include <ImFusion/GUI/CoreWidgets/LabeledSlider.h>`
+
+## Overview
+
+This class wraps a QSlider and two QLabels.
+
+The labels are positioned at the two ends of the slider in a layout. A default implementation of updateLabels() that changes the front label according to the current slider's values is provided (and can be overridden).
+
+## Public Types
+
+- enum class LabelVisibility &#123; **None** = 0 , **Front** = 1 , **Back** = 2 , **Both** = 3 &#125; — Sets the visibility of front/back labels.
+
+## Signals
+
+- void **sliderValueChanged** (int) — Emitted when the value is changed by interaction with the slider.
+
+## Public Member Functions
+
+- **LabeledSlider** (Qt::Orientation ori=Qt::Orientation::Horizontal, LabelVisibility visibility=LabelVisibility::Both, QWidget \*parent=nullptr) — Construct with slider orientation, label visibility, and parent.
+- void [setFrontLabelFormat](#setfrontlabelformat) (const QString &frontFormat) — Set the (format) string to be displayed by the label.
+- void **setBackLabelFormat** (const QString &backFormat) — \copyDoc [setFrontLabelFormat()](#setfrontlabelformat)
+- void **setSliderRange** (int min, int max) — Sets the slider range and calls updateLabels().
+- void **setSliderValue** (int val) — Sets the slider value and calls updateLabels().
+
+## Protected Member Functions
+
+- virtual void **updateLabels** () — Updates the values displayed by the labels according to slider values.
+
+## Protected Attributes
+
+- QLabel \* **m_backLabel** = nullptr
+- QLabel \* **m_frontLabel** = nullptr
+- QSlider \* **m_slider** = nullptr
+- QString **m_frontFormatString** = ""
+- QString **m_backFormatString** = ""
+
+## Member Function Documentation
+
+### setFrontLabelFormat
+
+```cpp
+void ImFusion::LabeledSlider::setFrontLabelFormat (const QString & frontFormat)
+```
+
+Set the (format) string to be displayed by the label.
+
+The placeholders are: &#123;current&#125;, &#123;maximum&#125;, &#123;minimum&#125; for the current, maximum, minimum values of the slider respectively.

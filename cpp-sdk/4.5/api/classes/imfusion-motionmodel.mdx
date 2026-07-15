@@ -1,0 +1,71 @@
+---
+title: "ImFusion::MotionModel"
+sidebarTitle: "MotionModel"
+description: "Motion model of smooth (modeled by splines) homogeneous transformations over time."
+---
+
+`#include <ImFusion/Base/MotionModel.h>`
+
+## Overview
+
+Motion model of smooth (modeled by splines) homogeneous transformations over time.
+
+The output of the model is a vector of matrices. Control point values, (and optionally locations) are set via applyParameters()
+
+## Public Member Functions
+
+- **MotionModel** (int numMatrices) — Creates the motion model with the desired number of output matrices.
+- void **setControlPoints** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; &points) — Specify custom control point locations, normalized between zero and one.
+- void **setPoseParameterSelection** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; bool &gt; &sel) — Set which affine pose parameters to use (the rigid ones by default).
+- void **fit** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; mat4 &gt; &matrices, bool [optimize](#optimize)=false) — Fits the motion model from a vector of transformation matrices.
+- void [optimize](#optimize) ([Optimizer](/cpp-sdk/4.5/api/classes/imfusion-optimizer) \*opt) — Prepares the given optimizer and runs it for motion model refinement The optimizer has to have a cost function assigned which is calling the applyParameters method of this class.
+- void **applyParameters** (int n, const double \*pars) — Applies provided parameters on the motion model.
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; & **parameters** () const — Access to the parameter vector for all control points.
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; mat4 &gt; & **matrices** () const — Access the transformation matrices.
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; & **points** () const — Access the control point locations.
+- int **numberOfControlPointsToOptimize** () const — Return the number of control points that are actually optimized ( depends on whether first and last control points are optimized).
+- int **numberOfControlPointLocationsToOptimize** () const — Return the number of control point locations to be optimized, may be zero.
+- int **numberOfParameters** () const — Return the number of parameters needed for optimization.
+- int **numberOfControlPoints** () const — Legacy getter/setter Methods.
+- void **setNumberOfControlPoints** (int n)
+- void **setUseBorderPoints** (bool first, bool last) — Legacy getter/setter methods for p_useFirstControlPoint and p_useLastControlPoint.
+- void [setOptimizePosition](#setoptimizeposition) (bool flag) — Legacy setter method for p_optimizeCPPositions.
+- void **setLinkLastPoint** (bool flag) — Legacy setter method for linkLastCpWithPrevious.
+- void **setBlockMode** (bool flag) — Legacy setter for p_blockMode.
+
+## Public Attributes
+
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; int &gt; **p_numControlPoints** = &#123;"numControlPoints", 3, this&#125; — Number of control points.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; bool &gt; **p_useFirstControlPoint** = &#123;"useFirstControlPoint", true, this&#125; — Whether to use the first control point.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; bool &gt; **p_useLastControlPoint** = &#123;"useLastControlPoint", true, this&#125; — Whether to use the last control point.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; bool &gt; **p_optimizeCPPositions** = &#123;"optimizeCPPositions", false, this&#125; — Whether to optimize control point positions.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; bool &gt; **p_linkLastCPWithPrevious** = &#123;"linkLastCPWithPrevious", false, this&#125;
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; bool &gt; **p_blockMode** = &#123;"blockMode", false, this&#125; — If enabled, blocks of constant transformations are defined between the control points.
+
+## Protected Member Functions
+
+- void **applyParametersSpline** (int n, const double \*pars)
+
+## Member Function Documentation
+
+### optimize
+
+```cpp
+void ImFusion::MotionModel::optimize (Optimizer * opt)
+```
+
+Prepares the given optimizer and runs it for motion model refinement The optimizer has to have a cost function assigned which is calling the applyParameters method of this class.
+
+If the optimizer dimension does not match, it is expected to contain just a single set of pose parameters and is expanded.
+
+### setOptimizePosition
+
+```cpp
+void ImFusion::MotionModel::setOptimizePosition (bool flag)
+```
+
+*inline*
+
+Legacy setter method for p_optimizeCPPositions.
+
+Link last control point with previous. If true and the last border point is disabled, it moves with the previous one

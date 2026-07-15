@@ -1,0 +1,308 @@
+---
+title: "Algorithms"
+description: "Algorithms are one of the central concepts of the ImFusion framework because they allow to develop new functionality in a clean, well-defined manner without hav"
+---
+
+Algorithms are one of the central concepts of the ImFusion framework because they allow to develop new functionality in a clean, well-defined manner without having to modify the base framework or interfering with existing algorithms. All algorithms are derived from the [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) interface. The central methods of this interface are the [compute](/cpp-sdk/4.5/api/classes/imfusion-algorithm) method and the [createCompatible](/cpp-sdk/4.5/api/classes/imfusion-algorithm) method which must be defined by every algorithm. Optionally an algorithm controller derived from [Algorithm Controller](/cpp-sdk/4.5/api/classes/imfusion-algorithmcontroller) can be defined which can be used to display a graphical user interface for interacting with the algorithm, for instance allowing to set properties or to create new views for displaying algorithm results. To make an algorithm known to the framework a factory needs to be written which in turn has to be registered with the global [FactoryRegistry](/cpp-sdk/4.5/api/classes/imfusion-factoryregistry) object.
+
+### I/O-Algorithms
+
+Support for loading and saving custom data formats can be added by implementing specialized algorithms. In contrast to regular algorithms I/O-algorithms derive from [IoAlgorithm](/cpp-sdk/4.5/api/classes/imfusion-ioalgorithm). IoAlgorithms have special properties which allow to generically specify the location of the data and whether data should be imported or exported. The actual loading and writing of the data is performed in the compute method. It is also possible to write controllers for an IoAlgorithm which can for instance display custom import and export options. For the common use case of only needing to select the input/output file the default controller [IoController](/cpp-sdk/4.5/api/classes/imfusion-iocontroller) can be used.
+
+### Defining the Algorithm
+
+To create a new algorithm a class deriving from [ImFusion::Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) needs to be created. Inside this class the [ImFusion::Algorithm::compute](/cpp-sdk/4.5/api/classes/imfusion-algorithm) and the [ImFusion::Algorithm::createCompatible](/cpp-sdk/4.5/api/classes/imfusion-algorithm) method need to be defined. [ImFusion::Algorithm::compute](/cpp-sdk/4.5/api/classes/imfusion-algorithm) is called by the framework or the algorithm controller to perform the actual computations. [ImFusion::Algorithm::createCompatible](/cpp-sdk/4.5/api/classes/imfusion-algorithm) is used to create an algorithm instance for a given set of input data represented as a DataList object. Inside [ImFusion::Algorithm::createCompatible](/cpp-sdk/4.5/api/classes/imfusion-algorithm) the algorithm needs to check whether it supports operating on the provided data. If so it should create an instance of itself and configure it so that it runs on the input data. [ImFusion::Algorithm::createCompatible](/cpp-sdk/4.5/api/classes/imfusion-algorithm) should only succeed when all data in the data list is needed by the algorithm to operate. For instance an algorithm which downsamples a single 2D image should fail [ImFusion::Algorithm::createCompatible](/cpp-sdk/4.5/api/classes/imfusion-algorithm) if the data list contains more than one element even if one of them is a 2D image. The framework generates the data list passed to [ImFusion::Algorithm::createCompatible](/cpp-sdk/4.5/api/classes/imfusion-algorithm) in one of two ways:
+
+- If the algorithm is created from a workspace file the inputs specified in the corresponding algorithm section of the workspace.
+- If the algorithm is created from the context menu of the GUI application the inputs are the selected data sets. The framework only adds algorithms to the algorithm context menu which pass [ImFusion::Algorithm::createCompatible](/cpp-sdk/4.5/api/classes/imfusion-algorithm).
+
+If the algorithm creates output data it also needs to implement the [ImFusion::Algorithm::takeOutput](/cpp-sdk/4.5/api/classes/imfusion-algorithm) method to provide the data to the framework or the controller.
+
+To support automated algorithm serialization and instantiation by the framework for instance for including the algorithm configuration in a workspace file the methods of the [Configurable](/cpp-sdk/4.5/api/classes/imfusion-configurable) interface need to be implemented.
+
+```cpp
+#include <ImFusion/Base/Algorithm.h>
+
+namespace ImFusion
+{
+ class SharedImageSet;
+
+ // Algorithms need to derive from the Algorithm class
+ class DemoAlgorithm : public Algorithm
+    {
+ public:
+ // Creates the algorithm instance. It is good practice to pass the image data in the
+ // required format here, instead of calling input() which returns the DataList with
+ // which the algorithm was created.
+ explicit DemoAlgorithm(SharedImageSet* img);
+
+ // Method for configuring algorithm settings
+ void setParam(int param);
+
+ // Needs to be implemented by every algorithm to check for data compatibility and to
+ // create the algorithm.
+ static bool createCompatible(const DataList &data, Algorithm **a = 0);
+
+ // Needs to be implemented by every algorithm to perform the actual processing
+ void compute() override;
+
+ // Return any new Data that was created by the Algorithm during the last call to
+ // compute().
+ // \note Since ownership of the data is transferred, you can call this method only
+ // once between calls to compute().
+        OwningDataList takeOutput() override;
+
+ // Configure algorithm from supplied properties
+ void configure(const Properties* p) override;
+
+ // Write algorithm settings into supplied properties object
+ void configuration(Properties* p) const override;
+
+ // Set the progress
+ void setProgress(Progress* p) override;
+
+ private:
+ std::unique_ptr<SharedImageSet> m_imgOut;
+        Progress* m_progress;
+    };
+}
+```
+ fragment
+```cpp
+#include "DemoAlgorithm.h"
+
+#include <ImFusion/Base/DataList.h>
+#include <ImFusion/Base/MemImage.h>
+#include <ImFusion/Base/SharedImage.h>
+#include <ImFusion/Base/SharedImageSet.h>
+
+namespace ImFusion
+{
+    DemoAlgorithm::DemoAlgorithm(SharedImageSet* img):
+        m_imgOut(0)
+    {
+ // Call this to use the default values as specified in the configuration()-method
+        configureDefaults();
+    }
+
+    DemoAlgorithm::~DemoAlgorithm() = default;
+
+ // Called by framework to determine algorithm support for passed data
+ bool DemoAlgorithm::createCompatible(const DataList &data, Algorithm **a)
+    {
+ // This algorithm only works on one image. If more than one image has been passed
+ // don't do anything.
+ if (data.size() != 1)
+ return false;
+ // Test whether the data provided is supported by this algorithm
+        SharedImageSet* img = data.getImage(Data::UNKNOWN);
+ // If the data does not contain an image don't do anything
+ if (img == 0)
+ return false;
+ // Requirements are met, create the algorithm if asked otherwise just indicate support
+ // for input data.
+ if (a)
+        {
+             *a = new DemoAlgorithm(img);
+            (*a)->setInput(data);
+        }
+ return true;
+    }
+
+ // Called by framework or controller to perform computations
+ void DemoAlgorithm::compute()
+    {
+ // Create output data
+        m_imgOut = new SharedImageSet();
+
+ // Perform processing
+        Progress::Task pt(m_progress, 1, "Computing...");
+ // ...
+        pt.incrementStep();
+
+ // Add result to output image set
+        m_imgOut->add(<result>);
+    }
+
+ // Called by framework or controller to retrieve output data
+    OwningDataList DemoAlgorithm::takeOutput()
+    {
+ // Transfer the algorithm output to the caller
+        OwningDataList result;
+ if (m_imgOut)
+            result.add(std::move(m_imgOut));
+ return result;
+    }
+
+ // Configure algorithm from properties
+ void DemoAlgorithm::configure(const Properties* p)
+    {
+ if (p == 0)
+ return;
+        p->param("factor",m_factor);
+    }
+
+ // Save algorithm parameters to properties
+ void DemoAlgorithm::configuration(Properties* p) const
+ {
+ if (p == 0)
+ return;
+ // Last parameter to setParam specifies default value
+        p->setParam("factor",m_factor,2);
+    }
+
+ void DemoAlgorithm::setProgress(Progress* p)
+    {
+        m_progress = p;
+    }
+}
+```
+ fragment
+
+### Defining the Algorithm Controller
+
+If desired an algorithm controller can be written to implement custom logic and user interface components for interacting with the algorithm. The algorithm controller needs to derive from the [AlgorithmController](/cpp-sdk/4.5/api/classes/imfusion-algorithmcontroller) class. Typically the algorithm controller class also derives from QWidget to be able to display a widget; however, this is not a requirement. If a controller is available for an algorithm the framework creates the controller after creating the algorithm. The previously created algorithm object is passed to the algorithm controller constructor so that it can be accessed from the controller. Then the [init](/cpp-sdk/4.5/api/classes/imfusion-controller) method which every controller needs to implement is called by the framework. Use this method for initializations requiring access to [ImFusion::MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase) or [ImFusion::DisplayWidgetMulti](/cpp-sdk/4.5/api/classes/imfusion-displaywidgetmulti) as [ImFusion::AlgorithmController::init](/cpp-sdk/4.5/api/classes/imfusion-controller) is called only after the [ImFusion::Controller::m_disp](/cpp-sdk/4.5/api/classes/imfusion-controller) and [ImFusion::Controller::m_main](/cpp-sdk/4.5/api/classes/imfusion-controller) attributes have been set. A controller with user interface components additionally needs to contain methods to react to user interaction such as a button press to call methods on the actual algorithm instance. While it is possible to perform all computations inside the controller and leave the algorithm as a stub, this should be avoided for the sake of a clean separation of GUI and processing code and to enable the usage of algorithms from non-GUI aware code.
+
+A controller can fully interact with the framework allowing it to add new data to the data model (m_main-&gt;dataModel()-&gt;add(&lt;data&gt;)) or to add custom views (m_disp-&gt;addView(&lt;view&gt;)) or annotations (m_disp-&gt;addObject(&lt;object&gt;, ...)).
+
+```cpp
+#include <ImFusion/GUI/AlgorithmController.h>
+
+#include <QtWidgets/QWidget>
+
+class Ui_DemoController;
+
+namespace ImFusion
+{
+ class DemoAlgorithm;
+
+ // \brief Demonstrates usage of algorithm controllers
+ class DemoController: public QWidget, public AlgorithmController
+    {
+        Q_OBJECT
+
+ public:
+ // Constructor with the algorithm instance
+ explicit DemoController(DemoAlgorithm* algorithm);
+
+ // Destructor
+        ~DemoController() override;
+
+ // Initializes the widget
+ void init() override;
+
+ public slots:
+ // Apply the chosen processing
+ void onApply();
+
+ protected:
+ // The actual GUI
+        Ui_DemoController*  m_ui;
+ // The algorithm instance
+        DemoAlgorithm* m_alg;
+    };
+}
+```
+ fragment
+```cpp
+#include "DemoController.h"
+#include "DemoAlgorithm.h"
+
+#include <ImFusion/Base/DataModel.h>
+#include <ImFusion/GUI/MainWindowBase.h>
+#include <ImFusion/Base/SharedImageSet.h>
+
+#include "ui_DemoController.h"
+
+namespace ImFusion
+{
+    DemoController::DemoController(DemoAlgorithm* algorithm) : AlgorithmController(algorithm),
+        m_alg(algorithm)
+    {
+        m_ui = new Ui_DemoController();
+        m_ui->setupUi(this);
+        connect(m_ui->pushButtonApply,SIGNAL(clicked()),this,SLOT(onApply()));
+    }
+
+    DemoController::~DemoController()
+    {
+ delete m_ui;
+    }
+
+ void DemoController::init()
+    {
+        m_alg->setProgress(m_main->progress());
+    }
+
+ void DemoController::onApply()
+    {
+        m_alg->setFactor(m_ui->spinBoxFactor->value());
+        m_alg->compute();
+        DataList d;
+        m_alg->output(d);
+ for (auto i : d.getImages(Data::UNKNOWN))
+            m_main->dataModel()->add(i);
+    }
+}
+```
+ fragment
+
+### Registering the Algorithm
+
+To make the application aware of the algorithm and optionally the controller they need to be registered with the global factory registry. To this end it is necessary to derive classes from [ImFusion::AlgorithmFactory](/cpp-sdk/4.5/api/classes/imfusion-algorithmfactory) and [ImFusion::AlgorithmControllerFactory](/cpp-sdk/4.5/api/classes/imfusion-algorithmcontrollerfactory) respectively:
+
+- Inside the [AlgorithmFactory](/cpp-sdk/4.5/api/classes/imfusion-algorithmfactory)-derived class the constructor needs to call [ImFusion::AlgorithmFactory::registerAlgorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithmfactory) with the algorithm type and the name of the algorithm. The name of the algorithm is used for display in the GUI as well as for identifying the algorithm in the factory.
+- In the [AlgorithmControllerFactory](/cpp-sdk/4.5/api/classes/imfusion-algorithmcontrollerfactory)-derived class the [ImFusion::AlgorithmControllerFactory::create](/cpp-sdk/4.5/api/classes/imfusion-algorithmcontrollerfactory) method needs to be implemented which should test whether the supplied algorithm is of the correct type and then generate the corresponding algorithm controller.
+
+To make the application aware of the factories - depending on your use case - it is necessary to do one of the following:
+
+- When writing a plugin, in the [ImFusionPlugin](/cpp-sdk/4.5/api/classes/imfusion-imfusionplugin)-derived plugin class return them from the corresponding methods [ImFusion::ImFusionPlugin::getAlgorithmFactory](/cpp-sdk/4.5/api/classes/imfusion-imfusionplugin) and [ImFusion::ImFusionPlugin::getAlgorithmControllerFactory](/cpp-sdk/4.5/api/classes/imfusion-imfusionplugin) respectively.
+- Explicitly call [registerAlgorithmFactory](/cpp-sdk/4.5/api/classes/imfusion-factoryregistry) and [registerAlgorithmControllerFactory](/cpp-sdk/4.5/api/classes/imfusion-factoryregistry).
+
+```cpp
+#include <ImFusion/Base/AlgorithmFactory.h>
+#include <ImFusion/Base/AlgorithmControllerFactory.h>
+
+namespace ImFusion
+{
+ class Algorithm;
+
+ // Factory for demo algorithm
+ class DemoAlgorithmFactory : public AlgorithmFactory
+    {
+ public:
+        DemoAlgorithmFactory();
+    };
+
+ // Factory for demo algorithm controller
+ class DemoControllerFactory : public AlgorithmControllerFactory
+    {
+ public:
+        AlgorithmController* create(Algorithm *a) const override;
+    };
+}
+```
+ fragment
+```cpp
+#include "DemoFactory.h"
+#include "DemoAlgorithm.h"
+#include "DemoController.h"
+
+namespace ImFusion
+{
+    DemoAlgorithmFactory::DemoAlgorithmFactory()
+    {
+        registerAlgorithm<DemoAlgorithm>("Demo;Demo algorithm");
+    }
+
+    AlgorithmController* DemoControllerFactory::create(Algorithm *a) const
+ {
+ if (a == 0)
+ return 0;
+ if (DemoAlgorithm *alg = dynamic_cast<DemoAlgorithm*>(a))
+ return new DemoController(alg);
+ return 0;
+    }
+}
+```
+ fragment

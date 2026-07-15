@@ -1,0 +1,28 @@
+---
+title: "ImFusion::GlTexelFetch"
+sidebarTitle: "GlTexelFetch"
+description: "Read single intensity values from an OpenGL texture."
+---
+
+`#include <ImFusion/GL/GlTexelFetch.h>`
+
+## Overview
+
+Read single intensity values from an OpenGL texture.
+
+## Public Member Functions
+
+- **GlTexelFetch** () — Constructor, not setting up shader yet.
+- **~GlTexelFetch** () override — Destructor.
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; float &gt; & **read** (const [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) \*tex, int x, int y, int z=0) — Retrieve scalar intensity value at specified location.
+
+## Static Public Member Functions
+
+- static GlTexelFetch & **instance** () — [Singleton](/cpp-sdk/4.5/api/classes/imfusion-singleton) access to instance.
+
+## Protected Attributes
+
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [GL::Program](/cpp-sdk/4.5/api/classes/imfusion-gl-program) &gt; **m_prog** — Shader program for intensity retrieval.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [GL::Framebuffer](/cpp-sdk/4.5/api/classes/imfusion-gl-framebuffer) &gt; **m_fbo** — Required FBO instance.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [GL::Texture](/cpp-sdk/4.5/api/classes/imfusion-gl-texture) &gt; **m_imgOut** — Output image for retrieved intensity.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; float &gt; **m_valOut** — Output intensities for all channels.

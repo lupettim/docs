@@ -1,0 +1,224 @@
+---
+title: "ImFusion::Algorithm"
+sidebarTitle: "Algorithm"
+description: "Interface for describing algorithms that can be made available in the ImFusion Suite through AlgorithmFactory ."
+---
+
+`#include <ImFusion/Base/Algorithm.h>`
+
+Inherits [ImFusion::Configurable](/cpp-sdk/4.5/api/classes/imfusion-configurable), and [ImFusion::Utils::NotCopyable](/cpp-sdk/4.5/api/classes/imfusion-utils-notcopyable).
+
+## Overview
+
+Interface for describing algorithms that can be made available in the ImFusion Suite through [AlgorithmFactory](/cpp-sdk/4.5/api/classes/imfusion-algorithmfactory).
+
+The [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) interface provides the following functionality:
+
+- They can be registered with the [AlgorithmFactory](/cpp-sdk/4.5/api/classes/imfusion-algorithmfactory). Define a [createCompatible()](#createcompatible) function serving both as predicate function checking if input data is suitable, as well as factory function to instantiate the algorithm. If an algorithm was instantiated by a factory, the [factoryInfo()](#factoryinfo) struct is populated.
+- The inherit from [Configurable](/cpp-sdk/4.5/api/classes/imfusion-configurable) so that their settings/parameters can be easily serialized.
+- You must implement the [compute()](#compute) function to execute the algorithm on the input data provided at creation. Afterwards, users can call [takeOutput()](#takeoutput) to receive [Data](/cpp-sdk/4.5/api/classes/imfusion-data) that was newly created during [compute()](#compute). Use the [status()](#status) interface to signal whether the last call to [compute()](#compute) was successful or not.
+- The [Action](/cpp-sdk/4.5/api/structs/imfusion-algorithm-action) interface enables you to define a generic set of actions a user can execute on your algorithm without knowing about the concrete derived type.
+
+If you would like to provide a [GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui) for your [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) you need to use the [AlgorithmController](/cpp-sdk/4.5/api/classes/imfusion-algorithmcontroller) interface. For rapid prototyping you can use the [DefaultAlgorithmController](/cpp-sdk/4.5/api/classes/imfusion-defaultalgorithmcontroller) to automatically generate a [GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui) from the [Configurable](/cpp-sdk/4.5/api/classes/imfusion-configurable) interface and set of registered actions.
+
+**Note:** The constructor of derived classes might perform a check for a valid license and throw a [MissingLicenseException](/cpp-sdk/4.5/api/classes/imfusion-missinglicenseexception) in case of failure.
+
+**See also:** [Writing Algorithms](/cpp-sdk/4.5/api/guides/algorithm-tutorial), [Algorithms](/cpp-sdk/4.5/api/guides/algorithms), [AlgorithmUtils](/cpp-sdk/4.5/api/namespaces/imfusion-algorithmutils), [AlgorithmController](/cpp-sdk/4.5/api/classes/imfusion-algorithmcontroller)
+
+**Examples:** [ExampleAlgorithm.cpp](/cpp-sdk/4.5/api/examples/example-algorithm-8cpp), [ExampleAlgorithm.h](/cpp-sdk/4.5/api/examples/example-algorithm-8h), [SqrtAlgorithm.cpp](/cpp-sdk/4.5/api/examples/sqrt-algorithm-8cpp), and [SqrtAlgorithm.h](/cpp-sdk/4.5/api/examples/sqrt-algorithm-8h).
+
+## Classes
+
+- struct [FactoryInfo](/cpp-sdk/4.5/api/structs/imfusion-algorithm-factoryinfo) — Struct describing how an [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) was instantiated by the [AlgorithmFactory](/cpp-sdk/4.5/api/classes/imfusion-algorithmfactory).
+- struct [Action](/cpp-sdk/4.5/api/structs/imfusion-algorithm-action) — Struct for representing a named action that has been registered with this algorithm.
+
+## Public Types
+
+- enum [Status](#status) &#123; Unknown = -1 , Success = 0 , Error = 1 , InvalidInput , IncompleteInput , OutOfMemoryHost , OutOfMemoryGPU , UnsupportedGPU , UnknownAction , AbortedByUser , User = 1000 &#125; — [Status](#status) codes.
+
+## Public Member Functions
+
+- [Algorithm](#algorithm) () — Default constructor will registers a single "compute" action that calls [compute()](#compute) and returns [status()](#status).
+- virtual void [compute](#compute) ()=0 — Execute the algorithm.
+- virtual [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) [takeOutput](#takeoutput) () — Return any new [Data](/cpp-sdk/4.5/api/classes/imfusion-data) that was created by the [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) during the last call to [compute()](#compute).
+- virtual void [setProgress](#setprogress) ([Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) \*progress) — Sets a [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) interface the algorithm can use to notify observers about its computing progress.
+- [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) \* **progress** () const — Returns the progress interface if set.
+- virtual int [status](#status) () const — Indicates the status of the last call to [compute()](#compute).
+- virtual bool [survivesDataDeletion](#survivesdatadeletion) (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*) const — Indicates whether the algorithm can handle (partial) deletion of the specified data, by default this checks whether the data is in the input list.
+- const [FactoryInfo](/cpp-sdk/4.5/api/structs/imfusion-algorithm-factoryinfo) & [factoryInfo](#factoryinfo) () const — Returns the record describing how this [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) was instantiated by the [AlgorithmFactory](/cpp-sdk/4.5/api/classes/imfusion-algorithmfactory).
+- void **setFactoryInfo** (const [FactoryInfo](/cpp-sdk/4.5/api/structs/imfusion-algorithm-factoryinfo) &value) — Sets the record describing how this [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) was instantiated by the [AlgorithmFactory](/cpp-sdk/4.5/api/classes/imfusion-algorithmfactory).
+- [Status](#status) [runAction](#runaction) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &id) — Run the action with name id if it exists.
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Action](/cpp-sdk/4.5/api/structs/imfusion-algorithm-action) &gt; & **actions** () — Get a mapping from [Action](/cpp-sdk/4.5/api/structs/imfusion-algorithm-action) id to [Action](/cpp-sdk/4.5/api/structs/imfusion-algorithm-action) as registered in this algorithm.
+
+## Static Public Member Functions
+
+- static bool [createCompatible](#createcompatible) (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](#algorithm) \*\*a=nullptr) — Factory function to check algorithm compatibility with input data and optionally instantiate it.
+
+## Public Attributes
+
+- Signal **signalOutputChanged** — Signal should be emitted by Algorithms when their output/result has changed.
+- Signal **signalParametersChanged** — Signal should be emitted by Algorithms when their parameter configuration has changed.
+
+## Protected Member Functions
+
+- void **loadDefaults** ()
+- void [registerAction](#registeraction) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &id, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &guiName, const [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; [Algorithm::Status](#status)(void)&gt; &action) — Register an action to be run via runAction.
+- void **registerAction** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &id, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &guiName, [Algorithm::Status](#status)(D::\*action)(void)) — Template version of runAction that can be used with a pointer to a member function.
+- void **registerAction** (const [Action](/cpp-sdk/4.5/api/structs/imfusion-algorithm-action) &action) — Register an action.
+
+## Protected Attributes
+
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **m_name** — [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) name.
+- [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) \* **m_progress** = nullptr — Non-owing pointer to a progress interface. May be a nullptr.
+- [FactoryInfo](/cpp-sdk/4.5/api/structs/imfusion-algorithm-factoryinfo) **m_factoryInfo** = &#123;&#125; — Record describing how this algorithm was instantiated by the [AlgorithmFactory](/cpp-sdk/4.5/api/classes/imfusion-algorithmfactory).
+- int **m_status** = Status::Unknown — [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) status after last call to [compute()](#compute).
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Action](/cpp-sdk/4.5/api/structs/imfusion-algorithm-action) &gt; **m_actions** — Map of key given by the id of the action, of the available actions of this algorithm.
+
+## Member Enumeration Documentation
+
+### Status
+
+```cpp
+enum ImFusion::Algorithm::Status
+```
+
+[Status](#status) codes.
+
+**Enumerator:**
+
+- `Unknown` — Returned before compute has been called or when algorithm does not implement status interface.
+- `Success` — Computation was successful.
+- `Error` — Generic catch all error status.
+- `InvalidInput` — Some input arguments do not meet the requirements.
+- `IncompleteInput` — Not all required input has been set.
+- `OutOfMemoryHost` — Insufficient main memory, e.g. a [std::bad_alloc](http://en.cppreference.com/w/cpp/memory/new/bad_alloc.html).
+- `OutOfMemoryGPU` — Insufficient memory on the GPU.
+- `UnsupportedGPU` — This should be returned when for instance the OpenGL version is not high enough or CUDA/OpenCL is not available.
+- `UnknownAction` — This is returned by runAction if an action with the requested id does not exist.
+- `AbortedByUser` — User canceled execution.
+- `User` — [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) specific status codes can be defined above this status code.
+
+## Constructor & Destructor Documentation
+
+### Algorithm
+
+```cpp
+ImFusion::Algorithm::Algorithm ()
+```
+
+Default constructor will registers a single "compute" action that calls [compute()](#compute) and returns [status()](#status).
+
+**Exceptions:**
+
+- `MissingLicenseException` — Derived classes may perform a license check during construction and throw in case of failure.
+
+## Member Function Documentation
+
+### createCompatible
+
+```cpp
+bool ImFusion::Algorithm::createCompatible (const DataList & data, Algorithm ** a = nullptr)
+```
+
+*static*
+
+Factory function to check algorithm compatibility with input data and optionally instantiate it.
+
+Every subclass of [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) must implement this function in order to be usable by [AlgorithmFactory](/cpp-sdk/4.5/api/classes/imfusion-algorithmfactory).
+
+**Parameters:**
+
+- `data` — Input data for the algorithm
+- `a` — Optional output pointer for instantiation through factory. If *a* is not null, this function will instantiate the algorithm and store the pointer there.
+
+**Returns:** true if the algorithm is compatible with the input data.
+
+### compute
+
+```cpp
+virtual void ImFusion::Algorithm::compute ()
+```
+
+*pure virtual*
+
+Execute the algorithm.
+
+### takeOutput
+
+```cpp
+virtual OwningDataList ImFusion::Algorithm::takeOutput ()
+```
+
+*virtual*
+
+Return any new [Data](/cpp-sdk/4.5/api/classes/imfusion-data) that was created by the [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) during the last call to [compute()](#compute).
+
+The default implementation will return an empty list.
+
+**Note:** Since ownership of the data is transferred, you can call this method only once between calls to [compute()](#compute).
+
+### setProgress
+
+```cpp
+virtual void ImFusion::Algorithm::setProgress (Progress * progress)
+```
+
+*inline, virtual*
+
+Sets a [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) interface the algorithm can use to notify observers about its computing progress.
+
+### status
+
+```cpp
+virtual int ImFusion::Algorithm::status () const
+```
+
+*virtual*
+
+Indicates the status of the last call to [compute()](#compute).
+
+Returns a predefined [Algorithm::Status](#status) constant or custom algorithm-specific error codes (values &gt;= Status::Custom).
+
+### survivesDataDeletion
+
+```cpp
+virtual bool ImFusion::Algorithm::survivesDataDeletion (const Data *) const
+```
+
+*virtual*
+
+Indicates whether the algorithm can handle (partial) deletion of the specified data, by default this checks whether the data is in the input list.
+
+### factoryInfo
+
+```cpp
+const FactoryInfo & ImFusion::Algorithm::factoryInfo () const
+```
+
+*inline*
+
+Returns the record describing how this [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) was instantiated by the [AlgorithmFactory](/cpp-sdk/4.5/api/classes/imfusion-algorithmfactory).
+
+May be empty if [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) was instantiated manually.
+
+### runAction
+
+```cpp
+Status ImFusion::Algorithm::runAction (const std::string & id)
+```
+
+Run the action with name id if it exists.
+
+**Returns:** Status::UnknownAction if an action with the specified id does not exist, otherwise returns the returned value from the action.
+
+### registerAction
+
+```cpp
+void ImFusion::Algorithm::registerAction (const std::string & id, const std::string & guiName, const std::function < Algorithm::Status (void)> & action)
+```
+
+*protected*
+
+Register an action to be run via runAction.
+
+These actions can be called from python bindings and show up in the [DefaultAlgorithmController](/cpp-sdk/4.5/api/classes/imfusion-defaultalgorithmcontroller). The third argument is copied. If an action with the specified id already exists, calling this function overwrites it.

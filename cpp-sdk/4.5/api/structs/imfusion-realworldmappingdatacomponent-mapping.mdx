@@ -1,0 +1,43 @@
+---
+title: "ImFusion::RealWorldMappingDataComponent::Mapping"
+sidebarTitle: "Mapping"
+---
+
+## Public Member Functions
+
+- double [originalToRealWorld](#originaltorealworld) (double value) const — Converts Original Values to Real-World Values.
+- double **storageToRealWorld** (const [ImageDescriptor](/cpp-sdk/4.5/api/structs/imfusion-imagedescriptor) &image, double value) const — Equivalent to originalToRealWorld(image.storageToOriginal(value));.
+- bool **operator==** (const [Mapping](/cpp-sdk/4.5/api/structs/imfusion-realworldmappingdatacomponent-mapping) &other) const
+- double **getIntercept** () const
+- double **getSlope** () const
+
+## Public Attributes
+
+- MappingType **type** = MappingType::RealWorldValues
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [unit](#unit) — Returns the unit of the Real-World-Value-Mapping if any.
+
+## Member Function Documentation
+
+### originalToRealWorld
+
+```cpp
+double ImFusion::RealWorldMappingDataComponent::Mapping::originalToRealWorld (double value) const
+```
+
+*inline*
+
+Converts Original Values to Real-World Values.
+
+NOTE: Don't rely on this formular always being this simple. In the future there might be types with more complicated formulars.
+
+## Member Data Documentation
+
+### unit
+
+```cpp
+std::string ImFusion::RealWorldMappingDataComponent::Mapping::unit
+```
+
+Returns the unit of the Real-World-Value-Mapping if any.
+
+This is usually some kind of SI unit but this is not enforced.

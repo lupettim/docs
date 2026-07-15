@@ -1,0 +1,23 @@
+---
+title: "ImFusion::DisplayOptions3dWidget"
+sidebarTitle: "DisplayOptions3dWidget"
+description: "Widget to display and manipulate the per-data rendering options of a 3D view."
+---
+
+`#include <ImFusion/GUI/DisplayOptions3dWidget.h>`
+
+## Overview
+
+Widget to display and manipulate the per-data rendering options of a 3D view.
+
+## Public Types
+
+- enum class Sections &#123; **None** = 0 , **Windowing** = 1 &lt;&lt; 0 , **AutoWindowing** = 1 &lt;&lt; 1 , **TransferFunc** = 1 &lt;&lt; 2 , **Advanced** = 1 &lt;&lt; 3 , **Masking** = 1 &lt;&lt; 4 , **All** = 0xFF &#125; — Enumeration of sections that this widget can display.
+
+## Public Member Functions
+
+- **DisplayOptions3dWidget** ([GUI::DisplayBase](/cpp-sdk/4.5/api/classes/imfusion-gui-displaybase) \*display, [GUI::View](/cpp-sdk/4.5/api/classes/imfusion-gui-view) \*view, QWidget \*parent=nullptr) — Standard constructor.
+- void **setDataOptions** ([DisplayOptions3d](/cpp-sdk/4.5/api/classes/imfusion-displayoptions3d) \*displayOptions, const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*refSis) — Sets the image whose rendering options will be manipulated through this widget.
+- void **setShowMinMax** (bool value) — Sets whether to show min/max sliders (true) or window/level sliders (false).
+- void **setVisibleDisplayOptionsSections** ([Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; Sections &gt; visibleSections) — Sets the list of all DisplayOptions widget sections to show.
+- void **setShowInvert** (bool value) — Sets the "Invert" label and check-box visibility.

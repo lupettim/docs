@@ -1,0 +1,28 @@
+---
+title: "ImFusion::DicomIoController"
+sidebarTitle: "DicomIoController"
+---
+
+## Public Slots
+
+- void **run** () override
+
+## Public Member Functions
+
+- **DicomIoController** ([DicomIoAlgorithm](/cpp-sdk/4.5/api/classes/imfusion-dicomioalgorithm) \*[algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithmcontroller))
+
+## Protected Member Functions
+
+- void **showFatalErrors** ()
+
+## Protected Attributes
+
+- [DicomIoAlgorithm](/cpp-sdk/4.5/api/classes/imfusion-dicomioalgorithm) \* **m_alg**
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [DicomBrowserModel](/cpp-sdk/4.5/api/classes/imfusion-dicombrowsermodel) &gt; **m_browserModel**
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [Progress::Task](/cpp-sdk/4.5/api/classes/imfusion-progress-task) &gt; **m_progressTask**
+- int **m_maxProgress**
+- bool **m_cancelled**
+
+## Static Protected Attributes
+
+- static [DicomBrowser](/cpp-sdk/4.5/api/classes/imfusion-dicombrowser) \* **m_dicomBrowser** — Persistent instance in order to not require re-scan when dialog is re-opened.

@@ -1,0 +1,35 @@
+---
+title: "ImFusion::SegmentationReductionsAlgorithm"
+sidebarTitle: "SegmentationReductionsAlgorithm"
+description: "Computes basic image reductions of segmentation images, for instance vessel segmentations, including center of gravity and area."
+---
+
+`#include <ImFusion/Seg/SegmentationReductionsAlgorithm.h>`
+
+## Overview
+
+Computes basic image reductions of segmentation images, for instance vessel segmentations, including center of gravity and area.
+
+## Public Member Functions
+
+- **SegmentationReductionsAlgorithm** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*labels)
+- void [compute](#compute) () override — Execute the algorithm.
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; & **centersOfGravityPixels** () — Returns the detected center of gravity positions in pixels.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; mat4 &gt; **centersOfGravityWorld** () — Computes the detected center of gravity poses in the world system.
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; & **sums** () — Returns the computed area/volume values (im mm^2 or mm^3).
+
+## Static Public Member Functions
+
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=0) — If data is compatible with algorithm return true. If a is not zero, create algorithm with input data.
+
+## Member Function Documentation
+
+### compute
+
+```cpp
+void ImFusion::SegmentationReductionsAlgorithm::compute ()
+```
+
+*override, virtual*
+
+Execute the algorithm.

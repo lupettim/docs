@@ -1,0 +1,23 @@
+---
+title: "ImFusion::Resource"
+sidebarTitle: "Resource"
+description: "ImFusion Resource System to store binary data in the executable/library and retrieve it at runtime."
+---
+
+## Overview
+
+ImFusion Resource System to store binary data in the executable/library and retrieve it at runtime.
+
+**See also:** ImFusionResource
+
+## Classes
+
+- class [FilesystemRepository](/cpp-sdk/4.5/api/classes/imfusion-resource-filesystemrepository) — [Repository](/cpp-sdk/4.5/api/classes/imfusion-resource-repository) for loading resources from the local filesystem.
+- class [Repository](/cpp-sdk/4.5/api/classes/imfusion-resource-repository) — [Base](/cpp-sdk/4.5/api/structs/imfusion-dicom-base) interface for a ImFusion resource repository.
+
+## Functions
+
+- void **addRepository** (const [Repository](/cpp-sdk/4.5/api/classes/imfusion-resource-repository) \*rep) — Add the given [Repository](/cpp-sdk/4.5/api/classes/imfusion-resource-repository) to the set of registered repositories.
+- void **removeRepository** (const [Repository](/cpp-sdk/4.5/api/classes/imfusion-resource-repository) \*rep) — Remove the given [Repository](/cpp-sdk/4.5/api/classes/imfusion-resource-repository) from the set of registered repositories.
+- const [Repository](/cpp-sdk/4.5/api/classes/imfusion-resource-repository) \* locate (const [std::string_view](http://en.cppreference.com/w/cpp/string/basic_string_view.html) &repositoryName, const [std::string_view](http://en.cppreference.com/w/cpp/string/basic_string_view.html) &resourceName) — Searches the registered repositories if they provide a resource identified by the given name.
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [ByteBuffer](/cpp-sdk/4.5/api/classes/imfusion-bytebuffer) &gt; query (const [std::string_view](http://en.cppreference.com/w/cpp/string/basic_string_view.html) &repositoryName, const [std::string_view](http://en.cppreference.com/w/cpp/string/basic_string_view.html) &resourceName) — Queries the registered repositories for the resource identified by the given name.

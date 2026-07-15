@@ -1,0 +1,46 @@
+---
+title: "ImFusion::RemoveUnlabelledImagesAlgorithm"
+sidebarTitle: "RemoveUnlabelledImagesAlgorithm"
+description: "Algorithm reducing an image data set and its label maps to its labelled frames."
+---
+
+`#include <ImFusion/Base/RemoveUnlabelledImagesAlgorithm.h>`
+
+## Overview
+
+[Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) reducing an image data set and its label maps to its labelled frames.
+
+If all frames are to be removed, the algorithm returns an error and does not modify its input. A vector of booleans can be additionally specified to force some frames to be kept.
+
+## Public Member Functions
+
+- **RemoveUnlabelledImagesAlgorithm** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*img, [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*labels) — Creates the algorithm instance with an image set and a label set.
+- void [setKeepImages](#setkeepimages) ([std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; bool &gt; keep) — Used to flag certain frames, such that they will not be removed even if they are empty.
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; int &gt; & **keptFrameNumbers** () const — Returns the indices of frames that were kept after running the algorithm.
+
+## Methods implementing the algorithm interface
+
+- void [compute](#compute) () override — Execute the algorithm.
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=0)
+
+## Member Function Documentation
+
+### compute
+
+```cpp
+void ImFusion::RemoveUnlabelledImagesAlgorithm::compute ()
+```
+
+*override, virtual*
+
+Execute the algorithm.
+
+### setKeepImages
+
+```cpp
+void ImFusion::RemoveUnlabelledImagesAlgorithm::setKeepImages (std::vector < bool > keep)
+```
+
+Used to flag certain frames, such that they will not be removed even if they are empty.
+
+The size of the keep vector must be equal to the number of frames in img.

@@ -1,0 +1,93 @@
+---
+title: "ImFusion::SplineSlicingAlgorithm"
+sidebarTitle: "SplineSlicingAlgorithm"
+description: "Creates slices orthogonal to a spline and exports them to an image set."
+---
+
+`#include <ImFusion/GL/SplineSlicingAlgorithm.h>`
+
+## Overview
+
+Creates slices orthogonal to a spline and exports them to an image set.
+
+## Public Member Functions
+
+- **SplineSlicingAlgorithm** (const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*input)
+- void **setSpline** ([GlSpline](/cpp-sdk/4.5/api/classes/imfusion-glspline) \*spline)
+
+## Public Attributes
+
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; bool &gt; **p_usMode** = &#123;"usMode", true, this&#125; — Create ultrasound-compatible data.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; int &gt; **p_sliceCount** = &#123;"sliceCount", 0, this&#125; — Number of slices to generate (derived from spacing if 0).
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; vec2 &gt; **p_sliceExtent** = &#123;"sliceExtent", vec2(60.0, 60.0), this&#125; — Desired slice extent in mm.
+
+## Algorithm interface methods
+
+- void [compute](#compute) () override — Applies the processing.
+- [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) [takeOutput](#takeoutput) () override — If new data was created, make it available here.
+- static bool [createCompatible](#createcompatible) (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=0)
+
+## Methods implementing the Configurable interface
+
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+## Member Function Documentation
+
+### createCompatible
+
+```cpp
+bool ImFusion::SplineSlicingAlgorithm::createCompatible (const DataList & data, Algorithm ** a = 0)
+```
+
+*static*
+
+Check if input data is appropriate and optionally create an instance
+
+### compute
+
+```cpp
+void ImFusion::SplineSlicingAlgorithm::compute ()
+```
+
+*override, virtual*
+
+Applies the processing.
+
+### takeOutput
+
+```cpp
+OwningDataList ImFusion::SplineSlicingAlgorithm::takeOutput ()
+```
+
+*override, virtual*
+
+If new data was created, make it available here.
+
+### configure
+
+```cpp
+void ImFusion::SplineSlicingAlgorithm::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### configuration
+
+```cpp
+void ImFusion::SplineSlicingAlgorithm::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality

@@ -1,0 +1,48 @@
+---
+title: "ImFusion::GUI::TypedViewObject< ObjectType, EventHandlerType >"
+sidebarTitle: "TypedViewObject< ObjectType, EventHandlerType >"
+description: "Specialization of a ViewObject where the concrete types of the underlying GlObject and EventHandler are defined by the template parameters."
+---
+
+`#include <ImFusion/GUI/ViewObject.h>`
+
+## Overview
+
+template&lt;typename ObjectType, typename EventHandlerType = ViewObject::EventHandler&gt;
+
+class ImFusion::GUI::TypedViewObject&lt; ObjectType, EventHandlerType &gt;
+Specialization of a [ViewObject](/cpp-sdk/4.5/api/classes/imfusion-gui-viewobject) where the concrete types of the underlying [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) and [EventHandler](/cpp-sdk/4.5/api/classes/imfusion-gui-viewobject-eventhandler) are defined by the template parameters.
+
+This can be useful if you know them in advance, don't need to rely on polymorphism, and want to avoid manually casting repeatedly.
+
+## Public Member Functions
+
+- **TypedViewObject** ([std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; ObjectType &gt; glObject, [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; EventHandlerType &gt; eventHandler=nullptr)
+- const ObjectType & **glObject** () const — Get the underlying typed [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject).
+- ObjectType & **glObject** ()
+- const EventHandlerType \* **eventHandler** () const — Get the optionally attached [EventHandler](/cpp-sdk/4.5/api/classes/imfusion-gui-viewobject-eventhandler).
+- EventHandlerType \* **eventHandler** ()
+- [EventResult](/cpp-sdk/4.5/api/structs/imfusion-gui-eventresult) [handleInputEvent](#handleinputevent) (const [InputEvent](/cpp-sdk/4.5/api/classes/imfusion-gui-inputevent) &event, const [View](/cpp-sdk/4.5/api/classes/imfusion-gui-view) &view) override — Gets called by the parent *view* in order to handle user input events.
+
+## Protected Attributes
+
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; EventHandlerType &gt; **m_eventHandler**
+
+## Member Function Documentation
+
+### handleInputEvent
+
+```cpp
+template<typename ObjectType, typename EventHandlerType> EventResult ImFusion::GUI::TypedViewObject < ObjectType, EventHandlerType >::handleInputEvent (const InputEvent & event, const View & view)
+```
+
+*override, virtual*
+
+Gets called by the parent *view* in order to handle user input events.
+
+It returns an [EventResult](/cpp-sdk/4.5/api/structs/imfusion-gui-eventresult) to indicated if and how event propagation should continue.
+
+**Parameters:**
+
+- `event` — User input event to handle.
+- `view` — Parent [View](/cpp-sdk/4.5/api/classes/imfusion-gui-view) where the event originates from. This additional payload enables you to add the same [ViewObject](/cpp-sdk/4.5/api/classes/imfusion-gui-viewobject) to multiple views and still implement view-specific handling logic.

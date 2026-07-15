@@ -1,0 +1,49 @@
+---
+title: "ImFusion::PoissonReconstruction"
+sidebarTitle: "PoissonReconstruction"
+description: "Different wrapper functions for Poisson Surface Reconstruction by M."
+---
+
+## Overview
+
+Different wrapper functions for Poisson Surface Reconstruction by M.
+
+Kazhdan et al. (2006).
+
+Used in [PoissonSurfaceReconstructionAlgorithm](/cpp-sdk/4.5/api/classes/imfusion-poissonsurfacereconstructionalgorithm)
+
+## Classes
+
+- struct [PoissonParams](/cpp-sdk/4.5/api/structs/imfusion-poissonreconstruction-poissonparams) — Parameters for Poisson reconstruction.
+
+## Enumerations
+
+- enum [DensityThresholdMode](#densitythresholdmode) &#123; None = 0 , QuantileDensity , MedianDensity , AbsoluteDensity &#125;
+
+## Functions
+
+- [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) \* **PoissonReconstruction** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; ImFusion::vec3 &gt; &vertices, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; ImFusion::vec3 &gt; &normals, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; ImFusion::vec3 &gt; &colors, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; &weights, const [PoissonParams](/cpp-sdk/4.5/api/structs/imfusion-poissonreconstruction-poissonparams) &params) — Perform Poisson reconstruction on mesh. The mesh needs to have normals defined for each vertex.
+- [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) \* **PoissonReconstruction** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; ImFusion::vec3 &gt; &vertices, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; ImFusion::vec3 &gt; &normals, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; ImFusion::vec3 &gt; &colors, const [PoissonParams](/cpp-sdk/4.5/api/structs/imfusion-poissonreconstruction-poissonparams) &params)
+- [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) \* **PoissonReconstruction** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; ImFusion::vec3 &gt; &vertices, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; ImFusion::vec3 &gt; &normals, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; &weights, const [PoissonParams](/cpp-sdk/4.5/api/structs/imfusion-poissonreconstruction-poissonparams) &params)
+- [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) \* **PoissonReconstruction** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; ImFusion::vec3 &gt; &vertices, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; ImFusion::vec3 &gt; &normals, const [PoissonParams](/cpp-sdk/4.5/api/structs/imfusion-poissonreconstruction-poissonparams) &params)
+
+## Variables
+
+- const int **DATA_DEGREE** = 0
+- const int **WEIGHT_DEGREE** = 2
+- const int **NORMAL_DEGREE** = 2
+
+## Enumeration Type Documentation
+
+### DensityThresholdMode
+
+```cpp
+enum ImFusion::PoissonReconstruction::DensityThresholdMode
+```
+
+**Enumerator:**
+
+- `None` — No thresholding is applied on the vertices, all contributes to the final mesh.
+- `QuantileDensity` — Applies alpha trimming on the vertices that are below a certain quantile in the density histogram. The quantile value is controlled by [PoissonParams.densityThreshold](/cpp-sdk/4.5/api/structs/imfusion-poissonreconstruction-poissonparams).
+- `MedianDensity` — Applies binary thresholding on the vertices that have a lower density than a certain percentage of the median value of the density histogram. The percentage value is controlled by PoissonParams.medianDensityPercentageThreshold.
+- `AbsoluteDensity` — Uses absolute density threshold. The value is controlled by PoissonParams.absoluteDensityThreshold.

@@ -1,0 +1,56 @@
+---
+title: "ImFusion::ProjectHelpers"
+sidebarTitle: "ProjectHelpers"
+---
+
+## Classes
+
+- struct [ProjectDB](/cpp-sdk/4.5/api/structs/imfusion-projecthelpers-projectdb)
+
+## Public Types
+
+- enum **Version** &#123; **Invalid** , **Older** , **Current** , **Newer** &#125;
+
+## Static Public Member Functions
+
+- static bool **hasValidProject** (const QString &projectRoot)
+- static Version **projectVersion** (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) &rootProps)
+- static [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) **updateToLatestVersion** (const QString &projectRoot, const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) &rootProps, [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) \*progress)
+- static [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::pair](http://en.cppreference.com/w/cpp/utility/pair.html)&lt; QString, QString &gt; &gt; **recentProjects** ()
+- static void **pushToRecentFront** (const QString &name, const QString &dir)
+- static void **projectRenamed** (const QString &dir, const QString &newName)
+- static void **projectMoved** (const QString &dir, const QString &newDir)
+- static void **removeFromRecent** (const QString &dir)
+- static void **clearRecent** ()
+- static [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) **readRootProperties** (const QString &projectDir)
+- static [ProjectDB](/cpp-sdk/4.5/api/structs/imfusion-projecthelpers-projectdb) **readProjectDB** (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) &globalProps)
+- static bool **writeProjectDB** (const QString &projectDir, [ProjectDB](/cpp-sdk/4.5/api/structs/imfusion-projecthelpers-projectdb) db)
+- static [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [Project](/cpp-sdk/4.5/api/classes/imfusion-project) &gt; [copyLocalProject](#copylocalproject) (const QString &from, const QString &to, const [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [std::set](http://en.cppreference.com/w/cpp/container/set.html)&lt; QString &gt; &gt; &identifiersToPreserve=std::nullopt) — Copies a local project from one folder (from) to another folder (to) A list of identifiers to be copied can be passed.
+- static void **makeDataOwned** ([Project](/cpp-sdk/4.5/api/classes/imfusion-project) &project, [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) \*prog=nullptr)
+- static [std::pair](http://en.cppreference.com/w/cpp/utility/pair.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html), int &gt; [splitProjectPathIntoServerAndId](#splitprojectpathintoserverandid) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &path) — Splits the projectPath of a remote [Project](/cpp-sdk/4.5/api/classes/imfusion-project) into its server url and the ID of the project.
+
+## Member Function Documentation
+
+### copyLocalProject
+
+```cpp
+std::unique_ptr < Project > ImFusion::ProjectHelpers::copyLocalProject (const QString & from, const QString & to, const std::optional < std::set < QString > > & identifiersToPreserve = std::nullopt)
+```
+
+*static*
+
+Copies a local project from one folder (from) to another folder (to) A list of identifiers to be copied can be passed.
+
+If std::nullopt is passed, all identifiers are copied. If an empty set is passed, none of the identifiers are copied.
+
+### splitProjectPathIntoServerAndId
+
+```cpp
+std::pair < std::string, int > ImFusion::ProjectHelpers::splitProjectPathIntoServerAndId (const std::string & path)
+```
+
+*static*
+
+Splits the projectPath of a remote [Project](/cpp-sdk/4.5/api/classes/imfusion-project) into its server url and the ID of the project.
+
+Must only be used with projectPath in the form of: http(s)://&lt;hostname-and-port&gt;/api/v1/projects/&lt;project_id&gt; It returns the server url (without the /api... path) and the project id.

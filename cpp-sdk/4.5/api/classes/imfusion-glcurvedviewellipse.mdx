@@ -1,0 +1,261 @@
+---
+title: "ImFusion::GlCurvedViewEllipse"
+sidebarTitle: "GlCurvedViewEllipse"
+description: "Ellipse annotation for curved views."
+---
+
+`#include <ImFusion/GL/GlCurvedViewEllipse.h>`
+
+## Overview
+
+Ellipse annotation for curved views.
+
+## Public Member Functions
+
+- **GlCurvedViewEllipse** () — Creates the ellipse.
+- **~GlCurvedViewEllipse** () override — Destroy the ellipse.
+- void [draw](#draw) (const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &[view](/cpp-sdk/4.5/api/classes/imfusion-glannotation)) override — Render annotation.
+- bool **visibleInView** (const [GlSliceView](/cpp-sdk/4.5/api/classes/imfusion-glsliceview) &[view](/cpp-sdk/4.5/api/classes/imfusion-glannotation)) const
+- int [hitTestHandles2D](#hittesthandles2d) (int x, int y, const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &[view](/cpp-sdk/4.5/api/classes/imfusion-glannotation)) const override — Returns the index of the handle being hit, or -1 when missing.
+- bool [hitTestLine2D](#hittestline2d) (int x, int y, const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &[view](/cpp-sdk/4.5/api/classes/imfusion-glannotation)) const override — Checks whether the line between handles gets hit (if not a straight line, override this in the annotation).
+- void [setPoints](#setpoints) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; &points) override — Set the points of the ellipse.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; **points** () const
+- void [evaluate](#evaluate) (double t, vec3 &res) const override — Evaluates ellipse.
+- void [evaluateNormal](#evaluatenormal) (double t, vec3 &res) const override — Evaluates primitive normal direction.
+- void [evaluateTangent](#evaluatetangent) (double t, vec3 &res) const override — Evaluates ellipse tangent.
+- void [updatePoints](#updatepoints) () override — Update the internal point structure.
+- void [updateYDir](#updateydir) () override — Update the normal of the ellipse.
+- double [getCurveLength](#getcurvelength) () const override — Get the length of the primitive.
+- double [coordToArcLength](#coordtoarclength) (double t) const override
+- double [arcLengthToCoord](#arclengthtocoord) (double length) const override
+- void [getUniformSamples](#getuniformsamples) ([std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::pair](http://en.cppreference.com/w/cpp/utility/pair.html)&lt; double, vec3 &gt; &gt; &samples, int n=0) const override — Get the sample points of the primitive.
+- double [calculateNearestPointCoord](#calculatenearestpointcoord) (const vec3 &pos) const override — Calculates the curve parameter t of the point nearest to pos.
+- bool [isClosed](#isclosed) () const override — Returns true if the curve is closed (i.e. first point is at the same position as the last point).
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [typeName](#typename) () const override — Return unique identifier for this object class used for serialization.
+- void **setFilledSurface** (bool v)
+- bool **filledSurface** () const
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Set one or multiple properties.
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Retrieve the properties of this object.
+- [Geometry::AlignedBox](/cpp-sdk/4.5/api/classes/imfusion-geometry-alignedbox) [bounds](#bounds) () const override — Get the axis-aligned bounding box of this [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) in world space.
+
+## Protected Attributes
+
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [GL::VertexBuffer](/cpp-sdk/4.5/api/classes/imfusion-gl-vertexbuffer) &gt; **m_curvedVbo**
+- bool **m_fillSurface**
+
+## Member Function Documentation
+
+### draw
+
+```cpp
+void ImFusion::GlCurvedViewEllipse::draw (const GlView & view)
+```
+
+*override, virtual*
+
+Render annotation.
+
+### hitTestHandles2D
+
+```cpp
+int ImFusion::GlCurvedViewEllipse::hitTestHandles2D (int x, int y, const GlView & view) const
+```
+
+*override, virtual*
+
+Returns the index of the handle being hit, or -1 when missing.
+
+### hitTestLine2D
+
+```cpp
+bool ImFusion::GlCurvedViewEllipse::hitTestLine2D (int x, int y, const GlView & view) const
+```
+
+*override, virtual*
+
+Checks whether the line between handles gets hit (if not a straight line, override this in the annotation).
+
+### setPoints
+
+```cpp
+void ImFusion::GlCurvedViewEllipse::setPoints (const std::vector < vec3 > & points)
+```
+
+*override, virtual*
+
+Set the points of the ellipse.
+
+### evaluate
+
+```cpp
+void ImFusion::GlCurvedViewEllipse::evaluate (double t, vec3 & res) const
+```
+
+*override, virtual*
+
+Evaluates ellipse.
+
+The ellipse is parametrized in the range t = [0;1]
+
+**Parameters:**
+
+- `t` — ellipse parameter
+- `res` — position at t (output parameter)
+
+### evaluateNormal
+
+```cpp
+void ImFusion::GlCurvedViewEllipse::evaluateNormal (double t, vec3 & res) const
+```
+
+*override, virtual*
+
+Evaluates primitive normal direction.
+
+The curve is parametrized in the range t = [0;1]
+
+**Parameters:**
+
+- `t` — curve parameter
+- `res` — normalized normal direction at t (output parameter)
+
+### evaluateTangent
+
+```cpp
+void ImFusion::GlCurvedViewEllipse::evaluateTangent (double t, vec3 & res) const
+```
+
+*override, virtual*
+
+Evaluates ellipse tangent.
+
+The polyline is parametrized in the range t = [0;1]
+
+**Parameters:**
+
+- `t` — ellipse parameter
+- `res` — tangent at t (output parameter)
+
+### updatePoints
+
+```cpp
+void ImFusion::GlCurvedViewEllipse::updatePoints ()
+```
+
+*override, virtual*
+
+Update the internal point structure.
+
+### updateYDir
+
+```cpp
+void ImFusion::GlCurvedViewEllipse::updateYDir ()
+```
+
+*override, virtual*
+
+Update the normal of the ellipse.
+
+### getCurveLength
+
+```cpp
+double ImFusion::GlCurvedViewEllipse::getCurveLength () const
+```
+
+*override, virtual*
+
+Get the length of the primitive.
+
+### coordToArcLength
+
+```cpp
+double ImFusion::GlCurvedViewEllipse::coordToArcLength (double t) const
+```
+
+*override, virtual*
+
+### arcLengthToCoord
+
+```cpp
+double ImFusion::GlCurvedViewEllipse::arcLengthToCoord (double length) const
+```
+
+*override, virtual*
+
+### getUniformSamples
+
+```cpp
+void ImFusion::GlCurvedViewEllipse::getUniformSamples (std::vector < std::pair < double, vec3 > > & samples, int n = 0) const
+```
+
+*override, virtual*
+
+Get the sample points of the primitive.
+
+### calculateNearestPointCoord
+
+```cpp
+double ImFusion::GlCurvedViewEllipse::calculateNearestPointCoord (const vec3 & pos) const
+```
+
+*override, virtual*
+
+Calculates the curve parameter t of the point nearest to pos.
+
+First the nearest point to pos on the curve is determined and the parameter t from the start of the curve to this point returned.
+
+**Parameters:**
+
+- `pos` — worldspace position of a point on the view
+
+### isClosed
+
+```cpp
+bool ImFusion::GlCurvedViewEllipse::isClosed () const
+```
+
+*inline, override, virtual*
+
+Returns true if the curve is closed (i.e. first point is at the same position as the last point).
+
+### typeName
+
+```cpp
+std::string ImFusion::GlCurvedViewEllipse::typeName () const
+```
+
+*inline, override, virtual*
+
+Return unique identifier for this object class used for serialization.
+
+### configure
+
+```cpp
+void ImFusion::GlCurvedViewEllipse::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Set one or multiple properties.
+
+### configuration
+
+```cpp
+void ImFusion::GlCurvedViewEllipse::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Retrieve the properties of this object.
+
+### bounds
+
+```cpp
+Geometry::AlignedBox ImFusion::GlCurvedViewEllipse::bounds () const
+```
+
+*override, virtual*
+
+Get the axis-aligned bounding box of this [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) in world space.
+
+Return an empty (default-constructed) AlignedBox object if the [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) does not reside in world space.

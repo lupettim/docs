@@ -1,0 +1,96 @@
+---
+title: "ImFusion::SelectionWidget::PlaybackWrapper"
+sidebarTitle: "PlaybackWrapper"
+description: "This class provides an interface for creating wrappers that allow playback functionality to a type."
+---
+
+`#include <ImFusion/GUI/SelectionWidget.h>`
+
+## Overview
+
+This class provides an interface for creating wrappers that allow playback functionality to a type.
+
+To make a type "Playable" with the [SelectionWidget](/cpp-sdk/4.5/api/classes/imfusion-selectionwidget), implement this interface in a concrete wrapper class, and register it with the [Selection](/cpp-sdk/4.5/api/classes/imfusion-selection) widget using the [registerPlaybackWrapper](/cpp-sdk/4.5/api/classes/imfusion-selectionwidget) function.
+
+## Public Member Functions
+
+- virtual bool [supported](#supported) ([Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data)=0
+- virtual bool [running](#running) ([Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data)=0
+- virtual bool [start](#start) ([Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data)=0 — Start the playback.
+- virtual bool [stop](#stop) ([Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data)=0 — Stop the playback.
+- virtual bool [looping](#looping) ([Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data)=0
+- virtual void **setLooping** ([Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data, bool isEnabled)=0 — Set looping playback mode.
+- virtual void [setUpdateGuiCallback](#setupdateguicallback) ([Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data, const [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; void(void)&gt; &callback)=0 — Set a callback function for updating the [GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui).
+- virtual void **setPlaySelected** ([Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data, bool isSet)=0 — Set whether only selected frames should be played.
+
+## Member Function Documentation
+
+### supported
+
+```cpp
+virtual bool ImFusion::SelectionWidget::PlaybackWrapper::supported (Data * data)
+```
+
+*pure virtual*
+
+**Returns:** true iff this wrapper supports the type of [Data](/cpp-sdk/4.5/api/classes/imfusion-data) provided as `data`.
+
+### running
+
+```cpp
+virtual bool ImFusion::SelectionWidget::PlaybackWrapper::running (Data * data)
+```
+
+*pure virtual*
+
+**Returns:** true iff the playback is currently running.
+
+### start
+
+```cpp
+virtual bool ImFusion::SelectionWidget::PlaybackWrapper::start (Data * data)
+```
+
+*pure virtual*
+
+Start the playback.
+
+**Returns:** true iff start is successful.
+
+### stop
+
+```cpp
+virtual bool ImFusion::SelectionWidget::PlaybackWrapper::stop (Data * data)
+```
+
+*pure virtual*
+
+Stop the playback.
+
+**Returns:** true iff stop is successful.
+
+### looping
+
+```cpp
+virtual bool ImFusion::SelectionWidget::PlaybackWrapper::looping (Data * data)
+```
+
+*pure virtual*
+
+**Returns:** true iff looping playback is enabled.
+
+### setUpdateGuiCallback
+
+```cpp
+virtual void ImFusion::SelectionWidget::PlaybackWrapper::setUpdateGuiCallback (Data * data, const std::function < void(void)> & callback)
+```
+
+*pure virtual*
+
+Set a callback function for updating the [GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui).
+
+The [SelectionWidget](/cpp-sdk/4.5/api/classes/imfusion-selectionwidget) will provide a callback function that will run on the [GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui) thread via this function.
+
+**Parameters:**
+
+- `callback` — Function for updating the [GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui) on the main thread.

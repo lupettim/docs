@@ -1,0 +1,55 @@
+---
+title: "ImFusion::TypedTree< T >"
+sidebarTitle: "TypedTree< T >"
+description: "Data structure for typed trees."
+---
+
+`#include <ImFusion/Base/Tree.h>`
+
+## Overview
+
+template&lt;typename T&gt;
+
+class ImFusion::TypedTree&lt; T &gt;
+[Data](/cpp-sdk/4.5/api/classes/imfusion-data) structure for typed trees.
+
+## Public Member Functions
+
+- [Node](/cpp-sdk/4.5/api/classes/imfusion-node) \* [addNode](#addnode) ([std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [Node](/cpp-sdk/4.5/api/classes/imfusion-node) &gt; [node](/cpp-sdk/4.5/api/classes/imfusion-tree), [Node](/cpp-sdk/4.5/api/classes/imfusion-node) \*parent) override — Insert typed node below parent.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; Tree &gt; [detachNode](#detachnode) ([Node](/cpp-sdk/4.5/api/classes/imfusion-node) \*[node](/cpp-sdk/4.5/api/classes/imfusion-tree)) override — Detach a node with all its children, and form a new tree from it.
+- [TypedNode](/cpp-sdk/4.5/api/classes/imfusion-typednode)&lt; T &gt; \* **root** () const — Get root.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [TypedNode](/cpp-sdk/4.5/api/classes/imfusion-typednode)&lt; T &gt; \* &gt; **children** ([TypedNode](/cpp-sdk/4.5/api/classes/imfusion-typednode)&lt; T &gt; \*[node](/cpp-sdk/4.5/api/classes/imfusion-tree)) const — Get children nodes.
+- [TypedNode](/cpp-sdk/4.5/api/classes/imfusion-typednode)&lt; T &gt; \* **parent** ([TypedNode](/cpp-sdk/4.5/api/classes/imfusion-typednode)&lt; T &gt; \*[node](/cpp-sdk/4.5/api/classes/imfusion-tree)) const — Get a parent node.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [typeName](#typename) () const override
+
+## Member Function Documentation
+
+### addNode
+
+```cpp
+template<typename T> Node * ImFusion::TypedTree < T >::addNode (std::unique_ptr < Node > node, Node * parent)
+```
+
+*inline, override, virtual*
+
+Insert typed node below parent.
+
+Also checks node type. Returns pointer to the node if node is added successfully, nullptr otherwise (probably due to invalid parent). nullptr parent means that the node should become a root of the tree. If tree already has a root, the node will not be added.
+
+### detachNode
+
+```cpp
+template<typename T> std::unique_ptr < Tree > ImFusion::TypedTree < T >::detachNode (Node * node)
+```
+
+*inline, override, virtual*
+
+Detach a node with all its children, and form a new tree from it.
+
+### typeName
+
+```cpp
+template<typename T> std::string ImFusion::TypedTree < T >::typeName () const
+```
+
+*inline, override, virtual*

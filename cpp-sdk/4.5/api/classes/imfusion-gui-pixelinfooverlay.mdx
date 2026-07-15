@@ -1,0 +1,96 @@
+---
+title: "ImFusion::GUI::PixelInfoOverlay"
+sidebarTitle: "PixelInfoOverlay"
+description: "InfoOverlay to show information about the pixel currently underneath the mouse cursor."
+---
+
+`#include <ImFusion/GUI/PixelInfoOverlay.h>`
+
+## Overview
+
+[InfoOverlay](/cpp-sdk/4.5/api/classes/imfusion-gui-infooverlay) to show information about the pixel currently underneath the mouse cursor.
+
+## Public Types
+
+- enum [Coordinates](#coordinates) &#123; NoCoordinates = 0 , ShowPixelCoordinates = 1 &lt;&lt; 0 , ShowWorldCoordinates = 1 &lt;&lt; 1 &#125; — Bitmask enum to select which coordinates to show in overlay.
+- enum [ValueDomains](#valuedomains) &#123; ShowOriginalValuesOnly = 0 , ShowStorageValues = 1 &lt;&lt; 0 , ShowRealWorldUnits = 1 &lt;&lt; 1 , ShowLabelNames = 1 &lt;&lt; 2 &#125; — Bitmask enum to select which value domain/unit to use when printing pixel intensities.
+
+## Public Member Functions
+
+- **PixelInfoOverlay** (const [SliceView](/cpp-sdk/4.5/api/classes/imfusion-gui-sliceview) &view) — Instantiate an [PixelInfoOverlay](/cpp-sdk/4.5/api/classes/imfusion-gui-pixelinfooverlay) for the given 2D view.
+- **PixelInfoOverlay** (const [ImageView2D](/cpp-sdk/4.5/api/classes/imfusion-imageview2d) &view)
+- [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; [Coordinates](#coordinates) &gt; **shownCoordinates** () const — Returns the selected coordinate systems to show.
+- void **setShownCoordinates** ([Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; [Coordinates](#coordinates) &gt; value) — Sets the selected coordinate systems to show.
+- [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; [ValueDomains](#valuedomains) &gt; **shownValueDomains** () const — Returns the selected value domains to show.
+- void **setShownValueDomains** ([Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; [ValueDomains](#valuedomains) &gt; value) — Sets the selected value domains to show.
+
+## Protected Member Functions
+
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [createSizeHintText](#createsizehinttext) () override — Implement this function to return a largest sample text that would give a hint about the necessary overlay size.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [createText](#createtext) (vec2i mousePositionPx) override — Implement this function to specify what text to display for the given mouse position.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **lookupPixelIntensity** (const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &sis, const vec3i &pixelPos) const
+
+## Protected Attributes
+
+- const [View](/cpp-sdk/4.5/api/classes/imfusion-gui-view) \* **m_view** = nullptr — parent view to use for pixel lookup
+- const [GlSliceView](/cpp-sdk/4.5/api/classes/imfusion-glsliceview) \* **m_sliceView** = nullptr — parent view to use for pixel lookup
+- [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; [Coordinates](#coordinates) &gt; **m_shownCoordinates** = ShowPixelCoordinates — Selected coordinate systems to show in overlay.
+- [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; [ValueDomains](#valuedomains) &gt; **m_shownValueDomains** = ShowOriginalValuesOnly — Selected value domains to show in overlay.
+
+## Member Enumeration Documentation
+
+### Coordinates
+
+```cpp
+enum ImFusion::GUI::PixelInfoOverlay::Coordinates
+```
+
+Bitmask enum to select which coordinates to show in overlay.
+
+**See also:** CoordinateSystems
+
+**Enumerator:**
+
+- `NoCoordinates` — Don't show coordinates under mouse cursor.
+- `ShowPixelCoordinates` — Show pixel coordinates under mouse cursor.
+- `ShowWorldCoordinates` — Show world coordinates under mouse cursor.
+
+### ValueDomains
+
+```cpp
+enum ImFusion::GUI::PixelInfoOverlay::ValueDomains
+```
+
+Bitmask enum to select which value domain/unit to use when printing pixel intensities.
+
+**See also:** PixelValueDomains
+
+**Enumerator:**
+
+- `ShowOriginalValuesOnly` — Show only values in original value domain, i.e. storage values with shift/scale applied.
+- `ShowStorageValues` — Show only values as stored currently in memory.
+- `ShowRealWorldUnits` — Additionally print units if a [RealWorldMappingDataComponent](/cpp-sdk/4.5/api/classes/imfusion-realworldmappingdatacomponent) is present.
+Warning[PixelInfoOverlay](/cpp-sdk/4.5/api/classes/imfusion-gui-pixelinfooverlay) does not validate if the unit information is accurate.
+- `ShowLabelNames` — Additionally print label names if a [LabelDataComponent](/cpp-sdk/4.5/api/classes/imfusion-labeldatacomponent) is present.
+
+## Member Function Documentation
+
+### createSizeHintText
+
+```cpp
+std::string ImFusion::GUI::PixelInfoOverlay::createSizeHintText ()
+```
+
+*override, protected, virtual*
+
+Implement this function to return a largest sample text that would give a hint about the necessary overlay size.
+
+### createText
+
+```cpp
+std::string ImFusion::GUI::PixelInfoOverlay::createText (vec2i mousePositionPx)
+```
+
+*override, protected, virtual*
+
+Implement this function to specify what text to display for the given mouse position.

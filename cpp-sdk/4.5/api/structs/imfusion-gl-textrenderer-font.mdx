@@ -1,0 +1,27 @@
+---
+title: "ImFusion::GL::TextRenderer::Font"
+sidebarTitle: "Font"
+description: "Struct to describe font settings such as font family, size, or decorations."
+---
+
+`#include <ImFusion/Core/GL/TextRenderer.h>`
+
+## Overview
+
+Struct to describe font settings such as font family, size, or decorations.
+
+## Public Member Functions
+
+- **Font** (int sizePt, const vec4 color=vec4::Ones(), [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; [Face](/cpp-sdk/4.5/api/classes/imfusion-gl-textrenderer) &gt; fontFace=[Regular](/cpp-sdk/4.5/api/classes/imfusion-gl-textrenderer), [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; [Decoration](/cpp-sdk/4.5/api/classes/imfusion-gl-textrenderer) &gt; decoration=[Plain](/cpp-sdk/4.5/api/classes/imfusion-gl-textrenderer))
+- **Font** (int sizePt, const vec3 color, [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; [Face](/cpp-sdk/4.5/api/classes/imfusion-gl-textrenderer) &gt; fontFace=[Regular](/cpp-sdk/4.5/api/classes/imfusion-gl-textrenderer), [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; [Decoration](/cpp-sdk/4.5/api/classes/imfusion-gl-textrenderer) &gt; decoration=[Plain](/cpp-sdk/4.5/api/classes/imfusion-gl-textrenderer))
+- **Font** (int sizePt, const vec4 color, [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; [Decoration](/cpp-sdk/4.5/api/classes/imfusion-gl-textrenderer) &gt; decoration)
+- **Font** (int sizePt, const vec3 color, [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; [Decoration](/cpp-sdk/4.5/api/classes/imfusion-gl-textrenderer) &gt; decoration)
+- bool **operator==** (const Font &f) const
+
+## Public Attributes
+
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **name** = "DejaVu Sans" — Name of the font family.
+- int **sizePt** = 12 — [Font](/cpp-sdk/4.5/api/structs/imfusion-gl-textrenderer-font) size in pt.
+- [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; [Face](/cpp-sdk/4.5/api/classes/imfusion-gl-textrenderer) &gt; **face** = [Regular](/cpp-sdk/4.5/api/classes/imfusion-gl-textrenderer) — [Font](/cpp-sdk/4.5/api/structs/imfusion-gl-textrenderer-font) face to use.
+- [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; [Decoration](/cpp-sdk/4.5/api/classes/imfusion-gl-textrenderer) &gt; **decoration** = [Plain](/cpp-sdk/4.5/api/classes/imfusion-gl-textrenderer) — Text decoration to use.
+- vec4 **color** = vec4::Ones() — Text color.

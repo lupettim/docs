@@ -1,0 +1,70 @@
+---
+title: "ImFusion::MeshProcessing::Remeshing::SimplificationSettings"
+sidebarTitle: "SimplificationSettings"
+---
+
+## Public Attributes
+
+- double [minEdgeLength](#minedgelength) — Minimum edge length. If the longest resulting edge is shorter than this value, the collapse is always legal.
+- double [maxEdgeLength](#maxedgelength) — Maximum edge length. If the longest resulting edge is longer than this value, the collapse is always illegal.
+- bool [preserveColors](#preservecolors) — Flag specifying whether colors should be preserved. It limits the maximum intensity difference that is allowed.
+- bool [preserveNormals](#preservenormals) — Flag specifying whether normals should be preserved. It limits the maximum normal difference that is allowed.
+- double **maxSurfaceError** = [std::numeric_limits](http://en.cppreference.com/w/cpp/types/numeric_limits.html)&lt;double&gt;::infinity() — Maximum allowed deviation from the original surface.
+
+## Member Data Documentation
+
+### minEdgeLength
+
+```cpp
+double ImFusion::MeshProcessing::Remeshing::SimplificationSettings::minEdgeLength
+```
+
+**Initial value:**
+```cpp
+ =
+0.0
+```
+ fragment
+Minimum edge length. If the longest resulting edge is shorter than this value, the collapse is always legal.
+
+### maxEdgeLength
+
+```cpp
+double ImFusion::MeshProcessing::Remeshing::SimplificationSettings::maxEdgeLength
+```
+
+**Initial value:**
+```cpp
+ =
+10.0
+```
+ fragment
+Maximum edge length. If the longest resulting edge is longer than this value, the collapse is always illegal.
+
+### preserveColors
+
+```cpp
+bool ImFusion::MeshProcessing::Remeshing::SimplificationSettings::preserveColors
+```
+
+**Initial value:**
+```cpp
+=
+true
+```
+ fragment
+Flag specifying whether colors should be preserved. It limits the maximum intensity difference that is allowed.
+
+### preserveNormals
+
+```cpp
+bool ImFusion::MeshProcessing::Remeshing::SimplificationSettings::preserveNormals
+```
+
+**Initial value:**
+```cpp
+ =
+false
+```
+ fragment
+Flag specifying whether normals should be preserved. It limits the maximum normal difference that is allowed.

@@ -1,0 +1,44 @@
+---
+title: "ImFusion::Assert"
+sidebarTitle: "Assert"
+description: "Assertion library."
+---
+
+## Overview
+
+Assertion library.
+
+**See also:** Assertion Library
+
+## Classes
+
+- class [ContractViolation](/cpp-sdk/4.5/api/classes/imfusion-assert-contractviolation) — Represents a violation of a contract assertion.
+
+## Typedefs
+
+- using HandlerFunction — Alias for a function pointer that can be used to handle trapped assertions.
+
+## Functions
+
+- HandlerFunction debugAssertionHandler () — Returns the currently assigned handler function for debug asserts.
+- void setDebugAssertionHandler (HandlerFunction handler) — Sets the debug assertion handler function to use.
+- void defaultDebugAssertionHandler (const char \*condition, const char \*message, const char \*fileName, const char \*functionName, int line) — Handler function that is used by default to handle trapped debug assertions.
+- HandlerFunction handler ()
+- void setHandler (HandlerFunction handler) — Sets the assertion handler function to use.
+- void defaultHandler (const char \*condition, const char \*message, const char \*fileName, const char \*functionName, int line) — Handler function that is used by default to handle trapped assertions.
+- HandlerFunction contractAssertionHandler () — Returns the currently assigned handler function for contract asserts.
+- void setContractAssertionHandler (HandlerFunction handler) — Sets the contract assertion handler function to use.
+- void defaultContractAssertionHandler (const char \*condition, const char \*message, const char \*fileName, const char \*functionName, int line) — Handler function that is used by default to handle trapped contract assertions.
+- IMFUSION_ENABLE_WARNING_MSVC void [throwContractViolation](#throwcontractviolation) (const char \*condition, const char \*message, const char \*fileName, const char \*funcName, int line)
+
+## Function Documentation
+
+### throwContractViolation
+
+```cpp
+IMFUSION_ENABLE_WARNING_MSVC void ImFusion::Assert::throwContractViolation (const char * condition, const char * message, const char * fileName, const char * funcName, int line)
+```
+
+**Exceptions:**
+
+- `ContractViolation` — as only purpose of this friend function.

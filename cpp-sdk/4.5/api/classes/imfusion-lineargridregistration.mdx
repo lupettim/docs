@@ -1,0 +1,113 @@
+---
+title: "ImFusion::LinearGridRegistration"
+sidebarTitle: "LinearGridRegistration"
+description: "Registers a set of images arranged in a 2D grid."
+---
+
+`#include <ImFusion/Reg/LinearGridRegistration.h>`
+
+## Overview
+
+Registers a set of images arranged in a 2D grid.
+
+## Public Member Functions
+
+- **LinearGridRegistration** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*images)
+- void [initializeTransformationModel](#initializetransformationmodel) () override
+- void [compute](#compute) () override — Execute the algorithm.
+- double [evaluate](#evaluate) (int n, const double \*x, double \*dx=0) override — Assembles the parameters and returns similarity of images.
+- int [numberOfParameters](#numberofparameters) () const final — Returns the number of parameters representing the transformation.
+- void [reset](#reset) () override — Resets the registration of both images to the initial state.
+- bool [isDeformable](#isdeformable) () const override — Returns if the registration is non-linear or not.
+
+## Static Public Member Functions
+
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=0)
+
+## Protected Attributes
+
+- [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* **m_imageSet**
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; mat4 &gt; **m_resetMatrices**
+- [ImageTransformer](/cpp-sdk/4.5/api/classes/imfusion-imagetransformer) \* **m_transformer2**
+- bool **m_firstEval**
+- double **m_weight**
+- double **m_sDevThreshold**
+
+## Member Function Documentation
+
+### initializeTransformationModel
+
+```cpp
+void ImFusion::LinearGridRegistration::initializeTransformationModel ()
+```
+
+*override, virtual*
+
+### compute
+
+```cpp
+void ImFusion::LinearGridRegistration::compute ()
+```
+
+*override, virtual*
+
+Execute the algorithm.
+
+### evaluate
+
+```cpp
+double ImFusion::LinearGridRegistration::evaluate (int n, const double * x, double * dx = 0)
+```
+
+*override, virtual*
+
+Assembles the parameters and returns similarity of images.
+
+This method is mainly called during the optimization by the optimizer. n specifies the number of parameters in the arrays x and dx. x[i] contains the relative change to parameter i. Derived classes overriding this method must be able to apply these parameters to their transformation model. Since the parameters are only relative changes to the initial value, it is sometimes required to store the initial transformation in [compute()](#compute) before the optimization is started. The parameters will be optimized to maximize the return value of this method. If dx is not 0, derived classes can output the derivative of parameter i to each dx[i]. However, derived classes are not required to provide such a value.
+
+Example:
+
+```cpp
+double evaluate(int n, const double* x, out double* dx = 0) {
+ if (n != 6)
+ return 0.0;
+ else {
+        mat4 relativeMatrix = Pose::eulerToMat(x);
+ m_image2->setMatrix(m_initialMatrix * relativeMatrix); // move image to new location
+ return return m_sm->compute(m_transformer); // automatically picks up the new transformation of image2
+    }
+}
+```
+ fragment
+
+### numberOfParameters
+
+```cpp
+int ImFusion::LinearGridRegistration::numberOfParameters () const
+```
+
+*final, virtual*
+
+Returns the number of parameters representing the transformation.
+
+### reset
+
+```cpp
+void ImFusion::LinearGridRegistration::reset ()
+```
+
+*override, virtual*
+
+Resets the registration of both images to the initial state.
+
+**Warning:** Algorithms may not support this fully and only partially reset to the initial state, e.g. because they do not store the initial deformation.
+
+### isDeformable
+
+```cpp
+bool ImFusion::LinearGridRegistration::isDeformable () const
+```
+
+*override, virtual*
+
+Returns if the registration is non-linear or not.

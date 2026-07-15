@@ -1,0 +1,47 @@
+---
+title: "ImFusion::ParametricDeformationOptimizer"
+sidebarTitle: "ParametricDeformationOptimizer"
+description: "Runs a non-linear optimization on a ParametricDeformation in order to match its deformation to a given reference displacement field."
+---
+
+`#include <ImFusion/GL/ParametricDeformationOptimizer.h>`
+
+## Overview
+
+Runs a non-linear optimization on a [ParametricDeformation](/cpp-sdk/4.5/api/classes/imfusion-parametricdeformation) in order to match its deformation to a given reference displacement field.
+
+The optimization is performed by evaluating the SSD between the given reference displacement field and the displacement field of the target deformation object.
+
+## Public Member Functions
+
+- [ParametricDeformationOptimizer](#parametricdeformationoptimizer) (const [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) &referenceDisplacementField, [ParametricDeformation](/cpp-sdk/4.5/api/classes/imfusion-parametricdeformation) &targetDeformation) — Creates a new [ParametricDeformationOptimizer](/cpp-sdk/4.5/api/classes/imfusion-parametricdeformationoptimizer) instance for the given deformation object.
+- void **compute** () — Runs the optimization on the input data given during construction.
+- void **setProgress** ([Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) \*p) — Set an optional [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) object.
+- double [evaluate](#evaluate) (int n, const double \*x, double \*dx=0) override — Evaluation callback method used by the optimizer.
+
+## Constructor & Destructor Documentation
+
+### ParametricDeformationOptimizer
+
+```cpp
+ImFusion::ParametricDeformationOptimizer::ParametricDeformationOptimizer (const SharedImage & referenceDisplacementField, ParametricDeformation & targetDeformation)
+```
+
+Creates a new [ParametricDeformationOptimizer](/cpp-sdk/4.5/api/classes/imfusion-parametricdeformationoptimizer) instance for the given deformation object.
+
+**Parameters:**
+
+- `referenceDisplacementField` — Displacement field to use as reference. Must be a 3D float image with 3 channels.
+- `targetDeformation` — [Deformation](/cpp-sdk/4.5/api/classes/imfusion-deformation) whose parameters are to be optimized.
+
+## Member Function Documentation
+
+### evaluate
+
+```cpp
+double ImFusion::ParametricDeformationOptimizer::evaluate (int n, const double * x, double * dx = 0)
+```
+
+*override, virtual*
+
+Evaluation callback method used by the optimizer.

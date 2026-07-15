@@ -1,0 +1,42 @@
+---
+title: "ImFusion::Hashing::GenericHasher< T, PointerToMember >"
+sidebarTitle: "GenericHasher< T, PointerToMember >"
+description: "STL-compatible hasher for custom classes where you list the members to be hashed as template parameters."
+---
+
+`#include <ImFusion/Core/Hashing.h>`
+
+## Overview
+
+template&lt;typename T, auto... PointerToMember&gt;
+
+struct ImFusion::Hashing::GenericHasher&lt; T, PointerToMember &gt;
+STL-compatible hasher for custom classes where you list the members to be hashed as template parameters.
+
+Internally uses combineHash() on all members of the class that are defined through pointer-to-members in the template parameter pack.
+
+**Template Parameters:** | T | Type of the struct/class to be hashed. |
+| --- | --- |
+| PointerToMember | List of pointer-to-member declarations of members of T that should be hashed. The corresponding types must be hashable with [std::hash](http://en.cppreference.com/w/cpp/utility/hash.html)&lt;&gt;. |
+
+Example usage:
+
+```cpp
+struct Foo
+{
+ int i = 0;
+ double d = 0.0;
+ std::string s;
+
+ bool operator==(const Foo& rhs) const { ... }
+};
+std::unordered_map<Foo, int, GenericHasher<Foo, &Foo::i, &Foo::d, &Foo::s>> hashMap;
+hashMap.insert({Foo{42, 13.37, "Hello"}, 22});
+```
+ fragment
+
+**See also:** genericHash()
+
+## Public Member Functions
+
+- [std::size_t](http://en.cppreference.com/w/cpp/types/size_t.html) **operator()** (const T &t) const

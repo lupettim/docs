@@ -1,0 +1,151 @@
+---
+title: "ImFusion::DisplayOptions2d"
+sidebarTitle: "DisplayOptions2d"
+description: "Configures the display options for 2D slice rendering of images."
+---
+
+`#include <ImFusion/Base/DisplayOptions2d.h>`
+
+## Overview
+
+Configures the display options for 2D slice rendering of images.
+
+2D display options are mainly consumed by [GlSlice](/cpp-sdk/4.5/api/classes/imfusion-glslice) which implements 2D rendering of image data. Usually, [DisplayOptions2d](/cpp-sdk/4.5/api/classes/imfusion-displayoptions2d) are attached as a [DataComponent](/cpp-sdk/4.5/api/classes/imfusion-datacomponent) to the image for which they define the rendering options. However, classes like [ImageView2D](/cpp-sdk/4.5/api/classes/imfusion-imageview2d) may use special (e.g. view-specific) display options for rendering their images and therefore use the same interface.
+
+**Note:** Window/level parameters are defined in original pixel value domain (e.g. Hounsfield Units). Conversion of pixel values to display intensities is performed using the LINEAR_EXACT VOI LUT function as described in section C.11.2.1.3.2 of the DICOM standard. [http://dicom.nema.org/medical/dicom/current/output/chtml/part03/sect_C.11.2.html#sect_C.11.2.1.3](http://dicom.nema.org/medical/dicom/current/output/chtml/part03/sect_C.11.2.html#sect_C.11.2.1.3)
+
+**See also:** [GlSlice](/cpp-sdk/4.5/api/classes/imfusion-glslice), [ImageView2D](/cpp-sdk/4.5/api/classes/imfusion-imageview2d), [DisplayOptions3d](/cpp-sdk/4.5/api/classes/imfusion-displayoptions3d)
+
+## Classes
+
+- struct [WindowLevelPreset](/cpp-sdk/4.5/api/structs/imfusion-displayoptions2d-windowlevelpreset) — Window-level configuration that can be stored as a preset.
+
+## Public Types
+
+- enum class [MaskingMode](#maskingmode) &#123; Ignore , Discard , AdditiveBlend , MultiplicativeBlend , DiscardZerosAdditiveOnes , DiscardZerosMultiplicativeOnes &#125; — Enumeration of options for how masked image pixels should be rendered.
+
+## Public Member Functions
+
+- **DisplayOptions2d** (const DisplayOptions2d &other)
+- [DisplayOptions2d](#displayoptions2d) (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data) — Standard constructor for the given data.
+- virtual DisplayOptions2d & **operator=** (const DisplayOptions2d &other)
+- bool **operator==** (const DisplayOptions2d &other) const
+- bool **windowingInitialized** () const — Returns whether the windowing has been (non-default) initialized.
+- const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \* **data** () const — Return the optional reference [Data](/cpp-sdk/4.5/api/classes/imfusion-data).
+- void **setOriginalTransferFunction** (const [TransferFunction](/cpp-sdk/4.5/api/classes/imfusion-transferfunction) &lut) — Setter and getter for the original LUT-Transfer Function of this data.
+- const [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [TransferFunction](/cpp-sdk/4.5/api/classes/imfusion-transferfunction) &gt; & **originalTransferFunction** ()
+
+## Public Attributes
+
+- Signal&lt; DisplayOptions2d \* &gt; **signalChanged** — Signal emitted when the display options have changed.
+
+## Getters/Setters
+
+- double **window** () const — Returns the windowing width corresponding to the image.
+- void **setWindow** (double value) — Sets the windowing width corresponding to the image.
+- double **level** () const — Returns the windowing level corresponding to the image.
+- void **setLevel** (double value) — Sets the windowing level corresponding to the image.
+- void **setWindowLevel** (double window, double level) — Convenience method for setting the windowing range based on window and level.
+- double **alpha** () const — Returns the alpha blending factor of the corresponding image.
+- void **setAlpha** (double value) — Sets the alpha blending factor of the corresponding image.
+- double **gamma** () const — Returns the gamma level corresponding to the image.
+- void **setGamma** (double value) — Sets the gamma level corresponding to the image.
+- bool **invert** () const — Returns the flag whether to invert the intensities.
+- void **setInvert** (bool value) — Sets the flag whether to invert the intensities.
+- [MaskingMode](#maskingmode) **maskingMode** () const — Returns the mode how masked image pixels should be rendered.
+- void **setMaskingMode** ([MaskingMode](#maskingmode) value) — Sets the mode how masked image pixels should be rendered.
+- const vec4 & **maskingColor** () const — Returns the color used for the Multiply options of maskingMode().
+- void **setMaskingColor** (const vec4 &value) — Sets the color used for the Multiply options of maskingMode().
+- const [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) \* **colormap** () const — Returns the color map to use during rendering, the pointer is owned by the [DisplayOptions2d](/cpp-sdk/4.5/api/classes/imfusion-displayoptions2d) object, may be 0.
+- [TransferFunction](/cpp-sdk/4.5/api/classes/imfusion-transferfunction) & **transferFunction** () — Returns the transfer function storing window/level as well as the optional color map.
+- const [TransferFunction](/cpp-sdk/4.5/api/classes/imfusion-transferfunction) & **transferFunction** () const — Returns the transfer function storing window/level as well as the optional color map.
+
+## Manage window/level presets
+
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [WindowLevelPreset](/cpp-sdk/4.5/api/structs/imfusion-displayoptions2d-windowlevelpreset) &gt; & **windowLevelPresets** () const — Returns the list of window-level presets.
+- void **addWindowLevelPreset** ([WindowLevelPreset](/cpp-sdk/4.5/api/structs/imfusion-displayoptions2d-windowlevelpreset) preset) — Adds a new window-level preset.
+- void **removeWindowLevelPreset** (int index) — Removes the window-level preset of the given index.
+- void **applyWindowLevelPreset** (int index) — Applies the window-level preset of the given index.
+
+## DataComponent interface
+
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [id](#id) () const override — Returns a unique string identifier for this type of data component.
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+## Member Enumeration Documentation
+
+### MaskingMode
+
+```cpp
+enum class ImFusion::DisplayOptions2d::MaskingMode
+```
+
+*strong*
+
+Enumeration of options for how masked image pixels should be rendered.
+
+**Enumerator:**
+
+- `Ignore` — Ignore the mask, render the pixels normally.
+- `Discard` — Discard masked pixels (where the mask value is 0).
+- `AdditiveBlend` — Add maskingColor() to masked pixels (where the mask value is 0).
+- `MultiplicativeBlend` — Multiply masked pixels with the maskingColor() (where the mask value is 0).
+- `DiscardZerosAdditiveOnes` — Discard pixels where the mask value is 0, add maskingColor() to pixels where the mask value is 1.
+- `DiscardZerosMultiplicativeOnes` — Discard pixels where the mask value is 0, multiply pixels with maskingColor() where the mask value is 1.
+
+## Constructor & Destructor Documentation
+
+### DisplayOptions2d
+
+```cpp
+ImFusion::DisplayOptions2d::DisplayOptions2d (const Data * data)
+```
+
+*explicit*
+
+Standard constructor for the given data.
+
+**Note:** If *data* is not null and a [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset), window/level will be initialized to match the value range of the underlying image type without considering any actual pixel data. In all other cases it will be initialized to match a value range of [0..255].
+
+## Member Function Documentation
+
+### id
+
+```cpp
+std::string ImFusion::DisplayOptions2d::id () const
+```
+
+*override, virtual*
+
+Returns a unique string identifier for this type of data component.
+
+**Note:** To avoid conflicts make sure to include potential plugin names into this ID. Due to the modular architecture of the ImFusion library, uniqueness of IDs cannot be checked at compile time. However, [DataComponentFactory](/cpp-sdk/4.5/api/classes/imfusion-datacomponentfactory) will check the uniqueness of the ID during registration.
+
+### configure
+
+```cpp
+void ImFusion::DisplayOptions2d::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### configuration
+
+```cpp
+void ImFusion::DisplayOptions2d::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality

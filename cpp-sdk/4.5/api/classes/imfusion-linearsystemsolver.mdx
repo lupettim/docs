@@ -1,0 +1,25 @@
+---
+title: "ImFusion::LinearSystemSolver"
+sidebarTitle: "LinearSystemSolver"
+description: "Interface for linear system solvers."
+---
+
+`#include <ImFusion/Base/LinearSystemSolvers.h>`
+
+## Overview
+
+Interface for linear system solvers.
+
+## Public Types
+
+- enum **Solver** &#123; **LLT_FLOAT** = 0 , **LLT_EIGEN** = 1 , **CG_EIGEN** = 2 , **BICGSTAB_FLOAT** = 3 , **BICGSTAB_EIGEN** = 4 , **BICGSTAB_EIGEN_FLOAT** = 5 , **BICGSTAB_VIENNA** = 6 , **BICGSTAB_VIENNA_GPU** = 7 &#125;
+
+## Public Member Functions
+
+- virtual void **solve** (Eigen::SparseMatrix&lt; float &gt; &A, Eigen::VectorXf &b, Eigen::VectorXf &x, Eigen::VectorXf &x0)=0
+- void **solve** (Eigen::SparseMatrix&lt; float &gt; &A, Eigen::SparseVector&lt; float &gt; &b, Eigen::VectorXf &x, Eigen::VectorXf &x0)
+- void **setVerbose** (bool flag)
+
+## Protected Attributes
+
+- bool **m_verbose**

@@ -1,0 +1,71 @@
+---
+title: "ImFusion::GlPolarToCartesian"
+sidebarTitle: "GlPolarToCartesian"
+description: "Converts data from polar coordinate to Cartesian space, with constant degree between polar lines."
+---
+
+`#include <ImFusion/GL/GlPolarToCartesian.h>`
+
+## Overview
+
+Converts data from polar coordinate to Cartesian space, with constant degree between polar lines.
+
+## Public Types
+
+- enum class **InterpolationMode** &#123; **Nearest** , **Linear** &#125; — [Status](/cpp-sdk/4.5/api/classes/imfusion-algorithm) codes.
+
+## Public Member Functions
+
+- **GlPolarToCartesian** ([GL::Framebuffer](/cpp-sdk/4.5/api/classes/imfusion-gl-framebuffer) \*fbo=0) — Constructor with optional FBO to use. If no FBO is specified a private FBO is created.
+- **~GlPolarToCartesian** () override — Destructor.
+- void [setParam](#setparam) (float fanAngle, float radius=0.f, float offsetY=0.f, bool flipX=false, bool flipY=false) — Parameters must be set before calling the compute function.
+- void **setApexPoint** (const vec2 &pos)
+- void **setFlipYInput** (bool flag) — Define optionally whether the input data shall be vertically flipped.
+- void **setFlat** (bool flag) — Define whether the polar lines should be arranged flat on top of the cartesian image.
+- void **setInverse** (bool flag) — Define whether the inverse transform gets computed Note: The inverse transform currently does not support m_flat.
+- void **setInterpolationMode** (InterpolationMode mode) — Define the interpolation mode.
+- void [compute](#compute) (const [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) &imgIn, [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) &imgOut) override — Computes the polar transformation.
+- bool [good](#good) () const override — Return true if the filter can be used, in particular if the shaders are available and parameters are set.
+
+## Member Function Documentation
+
+### setParam
+
+```cpp
+void ImFusion::GlPolarToCartesian::setParam (float fanAngle, float radius = 0.f, float offsetY = 0.f, bool flipX = false, bool flipY = false)
+```
+
+Parameters must be set before calling the compute function.
+
+**Parameters:**
+
+- `fanAngle` — angle [degree] between the first and last polar line (maximum 360)
+- `radius` — offset [mm] of the radius in polar coordinate (fan's smaller radius from the center in Cartesian space)
+- `offsetY` — amount of shift [mm] in Y direction in Cartesian space after the conversion
+- `flipX` — if true the final image is flipped in X direction
+- `flipY` — if true the final image is flipped in Y direction
+
+### compute
+
+```cpp
+void ImFusion::GlPolarToCartesian::compute (const GlImage & imgIn, GlImage & imgOut)
+```
+
+*override, virtual*
+
+Computes the polar transformation.
+
+**Parameters:**
+
+- `imgIn` — If m_inverse is false the input is given in polar coordinate, (angle, radius) each scan line in a column. Otherwise the input is given in cartesian coordinates.
+- `imgOut` — set the spacing and dimension of imgOut before calling this function, glKernel is executed according to the size of imgOut
+
+### good
+
+```cpp
+bool ImFusion::GlPolarToCartesian::good () const
+```
+
+*override, virtual*
+
+Return true if the filter can be used, in particular if the shaders are available and parameters are set.

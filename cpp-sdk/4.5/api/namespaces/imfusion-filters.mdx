@@ -1,0 +1,166 @@
+---
+title: "ImFusion::Filters"
+sidebarTitle: "Filters"
+description: "Set of functions for efficient filtering on CPU."
+---
+
+## Overview
+
+Set of functions for efficient filtering on CPU.
+
+## Functions
+
+- void [boxFilter2d](#boxfilter2d) (const T \*in, T \*out, int width, int height, int channels, int nbSizes, int \*filterSizesX, int \*filterSizesY) — Generic function to apply a box filter on a 2D image with different sizes.
+- void **boxFilter2d** (const T \*in, T \*out, int width, int height, int channels, int filterSizeX, int filterSizeY) — Helper function for a single filter pass.
+- void **boxFilter2d** (const [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; T &gt; \*in, [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; T &gt; \*out, int filterSizeX, int filterSizeY) — Helper function for a single filter pass with a typed image.
+- void **boxFilter2d** (const [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) \*in, [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) \*out, int filterSizeX, int filterSizeY)
+- void [boxFilter3d](#boxfilter3d) (const T \*in, T \*out, int width, int height, int slices, int channels, int nbSizes, int \*filterSizesX, int \*filterSizesY, int \*filterSizesZ) — Generic function to apply a box filter on a 3D image with different sizes.
+- void **boxFilter3d** (const T \*in, T \*out, int width, int height, int slices, int channels, int filterSizeX, int filterSizeY, int filterSizeZ) — Helper function for a single filter pass.
+- void **boxFilter3d** (const [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; T &gt; \*in, [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; T &gt; \*out, int filterSizeX, int filterSizeY, int filterSizeZ) — Helper function for a single filter pass with a typed image.
+- void **boxFilter3d** (const [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) \*in, [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) \*out, int filterSizeX, int filterSizeY, int filterSizeZ)
+- void [gaussFilter2d](#gaussfilter2d) (const T \*in, T \*out, int width, int height, int channels, int filterSize, int nPasses=3) — Fast approximation of a gaussian filter via a series of box filters.
+- void [gaussFilter3d](#gaussfilter3d) (const float \*in, float \*out, int width, int height, int slices, int channels, int filterSize, int nPasses=3) — Fast approximation of a gaussian filter via a series of box filters.
+- void **laplacianFilter2d** (const float \*in, float \*out, int width, int height, int filterSize) — Computation of a 2D laplacian filter at a given scale.
+- void **laplacianFilter3d** (const float \*in, float \*out, int width, int height, int slices, int filterSize) — Computation of a 3D laplacian filter at a given scale.
+- void [guidedFilter2d](#guidedfilter2d-1-2) (const float \*in, const float \*guide, float \*out, int width, int height, int channels, int filterSizeX, int filterSizeY, float epsilon, bool useGaussFilter=false) — Guided filter using box or gaussian filter.
+- void **guidedFilter2d** (const [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; T &gt; \*in, const [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; T &gt; \*guide, [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; T &gt; \*out, int filterSizeX, int filterSizeY, float epsilon, bool useGaussFilter=false) — Helper function for a guided filter with a typed image.
+- void **guidedFilter2d** (const [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) \*in, const [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) \*guide, [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) \*out, int filterSizeX, int filterSizeY, float epsilon, bool useGaussFilter=false)
+- void [guidedFilter2d](#guidedfilter2d-2-2) (const float \*in, float \*out, int width, int height, int channels, int filterSizeX, int filterSizeY, float epsilon, bool useGaussFilter=false) — Guided filter using box or gaussian filter.
+- void [guidedFilter3d](#guidedfilter3d-1-2) (const float \*in, const float \*guide, float \*out, int width, int height, int slices, int channels, int filterSizeX, int filterSizeY, int filterSizeZ, float epsilon, bool useGaussFilter=false) — Guided filter using box or gaussian filter.
+- void **guidedFilter3d** (const [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; T &gt; \*in, const [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; T &gt; \*guide, [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; T &gt; \*out, int filterSizeX, int filterSizeY, int filterSizeZ, float epsilon, bool useGaussFilter=false) — Helper function for a guided filter with a typed image.
+- void **guidedFilter3d** (const [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) \*in, const [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) \*guide, [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) \*out, int filterSizeX, int filterSizeY, int filterSizeZ, float epsilon, bool useGaussFilter=false)
+- void [guidedFilter3d](#guidedfilter3d-2-2) (const float \*in, float \*out, int width, int height, int slices, int channels, int filterSizeX, int filterSizeY, int filterSizeZ, float epsilon, bool useGaussFilter=false) — Guided filter using box or gaussian filter.
+- void [unsharpMaskFilter2d](#unsharpmaskfilter2d) (const T \*in, T \*out, int width, int height, int filterSize, double k, double threshold=0.0, double thresholdSigma=0.0, bool clamp=true) — Unsharp mask filter.
+- bool **grayscaleADSOCFilter2d** (const [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; float &gt; \*in, [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; float &gt; \*&out, double textureThreshold=0.0, double edgeThreshold=0.0, double gain=1.0, double overshootControl=0.5, bool decreaseMinima=false, bool useOrthogonalMatrices=false)
+- bool **edgeFilter2D** (const [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; float &gt; &in, [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; float &gt; \*&out)
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; T &gt; &gt; **gaussFilter2dImpulseResponse** (const [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; T &gt; &img, double sigmaPixels) — Approximation of 2D gaussian blur, implementing [https://www.researchgate.net/profile/Lucas-Van-Vliet/publication/222453003_Recursive_implementation_of_the_Gaussian_filter/links/5a78786baca2722e4df302ed/Recursive-implementation-of-the-Gaussian-filter.pdf](https://www.researchgate.net/profile/Lucas-Van-Vliet/publication/222453003_Recursive_implementation_of_the_Gaussian_filter/links/5a78786baca2722e4df302ed/Recursive-implementation-of-the-Gaussian-filter.pdf) Requires a sigma of at least 0.5 and is generally more accurate with larger values.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; T &gt; &gt; **localMax** (const [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; T &gt; &fin, int kernelRadius) — Finds the local maximum inside +-kernelRadius along x and y.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; unsigned char &gt; &gt; [bilateralFilter2dFrequencyLimited](#bilateralfilter2dfrequencylimited) (const [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; unsigned char &gt; &img, float spatialSigmaPixels, float intensitySigmaNormalized) — Reasonably fast bilateral filter approximation, relative error usually &lt;= 1%.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; unsigned short &gt; &gt; **bilateralFilter2dFrequencyLimited** (const [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; unsigned short &gt; &img, float spatialSigmaPixels, float intensitySigmaNormalized) — Reasonably fast bilateral filter approximation, internally uses the 8bit implementation and leaves the lower 8bit as they are.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; unsigned short &gt; &gt; [bilateralFilter2dTaylorApprox](#bilateralfilter2dtaylorapprox) (const [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; unsigned short &gt; &img, float spatialSigmaPixels, float intensitySigmaNormalized) — Very fast bilateral filter approximation, becomes unstable for intensitySigmaNormalized &lt; 0.35.
+
+## Function Documentation
+
+### boxFilter2d
+
+```cpp
+template<typename T> void ImFusion::Filters::boxFilter2d (const T * in, T * out, int width, int height, int channels, int nbSizes, int * filterSizesX, int * filterSizesY)
+```
+
+Generic function to apply a box filter on a 2D image with different sizes.
+
+Implementation is separable and independent of the kernel size Boundary conditions: values are repeated outside the image
+
+### boxFilter3d
+
+```cpp
+template<typename T> void ImFusion::Filters::boxFilter3d (const T * in, T * out, int width, int height, int slices, int channels, int nbSizes, int * filterSizesX, int * filterSizesY, int * filterSizesZ)
+```
+
+Generic function to apply a box filter on a 3D image with different sizes.
+
+Implementation is separable and independent of the kernel size Boundary conditions: values are repeated outside the image
+
+### gaussFilter2d
+
+```cpp
+template<typename T> void ImFusion::Filters::gaussFilter2d (const T * in, T * out, int width, int height, int channels, int filterSize, int nPasses = 3)
+```
+
+Fast approximation of a gaussian filter via a series of box filters.
+
+The more passes, the closer to a Gaussian the filter is (3 passes already yields less than 10% error) See [http://web.csse.uwa.edu.au/research/?a=826172](http://web.csse.uwa.edu.au/research/?a=826172) (but not using the integral images)
+
+****Deprecated**:** "Use GaussianFilter class instead."
+
+### gaussFilter3d
+
+```cpp
+void ImFusion::Filters::gaussFilter3d (const float * in, float * out, int width, int height, int slices, int channels, int filterSize, int nPasses = 3)
+```
+
+Fast approximation of a gaussian filter via a series of box filters.
+
+The more passes, the closer to a Gaussian the filter is (3 passes already yields less than 10% error) See [http://web.csse.uwa.edu.au/research/?a=826172](http://web.csse.uwa.edu.au/research/?a=826172) (but not using the integral images)
+
+****Deprecated**:** "Use GaussianFilter class instead."
+
+### guidedFilter2d
+
+```cpp
+void ImFusion::Filters::guidedFilter2d (const float * in, const float * guide, float * out, int width, int height, int channels, int filterSizeX, int filterSizeY, float epsilon, bool useGaussFilter = false)
+```
+
+Guided filter using box or gaussian filter.
+
+See the paper by He et al. [http://research.microsoft.com/en-us/um/people/jiansun/papers/GuidedFilter_ECCV10.pdf](http://research.microsoft.com/en-us/um/people/jiansun/papers/GuidedFilter_ECCV10.pdf) Warning: the different channels are filtered independently, which is not optimal
+
+### guidedFilter2d
+
+```cpp
+void ImFusion::Filters::guidedFilter2d (const float * in, float * out, int width, int height, int channels, int filterSizeX, int filterSizeY, float epsilon, bool useGaussFilter = false)
+```
+
+Guided filter using box or gaussian filter.
+
+Optimized version for the special case when in == guide
+
+### guidedFilter3d
+
+```cpp
+void ImFusion::Filters::guidedFilter3d (const float * in, const float * guide, float * out, int width, int height, int slices, int channels, int filterSizeX, int filterSizeY, int filterSizeZ, float epsilon, bool useGaussFilter = false)
+```
+
+Guided filter using box or gaussian filter.
+
+See the paper by He et al. [http://research.microsoft.com/en-us/um/people/jiansun/papers/GuidedFilter_ECCV10.pdf](http://research.microsoft.com/en-us/um/people/jiansun/papers/GuidedFilter_ECCV10.pdf) Warning: the different channels are filtered independently, which is not optimal
+
+### guidedFilter3d
+
+```cpp
+void ImFusion::Filters::guidedFilter3d (const float * in, float * out, int width, int height, int slices, int channels, int filterSizeX, int filterSizeY, int filterSizeZ, float epsilon, bool useGaussFilter = false)
+```
+
+Guided filter using box or gaussian filter.
+
+Optimized version for the special case when in == guide
+
+### unsharpMaskFilter2d
+
+```cpp
+template<typename T> void ImFusion::Filters::unsharpMaskFilter2d (const T * in, T * out, int width, int height, int filterSize, double k, double threshold = 0.0, double thresholdSigma = 0.0, bool clamp = true)
+```
+
+Unsharp mask filter.
+
+Sharpens image by subtracting a blurred version of the image from the original, i.e. Sharpened = Original + ( Original - Blurred ) \* Amount. Input image and output image must have same size. Only single channel images with no padding are supported.
+
+```
+\param in Pointer to input pixel data
+\param out pointer to output pixel data. Must be different from input data.
+\param width Width of input and output image
+\param height Height of input and output image
+\param filterSize Kernel size of the blurring kernel. Even kernel sizes will be internally increased by one.
+\param k Amount of sharpening
+\param threshold Minimum difference between the original pixel and the blurred pixel to apply the subtraction.
+```
+
+### bilateralFilter2dFrequencyLimited
+
+```cpp
+std::unique_ptr < TypedImage < unsigned char > > ImFusion::Filters::bilateralFilter2dFrequencyLimited (const TypedImage < unsigned char > & img, float spatialSigmaPixels, float intensitySigmaNormalized)
+```
+
+Reasonably fast bilateral filter approximation, relative error usually &lt;= 1%.
+
+Ignores areas outside of the input image when averaging.
+
+### bilateralFilter2dTaylorApprox
+
+```cpp
+std::unique_ptr < TypedImage < unsigned short > > ImFusion::Filters::bilateralFilter2dTaylorApprox (const TypedImage < unsigned short > & img, float spatialSigmaPixels, float intensitySigmaNormalized)
+```
+
+Very fast bilateral filter approximation, becomes unstable for intensitySigmaNormalized &lt; 0.35.
+
+Treats areas outside of the image as having the value at the edge when sampling.

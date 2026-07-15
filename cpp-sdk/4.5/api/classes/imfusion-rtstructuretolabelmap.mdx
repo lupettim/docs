@@ -1,0 +1,84 @@
+---
+title: "ImFusion::RTStructureToLabelMap"
+sidebarTitle: "RTStructureToLabelMap"
+description: "Algorithm to convert a PointCloud with a Dicom::RTStructureDataComponent datacomponent to a labelmap."
+---
+
+`#include <ImFusion/Dicom/RTStructureToLabelMap.h>`
+
+## Overview
+
+[Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) to convert a [PointCloud](/cpp-sdk/4.5/api/classes/imfusion-pointcloud) with a [Dicom::RTStructureDataComponent](/cpp-sdk/4.5/api/classes/imfusion-dicom-rtstructuredatacomponent) datacomponent to a labelmap.
+
+This is currently only supported for CLOSED_PLANAR contours in [Dicom::RTStructureDataComponent](/cpp-sdk/4.5/api/classes/imfusion-dicom-rtstructuredatacomponent). The algorithm requires a reference volume that determines the size of the labelmap. Each contour is expected to be planar on a slice in the reference volume. This algorithm works best when using the volume that is referenced by the original DICOM RTStructureDataSet (see [Dicom::RTStructureDataComponent::referencedFrameOfReferenceUID](/cpp-sdk/4.5/api/classes/imfusion-dicom-rtstructuredatacomponent)).
+
+## Public Types
+
+- enum **OutputType** : int &#123; **OutputCombinedLabel** = 0 , **OutputSeparateLabels** = 1 , **OutputMesh** = 2 &#125; — [Status](/cpp-sdk/4.5/api/classes/imfusion-algorithm) codes.
+
+## Public Member Functions
+
+- **RTStructureToLabelMap** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [PointCloud](/cpp-sdk/4.5/api/classes/imfusion-pointcloud) \* &gt; &rtStructureSets, const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*referenceVolume)
+- void [compute](#compute) () override — Execute the algorithm.
+- [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) [takeOutput](#takeoutput) () override — Return any new [Data](/cpp-sdk/4.5/api/classes/imfusion-data) that was created by the [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) during the last call to [compute()](#compute).
+- void **setReferenceVolume** (const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*referenceVolume)
+- const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* **referenceVolume** () const
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [PointCloud](/cpp-sdk/4.5/api/classes/imfusion-pointcloud) \* &gt; & **rtStructureSets** () const
+
+## Static Public Member Functions
+
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=nullptr)
+- static void **convert** (const [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) &volume, const [PointCloud](/cpp-sdk/4.5/api/classes/imfusion-pointcloud) &rtStructureSet, const [Dicom::RTStructureDataComponent](/cpp-sdk/4.5/api/classes/imfusion-dicom-rtstructuredatacomponent) &rtdc, [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; unsigned char &gt; &labelMap, int label, [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; bool()&gt; incrementProgress) — Write the RTStructureSet to the given label map.
+
+## Public Attributes
+
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; int &gt; &gt; [labelValues](#labelvalues) = &#123;"labelValues", [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt;int&gt;(&#123;&#125;), this&#125; — Value used as label for each rtStructureSet.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; OutputType &gt; [outputType](#outputtype) = &#123;"outputType", OutputCombinedLabel, this&#125; — Whether this algorithm should create label map (i.e.
+
+## Member Function Documentation
+
+### compute
+
+```cpp
+void ImFusion::RTStructureToLabelMap::compute ()
+```
+
+*override, virtual*
+
+Execute the algorithm.
+
+### takeOutput
+
+```cpp
+OwningDataList ImFusion::RTStructureToLabelMap::takeOutput ()
+```
+
+*override, virtual*
+
+Return any new [Data](/cpp-sdk/4.5/api/classes/imfusion-data) that was created by the [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) during the last call to [compute()](#compute).
+
+The default implementation will return an empty list.
+
+**Note:** Since ownership of the data is transferred, you can call this method only once between calls to [compute()](#compute).
+
+## Member Data Documentation
+
+### labelValues
+
+```cpp
+Parameter < std::vector <int> > ImFusion::RTStructureToLabelMap::labelValues = {"labelValues", std::vector <int>({}), this}
+```
+
+Value used as label for each rtStructureSet.
+
+If there are less values that rtStructureSets the last value will be used for the remaining rtStructureSets. Initial values are raising from 1, e.g. 1, 2, 3, ...
+
+### outputType
+
+```cpp
+Parameter <OutputType> ImFusion::RTStructureToLabelMap::outputType = {"outputType", OutputCombinedLabel, this}
+```
+
+Whether this algorithm should create label map (i.e.
+
+SharedImageSets) or meshes as output. OutputMesh only works if the 'Extract [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh)' algorithm is registered in the factories.

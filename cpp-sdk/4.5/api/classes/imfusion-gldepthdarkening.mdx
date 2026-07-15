@@ -1,0 +1,38 @@
+---
+title: "ImFusion::GlDepthDarkening"
+sidebarTitle: "GlDepthDarkening"
+description: "Implementation of the Depth Darkening technique for a simple screen-space ambient occlusion effect."
+---
+
+`#include <ImFusion/GL/GlDepthDarkening.h>`
+
+## Overview
+
+Implementation of the Depth Darkening technique for a simple screen-space ambient occlusion effect.
+
+Original paper: [http://graphics.uni-konstanz.de/publikationen/2006/unsharp_masking/Luft%20et%20al.%20&ndash;%20Image%20Enhancement%20by%20Unsharp%20Masking%20the%20Depth%20Buffer.pdf](http://graphics.uni-konstanz.de/publikationen/2006/unsharp_masking/Luft%20et%20al.%20&ndash;%20Image%20Enhancement%20by%20Unsharp%20Masking%20the%20Depth%20Buffer.pdf)
+
+## Public Member Functions
+
+- **GlDepthDarkening** () — Constructor.
+- **~GlDepthDarkening** () — Destructor.
+- void [apply](#apply) (const [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) \*inputColorTex, const [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) \*inputDepthTex) — Applies depth darkening to the given input textures and renders the result directly to the screen.
+- void **setFuzziness** (float value) — Sets the fuzziness parameter. Defines the radius of the Gaussian blur.
+- void **setStrength** (float value) — Sets the strength of the depth darkening effect.
+
+## Member Function Documentation
+
+### apply
+
+```cpp
+void ImFusion::GlDepthDarkening::apply (const GlImage * inputColorTex, const GlImage * inputDepthTex)
+```
+
+Applies depth darkening to the given input textures and renders the result directly to the screen.
+
+If you have an active FBO with a texture attached, it will render to that.
+
+**Parameters:**
+
+- `inputColorTex` — Input color image, must not be 0.
+- `inputDepthTex` — Input depth image, must not be 0.

@@ -1,0 +1,215 @@
+---
+title: "ImFusion::GlFilterSet"
+sidebarTitle: "GlFilterSet"
+description: "Processing multiple images with a standard filter."
+---
+
+`#include <ImFusion/GL/GlFilterSet.h>`
+
+## Overview
+
+Processing multiple images with a standard filter.
+
+## Classes
+
+- class [ParamInfo](/cpp-sdk/4.5/api/classes/imfusion-glfilterset-paraminfo) — Simple container to store information about filter parameters and names.
+
+## Public Types
+
+- enum FilterMode &#123; **SHARPEN** = 0 , **GAUSSIAN** = 1 , **GUIDED_FILTER** = 2 , **ANISOTROPIC_DIFFUSION** = 3 , **BILATERAL** = 4 , **XCLAHE** = 5 , **NOISE_UNIFORM** = 6 , **NOISE_GAUSSIAN** = 7 , **NOISE_POISSON** = 8 , **GRADIENT** = 9 , **EDGE** = 10 , **MEDIAN** = 11 , **ADSOC** = 12 , **LOCALEXTREMAL** = 13 , **CUSTOM** = 14 &#125; — Enum for the different filters.
+- enum ParamType &#123; **FLOAT** &#125; — Categories for data types passed to filter.
+
+## Public Member Functions
+
+- [GlFilterSet](#glfilterset) ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*images, int mode=0, [GlFilter](/cpp-sdk/4.5/api/classes/imfusion-glfilter) \*custom=0) — Constructor providing texture images and filter mode.
+- **GlFilterSet** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* &gt; &images, int mode=0, [GlFilter](/cpp-sdk/4.5/api/classes/imfusion-glfilter) \*custom=0)
+- **~GlFilterSet** () override — Destructor, deleting all filtered images.
+- void **setInput** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* &gt; &newInput) — Replaces the input of the algorithm.
+- void [setMode](#setmode) (int val, [GlFilter](/cpp-sdk/4.5/api/classes/imfusion-glfilter) \*custom=0, bool atInit=false, bool config=false) — Specify which standard filter to use.
+- void **setHalfKernelSize** (int val) — Specify the half kernel size.
+- void **setIterations** (int val) — Specify the number of iterations (if applicable).
+- void **setStrength** (double val) — Specify the filter strength.
+- void **setSharpenStrength** (double val) — Specify sharpen filter strength for anisotropic diffusion.
+- void **setCreateNew** (bool flag) — Specify whether new data should be created when called via compute.
+- void **setMetricMode** (bool flag) — Specify whether the filter should be used in metric mode.
+- virtual [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \* [filterOne](#filterone) (int whichImg=-1, int whichSet=-1) — Filter a single image. The returned image is owned by the FilterSet class.
+- [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* [filterSelection](#filterselection) (int whichSet=-1) — Filter selection of images, if settings have changed.
+- void **filterAll** () — Filter the entire set of images, if settings have changed.
+- void **filterAllInPlace** () — Filter the entire set of images and replace them in the source image set.
+- int **mode** () const — Return current mode.
+- int **halfKernelSize** () const — Return half kernel size.
+- int **iterations** () const — Return number of iterations.
+- double **strength** () const — Return strength parameter.
+- double **sharpenStrength** () const — Return sharpen strength parameter.
+- bool **metricMode** () const — Return if the filter uses metric mode.
+- [GlFilter](/cpp-sdk/4.5/api/classes/imfusion-glfilter) \* **filter** () — Access to filter instance.
+- void [initParamInfos](#initparaminfos) () — Initialize the info for all available filters, i.e.
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::pair](http://en.cppreference.com/w/cpp/utility/pair.html)&lt; FilterMode, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [ParamInfo](/cpp-sdk/4.5/api/classes/imfusion-glfilterset-paraminfo) &gt; &gt; &gt; **paramInfos** () const — Get the vector of ParamInfos.
+
+## Protected Member Functions
+
+- void **setAllDirty** (bool dirty)
+
+## Protected Attributes
+
+- int **m_mode** — Standard filter mode.
+- int **m_kernelSize** — Half kernel size.
+- int **m_iterations** — Number of iterations.
+- double **m_strength** — Filter strength parameter.
+- double **m_sharpenStrength** — Strength parameter for sharpen filter of anisotropic diffusion filter.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; bool &gt; **m_dirty** — Dirty flag for processing all images.
+- bool **m_createNew** — Create new data when called via compute.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* &gt; **m_imgSrc** — Source images.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &gt; &gt; **m_imgDst** — Destination images.
+- [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \* **m_imgAux** — Single auxiliary destination.
+- [GlFilter](/cpp-sdk/4.5/api/classes/imfusion-glfilter) \* **m_filter** — The actual filter.
+- bool **m_metricMode** — The filter will consider the metric if this is true and the filter supports this.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::pair](http://en.cppreference.com/w/cpp/utility/pair.html)&lt; FilterMode, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [ParamInfo](/cpp-sdk/4.5/api/classes/imfusion-glfilterset-paraminfo) &gt; &gt; &gt; **m_paramInfos** — FilterInfos of all filters.
+- [std::mutex](http://en.cppreference.com/w/cpp/thread/mutex.html) **m_filterSetupMutex** — Mutex protecting the filter.
+
+## Algorithm interface methods
+
+- void [compute](#compute) () override — Execute the algorithm.
+- [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) [takeOutput](#takeoutput) () override — Return any new [Data](/cpp-sdk/4.5/api/classes/imfusion-data) that was created by the [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) during the last call to [compute()](#compute).
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=0)
+
+## SequentialImageProcessor interface method
+
+- [std::pair](http://en.cppreference.com/w/cpp/utility/pair.html)&lt; [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) &gt;, [DataComponentList](/cpp-sdk/4.5/api/classes/imfusion-datacomponentlist) &gt; [processImage](#processimage) (const [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) &image, const [DataComponentList](/cpp-sdk/4.5/api/classes/imfusion-datacomponentlist) &components) const override — Processes a single image without modifying the algorithm's status.
+
+## Configurable interface methods
+
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+## Constructor & Destructor Documentation
+
+### GlFilterSet
+
+```cpp
+ImFusion::GlFilterSet::GlFilterSet (SharedImageSet * images, int mode = 0, GlFilter * custom = 0)
+```
+
+Constructor providing texture images and filter mode.
+
+**Parameters:**
+
+- `images` — input images
+- `mode` — to use
+- `custom` — custom filter for last mode
+
+## Member Function Documentation
+
+### compute
+
+```cpp
+void ImFusion::GlFilterSet::compute ()
+```
+
+*override, virtual*
+
+Execute the algorithm.
+
+### takeOutput
+
+```cpp
+OwningDataList ImFusion::GlFilterSet::takeOutput ()
+```
+
+*override, virtual*
+
+Return any new [Data](/cpp-sdk/4.5/api/classes/imfusion-data) that was created by the [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) during the last call to [compute()](#compute).
+
+The default implementation will return an empty list.
+
+**Note:** Since ownership of the data is transferred, you can call this method only once between calls to [compute()](#compute).
+
+### processImage
+
+```cpp
+std::pair < std::shared_ptr < SharedImage >, DataComponentList > ImFusion::GlFilterSet::processImage (const SharedImage & image, const DataComponentList & components) const
+```
+
+*override, virtual*
+
+Processes a single image without modifying the algorithm's status.
+
+The algorithm parameters should be configured in advance.
+
+**Returns:** the result of the computation (may be null, e.g. if some frame should be dropped)
+
+### configure
+
+```cpp
+void ImFusion::GlFilterSet::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### configuration
+
+```cpp
+void ImFusion::GlFilterSet::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality
+
+### setMode
+
+```cpp
+void ImFusion::GlFilterSet::setMode (int val, GlFilter * custom = 0, bool atInit = false, bool config = false)
+```
+
+Specify which standard filter to use.
+
+**Parameters:**
+
+- `atInit` — Prevents overwriting of config values if available
+
+### filterOne
+
+```cpp
+virtual SharedImage * ImFusion::GlFilterSet::filterOne (int whichImg = -1, int whichSet = -1)
+```
+
+*virtual*
+
+Filter a single image. The returned image is owned by the FilterSet class.
+
+If the which parameter is not set, the focus frame is filtered.
+
+### filterSelection
+
+```cpp
+SharedImageSet * ImFusion::GlFilterSet::filterSelection (int whichSet = -1)
+```
+
+Filter selection of images, if settings have changed.
+
+**Note:** Yields the same result as filterAll() if all images of input selected.
+
+### initParamInfos
+
+```cpp
+void ImFusion::GlFilterSet::initParamInfos ()
+```
+
+Initialize the info for all available filters, i.e.
+
+set name, type and range
+
+**Note:** The ParamInfos in the inner vector will be successively matched to the controller's slider
+
+**Note:** Do not add more than three ParamInfos per mode since there are only three sliders.

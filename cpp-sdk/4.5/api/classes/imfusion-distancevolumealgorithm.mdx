@@ -1,0 +1,122 @@
+---
+title: "ImFusion::DistanceVolumeAlgorithm"
+sidebarTitle: "DistanceVolumeAlgorithm"
+description: "Algorithm to create a distance-volume from a mesh."
+---
+
+`#include <ImFusion/Base/DistanceVolumeAlgorithm.h>`
+
+## Overview
+
+[Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) to create a distance-volume from a mesh.
+
+This algorithm provides an optional GPU implementation, which requires OpenGL 4.3. CPU and GPU versions may yield slightly different results (including the dimensions of the result) due to numerical precision.
+
+If a reference [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) is supplied to the constructor, computeDistanceVolume() will produce one signed distance volume per image in that set, sized and oriented to match each reference volume. Otherwise the output grid is derived from the mesh bounds, the configured spacing, and p_marginPx.
+
+## Public Member Functions
+
+- **DistanceVolumeAlgorithm** (const [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) \*mesh, const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*refVolumes=nullptr)
+- void [compute](#compute) () override — Execute the algorithm.
+- virtual [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) [takeOutput](#takeoutput) () override — Return any new [Data](/cpp-sdk/4.5/api/classes/imfusion-data) that was created by the [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) during the last call to [compute()](#compute).
+- void [setMesh](#setmesh) (const [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) \*mesh) — Replace the input mesh used by [compute()](#compute).
+- [Algorithm::Status](/cpp-sdk/4.5/api/classes/imfusion-algorithm) [computeDistanceVolumeGPU](#computedistancevolumegpu-1-2) (const [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) &mesh, [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) &outputIntegerBuffer, [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) &distanceVolumeOut, bool signedDistance=true, bool extendApproximate=false, [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; size_t &gt; remainingMemoryMB=std::nullopt) — Computes a volume of sub-voxel precise distances to the [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) on the GPU Requires OpenGL 4.3.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) &gt; [computeDistanceVolumeGPU](#computedistancevolumegpu-2-2) (const [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) &mesh, const [ImageDescriptorWorld](/cpp-sdk/4.5/api/classes/imfusion-imagedescriptorworld) &idw, bool signedDistance=true, bool extendApproximate=false, [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; size_t &gt; remainingMemoryMB=std::nullopt) — Computes a volume of sub-voxel precise distances to the [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) on the GPU Requires OpenGL 4.3.
+
+## Static Public Member Functions
+
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=nullptr)
+
+## Public Attributes
+
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; int &gt; **p_marginPx** = &#123;"marginPx", 10, this&#125; — Margin in pixels (sum of front and back margin) For technical reasons, this should be greater than or equal to 3.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; double &gt; **p_preciseRegionWidthPx** = &#123;"preciseRegionWidthPx", 10, this&#125; — Width of region (in pixels) around mesh in each direction where sub-voxel precise distances are computed.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; bool &gt; **p_useGPU** = &#123;"useGPU", true, this&#125; — Run on GPU if possible (requires OpenGL 4.3, falls back to CPU if unavailable).
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; bool &gt; **p_forceGPU** = &#123;"forceGPU", false, this&#125; — Abort processing instead of using the slow CPU mode.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; double &gt; **p_distVolResolution** = [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt;double&gt;&#123;"distanceVolumeResolution", 1.0, this&#125; — Spacing of the output image.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; bool &gt; [p_usePixelDistances](#p-usepixeldistances) = [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt;bool&gt;&#123;"usePixelDistances", true, this&#125; — Whether to use pixel coordinates for distance.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; size_t &gt; &gt; **p_memoryLimitMB** = &#123;"memoryLimitMB", std::nullopt, this&#125; — Maximum memory in MB of distance volume.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; bool &gt; **p_signedDistance** = &#123;"signedDistance", true, this&#125; — Whether to use signed distance.
+
+## Member Function Documentation
+
+### compute
+
+```cpp
+void ImFusion::DistanceVolumeAlgorithm::compute ()
+```
+
+*override, virtual*
+
+Execute the algorithm.
+
+### takeOutput
+
+```cpp
+virtual OwningDataList ImFusion::DistanceVolumeAlgorithm::takeOutput ()
+```
+
+*override, virtual*
+
+Return any new [Data](/cpp-sdk/4.5/api/classes/imfusion-data) that was created by the [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) during the last call to [compute()](#compute).
+
+**Note:** Since ownership of the data is transferred, you can call this method only once between calls to [compute()](#compute).
+
+### setMesh
+
+```cpp
+void ImFusion::DistanceVolumeAlgorithm::setMesh (const Mesh * mesh)
+```
+
+Replace the input mesh used by [compute()](#compute).
+
+The internally cached scratch buffer used by the GPU path is preserved; it will be reallocated lazily if a subsequent output's pixel layout differs from the cached one.
+
+### computeDistanceVolumeGPU
+
+```cpp
+Algorithm::Status ImFusion::DistanceVolumeAlgorithm::computeDistanceVolumeGPU (const Mesh & mesh, SharedImage & outputIntegerBuffer, SharedImage & distanceVolumeOut, bool signedDistance = true, bool extendApproximate = false, std::optional < size_t > remainingMemoryMB = std::nullopt)
+```
+
+Computes a volume of sub-voxel precise distances to the [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) on the GPU Requires OpenGL 4.3.
+
+This function only computes a distance volume, unlike [compute()](#compute) which may perform rescaling, fill holes etc. Uses 16-bit fixed-point rounding internally. Sub-voxel precision is only used in a region of size p_preciseRegionWidth around the mesh.
+
+**Parameters:**
+
+- `mesh` — The mesh to compute the distance volume for.
+- `outputIntegerBuffer` — A buffer of of the same shape as distanceVolumeOut with type R32UI that is used internally for computing the distance volume. Passing this buffer here avoids the need to reallocate it on each call to this function.
+- `distanceVolumeOut` — The output distance volume. Must be of type R32F.
+- `signedDistance` — if true, the distance volume is signed, i.e. negative inside the mesh.
+- `extendApproximate` — if true, the final distance volume includes an extension of the precise distance by some approximate distance, such as the chamfer distance. This may be done on the CPU.
+- `remainingMemoryMB` — Maximum amount of memory to allocate for images. This is often sensible to set because large meshes may lead to very large bounding volumes being allocated. Processing is aborted before more is allocated. If remainingMemoryMB is not set, remainingMemoryMB is set to p_memoryLimitMB. than the provided value.
+
+### computeDistanceVolumeGPU
+
+```cpp
+std::unique_ptr < SharedImage > ImFusion::DistanceVolumeAlgorithm::computeDistanceVolumeGPU (const Mesh & mesh, const ImageDescriptorWorld & idw, bool signedDistance = true, bool extendApproximate = false, std::optional < size_t > remainingMemoryMB = std::nullopt)
+```
+
+Computes a volume of sub-voxel precise distances to the [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) on the GPU Requires OpenGL 4.3.
+
+This function only computes a distance volume, unlike [compute()](#compute) which may perform rescaling, fill holes etc. Uses 16-bit fixed-point rounding internally. Sub-voxel precision is only used in a region of size p_preciseRegionWidth around the mesh.
+
+**Parameters:**
+
+- `mesh` — The mesh to compute the distance volume for.
+- `idw` — [ImageDescriptorWorld](/cpp-sdk/4.5/api/classes/imfusion-imagedescriptorworld) describing the desired shape of the output volume.
+- `signedDistance` — if true, the distance volume is signed, i.e. negative inside the mesh.
+- `extendApproximate` — if true, the final distance volume includes an extension of the precise distance by some approximate distance, such as the chamfer distance. This may be done on the CPU.
+- `remainingMemoryMB` — Maximum amount of memory to allocate for images. This is often sensible to set because large meshes may lead to very large bounding volumes being allocated. Processing is aborted before more is allocated. If remainingMemoryMB is not set, remainingMemoryMB is set to p_memoryLimitMB.
+
+## Member Data Documentation
+
+### p_usePixelDistances
+
+```cpp
+Parameter <bool> ImFusion::DistanceVolumeAlgorithm::p_usePixelDistances = Parameter <bool>{"usePixelDistances", true, this}
+```
+
+Whether to use pixel coordinates for distance.
+
+**Warning:** defaults to true

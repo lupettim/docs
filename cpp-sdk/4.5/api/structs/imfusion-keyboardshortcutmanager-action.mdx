@@ -1,0 +1,21 @@
+---
+title: "ImFusion::KeyboardShortcutManager::Action"
+sidebarTitle: "Action"
+description: "Small structure encapsulating a shortcut action."
+---
+
+`#include <ImFusion/GUI/KeyboardShortcutManager.h>`
+
+## Overview
+
+Small structure encapsulating a shortcut action.
+
+You can connect to both signalTriggered and qtShortcut to get notified when the shortcut is triggered by the user. \warn qtShortcut may be 0 if no parent has been set. In this case, the shortcut will be inactive.
+
+## Public Attributes
+
+- Signal **signalTriggered**
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **description**
+- QKeySequence **defaultSequence**
+- QKeySequence **currentSequence**
+- QShortcut \* **qtShortcut** = nullptr

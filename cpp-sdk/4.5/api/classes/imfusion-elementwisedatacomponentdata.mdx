@@ -1,0 +1,36 @@
+---
+title: "ImFusion::ElementwiseDataComponentData"
+sidebarTitle: "ElementwiseDataComponentData"
+description: "Class for augmenting Data classes with an ElementwiseDataComponentList ."
+---
+
+`#include <ImFusion/Base/ElementwiseDataComponentData.h>`
+
+## Overview
+
+Class for augmenting [Data](/cpp-sdk/4.5/api/classes/imfusion-data) classes with an [ElementwiseDataComponentList](/cpp-sdk/4.5/api/classes/imfusion-elementwisedatacomponentlist).
+
+Make sure to include m_elementwiseComponents in all relevant operations, e.g. clone, add, remove, clear, etc.
+
+## Public Member Functions
+
+- [ElementwiseDataComponentList](/cpp-sdk/4.5/api/classes/imfusion-elementwisedatacomponentlist) & **elementwiseComponents** () — Returns elementwise data component list.
+- const [ElementwiseDataComponentList](/cpp-sdk/4.5/api/classes/imfusion-elementwisedatacomponentlist) & **elementwiseComponents** () const — Returns elementwise data component list.
+- [DataComponentList](/cpp-sdk/4.5/api/classes/imfusion-datacomponentlist) & [mutableComponents](#mutablecomponents) (int i) — Returns the DataComponents associated to the element with that index, creating it if necessary.
+- const [DataComponentList](/cpp-sdk/4.5/api/classes/imfusion-datacomponentlist) & **components** (int i) const — Returns the DataComponents associated to the element with that index.
+
+## Protected Attributes
+
+- [ElementwiseDataComponentList](/cpp-sdk/4.5/api/classes/imfusion-elementwisedatacomponentlist) **m_elementwiseComponents** — Encodes elementwise data components.
+
+## Member Function Documentation
+
+### mutableComponents
+
+```cpp
+DataComponentList & ImFusion::ElementwiseDataComponentData::mutableComponents (int i)
+```
+
+Returns the DataComponents associated to the element with that index, creating it if necessary.
+
+**Note:** The return value might be changed by the caller, which will invalidate the internal de-duplication scheme. Therefore, this function is more expensive than the const components() accessor as it may spawn internal copying.

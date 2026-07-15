@@ -1,0 +1,44 @@
+---
+title: "ImFusion::SignalDebouncer< DerivedSignal >"
+sidebarTitle: "SignalDebouncer< DerivedSignal >"
+---
+
+## Public Member Functions
+
+- bool [isDebouncing](#isdebouncing) () const — Returns whether the signal is currently holding back incoming emits.
+- bool [setDebouncing](#setdebouncing) (bool v) — While enabled, the signal will hold back emits until debouncing mode is disabled and then perform a single combined emit if emits were held back.
+
+## Protected Member Functions
+
+- void **trigger** () const
+
+## Protected Attributes
+
+- bool **m_wasTriggered** = false
+- bool **m_debouncing** = false
+
+## Member Function Documentation
+
+### isDebouncing
+
+```cpp
+template<class DerivedSignal> bool ImFusion::SignalDebouncer < DerivedSignal >::isDebouncing () const
+```
+
+*inline*
+
+Returns whether the signal is currently holding back incoming emits.
+
+**See also:** [setDebouncing](#setdebouncing) for a complete explanation of what this implies. \experimental
+
+### setDebouncing
+
+```cpp
+template<class DerivedSignal> bool ImFusion::SignalDebouncer < DerivedSignal >::setDebouncing (bool v)
+```
+
+*inline*
+
+While enabled, the signal will hold back emits until debouncing mode is disabled and then perform a single combined emit if emits were held back.
+
+This avoids notifying listeners multiple times in scenarios where a single time would be sufficient. Unlike blocking and emitting afterwards, the combined emit only happens if the signal actually was requested to emit while debouncing was enabled. If a signal is both blocking and debouncing at the same time, the debouncing has no effect. \experimental

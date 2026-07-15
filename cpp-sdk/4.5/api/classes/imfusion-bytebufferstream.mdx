@@ -1,0 +1,27 @@
+---
+title: "ImFusion::ByteBufferStream"
+sidebarTitle: "ByteBufferStream"
+description: "Specialization of std::istream to easily extract data from a ByteBufferView ."
+---
+
+`#include <ImFusion/Core/ByteBufferStream.h>`
+
+## Overview
+
+Specialization of [std::istream](http://en.cppreference.com/w/cpp/io/basic_istream.html) to easily extract data from a [ByteBufferView](/cpp-sdk/4.5/api/classes/imfusion-bytebufferview).
+
+```cpp
+ByteBuffer buffer = ...
+ByteBufferStream bufferStream(input.view());
+std::string line;
+while (std::getline(bufferStream, line)) {
+    ...
+}
+```
+ fragment
+
+**See also:** [ByteBuffer](/cpp-sdk/4.5/api/classes/imfusion-bytebuffer), [ByteBufferView](/cpp-sdk/4.5/api/classes/imfusion-bytebufferview)
+
+## Public Member Functions
+
+- **ByteBufferStream** (const [ByteBufferView](/cpp-sdk/4.5/api/classes/imfusion-bytebufferview) &buffer)

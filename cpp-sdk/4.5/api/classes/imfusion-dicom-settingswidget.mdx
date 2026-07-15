@@ -1,0 +1,73 @@
+---
+title: "ImFusion::Dicom::SettingsWidget"
+sidebarTitle: "SettingsWidget"
+description: "Simple Qt widget to configure the DicomPluginSettings ."
+---
+
+`#include <ImFusion/Dicom/GUI/SettingsWidget.h>`
+
+## Overview
+
+Simple Qt widget to configure the [DicomPluginSettings](/cpp-sdk/4.5/api/classes/imfusion-dicompluginsettings).
+
+## Public Types
+
+- enum class [Contents](#contents) &#123; **None** = 0 , Cache = 1 &lt;&lt; 0 , DcmtkSettings = 1 &lt;&lt; 1 , Anonymization = 1 &lt;&lt; 2 , PACS = 1 &lt;&lt; 3 , Everything = 0xFF &#125; — Bitflag enumeration to define which settings to show.
+
+## Public Member Functions
+
+- [SettingsWidget](#settingswidget) ([Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; [Contents](#contents) &gt; shownSettings=Contents::Everything, QWidget \*parent=nullptr) — Instantiate a new Qt widget to configure the DICOM settings.
+- void **loadSettings** () — Populate the widget with the current settings.
+- void **saveSettings** () — Write the widget content to the settings.
+- bool [updateWidget](#updatewidget) () override — Update the widget in the [Settings](/cpp-sdk/4.5/api/classes/imfusion-settings) Dialog.
+
+## Member Enumeration Documentation
+
+### Contents
+
+```cpp
+enum class ImFusion::Dicom::SettingsWidget::Contents
+```
+
+*strong*
+
+Bitflag enumeration to define which settings to show.
+
+**Enumerator:**
+
+- `Cache` — Show settings regarding the DicomDatasetCache.
+- `DcmtkSettings` — Show settings regarding the DCMTK backend.
+- `Anonymization` — Show settings regarding the anonymization of datasets.
+- `PACS` — Show PACS settings.
+- `Everything` — Show all settings.
+
+## Constructor & Destructor Documentation
+
+### SettingsWidget
+
+```cpp
+ImFusion::Dicom::SettingsWidget::SettingsWidget (Flags < Contents > shownSettings = Contents::Everything, QWidget * parent = nullptr)
+```
+
+*explicit*
+
+Instantiate a new Qt widget to configure the DICOM settings.
+
+**Parameters:**
+
+- `shownSettings` — [Selection](/cpp-sdk/4.5/api/classes/imfusion-selection) of settings to show
+- `parent` — parent widget
+
+## Member Function Documentation
+
+### updateWidget
+
+```cpp
+bool ImFusion::Dicom::SettingsWidget::updateWidget ()
+```
+
+*override, virtual*
+
+Update the widget in the [Settings](/cpp-sdk/4.5/api/classes/imfusion-settings) Dialog.
+
+By default the settings fields of the custom settings will not change after they were registered with [SettingsDialog](/cpp-sdk/4.5/api/classes/imfusion-settingsdialog). However if you need to update the fields of your settings widget by adding or removing sub-properties and parameters, have this function return true to indicate that.

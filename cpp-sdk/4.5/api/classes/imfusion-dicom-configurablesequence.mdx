@@ -1,0 +1,53 @@
+---
+title: "ImFusion::Dicom::ConfigurableSequence< T >"
+sidebarTitle: "ConfigurableSequence< T >"
+---
+
+## Public Member Functions
+
+- **ConfigurableSequence** ([ElementList](/cpp-sdk/4.5/api/classes/imfusion-dicom-elementlist) &parent, DcmTag [tag](/cpp-sdk/4.5/api/classes/imfusion-dicom-elementbase), [ElementBase::Type](/cpp-sdk/4.5/api/classes/imfusion-dicom-elementbase) type, int defaultNumberOfElements)
+- **ConfigurableSequence** (DcmItem &[item](/cpp-sdk/4.5/api/classes/imfusion-dicom-sequence), DcmTag [tag](/cpp-sdk/4.5/api/classes/imfusion-dicom-elementbase), [ElementBase::Type](/cpp-sdk/4.5/api/classes/imfusion-dicom-elementbase) type, int defaultNumberOfElements)
+- void **setDefaultNumberOfElements** (int n)
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+- void [configureDefaults](#configuredefaults) () override — Retrieve the properties of this object, replaces values with their defaults and sets it again.
+
+## Member Function Documentation
+
+### configure
+
+```cpp
+template<class T> void ImFusion::Dicom::ConfigurableSequence < T >::configure (const Properties * p)
+```
+
+*inline, override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### configuration
+
+```cpp
+template<class T> void ImFusion::Dicom::ConfigurableSequence < T >::configuration (Properties * p) const
+```
+
+*inline, override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality
+
+### configureDefaults
+
+```cpp
+template<class T> void ImFusion::Dicom::ConfigurableSequence < T >::configureDefaults ()
+```
+
+*inline, override, virtual*
+
+Retrieve the properties of this object, replaces values with their defaults and sets it again.

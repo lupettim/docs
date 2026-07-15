@@ -1,0 +1,93 @@
+---
+title: "ImFusion::OptimizerNL"
+sidebarTitle: "OptimizerNL"
+description: "Non-linear optimization using the NLOpt library."
+---
+
+`#include <ImFusion/Base/OptimizerNL.h>`
+
+## Overview
+
+Non-linear optimization using the NLOpt library.
+
+## Public Member Functions
+
+- **OptimizerNL** (int n, int [type](/cpp-sdk/4.5/api/classes/imfusion-optimizer), [CostFunction](/cpp-sdk/4.5/api/classes/imfusion-costfunction) \*cf=0, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; &paramNames=&#123;&#125;) — Constructor with dimension and optimization type.
+- **~OptimizerNL** () override — Destructor.
+- void [setType](#settype) (int val) override — Set the optimizer type.
+- void **setStochasticPopulationSize** (int val) — Set the population size for stochastic optimizers.
+- int **stochasticPopulationSize** () const
+- void **setAbortFunTolAbs** (bool flag) — Use absolute or relative function tolerance abortion criteria.
+- bool **abortFunTolAbs** () const
+- void **setAbortParTolAbs** (bool flag) — Use absolute or relative parameter tolerance abortion criteria.
+- bool **abortParTolAbs** () const
+- void **setStep** (double val) — Set custom initial step size (otherwise determined automatically).
+- double **step** () const
+- void **setRandomSeed** (unsigned long s) — Set seed for random number generation.
+- void [abort](#abort) () override — [Request](/cpp-sdk/4.5/api/classes/imfusion-request) to abort the optimization.
+- const char \* [algorithmName](#algorithmname) (int which=-1) const — Returns string describing a particular optimization algorithm.
+
+## Implements the Configurable interface
+
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+## Member Function Documentation
+
+### setType
+
+```cpp
+void ImFusion::OptimizerNL::setType (int val)
+```
+
+*override, virtual*
+
+Set the optimizer type.
+
+### abort
+
+```cpp
+void ImFusion::OptimizerNL::abort ()
+```
+
+*override, virtual*
+
+[Request](/cpp-sdk/4.5/api/classes/imfusion-request) to abort the optimization.
+
+### algorithmName
+
+```cpp
+const char * ImFusion::OptimizerNL::algorithmName (int which = -1) const
+```
+
+Returns string describing a particular optimization algorithm.
+
+If the default number -1 is provided, the chosen algorithm name is returned.
+
+### configure
+
+```cpp
+void ImFusion::OptimizerNL::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### configuration
+
+```cpp
+void ImFusion::OptimizerNL::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality

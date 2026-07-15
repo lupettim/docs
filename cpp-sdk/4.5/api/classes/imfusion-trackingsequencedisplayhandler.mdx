@@ -1,0 +1,94 @@
+---
+title: "ImFusion::TrackingSequenceDisplayHandler"
+sidebarTitle: "TrackingSequenceDisplayHandler"
+description: "DataDisplayHandler for TrackingSequence Data Creates and owns an InteractiveObject comprised of GlTrackingSequence and MeshManipulator ."
+---
+
+`#include <ImFusion/Base/TrackingSequenceDisplayHandler.h>`
+
+## Overview
+
+[DataDisplayHandler](/cpp-sdk/4.5/api/classes/imfusion-datadisplayhandler) for [TrackingSequence](/cpp-sdk/4.5/api/classes/imfusion-trackingsequence)[Data](/cpp-sdk/4.5/api/classes/imfusion-data) Creates and owns an [InteractiveObject](/cpp-sdk/4.5/api/classes/imfusion-interactiveobject) comprised of [GlTrackingSequence](/cpp-sdk/4.5/api/classes/imfusion-gltrackingsequence) and [MeshManipulator](/cpp-sdk/4.5/api/classes/imfusion-meshmanipulator).
+
+## Public Member Functions
+
+- bool [handlesType](#handlestype) (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data) const override — Check whether this specialization handles the given [Data](/cpp-sdk/4.5/api/classes/imfusion-data) type.
+- bool [canBeShownInView](#canbeshowninview) (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data, const [GUI::View](/cpp-sdk/4.5/api/classes/imfusion-gui-view) &view) const override — Check whether a particular [Data](/cpp-sdk/4.5/api/classes/imfusion-data) can be shown in the given view.
+- void [show](#show) ([Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data, [GUI::View](/cpp-sdk/4.5/api/classes/imfusion-gui-view) &view) override — Visualize the given data in the given view.
+- void [hide](#hide) ([Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data, [GUI::View](/cpp-sdk/4.5/api/classes/imfusion-gui-view) &view) override — Remove the given data from the given view.
+- void [onViewDeleted](#onviewdeleted) ([GUI::View](/cpp-sdk/4.5/api/classes/imfusion-gui-view) &view) override — Called if a view associated with this [DataDisplayHandler](/cpp-sdk/4.5/api/classes/imfusion-datadisplayhandler) is destroyed.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; QWidget &gt; [createDisplayOptionsWidget](#createdisplayoptionswidget) ([Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data, [GUI::DisplayBase](/cpp-sdk/4.5/api/classes/imfusion-gui-displaybase) &display, [GUI::View](/cpp-sdk/4.5/api/classes/imfusion-gui-view) &view) const override — Provides an optional QtWidgets-based [GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui) to configure display options for the given data shown in *view*.
+
+## Member Function Documentation
+
+### handlesType
+
+```cpp
+bool ImFusion::TrackingSequenceDisplayHandler::handlesType (const Data * data) const
+```
+
+*override, virtual*
+
+Check whether this specialization handles the given [Data](/cpp-sdk/4.5/api/classes/imfusion-data) type.
+
+Checks should be as narrow as possible to avoid potential overlap with other handlers.
+
+### canBeShownInView
+
+```cpp
+bool ImFusion::TrackingSequenceDisplayHandler::canBeShownInView (const Data * data, const GUI::View & view) const
+```
+
+*override, virtual*
+
+Check whether a particular [Data](/cpp-sdk/4.5/api/classes/imfusion-data) can be shown in the given view.
+
+Used by [DataDisplayHandler](/cpp-sdk/4.5/api/classes/imfusion-datadisplayhandler) during view dispatch when calling [show()](#show). Should only be called if handlesType(data) == true.
+
+### show
+
+```cpp
+void ImFusion::TrackingSequenceDisplayHandler::show (Data * data, GUI::View & view)
+```
+
+*override, virtual*
+
+Visualize the given data in the given view.
+
+Should only be called if (handlesType(data) == true) && (canBeShownInView(data, view) == true).
+
+### hide
+
+```cpp
+void ImFusion::TrackingSequenceDisplayHandler::hide (Data * data, GUI::View & view)
+```
+
+*override, virtual*
+
+Remove the given data from the given view.
+
+**Warning:** Implementations must *not* access data beyond pointer comparison because the instance may already in the process of deletion when calling this function.
+
+### onViewDeleted
+
+```cpp
+void ImFusion::TrackingSequenceDisplayHandler::onViewDeleted (GUI::View & view)
+```
+
+*override, virtual*
+
+Called if a view associated with this [DataDisplayHandler](/cpp-sdk/4.5/api/classes/imfusion-datadisplayhandler) is destroyed.
+
+### createDisplayOptionsWidget
+
+```cpp
+std::unique_ptr < QWidget > ImFusion::TrackingSequenceDisplayHandler::createDisplayOptionsWidget (Data * data, GUI::DisplayBase & display, GUI::View & view) const
+```
+
+*override, virtual*
+
+Provides an optional QtWidgets-based [GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui) to configure display options for the given data shown in *view*.
+
+This function is used to enable [InteractiveViewOptionsOverlay](/cpp-sdk/4.5/api/classes/imfusion-interactiveviewoptionsoverlay) showing a suitable [GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui) for all data shown in its corresponding view. The default implementation returns nullptr.
+
+**Note:** This function is still considered experimental and may be moved/changed in the future.

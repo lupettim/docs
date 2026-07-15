@@ -1,0 +1,26 @@
+---
+title: "ImFusion::AnnotationWidget"
+sidebarTitle: "AnnotationWidget"
+description: "Qt User interface for editing annotations managed by AnnotationModel ."
+---
+
+`#include <ImFusion/GUI/AnnotationWidget.h>`
+
+## Overview
+
+Qt User interface for editing annotations managed by [AnnotationModel](/cpp-sdk/4.5/api/classes/imfusion-annotationmodel).
+
+## Public Member Functions
+
+- **AnnotationWidget** ([MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase) \*mw) — Construct annotation widget.
+- **~AnnotationWidget** () override — Destructor.
+- [AnnotationModel](/cpp-sdk/4.5/api/classes/imfusion-annotationmodel) \* **model** ()
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [InteractiveObject](/cpp-sdk/4.5/api/classes/imfusion-interactiveobject) \* &gt; **selectedAnnotations** (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*dataset, bool includeGlobal=true) const
+- void **createProjectiveObject** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [InteractiveObject](/cpp-sdk/4.5/api/classes/imfusion-interactiveobject) \* &gt; &annotations, [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &sis) — Creates a ProjectiveObject for a given annotation and adds it to the selected Fluoro image.
+- void **moveAnnotationsToData** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [InteractiveObject](/cpp-sdk/4.5/api/classes/imfusion-interactiveobject) \* &gt; &annotations, [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data) — Move all passed annotations under the specified [Data](/cpp-sdk/4.5/api/classes/imfusion-data). If "data" is nullptr, move them to global annotations.
+- void **setAutomaticallyLinkPoseWithParent** (bool flag)
+- bool **getAutomaticallyLinkPoseWithParent** () const
+
+## Protected Member Functions
+
+- bool **eventFilter** (QObject \*obj, QEvent \*event) override

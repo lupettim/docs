@@ -1,0 +1,63 @@
+---
+title: "ImFusion::GUI::TouchEvent"
+sidebarTitle: "TouchEvent"
+description: "Touch events occur when pressing, releasing, or moving one ore multiple touch points on a touch device."
+---
+
+`#include <ImFusion/GUI/InputEvent.h>`
+
+## Overview
+
+Touch events occur when pressing, releasing, or moving one ore multiple touch points on a touch device.
+
+Note that events of type Update and End should only be sent to those handlers that previously accepted a Begin event. Some systems may send an event of type Cancel, which requests to ignore the entire active touch sequence.
+
+## Classes
+
+- struct [Point](/cpp-sdk/4.5/api/structs/imfusion-gui-touchevent-point) — Record of touch point metadata.
+
+## Public Types
+
+- enum class [Type](#type) &#123; Begin , Update , End , Cancel &#125; — Enumeration of reasons for the event.
+
+## Public Member Functions
+
+- [TouchEvent](#touchevent) ([Type](#type) type, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Point](/cpp-sdk/4.5/api/structs/imfusion-gui-touchevent-point) &gt; points, [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; [KeyboardModifier](/cpp-sdk/4.5/api/classes/imfusion-gui-inputevent) &gt; [modifiers](/cpp-sdk/4.5/api/classes/imfusion-gui-inputevent)=[KeyboardModifier::None](/cpp-sdk/4.5/api/classes/imfusion-gui-inputevent), [LocalToGlobalCoordMapping](/cpp-sdk/4.5/api/classes/imfusion-gui-inputevent) mappingFunction=nullptr) — Constructor for a [TouchEvent](/cpp-sdk/4.5/api/classes/imfusion-gui-touchevent).
+- [Type](#type) **type** () const — Returns the reason for emitting this event.
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Point](/cpp-sdk/4.5/api/structs/imfusion-gui-touchevent-point) &gt; & **points** () const — Returns the list of touch points comprising this event.
+
+## Member Enumeration Documentation
+
+### Type
+
+```cpp
+enum class ImFusion::GUI::TouchEvent::Type
+```
+
+*strong*
+
+Enumeration of reasons for the event.
+
+**Enumerator:**
+
+- `Begin` — A touch gesture has just started.
+- `Update` — The state of the touch points of a previously started touch gesture has changed.
+- `End` — A touch gesture has been completed.
+- `Cancel` — A touch gesture was aborted by the user requesting to ignore the entire touch sequence.
+
+## Constructor & Destructor Documentation
+
+### TouchEvent
+
+```cpp
+ImFusion::GUI::TouchEvent::TouchEvent (Type type, std::vector < Point > points, Flags < KeyboardModifier > modifiers = KeyboardModifier::None, LocalToGlobalCoordMapping mappingFunction = nullptr)
+```
+
+Constructor for a [TouchEvent](/cpp-sdk/4.5/api/classes/imfusion-gui-touchevent).
+
+**Parameters:**
+
+- `type` — Reason for emitting this event.
+- `points` — List of touch points comprising this event.
+- `modifiers` — List of pressed keyboard modifier keys.
+- `mappingFunction` — Optional mapping function used by [mapToGlobalCoord()](/cpp-sdk/4.5/api/classes/imfusion-gui-inputevent) to convert event coordinates to global coordinates if the underlying windowing system supports it; [mapToGlobalCoord()](/cpp-sdk/4.5/api/classes/imfusion-gui-inputevent) will use the identity function if empty.

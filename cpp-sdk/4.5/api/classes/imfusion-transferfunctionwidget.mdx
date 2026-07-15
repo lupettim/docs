@@ -1,0 +1,55 @@
+---
+title: "ImFusion::TransferFunctionWidget"
+sidebarTitle: "TransferFunctionWidget"
+description: "Widget for setting up a transfer function."
+---
+
+`#include <ImFusion/GUI/TransferFunctionWidget.h>`
+
+## Overview
+
+Widget for setting up a transfer function.
+
+Provides a [GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui) for a [TransferFunction](/cpp-sdk/4.5/api/classes/imfusion-transferfunction) that is optionally also mapped onto a [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage).
+
+## Public Types
+
+- using [Preset](#preset) = [std::pair](http://en.cppreference.com/w/cpp/utility/pair.html)&lt;QString, [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt;void([TransferFunction](/cpp-sdk/4.5/api/classes/imfusion-transferfunction)&, const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset)&)&gt;&gt; — Map of presets: string used for the [GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui), [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html) used to apply the preset to the TF.
+- using **PresetMap** = [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt;[Preset](#preset)&gt;
+
+## Public Member Functions
+
+- [TransferFunctionWidget](#transferfunctionwidget) (bool compactMode, QWidget \*parent=nullptr) — Standard constructor, creates a widget to setup the given transfer function.
+- **~TransferFunctionWidget** () override — Virtual Destructor.
+- void **setTransferFunction** ([TransferFunction](/cpp-sdk/4.5/api/classes/imfusion-transferfunction) \*transferFunction) — Sets the transfer function this widget manipulates, may be 0.
+- void **setImage** (const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*image, int index) — Sets the image the TF is applied to (optional, may be 0). Used for displaying a histogram and modifying windowing.
+- void **setView** ([GUI::View](/cpp-sdk/4.5/api/classes/imfusion-gui-view) \*view) — Sets the view to update on changes as well as reference view.
+- void **setPresets** (const PresetMap &presets) — Setter for the list of presets to provide.
+- void **insertPreset** (const [Preset](#preset) &preset) — If the list of presets does not contain a preset with the same name, inserts the preset at the beginning of the list of presets, otherwise replaces the preset with the given one.
+
+## Member Typedef Documentation
+
+### Preset
+
+```cpp
+using ImFusion::TransferFunctionWidget::Preset = std::pair <QString, std::function <void(TransferFunction &, const SharedImageSet &)>>
+```
+
+Map of presets: string used for the [GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui), [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html) used to apply the preset to the TF.
+
+We use a vector instead of a map to allow for custom sorting.
+
+## Constructor & Destructor Documentation
+
+### TransferFunctionWidget
+
+```cpp
+ImFusion::TransferFunctionWidget::TransferFunctionWidget (bool compactMode, QWidget * parent = nullptr)
+```
+
+Standard constructor, creates a widget to setup the given transfer function.
+
+**Parameters:**
+
+- `compactMode` — Flag whether to use the compact mode or show the full widget.
+- `parent` — Parent widget, may be 0.

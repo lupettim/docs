@@ -1,0 +1,39 @@
+---
+title: "ImFusion::Seg::EllipseReferenceShape"
+sidebarTitle: "EllipseReferenceShape"
+description: "Reference with an ellipse section shape."
+---
+
+`#include <ImFusion/Seg/ReferenceShape.h>`
+
+## Overview
+
+Reference with an ellipse section shape.
+
+First local coordinate moves you around the ellipse, the second perpendicularly to it. Note that the first coordinates is not metric, there is no direct correspondence to millimeters.
+
+## Public Member Functions
+
+- **EllipseReferenceShape** (const [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*segmentation, unsigned char label=1)
+- **EllipseReferenceShape** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec2 &gt; &points)
+- vec3 [worldToLocal](#worldtolocal) (vec3 p) const override
+- vec3 [localToWorld](#localtoworld) (vec3 p) const override
+- const [Geometry::Ellipse2D](/cpp-sdk/4.5/api/classes/imfusion-geometry-ellipse2d) & **ellipse2D** () const
+
+## Member Function Documentation
+
+### worldToLocal
+
+```cpp
+vec3 ImFusion::Seg::EllipseReferenceShape::worldToLocal (vec3 p) const
+```
+
+*override, virtual*
+
+### localToWorld
+
+```cpp
+vec3 ImFusion::Seg::EllipseReferenceShape::localToWorld (vec3 p) const
+```
+
+*override, virtual*

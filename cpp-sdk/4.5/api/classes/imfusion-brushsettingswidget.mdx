@@ -1,0 +1,15 @@
+---
+title: "ImFusion::BrushSettingsWidget"
+sidebarTitle: "BrushSettingsWidget"
+---
+
+## Public Types
+
+- enum **SettingsOption** &#123; **ShowNone** = 0 , **ShowSize** = 1 &lt;&lt; 0 , **ShowAdaptiveness** = 1 &lt;&lt; 1 , **ShowSmoothing** = 1 &lt;&lt; 2 , **ShowContiguous** = 1 &lt;&lt; 3 , **ShowLinkViews** = 1 &lt;&lt; 4 , **ShowOnly2D** = 1 &lt;&lt; 5 , **ShowAll** = ShowSize | ShowAdaptiveness | ShowSmoothing | ShowContiguous | ShowLinkViews | ShowOnly2D &#125;
+
+## Public Member Functions
+
+- **BrushSettingsWidget** ([AnnotationActionSharedState::BrushSettings](/cpp-sdk/4.5/api/structs/imfusion-annotationactionsharedstate-brushsettings) &settings, [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; SettingsOption &gt; options, QWidget \*parent=nullptr)
+- void **adaptToImage** (const [Image](/cpp-sdk/4.5/api/classes/imfusion-image) &img)
+- void **keyPressEvent** (QKeyEvent \*event) override
+- void **wheelEvent** (QWheelEvent \*event) override

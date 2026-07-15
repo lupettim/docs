@@ -1,0 +1,41 @@
+---
+title: "ImFusion::CompoundData"
+sidebarTitle: "CompoundData"
+description: "Interface for datasets that are formed by one or multiple other nested Data instances."
+---
+
+`#include <ImFusion/Base/CompoundData.h>`
+
+## Overview
+
+Interface for datasets that are formed by one or multiple other nested [Data](/cpp-sdk/4.5/api/classes/imfusion-data) instances.
+
+Certain [Data](/cpp-sdk/4.5/api/classes/imfusion-data) types may hold other instances of [Data](/cpp-sdk/4.5/api/classes/imfusion-data) internally. One such example is for instance [TrackedSharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-trackedsharedimageset) which is a [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) that internally maintains a set of TrackingSequences to define the poses of the individual images. Implementing the [CompoundData](/cpp-sdk/4.5/api/classes/imfusion-compounddata) interface enables such [Data](/cpp-sdk/4.5/api/classes/imfusion-data) types to expose their internal datasets to the outside in a generic fashion so that for instance the [DataItemModel](/cpp-sdk/4.5/api/classes/imfusion-dataitemmodel) knows about them and the [DataWidget](/cpp-sdk/4.5/api/classes/imfusion-datawidget) can show the nested datasets underneath the main dataset.
+
+In contrast to a [DataGroup](/cpp-sdk/4.5/api/classes/imfusion-datagroup) however, the [CompoundData](/cpp-sdk/4.5/api/classes/imfusion-compounddata) interface provides only read access to the children. This is because it's meant to model situations where the nested datasets are inherently bound to the parent dataset and not to be moved or taken from the outside.
+
+**Note:** Deriving classes must make sure to emit the signals signalChildAdded, signalChildMoved, and signalChildAboutToBeRemoved correctly whenever the result of [children()](#children) has changed.
+
+**See also:** [Data](/cpp-sdk/4.5/api/classes/imfusion-data), [DataGroup](/cpp-sdk/4.5/api/classes/imfusion-datagroup), [DataModel](/cpp-sdk/4.5/api/classes/imfusion-datamodel)
+
+## Public Member Functions
+
+- virtual [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) [children](#children) () const =0 — Returns the list of direct children of this group.
+
+## Public Attributes
+
+- Signal&lt; [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \* &gt; **signalChildAdded** — Signal emitted when a new [Data](/cpp-sdk/4.5/api/classes/imfusion-data) instance has been added to [children()](#children).
+- Signal&lt; [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \* &gt; **signalChildMoved** — Signal emitted when a [Data](/cpp-sdk/4.5/api/classes/imfusion-data) instance has changed its position in [children()](#children).
+- Signal&lt; [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \* &gt; **signalChildAboutToBeRemoved** — Signal emitted when a [Data](/cpp-sdk/4.5/api/classes/imfusion-data) instance is about to be removed or taken from [children()](#children).
+
+## Member Function Documentation
+
+### children
+
+```cpp
+virtual DataList ImFusion::CompoundData::children () const
+```
+
+*pure virtual*
+
+Returns the list of direct children of this group.

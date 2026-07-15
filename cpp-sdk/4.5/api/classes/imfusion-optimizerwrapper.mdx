@@ -1,0 +1,45 @@
+---
+title: "ImFusion::OptimizerWrapper"
+sidebarTitle: "OptimizerWrapper"
+description: "Wrapper around Optimizer and CostFunction classes to work on simple lambda functions."
+---
+
+`#include <ImFusion/Base/OptimizerWrapper.h>`
+
+## Overview
+
+Wrapper around [Optimizer](/cpp-sdk/4.5/api/classes/imfusion-optimizer) and [CostFunction](/cpp-sdk/4.5/api/classes/imfusion-costfunction) classes to work on simple lambda functions.
+
+Example usage:
+
+```cpp
+auto costFunction = [&](int n, const double* x) { return ...; };
+OptimizerWrapper ow(costFunction, 3);
+ow.compute();
+```
+ fragment
+
+## Public Member Functions
+
+- **OptimizerWrapper** ([std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; double(int, const double \*)&gt; cf, int dim, int type=34) — Constructor with lambda cost function, dimension and optional NLopt type (BOBYQA by default).
+- [OptimizerNL](/cpp-sdk/4.5/api/classes/imfusion-optimizernl) & **opt** () — Provides access to the underlying [OptimizerNL](/cpp-sdk/4.5/api/classes/imfusion-optimizernl) instance for all detailed settings.
+- int **compute** ([std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; &pars) — Executes the optimization with the given initial parameters.
+- int **compute** () — Executes the optimization with zero-initialized parameters.
+- double [evaluate](#evaluate) (int n, const double \*x, double \*dx=0) override — Forwards the cost function evaluation to the lambda function (derivatives not supported).
+
+## Protected Attributes
+
+- [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; double(int, const double \*)&gt; **m_cf** — Cost function.
+- [OptimizerNL](/cpp-sdk/4.5/api/classes/imfusion-optimizernl) **m_opt** — [Optimizer](/cpp-sdk/4.5/api/classes/imfusion-optimizer) instance.
+
+## Member Function Documentation
+
+### evaluate
+
+```cpp
+double ImFusion::OptimizerWrapper::evaluate (int n, const double * x, double * dx = 0)
+```
+
+*inline, override, virtual*
+
+Forwards the cost function evaluation to the lambda function (derivatives not supported).

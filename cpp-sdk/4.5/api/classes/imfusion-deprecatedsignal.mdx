@@ -1,0 +1,218 @@
+---
+title: "ImFusion::DeprecatedSignal< MainSignalType, ArgTypes >"
+sidebarTitle: "DeprecatedSignal< MainSignalType, ArgTypes >"
+description: "Deprecation layer for signals."
+---
+
+`#include <ImFusion/Core/DeprecatedSignal.h>`
+
+## Overview
+
+template&lt;typename MainSignalType, typename... ArgTypes&gt;
+
+class ImFusion::DeprecatedSignal&lt; MainSignalType, ArgTypes &gt;
+Deprecation layer for signals.
+
+Allows to change the name and signature of a signal without breaking existing code.
+
+By turning an existing Signal into a [DeprecatedSignal](/cpp-sdk/4.5/api/classes/imfusion-deprecatedsignal) and linking it to the new signal (the main signal), you can change signals while keeping backwards compatibility. Both emission of the [DeprecatedSignal](/cpp-sdk/4.5/api/classes/imfusion-deprecatedsignal) and the main signal will cause the same observers to be called, and there can be observers connected to both signals at the same time. The [DeprecatedSignal](/cpp-sdk/4.5/api/classes/imfusion-deprecatedsignal) and the main signal share the same connections and other state, but the arguments are converted between the old and the new signal with conversion function specified during instantiation of the [DeprecatedSignal](/cpp-sdk/4.5/api/classes/imfusion-deprecatedsignal).
+
+**Note:** The thread safety of the [DeprecatedSignal](/cpp-sdk/4.5/api/classes/imfusion-deprecatedsignal) is the same as the main signal. [DeprecatedSignal](/cpp-sdk/4.5/api/classes/imfusion-deprecatedsignal) can be used in combination with ProtectedSignal as the main signal.
+
+**Template Parameters:** | MainSignalType | The type of the main signal to which this signal is linked. |
+| --- | --- |
+| ArgTypes | The types of the arguments of this signal. |
+
+Example:
+
+```cpp
+// Previous signal definition (pre-deprecation)
+Signal<int> signalNewNumber;
+
+// New signal definition including the old signal as deprecated signal
+Signal<std::string> signalNewMeasurement;
+DeprecatedSignal<Signal<std::string>, int> signalNewNumber{
+    signalNewNumber,
+ // Conversion of the old signal arguments to the new signal arguments, returned as a tuple
+    [](int number) -> std::tuple<std::string> {
+ return std::make_tuple(std::to_string(number));
+    },
+ // Conversion of the new signal arguments (passed as a tuple) to the old signal arguments, returned as a tuple
+    [](std::tuple<std::string> newArguments) -> std::tuple<int> {
+ const std::string& measurementString = std::get<0>(newArguments);
+ return std::make_tuple(std::stoi(measurementString));
+    }};
+```
+ fragment
+
+**See also:** Signals and Slots, [SignalReceiver](/cpp-sdk/4.5/api/classes/imfusion-signalreceiver), Signal, ProtectedSignal, [SignalConnection](/cpp-sdk/4.5/api/classes/imfusion-signalconnection), [DeprecatedSignal](/cpp-sdk/4.5/api/classes/imfusion-deprecatedsignal)
+
+## Public Types
+
+- using **FunctionType** = [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt;void(ArgTypes...)&gt; — Typedef for a [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html) matching ths signal type.
+- using **ArgumentTuple** = [std::tuple](http://en.cppreference.com/w/cpp/utility/tuple.html)&lt;ArgTypes...&gt; — Typedef for a tuple of the arguments of this signal.
+- using **ConversionFunctionToMainSignal** = [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt;typename MainSignalType::ArgumentTuple(ArgTypes...)&gt; — Function type for converting the arguments of this signal to the main signal.
+- using **ConversionFunctionFromMainSignal** = [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt;ArgumentTuple(typename MainSignalType::ArgumentTuple)&gt; — Function type for converting the arguments of the main signal to this signal.
+
+## Public Member Functions
+
+- **DeprecatedSignal** (MainSignalType &mainSignal, ConversionFunctionToMainSignal convertToMainSignal, ConversionFunctionFromMainSignal convertFromMainSignal) — Construct the [DeprecatedSignal](/cpp-sdk/4.5/api/classes/imfusion-deprecatedsignal) with the main signal and the conversion functions.
+- **DeprecatedSignal** (const DeprecatedSignal&lt; MainSignalType, ArgTypes... &gt; &other)=delete
+- DeprecatedSignal&lt; MainSignalType, ArgTypes... &gt; & **operator=** (const DeprecatedSignal&lt; MainSignalType, ArgTypes... &gt; &rhs)=delete
+- **~DeprecatedSignal** () override — Virtual destructor, deletes all connections and thereby also disconnects from all connected slots.
+- [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [SignalConnection](/cpp-sdk/4.5/api/classes/imfusion-signalconnection) &gt; [connect](#connect-1-3) (const T \*object, void(T::\*methodptr)(ArgTypes...)) const — Connects the given method pointer as slot to this signal.
+- [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [SignalConnection](/cpp-sdk/4.5/api/classes/imfusion-signalconnection) &gt; [connect](#connect-2-3) (const [SignalReceiver](/cpp-sdk/4.5/api/classes/imfusion-signalreceiver) \*object, FunctionType func) const — Connects the given free function as slot to this signal using *object* as lifetime tracker.
+- [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [SignalConnection](/cpp-sdk/4.5/api/classes/imfusion-signalconnection) &gt; [connect](#connect-3-3) (FunctionType func) const — Connects the given free function as slot to this signal.
+- bool [disconnect](#disconnect-1-2) ([SignalConnection](/cpp-sdk/4.5/api/classes/imfusion-signalconnection) \*connection) const override — Removes the given connection.
+- int [disconnect](#disconnect-2-2) (const [SignalReceiver](/cpp-sdk/4.5/api/classes/imfusion-signalreceiver) \*object) const — Disconnects all slots of the given object from this signal.
+- int [disconnectAll](#disconnectall) () const — Disconnects all slots from this signal.
+- void [emitSignal](#emitsignal) (ArgTypes... args) const — Calls all connected slots with the given arguments.
+- void [allowOneRecursion](#allowonerecursion) () const — Allows a single recursive emitting of this signal if called while the signal is emitting.
+- bool [setBlocked](#setblocked) (bool muteSignal) override — Set the flag whether to block notifications of observers for this signal.
+- bool **isBlocked** () const — Returns whether notifications of observers for this signal are currently blocked.
+- int **numConnections** () const — Returns the current number of connections.
+- bool **isConnectedTo** (const [SignalReceiver](/cpp-sdk/4.5/api/classes/imfusion-signalreceiver) \*receiver) const — Returns whether this signal is connected to *receiver*.
+
+## Member Function Documentation
+
+### connect
+
+```cpp
+template<typename MainSignalType, typename... ArgTypes> template<typename T> std::shared_ptr < SignalConnection > ImFusion::DeprecatedSignal < MainSignalType, ArgTypes >::connect (const T * object, void(T::* methodptr)(ArgTypes...)) const
+```
+
+*inline*
+
+Connects the given method pointer as slot to this signal.
+
+**Parameters:**
+
+- `object` — Pointer to the receiver object holding the method. Must derive from [SignalReceiver](/cpp-sdk/4.5/api/classes/imfusion-signalreceiver). Must not be 0.
+- `methodptr` — Pointer to method to call on [emitSignal()](#emitsignal).
+
+**Returns:** [SignalConnection](/cpp-sdk/4.5/api/classes/imfusion-signalconnection) object for identifying the established signal-slot connection. You can use this to disconnect from the signal at any time.
+
+**Note:** [SignalImpl](/cpp-sdk/4.5/api/classes/imfusion-signalimpl) will track the lifetime of *object* and automatically disconnect the slot if *object* is deleted during the lifetime of this signal.
+
+### connect
+
+```cpp
+template<typename MainSignalType, typename... ArgTypes> std::shared_ptr < SignalConnection > ImFusion::DeprecatedSignal < MainSignalType, ArgTypes >::connect (const SignalReceiver * object, FunctionType func) const
+```
+
+*inline*
+
+Connects the given free function as slot to this signal using *object* as lifetime tracker.
+
+**Parameters:**
+
+- `object` — [SignalReceiver](/cpp-sdk/4.5/api/classes/imfusion-signalreceiver) to be used for lifetime tracking. If not null the connection will be disconnected automatically when the receiver is deleted.
+- `func` — Function to call on [emitSignal()](#emitsignal).
+
+**Returns:** [SignalConnection](/cpp-sdk/4.5/api/classes/imfusion-signalconnection) object for identifying the established signal-slot connection. You can use this to disconnect from the signal at any time.
+
+**Note:** [SignalImpl](/cpp-sdk/4.5/api/classes/imfusion-signalimpl) will track the lifetime of *object* and automatically disconnect the slot if *object* is deleted during the lifetime of this signal.
+
+### connect
+
+```cpp
+template<typename MainSignalType, typename... ArgTypes> std::shared_ptr < SignalConnection > ImFusion::DeprecatedSignal < MainSignalType, ArgTypes >::connect (FunctionType func) const
+```
+
+*inline*
+
+Connects the given free function as slot to this signal.
+
+**Parameters:**
+
+- `func` — Function to call on [emitSignal()](#emitsignal).
+
+**Returns:** [SignalConnection](/cpp-sdk/4.5/api/classes/imfusion-signalconnection) object for identifying the established signal-slot connection. You can use this to disconnect from the signal at any time.
+
+**Warning:** This overload is potentially dangerous, since there is no way for this signal to track the lifetime of *func*. Thus, you have to ensure that func will remain valid for the entire lifetime of this signal or use [disconnect()](#disconnect-1-2) on the returned [SignalConnection](/cpp-sdk/4.5/api/classes/imfusion-signalconnection) object when needed.
+
+### disconnect
+
+```cpp
+template<typename MainSignalType, typename... ArgTypes> bool ImFusion::DeprecatedSignal < MainSignalType, ArgTypes >::disconnect (SignalConnection * connection) const
+```
+
+*inline, override, virtual*
+
+Removes the given connection.
+
+**Parameters:**
+
+- `connection` — Pointer to the [SignalConnection](/cpp-sdk/4.5/api/classes/imfusion-signalconnection) object returned during [connect()](#connect-1-3).
+
+**Returns:** True if a slot was found and deleted, false otherwise.
+
+### disconnect
+
+```cpp
+template<typename MainSignalType, typename... ArgTypes> int ImFusion::DeprecatedSignal < MainSignalType, ArgTypes >::disconnect (const SignalReceiver * object) const
+```
+
+*inline*
+
+Disconnects all slots of the given object from this signal.
+
+**Parameters:**
+
+- `object` — Pointer to the object holding the slot. If the pointer is 0 all connections to free functions are disconnected.
+
+**Returns:** The number of connections that were found and disconnected.
+
+### disconnectAll
+
+```cpp
+template<typename MainSignalType, typename... ArgTypes> int ImFusion::DeprecatedSignal < MainSignalType, ArgTypes >::disconnectAll () const
+```
+
+*inline*
+
+Disconnects all slots from this signal.
+
+**Returns:** The number of connections that were found and disconnected.
+
+### emitSignal
+
+```cpp
+template<typename MainSignalType, typename... ArgTypes> void ImFusion::DeprecatedSignal < MainSignalType, ArgTypes >::emitSignal (ArgTypes... args) const
+```
+
+*inline*
+
+Calls all connected slots with the given arguments.
+
+**Note:** This function will *not* allow for recursive emitting of the same signal and nested emits will be discarded. Use [allowOneRecursion()](#allowonerecursion) to explicitly opt-in for recursive signal emitting support.
+
+### allowOneRecursion
+
+```cpp
+template<typename MainSignalType, typename... ArgTypes> void ImFusion::DeprecatedSignal < MainSignalType, ArgTypes >::allowOneRecursion () const
+```
+
+*inline*
+
+Allows a single recursive emitting of this signal if called while the signal is emitting.
+
+Otherwise does nothing.
+
+**Note:** Call this within your slot function if you need to re-emit the same signal. You may use a [SignalBlocker](/cpp-sdk/4.5/api/classes/imfusion-signalblocker) to avoid an infinite recursion.
+
+### setBlocked
+
+```cpp
+template<typename MainSignalType, typename... ArgTypes> bool ImFusion::DeprecatedSignal < MainSignalType, ArgTypes >::setBlocked (bool muteSignal)
+```
+
+*inline, override, virtual*
+
+Set the flag whether to block notifications of observers for this signal.
+
+If *muteSignal* is true, any subsequent call to emitSignal will do nothing. The caller is responsible to reset the blocked state to its original value when appropriate.
+
+**Returns:** Previous value of isBlocked().
+
+**See also:** [SignalBlocker](/cpp-sdk/4.5/api/classes/imfusion-signalblocker) for a more convenient and exception-safe interface to temporarily block a signal.

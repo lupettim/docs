@@ -1,0 +1,166 @@
+---
+title: "ImFusion::Threading::ThreadPool"
+sidebarTitle: "ThreadPool"
+description: "Lightweight implementation of a thread pool for distributing work onto a fixed number of threads."
+---
+
+`#include <ImFusion/Core/Threading/ThreadPool.h>`
+
+## Overview
+
+Lightweight implementation of a thread pool for distributing work onto a fixed number of threads.
+
+Internally, [ThreadPool](/cpp-sdk/4.5/api/classes/imfusion-threading-threadpool) will use the [StoppableThread](/cpp-sdk/4.5/api/classes/imfusion-threading-stoppablethread) interface so that you can abort any work if needed.
+
+Example:
+
+```cpp
+ThreadPool threadPool;      // create a thread pool with as many threads as CPU cores available
+std::future<int> task = threadPool.enqueue( /* some callable returning an int */ );
+int result = task.get();    // wait for the task to complete and get its result
+```
+ fragment
+
+## Public Types
+
+- using **ResultOf** = typename [std::invoke_result](http://en.cppreference.com/w/cpp/types/result_of.html)&lt;F, Args...&gt;::type
+
+## Public Member Functions
+
+- **ThreadPool** (int numThreads=[std::max](http://en.cppreference.com/w/cpp/algorithm/max.html)&lt; int &gt;(1, int([std::thread::hardware_concurrency](http://en.cppreference.com/w/cpp/thread/thread/hardware_concurrency.html)()))) — Create a new thread pool using the given number of threads.
+- **~ThreadPool** () — Implicitly calls [cancelTasks()](#canceltasks) and [join()](#join) on destruction.
+- auto [enqueue](#enqueue) (Function &&func, Args &&... args) -&gt; [std::future](http://en.cppreference.com/w/cpp/thread/future.html)&lt; ResultOf&lt; Function, Args... &gt; &gt; — Enqueue a single task.
+- void [enqueueSignaled](#enqueuesignaled) (CallbackFunc &&callback, Function &&func, Args &&... args) — Enqueue a single task and get notified when it has finished.
+- void [runOnEachThread](#runoneachthread) (const [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; void(int)&gt; &func) — Executes the given function on each thread of the thread pool and blocks until all calls have completed.
+- void [cancelTasks](#canceltasks) () — Signal to all tasks that they should abort their execution even if there are still tasks to finish.
+- bool **isFinished** () — Returns whether there are currently no tasks in flight and no tasks waiting.
+- bool [waitUntilFinished](#waituntilfinished) ([std::chrono::milliseconds](http://en.cppreference.com/w/cpp/chrono/duration.html) timeout=[std::chrono::milliseconds](http://en.cppreference.com/w/cpp/chrono/duration.html)(0)) — Blocks the current thread until all tasks have finished or the given timeout has been reached.
+- void [join](#join) () — Join all worker threads and wait until all enqueued tasks have finished.
+- int **numThreads** () const — Return the number of threads used by this pool.
+- int **numWaitingTasks** () const — Return the number of tasks that have not yet been started.
+- int **numRunningTasks** () const — Return the number tasks that have been started but did not yet complete.
+- void [setThreadNames](#setthreadnames) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &threadPoolName) — Sets the name of each worker thread to &lt;threadPoolName&gt; #i so that a debugger may show it as description.
+
+## Member Function Documentation
+
+### enqueue
+
+```cpp
+template<class Function, class... Args> auto ImFusion::Threading::ThreadPool::enqueue (Function && func, Args &&... args) -> std::future < ResultOf< Function, Args... > >
+```
+
+Enqueue a single task.
+
+You can either pass a lambda expression or a callable+arguments, for instance:
+
+```cpp
+std::future<double> result1 = threadPool.enqueue([this]() { return this->processItem(1); });
+std::future<double> result2 = threadPool.enqueue(MyClass::processItem, this, 2);
+
+// calling std::future::get() will block until the thread has finished computing the result
+double sum = result1.get() + result2.get();
+```
+ fragment
+
+**Parameters:**
+
+- `func` — Callable object that is to be executed (e.g. a lambda function or a function pointer).
+- `args` — Optional arguments to bind to *f*.
+
+**Returns:** A future to access the result of the asynchronous operation. It is safe to discard the return value in case you do not want to access the result and do not wait for completion of the operation.
+
+**Exceptions:**
+
+- `std::runtime_error` — if you call this function after calling [join()](#join).
+
+### enqueueSignaled
+
+```cpp
+template<class CallbackFunc, class Function, class... Args> void ImFusion::Threading::ThreadPool::enqueueSignaled (CallbackFunc && callback, Function && func, Args &&... args)
+```
+
+Enqueue a single task and get notified when it has finished.
+
+You can either pass a lambda expression or a callable+arguments, for instance:
+
+```cpp
+threadPool.enqueueSignaled(
+    [this](Result&& result) {
+ // do stuff with result, careful: this is executed on the worker thread!
+        consumeResult(result);
+    },
+    [this](item) {
+ // long running computation that shall be executed on the thread pool
+ return processItem(item);
+    });
+```
+ fragment
+By design in contrast to [enqueue()](#enqueue), this function does *not* return a future to monitor the progress of the asynchronous operation because *callback* will already consume its result. In case you need both it is easiest to use [enqueue()](#enqueue) and to manually call your callback function from within *func*.
+
+**Parameters:**
+
+- `callback` — Callback function with signature result_of&lt;Function(Args...)&gt;&& -&gt; void to execute when the task has finished. It directly consumes the result of func(args...) by rvalue reference.
+
+**Careful:** This function is called from the executing thread, make sure to use proper synchronization.
+- `func` — Callable object that is to be executed (e.g. a lambda function or a function pointer).
+- `args` — Optional arguments to bind to *func*.
+
+**Exceptions:**
+
+- `std::runtime_error` — if you call this function after calling [join()](#join).
+
+### runOnEachThread
+
+```cpp
+void ImFusion::Threading::ThreadPool::runOnEachThread (const std::function < void(int)> & func)
+```
+
+Executes the given function on each thread of the thread pool and blocks until all calls have completed.
+
+**Parameters:**
+
+- `func` — Function to execute once on every thread of the pool, its argument indicates the thread index.
+
+### cancelTasks
+
+```cpp
+void ImFusion::Threading::ThreadPool::cancelTasks ()
+```
+
+Signal to all tasks that they should abort their execution even if there are still tasks to finish.
+
+Effectively calls [StoppableThread::requestStop()](/cpp-sdk/4.5/api/classes/imfusion-threading-stoppablethread) on all worker threads and clears the list of pending tasks. This function does not wait until all tasks have been aborted, use [waitUntilFinished()](#waituntilfinished) to do so.
+
+### waitUntilFinished
+
+```cpp
+bool ImFusion::Threading::ThreadPool::waitUntilFinished (std::chrono::milliseconds timeout = std::chrono::milliseconds (0))
+```
+
+Blocks the current thread until all tasks have finished or the given timeout has been reached.
+
+Returns true if all tasks where finished, false otherwise.
+
+**Parameters:**
+
+- `timeout` — Maximum time to wait, ignored if 0.
+
+### join
+
+```cpp
+void ImFusion::Threading::ThreadPool::join ()
+```
+
+Join all worker threads and wait until all enqueued tasks have finished.
+
+**Note:** After calling [join()](#join) you must not enqueue any more tasks.
+
+### setThreadNames
+
+```cpp
+void ImFusion::Threading::ThreadPool::setThreadNames (const std::string & threadPoolName)
+```
+
+Sets the name of each worker thread to &lt;threadPoolName&gt; #i so that a debugger may show it as description.
+
+This functionality is platform-dependent and may not reliably work on all platforms.

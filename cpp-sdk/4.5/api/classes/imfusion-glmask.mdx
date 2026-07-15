@@ -1,0 +1,93 @@
+---
+title: "ImFusion::GlMask"
+sidebarTitle: "GlMask"
+description: "Base interface for implementing polymorphic image masks using OpenGL."
+---
+
+`#include <ImFusion/GL/GlMask.h>`
+
+## Overview
+
+[Base](/cpp-sdk/4.5/api/structs/imfusion-dicom-base) interface for implementing polymorphic image masks using OpenGL.
+
+Each subclass of a [GlMask](/cpp-sdk/4.5/api/classes/imfusion-glmask) should directly correspond to a subclass of [Mask](/cpp-sdk/4.5/api/classes/imfusion-mask) and the [GlMask](/cpp-sdk/4.5/api/classes/imfusion-glmask) instance should therefore only be exposed through the corresponding [Mask](/cpp-sdk/4.5/api/classes/imfusion-mask) object. Usually, concrete implementations inherit from both the [Mask](/cpp-sdk/4.5/api/classes/imfusion-mask) and the [GlMask](/cpp-sdk/4.5/api/classes/imfusion-glmask) interfaces.
+
+A [GlMask](/cpp-sdk/4.5/api/classes/imfusion-glmask) should mirror the functionality of the [Mask](/cpp-sdk/4.5/api/classes/imfusion-mask) using the [GL::AbstractInclude](/cpp-sdk/4.5/api/classes/imfusion-gl-abstractinclude) interface. The defineName is IMAGE_MASK and the include is expected to define a function with the following signature:
+
+```cpp
+int maskValue(vec3 coord, vec4 value);
+```
+ fragment
+Which correlates to [Mask::maskValue](/cpp-sdk/4.5/api/classes/imfusion-mask). For a complete example how to use such an include see Image Masks.
+
+In order to use several different mask includes in the same shader, [GlMask](/cpp-sdk/4.5/api/classes/imfusion-glmask) also implements the [GL::MultiIncludable](/cpp-sdk/4.5/api/classes/imfusion-gl-multiincludable) interface so that you can use the [createMultiInclude()](/cpp-sdk/4.5/api/classes/imfusion-gl-multiincludable) helper function to create variants with individual and unique prefixes.
+
+Because of the way [GL::MultiIncludable](/cpp-sdk/4.5/api/classes/imfusion-gl-multiincludable) works (prefix text replacement) there are some additional requirements when subclassing [GlMask](/cpp-sdk/4.5/api/classes/imfusion-glmask): All uniform names have to start with "mask", such as
+
+```cpp
+uniform int maskOutsideValue;
+```
+ fragment
+In [setIncludeArguments()](#setincludearguments) use the given prefix to access these uniform, i.e. in the previous example use
+
+```cpp
+setArgument((prefix + "OutsideValue").c_str, ...)
+```
+ fragment
+instead of
+
+```cpp
+setArgument("maskOutsideValue", ...)
+```
+ fragment
+When creating a multi-include this prefix will be replaced by a given unique alternative (e.g mask1). Thus, all occurrences of mask in the shader code will be replaced by the alternative, e.g. maskOutsideValue will become mask1OutsideValue.
+
+**See also:** - Image Masks
+- [Mask](/cpp-sdk/4.5/api/classes/imfusion-mask)
+- [GL::MultiIncludable](/cpp-sdk/4.5/api/classes/imfusion-gl-multiincludable)
+
+## Public Member Functions
+
+- **GlMask** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &[includePath](/cpp-sdk/4.5/api/classes/imfusion-gl-abstractinclude)) — Instantiates a new [GL::AbstractInclude](/cpp-sdk/4.5/api/classes/imfusion-gl-abstractinclude) using IMAGE_MASK as defineName and the given path the to retrieve the GLSL source code from.
+- int [setIncludeArguments](#setincludearguments) ([GL::Program](/cpp-sdk/4.5/api/classes/imfusion-gl-program) &p, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &prefix="mask") const override=0 — Called by users of [GlMask](/cpp-sdk/4.5/api/classes/imfusion-glmask) in order to correctly setup the mask shader.
+- virtual [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) &gt; [createExplicitMaskGl](#createexplicitmaskgl) (const [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) &inputImage, bool normalized=false) — Creates an explicit mask representation of this mask when applied to the given image.
+
+## Static Public Member Functions
+
+- static [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **defineName** () — Returns "IMAGE_MASK".
+- static [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **defineSuffix** () — Returns "MASK".
+- static [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **multiIncludeDefine** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &replacementToken) — Returns "IMAGE_" + toUpper(replacementToken).
+
+## Member Function Documentation
+
+### setIncludeArguments
+
+```cpp
+int ImFusion::GlMask::setIncludeArguments (GL::Program & p, const std::string & prefix = "mask") const
+```
+
+*override, pure virtual*
+
+Called by users of [GlMask](/cpp-sdk/4.5/api/classes/imfusion-glmask) in order to correctly setup the mask shader.
+
+Subclasses should implement this function so that it correctly sets all needed uniforms and input textures to be used by the OpenGL shader instance. Make sure to use the given *prefix* argument instead of a hardcoded "mask" when defining uniform names to support multi-includes where the prefixes have been replaced with unique alternatives. Example:
+
+```cpp
+p.setArgument(prefix + "UseRange", m_useRange);
+```
+ fragment
+
+### createExplicitMaskGl
+
+```cpp
+virtual std::unique_ptr < GlImage > ImFusion::GlMask::createExplicitMaskGl (const GlImage & inputImage, bool normalized = false)
+```
+
+*virtual*
+
+Creates an explicit mask representation of this mask when applied to the given image.
+
+**Parameters:**
+
+- `inputImage` — [Image](/cpp-sdk/4.5/api/classes/imfusion-image) to which the mask should be applied for each pixel in order to generate the explicit mask image. Must be compatible with the mask.
+- `normalized` — If the this parameter is true the resulting binary mask value will be created as CPU uint8_t values 0 and 255 (corresponding to 0 and 1 on the GPU), instead of 0 and 1 (0 and 1/255 on the GPU).

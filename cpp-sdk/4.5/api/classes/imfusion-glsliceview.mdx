@@ -1,0 +1,146 @@
+---
+title: "ImFusion::GlSliceView"
+sidebarTitle: "GlSliceView"
+description: "OpenGL view for 2D slice rendering of one or multiple images and GlObjects."
+---
+
+`#include <ImFusion/GL/GlSliceView.h>`
+
+## Overview
+
+OpenGL view for 2D slice rendering of one or multiple images and GlObjects.
+
+[GlSliceView](/cpp-sdk/4.5/api/classes/imfusion-glsliceview) employs a [GlSlice](/cpp-sdk/4.5/api/classes/imfusion-glslice) instance for performing multi-planar reconstruction (MPR) rendering of 2D and 3D image data integrating the regular render scene based on registered GlObjects.
+
+This renderer offers optional support for order-independent transparency (OIT) and will take care of setting up the OIT manager instance and blending the fragments. This feature is disabled by default and needs to be enabled explicitly. Note that OIT requires OpenGL 4.4. support by the host system, see [GL::OrderIndependentTransparency](/cpp-sdk/4.5/api/classes/imfusion-gl-orderindependenttransparency) for more details.
+
+## Public Member Functions
+
+- **GlSliceView** ([Slice::AnatomicalPlane](/cpp-sdk/4.5/api/classes/imfusion-slice) plane, [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [GlSlice](/cpp-sdk/4.5/api/classes/imfusion-glslice) &gt; slice) — Constructor optionally providing a standard plane direction and custom [GlSlice](/cpp-sdk/4.5/api/classes/imfusion-glslice) class.
+- **GlSliceView** (bool is3d, [Slice::AnatomicalPlane](/cpp-sdk/4.5/api/classes/imfusion-slice) plane=[Slice::AnatomicalPlane::Undefined](/cpp-sdk/4.5/api/classes/imfusion-slice))
+- **~GlSliceView** () override — Destructor, deletes shader and working variables.
+- void [setMatrix](#setmatrix) (const mat4 &m) override — Set matrix of the corresponding slice.
+- void [setFlip](#setflip) (bool flag) — Use flipped representation of image axes.
+- bool [render](#render) () override — Render the view.
+- void **reset** () — Reset settings to their default values.
+- [Type](/cpp-sdk/4.5/api/classes/imfusion-glview) [type](#type) () const override — Return view type as 2D or 3D slice.
+- [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) \* **object** () const — Return the OpenGL slice of this view, implementing the base class method.
+- const [GlSlice](/cpp-sdk/4.5/api/classes/imfusion-glslice) \* **slice** () const — Return the OpenGL slice of this view.
+- [GlSlice](/cpp-sdk/4.5/api/classes/imfusion-glslice) \* **slice** () — Return the OpenGL slice of this view.
+- bool **flip** () const — Return the flip flag.
+- void **setScale** (double scale) — Set scale.
+- void **setZoom** (double zoom) — Set zoom.
+- void **setClipDistance** (double val) — Set the distance with which rendering on either side of the view is clipped.
+- void **setDefaultClipDistance** () — Set the average image spacing as default clipping distance.
+- void **setShowZoom** (bool flag) — Specify if the view zoom shall be shown on the slice itself (affecting other views).
+- void **setShowIntersectionLines** (bool flag) — Specify if the intersection lines with other slices shall be drawn.
+- void [alignToPixelGrid](#aligntopixelgrid) () — Attempts to configure view matrix and zoom factor so that it can render a pixel-perfect version of imageData().
+- void **setPixelZoom** () — Set zoom for a one-on-one pixel mapping on the screen.
+- bool **isPixelZoom** () const — Return true if we are already displaying content in pixel zoom.
+- double **scale** () const — Get scale.
+- double **optimalScale** () const — Compute the best scale to fit the current image into the view given a zoom factor of 1.
+- double **optimalZoom** () const — Compute the zoom to fit the current image into the view given the current scale.
+- double **zoom** () const — Get zoom.
+- bool **showZoom** () const — Return if the view zoom is shown on the slice.
+- bool **showIntersectionLines** () const — Return if the intersection lines with other slices are drawn.
+- void [resize](#resize) (int [width](/cpp-sdk/4.5/api/classes/imfusion-glview), int [height](/cpp-sdk/4.5/api/classes/imfusion-glview)) override — Handle viewport resize. Called with valid OpenGL context.
+- [Geometry::AlignedBox](/cpp-sdk/4.5/api/classes/imfusion-geometry-alignedbox) **sceneBounds** () const — Return axis-aligned bounding box of all annotations.
+- virtual [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **typeName** () const
+- [Slice::AnatomicalPlane](/cpp-sdk/4.5/api/classes/imfusion-slice) **originalPlane** () const — Return the original designated plane (axial=0, sagittal=1, coronal=2) of this view.
+- mat4 **originalPlaneMatrix** () const — Return the original matrix of the original designated plane of this view.
+- bool **isOrderIndependentTransparencyEnabled** () const — Returns true if order-independent transparency support is enabled.
+- void **setOrderIndependentTransparencyEnabled** (bool value) — Specify whether order-independent transparency support should be enabled.
+- const [GL::OrderIndependentTransparency](/cpp-sdk/4.5/api/classes/imfusion-gl-orderindependenttransparency) \* [orderIndependentTransparency](#orderindependenttransparency) () const override — Returns the order-independent transparency handling object used by this view if supported and enabled.
+
+## Protected Member Functions
+
+- void **applyExtent** () — Applies the slice extent, distinguishing if zoom/pan is shown.
+
+## Protected Attributes
+
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [GlSlice](/cpp-sdk/4.5/api/classes/imfusion-glslice) &gt; **m_slice** — Own OpenGL slice object.
+- bool **m_isOitEnabled** = false — Flag whether OIT support is enabled or not.
+- bool **m_oitWasRequested** = false — Flag whether OIT was actually requested so far (used to lazy-instantiate the A-buffer).
+- double **m_scale** = 1.0 — Scale.
+- double **m_zoom** = 1.0 — Zoom.
+- double **m_clipDistance** = 0.5 — Distance with which to clip on either side of the view.
+- bool **m_flip** = true — Use flipped representation of images axes where the image origin is in the top-left corner.
+- bool **m_showZoom** = true — Flag if the view zoom shall be applied on the slice.
+- bool **m_showIntersectionLines** = true — Flag if intersection lines with other slices are drawn.
+- [Slice::AnatomicalPlane](/cpp-sdk/4.5/api/classes/imfusion-slice) **m_originalPlane** = [Slice::AnatomicalPlane::Undefined](/cpp-sdk/4.5/api/classes/imfusion-slice) — Original MPR plane used on reset.
+
+## Member Function Documentation
+
+### setMatrix
+
+```cpp
+void ImFusion::GlSliceView::setMatrix (const mat4 & m)
+```
+
+*override, virtual*
+
+Set matrix of the corresponding slice.
+
+### setFlip
+
+```cpp
+void ImFusion::GlSliceView::setFlip (bool flag)
+```
+
+*inline*
+
+Use flipped representation of image axes.
+
+If this is set to true the image origin is considered to be in the top-left corner.
+
+### render
+
+```cpp
+bool ImFusion::GlSliceView::render ()
+```
+
+*override, virtual*
+
+Render the view.
+
+### type
+
+```cpp
+Type ImFusion::GlSliceView::type () const
+```
+
+*override, virtual*
+
+Return view type as 2D or 3D slice.
+
+### alignToPixelGrid
+
+```cpp
+void ImFusion::GlSliceView::alignToPixelGrid ()
+```
+
+Attempts to configure view matrix and zoom factor so that it can render a pixel-perfect version of imageData().
+
+Be aware that this is only possible if the spacing is isotropic and the image matrix does not have a rotational component.
+
+### resize
+
+```cpp
+void ImFusion::GlSliceView::resize (int width, int height)
+```
+
+*override, virtual*
+
+Handle viewport resize. Called with valid OpenGL context.
+
+### orderIndependentTransparency
+
+```cpp
+const GL::OrderIndependentTransparency * ImFusion::GlSliceView::orderIndependentTransparency () const
+```
+
+*override, virtual*
+
+Returns the order-independent transparency handling object used by this view if supported and enabled.
+
+GlObjects can use this instance to support correct blending of their semi-transparent surfaces with the ones from the other GlObjects.

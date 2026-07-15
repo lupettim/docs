@@ -1,0 +1,108 @@
+---
+title: "ImFusion::Threading::StoppableThread"
+sidebarTitle: "StoppableThread"
+description: "Extension of a std::thread to allow for signalling the thread to abort its execution."
+---
+
+`#include <ImFusion/Core/Threading/StoppableThread.h>`
+
+## Overview
+
+[Extension](/cpp-sdk/4.5/api/classes/imfusion-dicom-extension) of a [std::thread](http://en.cppreference.com/w/cpp/thread/thread.html) to allow for signalling the thread to abort its execution.
+
+This class adds functionality for cooperative abortion of a running thread similar to the interface of boost::thread and the upcoming std::jthread: Other threads can signal the [StoppableThread](/cpp-sdk/4.5/api/classes/imfusion-threading-stoppablethread) that they request abortion by calling [requestStop()](#requeststop). In order for this to work the [StoppableThread](/cpp-sdk/4.5/api/classes/imfusion-threading-stoppablethread) must regularly check during its execution, whether abortion was requested using isStopRequested(), and if so stop its execution.
+
+Example:
+
+```cpp
+StoppableThread stoppableThread([]() {
+ while (true) { // continuously running loop performing computations
+        [...]
+
+ // periodically check whether abortion was requested
+ if (StoppableThread::isStopRequested())
+ break;
+    }
+});
+
+// signal the thread to stop
+stoppableThread.requestStop();
+// should join in finite time
+stoppableThread.join();
+```
+ fragment
+
+**Note:** For lifetime reasons, a [StoppableThread](/cpp-sdk/4.5/api/classes/imfusion-threading-stoppablethread) can not be detached and will always implicitly join on destruction.
+
+## Classes
+
+- struct [StopException](/cpp-sdk/4.5/api/structs/imfusion-threading-stoppablethread-stopexception) — Special exception type that is thrown by [throwIfStopRequested()](#throwifstoprequested) if abortion was requested.
+
+## Public Member Functions
+
+- [StoppableThread](#stoppablethread) (Function &&f, Args &&... args) — Instantiate a new interruptible thread that will execute the given function.
+- **~StoppableThread** () — If the thread is joinable, will call [requestStop()](#requeststop) and then [join()](#join) the thread.
+- **StoppableThread** (StoppableThread &&)=delete — [StoppableThread](/cpp-sdk/4.5/api/classes/imfusion-threading-stoppablethread) is not movable because we can't notify the running thread that his stopSignal ref has changed.
+- [StoppableThread](#stoppablethread) & **operator=** ([StoppableThread](#stoppablethread) &&)=delete
+- void [requestStop](#requeststop) (bool stop=true) — Signal to the thread that it should abort its execution.
+- void [join](#join) () — Wait for the thread to finish its execution.
+- bool **isRunning** () — Check whether the thread function is still running or not.
+- [std::thread::id](http://en.cppreference.com/w/cpp/thread/thread/id.html) **threadId** () const — Return the internal thread id.
+
+## Static Public Member Functions
+
+- static bool **isStopRequested** () — Check if abortion was requested for the current thread.
+- static void [throwIfStopRequested](#throwifstoprequested) () — Use exceptions to check if abortion was requested for the current thread.
+
+## Constructor & Destructor Documentation
+
+### StoppableThread
+
+```cpp
+template<typename Function, typename... Args> ImFusion::Threading::StoppableThread::StoppableThread (Function && f, Args &&... args)
+```
+
+Instantiate a new interruptible thread that will execute the given function.
+
+**Parameters:**
+
+- `f` — Function to execute in the new thread.
+- `args` — Arguments to pass to *f*.
+
+## Member Function Documentation
+
+### throwIfStopRequested
+
+```cpp
+void ImFusion::Threading::StoppableThread::throwIfStopRequested ()
+```
+
+*static*
+
+Use exceptions to check if abortion was requested for the current thread.
+
+**Exceptions:**
+
+- `StopException` — if abortion was requested for the current thread.
+
+### requestStop
+
+```cpp
+void ImFusion::Threading::StoppableThread::requestStop (bool stop = true)
+```
+
+Signal to the thread that it should abort its execution.
+
+The thread needs to check regularly for this signal in order for this to work. If you set *stop* to false you can reset the abortion flag in case future computations should no longer be aborted.
+
+### join
+
+```cpp
+void ImFusion::Threading::StoppableThread::join ()
+```
+
+Wait for the thread to finish its execution.
+
+Calling [join()](#join) on a non-joinable thread will have no effect.
+
+**Note:** Calling this function will *not* request the thread to stop.

@@ -1,0 +1,136 @@
+---
+title: "ImFusion::GlBilateralFilter"
+sidebarTitle: "GlBilateralFilter"
+description: "Bilateral Filter from Szeliski's Computer vision."
+---
+
+`#include <ImFusion/GL/GlBilateralFilter.h>`
+
+## Overview
+
+Bilateral Filter from Szeliski's Computer vision.
+
+## Public Member Functions
+
+- **GlBilateralFilter** ([GL::Framebuffer](/cpp-sdk/4.5/api/classes/imfusion-gl-framebuffer) \*fbo=0)
+- void **setGuide** ([GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) \*gIm) — Set guide image. If null then guide will be the input image.
+- bool [setKernelSize](#setkernelsize) (int size, double k) override — Common interface to set filter kernel size and parameter.
+- void **setKernelRadiusScaling** (int val)
+- void **setAdaptiveParameters** (double offset, double incline, bool on=true)
+- void **setSigmaPosition** (double val)
+- void **setSigmaIntensity** (double val)
+- double **sigmaPosition** () const
+- double **sigmaIntensity** () const
+- void **setSkipOutsidePixels** (bool skip)
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+- [GL::Sampler](/cpp-sdk/4.5/api/classes/imfusion-gl-sampler) & **samplingParameters** ()
+- void [compute](#compute-1-4) (const [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) &imgIn, [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) &imgOut) override — Execute the filter on the image.
+- bool [good](#good) () const override — Return if the filter can be used, in particular if the shaders are available.
+- void [compute](#compute-2-4) () override — [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) interface.
+- virtual void [compute](#compute-3-4) ([SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) &imgIn, [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) &imgOut)
+- virtual void [compute](#compute-4-4) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) \* &gt; &imgIn, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) \* &gt; &imgOut) — Convenience function for executing filter on multiple images.
+
+## Protected Attributes
+
+- [GL::ImageProgram](/cpp-sdk/4.5/api/classes/imfusion-gl-imageprogram) \* **m_kernelProgram** — Shader program for computation.
+- [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) \* **m_guide** — Optional guide image for joint bilateral filtering (see refs. in BilateralFilterAlgorithm.h). Not owned.
+- [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) \* **m_imgAux** — Auxiliary image for in-place filtering.
+- [GL::Sampler](/cpp-sdk/4.5/api/classes/imfusion-gl-sampler) **m_samplingParameters** — Sampling settings for the input and guide textures.
+- double **m_sigmaIntensity** — Width of intensity Gaussian weighting function.
+- double **m_sigmaPosition** — Width of spatial Gaussian weighting function (in pixels).
+- double **m_kernelRadiusScaling** — Defines ration of spatial kernel radius and sigmaPosition.
+- bool **m_adaptive**
+- double **m_adaptiveOffset**
+- double **m_adaptiveIncline**
+- bool **m_skipOutsidePixels** = true — If enabled, areas outside the image have zero weight.
+
+## Member Function Documentation
+
+### setKernelSize
+
+```cpp
+bool ImFusion::GlBilateralFilter::setKernelSize (int, double)
+```
+
+*override, virtual*
+
+Common interface to set filter kernel size and parameter.
+
+### configure
+
+```cpp
+void ImFusion::GlBilateralFilter::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### configuration
+
+```cpp
+void ImFusion::GlBilateralFilter::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality
+
+### compute
+
+```cpp
+void ImFusion::GlBilateralFilter::compute (const GlImage & imgIn, GlImage & imgOut)
+```
+
+*override, virtual*
+
+Execute the filter on the image.
+
+### good
+
+```cpp
+bool ImFusion::GlBilateralFilter::good () const
+```
+
+*override, virtual*
+
+Return if the filter can be used, in particular if the shaders are available.
+
+### compute
+
+```cpp
+void ImFusion::GlFilter::compute ()
+```
+
+*inline, override, virtual*
+
+[Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) interface.
+
+### compute
+
+```cpp
+virtual void ImFusion::GlFilter::compute (SharedImage & imgIn, SharedImage & imgOut)
+```
+
+*virtual*
+
+### compute
+
+```cpp
+virtual void ImFusion::GlFilter::compute (const std::vector < GlImage * > & imgIn, std::vector < GlImage * > & imgOut)
+```
+
+*virtual*
+
+Convenience function for executing filter on multiple images.
+
+**Note:** This is not adjusted in order to handle masks of SharedImages.

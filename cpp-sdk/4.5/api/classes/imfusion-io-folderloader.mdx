@@ -1,0 +1,93 @@
+---
+title: "ImFusion::IO::FolderLoader"
+sidebarTitle: "FolderLoader"
+description: "This class provides a very high level of abstraction for loading data from a directory."
+---
+
+`#include <ImFusion/IO/FolderLoader.h>`
+
+## Overview
+
+This class provides a very high level of abstraction for loading data from a directory.
+
+**See also:** [FileLoader](/cpp-sdk/4.5/api/classes/imfusion-io-fileloader), [FactoryRegistry](/cpp-sdk/4.5/api/classes/imfusion-factoryregistry), [IoAlgorithm](/cpp-sdk/4.5/api/classes/imfusion-ioalgorithm)
+
+## Public Types
+
+- enum class [Options](#options) &#123; None = 0 , AllowSpawnGUI = 1 &lt;&lt; 0 &#125; — Bitflag enumeration of options to customize the behavior of [FolderLoader](/cpp-sdk/4.5/api/classes/imfusion-io-folderloader).
+- enum class [Status](#status) &#123; Success = 0 , NotFound , NotFolder , MissingAppController , Error , Unknown &#125; — Known codes indicating the status/result of the last call to [load()](#load).
+
+## Public Member Functions
+
+- [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) [load](#load) (const [Filesystem::Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path) &folderPath, [ApplicationController](/cpp-sdk/4.5/api/classes/imfusion-applicationcontroller) \*appController, [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; [Options](#options) &gt; loadOptions=Options::None) — Attempts to load the folder at *folderPath*.
+- [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) **load** (const [Filesystem::Url](/cpp-sdk/4.5/api/classes/imfusion-filesystem-url) &folder, [ApplicationController](/cpp-sdk/4.5/api/classes/imfusion-applicationcontroller) \*appController, [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; [Options](#options) &gt; loadOptions=Options::None)
+- void **setProgress** ([Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) \*progress) — [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) interface is forwarded to the used IoAlgorithms.
+- [FolderLoader::Status](#status) **status** () — Get detailed information about the status/result of the most recent call to [load()](#load).
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [IoAlgorithm](/cpp-sdk/4.5/api/classes/imfusion-ioalgorithm) &gt; &gt; **usedAlgorithms** () — Retrieve the [IoAlgorithm](/cpp-sdk/4.5/api/classes/imfusion-ioalgorithm) instances used by [load()](#load).
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Filesystem::Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path) &gt; [filesLoadedWithoutAlgorithms](#filesloadedwithoutalgorithms) () const — Files loaded without using algorithms, typically workspaces.
+
+## Member Enumeration Documentation
+
+### Options
+
+```cpp
+enum class ImFusion::IO::FolderLoader::Options
+```
+
+*strong*
+
+Bitflag enumeration of options to customize the behavior of [FolderLoader](/cpp-sdk/4.5/api/classes/imfusion-io-folderloader).
+
+**Enumerator:**
+
+- `None` — Use default options.
+- `AllowSpawnGUI` — If set, allow for the loader to spawn a [GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui).
+
+### Status
+
+```cpp
+enum class ImFusion::IO::FolderLoader::Status
+```
+
+*strong*
+
+Known codes indicating the status/result of the last call to [load()](#load).
+
+**Enumerator:**
+
+- `Success` — Loading was successful.
+- `NotFound` — The specified path does not exist.
+- `NotFolder` — Path exists, but points to something that is not a folder.
+- `MissingAppController` — Contained workspaces, but no [ApplicationController](/cpp-sdk/4.5/api/classes/imfusion-applicationcontroller) was passed.
+- `Error` — Other unknown error occurred when loading.
+- `Unknown` — [load()](#load) was not called
+
+## Member Function Documentation
+
+### load
+
+```cpp
+OwningDataList ImFusion::IO::FolderLoader::load (const Filesystem::Path & folderPath, ApplicationController * appController, Flags < Options > loadOptions = Options::None)
+```
+
+Attempts to load the folder at *folderPath*.
+
+Returns an [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) with the loaded data if successful or an empty Optional on failure. After calling this function you can query details information on the result using status().
+
+**Parameters:**
+
+- `folderPath` — Path to the file to load on the filesystem.
+- `appController` — Optional pointer to an [ApplicationController](/cpp-sdk/4.5/api/classes/imfusion-applicationcontroller) instance needed to enable workspace loading support.
+- `loadOptions` — Enables you to customize the behavior or configure what file/directory types are accepted.
+
+### filesLoadedWithoutAlgorithms
+
+```cpp
+std::vector < Filesystem::Path > ImFusion::IO::FolderLoader::filesLoadedWithoutAlgorithms () const
+```
+
+*inline*
+
+Files loaded without using algorithms, typically workspaces.
+
+Paths are relative to the loaded folder.

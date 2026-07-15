@@ -1,0 +1,48 @@
+---
+title: "ImFusion::LinearRegression"
+sidebarTitle: "LinearRegression"
+description: "Class for linear regression."
+---
+
+`#include <ImFusion/Base/LinearRegression.h>`
+
+## Overview
+
+Class for linear regression.
+
+## Public Member Functions
+
+- **LinearRegression** (int dimFeatures)
+- void [train](#train) (float \*\*data, const float \*labels, size_t nData) override
+- float [predict](#predict) (const float \*data) const override
+- void **train** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; T &gt; &x, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; T &gt; &y) — Convenience method for line fitting on 2D dataset.
+- float **computeResiduals** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; T &gt; &x, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; T &gt; &y)
+- void **train** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; float &gt; &gt; &data, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; float &gt; &labels)
+- float **predict** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; float &gt; &data) const
+- virtual float [computeResiduals](#computeresiduals) (float \*\*data, const float \*labels, size_t nData) const
+
+## Member Function Documentation
+
+### train
+
+```cpp
+void ImFusion::LinearRegression::train (float ** data, const float * labels, size_t nData)
+```
+
+*override, virtual*
+
+### predict
+
+```cpp
+float ImFusion::LinearRegression::predict (const float * data) const
+```
+
+*override, virtual*
+
+### computeResiduals
+
+```cpp
+virtual float ImFusion::Regression::computeResiduals (float ** data, const float * labels, size_t nData) const
+```
+
+*virtual*

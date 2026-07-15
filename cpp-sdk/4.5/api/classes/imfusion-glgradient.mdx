@@ -1,0 +1,54 @@
+---
+title: "ImFusion::GlGradient"
+sidebarTitle: "GlGradient"
+description: "Computes the gradient of an image in pixel coordinates."
+---
+
+`#include <ImFusion/GL/GlGradient.h>`
+
+## Overview
+
+Computes the gradient of an image in pixel coordinates.
+
+Uses a Sobel filter internally.
+
+## Public Member Functions
+
+- **GlGradient** ([GL::Framebuffer](/cpp-sdk/4.5/api/classes/imfusion-gl-framebuffer) \*fbo=0) — Constructor with optional FBO to use. If no FBO is specified a private FBO is created.
+- **~GlGradient** () override — Destructor.
+- void [compute](#compute) (const [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) &imgIn, [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) &imgOut) override — Execute the filter on the image, output image needs 3 channels.
+- bool [good](#good) () const override — Return if the filter can be used, in particular if the shaders are available.
+
+## Protected Member Functions
+
+- void **initProgram** (int dim)
+
+## Protected Attributes
+
+- [GL::ImageProgram](/cpp-sdk/4.5/api/classes/imfusion-gl-imageprogram) \* **m_program**
+- int **m_dim**
+- [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) \* **m_kernelX**
+- [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) \* **m_kernelY**
+- [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) \* **m_kernelZ**
+
+## Member Function Documentation
+
+### compute
+
+```cpp
+void ImFusion::GlGradient::compute (const GlImage & imgIn, GlImage & imgOut)
+```
+
+*override, virtual*
+
+Execute the filter on the image, output image needs 3 channels.
+
+### good
+
+```cpp
+bool ImFusion::GlGradient::good () const
+```
+
+*override, virtual*
+
+Return if the filter can be used, in particular if the shaders are available.

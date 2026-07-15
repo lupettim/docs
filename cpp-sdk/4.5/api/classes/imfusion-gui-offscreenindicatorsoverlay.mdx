@@ -1,0 +1,69 @@
+---
+title: "ImFusion::GUI::OffscreenIndicatorsOverlay"
+sidebarTitle: "OffscreenIndicatorsOverlay"
+description: "The OffscreenIndicatorOverlay provides indicators to data that is outside of the current view area."
+---
+
+`#include <ImFusion/GUI/OffscreenIndicatorsOverlay.h>`
+
+## Overview
+
+The OffscreenIndicatorOverlay provides indicators to data that is outside of the current view area.
+
+The overlay fills the complete view and shows arrows at the border of the view, pointing to data that is located in that direction. Clicking on an arrow will center the view on the corresponding dataset.
+
+## Public Member Functions
+
+- [OffscreenIndicatorsOverlay](#offscreenindicatorsoverlay) ([SliceView](/cpp-sdk/4.5/api/classes/imfusion-gui-sliceview) \*view) — Creates the overlay with the corresponding interaction for the given view.
+- **OffscreenIndicatorsOverlay** ([ImageView2D](/cpp-sdk/4.5/api/classes/imfusion-imageview2d) \*view)
+- [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \* [indictorAt](#indictorat) (const vec2 &point) const — Returns the data the indicator at point refers to if any.
+- void **setHoverIndicator** ([Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data) — Highlights the indicator of data (if it has one).
+- void **gotoData** ([Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data) — Centers the view on the given data.
+- void [setVisible](#setvisible) (bool value) override — Sets the visibility of this overlay.
+- [EventResult](/cpp-sdk/4.5/api/structs/imfusion-gui-eventresult) [handleInputEvent](#handleinputevent) (const [InputEvent](/cpp-sdk/4.5/api/classes/imfusion-gui-inputevent) &event) override — Handle a user event received from the parent [View](/cpp-sdk/4.5/api/classes/imfusion-gui-view).
+
+## Constructor & Destructor Documentation
+
+### OffscreenIndicatorsOverlay
+
+```cpp
+ImFusion::GUI::OffscreenIndicatorsOverlay::OffscreenIndicatorsOverlay (SliceView * view)
+```
+
+Creates the overlay with the corresponding interaction for the given view.
+
+The overlay automatically fills the view.
+
+## Member Function Documentation
+
+### indictorAt
+
+```cpp
+Data * ImFusion::GUI::OffscreenIndicatorsOverlay::indictorAt (const vec2 & point) const
+```
+
+Returns the data the indicator at point refers to if any.
+
+The point is in pixel coordinates (i.e. [Display](/cpp-sdk/4.5/api/classes/imfusion-gui-display) coordinates). If there is no indicator at the given position, 0 is returned.
+
+### setVisible
+
+```cpp
+void ImFusion::GUI::OffscreenIndicatorsOverlay::setVisible (bool value)
+```
+
+*override, virtual*
+
+Sets the visibility of this overlay.
+
+### handleInputEvent
+
+```cpp
+EventResult ImFusion::GUI::OffscreenIndicatorsOverlay::handleInputEvent (const InputEvent & event)
+```
+
+*override, virtual*
+
+Handle a user event received from the parent [View](/cpp-sdk/4.5/api/classes/imfusion-gui-view).
+
+The default implementation is empty.

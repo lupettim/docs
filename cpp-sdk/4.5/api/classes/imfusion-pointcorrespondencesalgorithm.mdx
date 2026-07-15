@@ -1,0 +1,122 @@
+---
+title: "ImFusion::PointCorrespondencesAlgorithm"
+sidebarTitle: "PointCorrespondencesAlgorithm"
+description: "Algorithm for managing and registering point correspondences between two Data instances."
+---
+
+`#include <ImFusion/Base/PointCorrespondencesAlgorithm.h>`
+
+## Overview
+
+[Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) for managing and registering point correspondences between two [Data](/cpp-sdk/4.5/api/classes/imfusion-data) instances.
+
+## Public Member Functions
+
+- [PointsOnData](/cpp-sdk/4.5/api/classes/imfusion-pointsondata) & **firstHandler** () — The handler for the first data.
+- [PointsOnData](/cpp-sdk/4.5/api/classes/imfusion-pointsondata) & **secondHandler** () — The handler for the second data.
+- [PointCorrespondences](/cpp-sdk/4.5/api/classes/imfusion-pointcorrespondences) & **correspondences** () — The point correspondences object.
+- void [compute](#compute) () override — Performs rigid registration using the current point correspondences.
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+## Static Public Member Functions
+
+- static [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; PointCorrespondencesAlgorithm &gt; **create** ([Data](/cpp-sdk/4.5/api/classes/imfusion-data) &first, [Data](/cpp-sdk/4.5/api/classes/imfusion-data) &second) — Creates the algorithm if compatible [PointsOnData](/cpp-sdk/4.5/api/classes/imfusion-pointsondata) handlers exist for both datasets.
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=nullptr)
+- static bool [isDataCompatible](#isdatacompatible) ([Data](/cpp-sdk/4.5/api/classes/imfusion-data) &data) — Checks if there is any registered [PointsOnData](/cpp-sdk/4.5/api/classes/imfusion-pointsondata) handler compatible with the given data.
+- static [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [PointsOnData](/cpp-sdk/4.5/api/classes/imfusion-pointsondata) &gt; [createPointHandler](#createpointhandler) ([Data](/cpp-sdk/4.5/api/classes/imfusion-data) &data, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name) — Creates a [PointsOnData](/cpp-sdk/4.5/api/classes/imfusion-pointsondata) handler for the given data.
+- static [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [PointsOnDataManipulator](/cpp-sdk/4.5/api/classes/imfusion-pointsondatamanipulator) &gt; [createPointManipulator](#createpointmanipulator) ([PointsOnData](/cpp-sdk/4.5/api/classes/imfusion-pointsondata) &pod) — Creates a manipulator for the given [PointsOnData](/cpp-sdk/4.5/api/classes/imfusion-pointsondata) handler.
+- static void [registerPointsOnData](#registerpointsondata) (int priority=1) — Registers custom [PointsOnData](/cpp-sdk/4.5/api/classes/imfusion-pointsondata) and manipulator types into the factory.
+
+## Member Function Documentation
+
+### isDataCompatible
+
+```cpp
+bool ImFusion::PointCorrespondencesAlgorithm::isDataCompatible (Data & data)
+```
+
+*static*
+
+Checks if there is any registered [PointsOnData](/cpp-sdk/4.5/api/classes/imfusion-pointsondata) handler compatible with the given data.
+
+**Returns:** true if at least one compatible handler is found, false otherwise
+
+### createPointHandler
+
+```cpp
+std::shared_ptr < PointsOnData > ImFusion::PointCorrespondencesAlgorithm::createPointHandler (Data & data, const std::string & name)
+```
+
+*static*
+
+Creates a [PointsOnData](/cpp-sdk/4.5/api/classes/imfusion-pointsondata) handler for the given data.
+
+It uses registered factories to find the appropriate handler type. Returns nullptr if no compatible handler is found.
+
+### createPointManipulator
+
+```cpp
+std::unique_ptr < PointsOnDataManipulator > ImFusion::PointCorrespondencesAlgorithm::createPointManipulator (PointsOnData & pod)
+```
+
+*static*
+
+Creates a manipulator for the given [PointsOnData](/cpp-sdk/4.5/api/classes/imfusion-pointsondata) handler.
+
+It uses registered factories to find the appropriate manipulator type. Returns nullptr if no compatible manipulator is found.
+
+### registerPointsOnData
+
+```cpp
+template<class DataType, class PodType, class ManipulatorType> void ImFusion::PointCorrespondencesAlgorithm::registerPointsOnData (int priority = 1)
+```
+
+*inline, static*
+
+Registers custom [PointsOnData](/cpp-sdk/4.5/api/classes/imfusion-pointsondata) and manipulator types into the factory.
+
+The priority parameter determines which factory will be used when multiple factories are available. Higher priority values mean the factory will be used first. In case of equal priorities, the factory registered first will be used. As a general suggestion, priority should be set to the inheritance depth of the class, with 1 being a class that directly inherits from [Data](/cpp-sdk/4.5/api/classes/imfusion-data), 2 a class that inherits from B, where B inherits directly from [Data](/cpp-sdk/4.5/api/classes/imfusion-data), and so on.
+
+**Template Parameters:** | DataType | Derived type of base class [Data](/cpp-sdk/4.5/api/classes/imfusion-data) the registered [PointsOnData](/cpp-sdk/4.5/api/classes/imfusion-pointsondata) and [PointsOnDataManipulator](/cpp-sdk/4.5/api/classes/imfusion-pointsondatamanipulator) should be used for |
+| --- | --- |
+| PodType | Must be of type [PointsOnData](/cpp-sdk/4.5/api/classes/imfusion-pointsondata) that takes data of type DataType as construction parameter |
+| [Manipulator](/cpp-sdk/4.5/api/classes/imfusion-manipulator) | Must be of type [PointsOnDataManipulator](/cpp-sdk/4.5/api/classes/imfusion-pointsondatamanipulator) that takes [PointsOnData](/cpp-sdk/4.5/api/classes/imfusion-pointsondata) of type PodType as construction parameter |
+
+### compute
+
+```cpp
+void ImFusion::PointCorrespondencesAlgorithm::compute ()
+```
+
+*override, virtual*
+
+Performs rigid registration using the current point correspondences.
+
+### configure
+
+```cpp
+void ImFusion::PointCorrespondencesAlgorithm::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### configuration
+
+```cpp
+void ImFusion::PointCorrespondencesAlgorithm::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality

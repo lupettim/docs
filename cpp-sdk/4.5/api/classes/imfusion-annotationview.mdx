@@ -1,0 +1,61 @@
+---
+title: "ImFusion::AnnotationView"
+sidebarTitle: "AnnotationView"
+---
+
+## Public Member Functions
+
+- **AnnotationView** ([Project](/cpp-sdk/4.5/api/classes/imfusion-project) &p, [ProjectSortFilter](/cpp-sdk/4.5/api/classes/imfusion-projectsortfilter) &psf, [ThumbnailLoader](/cpp-sdk/4.5/api/classes/imfusion-thumbnailloader) &tl, bool reduced, QWidget \*parent)
+- void **keyPressEvent** (QKeyEvent \*event) override
+- void **keyReleaseEvent** (QKeyEvent \*event) override
+- void **mouseDoubleClickEvent** (QMouseEvent \*event) override
+- void **mouseMoveEvent** (QMouseEvent \*event) override
+- void **mousePressEvent** (QMouseEvent \*event) override
+- void **wheelEvent** (QWheelEvent \*event) override
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- [AnnotationPanel](/cpp-sdk/4.5/api/classes/imfusion-annotationpanel) \* **annotationPanel** ()
+- [GUI::RadiologyDisplay](/cpp-sdk/4.5/api/classes/imfusion-gui-radiologydisplay) \* **displayWidget** ()
+- [GUI::QtDisplayWidget](/cpp-sdk/4.5/api/classes/imfusion-gui-qtdisplaywidget) \* **qtDisplayWidget** ()
+- Ui::Annotation & **ui** ()
+- void [setGeometricAnnotationsVisible](#setgeometricannotationsvisible) (bool visible) — Show or hide all geometric annotations.
+
+## Member Function Documentation
+
+### configuration
+
+```cpp
+void ImFusion::AnnotationView::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality
+
+### configure
+
+```cpp
+void ImFusion::AnnotationView::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### setGeometricAnnotationsVisible
+
+```cpp
+void ImFusion::AnnotationView::setGeometricAnnotationsVisible (bool visible)
+```
+
+Show or hide all geometric annotations.
+
+This can be used to toggle visibility from the outside without any automatic display options or user interactions interfering.

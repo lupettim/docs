@@ -1,0 +1,156 @@
+---
+title: "ImFusion::PointsOnDataManipulator"
+sidebarTitle: "PointsOnDataManipulator"
+description: "Interface class that handles creation and manipulation of points on Data ."
+---
+
+`#include <ImFusion/GUI/PointsOnDataManipulator.h>`
+
+## Overview
+
+Interface class that handles creation and manipulation of points on [Data](/cpp-sdk/4.5/api/classes/imfusion-data).
+
+Implementations of this interface should rely on [PointsOnData](/cpp-sdk/4.5/api/classes/imfusion-pointsondata) for handling the points and react to the events emitted by it.
+
+## Classes
+
+- class [Receiver](/cpp-sdk/4.5/api/classes/imfusion-pointsondatamanipulator-receiver)
+
+## Public Member Functions
+
+- virtual void **init** ([DisplayWidgetMulti](/cpp-sdk/4.5/api/classes/imfusion-displaywidgetmulti) \*disp)
+- virtual [PointsOnData](/cpp-sdk/4.5/api/classes/imfusion-pointsondata) & [pointHandler](#pointhandler) () const =0 — Gets the underlying [PointsOnData](/cpp-sdk/4.5/api/classes/imfusion-pointsondata).
+- virtual void **startPointCreation** () — Start the interactive creation of a new point.
+- bool **isCreatingPoint** () const — Return true if it is currently creating a new point.
+- virtual void **cancelPointCreation** () — Cancel the interactive creation of a new point.
+- virtual void **exportPoints** ([AnnotationModel](/cpp-sdk/4.5/api/classes/imfusion-annotationmodel) \*annotationModel)
+- virtual void **goToPoint** (int index)
+- void [onManipulatorEvent](#onmanipulatorevent) ([Manipulator](/cpp-sdk/4.5/api/classes/imfusion-manipulator) \*src, void \*eventData) override — Called when an event occurs.
+- void **showNames** (bool show)
+- virtual void [setVisible](#setvisible) (bool visible) — Shows or hides all the points.
+- void **setPointSize** (float pointSize)
+- float **pointSize** () const
+- virtual void **setEditable** (bool editable) — Enables or disables the manipulation of points.
+- bool **isEditable** () const
+- virtual void **setPointColor** (const vec3 &color) — Set the color of all points.
+- const vec3 & **pointColor** () const
+- virtual [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [InteractiveView](/cpp-sdk/4.5/api/classes/imfusion-interactiveview) \* &gt; **pointViews** () const — Return the current views showing the points.
+- virtual void **recomputePointViews** () — Recomputes the views where points are visible and add points to those views.
+- virtual void [showVisualGuideInViews](#showvisualguideinviews) ([InteractiveObject](/cpp-sdk/4.5/api/classes/imfusion-interactiveobject) &visualGuideIObj, [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &visualGuideImg, [TransferFunction](/cpp-sdk/4.5/api/classes/imfusion-transferfunction) \*tf=nullptr)=0 — Displays visual guide in views [GlSliceView](/cpp-sdk/4.5/api/classes/imfusion-glsliceview) can properly render the [InteractiveObject](/cpp-sdk/4.5/api/classes/imfusion-interactiveobject), while other views require the [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) with transfer function.
+- virtual void **hideVisualGuideInViews** () — Hide the visual guide from views.
+- void **storeBlendingMode2DViews** ([GlSlice::BlendingMode](/cpp-sdk/4.5/api/classes/imfusion-glslice) blendingMode2DView) — Store original blending mode for 2D views.
+- void **restoreBlendingMode2DViews** ([std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [ImageView2D](/cpp-sdk/4.5/api/classes/imfusion-imageview2d) \* &gt; views2d) — Restore original blending mode for 2D views.
+- void **setListenToDisplayChanges** (bool listen=true) — Sets whether the class should listen to display changes and add the points to new views.
+- bool **isListeningToDisplayChanges** () const
+
+## Protected Member Functions
+
+- virtual void [onPointsAdded](#onpointsadded) (int first, int last) — These methods are called when the underlying [PointsOnData](/cpp-sdk/4.5/api/classes/imfusion-pointsondata) structure changes.
+- virtual void **onPointsRemoved** (int first, int last)
+- virtual void **onPointsChanged** (int first, int last)
+- virtual void **onPointsRenamed** (int first, int last)
+- virtual void [onCreatePointInteraction](#oncreatepointinteraction) (const vec3 &point)=0 — This function is called when the user creates a point. The implementation should update of the underlying [PointsOnData](/cpp-sdk/4.5/api/classes/imfusion-pointsondata) structure.
+- virtual void [onMovePointInteraction](#onmovepointinteraction) ([Manipulator](/cpp-sdk/4.5/api/classes/imfusion-manipulator) \*src)=0 — This function is called when the user moves a point. The implementation should update of the underlying [PointsOnData](/cpp-sdk/4.5/api/classes/imfusion-pointsondata) structure.
+- virtual [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [InteractiveView](/cpp-sdk/4.5/api/classes/imfusion-interactiveview) \* &gt; **availableViews** () const — Return a vector of views where the points should be shown.
+- void **removePoint** ([Interactive](/cpp-sdk/4.5/api/classes/imfusion-interactive)&lt; [GlPoint](/cpp-sdk/4.5/api/classes/imfusion-glpoint), [PointBasedAnnotationManipulator](/cpp-sdk/4.5/api/classes/imfusion-pointbasedannotationmanipulator) &gt; \*p) — Removes a specific point from all the views.
+- void **clearPendingPoint** () — Removes the temporary point used in user interaction.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [Interactive](/cpp-sdk/4.5/api/classes/imfusion-interactive)&lt; [GlPoint](/cpp-sdk/4.5/api/classes/imfusion-glpoint), [PointBasedAnnotationManipulator](/cpp-sdk/4.5/api/classes/imfusion-pointbasedannotationmanipulator) &gt; &gt; **createInteractivePoint** (const vec3 \*point=nullptr, bool interactive=true, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name="") — Creates an interactive point.
+- void **sanitizeRange** (int &first, int &last, size_t size) — Makes sure that the range [first, last) is inside the range [0, size).
+
+## Protected Attributes
+
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [Interactive](/cpp-sdk/4.5/api/classes/imfusion-interactive)&lt; [GlPoint](/cpp-sdk/4.5/api/classes/imfusion-glpoint), [PointBasedAnnotationManipulator](/cpp-sdk/4.5/api/classes/imfusion-pointbasedannotationmanipulator) &gt; &gt; **m_pendingPoint** — Pending point currently being set.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [Interactive](/cpp-sdk/4.5/api/classes/imfusion-interactive)&lt; [GlPoint](/cpp-sdk/4.5/api/classes/imfusion-glpoint), [PointBasedAnnotationManipulator](/cpp-sdk/4.5/api/classes/imfusion-pointbasedannotationmanipulator) &gt; &gt; &gt; **m_points**
+- vec3 **m_pointColor** = vec3(1.0, 0.0, 0.0)
+- float **m_pointSize** = 5.0f
+- [DisplayWidgetMulti](/cpp-sdk/4.5/api/classes/imfusion-displaywidgetmulti) \* **m_disp** = nullptr
+- bool **m_isEditable** = true
+- bool **m_showNames** = false
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [Receiver](/cpp-sdk/4.5/api/classes/imfusion-pointsondatamanipulator-receiver) &gt; **m_receiver**
+- bool **m_isListeningToDisplayChanges** = true
+- [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \* **m_visualGuideData** = nullptr — Pointer to the visual guide data.
+- [InteractiveObject](/cpp-sdk/4.5/api/classes/imfusion-interactiveobject) \* **m_visualGuideIObj** = nullptr — Pointer to the visual guide interactive object.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [GlSlice::BlendingMode](/cpp-sdk/4.5/api/classes/imfusion-glslice) &gt; **m_blendingMode2DViewsRestore** — Backup to restore blending mode for 2D views on hiding of visual guide.
+
+## Member Function Documentation
+
+### pointHandler
+
+```cpp
+virtual PointsOnData & ImFusion::PointsOnDataManipulator::pointHandler () const
+```
+
+*pure virtual*
+
+Gets the underlying [PointsOnData](/cpp-sdk/4.5/api/classes/imfusion-pointsondata).
+
+### onManipulatorEvent
+
+```cpp
+void ImFusion::PointsOnDataManipulator::onManipulatorEvent (Manipulator * src, void * eventData)
+```
+
+*override, virtual*
+
+Called when an event occurs.
+
+**Parameters:**
+
+- `src` — source of the event
+- `eventData` — pointer to event data. Zero if no event data is provided.
+
+### setVisible
+
+```cpp
+virtual void ImFusion::PointsOnDataManipulator::setVisible (bool visible)
+```
+
+*virtual*
+
+Shows or hides all the points.
+
+### showVisualGuideInViews
+
+```cpp
+virtual void ImFusion::PointsOnDataManipulator::showVisualGuideInViews (InteractiveObject & visualGuideIObj, SharedImageSet & visualGuideImg, TransferFunction * tf = nullptr)
+```
+
+*pure virtual*
+
+Displays visual guide in views [GlSliceView](/cpp-sdk/4.5/api/classes/imfusion-glsliceview) can properly render the [InteractiveObject](/cpp-sdk/4.5/api/classes/imfusion-interactiveobject), while other views require the [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) with transfer function.
+
+**Parameters:**
+
+- `visualGuideIObj` — The visual guide interactive object
+- `visualGuideImg` — The visual guide image
+- `tf` — The transfer function (optional)
+
+### onPointsAdded
+
+```cpp
+virtual void ImFusion::PointsOnDataManipulator::onPointsAdded (int first, int last)
+```
+
+*protected, virtual*
+
+These methods are called when the underlying [PointsOnData](/cpp-sdk/4.5/api/classes/imfusion-pointsondata) structure changes.
+
+### onCreatePointInteraction
+
+```cpp
+virtual void ImFusion::PointsOnDataManipulator::onCreatePointInteraction (const vec3 & point)
+```
+
+*protected, pure virtual*
+
+This function is called when the user creates a point. The implementation should update of the underlying [PointsOnData](/cpp-sdk/4.5/api/classes/imfusion-pointsondata) structure.
+
+### onMovePointInteraction
+
+```cpp
+virtual void ImFusion::PointsOnDataManipulator::onMovePointInteraction (Manipulator * src)
+```
+
+*protected, pure virtual*
+
+This function is called when the user moves a point. The implementation should update of the underlying [PointsOnData](/cpp-sdk/4.5/api/classes/imfusion-pointsondata) structure.

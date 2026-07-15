@@ -1,0 +1,86 @@
+---
+title: "ImFusion::CurveEditorManipulator"
+sidebarTitle: "CurveEditorManipulator"
+---
+
+## Public Member Functions
+
+- **CurveEditorManipulator** ([GlPointBasedAnnotation](/cpp-sdk/4.5/api/classes/imfusion-glpointbasedannotation) &annotation)
+
+## Protected Member Functions
+
+- bool [onMove](#onmove) (const [MouseEvent](/cpp-sdk/4.5/api/structs/imfusion-pointbasedannotationmanipulator-mouseevent) &event, vec3 &X, bool &update) override — Handler for mouse events in the InteractionMove mode.
+- bool [onEdit](#onedit) (const [MouseEvent](/cpp-sdk/4.5/api/structs/imfusion-pointbasedannotationmanipulator-mouseevent) &event, vec3 &X, bool &update, const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &view) override — Handler for mouse events in the InteractionEdit mode.
+- bool [onAdd](#onadd) (const [MouseEvent](/cpp-sdk/4.5/api/structs/imfusion-pointbasedannotationmanipulator-mouseevent) &event, vec3 &X, bool &update) override — Handler for mouse events in the InteractionAdd mode.
+- bool [onRemove](#onremove) (const [MouseEvent](/cpp-sdk/4.5/api/structs/imfusion-pointbasedannotationmanipulator-mouseevent) &event, vec3 &X, bool &update) override — Handler for mouse events in the InteractionRemove mode.
+- bool [sceneEvent](#sceneevent) (QEvent \*event, const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &view) override
+
+## Member Function Documentation
+
+### onMove
+
+```cpp
+bool ImFusion::CurveEditorManipulator::onMove (const MouseEvent & event, vec3 & X, bool & update)
+```
+
+*override, protected, virtual*
+
+Handler for mouse events in the InteractionMove mode.
+
+**Parameters:**
+
+- `event` — mouse event
+- `update` — true if the point set was changed (output parameter)
+
+### onEdit
+
+```cpp
+bool ImFusion::CurveEditorManipulator::onEdit (const MouseEvent & event, vec3 & X, bool & update, const GlView & view)
+```
+
+*override, protected, virtual*
+
+Handler for mouse events in the InteractionEdit mode.
+
+**Parameters:**
+
+- `event` — mouse event
+- `update` — true if the point set was changed (output parameter)
+
+### onAdd
+
+```cpp
+bool ImFusion::CurveEditorManipulator::onAdd (const MouseEvent & event, vec3 & X, bool & update)
+```
+
+*override, protected, virtual*
+
+Handler for mouse events in the InteractionAdd mode.
+
+**Parameters:**
+
+- `event` — mouse event
+- `update` — true if the point set was changed (output parameter)
+
+### onRemove
+
+```cpp
+bool ImFusion::CurveEditorManipulator::onRemove (const MouseEvent & event, vec3 & X, bool & update)
+```
+
+*override, protected, virtual*
+
+Handler for mouse events in the InteractionRemove mode.
+
+**Parameters:**
+
+- `event` — mouse event
+- `update` — true if the point set was changed (output parameter)
+
+### sceneEvent
+
+```cpp
+bool ImFusion::CurveEditorManipulator::sceneEvent (QEvent * event, const GlView & view)
+```
+
+*override, protected, virtual*

@@ -1,0 +1,55 @@
+---
+title: "ImFusion::Resource::FilesystemRepository"
+sidebarTitle: "FilesystemRepository"
+description: "Repository for loading resources from the local filesystem."
+---
+
+`#include <ImFusion/Core/Resource/FilesystemRepository.h>`
+
+## Overview
+
+[Repository](/cpp-sdk/4.5/api/classes/imfusion-resource-repository) for loading resources from the local filesystem.
+
+Maintains a set of search paths, in which it looks for matching files.
+
+**Note:** Be aware that the search paths may be different for every system. Thus, pay particular attention if you plan deploying your software to other computers than your local build system. Writing a custom [Repository](/cpp-sdk/4.5/api/classes/imfusion-resource-repository) may be the more robust alternative in such cases.
+
+## Public Member Functions
+
+- **FilesystemRepository** (const [std::string_view](http://en.cppreference.com/w/cpp/string/basic_string_view.html) &repositoryName, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Filesystem::Directory](/cpp-sdk/4.5/api/classes/imfusion-filesystem-directory) &gt; &searchPaths=&#123;&#125;) — Create a new [FilesystemRepository](/cpp-sdk/4.5/api/classes/imfusion-resource-filesystemrepository) with the given name and set of search paths.
+- void **addSearchPath** (const [Filesystem::Directory](/cpp-sdk/4.5/api/classes/imfusion-filesystem-directory) &path) — Add the given string to the list of search directories.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [name](#name) () const override — Returns the repository name to allow for namespacing in case multiple repositories are registered.
+- bool [contains](#contains) (const [std::string_view](http://en.cppreference.com/w/cpp/string/basic_string_view.html) &resourceName) const override — Checks whether this repository contains a resource of the given name.
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [ByteBuffer](/cpp-sdk/4.5/api/classes/imfusion-bytebuffer) &gt; [query](#query) (const [std::string_view](http://en.cppreference.com/w/cpp/string/basic_string_view.html) &resourceName) const override — Returns the requested resource name.
+
+## Member Function Documentation
+
+### name
+
+```cpp
+std::string ImFusion::Resource::FilesystemRepository::name () const
+```
+
+*override, virtual*
+
+Returns the repository name to allow for namespacing in case multiple repositories are registered.
+
+### contains
+
+```cpp
+bool ImFusion::Resource::FilesystemRepository::contains (const std::string_view & resourceName) const
+```
+
+*override, virtual*
+
+Checks whether this repository contains a resource of the given name.
+
+### query
+
+```cpp
+std::optional < ByteBuffer > ImFusion::Resource::FilesystemRepository::query (const std::string_view & resourceName) const
+```
+
+*override, virtual*
+
+Returns the requested resource name.

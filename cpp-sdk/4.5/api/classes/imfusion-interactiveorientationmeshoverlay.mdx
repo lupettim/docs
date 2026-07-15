@@ -1,0 +1,43 @@
+---
+title: "ImFusion::InteractiveOrientationMeshOverlay"
+sidebarTitle: "InteractiveOrientationMeshOverlay"
+description: "The InteractiveOrientationMeshOverlay class wraps a GlOrientationMeshOverlay and does not provide any interactions."
+---
+
+`#include <ImFusion/GUI/InteractiveOrientationMeshOverlay.h>`
+
+## Overview
+
+The [InteractiveOrientationMeshOverlay](/cpp-sdk/4.5/api/classes/imfusion-interactiveorientationmeshoverlay) class wraps a [GlOrientationMeshOverlay](/cpp-sdk/4.5/api/classes/imfusion-glorientationmeshoverlay) and does not provide any interactions.
+
+**See also:** [GlOrientationMeshOverlay](/cpp-sdk/4.5/api/classes/imfusion-glorientationmeshoverlay)
+
+## Public Member Functions
+
+- [InteractiveOrientationMeshOverlay](#interactiveorientationmeshoverlay) (const [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) &mesh, InteractiveView \*view, [AnchorPoint](/cpp-sdk/4.5/api/classes/imfusion-interactiveoverlay) anchor) — Constructs a new [InteractiveOrientationMeshOverlay](/cpp-sdk/4.5/api/classes/imfusion-interactiveorientationmeshoverlay) with the given mesh.
+- void [loadMesh](#loadmesh) (const [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) &mesh) — Updates the mesh of the overlay.
+- void **setBackgroundImage** ([std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) &gt; backgroundImage) — Set an optional background image to show behind the mesh.
+
+## Constructor & Destructor Documentation
+
+### InteractiveOrientationMeshOverlay
+
+```cpp
+ImFusion::InteractiveOrientationMeshOverlay::InteractiveOrientationMeshOverlay (const Mesh & mesh, InteractiveView * view, AnchorPoint anchor)
+```
+
+Constructs a new [InteractiveOrientationMeshOverlay](/cpp-sdk/4.5/api/classes/imfusion-interactiveorientationmeshoverlay) with the given mesh.
+
+The modelView matrix of view is used to determine the orientation of the mesh. This is not necessarily the anchor view, e.g. the overlay could be part of one view but display the orientation of another. The mesh is not stored and can be deleted after this call.
+
+## Member Function Documentation
+
+### loadMesh
+
+```cpp
+void ImFusion::InteractiveOrientationMeshOverlay::loadMesh (const Mesh & mesh)
+```
+
+Updates the mesh of the overlay.
+
+The mesh is not stored and can be deleted after this call.

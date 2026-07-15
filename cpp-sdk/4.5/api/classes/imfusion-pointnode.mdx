@@ -1,0 +1,76 @@
+---
+title: "ImFusion::PointNode"
+sidebarTitle: "PointNode"
+description: "Class representing a tree point node."
+---
+
+`#include <ImFusion/Base/PointTree.h>`
+
+## Overview
+
+Class representing a tree point node.
+
+## Public Member Functions
+
+- const vec3 & **point** () const
+- vec3 & **point** ()
+- void **setPoint** (const vec3 &point)
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [typeName](#typename) () const override
+- [Node](/cpp-sdk/4.5/api/classes/imfusion-node) \* [clone](#clone) () const override
+- [Geometry::AlignedBox](/cpp-sdk/4.5/api/classes/imfusion-geometry-alignedbox) [bounds](#bounds) (const mat4 &m) const override
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+## Member Function Documentation
+
+### typeName
+
+```cpp
+std::string ImFusion::PointNode::typeName () const
+```
+
+*override, virtual*
+
+### clone
+
+```cpp
+Node * ImFusion::PointNode::clone () const
+```
+
+*override, virtual*
+
+### bounds
+
+```cpp
+Geometry::AlignedBox ImFusion::PointNode::bounds (const mat4 & m) const
+```
+
+*override, virtual*
+
+### configure
+
+```cpp
+void ImFusion::PointNode::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### configuration
+
+```cpp
+void ImFusion::PointNode::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality

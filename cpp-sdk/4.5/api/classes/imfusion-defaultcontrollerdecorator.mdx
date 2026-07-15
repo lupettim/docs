@@ -1,0 +1,146 @@
+---
+title: "ImFusion::DefaultControllerDecorator"
+sidebarTitle: "DefaultControllerDecorator"
+description: "Wrapper class to decorate Controller instances and place them in the GUI of MainWindowBase using Qt Widgets."
+---
+
+`#include <ImFusion/GUI/DefaultControllerDecorator.h>`
+
+## Overview
+
+Wrapper class to decorate [Controller](/cpp-sdk/4.5/api/classes/imfusion-controller) instances and place them in the [GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui) of [MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase) using Qt Widgets.
+
+This class is designed to work with [MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase) and supports the available default locations of Controllers. Usually, you don't need to create instances of this class manually since [MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase) takes care of it.
+
+**See also:** [MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase), [Controller](/cpp-sdk/4.5/api/classes/imfusion-controller)
+
+## Public Member Functions
+
+- [DefaultControllerDecorator](#defaultcontrollerdecorator) ([Controller](/cpp-sdk/4.5/api/classes/imfusion-controller) &controller, [MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase) &mwb) — Instantiates a new container widget wrapping *controller* and placing it inside *mwb*.
+- bool [setLocation](#setlocation) ([Controller::Location](/cpp-sdk/4.5/api/classes/imfusion-controller) [location](#location)) override — Sets how the controller should be decorated and where it should be placed in the parent [MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase).
+- [Controller::Location](/cpp-sdk/4.5/api/classes/imfusion-controller) [location](#location) () const override — Returns the current location of the controller, i.e. where it is placed in the parent [MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase).
+- void [setVisible](#setvisible) (bool value) override — Sets whether the controller should be visible or hidden from the [GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui).
+- bool [isVisible](#isvisible) () const override — Returns whether the controller widget is currently visible.
+- void [setUserClosable](#setuserclosable) (bool closable) override — Sets whether the container widget should show a button to close the underlying [Controller](/cpp-sdk/4.5/api/classes/imfusion-controller).
+- bool [isUserClosable](#isuserclosable) () const override — Returns whether the container widget should show a button to close the underlying [Controller](/cpp-sdk/4.5/api/classes/imfusion-controller).
+- void **setExpanded** (bool value) — Convenience function to set whether the boxContainer() should be expanded or not.
+- bool **isExpanded** () const — Convenience function to return whether the boxContainer() is expanded or not.
+- void **setResizable** (bool value) — Convenience function to set whether the boxContainer() should be resizable or not.
+- bool **isResizable** () const — Convenience function to return whether the boxContainer() is resizable or not.
+- void **setTitleOverride** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &title) — Sets an optional text to show instead of [Controller::title()](/cpp-sdk/4.5/api/classes/imfusion-controller) in the title section.
+- [ExpandableGroupBox](/cpp-sdk/4.5/api/classes/imfusion-expandablegroupbox) \* **boxContainer** () — Returns the container widget if the location is PrimaryDock, SecondaryDock, or Detached, or nullptr otherwise.
+- QWidget \* **toolbarContainer** () — Returns the container widget if the location is ToolBar or nullptr otherwise.
+- void **addMenuActionPopulator** ([std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; void(QMenu &)&gt; func)
+- void **updateSelectDataAction** ()
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+## Static Public Member Functions
+
+- static void **resetSavedControllerLocations** () — Clears all stored controller locations from the global settings so that they are reset to their default.
+
+## Constructor & Destructor Documentation
+
+### DefaultControllerDecorator
+
+```cpp
+ImFusion::DefaultControllerDecorator::DefaultControllerDecorator (Controller & controller, MainWindowBase & mwb)
+```
+
+*explicit*
+
+Instantiates a new container widget wrapping *controller* and placing it inside *mwb*.
+
+Both references must remain valid for the lifetime of this instance.
+
+## Member Function Documentation
+
+### setLocation
+
+```cpp
+bool ImFusion::DefaultControllerDecorator::setLocation (Controller::Location location)
+```
+
+*override, virtual*
+
+Sets how the controller should be decorated and where it should be placed in the parent [MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase).
+
+Returns false if requested location could not be set (e.g. because not in [Controller::supportedLocations()](/cpp-sdk/4.5/api/classes/imfusion-controller)).
+
+### location
+
+```cpp
+Controller::Location ImFusion::DefaultControllerDecorator::location () const
+```
+
+*inline, override, virtual*
+
+Returns the current location of the controller, i.e. where it is placed in the parent [MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase).
+
+### setVisible
+
+```cpp
+void ImFusion::DefaultControllerDecorator::setVisible (bool value)
+```
+
+*override, virtual*
+
+Sets whether the controller should be visible or hidden from the [GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui).
+
+### isVisible
+
+```cpp
+bool ImFusion::DefaultControllerDecorator::isVisible () const
+```
+
+*override, virtual*
+
+Returns whether the controller widget is currently visible.
+
+### setUserClosable
+
+```cpp
+void ImFusion::DefaultControllerDecorator::setUserClosable (bool closable)
+```
+
+*override, virtual*
+
+Sets whether the container widget should show a button to close the underlying [Controller](/cpp-sdk/4.5/api/classes/imfusion-controller).
+
+### isUserClosable
+
+```cpp
+bool ImFusion::DefaultControllerDecorator::isUserClosable () const
+```
+
+*override, virtual*
+
+Returns whether the container widget should show a button to close the underlying [Controller](/cpp-sdk/4.5/api/classes/imfusion-controller).
+
+### configure
+
+```cpp
+void ImFusion::DefaultControllerDecorator::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### configuration
+
+```cpp
+void ImFusion::DefaultControllerDecorator::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality

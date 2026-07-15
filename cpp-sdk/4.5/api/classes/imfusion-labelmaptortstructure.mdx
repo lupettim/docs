@@ -1,0 +1,49 @@
+---
+title: "ImFusion::LabelMapToRTStructure"
+sidebarTitle: "LabelMapToRTStructure"
+description: "Converts a LabelMap to RTStructures."
+---
+
+`#include <ImFusion/Dicom/LabelMapToRTStructure.h>`
+
+## Overview
+
+Converts a LabelMap to RTStructures.
+
+An RTStructure is a [PointCloud](/cpp-sdk/4.5/api/classes/imfusion-pointcloud) with an [RTStructureDataComponent](/cpp-sdk/4.5/api/classes/imfusion-dicom-rtstructuredatacomponent). Per label in the input, one [PointCloud](/cpp-sdk/4.5/api/classes/imfusion-pointcloud) is generated.
+
+## Public Member Functions
+
+- **LabelMapToRTStructure** (const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*labelmap)
+- void [compute](#compute) () override — Execute the algorithm.
+- [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) [takeOutput](#takeoutput) () override — Return any new [Data](/cpp-sdk/4.5/api/classes/imfusion-data) that was created by the [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) during the last call to [compute()](#compute).
+
+## Static Public Member Functions
+
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=nullptr)
+
+## Member Function Documentation
+
+### compute
+
+```cpp
+void ImFusion::LabelMapToRTStructure::compute ()
+```
+
+*override, virtual*
+
+Execute the algorithm.
+
+### takeOutput
+
+```cpp
+OwningDataList ImFusion::LabelMapToRTStructure::takeOutput ()
+```
+
+*override, virtual*
+
+Return any new [Data](/cpp-sdk/4.5/api/classes/imfusion-data) that was created by the [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) during the last call to [compute()](#compute).
+
+The default implementation will return an empty list.
+
+**Note:** Since ownership of the data is transferred, you can call this method only once between calls to [compute()](#compute).

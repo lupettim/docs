@@ -1,0 +1,32 @@
+---
+title: "ImFusion::Network::ServerStatus"
+sidebarTitle: "ServerStatus"
+description: "Contains the status of the server (used by checkServer) i.e."
+---
+
+`#include <ImFusionLabels/lib/include/ImFusion/Labels/Core/NetworkUtils.h>`
+
+## Overview
+
+Contains the status of the server (used by checkServer) i.e.
+
+an enum and a message Also offers an implicit bool conversion operator that checks if the underlying status has the "Supported" enum value
+
+## Public Types
+
+- enum class **Status** &#123; **Unreachable** , **NotALabelsServer** , **Supported** , **VersionTooLow** , **VersionTooHigh** , **VersionWarning** &#125;
+
+## Public Member Functions
+
+- **ServerStatus** (Status s, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &message="")
+- **operator bool** () const
+- const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) & **message** () const
+- Status **status** () const
+
+## Static Public Attributes
+
+- static const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **UnreachableFormatMessage**
+- static const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **NotALabelsServerFormatMessage**
+- static const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **VersionTooLowFormatMessage**
+- static const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **VersionTooHighFormatMessage**
+- static const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **VersionWarningMessage**

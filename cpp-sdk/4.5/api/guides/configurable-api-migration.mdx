@@ -1,0 +1,110 @@
+---
+title: "Configurable/Properties API Migration Guide"
+description: "ImFusion SDK version 2.41 introduces a large refactoring and overhaul of our object serialization framework revolving around the Configurable interface and Prop"
+---
+
+ImFusion SDK version 2.41 introduces a large refactoring and overhaul of our object serialization framework revolving around the [Configurable](/cpp-sdk/4.5/api/classes/imfusion-configurable) interface and [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) class.
+
+The entire component was moved to the ImFusionCore library and the corresponding includes are now found in ImFusion/Core/... instead of ImFusion/Base/.... The majority of changes was implemented while providing a deprecation layer to facilitate migration and enabling existing code to continue working. However, at a few places an API break was the only reasonable option. This page provides you with an overview of the changes and guidelines for the migration. See also the new Object Serialization component page.
+
+The following classes and interfaces of ImFusionLib are affected:
+
+- [Configurable](/cpp-sdk/4.5/api/classes/imfusion-configurable) interface: moved to ImFusionCore and extended
+- [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) class: moved to ImFusionCore and extended
+- ParameterMixin class: deprecated, functionality has been merged into [Configurable](/cpp-sdk/4.5/api/classes/imfusion-configurable) interface
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) class: moved to ImFusionCore, API chagnes
+- free functions in Base/Utils/PropertyUtils.h header: deprecated, replaced by member functions of [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties)
+- PropertiesXML namespace: deprecated, replaced by [PropertiesIO](/cpp-sdk/4.5/api/namespaces/imfusion-propertiesio) namespace
+- PropertyFile class: deprecated, replaced by [PropertiesIO](/cpp-sdk/4.5/api/namespaces/imfusion-propertiesio) namespace
+
+### Properties::Attribute Type
+
+Previously, Properties::Attribute used to be a typedef for a [std::pair](http://en.cppreference.com/w/cpp/utility/pair.html)&lt;[std::string](http://en.cppreference.com/w/cpp/string/basic_string.html), [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html)&gt;. It has been converted into a simple struct with named fields for key and value. As a result, you must no longer use attribute.first and attribute.second to access key/value but attribute.key and attribute.value.
+
+### Properties::paramMap() Member Function
+
+The return type of the [Properties::paramMap()](/cpp-sdk/4.5/api/classes/imfusion-properties) member function has changed. It now returns a [std::map](http://en.cppreference.com/w/cpp/container/map.html)&lt;[std::string](http://en.cppreference.com/w/cpp/string/basic_string.html), Properties::Param&gt; containing all information about each stored parameter instead of a [std::map](http://en.cppreference.com/w/cpp/container/map.html)&lt;[std::string](http://en.cppreference.com/w/cpp/string/basic_string.html), [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html)&gt; only providing the parameter value. Code using this function to access parameter values needs to be adjusted:
+
+```cpp
+Properties p = ...;
+for (const auto& pair : p.paramMap())
+ LOG_INFO("value: " << pair.second);
+```
+ fragment
+becomes
+
+```cpp
+Properties p = ...;
+for (const auto& pair : p.paramMap())
+ LOG_INFO("value: " << pair.second.value);
+```
+ fragment
+
+**Note:** A linker error such as unresolved external symbol ImFusion::Properties::setParam&lt;struct ImFusion::PropertiesDetail::Param,0&gt;(...) is most probably related to this API change.
+
+### Parameter::signalValueChanged Signature
+
+[Parameter::signalValueChanged](/cpp-sdk/4.5/api/classes/imfusion-parameterbase) no longer passes the sender as signal argument. If you require access to the sender in a callback function you should capture it in the corresponding lambda instead.
+
+### Configurable interface
+
+The two virtual member functions [Configurable::configure()](/cpp-sdk/4.5/api/classes/imfusion-configurable) and [Configurable::configuration()](/cpp-sdk/4.5/api/classes/imfusion-configurable) are no longer pure virtual. Therefore, when implementing these functions in derived classes you should make sure to call be base class' version. However, this change should not break any existing code since the new base class implementation only takes care of serializing Parameters and existing classes implementing the [Configurable](/cpp-sdk/4.5/api/classes/imfusion-configurable) interface do not rely on this unless they use the ParameterMixin interface, which itself has been deprecated, see ParameterMixin&lt;T&gt;.
+
+### Parameter&lt;T&gt; base class
+
+The base class of [Parameter&lt;T&gt;](/cpp-sdk/4.5/api/classes/imfusion-parameter) is no longer Configurable but [ParameterBase](/cpp-sdk/4.5/api/classes/imfusion-parameterbase).
+
+### Moved Header Files
+
+The following header files have changed their location:
+
+- ImFusion/Base/Configurable.h moved to ImFusion/Core/Configurable.h
+- ImFusion/Base/Properties.h moved to ImFusion/Core/Properties.h
+
+### Properties Class
+
+There have been several deprecations inside the [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) class:
+
+- The addSubProperties() and insertSubProperties() member functions taking owning raw pointers have been replaced by versions taking a [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html) to model proper ownership semantics.
+- Internally, [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) now store a map of structs instead of a struct of maps. Therefore, functions such as Properties::defaultMap() or Properties::paramTypeMap() have been deprecated and replaced by [Properties::paramMap()](/cpp-sdk/4.5/api/classes/imfusion-properties) returning a map of structs encompassing all that information in one place. See als Properties::paramMap() Member Function
+- Several other member functions have been renamed and/or changed signature in order to homogenize the API. See the corresponding deprecation messages for detailed information how to follow-up on this.
+- The various typedefs such as Properties::ParamMap, Properties::ParamList have been deprecated without replacement. Write out the full type yourself or create your own alias if you need to.
+
+### ParameterMixin&lt;T&gt;
+
+The ParameterMixin&lt;T&gt; interface providing functionality to automatically serialize Parameters has been moved into the base [Configurable](/cpp-sdk/4.5/api/classes/imfusion-configurable) interface. Therefore, you should no longer inherit from this class but only from [Configurable](/cpp-sdk/4.5/api/classes/imfusion-configurable). This simplifies inheritance hierarchies and also avoids linker issues on certain platforms. The [Configurable::registerParameter()](/cpp-sdk/4.5/api/classes/imfusion-configurable) function signature has been changed to take a pointer instead of a reference.
+
+```cpp
+class MyAlgorithm : public ParameterMixin<Algorithm> {
+public:
+    Parameter<double> p_threshold = {"threshold", 42.0, *this};
+}
+```
+ fragment
+becomes
+
+```cpp
+class MyAlgorithm : public Algorithm /* Algorithm already implements Configurable */ {
+public:
+    Parameter<double> p_threshold = {"threshold", 42.0, this};
+}
+```
+ fragment
+
+**Warning:** If you were overriding configuration()/configure() and calling ParameterMixin::configuration()/configure() make sure to call Configurable::configuration()/configure() instead.
+
+### Free Functions in PropertyUtils.h
+
+The header file ImFusion/Base/Utils/PropertyUtils.h and all of its functions have been deprecated. You can find the same functionality now as member functions of the [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) class.
+
+### PropertiesXML and PropertyFile
+
+The PropertyFile class and the free functions of the PropertiesXML namespace have been deprecated. Their functionality has been merged and can now be found as free functions in the [PropertiesIO](/cpp-sdk/4.5/api/namespaces/imfusion-propertiesio) namespace.
+
+**Note:** Some very low-level PropertyFile member functions regarding Qt JSON objects have not been migrated. You have to reimplement them yourself if you want to continue using them.
+
+- [Properties::setParam()](/cpp-sdk/4.5/api/classes/imfusion-properties) and [Properties::param()](/cpp-sdk/4.5/api/classes/imfusion-properties) now have out-of-the-box support for [Filesystem::Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path) and [Filesystem::Url](/cpp-sdk/4.5/api/classes/imfusion-filesystem-url) arguments.
+- We introduced the new [SubProperty&lt;T&gt;](/cpp-sdk/4.5/api/classes/imfusion-subproperty) class for automatic serialization of nested configuration, analogous to [Parameter&lt;T](/cpp-sdk/4.5/api/classes/imfusion-parameter)&gt;.
+- Added [Parameter::removeDefault()](/cpp-sdk/4.5/api/classes/imfusion-parameter) to optionally remove the automatically defined default value for a parameter again.
+- Added [Parameter::addDeprecatedName()](/cpp-sdk/4.5/api/classes/imfusion-parameterbase) to facilitate keeping backward comaptibility when changing parameter names.
+- [PropertiesIO](/cpp-sdk/4.5/api/namespaces/imfusion-propertiesio) has a new format that supports exporting [property attributes](/cpp-sdk/4.5/api/classes/imfusion-properties) to XML.

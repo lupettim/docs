@@ -1,0 +1,43 @@
+---
+title: "ImFusion::MergeFrameBasedPointCloudsAlgorithm"
+sidebarTitle: "MergeFrameBasedPointCloudsAlgorithm"
+description: "Algorithm for merging frame-based point clouds."
+---
+
+`#include <ImFusion/Base/MergeFrameBasedPointCloudsAlgorithm.h>`
+
+## Overview
+
+[Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) for merging frame-based point clouds.
+
+## Public Member Functions
+
+- **MergeFrameBasedPointCloudsAlgorithm** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [FrameBasedPointCloud](/cpp-sdk/4.5/api/classes/imfusion-framebasedpointcloud) \* &gt; &pcs)
+- void [compute](#compute) () override — Merges the input point clouds.
+- [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) [takeOutput](#takeoutput) () override — Returns the merged output point cloud.
+
+## Static Public Member Functions
+
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=0) — Factory method to check for applicability or to create the algorithm.
+
+## Member Function Documentation
+
+### compute
+
+```cpp
+void ImFusion::MergeFrameBasedPointCloudsAlgorithm::compute ()
+```
+
+*override, virtual*
+
+Merges the input point clouds.
+
+### takeOutput
+
+```cpp
+OwningDataList ImFusion::MergeFrameBasedPointCloudsAlgorithm::takeOutput ()
+```
+
+*override, virtual*
+
+Returns the merged output point cloud.

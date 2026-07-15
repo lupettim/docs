@@ -1,0 +1,43 @@
+---
+title: "ImFusion::SignalBlocker"
+sidebarTitle: "SignalBlocker"
+description: "Convenient scope guard class to temporarily block signals/connections so that observers are not notified."
+---
+
+`#include <ImFusion/Core/Signal.h>`
+
+## Overview
+
+Convenient scope guard class to temporarily block signals/connections so that observers are not notified.
+
+This class can be used wherever you would otherwise use a pair of calls to [SignalImpl::setBlocked()](/cpp-sdk/4.5/api/classes/imfusion-signalimpl) or [SignalConnection::setBlocked()](/cpp-sdk/4.5/api/classes/imfusion-signalconnection). [SignalBlocker](/cpp-sdk/4.5/api/classes/imfusion-signalblocker) blocks signals/connections in its constructor and resets the original state on destruction.
+
+```cpp
+Signal signal;
+SignalReceiver receiver;
+auto connection = signal.connect(&receiver, ...);
+
+{
+ // will block `signal` until the end of the surrounding scope
+ SignalBlocker blocker(signal);
+}
+{
+ // will block `connection` until the end of the surrounding scope
+ SignalBlocker blocker(*connection);
+}
+{
+ // will block all connections between `receiver` and `signal` until the end of the surrounding scope
+ SignalBlocker blocker(signal, receiver);
+}
+```
+ fragment
+
+**See also:** Temporarily Blocking Notification of Observers
+
+**Examples:** [SignalSlot.cpp](/cpp-sdk/4.5/api/examples/signal-slot-8cpp).
+
+## Public Member Functions
+
+- **SignalBlocker** ([SignalBase](/cpp-sdk/4.5/api/classes/imfusion-signalbase) &signal) — Temporarily block the notification of all observers connected to *signal*.
+- **SignalBlocker** ([SignalConnection](/cpp-sdk/4.5/api/classes/imfusion-signalconnection) &connection) — Temporarily block the single signal-observer connection represented by *connection*.
+- **SignalBlocker** (const [SignalBase](/cpp-sdk/4.5/api/classes/imfusion-signalbase) &signal, const [SignalReceiver](/cpp-sdk/4.5/api/classes/imfusion-signalreceiver) &receiver) — Temporarily block all connections between *signal* and *receiver*.

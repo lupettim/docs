@@ -1,0 +1,101 @@
+---
+title: "ImFusion::PopupMenuButton"
+sidebarTitle: "PopupMenuButton"
+description: "Extension of a QToolButton to which you can add a drop-down menu."
+---
+
+`#include <ImFusion/GUI/PopupMenuButton.h>`
+
+## Overview
+
+[Extension](/cpp-sdk/4.5/api/classes/imfusion-dicom-extension) of a QToolButton to which you can add a drop-down menu.
+
+This is a mixture of a combo box and a button on a single widget. When toggling the drop down menu the user can select one of the available menu entries, which is executed directly. Furthermore, the widget saves the last selected entry and will show this as default action, which is executed when clicking on the main part of the button.
+
+To the outside, menu entries (actions) are identified by a simple string. There is no duplicate detection of action IDs implemented in this class.
+
+## Signals
+
+- void [actionTriggered](#actiontriggered) (QString actionId) — Signal emitted every time button is clicked or one of the menu entries is selected.
+
+## Public Member Functions
+
+- [PopupMenuButton](#popupmenubutton) (const QString &storageId, QWidget \*parent=nullptr) — Creates a new [PopupMenuButton](/cpp-sdk/4.5/api/classes/imfusion-popupmenubutton) using the.
+- **~PopupMenuButton** () override — Default destructor.
+- void [addAction](#addaction) (const QString &title, const QString &actionId, bool setAsDefaultAction=false) — Add an action to the drop down menu of this button.
+- void [setActionEnabled](#setactionenabled) (const QString &actionId, bool enabledState) — Sets the enabled state of the given action.
+- const QString & **currentActionId** () const — Return the ID of the currently selected default action.
+
+## Protected Slots
+
+- virtual void **onAction** (bool)
+
+## Protected Member Functions
+
+- void **storeDefault** (const QString &id)
+- QString **retrieveDefault** () const
+
+## Protected Attributes
+
+- QMenu \* **m_menu**
+- [std::map](http://en.cppreference.com/w/cpp/container/map.html)&lt; QAction \*, QString &gt; **m_actions**
+- QString **m_storageId**
+- QString **m_currentActionId**
+
+## Constructor & Destructor Documentation
+
+### PopupMenuButton
+
+```cpp
+ImFusion::PopupMenuButton::PopupMenuButton (const QString & storageId, QWidget * parent = nullptr)
+```
+
+Creates a new [PopupMenuButton](/cpp-sdk/4.5/api/classes/imfusion-popupmenubutton) using the.
+
+**Parameters:**
+
+- `storageId` — [String](/cpp-sdk/4.5/api/namespaces/imfusion-string) to use as key for storing the default action in QSettings If *storageId* is empty, the selected default action will not be written to QSettings.
+- `parent` — Parent widget
+
+## Member Function Documentation
+
+### addAction
+
+```cpp
+void ImFusion::PopupMenuButton::addAction (const QString & title, const QString & actionId, bool setAsDefaultAction = false)
+```
+
+Add an action to the drop down menu of this button.
+
+**Parameters:**
+
+- `title` — Text that is shown in the menu for this item.
+- `actionId` — [String](/cpp-sdk/4.5/api/namespaces/imfusion-string) ID to reference this action.
+- `setAsDefaultAction` — Flag whether to use this action as default entry.
+
+### setActionEnabled
+
+```cpp
+void ImFusion::PopupMenuButton::setActionEnabled (const QString & actionId, bool enabledState)
+```
+
+Sets the enabled state of the given action.
+
+**Parameters:**
+
+- `actionId` — [String](/cpp-sdk/4.5/api/namespaces/imfusion-string) ID of the action to modify
+- `enabledState` — Enabled state of the corresponding action
+
+### actionTriggered
+
+```cpp
+void ImFusion::PopupMenuButton::actionTriggered (QString actionId)
+```
+
+*signal*
+
+Signal emitted every time button is clicked or one of the menu entries is selected.
+
+**Parameters:**
+
+- `actionId` — [String](/cpp-sdk/4.5/api/namespaces/imfusion-string) ID of the selected action as provided in *[addAction()](#addaction)*.

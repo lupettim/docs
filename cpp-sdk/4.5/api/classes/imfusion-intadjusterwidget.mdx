@@ -1,0 +1,55 @@
+---
+title: "ImFusion::IntAdjusterWidget"
+sidebarTitle: "IntAdjusterWidget"
+description: "Widget combining a slider with a spin box for configuring integer values."
+---
+
+`#include <ImFusion/GUI/CoreWidgets/AdjusterWidget.h>`
+
+## Overview
+
+Widget combining a slider with a spin box for configuring integer values.
+
+## Signals
+
+- void [valueChanged](#valuechanged) (int [value](/cpp-sdk/4.5/api/classes/imfusion-adjusterwidgetbase)) — This signal is emitted whenever the adjuster's value is changed.
+
+## Public Member Functions
+
+- [IntAdjusterWidget](#intadjusterwidget) (int [minimum](/cpp-sdk/4.5/api/classes/imfusion-adjusterwidgetbase), int [maximum](/cpp-sdk/4.5/api/classes/imfusion-adjusterwidgetbase), int [singleStep](/cpp-sdk/4.5/api/classes/imfusion-adjusterwidgetbase)=1, QWidget \*parent=nullptr) — Creates a new [IntAdjusterWidget](/cpp-sdk/4.5/api/classes/imfusion-intadjusterwidget).
+- **IntAdjusterWidget** (QWidget \*parent=nullptr) — Creates a new [IntAdjusterWidget](/cpp-sdk/4.5/api/classes/imfusion-intadjusterwidget) with minimum of 0, maximum of 99 and singleStep of 1.
+
+## Protected Slots
+
+- void **onSpinBoxValueChanged** (int [value](/cpp-sdk/4.5/api/classes/imfusion-adjusterwidgetbase)) — Slot getting called when the spin box's value changes.
+- void **onSliderValueChanged** (int [value](/cpp-sdk/4.5/api/classes/imfusion-adjusterwidgetbase)) — Slot getting called when the slider's value changes.
+
+## Constructor & Destructor Documentation
+
+### IntAdjusterWidget
+
+```cpp
+ImFusion::IntAdjusterWidget::IntAdjusterWidget (int minimum, int maximum, int singleStep = 1, QWidget * parent = nullptr)
+```
+
+Creates a new [IntAdjusterWidget](/cpp-sdk/4.5/api/classes/imfusion-intadjusterwidget).
+
+**Parameters:**
+
+- `parent` — Parent Qt widget
+
+## Member Function Documentation
+
+### valueChanged
+
+```cpp
+void ImFusion::IntAdjusterWidget::valueChanged (int value)
+```
+
+*signal*
+
+This signal is emitted whenever the adjuster's value is changed.
+
+**Parameters:**
+
+- `value` — New value of the adjuster

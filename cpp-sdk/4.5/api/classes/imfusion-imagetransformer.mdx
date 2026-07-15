@@ -1,0 +1,62 @@
+---
+title: "ImFusion::ImageTransformer"
+sidebarTitle: "ImageTransformer"
+description: "The ImageTransformer class provides a generic way of transforming from the pixel coordinates of one image to the pixel coordinates of another image including an"
+---
+
+`#include <ImFusion/Reg/ImageTransformer.h>`
+
+## Overview
+
+The [ImageTransformer](/cpp-sdk/4.5/api/classes/imfusion-imagetransformer) class provides a generic way of transforming from the pixel coordinates of one image to the pixel coordinates of another image including any world transformations.
+
+It also provides a GLSL shader include (see ImageTransformations.glh). Currently supports linear transformations ([SharedImage::matrix](/cpp-sdk/4.5/api/classes/imfusion-sharedimage)) and deformations ([SharedImage::deformation](/cpp-sdk/4.5/api/classes/imfusion-sharedimage)).
+
+## Public Member Functions
+
+- **ImageTransformer** ([SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*img1, [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*img2) — Creates an ImageTransform to transfer from img1 pixel coordinates to img2 pixel coordinates.
+- void **setImage1** ([SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*img)
+- [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \* **image1** () const
+- void **setImage2** ([SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*img)
+- [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \* **image2** () const
+- vec3 **getMovingCoord** (vec3 img1PixelCoords) const — Transforms the given pixel coordinates of img1 into pixel coordinates of img2.
+- void [warpMoving](#warpmoving-1-2) ([SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*output, int device) const — Samples img2 into output including any transformations.
+- [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \* [warpMoving](#warpmoving-2-2) (int device) const — Convenient method that creates a new image with the same size as img1 and calls warpMoving(SharedImage\*, int).
+
+## Static Public Member Functions
+
+- static void [initShaderInclude](#initshaderinclude) (const ImageTransformer \*t, [GL::Program](/cpp-sdk/4.5/api/classes/imfusion-gl-program) \*p) — Initializes all uniforms required by the [ImageTransformer](/cpp-sdk/4.5/api/classes/imfusion-imagetransformer).
+
+## Member Function Documentation
+
+### initShaderInclude
+
+```cpp
+void ImFusion::ImageTransformer::initShaderInclude (const ImageTransformer * t, GL::Program * p)
+```
+
+*static*
+
+Initializes all uniforms required by the [ImageTransformer](/cpp-sdk/4.5/api/classes/imfusion-imagetransformer).
+
+If t is null, default values will be set. If you include the ImageTransformations.glh header, you should ALWAYS call this method, otherwise samplers in p and samplers in the header can collide! This method may trigger a rebuild of the shader which also resets all previous that uniforms. Therefore this method should be called right after the program is enabled and before any setUniform or other calls.
+
+### warpMoving
+
+```cpp
+void ImFusion::ImageTransformer::warpMoving (SharedImage * output, int device) const
+```
+
+Samples img2 into output including any transformations.
+
+TODO: for now output must have the same size as img1 TODO: device is ignored for now (always uses OpenGL)
+
+### warpMoving
+
+```cpp
+SharedImage * ImFusion::ImageTransformer::warpMoving (int device) const
+```
+
+Convenient method that creates a new image with the same size as img1 and calls warpMoving(SharedImage\*, int).
+
+The created image will have the same type and number of channels as img1 but the extent of img1. The caller is responsable for deleting the returned image.

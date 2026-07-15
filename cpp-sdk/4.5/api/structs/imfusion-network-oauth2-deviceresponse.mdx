@@ -1,0 +1,20 @@
+---
+title: "ImFusion::Network::OAuth2::DeviceResponse"
+sidebarTitle: "DeviceResponse"
+description: "Response of the authEndpoint that starts the flow."
+---
+
+`#include <ImFusion/Base/OAuth2.h>`
+
+## Overview
+
+[Response](/cpp-sdk/4.5/api/structs/imfusion-network-response) of the authEndpoint that starts the flow.
+
+## Public Attributes
+
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **deviceCode** — Internal code that will be send to the tokenEndpoint.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **userCode** — Code that the user needs to enter in the page behind the verificationUri.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **verificationUri** — URL that the user needs to visit in their browser.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **verificationUriComplete** — Same as verificationUri, but includes the userCode as query so that the user doesn't have to enter it manually (value is optional according to OAuth2).
+- int **interval** — Interval in seconds the client should query the server for an access token.
+- int **expiresIn** — Number of seconds before the deviceCode and userCode expires.

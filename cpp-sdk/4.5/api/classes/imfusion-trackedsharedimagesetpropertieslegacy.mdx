@@ -1,0 +1,120 @@
+---
+title: "ImFusion::TrackedSharedImageSetPropertiesLegacy"
+sidebarTitle: "TrackedSharedImageSetPropertiesLegacy"
+description: "Dialog for adjusting properties of a tracked shared image set."
+---
+
+`#include <ImFusion/GUI/TrackedSharedImageSetPropertiesLegacy.h>`
+
+## Overview
+
+Dialog for adjusting properties of a tracked shared image set.
+
+## Public Slots
+
+- virtual void **updateGUI** () — Update [GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui) from image set information.
+- virtual void **setSizeX** (double val) — Change the horizontal image size, to be overridden when it makes sense.
+- virtual void **setSizeY** (double val) — Change the vertical image size, to be overridden when it makes sense.
+- void **setTemporal** (double val) — Change of the temporal offset.
+- void **setUseTimestamps** (bool flag) — Denote if the tracking timestamps should be used for pose interpolation.
+- void **setApplyTempCalibToAll** (bool flag) — Denote if the temporal calibration should be applied to all trackings streams.
+- void **applyTimestampsFromDataComponent** () — Applies either arrival or device timestamps from data components.
+- void **setCenterReg** () — Adjust registration pose to center of tracking sequence.
+- void **setTrackingStream** (int which)
+- void **setTrackingInvert** (bool flag)
+- void **setTrackingRelativeEnabled** (bool flag)
+- void **setTrackingRelativeToFirst** (bool flag)
+- void **setTrackingRelative** (int which)
+- void **onShowAllTrackings** (bool show)
+- void **onDeleteTrackingStream** ()
+- void **onEquiTimestamp** ()
+- void **setFilterMode** (int val)
+- void **setFilterSize** (int val)
+- void **setFilterGaussian** (bool flag)
+- void **setFilterTime** (bool flag)
+- void **setFilterBalance** (bool flag)
+- void **setMaxTimestepBetweenSamplesMode** (int val) — Set the timestep between samples based on the criteria selection.
+- void **setMaxTimestepBetweenSamplesMode** () — Set the timestep between samples based on the spinbox value.
+- void **updateTrackingMetadata** () — Update tracking instrument name, ID, model.
+- virtual void **propertiesTabChanged** (int val) — Called when tab is changed.
+- void **buttonBoxClicked** (QAbstractButton \*button) — Resolve which button has been clicked.
+
+## Signals
+
+- void **imageSetPropertiesChanged** ([TrackedSharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-trackedsharedimageset) \*tsis) — Emitted when something has changed.
+
+## Public Member Functions
+
+- **TrackedSharedImageSetPropertiesLegacy** ([TrackedSharedImageSetPropertiesAlgorithm](/cpp-sdk/4.5/api/classes/imfusion-trackedsharedimagesetpropertiesalgorithm) \*alg) — Constructor, backs up original values of the image set.
+- **~TrackedSharedImageSetPropertiesLegacy** () override — Destructor.
+- void [init](#init) () override — Initialization method of algorithm controller.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Location](/cpp-sdk/4.5/api/classes/imfusion-controller) &gt; [supportedLocations](#supportedlocations) () const override — Returns the list of locations in which this controller is allowed to be placed by the parent [MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase).
+- [Location](/cpp-sdk/4.5/api/classes/imfusion-controller) [preferredLocation](#preferredlocation) () const override — Returns the preferred location in which the parent [MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase) should place this controller.
+- void **onTransformationChanged** (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data) — The registration matrix may change from outside, this is handled here.
+
+## Protected Member Functions
+
+- void **accept** () override — Accept the dialog.
+- void **reject** () override — Cancel the dialog, restoring original properties.
+- void **reset** () — Reset all values to original ones.
+- virtual void **emitImageSetPropertiesChangedSignal** () — Emits imageSetPropertiesChanged and possibly other signals with derived classes.
+- virtual void **updateCal** (const mat4 &mat) — Update calibration pose and issue parent window redraw.
+- void **updateReg** (const mat4 &mat) — Update registration pose and issue parent window redraw.
+- virtual void **resetValues** () — Used both by reset and reject.
+- QWidget \* **addTab** (QString objectName, QString caption) — Adds an additional tab, for instance for US geometry information in a derived class.
+- void **setInstrumentDataSilent** ([TrackingInstrument](/cpp-sdk/4.5/api/classes/imfusion-trackinginstrument) \*ti, bool enabled) — Provides access to tracking instrument text boxes for derived classes.
+- void **setImageSizeDataSilent** (double sizeX, double sizeY) — Provides access to image size text boxes for derived classes.
+- void **setErrorLabelText** (QString text) — Provides access to error label for derived classes.
+- QHBoxLayout \* **regTabButtonContainer** () — Provides access to the container holding registration buttons for derived classes.
+- virtual [TransformationMatrixWidget](/cpp-sdk/4.5/api/classes/imfusion-transformationmatrixwidget) \* **createCalibrationMatrixWidget** (QWidget \*parent) — Creates the calibration matrix widget (needed as virtual function so that it can be overridden by SweepProperties).
+- virtual void **updateCalibrationGUI** () — Updates the calibration part of the [GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui).
+
+## Protected Attributes
+
+- [TransformationMatrixWidget](/cpp-sdk/4.5/api/classes/imfusion-transformationmatrixwidget) \* **m_calibMatWidget** = nullptr
+- [TransformationMatrixWidget](/cpp-sdk/4.5/api/classes/imfusion-transformationmatrixwidget) \* **m_regMatWidget** = nullptr
+- mat4 **m_calOrig** = mat4::Identity() — Original calibration matrix.
+- mat4 **m_regOrig** = mat4::Identity() — Original registration matrix.
+- double **m_temporalOrig** = 0. — Original temporal offset (lag).
+- bool **m_useTSOrig** = true — Original timestamp usage flag.
+- [TrackerID](/cpp-sdk/4.5/api/classes/imfusion-trackerid) **m_trackerIDOrig** — Original [TrackerID](/cpp-sdk/4.5/api/classes/imfusion-trackerid) of the instrument.
+- [TrackingSequence](/cpp-sdk/4.5/api/classes/imfusion-trackingsequence) \* **m_tracking** = nullptr — Tracking instance.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [TrackingSequence](/cpp-sdk/4.5/api/classes/imfusion-trackingsequence) \* &gt; **m_trackingAll** — Active tracking instances of all TrackedSharedImageSets.
+- [TrackedSharedImageSetPropertiesAlgorithm](/cpp-sdk/4.5/api/classes/imfusion-trackedsharedimagesetpropertiesalgorithm) \* **m_alg** = nullptr — [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) instance.
+- bool **m_changedHere** = false
+
+## Member Function Documentation
+
+### init
+
+```cpp
+void ImFusion::TrackedSharedImageSetPropertiesLegacy::init ()
+```
+
+*override, virtual*
+
+Initialization method of algorithm controller.
+
+### supportedLocations
+
+```cpp
+std::vector < Location > ImFusion::TrackedSharedImageSetPropertiesLegacy::supportedLocations () const
+```
+
+*inline, override, virtual*
+
+Returns the list of locations in which this controller is allowed to be placed by the parent [MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase).
+
+If the controller should not be placed/wrapped by the host but stand by itself you should return a list containing only [Location::Naked](/cpp-sdk/4.5/api/classes/imfusion-controller).
+
+### preferredLocation
+
+```cpp
+Location ImFusion::TrackedSharedImageSetPropertiesLegacy::preferredLocation () const
+```
+
+*inline, override, virtual*
+
+Returns the preferred location in which the parent [MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase) should place this controller.
+
+If the controller should not be placed/wrapped by the host but stand by itself you should return [Location::Naked](/cpp-sdk/4.5/api/classes/imfusion-controller).

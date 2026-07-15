@@ -1,0 +1,217 @@
+---
+title: "ImFusion::Dicom::Utils"
+sidebarTitle: "Utils"
+description: "Collection of utility functions to handle DICOM data."
+---
+
+## Overview
+
+Collection of utility functions to handle DICOM data.
+
+## Classes
+
+- struct [DcmTagKeyStlComp](/cpp-sdk/4.5/api/structs/imfusion-dicom-utils-dcmtagkeystlcomp)
+- struct [UrlQueries](/cpp-sdk/4.5/api/structs/imfusion-dicom-utils-urlqueries)
+
+## Typedefs
+
+- using **Url** = [Filesystem::Url](/cpp-sdk/4.5/api/classes/imfusion-filesystem-url)
+
+## Functions
+
+- void [anonymize](#anonymize-1-2) (DcmDataset &dataset, const [std::map](http://en.cppreference.com/w/cpp/container/map.html)&lt; [TagProxy](/cpp-sdk/4.5/api/structs/imfusion-dicom-tagproxy), [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; &profile, bool keepPrivateTags=false) — Removes patient related information from the dataset as using a custom confidentiality profile.
+- void **anonymize** (DcmDataset &dataset, AnonymizationProfile profile, bool keepPrivateTags=false) — Calls [anonymize](#anonymize-1-2) with the appropriate profile map.
+- bool **computeTransformation** (const [Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element)&lt; [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; &gt; &imagePositionPatient, const [Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element)&lt; [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; &gt; &imageOrientationPatient, const [ImageDescriptor](/cpp-sdk/4.5/api/structs/imfusion-imagedescriptor) &desc, mat4 &matrixOut, const [ErrorRecorder](/cpp-sdk/4.5/api/classes/imfusion-dicom-errorrecorder) \*errorRecorder=nullptr) — Computes the image matrix according to imagePositionPatient and imageOrientationPatient.
+- bool **saveTransformation** ([std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; &imagePositionPatient, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; &imageOrientationPatient, const [ImageDescriptor](/cpp-sdk/4.5/api/structs/imfusion-imagedescriptor) &desc, const mat4 &matrix, int sliceIndex) — Saves the image matrix for the given slice in imagePositionPatient and imageOrientationPatient.
+- bool **saveTransformation** ([Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element)&lt; [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; &gt; &imagePositionPatient, [Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element)&lt; [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; &gt; &imageOrientationPatient, const [ImageDescriptor](/cpp-sdk/4.5/api/structs/imfusion-imagedescriptor) &desc, const mat4 &matrix, int sliceIndex) — Saves the image matrix for the given slice in imagePositionPatient and imageOrientationPatient.
+- bool [assignToSequence](#assigntosequence) (DcmItem &dataset, [ElementList](/cpp-sdk/4.5/api/classes/imfusion-dicom-elementlist) &elementList, DcmTagKey sequenceTag, [ErrorRecorder](/cpp-sdk/4.5/api/classes/imfusion-dicom-errorrecorder) \*errorRecorder=nullptr) — Assigns the given sequence as [ElementBase::setTargetSequence](/cpp-sdk/4.5/api/classes/imfusion-dicom-elementbase) to all elements of the given list.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; T &gt; **splitString** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &valuesString)
+- [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; DcmDataset &gt; **datasetFromBuffer** (const void \*buf, size_t size)
+- bool **hasDicomHeader** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &path) — Checks if the file contains a DICOM header.
+- bool **hasDicomHeader** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; char &gt; &data)
+- bool **hasDicomHeader** (const char \*data, size_t size)
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [generateUID](#generateuid) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &prefix="") — Generates a new UID.
+- [std::tuple](http://en.cppreference.com/w/cpp/utility/tuple.html)&lt; [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; date::year_month_day &gt;, [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [Dicom::Error](/cpp-sdk/4.5/api/structs/imfusion-dicom-error) &gt; &gt; [parseDICOMDate](#parsedicomdate) ([std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) str) — Converts the string to a date.
+- [std::tuple](http://en.cppreference.com/w/cpp/utility/tuple.html)&lt; [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [std::chrono::microseconds](http://en.cppreference.com/w/cpp/chrono/duration.html) &gt;, [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [Dicom::Error](/cpp-sdk/4.5/api/structs/imfusion-dicom-error) &gt; &gt; [parseDICOMTime](#parsedicomtime) ([std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) str) — Converts the string to a point in time.
+- [std::tuple](http://en.cppreference.com/w/cpp/utility/tuple.html)&lt; [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; std::chrono::system_clock::time_point &gt;, [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [Dicom::Error](/cpp-sdk/4.5/api/structs/imfusion-dicom-error) &gt; &gt; [parseDICOMDateTime](#parsedicomdatetime) ([std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) str) — Converts the string to a date time.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [parseDICOMSex](#parsedicomsex) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &str) — Converts the DICOM sex string M, F or O to male, female or other.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [formatDICOMDate](#formatdicomdate) (const date::year_month_day &date) — Converts a date to a DICOM DA value.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [formatDICOMTime](#formatdicomtime) ([std::chrono::microseconds](http://en.cppreference.com/w/cpp/chrono/duration.html) time) — Converts a point in time to a DICOM TM value.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **formatStr** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &str) — Replaces all ^ with spaces and trims surround whitespaces.
+- void [convertPropertiesToDataset](#convertpropertiestodataset) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) &pr, DcmItem &parent) — Recursively writes the DICOM tags specified in a Property into a DcmItem Params are converted into tags, by looking up their name as keyword; their content is dumped as-is into the tag.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) &gt; [generatePreview](#generatepreview) (DcmDataset &dataset, bool copyDataset=false, [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; int &gt; frameIndex=std::nullopt) — Generates a preview of the given DICOM.
+- void [anonymize](#anonymize-2-2) (DcmDataset &dataset, bool keepPrivateTags=false) — Removes all patient related information from the dataset as specified in the DICOM Basic Confidentiality Profile with the Retain UIDs Option.
+- [Filesystem::Url](/cpp-sdk/4.5/api/classes/imfusion-filesystem-url) [parseUserInput](#parseuserinput) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &path) — Parses the given path and converts it to the best matching Url.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [checkDicomWebUrlWarnings](#checkdicomweburlwarnings) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &url) — Checks whether the given url has potential issues when used with DICOMweb.
+- [UrlQueries](/cpp-sdk/4.5/api/structs/imfusion-dicom-utils-urlqueries) [parseUrlQueries](#parseurlqueries) (const [Filesystem::Url](/cpp-sdk/4.5/api/classes/imfusion-filesystem-url) &url) — Extracts supported queries from the given url.
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **queryElement** (DcmItem &item, [TagProxy](/cpp-sdk/4.5/api/structs/imfusion-dicom-tagproxy) tag) — Helper function to query the string representation of any [Dicom](/cpp-sdk/4.5/api/namespaces/imfusion-dicom) Tag.
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **queryElement** (DcmDataset &dataset, [TagProxy](/cpp-sdk/4.5/api/structs/imfusion-dicom-tagproxy) tag) — Helper function to query the string representation of any [Dicom](/cpp-sdk/4.5/api/namespaces/imfusion-dicom) Tag.
+- void **setDcmLogLevel** (ImFusion::Log::Level level) — Set the log level of the DCMTK library.
+
+## Variables
+
+- const [std::set](http://en.cppreference.com/w/cpp/container/set.html)&lt; DcmTagKey, [DcmTagKeyStlComp](/cpp-sdk/4.5/api/structs/imfusion-dicom-utils-dcmtagkeystlcomp) &gt; **readOnlyTags** — List of all tags that should be considered read only when modifying a DcmDataset from outside an [IOD](/cpp-sdk/4.5/api/classes/imfusion-dicom-iod) (like Rows, Columns, SOPClassUID...).
+
+## Function Documentation
+
+### anonymize
+
+```cpp
+void ImFusion::Dicom::Utils::anonymize (DcmDataset & dataset, const std::map < TagProxy, std::string > & profile, bool keepPrivateTags = false)
+```
+
+Removes patient related information from the dataset as using a custom confidentiality profile.
+
+**Note:** This method is threadsafe but not reentrant.
+
+### assignToSequence
+
+```cpp
+bool ImFusion::Dicom::Utils::assignToSequence (DcmItem & dataset, ElementList & elementList, DcmTagKey sequenceTag, ErrorRecorder * errorRecorder = nullptr)
+```
+
+Assigns the given sequence as [ElementBase::setTargetSequence](/cpp-sdk/4.5/api/classes/imfusion-dicom-elementbase) to all elements of the given list.
+
+If the sequence does not exist yet, it is created. Always uses the first item in the sequence.
+
+### generateUID
+
+```cpp
+std::string ImFusion::Dicom::Utils::generateUID (const std::string & prefix = "")
+```
+
+Generates a new UID.
+
+See dcmGenerateUniqueIdentifier for details. If the prefix is empty, IMFUSION_INSTANCE_UID_ROOT is used.
+
+### parseDICOMDate
+
+```cpp
+std::tuple < std::optional < date::year_month_day >, std::optional < Dicom::Error > > ImFusion::Dicom::Utils::parseDICOMDate (std::string str)
+```
+
+Converts the string to a date.
+
+Aside from the standard DICOM format yyyyMMdd, it will also try the following formats (in that order): yyMMdd, ddMMyyyy, ddMMyy The first format producing a valid date is used. If no format is working, no date and an error is returned. A warning will be returned if a non-standard format is found.
+
+[http://dicom.nema.org/dicom/2013/output/chtml/part05/sect_6.2.html](http://dicom.nema.org/dicom/2013/output/chtml/part05/sect_6.2.html)
+
+### parseDICOMTime
+
+```cpp
+std::tuple < std::optional < std::chrono::microseconds >, std::optional < Dicom::Error > > ImFusion::Dicom::Utils::parseDICOMTime (std::string str)
+```
+
+Converts the string to a point in time.
+
+If a non-standardised time is parsed, an InvalidElementValue warning will be added to errorOut. If a time cannot be parsed at all, an InvalidElementValue error will be added to errorOut and an empty value is returned. [http://dicom.nema.org/dicom/2013/output/chtml/part05/sect_6.2.html](http://dicom.nema.org/dicom/2013/output/chtml/part05/sect_6.2.html)
+
+### parseDICOMDateTime
+
+```cpp
+std::tuple < std::optional < std::chrono::system_clock::time_point >, std::optional < Dicom::Error > > ImFusion::Dicom::Utils::parseDICOMDateTime (std::string str)
+```
+
+Converts the string to a date time.
+
+We currently don't support all allowed combinations. Especially omitting parts but still specify a timezone is not well supported. The timezone is always converted to UTC. [http://dicom.nema.org/dicom/2013/output/chtml/part05/sect_6.2.html](http://dicom.nema.org/dicom/2013/output/chtml/part05/sect_6.2.html)
+
+### parseDICOMSex
+
+```cpp
+std::string ImFusion::Dicom::Utils::parseDICOMSex (const std::string & str)
+```
+
+Converts the DICOM sex string M, F or O to male, female or other.
+
+Any other string is returned unchanged.
+
+### formatDICOMDate
+
+```cpp
+std::string ImFusion::Dicom::Utils::formatDICOMDate (const date::year_month_day & date)
+```
+
+Converts a date to a DICOM DA value.
+
+The format is always YYYYMMDD. If the given date is invalid, an empty string is returned.
+
+### formatDICOMTime
+
+```cpp
+std::string ImFusion::Dicom::Utils::formatDICOMTime (std::chrono::microseconds time)
+```
+
+Converts a point in time to a DICOM TM value.
+
+The format is always HHMMSS.FFFFFF or HHMMSS in case the second part is only zeros.
+
+### convertPropertiesToDataset
+
+```cpp
+void ImFusion::Dicom::Utils::convertPropertiesToDataset (const Properties & pr, DcmItem & parent)
+```
+
+Recursively writes the DICOM tags specified in a Property into a DcmItem Params are converted into tags, by looking up their name as keyword; their content is dumped as-is into the tag.
+
+No validity control is performed. Nested subproperties are converted into DICOM sequences. Their name should also be a valid DICOM tag with SQ representation. Each contained param is converted into a tag, and each contained subproperty is converted into a nested sequence.
+
+### generatePreview
+
+```cpp
+std::unique_ptr < MemImage > ImFusion::Dicom::Utils::generatePreview (DcmDataset & dataset, bool copyDataset = false, std::optional < int > frameIndex = std::nullopt)
+```
+
+Generates a preview of the given DICOM.
+
+Returns nullptr if the thumbnail could not be generated.
+
+If the DICOM contains multiple frames will either use the frame indicated by RepresentativeFrameNumber or the middle frame as a fallback (the middle frame is not necessary the middle frame of the final volume!).
+
+The returned image is always 8bit grayscale or RGB. The width and height is always the original columns and rows of the DICOM.
+
+Optionally clones the given dataset. This is recommended when this function is called from another thread since DcmDataset isn't entirely thread-safe. For multi-frame dicom a specific frameIndex can be optionally selected
+
+### anonymize
+
+```cpp
+void ImFusion::Dicom::Utils::anonymize (DcmDataset & dataset, bool keepPrivateTags = false)
+```
+
+Removes all patient related information from the dataset as specified in the DICOM Basic Confidentiality Profile with the Retain UIDs Option.
+
+This may not remove all information e.g. from private tags! If keepPrivateTags is set, no private tags are removed.
+
+**Note:** This method is threadsafe but not reentrant.
+
+**See also:** PS3.15 Annex E [Table](/cpp-sdk/4.5/api/classes/imfusion-table) E.1-1 ([http://dicom.nema.org/medical/dicom/current/output/chtml/part15/chapter_E.html](http://dicom.nema.org/medical/dicom/current/output/chtml/part15/chapter_E.html))
+
+### parseUserInput
+
+```cpp
+Filesystem::Url ImFusion::Dicom::Utils::parseUserInput (const std::string & path)
+```
+
+Parses the given path and converts it to the best matching Url.
+
+If path is already a valid URL including a scheme of either file:// or pacs://, it will be returned unchanged. If path does not contain a valid URL scheme, it will be interpreted as file path and converted into a file:// URL interpreting an optional ? as query delimiter. Both absolute and relative paths are supported.
+
+### checkDicomWebUrlWarnings
+
+```cpp
+std::string ImFusion::Dicom::Utils::checkDicomWebUrlWarnings (const std::string & url)
+```
+
+Checks whether the given url has potential issues when used with DICOMweb.
+
+This includes the scheme not being http(s) or the path containing already the /studies endpoint which is added automatically. Returns an empty string if there is no warning.
+
+### parseUrlQueries
+
+```cpp
+UrlQueries ImFusion::Dicom::Utils::parseUrlQueries (const Filesystem::Url & url)
+```
+
+Extracts supported queries from the given url.
+
+If the query is not using a key-value format, it is parsed as a single seriesUID and no studyUID. Otherwise, the 'series' and 'study' keys are parsed. All other keys are ignored. The sopInstanceUID is parsed from the fragment part of the URL.

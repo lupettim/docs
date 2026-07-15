@@ -1,0 +1,55 @@
+---
+title: "ImFusion::MarchingCubes"
+sidebarTitle: "MarchingCubes"
+description: "Marching Cubes implementation to extract a isosurface mesh from a volume."
+---
+
+## Overview
+
+Marching Cubes implementation to extract a isosurface mesh from a volume.
+
+## Functions
+
+- [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) \* [computeIsosurface](#computeisosurface) (const [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; T &gt; \*volume, const [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; unsigned char &gt; \*volumeColor, float isovalue, bool aboveIsovalue=false, const [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; unsigned char &gt; \*mask=nullptr) — Compute isosurface mesh for isovalue.
+- [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) \* [computeIsosurfaceHalfFloat](#computeisosurfacehalffloat) (const [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; unsigned short &gt; \*volume, const [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; unsigned char &gt; \*volumeColor, float isovalue, bool aboveIsovalue=false) — Compute isosurface mesh for isovalue.
+
+## Function Documentation
+
+### computeIsosurface
+
+```cpp
+template<typename T> Mesh * ImFusion::MarchingCubes::computeIsosurface (const TypedImage < T > * volume, const TypedImage < unsigned char > * volumeColor, float isovalue, bool aboveIsovalue = false, const TypedImage < unsigned char > * mask = nullptr)
+```
+
+Compute isosurface mesh for isovalue.
+
+The output coordinate for voxel (x,y,z) is (x,y,z)\*spacing. The spacing is taken from the volume.
+
+**Parameters:**
+
+- `volume` — float buffer with volume
+- `volumeColor` — optional 3 channel RGB color values for each voxel
+- `isovalue` — iso value
+- `aboveIsovalue` — true if the interior of the mesh is greater than the isovalue
+- `mask` — optional pointer to a unsigned char typed image forming a mask. If supplied, only faces that lie within the mask are added.
+
+**Returns:** pointer to mesh object representing isosurface if successful, zero otherwise. Caller has to relase memory.
+
+### computeIsosurfaceHalfFloat
+
+```cpp
+Mesh * ImFusion::MarchingCubes::computeIsosurfaceHalfFloat (const TypedImage < unsigned short > * volume, const TypedImage < unsigned char > * volumeColor, float isovalue, bool aboveIsovalue = false)
+```
+
+Compute isosurface mesh for isovalue.
+
+The output coordinate for voxel (x,y,z) is (x,y,z)\*spacing. The spacing is taken from the volume.
+
+**Parameters:**
+
+- `volume` — half float buffer with volume
+- `volumeColor` — optional 3 channel RGB color values for each voxel
+- `isovalue` — iso value
+- `aboveIsovalue` — true if the interior of the mesh is greater than the isovalue
+
+**Returns:** pointer to mesh object representing isosurface if successful, zero otherwise. Caller has to relase memory.

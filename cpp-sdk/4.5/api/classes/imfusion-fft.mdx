@@ -1,0 +1,54 @@
+---
+title: "ImFusion::FFT"
+sidebarTitle: "FFT"
+description: "Fast Fourier Transform abstract base class."
+---
+
+`#include <ImFusion/Base/FFT.h>`
+
+## Overview
+
+Fast Fourier [Transform](/cpp-sdk/4.5/api/classes/imfusion-transform) abstract base class.
+
+## Public Member Functions
+
+- virtual bool **setup** (const [Image](/cpp-sdk/4.5/api/classes/imfusion-image) \*descIn, const int dim=4, const double paddingPercentage=0.0, size_t \*strides=nullptr, const int dist=0, const int prec=1)=0 — Abstract method to set up the Fourier transform.
+- void [computeDescPadded](#computedescpadded) (int dim, double paddingPercentage) — Compute the padded image for an [FFT](/cpp-sdk/4.5/api/classes/imfusion-fft) of dimension `dim`. The image type will be `FLOAT`.
+- const [Image](/cpp-sdk/4.5/api/classes/imfusion-image) \* **descPadded** () const — Get the padded image descriptor. This is a nullpointer if no `m_descIn` has been set before.
+- const [Image](/cpp-sdk/4.5/api/classes/imfusion-image) \* **descIn** () const — Fetch the descriptor of the image that the [FFT](/cpp-sdk/4.5/api/classes/imfusion-fft) will be computed on. This is a nullpointer if `setup()` has not been called.
+
+## Protected Attributes
+
+- [Image](/cpp-sdk/4.5/api/classes/imfusion-image) \* **m_descIn** — Descriptor of input image, owned.
+- [Image](/cpp-sdk/4.5/api/classes/imfusion-image) \* **m_descPadded** — Descriptor of padded image, owned.
+- unsigned int [m_largestValidPrimeRank](#m-largestvalidprimerank) — A specific [FFT](/cpp-sdk/4.5/api/classes/imfusion-fft) implementation can only deal with images whose dimensions are a multiple of small primes.
+
+## Member Function Documentation
+
+### computeDescPadded
+
+```cpp
+void ImFusion::FFT::computeDescPadded (int dim, double paddingPercentage)
+```
+
+Compute the padded image for an [FFT](/cpp-sdk/4.5/api/classes/imfusion-fft) of dimension `dim`. The image type will be `FLOAT`.
+
+**Parameters:**
+
+- `paddingPercentage` — Set to e.g. 1.0 for 100% of padding. The image will be padded along \dim dimensions. Its size will be at least ``(1+paddingPercentage) of the original image since the dimensions have to be multiples of small prime numbers for efficient [FFT](/cpp-sdk/4.5/api/classes/imfusion-fft) computation.
+
+**Note:** This requires `m_descIn` to be set.
+
+## Member Data Documentation
+
+### m_largestValidPrimeRank
+
+```cpp
+unsigned int ImFusion::FFT::m_largestValidPrimeRank
+```
+
+*protected*
+
+A specific [FFT](/cpp-sdk/4.5/api/classes/imfusion-fft) implementation can only deal with images whose dimensions are a multiple of small primes.
+
+The rank of the largest of those primes needs to be specified (e.g. rank 0 for 2, 1 for 3, 2 for 5, 3 for 7, 4 for 11, etc.).

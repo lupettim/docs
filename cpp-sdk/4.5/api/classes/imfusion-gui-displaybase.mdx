@@ -1,0 +1,62 @@
+---
+title: "ImFusion::GUI::DisplayBase"
+sidebarTitle: "DisplayBase"
+description: "Common base class interface of GUI::Display and DisplayWidget enabling other parts of the framework to access the most basic functionality in a general fashion."
+---
+
+`#include <ImFusion/GUI/Display.h>`
+
+## Overview
+
+Common base class interface of [GUI::Display](/cpp-sdk/4.5/api/classes/imfusion-gui-display) and [DisplayWidget](/cpp-sdk/4.5/api/classes/imfusion-displaywidget) enabling other parts of the framework to access the most basic functionality in a general fashion.
+
+## Public Member Functions
+
+- virtual [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [View](/cpp-sdk/4.5/api/classes/imfusion-gui-view) \* &gt; [views](#views) () const =0 — Returns all views hosted by this display.
+- virtual [DisplayLayout](/cpp-sdk/4.5/api/classes/imfusion-gui-displaylayout) & [layout](#layout) ()=0 — Returns the [DisplayLayout](/cpp-sdk/4.5/api/classes/imfusion-gui-displaylayout) determining how views are distributed within the viewport.
+- virtual [GL::Viewport](/cpp-sdk/4.5/api/structs/imfusion-gl-viewport) [viewport](#viewport) () const =0 — Returns the viewport of this display surface in OpenGL coordinates (origin in lower-left corner).
+- virtual void [requestUpdate](#requestupdate) ()=0 — [Request](/cpp-sdk/4.5/api/classes/imfusion-request) an update of the rendered display content.
+
+## Member Function Documentation
+
+### views
+
+```cpp
+virtual std::vector < View * > ImFusion::GUI::DisplayBase::views () const
+```
+
+*pure virtual*
+
+Returns all views hosted by this display.
+
+### layout
+
+```cpp
+virtual DisplayLayout & ImFusion::GUI::DisplayBase::layout ()
+```
+
+*pure virtual*
+
+Returns the [DisplayLayout](/cpp-sdk/4.5/api/classes/imfusion-gui-displaylayout) determining how views are distributed within the viewport.
+
+### viewport
+
+```cpp
+virtual GL::Viewport ImFusion::GUI::DisplayBase::viewport () const
+```
+
+*pure virtual*
+
+Returns the viewport of this display surface in OpenGL coordinates (origin in lower-left corner).
+
+### requestUpdate
+
+```cpp
+virtual void ImFusion::GUI::DisplayBase::requestUpdate ()
+```
+
+*pure virtual*
+
+[Request](/cpp-sdk/4.5/api/classes/imfusion-request) an update of the rendered display content.
+
+Subclasses are not required to perform the update immediately but may postpone it to a later point in time (e.g. by using the application's event loop) in order to collect and combine multiple update requests into one.

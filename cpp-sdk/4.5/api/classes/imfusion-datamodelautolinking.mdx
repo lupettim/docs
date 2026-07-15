@@ -1,0 +1,42 @@
+---
+title: "ImFusion::DataModelAutoLinking"
+sidebarTitle: "DataModelAutoLinking"
+description: "Utility class to automatically create DataLink instances between datasets in a DataModel ."
+---
+
+`#include <ImFusion/Base/DataModelAutoLinking.h>`
+
+## Overview
+
+Utility class to automatically create [DataLink](/cpp-sdk/4.5/api/classes/imfusion-datalink) instances between datasets in a [DataModel](/cpp-sdk/4.5/api/classes/imfusion-datamodel).
+
+This class can manage the following links automatically:
+
+- If setAutoLinkWindowing() is enabled it will create one [LinkWindowing](/cpp-sdk/4.5/api/classes/imfusion-linkwindowing) instance for each [Data::Modality](/cpp-sdk/4.5/api/classes/imfusion-data) present in the [DataModel](/cpp-sdk/4.5/api/classes/imfusion-datamodel) so that images of the same modality share their display options.
+- If setAutoLinkPose() is enabled it will create one [LinkPose](/cpp-sdk/4.5/api/classes/imfusion-linkpose) instance for each [DataGroup](/cpp-sdk/4.5/api/classes/imfusion-datagroup) present in the [DataModel](/cpp-sdk/4.5/api/classes/imfusion-datamodel) and add its children to it.
+
+**Note:** Ownership of the links created by [DataModelAutoLinking](/cpp-sdk/4.5/api/classes/imfusion-datamodelautolinking) will still be held by the observed [DataModel](/cpp-sdk/4.5/api/classes/imfusion-datamodel) as usual.
+
+**See also:** [DataModel](/cpp-sdk/4.5/api/classes/imfusion-datamodel), [DataLink](/cpp-sdk/4.5/api/classes/imfusion-datalink)
+
+## Public Member Functions
+
+- [DataModelAutoLinking](#datamodelautolinking) ([DataModel](/cpp-sdk/4.5/api/classes/imfusion-datamodel) &dataModel) — Creates a new [DataModelAutoLinking](/cpp-sdk/4.5/api/classes/imfusion-datamodelautolinking) instance observing the given *dataModel*.
+- void **setAutoLinkWindowing** (bool enable) — Enables automatic creation of [LinkWindowing](/cpp-sdk/4.5/api/classes/imfusion-linkwindowing) links per modality.
+- bool **isAutoLinkWindowingEnabled** () const — Returns whether automatic creation of [LinkWindowing](/cpp-sdk/4.5/api/classes/imfusion-linkwindowing) links per modality is enabled.
+- void **setAutoLinkPose** (bool enable) — Enables automatic creation of [LinkPose](/cpp-sdk/4.5/api/classes/imfusion-linkpose) links when grouping [Data](/cpp-sdk/4.5/api/classes/imfusion-data).
+- bool **isAutoLinkPoseEnabled** () const — Returns whether automatic creation of [LinkPose](/cpp-sdk/4.5/api/classes/imfusion-linkpose) links when grouping [Data](/cpp-sdk/4.5/api/classes/imfusion-data) is enabled.
+- bool **didOriginallyCreate** (const [DataLink](/cpp-sdk/4.5/api/classes/imfusion-datalink) \*link) const — Checks if the given *link* was originally created by this object.
+- void **clear** () — Clears all internal bookkeeping of automatically created links but does not delete the links themselves.
+
+## Constructor & Destructor Documentation
+
+### DataModelAutoLinking
+
+```cpp
+ImFusion::DataModelAutoLinking::DataModelAutoLinking (DataModel & dataModel)
+```
+
+Creates a new [DataModelAutoLinking](/cpp-sdk/4.5/api/classes/imfusion-datamodelautolinking) instance observing the given *dataModel*.
+
+Will ignore all datasets that are already present and only deal with newly added datasets.

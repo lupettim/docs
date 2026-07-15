@@ -1,0 +1,60 @@
+---
+title: "ImFusion::HsvColorPicker2d"
+sidebarTitle: "HsvColorPicker2d"
+description: "QWidget allowing for selecting 2 components of the HSV color space."
+---
+
+`#include <ImFusion/GUI/CoreWidgets/HsvColorPicker.h>`
+
+## Overview
+
+QWidget allowing for selecting 2 components of the HSV color space.
+
+Renders the color gradient of the two selected components and offers user interaction to select the corresponding color underneath. The third component of the HSV color space is fixed.
+
+**See also:** [HsvHueSlider](/cpp-sdk/4.5/api/classes/imfusion-hsvhueslider), [OpacitySlider](/cpp-sdk/4.5/api/classes/imfusion-opacityslider), [ColorPickerWidget](/cpp-sdk/4.5/api/classes/imfusion-colorpickerwidget), [ColorButton](/cpp-sdk/4.5/api/classes/imfusion-colorbutton)
+
+## Public Types
+
+- enum class Component &#123; **Hue** , **Saturation** , **Value** &#125; — HSV color space component.
+
+## Signals
+
+- void **colorChanged** (QColor)
+
+## Public Member Functions
+
+- **HsvColorPicker2d** (QWidget \*parent=nullptr) — Creates a new [HsvColorPicker2d](/cpp-sdk/4.5/api/classes/imfusion-hsvcolorpicker2d) widget.
+- void [setComponents](#setcomponents) (Component xComponent, Component yComponent) — Set the HSV components to plot along the two widget axes, must be different from each other.
+- QColor **color** () const — Returns the currently selected color.
+- void **setColor** (const QColor &c) — Sets current color.
+- double **hue** () const — Returns the currently selected hue in the range [0..1].
+- void **setHue** (double h) — Sets the currently selected hue in the range [0..1].
+- double **saturation** () const — Returns the currently selected saturation in the range [0..1].
+- void **setSaturation** (double s) — Sets the currently selected saturation in the range [0..1].
+- double **value** () const — Returns the currently selected value in the range [0..1].
+- void **setValue** (double v) — Sets the currently selected value in the range [0..1].
+- QSize **sizeHint** () const override
+
+## Protected Member Functions
+
+- void **paintEvent** (QPaintEvent \*event) override
+- void **mousePressEvent** (QMouseEvent \*event) override
+- void **mouseMoveEvent** (QMouseEvent \*event) override
+- void **mouseReleaseEvent** (QMouseEvent \*event) override
+- void **resizeEvent** (QResizeEvent \*event) override
+
+## Member Function Documentation
+
+### setComponents
+
+```cpp
+void ImFusion::HsvColorPicker2d::setComponents (Component xComponent, Component yComponent)
+```
+
+Set the HSV components to plot along the two widget axes, must be different from each other.
+
+**Parameters:**
+
+- `xComponent` — HSV color space component to plot along the X axis.
+- `yComponent` — HSV color space component to plot along the Y axis.

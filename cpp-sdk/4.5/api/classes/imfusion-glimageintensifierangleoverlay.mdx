@@ -1,0 +1,34 @@
+---
+title: "ImFusion::GlImageIntensifierAngleOverlay"
+sidebarTitle: "GlImageIntensifierAngleOverlay"
+description: "Text overlay representing the current view's matrix in the form of image intensifier angles, for instance 'RAO -3.3, CAU -51.5'."
+---
+
+`#include <ImFusion/GL/GlImageIntensifierAngleOverlay.h>`
+
+## Overview
+
+Text overlay representing the current view's matrix in the form of image intensifier angles, for instance "RAO -3.3, CAU -51.5".
+
+See [https://dicom.nema.org/medical/Dicom/2017c/output/chtml/part03/sect_C.8.7.5.html](https://dicom.nema.org/medical/Dicom/2017c/output/chtml/part03/sect_C.8.7.5.html) for more details on how the primary and secondary Positioner Angles are defined.
+
+**Note:** For slice views, the shown angles represent how the C-arm needs to be positioned so that the detector is parallel the slice view. For volume views, the shown angles are based on the view's camera, as if one were looking in the detector-source direction.
+
+**See also:** [GlTextOverlay](/cpp-sdk/4.5/api/classes/imfusion-gltextoverlay)
+
+## Public Member Functions
+
+- **GlImageIntensifierAngleOverlay** ([InteractiveView](/cpp-sdk/4.5/api/classes/imfusion-interactiveview) \*disp)
+- void [update](#update) () — update the angle information according to current view orientation
+
+## Member Function Documentation
+
+### update
+
+```cpp
+void ImFusion::GlImageIntensifierAngleOverlay::update ()
+```
+
+*virtual*
+
+update the angle information according to current view orientation

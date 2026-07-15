@@ -1,0 +1,61 @@
+---
+title: "ImFusion::Project::TypeSpecificData< TypeData >"
+sidebarTitle: "TypeSpecificData< TypeData >"
+---
+
+## Public Types
+
+- using **value_type** = TypeData
+
+## Public Member Functions
+
+- **TypeSpecificData** (QString name, QString id, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; TypeData &gt;)
+- **TypeSpecificData** (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) &)
+- const QString & **name** () const
+- void **setName** (const QString &name)
+- const QString & **id** () const
+- const QString & **identifier** () const
+- bool **hasThumbnail** () const
+- QString **directoryName** () const
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; TypeData &gt; & **types** () const
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; TypeData &gt; & **types** ()
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+- bool **operator==** (const TypeSpecificData&lt; TypeData &gt; &) const
+- bool **operator!=** (const TypeSpecificData&lt; TypeData &gt; &) const
+
+## Protected Attributes
+
+- QString **m_name**
+- QString **m_id**
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; TypeData &gt; **m_types**
+
+## Member Function Documentation
+
+### configure
+
+```cpp
+template<typename TypeData> void ImFusion::Project::TypeSpecificData < TypeData >::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### configuration
+
+```cpp
+template<typename TypeData> void ImFusion::Project::TypeSpecificData < TypeData >::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality

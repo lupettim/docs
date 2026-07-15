@@ -1,0 +1,119 @@
+---
+title: "ImFusion::InteractionPlotView"
+sidebarTitle: "InteractionPlotView"
+description: "Interaction class for plot view."
+---
+
+`#include <ImFusion/GUI/InteractionPlotView.h>`
+
+## Overview
+
+[Interaction](/cpp-sdk/4.5/api/classes/imfusion-interaction) class for plot view.
+
+**See also:** [PlotView](/cpp-sdk/4.5/api/classes/imfusion-plotview), [GlPlotView](/cpp-sdk/4.5/api/classes/imfusion-glplotview)
+
+## Public Types
+
+- enum [SelectionMode](#selectionmode) &#123; NoSelection = 0 , SelectionX = 1 &lt;&lt; 0 , SelectionY = 1 &lt;&lt; 1 &#125; — Bitflag enumeration for defining the set of allowed/supported selections.
+
+## Public Slots
+
+- void **setPlotSelection** (vec2 rangeX, vec2 rangeY)
+
+## Signals
+
+- void **selectionChanged** (vec2 rangeX, vec2 rangeY)
+
+## Public Member Functions
+
+- **InteractionPlotView** ([PlotView](/cpp-sdk/4.5/api/classes/imfusion-plotview) &pv)
+- [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; [SelectionMode](#selectionmode) &gt; **selectionMode** () const — Returns the set of supported selection modes.
+- void **setSelectionMode** ([Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; [SelectionMode](#selectionmode) &gt; value) — Sets the set of supported selection modes.
+- bool [sceneEvent](#sceneevent) (QEvent \*event) override — Modify the translation and rotation parameters based on the mouse events.
+- void [contextMenuCreate](#contextmenucreate) (QMenu &m) override — Create context menu entries.
+- void [contextMenuEvaluate](#contextmenuevaluate) (QAction \*a) override — Evaluate action chosen in context menu.
+- void [createActions](#createactions) () override — Create context menu actions.
+- void **updateSpectrum** ()
+- void **setSpectrumVisible** (bool on)
+
+## Protected Types
+
+- enum class **InteractionMode** &#123; **None** , **Pan** , **Zoom** , **Select** &#125;
+
+## Protected Attributes
+
+- [PlotView](/cpp-sdk/4.5/api/classes/imfusion-plotview) & **m_plotView**
+- [GlPlotView](/cpp-sdk/4.5/api/classes/imfusion-glplotview) \* **m_glView** = nullptr
+- QDialog \* **m_zoomDialog** = nullptr
+- [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; [SelectionMode](#selectionmode) &gt; **m_selectionMode** = NoSelection
+- InteractionMode **m_currentInteractionMode** = InteractionMode::None
+- int **m_x0** = 0
+- int **m_y0** = 0
+- bool **m_suppressNextContextMenuEvent** = false
+
+## Additional Inherited Members
+
+- static bool [addMappedViewAction](/cpp-sdk/4.5/api/classes/imfusion-viewinteraction) (ViewActionType viewAction, Qt::MouseButton button, Qt::KeyboardModifiers modifiers)
+- static bool **removeMappedViewAction** (ViewActionType viewAction, Qt::MouseButton button, Qt::KeyboardModifiers modifiers) — Removes mapping from `viewAction` to *MouseAction* defined by `button` and `modifiers` Returns true if removing succeeds, or false if this mapping does not exists.
+- static void **resetActionMapping** () — Loads the default view interaction mapping.
+- static const ViewActionMap & **globalViewActionMap** () — Const access to the global view action mapper.
+- static void **setGlobalViewActionMap** (const ViewActionMap &map) — Sets the global view action map.
+- static bool **hasConflicts** (const ViewActionMap &actionMap, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::pair](http://en.cppreference.com/w/cpp/utility/pair.html)&lt; ViewActionType, ViewActionType &gt; &gt; &conflictingActions) — Checks if the mapping defined in `actionMap` has any conflicts.
+
+## Member Enumeration Documentation
+
+### SelectionMode
+
+```cpp
+enum ImFusion::InteractionPlotView::SelectionMode
+```
+
+Bitflag enumeration for defining the set of allowed/supported selections.
+
+**Enumerator:**
+
+- `NoSelection` — No selection supported.
+- `SelectionX` — Support selection along the X axis.
+- `SelectionY` — Support selection along the Y axis.
+
+## Member Function Documentation
+
+### sceneEvent
+
+```cpp
+bool ImFusion::InteractionPlotView::sceneEvent (QEvent * event)
+```
+
+*override, virtual*
+
+Modify the translation and rotation parameters based on the mouse events.
+
+### contextMenuCreate
+
+```cpp
+void ImFusion::InteractionPlotView::contextMenuCreate (QMenu & m)
+```
+
+*override, virtual*
+
+Create context menu entries.
+
+### contextMenuEvaluate
+
+```cpp
+void ImFusion::InteractionPlotView::contextMenuEvaluate (QAction * a)
+```
+
+*override, virtual*
+
+Evaluate action chosen in context menu.
+
+### createActions
+
+```cpp
+void ImFusion::InteractionPlotView::createActions ()
+```
+
+*override, virtual*
+
+Create context menu actions.

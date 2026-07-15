@@ -1,0 +1,67 @@
+---
+title: "ImFusion::MultiLogisticRegression"
+sidebarTitle: "MultiLogisticRegression"
+description: "Class for multiple logistic regressions (to be used for multi-label classification)."
+---
+
+`#include <ImFusion/Base/MultiLogisticRegression.h>`
+
+## Overview
+
+Class for multiple logistic regressions (to be used for multi-label classification).
+
+## Public Member Functions
+
+- **MultiLogisticRegression** (int dimFeatures)
+- void [train](#train) (float \*\*data, const float \*labels, size_t nData) override
+- float [predict](#predict) (const float \*data) const override
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+- void **train** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; float &gt; &gt; &data, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; float &gt; &labels)
+- float **predict** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; float &gt; &data) const
+
+## Member Function Documentation
+
+### train
+
+```cpp
+void ImFusion::MultiLogisticRegression::train (float ** data, const float * labels, size_t nData)
+```
+
+*override, virtual*
+
+### predict
+
+```cpp
+float ImFusion::MultiLogisticRegression::predict (const float * data) const
+```
+
+*override, virtual*
+
+### configure
+
+```cpp
+void ImFusion::MultiLogisticRegression::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### configuration
+
+```cpp
+void ImFusion::MultiLogisticRegression::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality

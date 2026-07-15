@@ -1,0 +1,90 @@
+---
+title: "ImFusion::Geometry::Plane"
+sidebarTitle: "Plane"
+description: "Class representing an oriented plane in 3D space defined by a base point and a normal direction."
+---
+
+`#include <ImFusion/Core/Geometry/Plane.h>`
+
+## Overview
+
+Class representing an oriented plane in 3D space defined by a base point and a normal direction.
+
+Unless stated otherwise, all operations that involve comparisons use the same tolerance epsilon as vec3::isApprox (which is 1e-12).
+
+**See also:** Intersections between geometry primitives can be computed using the sets of free functions Geometry::intersection() and Geometry::intersects().
+
+## Public Member Functions
+
+- [Plane](#plane) (const vec3 &point, const vec3 &normal) — Construct plane from point and normal, the latter will be normalized.
+- **Plane** (const [Rectangle](/cpp-sdk/4.5/api/classes/imfusion-geometry-rectangle) &rect) — Construct plane by extending a rectangle. User is responsible for the rectangle being valid.
+- vec4 [hesseNormalForm](#hessenormalform) () const — Returns [normal, d] with d &gt;= 0 such that for any point p its distance to the plane is given by abs(p.dot(normal) - d).
+- vec4 [computerVisionNormalForm](#computervisionnormalform) () const — Returns cvnf = [normal, d] such that for any point p its distance to the plane is given by abs(p.dot(normal) + d), in terser notation: abs(p.homogeneous().dot(cvnf)).
+- const vec3 & **point** () const
+- const vec3 & **normal** () const
+- bool **isApprox** (const [Plane](#plane) &other) — Comparison using the same epsilon as Eigen::isApprox.
+- bool [isEquivalent](#isequivalent) (const [Plane](#plane) &other, bool considerOrientation=false) — Returns if both [Plane](/cpp-sdk/4.5/api/classes/imfusion-geometry-plane) objects describe the same geometrical objects.
+- vec3 **closestPoint** (const vec3 &p) const — Returns the point on the plane closest to p.
+- double **distanceToPoint** (const vec3 &p) const — Returns the L2 distance between p and the closest point on the plane.
+- double **signedDistanceToPoint** (const vec3 &p) const — Returns the dot product of the vector from the plane towards p and the plane normal.
+- bool **includesPoint** (const vec3 &p) const — Returns if p sits on the plane.
+
+## Static Public Member Functions
+
+- static [Plane](#plane) **fromComputerVisionNormalForm** (const vec4 &cvnf) — Construct plane from normal form, see [computerVisionNormalForm()](#computervisionnormalform) for details.
+- bool [operator==](#operator) (const [Plane](#plane) &) const — Exact comparisons of [Plane](/cpp-sdk/4.5/api/classes/imfusion-geometry-plane) instances based on the point() and normal().
+- bool **operator!=** (const [Plane](#plane) &) const
+
+## Constructor & Destructor Documentation
+
+### Plane
+
+```cpp
+ImFusion::Geometry::Plane::Plane (const vec3 & point, const vec3 & normal)
+```
+
+Construct plane from point and normal, the latter will be normalized.
+
+Passing something that cannot be normalized will invalidate the plane (does not intersect, distance to anything is NAN).
+
+## Member Function Documentation
+
+### hesseNormalForm
+
+```cpp
+vec4 ImFusion::Geometry::Plane::hesseNormalForm () const
+```
+
+Returns [normal, d] with d &gt;= 0 such that for any point p its distance to the plane is given by abs(p.dot(normal) - d).
+
+**Note:** By definition the d component of the Hesse Normal Form is always positive. This means that the sign of the normal component may be flipped wrt. the plane's normal effectively flipping the orientation of the plane. Use [computerVisionNormalForm()](#computervisionnormalform) as alternative representation where the normal component always equals normal().
+
+### computerVisionNormalForm
+
+```cpp
+vec4 ImFusion::Geometry::Plane::computerVisionNormalForm () const
+```
+
+Returns cvnf = [normal, d] such that for any point p its distance to the plane is given by abs(p.dot(normal) + d), in terser notation: abs(p.homogeneous().dot(cvnf)).
+
+**Note:** This form differs from [hesseNormalForm()](#hessenormalform) in that the normal component always has the same sign as normal() and the d component may be negative. Therefore, this form maintains the orientation of the plane enabling you to easily determine if a point is on its front or back side. Also, please note the slight difference in the distance computation formula above: this form requires *adding* the d component while the [hesseNormalForm()](#hessenormalform) requires *subtracting* it.
+
+### operator
+
+```cpp
+bool ImFusion::Geometry::Plane::operator== (const Plane &) const
+```
+
+Exact comparisons of [Plane](/cpp-sdk/4.5/api/classes/imfusion-geometry-plane) instances based on the point() and normal().
+
+If you instead want to check if the represented geometric structures are the same, use [isEquivalent()](#isequivalent).
+
+### isEquivalent
+
+```cpp
+bool ImFusion::Geometry::Plane::isEquivalent (const Plane & other, bool considerOrientation = false)
+```
+
+Returns if both [Plane](/cpp-sdk/4.5/api/classes/imfusion-geometry-plane) objects describe the same geometrical objects.
+
+Note that unlike all other comparisons provided here this allows anti-parallel normals and using different points to define the same position.

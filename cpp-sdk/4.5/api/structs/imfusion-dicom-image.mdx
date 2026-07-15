@@ -1,0 +1,34 @@
+---
+title: "ImFusion::Dicom::Image"
+sidebarTitle: "Image"
+---
+
+## Public Member Functions
+
+- **Image** ([Series](/cpp-sdk/4.5/api/structs/imfusion-dicom-series) \*parent)
+- **Image** ([Series](/cpp-sdk/4.5/api/structs/imfusion-dicom-series) \*parent, DcmItem &item)
+
+## Public Attributes
+
+- [Series](/cpp-sdk/4.5/api/structs/imfusion-dicom-series) \* **parent**
+- QString **sopInstanceUid** — (0008, 0018)
+- QString **instanceNumber** — (0020, 0013)
+- QString **imageType** — (0008, 0008)
+- QString **width** — (0028, 0011)
+- QString **height** — (0028, 0012)
+- QString **channels** — (0028, 0002)
+- QString **bitsAllocated** — (0028, 0100)
+- QString **numberOfFrames** — (0028, 0008)
+- QString **sliceThickness** — (0018, 0050)
+- QString **protocol** — (0018, 1030)
+- QString **bodyPart** — (0018, 0015)
+- QString **manufacturer** — (0008, 0070)
+- QString **modelName** — (0008, 1090)
+- QDate **acquisitionDate** — (0008, 0022)
+- [Filesystem::Url](/cpp-sdk/4.5/api/classes/imfusion-filesystem-url) **uri**
+- vec3 **imagePositionPatient** = vec3::Zero() — (0020, 0032)
+- vec6 **imageOrientationPatient** = vec6::Zero() — (0020, 0037)
+- vec2 **pixelSpacing** = vec2::Zero() — (0028, 0030)
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; double &gt; **spacingBetweenSlices** — (0018, 0088)
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; int &gt; **instanceNumberOpt** — (0020, 0013)
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; int &gt; **acquisitionNumber** — (0020, 0013)

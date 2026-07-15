@@ -1,0 +1,30 @@
+---
+title: "ImFusion::SummedAreaTable"
+sidebarTitle: "SummedAreaTable"
+description: "Class for efficient box average using a summed area table."
+---
+
+`#include <ImFusion/Base/SummedAreaTable.h>`
+
+## Overview
+
+Class for efficient box average using a summed area table.
+
+## Public Member Functions
+
+- **SummedAreaTable** (const [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) &im) — Constructor from a shared image.
+- **~SummedAreaTable** () — Destructor.
+- float **getSum** (int \*box, int channel=0) — Compute sum within the box defined as (x_min, y_min, z_min, x_max, y_max, z_max).
+- [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; float &gt; \* **getSummedAreaTable** () — Returns integral image and yields ownership.
+
+## Protected Member Functions
+
+- void **computeSummedAreaTable** ()
+- void **computeSummedAreaTable** (const [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; T &gt; \*image)
+- float **summedAreaTable2D** (int x, int y, int c=0)
+- float **summedAreaTable3D** (int x, int y, int z=0, int c=0)
+
+## Protected Attributes
+
+- const [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \* **m_image**
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; float &gt; &gt; **m_summedAreaTable**

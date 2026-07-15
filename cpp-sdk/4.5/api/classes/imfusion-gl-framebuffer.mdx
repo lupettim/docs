@@ -1,0 +1,191 @@
+---
+title: "ImFusion::GL::Framebuffer"
+sidebarTitle: "Framebuffer"
+description: "Wrapper class for OpenGL Framebuffer Objects (FBO)."
+---
+
+`#include <ImFusion/Core/GL/Framebuffer.h>`
+
+## Overview
+
+Wrapper class for OpenGL Framebuffer Objects (FBO).
+
+FBOs allow for using custom textures as framebuffer attachments so that you can render to them instead of rendering to the main screen.
+
+To avoid confusion, [GL::Framebuffer](/cpp-sdk/4.5/api/classes/imfusion-gl-framebuffer) will synchronize the color attachment point Attachment::ColorI with the fragment color location (location in glDrawBuffers() array/fragment shader outputs). Thus, color attachment i will always end up on draw buffer/fragment shader output location i.
+
+Example for rendering to texture:
+
+```cpp
+GL::Texture colorTex1, colorTex2, depthTex = ...;
+GL::Framebuffer fbo;
+auto guard = fbo.guardedBind();
+fbo.attach(colorTex1, GL::Framebuffer::Attachment::Color0);
+fbo.attach(colorTex2, GL::Framebuffer::Attachment::Color2);
+fbo.attach(depthTex, GL::Framebuffer::Attachment::Depth);
+fbo.setDrawBuffers();
+
+// perform rendering
+// rendering output will be routed into the attached textures colorTex1, colorTex2, and depthTex
+```
+ fragment
+the corresponding shader should be setup like this:
+
+```cpp
+layout (location = 0) out vec4 out_color0;   // output variable for color attachment 0
+layout (location = 2) out vec4 out_color2;   // output variable for color attachment 2
+
+void main() {
+ // write to outputs
+    out_color0 = ...;
+    out_color2 = ...;
+    gl_FragDepth = ...;
+}
+```
+ fragment
+
+**Note:** The bound FBO is a global state of the current OpenGL context and only one FBO can be bound at any time. Therefore, make sure to use state guards when binding your FBO. Furthermore, FBOs can *not* be shared across OpenGL contexts.
+
+**See also:** - [https://www.khronos.org/opengl/wiki/Framebuffer_Object](https://www.khronos.org/opengl/wiki/Framebuffer_Object)
+- [https://www.khronos.org/opengl/wiki/Fragment_Shader#Output_buffers](https://www.khronos.org/opengl/wiki/Fragment_Shader#Output_buffers)
+
+## Public Types
+
+- enum class [Attachment](#attachment) &#123; Color0 = 0x8CE0 , Color1 = 0x8CE1 , Color2 = 0x8CE2 , Color3 = 0x8CE3 , Color4 = 0x8CE4 , Color5 = 0x8CE5 , Color6 = 0x8CE6 , Color7 = 0x8CE7 , Depth = 0x8D00 , Stencil = 0x8D20 , DepthStencil = 0x821A &#125; — Enumeration of possible FBO attachment points.
+
+## Public Member Functions
+
+- [Framebuffer](#framebuffer) () — Construct a new FBO.
+- **~Framebuffer** () — Destroy FBO.
+- void **bind** () — Bind FBO.
+- void [unbind](#unbind) () — Unbind FBO, resets the bound FBO to 0.
+- bool **isBound** () const — Returns true if this framebuffer object is the current draw buffer.
+- [StateGuard](/cpp-sdk/4.5/api/classes/imfusion-gl-stateguard) [guardedBind](#guardedbind) () — Binds the FBO and returns a GlStateGuard to restore the FBO binding state before the call.
+- void [attach](#attach-1-2) ([Texture](/cpp-sdk/4.5/api/classes/imfusion-gl-texture) &texture, [Attachment](#attachment) attachment, int mipmapLevel=0) — Attach the given texture as a whole to this FBO.
+- void [attachLayer](#attachlayer) ([Texture](/cpp-sdk/4.5/api/classes/imfusion-gl-texture) &texture, [Attachment](#attachment) attachment, int layer, int mipmapLevel=0) — Attach a single layer/slice of the given texture to this FBO.
+- void [attach](#attach-2-2) ([Texture](/cpp-sdk/4.5/api/classes/imfusion-gl-texture) &texture, int position=0) — Convenience overload that auto-determines the position based on the texture's internal format.
+- void **detach** ([Attachment](#attachment) attachment) — Detaches the texture at the given attachment point.
+- void **detachAll** () — Detaches all previously attached textures.
+- void **setDrawBuffers** () — Set draw buffers according to the attached color textures.
+- void **clearDrawBuffers** () — Clear draw buffers.
+- uint32_t **id** () const — Return the OpenGL name/id for the wrapped FBO.
+
+## Static Public Member Functions
+
+- static bool **isComplete** () — Check FBO status, will log the reason in case of errors and return false.
+
+## Member Enumeration Documentation
+
+### Attachment
+
+```cpp
+enum class ImFusion::GL::Framebuffer::Attachment
+```
+
+*strong*
+
+Enumeration of possible FBO attachment points.
+
+**See also:** [https://www.khronos.org/opengl/wiki/Framebuffer_Object#Framebuffer_Object_Structure](https://www.khronos.org/opengl/wiki/Framebuffer_Object#Framebuffer_Object_Structure)
+
+**Enumerator:**
+
+- `Color0` — Color attachment of fragment shader output location 0.
+- `Color1` — Color attachment of fragment shader output location 1.
+- `Color2` — Color attachment of fragment shader output location 2.
+- `Color3` — Color attachment of fragment shader output location 3.
+- `Color4` — Color attachment of fragment shader output location 4.
+- `Color5` — Color attachment of fragment shader output location 5.
+- `Color6` — Color attachment of fragment shader output location 6.
+- `Color7` — Color attachment of fragment shader output location 7.
+- `Depth` — Depth buffer attachment, texture must have depth format.
+- `Stencil` — Stencil buffer attachment, texture must have stencil format.
+- `DepthStencil` — Combined depth-stencil buffer attachment, texture must have depth-stencil format.
+
+## Constructor & Destructor Documentation
+
+### Framebuffer
+
+```cpp
+ImFusion::GL::Framebuffer::Framebuffer ()
+```
+
+Construct a new FBO.
+
+**Exceptions:**
+
+- `std::runtime_error` — if the corresponding OpenGL framebuffer object could not be created.
+
+## Member Function Documentation
+
+### unbind
+
+```cpp
+void ImFusion::GL::Framebuffer::unbind ()
+```
+
+Unbind FBO, resets the bound FBO to 0.
+
+**Note:** It is not encouraged to use [unbind()](#unbind) unless you're absolutely sure that the surrounding code expects the bound FBO to be 0. If you're unsure what FBO state the surrounding code requires, use *[guardedBind()](#guardedbind)* instead of combining *bind()* and *[unbind()](#unbind)* or manage your own GlStateGuard explicitly.
+
+### guardedBind
+
+```cpp
+StateGuard ImFusion::GL::Framebuffer::guardedBind ()
+```
+
+*nodiscard*
+
+Binds the FBO and returns a GlStateGuard to restore the FBO binding state before the call.
+
+**Note:** Make sure to capture the returned variable, otherwise the call will have no effect.
+
+**Note:** In case of recurrent binding of FBOs in tight loops, consider managing a single GlStateGuard outside the loop and bind the FBO using *bind()*.
+
+### attach
+
+```cpp
+void ImFusion::GL::Framebuffer::attach (Texture & texture, Attachment attachment, int mipmapLevel = 0)
+```
+
+Attach the given texture as a whole to this FBO.
+
+**Note:** FBO must be bound prior to calling this function.
+
+**Parameters:**
+
+- `texture` — [Texture](/cpp-sdk/4.5/api/classes/imfusion-gl-texture) to attach
+- `attachment` — [Attachment](#attachment) point
+- `mipmapLevel` — Mipmap level of *texture* to attach
+
+### attachLayer
+
+```cpp
+void ImFusion::GL::Framebuffer::attachLayer (Texture & texture, Attachment attachment, int layer, int mipmapLevel = 0)
+```
+
+Attach a single layer/slice of the given texture to this FBO.
+
+**Note:** FBO must be bound prior to calling this function.
+
+**Parameters:**
+
+- `texture` — [Texture](/cpp-sdk/4.5/api/classes/imfusion-gl-texture) to attach, must be a 3D texture or an array texture.
+- `attachment` — [Attachment](#attachment) point
+- `layer` — Layer/slice of *texture* to attach
+- `mipmapLevel` — Mipmap level of *texture* to attach
+
+### attach
+
+```cpp
+void ImFusion::GL::Framebuffer::attach (Texture & texture, int position = 0)
+```
+
+Convenience overload that auto-determines the position based on the texture's internal format.
+
+**Note:** FBO must be bound prior to calling this function.
+
+**Parameters:**
+
+- `texture` — [Texture](/cpp-sdk/4.5/api/classes/imfusion-gl-texture) to attach
+- `position` — Ignored if *texture* has a depth or stencil format. Otherwise describes the index of the color attachment, i.e. attachment = (Color0 + position).

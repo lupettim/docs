@@ -1,0 +1,50 @@
+---
+title: "ImFusion::Dicom::PixelSpacingCalibration"
+sidebarTitle: "PixelSpacingCalibration"
+description: "Basic Pixel Spacing Calibration Macro (PS 3.3 Table 10.7) Pixel Measures Macro (PS 3.3 Table C.7.6.16-2)."
+---
+
+`#include <ImFusion/Dicom/DicomModule.h>`
+
+## Overview
+
+Basic Pixel Spacing Calibration Macro (PS 3.3 [Table](/cpp-sdk/4.5/api/classes/imfusion-table) 10.7) Pixel Measures Macro (PS 3.3 [Table](/cpp-sdk/4.5/api/classes/imfusion-table) C.7.6.16-2).
+
+**See also:** [http://dicom.nema.org/medical/dicom/current/output/chtml/part03/sect_10.7.html#table_10-10](http://dicom.nema.org/medical/dicom/current/output/chtml/part03/sect_10.7.html#table_10-10)
+
+**See also:** [https://dicom.nema.org/medical/dicom/current/output/chtml/part03/sect_C.7.6.16.2.html#table_C.7.6.16-2](https://dicom.nema.org/medical/dicom/current/output/chtml/part03/sect_C.7.6.16.2.html#table_C.7.6.16-2)
+
+## Public Member Functions
+
+- **PixelSpacingCalibration** ([ModuleList](/cpp-sdk/4.5/api/classes/imfusion-dicom-modulelist) &parent, [Type](/cpp-sdk/4.5/api/classes/imfusion-dicom-module) type, bool searchIntoSubs=false)
+- bool [load](#load) ([ImageDescriptor](/cpp-sdk/4.5/api/structs/imfusion-imagedescriptor) &desc) const — Loads spacing into the given descriptor and returns true if anything was loaded.
+- void [save](#save) (const [ImageDescriptor](/cpp-sdk/4.5/api/structs/imfusion-imagedescriptor) &desc, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &sopClassUID="") — Stores the spacing in the dataset if it's metric.
+
+## Public Attributes
+
+- [Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element)&lt; vec2 &gt; **pixelSpacing**
+- [Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element)&lt; vec2 &gt; **imagerSpacing**
+- [Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element)&lt; double &gt; **sliceThickness**
+- [Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element)&lt; double &gt; **spacingBetweenSlices**
+
+## Member Function Documentation
+
+### load
+
+```cpp
+bool ImFusion::Dicom::PixelSpacingCalibration::load (ImageDescriptor & desc) const
+```
+
+Loads spacing into the given descriptor and returns true if anything was loaded.
+
+Automatically registers an error when an existing spacing cannot be loaded.
+
+### save
+
+```cpp
+void ImFusion::Dicom::PixelSpacingCalibration::save (const ImageDescriptor & desc, const std::string & sopClassUID = "")
+```
+
+Stores the spacing in the dataset if it's metric.
+
+If it's not metric, spacing is not set. Depending on the sopClassUID, sliceThickness or spacingBetweenSlices is set as well.

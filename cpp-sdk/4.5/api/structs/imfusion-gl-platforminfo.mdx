@@ -1,0 +1,24 @@
+---
+title: "ImFusion::GL::PlatformInfo"
+sidebarTitle: "PlatformInfo"
+description: "Structure storing information on the GPU/driver/OpenGL context configuration."
+---
+
+`#include <ImFusion/Core/GL/Types.h>`
+
+## Overview
+
+Structure storing information on the GPU/driver/OpenGL context configuration.
+
+## Public Types
+
+- enum class Vendor &#123; **Nvidia** , **AMD** , **Intel** , **Mesa3D** , **Microsoft** , **Apple** , **Unknown** &#125; — Enumeration of GPU/driver vendors detected by ImFusionGL.
+
+## Public Attributes
+
+- Vendor **vendor** = Vendor::Unknown — Vendor as parsed by ImFusionGL.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **vendorString** — GL_VENDOR string as reported by OpenGL
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **renderer** — GL_RENDERER string as reported by OpenGL
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **versionString** — GL_VERSION string as reported by OpenGL
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **glslVersionString** — GL_SHADING_LANGUAGE_VERSION string as reported by OpenGL
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **extensions** — List of available OpenGL extensions.

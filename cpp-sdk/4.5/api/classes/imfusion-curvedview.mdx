@@ -1,0 +1,161 @@
+---
+title: "ImFusion::CurvedView"
+sidebarTitle: "CurvedView"
+description: "Interactive 2D view of one or multiple images."
+---
+
+`#include <ImFusion/GUI/CurvedView.h>`
+
+## Overview
+
+[Interactive](/cpp-sdk/4.5/api/classes/imfusion-interactive) 2D view of one or multiple images.
+
+## Public Slots
+
+- void **setAutoWindowing** () — Sets the window and level properties depending on the image histogram.
+- void **reset** () override — Reset the view.
+
+## Signals
+
+- void **showHistogramRequested** (bool show) — Connected slot should show a histogram for the data in this view.
+
+## Public Member Functions
+
+- **CurvedView** ([CurvedViewPrimitive](/cpp-sdk/4.5/api/classes/imfusion-curvedviewprimitive) &primitive) — Default constructor.
+- **~CurvedView** () override — Destructor.
+- const [GlCurvedView](/cpp-sdk/4.5/api/classes/imfusion-glcurvedview) \* **view** () const — Read-only access to OpenGL view.
+- [GlCurvedView](/cpp-sdk/4.5/api/classes/imfusion-glcurvedview) \* **view** () — Read-write access to OpenGL view.
+- void **setImageData** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*is, [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*label=nullptr) — Set image data. Convenience function which calls corresponding function in slice.
+
+## Protected Member Functions
+
+- bool [handleObjectEvent](#handleobjectevent) (QEvent \*qtEvent, const [GUI::InputEvent](/cpp-sdk/4.5/api/classes/imfusion-gui-inputevent) &inputEvent) override — Override event handling code for objects.
+
+## Protected Attributes
+
+- [GlCurvedView](/cpp-sdk/4.5/api/classes/imfusion-glcurvedview) \* **m_curvedView** — Internal OpenGL view instance.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [CurvedViewSettingsController](/cpp-sdk/4.5/api/classes/imfusion-curvedviewsettingscontroller) &gt; **m_curvedViewSettingsController**
+- double **m_lowerLimit**
+- double **m_upperLimit**
+- [DisplayOptions2d](/cpp-sdk/4.5/api/classes/imfusion-displayoptions2d) **m_displayOptionsView**
+
+## Properties
+
+- int **interpolation**
+- double **scale**
+- double **zoom**
+- double **thickness**
+- double **lowerLimit**
+- double **upperLimit**
+- double **window**
+- double **level**
+- double **gamma**
+
+## Property read methods
+
+- int **interpolation** () const
+- double **scale** () const — View scale.
+- double **window** () const — View window setting of the given data. If data is 0, returns the global setting.
+- double **level** () const — View level setting of the given data. If data is 0, returns the global setting.
+- double **gamma** () const — View gamma setting of the given data. If data is 0, returns the global setting.
+- double **zoom** () const — View zoom.
+- double **lowerLimit** () const — percentage of lower values removed by the auto windowing
+- double **upperLimit** () const — percentage of upper values removed by the auto windowing
+- double **thickness** () const — [Slice](/cpp-sdk/4.5/api/classes/imfusion-slice) thickness in case of a 3D MPR.
+- double **offsetNormal** () — Offset in the normal direction.
+- void **setOffsetNormal** (double offset)
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Restore view state from properties.
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Save view state to properties.
+- [CurvedViewSettingsController](/cpp-sdk/4.5/api/classes/imfusion-curvedviewsettingscontroller) \* **curvedViewSettingsController** () const
+- const [DisplayOptions2d](/cpp-sdk/4.5/api/classes/imfusion-displayoptions2d) & **displayOptions** () const
+- [DisplayOptions2d](/cpp-sdk/4.5/api/classes/imfusion-displayoptions2d) & **displayOptions** ()
+
+## Property write methods
+
+- void **setInterpolation** (int val)
+- void **setScale** (double val) — Set view scale.
+- void **setWindow** (double val) — Set view window of the given data. If data is 0, sets the global setting.
+- void **setLevel** (double val) — Set view level of the given data. If data is 0, sets the global setting.
+- void **setGamma** (double val) — Set view gamma of the given data. If data is 0, sets the global setting.
+- void **setZoom** (double val) — Set view zoom.
+- void **setThickness** (double val) — Set the 3D MPR slice thickness.
+- void **setLowerLimit** (double val) — Set percentage of lower values removed by the auto windowing.
+- void **setUpperLimit** (double val) — Set percentage of upper values removed by the auto windowing.
+
+## Property notifiers
+
+- void **interpolationChanged** (int val)
+- void **scaleChanged** (double val) — Emitted when scale changed.
+- void [windowChanged](#windowchanged) (double val) — Emitted when window changed.
+- void [levelChanged](#levelchanged) (double val) — Emitted when level changed.
+- void [gammaChanged](#gammachanged) (double val) — Emitted when gamma changed.
+- void **zoomChanged** (double val) — Emitted when zoom changed.
+- void **thicknessChanged** (double val) — Emitted when slice thickness changes.
+
+## Member Function Documentation
+
+### configure
+
+```cpp
+void ImFusion::CurvedView::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Restore view state from properties.
+
+### configuration
+
+```cpp
+void ImFusion::CurvedView::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Save view state to properties.
+
+### windowChanged
+
+```cpp
+void ImFusion::CurvedView::windowChanged (double val)
+```
+
+*signal*
+
+Emitted when window changed.
+
+**Warning:** Do not rely on this signal since it may not be triggered under all circumstances.
+
+### levelChanged
+
+```cpp
+void ImFusion::CurvedView::levelChanged (double val)
+```
+
+*signal*
+
+Emitted when level changed.
+
+**Warning:** Do not rely on this signal since it may not be triggered under all circumstances.
+
+### gammaChanged
+
+```cpp
+void ImFusion::CurvedView::gammaChanged (double val)
+```
+
+*signal*
+
+Emitted when gamma changed.
+
+**Warning:** Do not rely on this signal since it may not be triggered under all circumstances.
+
+### handleObjectEvent
+
+```cpp
+bool ImFusion::CurvedView::handleObjectEvent (QEvent * qtEvent, const GUI::InputEvent & inputEvent)
+```
+
+*override, protected, virtual*
+
+Override event handling code for objects.

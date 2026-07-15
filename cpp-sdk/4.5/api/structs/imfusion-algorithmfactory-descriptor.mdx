@@ -1,0 +1,47 @@
+---
+title: "ImFusion::AlgorithmFactory::Descriptor"
+sidebarTitle: "Descriptor"
+description: "Struct describing an algorithm registered with a factory."
+---
+
+`#include <ImFusion/Base/AlgorithmFactory.h>`
+
+## Overview
+
+Struct describing an algorithm registered with a factory.
+
+along with functions to create it and check compatibility. A default constructed descriptor has create and isCompatible functions that always return nullptr and false respectively. An empty descriptor implicitly casts to false, i.e. can check if a descriptor is valid with if (descriptor).
+
+## Public Types
+
+- enum [AlgorithmAttributes](#algorithmattributes) &#123; Internal = 1 &lt;&lt; 0 , Experimental = 1 &lt;&lt; 1 , Priority = 1 &lt;&lt; 2 &#125; — Bitflag enumeration of factory attributes for a registered [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm).
+
+## Public Member Functions
+
+- bool **isEmpty** () const — Returns whether the descriptor has an empty id or represents a known entry in the underlying factory.
+- **operator bool** () const — Returns whether the descriptor represents a known entry in the underlying factory.
+
+## Public Attributes
+
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **id** — Unique ID including module name.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **name** — [GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui) name including groups.
+- [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; [AlgorithmAttributes](#algorithmattributes) &gt; **flags** — List of factory attributes for the underlying algorithm.
+- bool **isIoAlgorithm** = false — Flag whether the algorithm is an I/O algorithm.
+- [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) &gt;(const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &)&gt; **create** = [](const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist)&) &#123; return nullptr; &#125; — Function for instantiating the algorithm.
+- [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; bool(const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &)&gt; **isCompatible** = [](const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist)&) &#123; return false; &#125; — Function for checking compatibility with the given data.
+
+## Member Enumeration Documentation
+
+### AlgorithmAttributes
+
+```cpp
+enum ImFusion::AlgorithmFactory::Descriptor::AlgorithmAttributes
+```
+
+Bitflag enumeration of factory attributes for a registered [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm).
+
+**Enumerator:**
+
+- `Internal` — Whether the algorithm is internal.
+- `Experimental` — Whether the algorithm is experimental.
+- `Priority` — Whether the algorithm should be shown at the top of the list.

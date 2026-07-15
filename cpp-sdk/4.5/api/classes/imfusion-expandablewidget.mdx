@@ -1,0 +1,33 @@
+---
+title: "ImFusion::ExpandableWidget"
+sidebarTitle: "ExpandableWidget"
+description: "This class is a container widget that can expand and collapse another widget."
+---
+
+`#include <ImFusion/GUI/ExpandableWidget.h>`
+
+## Overview
+
+This class is a container widget that can expand and collapse another widget.
+
+The [ExpandableWidget](/cpp-sdk/4.5/api/classes/imfusion-expandablewidget) consists of a title widget and a body widget below
+
+## Public Member Functions
+
+- virtual QWidget \* **header** ()=0 — Returns the header of the widget, which will remain visible when collapsed.
+- virtual QWidget \* **body** ()=0 — Returns the body of the widget, which will be collapsed.
+- void **setCollapsible** (bool collapsible) — Sets if widget is collapsible.
+- bool **isCollapsible** () — Returns if widget is collapsible.
+- bool **isExpanded** () const
+- void **expand** () — Expands the body.
+- void **collapse** () — Collapses the body.
+- void **setExpanded** (bool expanded) — Expands or collapses the body (default: expanded).
+
+## Public Attributes
+
+- Signal&lt; bool &gt; **expansionChanged**
+
+## Protected Attributes
+
+- bool **m_expanded** = true
+- bool **m_collapsible** = true

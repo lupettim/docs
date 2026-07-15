@@ -1,0 +1,68 @@
+---
+title: "ImFusion::VolumeBasedMeshCurvatureAlgorithm"
+sidebarTitle: "VolumeBasedMeshCurvatureAlgorithm"
+description: "Algorithm to compute curvature measures (mean curvature, Gaussian curvature, curvedness and shape index) of a mesh based on its implicit surface representation"
+---
+
+`#include <ImFusion/Base/VolumeBasedMeshCurvatureAlgorithm.h>`
+
+## Overview
+
+[Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) to compute curvature measures (mean curvature, Gaussian curvature, curvedness and shape index) of a mesh based on its implicit surface representation as signed distance volume.
+
+If only a mesh is provided as input, the distance volume is first generated using [DistanceVolumeAlgorithm](/cpp-sdk/4.5/api/classes/imfusion-distancevolumealgorithm). If a distance volume is provided (either alone or together with a mesh), it is directly used to compute the curvatures. The output are curvature volumes of the same size as the distance volume. If a mesh was provided, the volumetric curvatures are additionally linearly interpolated to the mesh vertices and the resulting per-vertex curvatures can be obtained using getters.
+
+## Public Types
+
+- enum class **MeshColorData** &#123; **None** , **MeanCurvature** , **GaussianCurvature** , **Curvedness** , **ShapeIndex** &#125; — [Status](/cpp-sdk/4.5/api/classes/imfusion-algorithm) codes.
+
+## Public Member Functions
+
+- **VolumeBasedMeshCurvatureAlgorithm** ([Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) \*mesh=nullptr, [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*dist=nullptr)
+- void [compute](#compute) () override — Execute the algorithm.
+- [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) [takeOutput](#takeoutput) () override — Return any new [Data](/cpp-sdk/4.5/api/classes/imfusion-data) that was created by the [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) during the last call to [compute()](#compute).
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &gt; **takeDistanceVolume** () — Returns the distance volume (before smoothing), transferring ownership.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; float &gt; **meanCurvaturePerVertex** () const — Returns a vector of mean curvatures at the mesh vertices.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; float &gt; **gaussianCurvaturePerVertex** () const — Returns a vector of Gaussian curvatures at the mesh vertices.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; float &gt; **curvednessPerVertex** () const — Returns a vector of curvedness values at the mesh vertices.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; float &gt; **shapeIndexPerVertex** () const — Returns a vector of shape index values at the mesh vertices.
+- void **updateMeshColors** () — Can be used to update the mesh colors after changing p_meshColorData or p_meshColorRange.
+
+## Static Public Member Functions
+
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=nullptr)
+
+## Public Attributes
+
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; double &gt; **p_resolution** = &#123;"resolution", 0.5, this&#125; — Resolution (mm) of the distance volume (isotropic spacing).
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; double &gt; **p_sigma** = &#123;"sigma", 1., this&#125; — Sigma (mm) for Gaussian smoothing of the distance volume.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; double &gt; **p_distThresh** = &#123;"distThresh", 2. \* p_resolution, this&#125; — Distance threshold (mm) defining the width of the region around the mesh in which curvatures shall be computed.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; bool &gt; **p_outputCurvVols** = &#123;"outputCurvVols", true, this&#125; — Whether to output curvature volumes.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; MeshColorData &gt; **p_meshColorData** = &#123;"meshColorData", MeshColorData::None, this&#125; — Curvature data to be set as mesh color.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; float &gt; **p_meshColorRange** = &#123;"meshColorRange", 100.f, this&#125; — Symmetric percentage range to be covered by the mesh colors: [-meshColorRange, meshColorRange].
+
+## Member Function Documentation
+
+### compute
+
+```cpp
+void ImFusion::VolumeBasedMeshCurvatureAlgorithm::compute ()
+```
+
+*override, virtual*
+
+Execute the algorithm.
+
+### takeOutput
+
+```cpp
+OwningDataList ImFusion::VolumeBasedMeshCurvatureAlgorithm::takeOutput ()
+```
+
+*override, virtual*
+
+Return any new [Data](/cpp-sdk/4.5/api/classes/imfusion-data) that was created by the [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) during the last call to [compute()](#compute).
+
+The default implementation will return an empty list.
+
+**Note:** Since ownership of the data is transferred, you can call this method only once between calls to [compute()](#compute).

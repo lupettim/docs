@@ -1,0 +1,63 @@
+---
+title: "ImFusion::LabelToFrameBasedPointCloudAlgorithm"
+sidebarTitle: "LabelToFrameBasedPointCloudAlgorithm"
+description: "Given a label map and a tracked shared image set, create a frame based point cloud."
+---
+
+`#include <ImFusion/Seg/LabelToFrameBasedPointCloudAlgorithm.h>`
+
+## Overview
+
+Given a label map and a tracked shared image set, create a frame based point cloud.
+
+The outline of the label map is taken, resampled to a more sparse point cloud (strength of resampling configurable via the parameter p_takeEveryXPoint), and the [FrameBasedPointCloud](/cpp-sdk/4.5/api/classes/imfusion-framebasedpointcloud) is constructed with the provided [TrackedSharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-trackedsharedimageset). Note that the point cloud is valid only thought the lifetime of the [TrackedSharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-trackedsharedimageset).
+
+Constrains:
+
+- the label map must be encoded with an unsigned char
+- The label map must have the same length as the [TrackedSharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-trackedsharedimageset).
+- The labels will be taken as altogether. If you require different point cloud for each label, you need to preprocess them and feed them one by one.
+
+**See also:** [FrameBasedPointCloud](/cpp-sdk/4.5/api/classes/imfusion-framebasedpointcloud), [TrackedSharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-trackedsharedimageset)
+
+## Public Member Functions
+
+- **LabelToFrameBasedPointCloudAlgorithm** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*labelmap, [TrackedSharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-trackedsharedimageset) \*trackedSharedImageSet)
+
+## Methods implementing the Algorithm interface
+
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **p_nameOfOutput** = &#123;"Name", "Points", this&#125;
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; int &gt; **p_takeEveryXPoint** = &#123;"Resampling strength", 20, this&#125;
+- [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* **m_labelmap**
+- [TrackedSharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-trackedsharedimageset) \* **m_tsis**
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [FrameBasedPointCloud](/cpp-sdk/4.5/api/classes/imfusion-framebasedpointcloud) &gt; **m_out**
+- [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) **m_data**
+- void [compute](#compute) () override — Execute the algorithm.
+- [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) [takeOutput](#takeoutput) () override — Return any new [Data](/cpp-sdk/4.5/api/classes/imfusion-data) that was created by the [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) during the last call to [compute()](#compute).
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a)
+
+## Member Function Documentation
+
+### compute
+
+```cpp
+void ImFusion::LabelToFrameBasedPointCloudAlgorithm::compute ()
+```
+
+*override, virtual*
+
+Execute the algorithm.
+
+### takeOutput
+
+```cpp
+OwningDataList ImFusion::LabelToFrameBasedPointCloudAlgorithm::takeOutput ()
+```
+
+*override, virtual*
+
+Return any new [Data](/cpp-sdk/4.5/api/classes/imfusion-data) that was created by the [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) during the last call to [compute()](#compute).
+
+The default implementation will return an empty list.
+
+**Note:** Since ownership of the data is transferred, you can call this method only once between calls to [compute()](#compute).

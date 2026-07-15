@@ -1,0 +1,176 @@
+---
+title: "ImFusion::Controller"
+sidebarTitle: "Controller"
+description: "Base interface for a GUI element within MainWindowBase ."
+---
+
+`#include <ImFusion/GUI/Controller.h>`
+
+## Overview
+
+[Base](/cpp-sdk/4.5/api/structs/imfusion-dicom-base) interface for a [GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui) element within [MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase).
+
+A [Controller](/cpp-sdk/4.5/api/classes/imfusion-controller) enables the user to configure and control the underlying entity such as an [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) or a [Data](/cpp-sdk/4.5/api/classes/imfusion-data) instance hosted by a [MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase). Furthermore, a [Controller](/cpp-sdk/4.5/api/classes/imfusion-controller) has access to the parent [MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase) instance and can therefore also access entities that usually would not be accessible by the underlying entity (e.g. [DisplayWidget](/cpp-sdk/4.5/api/classes/imfusion-displaywidget), [DataModel](/cpp-sdk/4.5/api/classes/imfusion-datamodel), other Algorithms, ...). Furthermore, it provides the following callbacks for convenience:
+
+- [onSelectedDataChanged()](#onselecteddatachanged) is called whenever the selection in the [DataWidget](/cpp-sdk/4.5/api/classes/imfusion-datawidget) changes.
+- [onVisibleDataChanged()](#onvisibledatachanged) is called whenever the visible data in the [DisplayWidgetMulti](/cpp-sdk/4.5/api/classes/imfusion-displaywidgetmulti) changes.
+
+The [Controller](/cpp-sdk/4.5/api/classes/imfusion-controller) interface by itself is just an interface providing the necessary link to the parent [MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase) instance and does *not* provide any "visible" [GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui). This is done in order to avoid a dependency to a particular [GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui) framework. However, usually all concrete implementations of this interface will provide a concrete [GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui) and therefore depend on a particular [GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui) framework (Qt in the case of all ImFusion Controllers).
+
+Depending on the application a [Controller](/cpp-sdk/4.5/api/classes/imfusion-controller) can be placed in different locations within the [GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui), which can be customized by the programmer through the [supportedLocations()](#supportedlocations) and [preferredLocation()](#preferredlocation) member functions. The actual placement within the application [GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui) is to be performed from the outside by the hosting [MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase) and the [ControllerDecorator](/cpp-sdk/4.5/api/classes/imfusion-controllerdecorator) class/interface. Custom applications specializing [MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase) are free to implement their own container widgets supporting additional locations.
+
+**Note:** Due to technical constraints [Controller](/cpp-sdk/4.5/api/classes/imfusion-controller) requires a two-step initialization procedure! After construction, [setMainWindowBase()](#setmainwindowbase) must be called to provide the parent [MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase) instance and complete the initialization procedure. Usually, programmers do not need to call this function manually since this is already done by [MainWindowBase::addController()](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase). Implementers of Controllers should put initialization code into the pure virtual [init()](#init) function since it's called by [setMainWindowBase()](#setmainwindowbase) once the parent main window is known. Users must not call any other functions on Controllers before their initialization is complete.
+
+**See also:** [AlgorithmController](/cpp-sdk/4.5/api/classes/imfusion-algorithmcontroller), [DataController](/cpp-sdk/4.5/api/classes/imfusion-datacontroller), [MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase), [ControllerDecorator](/cpp-sdk/4.5/api/classes/imfusion-controllerdecorator)
+
+## Public Types
+
+- enum class [Location](#location) : int &#123; Unknown = -1 , Naked = 0 , PrimaryDock = 1 , SecondaryDock = 2 , Detached = 3 , ToolBar = 4 , UserLocation = 100 &#125; — Enumeration of possible placement/decoration options of a [Controller](/cpp-sdk/4.5/api/classes/imfusion-controller).
+
+## Public Member Functions
+
+- void [setMainWindowBase](#setmainwindowbase) ([MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase) \*mw) — Complete the initialization by providing the parent [MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase) instance hosting the controller by setting m_main and m_disp and eventually call [init()](#init).
+- virtual void [onSelectedDataChanged](#onselecteddatachanged) (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &) — Called by [MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase) in the case that the selection in the data model has changed.
+- virtual void [onVisibleDataChanged](#onvisibledatachanged) (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &) — Called by [MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase) in the case that the currently visible data has changed.
+- virtual [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Location](#location) &gt; [supportedLocations](#supportedlocations) () const — Returns the list of locations in which this controller is allowed to be placed by the parent [MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase).
+- virtual [Location](#location) [preferredLocation](#preferredlocation) () const — Returns the preferred location in which the parent [MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase) should place this controller.
+- virtual void [onLocationChanged](#onlocationchanged) ([Location](#location) newLocation) — Callback function called by the parent MainWindowBase/ControllerDecorator whenever the place was changed.
+- [Location](#location) [location](#location) () const — Convenience function to query the current controller [Location](#location) from the parent [ControllerDecorator](/cpp-sdk/4.5/api/classes/imfusion-controllerdecorator).
+- virtual [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [title](#title) () const =0 — Returns the shown widget title if the controller is shown in a mode that supports this (e.g. when in dock).
+- [ControllerDecorator](/cpp-sdk/4.5/api/classes/imfusion-controllerdecorator) \* **getDecorator** () const — Convenience function to return m_main-&gt;getControllerDecorator(this) if m_main is set or nullptr otherwise.
+- T \* **getDecorator** () const — Convenience function to dynamic_cast the return value of getDecorator() to a derived type.
+
+## Public Attributes
+
+- Signal **signalTitleChanged** — Signal emitted when the [title()](#title) has changed.
+
+## Protected Member Functions
+
+- virtual void [init](#init) ()=0 — Two-step initialization function to be implemented by subclasses.
+
+## Protected Attributes
+
+- [MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase) \* **m_main** = nullptr — The parent [MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase) instance hosting this [Controller](/cpp-sdk/4.5/api/classes/imfusion-controller).
+- [DisplayWidgetMulti](/cpp-sdk/4.5/api/classes/imfusion-displaywidgetmulti) \* **m_disp** = nullptr — The main [DisplayWidget](/cpp-sdk/4.5/api/classes/imfusion-displaywidget) instance, convenience shortcut for m_main-&gt;display().
+
+## Member Enumeration Documentation
+
+### int
+
+```cpp
+enum class ImFusion::Controller::Location : int
+```
+
+*strong*
+
+Enumeration of possible placement/decoration options of a [Controller](/cpp-sdk/4.5/api/classes/imfusion-controller).
+
+**Enumerator:**
+
+- `Unknown` — Exact location could not be determined (e.g. when [Controller](/cpp-sdk/4.5/api/classes/imfusion-controller) is not yet initialized).
+- `Naked` — [Controller](/cpp-sdk/4.5/api/classes/imfusion-controller) should not be wrapped/placed by [MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase) at all (e.g. [Controller](/cpp-sdk/4.5/api/classes/imfusion-controller) hosts its own window).
+- `PrimaryDock` — [Controller](/cpp-sdk/4.5/api/classes/imfusion-controller) should be placed in MainWindowBase::algorithmDock() if available.
+- `SecondaryDock` — [Controller](/cpp-sdk/4.5/api/classes/imfusion-controller) should be placed in [MainWindowBase::secondaryAlgorithmDock()](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase) if available.
+- `Detached` — [Controller](/cpp-sdk/4.5/api/classes/imfusion-controller) should be placed in a detached floating window.
+- `ToolBar` — [Controller](/cpp-sdk/4.5/api/classes/imfusion-controller) should be placed in MainWindowBase::controllerBar() if available.
+- `UserLocation` — First unreserved enum value that can be used for custom or application-specific purposes.
+
+## Member Function Documentation
+
+### setMainWindowBase
+
+```cpp
+void ImFusion::Controller::setMainWindowBase (MainWindowBase * mw)
+```
+
+Complete the initialization by providing the parent [MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase) instance hosting the controller by setting m_main and m_disp and eventually call [init()](#init).
+
+This function is called by [MainWindowBase::addController()](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase) so that you normally do not need to call it manually from the outside except in case you want to use a [Controller](/cpp-sdk/4.5/api/classes/imfusion-controller) without adding it to [MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase).
+
+**Note:** Controllers do not support exchanging their main window. Therefore, this function must not be called multiple times with different arguments!
+
+### onSelectedDataChanged
+
+```cpp
+virtual void ImFusion::Controller::onSelectedDataChanged (const DataList &)
+```
+
+*inline, virtual*
+
+Called by [MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase) in the case that the selection in the data model has changed.
+
+### onVisibleDataChanged
+
+```cpp
+virtual void ImFusion::Controller::onVisibleDataChanged (const DataList &)
+```
+
+*inline, virtual*
+
+Called by [MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase) in the case that the currently visible data has changed.
+
+### supportedLocations
+
+```cpp
+virtual std::vector < Location > ImFusion::Controller::supportedLocations () const
+```
+
+*inline, virtual*
+
+Returns the list of locations in which this controller is allowed to be placed by the parent [MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase).
+
+If the controller should not be placed/wrapped by the host but stand by itself you should return a list containing only Location::Naked.
+
+### preferredLocation
+
+```cpp
+virtual Location ImFusion::Controller::preferredLocation () const
+```
+
+*inline, virtual*
+
+Returns the preferred location in which the parent [MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase) should place this controller.
+
+If the controller should not be placed/wrapped by the host but stand by itself you should return Location::Naked.
+
+### onLocationChanged
+
+```cpp
+virtual void ImFusion::Controller::onLocationChanged (Location newLocation)
+```
+
+*virtual*
+
+Callback function called by the parent MainWindowBase/ControllerDecorator whenever the place was changed.
+
+### location
+
+```cpp
+Location ImFusion::Controller::location () const
+```
+
+Convenience function to query the current controller [Location](#location) from the parent [ControllerDecorator](/cpp-sdk/4.5/api/classes/imfusion-controllerdecorator).
+
+If the current location could not be determined, Location::Unknown is returned.
+
+### title
+
+```cpp
+virtual std::string ImFusion::Controller::title () const
+```
+
+*pure virtual*
+
+Returns the shown widget title if the controller is shown in a mode that supports this (e.g. when in dock).
+
+### init
+
+```cpp
+virtual void ImFusion::Controller::init ()
+```
+
+*protected, pure virtual*
+
+Two-step initialization function to be implemented by subclasses.
+
+This function is called by [setMainWindowBase()](#setmainwindowbase) after the m_disp and m_main attributes have been set and hence a complete initialization of the controller is possible at this point.

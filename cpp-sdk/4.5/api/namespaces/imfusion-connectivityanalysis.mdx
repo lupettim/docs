@@ -1,0 +1,106 @@
+---
+title: "ImFusion::ConnectivityAnalysis"
+sidebarTitle: "ConnectivityAnalysis"
+description: "Set of functions for efficient connectivity analysis of binary or thresholded images."
+---
+
+## Overview
+
+Set of functions for efficient connectivity analysis of binary or thresholded images.
+
+This namespace provides optimized implementations for identifying and labeling connected components in 2D and 3D images. Both CPU and GPU implementations are available for both 2D and 3D images.
+
+## Enumerations
+
+- enum [Connectivity](#connectivity) &#123; CONNECT4_2D = 4 , CONNECT8_2D = 8 , CONNECT6_3D = 6 , CONNECT18_3D = 18 , CONNECT26_3D = 26 &#125; — [Connectivity](#connectivity) types for 2D and 3D connected component analysis.
+
+## Functions
+
+- int [computeConnectedComponents](#computeconnectedcomponents-1-2) (const [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; T &gt; \*inImage, [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; S &gt; \*labelImage, [Connectivity](#connectivity) connectivity, int minComponentSize=-1, int maxNumberComponents=-1, T threshold=T(1), int maxComponentSize=-1, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; size_t &gt; \*componentSizes=nullptr) — Compute connected components of the input image using a CPU-based implementation.
+- int [computeConnectedComponents](#computeconnectedcomponents-2-2) ([GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) \*inImage, [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; S &gt; \*labelImage, [Connectivity](#connectivity) connectivity, int minComponentSize=-1, int maxNumberComponents=-1, double threshold=1.0, int maxComponentSize=-1, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; size_t &gt; \*componentSizes=nullptr) — Compute connected components of the input image using a GPU-accelerated implementation.
+- int [hysteresisThresholding](#hysteresisthresholding) ([TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; T &gt; \*inImage, [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; S &gt; \*labelImage, double lowThreshold, double highThreshold, [Connectivity](#connectivity) connectivity, int minComponentSize=-1, int maxNumberComponents=-1)
+
+## Enumeration Type Documentation
+
+### Connectivity
+
+```cpp
+enum ImFusion::ConnectivityAnalysis::Connectivity
+```
+
+[Connectivity](#connectivity) types for 2D and 3D connected component analysis.
+
+Defines the neighborhood structure used to determine if pixels/voxels belong to the same component:
+
+- 2D: 4-connectivity (face neighbors) or 8-connectivity (face + diagonal neighbors)
+- 3D: 6-connectivity (face neighbors), 18-connectivity (face + edge neighbors), or 26-connectivity (face + edge + corner neighbors)
+
+**Enumerator:**
+
+- `CONNECT4_2D` — 2D connectivity using 4 face neighbors
+- `CONNECT8_2D` — 2D connectivity using 8 face and diagonal neighbors
+- `CONNECT6_3D` — 3D connectivity using 6 face neighbors
+- `CONNECT18_3D` — 3D connectivity using 18 face and edge neighbors
+- `CONNECT26_3D` — 3D connectivity using 26 face, edge, and corner neighbors
+
+## Function Documentation
+
+### computeConnectedComponents
+
+```cpp
+template<typename T, typename S> int ImFusion::ConnectivityAnalysis::computeConnectedComponents (const TypedImage < T > * inImage, TypedImage < S > * labelImage, Connectivity connectivity, int minComponentSize = -1, int maxNumberComponents = -1, T threshold = T(1), int maxComponentSize = -1, std::vector < size_t > * componentSizes = nullptr)
+```
+
+Compute connected components of the input image using a CPU-based implementation.
+
+Identifies and labels all connected components in the input image using an optimized union-find algorithm. All pixels with a value greater than or equal to the specified threshold are considered foreground and processed. Components can be filtered by size and total count. The resulting label image assigns each pixel a unique component ID (starting from 1), with larger components receiving lower IDs. Background pixels are labeled as 0.
+
+**Parameters:**
+
+- `inImage` — Input image to analyze, will not be modified
+- `labelImage` — Output image to store component labels; must have the same dimensions as the input image
+- `connectivity` — Type of connectivity to use (4 or 8 for 2D images, 6, 18, or 26 for 3D images)
+- `minComponentSize` — Minimum component size in pixels/voxels; components smaller than this will be removed (-1 = no filtering)
+- `maxNumberComponents` — Maximum number of components to keep, sorted by size (-1 = keep all)
+- `threshold` — Threshold value; pixels &gt;= threshold are considered foreground
+- `maxComponentSize` — Maximum component size in pixels/voxels; components larger than this will be removed (-1 = no filtering)
+- `componentSizes` — Optional output vector to receive component sizes; index i contains the size of component label i+1
+
+**Returns:** Number of components found after filtering, or -1 on error
+
+### computeConnectedComponents
+
+```cpp
+template<typename S> int ImFusion::ConnectivityAnalysis::computeConnectedComponents (GlImage * inImage, TypedImage < S > * labelImage, Connectivity connectivity, int minComponentSize = -1, int maxNumberComponents = -1, double threshold = 1.0, int maxComponentSize = -1, std::vector < size_t > * componentSizes = nullptr)
+```
+
+Compute connected components of the input image using a GPU-accelerated implementation.
+
+Identifies and labels all connected components in the input image using GPU compute shaders. All pixels with a value greater than or equal to the specified threshold are considered foreground and processed. Components can be filtered by size and total count. The resulting label image assigns each pixel a unique component ID (starting from 1), with larger components receiving lower IDs. Background pixels are labeled as 0. Note: The underlying algorithm is inherently hard to parallelize, so the GPU implementation might be slower than the CPU implementation for small images.
+
+**Parameters:**
+
+- `inImage` — GPU image to analyze; must be a valid [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) with texture data
+- `labelImage` — Output image to store component labels; must have the same dimensions as the input image
+- `connectivity` — Type of connectivity to use (4 or 8 for 2D images, 6, 18, or 26 for 3D images)
+- `minComponentSize` — Minimum component size in pixels/voxels; components smaller than this will be removed (-1 = no filtering)
+- `maxNumberComponents` — Maximum number of components to keep, sorted by size (-1 = keep all)
+- `threshold` — Threshold value; pixels &gt;= threshold are considered foreground
+- `maxComponentSize` — Maximum component size in pixels/voxels; components larger than this will be removed (-1 = no filtering)
+- `componentSizes` — Optional output vector to receive component sizes; index i contains the size of component label i+1
+
+**Returns:** Number of components found after filtering, or -1 on error
+
+**Note:** Requires OpenGL 4.3+ support for compute shaders
+
+**Note:** [Image](/cpp-sdk/4.5/api/classes/imfusion-image) type DOUBLE is not supported on GPU
+
+### hysteresisThresholding
+
+```cpp
+template<typename T, typename S> int ImFusion::ConnectivityAnalysis::hysteresisThresholding (TypedImage < T > * inImage, TypedImage < S > * labelImage, double lowThreshold, double highThreshold, Connectivity connectivity, int minComponentSize = -1, int maxNumberComponents = -1)
+```
+
+****Deprecated**:** This function is deprecated and will be removed in a future release.
+
+****Deprecated**:** "Hysteresis thresholding was removed from ConnectivityAnalysis."

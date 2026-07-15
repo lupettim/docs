@@ -1,0 +1,26 @@
+---
+title: "ImFusion::RecentFilesMenu"
+sidebarTitle: "RecentFilesMenu"
+description: "QtMenu that displays recent files and favourites."
+---
+
+`#include <ImFusion/GUI/RecentFilesMenu.h>`
+
+## Overview
+
+QtMenu that displays recent files and favourites.
+
+Includes a button to mark as favorite
+
+**See also:** [RecentFileWidget](/cpp-sdk/4.5/api/classes/imfusion-recentfilewidget)
+
+## Signals
+
+- void **openFile** (const QString &type, const QString &filename, [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &d, bool bAddToRecent, const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*properties) — Signals to open a file.
+
+## Public Member Functions
+
+- **RecentFilesMenu** (int maxRecentFiles, QWidget \*parent=nullptr) — Creates a recent files menu with a maximum of recent files.
+- void **addRecentFile** (const QString &algorithm, const QString &fileName, const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) — Add file to recently opened files.
+- void **updateActions** () — Recomputes actions text and visibility.
+- void **clearRecentFiles** () — Clears recent file list.

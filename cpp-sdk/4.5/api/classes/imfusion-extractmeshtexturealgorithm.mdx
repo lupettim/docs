@@ -1,0 +1,86 @@
+---
+title: "ImFusion::ExtractMeshTextureAlgorithm"
+sidebarTitle: "ExtractMeshTextureAlgorithm"
+description: "Extracts the texture from a given mesh to an image."
+---
+
+`#include <ImFusion/Mesh/ExtractMeshTextureAlgorithm.h>`
+
+## Overview
+
+Extracts the texture from a given mesh to an image.
+
+This algorithm will copy the texture from a [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) to a [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset).
+
+## Public Member Functions
+
+- [ExtractMeshTextureAlgorithm](#extractmeshtexturealgorithm) ([Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) &mesh) — Constructor.
+- void [compute](#compute) () override — Execute the algorithm.
+- [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) [takeOutput](#takeoutput) () override — Get the result data.
+
+## Static Public Member Functions
+
+- static bool [createCompatible](#createcompatible) (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=nullptr) — Factory function to check algorithm compatibility with input data and optionally instantiate it.
+
+## Constructor & Destructor Documentation
+
+### ExtractMeshTextureAlgorithm
+
+```cpp
+ImFusion::ExtractMeshTextureAlgorithm::ExtractMeshTextureAlgorithm (Mesh & mesh)
+```
+
+*explicit*
+
+Constructor.
+
+**Parameters:**
+
+- `mesh` — The mesh to extract the texture from
+
+## Member Function Documentation
+
+### createCompatible
+
+```cpp
+bool ImFusion::ExtractMeshTextureAlgorithm::createCompatible (const DataList & data, Algorithm ** a = nullptr)
+```
+
+*static*
+
+Factory function to check algorithm compatibility with input data and optionally instantiate it.
+
+Every subclass of [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) must implement this function in order to be usable by [AlgorithmFactory](/cpp-sdk/4.5/api/classes/imfusion-algorithmfactory).
+
+**Parameters:**
+
+- `data` — Input data for the algorithm
+- `a` — Optional output pointer for instantiation through factory. If *a* is not null, this function will instantiate the algorithm and store the pointer there.
+
+**Returns:** true if the algorithm is compatible with the input data.
+
+### compute
+
+```cpp
+void ImFusion::ExtractMeshTextureAlgorithm::compute ()
+```
+
+*override, virtual*
+
+Execute the algorithm.
+
+### takeOutput
+
+```cpp
+OwningDataList ImFusion::ExtractMeshTextureAlgorithm::takeOutput ()
+```
+
+*override, virtual*
+
+Get the result data.
+
+Return any new [Data](/cpp-sdk/4.5/api/classes/imfusion-data) that was created by the [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) during the last call to [compute()](#compute).
+
+The default implementation will return an empty list.
+
+**Note:** Since ownership of the data is transferred, you can call this method only once between calls to [compute()](#compute).

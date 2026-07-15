@@ -1,0 +1,154 @@
+---
+title: "ImFusion::ParameterBase"
+sidebarTitle: "ParameterBase"
+description: "Shared base interface of Parameter and SubProperty so that Configurable can maintain a collection of those."
+---
+
+`#include <ImFusion/Core/ParameterBase.h>`
+
+## Overview
+
+Shared base interface of [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) so that [Configurable](/cpp-sdk/4.5/api/classes/imfusion-configurable) can maintain a collection of those.
+
+## Public Member Functions
+
+- **ParameterBase** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name)
+- virtual void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p)=0 — Configure this parameter/sub property by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- virtual void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const =0 — Serialize the current parameter/sub property state into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+- const Configurable \* **parent** () const — Return the parent [Configurable](/cpp-sdk/4.5/api/classes/imfusion-configurable) instance that this parameter is registered with.
+- virtual const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) & **name** () const — Returns parameter name, can only be set during construction.
+- void [setAttribute](#setattribute) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &key, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &value) — Add the given attribute key-value pair to the set of parameter attributes.
+- void [removeAttribute](#removeattribute) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &key) — Remove the attribute with the given key.
+- const [std::map](http://en.cppreference.com/w/cpp/container/map.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html), [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; & **attributes** () const — Get the attribute map.
+- void [setLabel](#setlabel) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &label) — Sets an optional label for the [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) if displayed in the UI.
+- void [addDeprecatedName](#adddeprecatedname) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &deprecatedName) — Adds an optional alternative parameter name that should be used for param lookup for during [configure()](#configure) in case de-serialization from m_name was not successful.
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; & **deprecatedNames** () const — Returns the list of deprecated parameter names that should be used for param lookup (see [addDeprecatedName()](#adddeprecatedname)).
+
+## Public Attributes
+
+- Signal **signalValueChanged** — Signal gets emitted when the underlying value of the Parameter/SubProperty has changed (either through setValue() or [configure()](#configure)).
+
+## Protected Member Functions
+
+- void **setParentFromCopy** (const ParameterBase &other) — Helper function to be called from a copy/move ctor in order to correctly set the parent relation ship to the new parent [Configurable](/cpp-sdk/4.5/api/classes/imfusion-configurable).
+
+## Protected Attributes
+
+- Configurable \* **m_parent** = nullptr
+- const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **m_name**
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **m_deprecatedNames**
+- [std::map](http://en.cppreference.com/w/cpp/container/map.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html), [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **m_attributes**
+
+## Member Function Documentation
+
+### configure
+
+```cpp
+virtual void ImFusion::ParameterBase::configure (const Properties * p)
+```
+
+*pure virtual*
+
+Configure this parameter/sub property by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+### configuration
+
+```cpp
+virtual void ImFusion::ParameterBase::configuration (Properties * p) const
+```
+
+*pure virtual*
+
+Serialize the current parameter/sub property state into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+### setAttribute
+
+```cpp
+void ImFusion::ParameterBase::setAttribute (const std::string & key, const std::string & value)
+```
+
+Add the given attribute key-value pair to the set of parameter attributes.
+
+Set special attributes to a single parameter.
+
+The attributes are specified in the form: &lt;attribute&gt;: &lt;value&gt;, &lt;attribute&gt;: &lt;value&gt;. Whitespace in between the elements (e.g. around the :) is automatically trimmed. Attributes must not contain whitespace. The value can be either a number or a string. Strings must be quoted with single quotes (') and are allowed to contain ,.
+
+The supported attributes depend on the type of the parameter. Currently supported attributes are:
+
+- General:
+  - label (string): text to use for the label when displaying this property in a default [PropertiesWidget](/cpp-sdk/4.5/api/classes/imfusion-propertieswidget).
+  - useroption ('r', 'w', or 'rw'): if this is set for a parameter of an [IoAlgorithm](/cpp-sdk/4.5/api/classes/imfusion-ioalgorithm), the parameter will be displayed in the global settings dialog.
+  - read-only (bool): if set, the user cannot change the value
+  - tooltip (string): tooltip that describes the parameter
+  - hidden (bool): if set, the [PropertiesWidget](/cpp-sdk/4.5/api/classes/imfusion-propertieswidget) will not show a control for this parameter
+  - invalid (bool): if set, the control’s value is highlighted as invalid in the [PropertiesWidget](/cpp-sdk/4.5/api/classes/imfusion-propertieswidget).
+  - Double, Integer:
+  - min (double or int): minimum allowed value
+  - max (double or int): maximum allowed value
+  - step (double or int): step by which the value is increased
+  - prefix (string): prefix displayed before the value (e.g. a unit)
+  - suffix (string): suffix displayed after the value (e.g. a unit)
+  - withSlider (bool): add a slider in the user interface
+- Double:
+  - decimals (int): number of decimals displayed. Setting this might alter min/max value (see [https://doc.qt.io/qt-5/qdoublespinbox.html#decimals-prop](https://doc.qt.io/qt-5/qdoublespinbox.html#decimals-prop))
+- Enum, EnumString:
+  - values (comma separated string, with or without whitespace around comma): [String](/cpp-sdk/4.5/api/namespaces/imfusion-string) representation of enumerators.
+  - keys (comma separated string, with or without whitespace around comma): Integer values assigned to enumerators. If not specified, integer values 0,1,2,3,... are assumed.
+- Path:
+  - type: specifies the dialog type and must be one of: OpenDirectory, OpenFile or SaveFile. The default is OpenFile.
+  - caption: sets the title of the dialog (the default is a generic caption depending on the type)
+  - filter: string of wildcard patterns to filter available files, separated by ;;, e.g.: Text files (\*.txt);;XML files (\*.xml) (see also QFileDialog)
+  - dontUseNativeDialog: when set to true use the Qt dialog instead of the native dialog. The default is false.
+- [String](/cpp-sdk/4.5/api/namespaces/imfusion-string):
+  - textBox (bool): if set, uses a text box instead of a line edit, making it more user-friendly for long or multi-line text. The default is false.
+  - password: whether or not to print the characters in the text box; must be one of Normal (show characters), NoEcho (show nothing at all), Password (show masked characters), PasswordEchoOnEdit (show characters during edit, otherwise mask them).
+- Color:
+  - type: specifies the dialog type and must be one of: normal, reduced, in-place.
+
+**Note:** Setting attributes will not change the value or restrict future values of the parameter in any way, e.g. setting a max value for an integer does not automatically clamp values assigned by setParam. Attributes are pure informational and can be used by other object to actually enforce these restrictions (e.g. [PropertiesWidget](/cpp-sdk/4.5/api/classes/imfusion-propertieswidget)).
+
+```cpp
+// a double value that is restricted between -1 and 1, and increases in steps of 0.1
+p.setParamAttributes("someDouble", "min: -1.0, max: 1.0, step: 0.1");
+
+// an enum value that can have three values\n
+p.setParamAttributes("someEnum", "values: 'value1, value2, value3'");
+```
+ fragment
+Returns true if the given string could be parsed or false otherwise.
+
+**See also:** String::join, [PropertiesWidget](/cpp-sdk/4.5/api/classes/imfusion-propertieswidget)
+
+**See also:** [Properties::setParamAttributes()](/cpp-sdk/4.5/api/classes/imfusion-properties)
+
+### removeAttribute
+
+```cpp
+void ImFusion::ParameterBase::removeAttribute (const std::string & key)
+```
+
+Remove the attribute with the given key.
+
+**See also:** [Properties::setParamAttributes()](/cpp-sdk/4.5/api/classes/imfusion-properties)
+
+### setLabel
+
+```cpp
+void ImFusion::ParameterBase::setLabel (const std::string & label)
+```
+
+Sets an optional label for the [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) if displayed in the UI.
+
+If not set, the name will be used.
+
+**See also:** [Properties::setParamAttributes()](/cpp-sdk/4.5/api/classes/imfusion-properties)
+
+### addDeprecatedName
+
+```cpp
+void ImFusion::ParameterBase::addDeprecatedName (const std::string & deprecatedName)
+```
+
+Adds an optional alternative parameter name that should be used for param lookup for during [configure()](#configure) in case de-serialization from m_name was not successful.
+
+Will log a warning if param lookup using the deprecated name is successful. This feature is helpful if you must change the parameter name but want to keep existing workspaces functioning.

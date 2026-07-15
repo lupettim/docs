@@ -1,0 +1,148 @@
+---
+title: "ImFusion::InteractionView2D"
+sidebarTitle: "InteractionView2D"
+---
+
+## Public Types
+
+- enum class **RotationReference** &#123; **Dataset** , **View** , **Crossection** &#125;
+- enum class [InteractionTarget](#interactiontarget) &#123; Slice , Image &#125; — Enumeration of interaction modes allowing to choose between regular view interaction and the "move image" feature.
+
+## Signals
+
+- void **windowingEditorRequested** () — Connected slot should open a windowing editor for this view.
+- void **moveImageStart** () — Signals when the move image interaction starts.
+- void **moveImageEnd** () — Signals when the move image interaction ends.
+
+## Public Member Functions
+
+- **InteractionView2D** ([ImageView2D](/cpp-sdk/4.5/api/classes/imfusion-imageview2d) &view)
+- void **setInteractionTarget** ([InteractionTarget](#interactiontarget) target)
+- [InteractionTarget](#interactiontarget) **interactionTarget** () const
+- RotationReference **rotationReference** () const — Returns the reference for determining the rotation center.
+- void **setRotationReference** (RotationReference value) — Sets the reference for determining the rotation center.
+- void **setTouchActions** (const [TouchActions](/cpp-sdk/4.5/api/structs/imfusion-touchactions) &touchActions) — Setter/getter pair for touch action types.
+- const [TouchActions](/cpp-sdk/4.5/api/structs/imfusion-touchactions) & **touchActions** () const
+- bool [sceneEvent](#sceneevent) (QEvent \*event) override — Modify the view parameters based on the mouse events.
+- bool **sceneEventTouch** (QEvent \*event) — Modify the view parameters based on the touchscreen events.
+- void [contextMenuCreate](#contextmenucreate) (QMenu &m) override — Create context menu entries.
+- void [contextMenuEvaluate](#contextmenuevaluate) (QAction \*a) override — Evaluate action chosen in context menu.
+- void [createActions](#createactions) () override — Create actions shown in context menu.
+- [ImageView2D](/cpp-sdk/4.5/api/classes/imfusion-imageview2d) & **view2D** () — Returns the view of this interaction.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* &gt; **moveImages** () const — Returns the list of images that should be moved if interactionTarget() is InteractionTarget::Image.
+- void [addMoveImage](#addmoveimage) ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*val) — Adds the given image to the list of images to which the "move image" feature is applied.
+- void [removeMoveImage](#removemoveimage) (const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*img) — Removes the given image from the list of images to which the "move image" feature is applied.
+- void **setMoveImageHighlightColor** (const vec4 &color) — Sets the color for highlighting move images.
+- void **setMoveImageHighlightEnabled** (bool enable) — Enables/Disables highlighting of the move-image.
+
+## Protected Member Functions
+
+- bool **changePose** (QMouseEvent \*event) — Changes the pose of the view using CumulativeViewManipulation2D.
+- vec3 **rotationCenter** (const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*sis=nullptr) const — Returns the rotation center (optionally considering the image).
+- bool **handleMouseMoveEvent** (QMouseEvent \*event) — Returns true(false) if the mouse move was (not) handled.
+- bool **hasMatchingAction** (int touchPointsCount, ViewActionType action) — Returns true (false) if there is (not) a matching action for the given number of touch-points Checks that the touch points are positive and smaller than three.
+- CumulativeViewManipulation2D \* **cumulativeManipulation** () const — Getters for the view manipulations.
+- ImmediateViewManipulation2D \* **immediateViewManipulation** () const
+
+## Protected Attributes
+
+- bool **m_dragging** = false
+- Qt::MouseButton **m_mouseDragButton** = Qt::NoButton
+- vec2 **m_mouseDownPos** = vec2::Zero()
+- vec2 **m_mouseDelta** = vec2::Zero()
+- vec3 **m_rotationCenter** = vec3::Zero()
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; double &gt; **m_oldDistance** = std::nullopt — Indicates the cached distance between 2 former touchpoints.
+- vec2 **m_oldPoint** = vec2::Zero() — Indicates the cached point of a single touch.
+- vec2 **m_oldCenterPoint** = vec2::Zero() — Indicates the cached center between 2 former touchpoints.
+- QLineF **m_oldAngleReferenceLine** = &#123;&#125; — Indicates the cached angle between 2 former lines (of 2 touchpoints).
+- [TouchActions](/cpp-sdk/4.5/api/structs/imfusion-touchactions) **m_touchActions** = &#123;&#123;PAN&#125;, &#123;PAN, ROTATESLICE2D, ZOOMSLICE&#125;&#125; — Standard touch actions for one/two finger touch gestures.
+- [InteractionTarget](#interactiontarget) **m_interactionTarget** = InteractionTarget::Slice
+- RotationReference **m_rotationReference** = RotationReference::Crossection
+
+## Additional Inherited Members
+
+- static bool [addMappedViewAction](/cpp-sdk/4.5/api/classes/imfusion-viewinteraction) (ViewActionType viewAction, Qt::MouseButton button, Qt::KeyboardModifiers modifiers)
+- static bool **removeMappedViewAction** (ViewActionType viewAction, Qt::MouseButton button, Qt::KeyboardModifiers modifiers) — Removes mapping from `viewAction` to *MouseAction* defined by `button` and `modifiers` Returns true if removing succeeds, or false if this mapping does not exists.
+- static void **resetActionMapping** () — Loads the default view interaction mapping.
+- static const ViewActionMap & **globalViewActionMap** () — Const access to the global view action mapper.
+- static void **setGlobalViewActionMap** (const ViewActionMap &map) — Sets the global view action map.
+- static bool **hasConflicts** (const ViewActionMap &actionMap, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::pair](http://en.cppreference.com/w/cpp/utility/pair.html)&lt; ViewActionType, ViewActionType &gt; &gt; &conflictingActions) — Checks if the mapping defined in `actionMap` has any conflicts.
+
+## Member Enumeration Documentation
+
+### InteractionTarget
+
+```cpp
+enum class ImFusion::InteractionView2D::InteractionTarget
+```
+
+*strong*
+
+Enumeration of interaction modes allowing to choose between regular view interaction and the "move image" feature.
+
+**Enumerator:**
+
+- `Slice` — "move image" feature off: Panning and rotation interactions are applied to the view matrix.
+- `Image` — "move image" feature on: Panning and rotation interactions are applied to the images in moveImages().
+
+## Member Function Documentation
+
+### sceneEvent
+
+```cpp
+bool ImFusion::InteractionView2D::sceneEvent (QEvent * event)
+```
+
+*override, virtual*
+
+Modify the view parameters based on the mouse events.
+
+### contextMenuCreate
+
+```cpp
+void ImFusion::InteractionView2D::contextMenuCreate (QMenu & m)
+```
+
+*override, virtual*
+
+Create context menu entries.
+
+### contextMenuEvaluate
+
+```cpp
+void ImFusion::InteractionView2D::contextMenuEvaluate (QAction * a)
+```
+
+*override, virtual*
+
+Evaluate action chosen in context menu.
+
+### createActions
+
+```cpp
+void ImFusion::InteractionView2D::createActions ()
+```
+
+*override, virtual*
+
+Create actions shown in context menu.
+
+### addMoveImage
+
+```cpp
+void ImFusion::InteractionView2D::addMoveImage (SharedImageSet * val)
+```
+
+Adds the given image to the list of images to which the "move image" feature is applied.
+
+Will also enable the "move image" feature by setting the [InteractionTarget](#interactiontarget) flag to [Image](/cpp-sdk/4.5/api/classes/imfusion-image).
+
+### removeMoveImage
+
+```cpp
+void ImFusion::InteractionView2D::removeMoveImage (const SharedImageSet * img)
+```
+
+Removes the given image from the list of images to which the "move image" feature is applied.
+
+If there are no move images left it will also disable the "move image" feature again by setting the [InteractionTarget](#interactiontarget) flag to [Slice](/cpp-sdk/4.5/api/classes/imfusion-slice).

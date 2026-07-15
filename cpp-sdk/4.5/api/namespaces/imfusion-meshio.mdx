@@ -1,0 +1,92 @@
+---
+title: "ImFusion::MeshIO"
+sidebarTitle: "MeshIO"
+description: "Mesh input/output to standard mesh formats."
+---
+
+## Overview
+
+[Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) input/output to standard mesh formats.
+
+Please note that a mesh is loaded as is, i.e. duplicate vertices are not removed. A user might need to remove duplicate vertices to be able to use some mesh processing functionality
+
+## Functions
+
+- [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) \* [load](#load-1-2) (const char \*buffer, size_t bufferLength, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &sourceFilename="", [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) \*progressBar=nullptr, bool log=false) — Loads a mesh from a memory buffer.
+- [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) \* [load](#load-2-2) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &filename, [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) \*progressBar=nullptr, bool log=false, bool allowVertexOnlyMesh=false, bool forceNoChecks=false, bool abortOnFaceAddFailure=false) — Generic method to load a mesh from a file Supports the following file extensions: stl, off, vtk, ply, obj, surf, grid, 3mf.
+- [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) \* **loadFromSTL** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &filename, bool mergeVertices=true) — Loads a mesh from a STL file, automatically determining text or binary format.
+- [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) \* **loadFromSTL** ([std::istream](http://en.cppreference.com/w/cpp/io/basic_istream.html) &binaryStream, bool mergeVertices=true)
+- [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) \* **loadFromOFF** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &filename, bool allowVertexOnlyMesh) — Loads a mesh from an OFF file.
+- [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) \* **loadFromOFF** ([std::istream](http://en.cppreference.com/w/cpp/io/basic_istream.html) &binaryStream, bool allowVertexOnlyMesh)
+- [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) \* **loadFromVTK** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &filename) — Loads a mesh from a VTK file.
+- [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) \* **loadFromVTK** ([std::istream](http://en.cppreference.com/w/cpp/io/basic_istream.html) &binaryStream)
+- [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) \* **loadFromSURF** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &filename)
+- [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) \* **loadFromSURF** ([std::istream](http://en.cppreference.com/w/cpp/io/basic_istream.html) &binaryStream)
+- [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) \* **loadFromGRID** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &filename)
+- [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) \* **loadFromGRID** ([std::istream](http://en.cppreference.com/w/cpp/io/basic_istream.html) &binaryStream)
+- [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) \* **loadFrom3MF** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &filename)
+- [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) \* **loadFrom3MF** ([std::istream](http://en.cppreference.com/w/cpp/io/basic_istream.html) &binaryStream)
+- [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) \* [loadFromOBJ](#loadfromobj-1-2) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &filename, [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) \*progressBar=nullptr, bool allowVertexOnlyMesh=false, bool enforceCLocale=true) — Loads a mesh from an OBJ file If enforceCLocale is true, the global locale is modified to make sure that the obj file is properly parsed.
+- [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) \* [loadFromOBJ](#loadfromobj-2-2) ([std::istream](http://en.cppreference.com/w/cpp/io/basic_istream.html) &in, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &sourceFilename, [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) \*progressBar=nullptr, bool allowVertexOnlyMesh=false, bool enforceCLocale=true) — Loads a mesh from an OBJ generic stream.
+- [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) \* **loadFromPLY** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &filename, [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) \*progress=nullptr, bool allowVertexOnlyMesh=false, bool forceNoChecks=false, bool abortOnFaceAddFailure=false, bool enforceCLocale=true) — Loads a mesh from an PLY file.
+- [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) \* **loadFromPLY** ([std::istream](http://en.cppreference.com/w/cpp/io/basic_istream.html) &in, [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &texFile, [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) \*progress=nullptr, bool allowVertexOnlyMesh=false, bool forceNoChecks=false, bool abortOnFaceAddFailure=false, bool enforceCLocale=true)
+- bool **saveToOBJ** (const [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) &mesh, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &filename, [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) \*progress=0, bool saveWithTexture=false, bool optimizeStorage=false, bool allowVertexOnlyMesh=false) — Save as file in OBJ format, returns true if successful.
+- bool **saveToOBJ** (const [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) &mesh, [std::ostream](http://en.cppreference.com/w/cpp/io/basic_ostream.html) &out, [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) \*progress=0, bool saveWithTexture=false, bool optimizeStorage=false, bool allowVertexOnlyMesh=false) — Save into an output stream in OBJ format, returns true if successful.
+- bool **saveToPLY** (const [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) &mesh, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &filename, bool saveWithTexture=false, bool allowVertexOnlyMesh=false) — Save as file in PLY format, returns true if successful.
+- bool **saveToPLY** (const [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) &mesh, [std::ostream](http://en.cppreference.com/w/cpp/io/basic_ostream.html) &out, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &textureFilename="", bool allowVertexOnlyMesh=false) — Save into an output stream in PLY format, returns true if successful.
+- bool **saveToSTL** (const [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) &mesh, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &filename) — Save as file in STL format, returns true if successful.
+- bool **saveToWRL** (const [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) &mesh, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &filename, [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) \*progress=0) — Save as file in VRML format, returns true if successful.
+- bool **saveToOFF** (const [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) &mesh, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &filename, [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) \*progress=0) — Save as file in OFF format, returns true if successful.
+- bool **saveTo3MF** (const [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) &mesh, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &filename) — Save as file in OFF format, returns true if successful.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **getMeshNameFromPath** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &path)
+- [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) \* **loadASCIISTLFile** ([std::istream](http://en.cppreference.com/w/cpp/io/basic_istream.html) &binaryStream)
+- [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) \* **loadBinarySTLFile** ([std::istream](http://en.cppreference.com/w/cpp/io/basic_istream.html) &binaryStream)
+
+## Function Documentation
+
+### load
+
+```cpp
+Mesh * ImFusion::MeshIO::load (const char * buffer, size_t bufferLength, const std::string & sourceFilename = "", Progress * progressBar = nullptr, bool log = false)
+```
+
+Loads a mesh from a memory buffer.
+
+The optional sourceFilename is used to determine the mesh type and used to load additional files (e.g. materials).
+
+**Examples:** [ExampleMeshAlgorithm.cpp](/cpp-sdk/4.5/api/examples/example-mesh-algorithm-8cpp).
+
+### load
+
+```cpp
+Mesh * ImFusion::MeshIO::load (const std::string & filename, Progress * progressBar = nullptr, bool log = false, bool allowVertexOnlyMesh = false, bool forceNoChecks = false, bool abortOnFaceAddFailure = false)
+```
+
+Generic method to load a mesh from a file Supports the following file extensions: stl, off, vtk, ply, obj, surf, grid, 3mf.
+
+**Parameters:**
+
+- `log` — unused, does not do anything
+- `allowVertexOnlyMesh` — Allows meshes without triangle data (off, ply and obj only)
+- `forceNoChecks` — Disables detecting and working around topology problems (ply only)
+- `abortOnFaceAddFailure` — Discards the mesh when topology prevents adding a face (ply only) Note that working around topology problems may result in new vertices being added, while ignoring them will either result in faces being lost or the mesh being discarded, depending on whether abortOnFaceAddFailure is set.
+
+### loadFromOBJ
+
+```cpp
+Mesh * ImFusion::MeshIO::loadFromOBJ (const std::string & filename, Progress * progressBar = nullptr, bool allowVertexOnlyMesh = false, bool enforceCLocale = true)
+```
+
+Loads a mesh from an OBJ file If enforceCLocale is true, the global locale is modified to make sure that the obj file is properly parsed.
+
+If this is the case, the function should not be used in parallel with other code that relies on the locale, such as any other number parsing code. If enforceCLocale is false, the function assumes that a C-locale is set such that the decimal separator is '.' If this precondition is not fulfilled (for example, if the current locale uses ',' as decimal separator) an empty mesh is returned Modifying the global locale while the function is running is unspecified behavior and may produce an invalid mesh.
+
+### loadFromOBJ
+
+```cpp
+Mesh * ImFusion::MeshIO::loadFromOBJ (std::istream & in, const std::string & sourceFilename, Progress * progressBar = nullptr, bool allowVertexOnlyMesh = false, bool enforceCLocale = true)
+```
+
+Loads a mesh from an OBJ generic stream.
+
+The optional sourceFilename is used to load materials files. Not safe to run in parallel. See the function above for a description of the common parameters

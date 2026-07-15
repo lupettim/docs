@@ -1,0 +1,66 @@
+---
+title: "ImFusion::Dicom::TagStoreDataComponent"
+sidebarTitle: "TagStoreDataComponent"
+description: "Data component that preserves the raw DICOM datasets."
+---
+
+`#include <ImFusion/Dicom/TagStoreDataComponent.h>`
+
+## Overview
+
+[Data](/cpp-sdk/4.5/api/classes/imfusion-data) component that preserves the raw DICOM datasets.
+
+**Note:** Large string tags are truncated to 1 kB with a marker, while large non-string tags and pixel data are dropped entirely.
+
+## Public Member Functions
+
+- **TagStoreDataComponent** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; DcmDataset \* &gt; &datasets)
+- **TagStoreDataComponent** (const TagStoreDataComponent &other)
+- TagStoreDataComponent & **operator=** (const TagStoreDataComponent &other)
+- bool **operator==** (const TagStoreDataComponent &other) const
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; DcmDataset &gt; &gt; **extractDatasets** () const
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [id](#id) () const override — Returns a unique string identifier for this type of data component.
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+## Member Function Documentation
+
+### id
+
+```cpp
+std::string ImFusion::Dicom::TagStoreDataComponent::id () const
+```
+
+*override, virtual*
+
+Returns a unique string identifier for this type of data component.
+
+**Note:** To avoid conflicts make sure to include potential plugin names into this ID. Due to the modular architecture of the ImFusion library, uniqueness of IDs cannot be checked at compile time. However, [DataComponentFactory](/cpp-sdk/4.5/api/classes/imfusion-datacomponentfactory) will check the uniqueness of the ID during registration.
+
+### configure
+
+```cpp
+void ImFusion::Dicom::TagStoreDataComponent::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### configuration
+
+```cpp
+void ImFusion::Dicom::TagStoreDataComponent::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality

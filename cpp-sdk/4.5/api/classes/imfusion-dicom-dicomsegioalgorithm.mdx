@@ -1,0 +1,41 @@
+---
+title: "ImFusion::Dicom::DicomSegIoAlgorithm"
+sidebarTitle: "DicomSegIoAlgorithm"
+---
+
+## Public Member Functions
+
+- void [compute](#compute) () override — Execute the algorithm.
+- [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) [takeOutput](#takeoutput) () override — Return any new [Data](/cpp-sdk/4.5/api/classes/imfusion-data) that was created by the [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) during the last call to [compute()](#compute).
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &gt; **loadFromDataset** (DcmDataset &dataset, [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) \*[progress](/cpp-sdk/4.5/api/classes/imfusion-algorithm)=nullptr)
+- void **setAutoCrop** (bool crop) — Set whether to implicitly drop frames that do not contain segmented data.
+
+## Static Public Member Functions
+
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a)
+
+## Member Function Documentation
+
+### compute
+
+```cpp
+void ImFusion::Dicom::DicomSegIoAlgorithm::compute ()
+```
+
+*override, virtual*
+
+Execute the algorithm.
+
+### takeOutput
+
+```cpp
+OwningDataList ImFusion::Dicom::DicomSegIoAlgorithm::takeOutput ()
+```
+
+*override, virtual*
+
+Return any new [Data](/cpp-sdk/4.5/api/classes/imfusion-data) that was created by the [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) during the last call to [compute()](#compute).
+
+The default implementation will return an empty list.
+
+**Note:** Since ownership of the data is transferred, you can call this method only once between calls to [compute()](#compute).

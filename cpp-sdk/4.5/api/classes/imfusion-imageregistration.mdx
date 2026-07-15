@@ -1,0 +1,248 @@
+---
+title: "ImFusion::ImageRegistration"
+sidebarTitle: "ImageRegistration"
+description: "High-level interface for image registration."
+---
+
+`#include <ImFusion/Reg/ImageRegistration.h>`
+
+## Overview
+
+High-level interface for image registration.
+
+The image registration algorithm wraps several concrete image registration algorithms (e.g. linear and deformable) and extends them with pre-processing techniques. Available pre-processing options include downsampling and gradient-magnitude used for [LC2](/cpp-sdk/4.5/api/classes/imfusion-lc2). On creation, the algorithm tries to find the best settings for the registration problem depending on the modality, size and other properties of the input images. The image registration comes with a default set of different transformation models but new ones can be registered on runtime.
+
+## Public Types
+
+- enum [TransformationModel](#transformationmodel) &#123; Linear = 0 , FFD = 1 , TPS = 2 , Demons = 3 , GreedyDemons = 4 , PolyRigid = 5 , DisaDemons = 6 , Gated4D = 7 , Parametric = 8 , UserDefined = 100 &#125; — Available registration models. Each one correlates to a certain [AbstractImageRegistration](/cpp-sdk/4.5/api/classes/imfusion-abstractimageregistration) subclass.
+- enum [PreprocessingOptions](#preprocessingoptions) &#123; NoPreprocessing = 0 , RestrictMemory = 1 , AdjustSpacing = 2 , IgnoreFiltering = 4 , CacheResults = 16 , Normalize = 32 &#125; — [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags) to enable/disable certain preprocessing options.
+
+## Public Member Functions
+
+- **ImageRegistration** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*image1, [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*image2, [TransformationModel](#transformationmodel) dof=Linear, bool image2IsMoving=true)
+- virtual bool [computePreprocessing](#computepreprocessing) () — Applies the pre-processing options on the input images.
+- void [compute](#compute) () override — Starts the registration.
+- virtual void **reset** () — Resets the transformation of moving to its initial transformation.
+- void [setTransformationModel](#settransformationmodel) ([TransformationModel](#transformationmodel) dof) — Sets the transformation model for the registration.
+- [TransformationModel](#transformationmodel) **transformationModel** () const
+- const [AbstractImageRegistration](/cpp-sdk/4.5/api/classes/imfusion-abstractimageregistration) \* **registrationObject** () const — Returns the internal registration object that performs the actual registration.
+- [AbstractImageRegistration](/cpp-sdk/4.5/api/classes/imfusion-abstractimageregistration) \* **registrationObject** ()
+- const [ParametricImageRegistration](/cpp-sdk/4.5/api/classes/imfusion-parametricimageregistration) \* **parametric** () const
+- [ParametricImageRegistration](/cpp-sdk/4.5/api/classes/imfusion-parametricimageregistration) \* **parametric** ()
+- bool **isDeformable** () const — Returns true if the registration is based on [Deformation](/cpp-sdk/4.5/api/classes/imfusion-deformation) object.
+- void **setOptimizer** ([std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [Optimizer](/cpp-sdk/4.5/api/classes/imfusion-optimizer) &gt; opt) — Sets an optimizer.
+- [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [Optimizer](/cpp-sdk/4.5/api/classes/imfusion-optimizer) &gt; **optimizer** ()
+- [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* **image1** () const
+- [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* **image2** () const
+- void [setMoving](#setmoving) ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*moving) — Sets the image which will be modified.
+- void [setFixed](#setfixed) ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*fixed) — Sets the image which will be fixed.
+- [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* **fixed** () const
+- [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* **moving** () const
+- [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* **image1Preprocessed** () const — Returns the preprocessed version of image1 or 0 if the preprocessing has not been applied yet.
+- [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* **image2Preprocessed** () const — Returns the preprocessed version of image2 or 0 if the preprocessing has not been applied yet.
+- void [setPreprocessingOptions](#setpreprocessingoptions) ([PreprocessingOptions](#preprocessingoptions) options) — Sets which options should be enabled for preprocessing.
+- [PreprocessingOptions](#preprocessingoptions) **preprocessingOptions** () const — Returns the current preprocessing options as a bitwise OR combination.
+- [PreprocessingOptions](#preprocessingoptions) **defaultPreprocessingOptions** () const — Returns the default options for the current configuration.
+- void [setMaximumMemory](#setmaximummemory) (int sizeInMB) — Restrict the memory used by the registration to the given amount in mebibyte.
+- int **maximumMemory** () const — Returns the current memory limit of the registration in mebibyte.
+- bool **verbose** () const — Returns whether info logs are enabled for this instance.
+- void **setVerbose** (bool flag) — Sets whether info logs are enabled for this instance.
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+- double **bestSimilarityValue** () const — Returns the best value of the similarity measure after optimization.
+
+## Static Public Member Functions
+
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=0) — If data is compatible with algorithm return true. If a is not zero, create algorithm with input data.
+- static bool [registerTransformationModel](#registertransformationmodel) ([TransformationModel](#transformationmodel) id, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name) — Registers a [AbstractImageRegistration](/cpp-sdk/4.5/api/classes/imfusion-abstractimageregistration) subclass to the avaiable transformation models.
+- static bool **registerTransformationModel** ([TransformationModel](#transformationmodel) id, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name, [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; [AbstractImageRegistration](/cpp-sdk/4.5/api/classes/imfusion-abstractimageregistration) \*([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*, [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*)&gt; createFunc, [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; bool([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*, [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*)&gt; compatibleFunc) — Registers a [AbstractImageRegistration](/cpp-sdk/4.5/api/classes/imfusion-abstractimageregistration) subclass to the available transformation models.
+- static bool [unregisterTransformationModel](#unregistertransformationmodel) ([TransformationModel](#transformationmodel) id) — Unregisteres a transformation model.
+- static [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [TransformationModel](#transformationmodel) &gt; **registeredTransformationModels** () — Returns a list of all registered transformation models.
+- static [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **transformationModelName** ([TransformationModel](#transformationmodel) model) — Returns the name for the given model or an empty string if the model is unknown.
+- static bool **isTransformationModelCompatible** ([TransformationModel](#transformationmodel) model, [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*img1, [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*img2) — Returns true if the transformation model can work with the given images.
+- static void [setErodedZeroMask](#seterodedzeromask) ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*img, int erosionSize=1) — Sets a zero-intensity mask onto the given image, eroded by one or more pixels to avoid numerical stepping problems.
+
+## Member Enumeration Documentation
+
+### TransformationModel
+
+```cpp
+enum ImFusion::ImageRegistration::TransformationModel
+```
+
+Available registration models. Each one correlates to a certain [AbstractImageRegistration](/cpp-sdk/4.5/api/classes/imfusion-abstractimageregistration) subclass.
+
+**Enumerator:**
+
+- `Linear` — 6 (rigid) or 12 (affine) DOF registration
+- `FFD` — Registration with non-linear Free-Form deformations.
+- `TPS` — Registration with non-linear Thin-Plate-Splines deformations.
+- `Demons` — Registration with non-linear dense (per-pixel) deformations.
+- `GreedyDemons` — Registration with non-linear dense (per-pixel) deformations using patch-based SimilarityMeasures.
+- `PolyRigid` — Registration with poly-rigid (i.e. partially piecewise rigid) deformations.
+- `DisaDemons` — Registration with non-linear dense (per-pixel) deformations, computed using DISA features (Ronchetti et al., 2023).
+- `Gated4D` — Same as linear, but for 4D-4D registration with a [GatingMetadata](/cpp-sdk/4.5/api/classes/imfusion-gatingmetadata) in either of the two models.
+- `Parametric` — Any other parametric deformation model which may be set on the moving image elsewhere.
+- `UserDefined` — First model that can be used for user defined transformation models (see [registerTransformationModel](#registertransformationmodel)).
+
+### PreprocessingOptions
+
+```cpp
+enum ImFusion::ImageRegistration::PreprocessingOptions
+```
+
+[Flags](/cpp-sdk/4.5/api/classes/imfusion-flags) to enable/disable certain preprocessing options.
+
+**Enumerator:**
+
+- `NoPreprocessing` — Disable preprocessing completely (this cannot be ORed with other options).
+- `RestrictMemory` — Downsamples the images so that the registration will not use more than a given maximum of (video) memory.
+- `AdjustSpacing` — if the spacing difference of both images is large, the spacing of the adjusted to the smaller one
+- `IgnoreFiltering` — Ignore any PreProcessingFilter required by the [AbstractImageRegistration](/cpp-sdk/4.5/api/classes/imfusion-abstractimageregistration) object.
+- `CacheResults` — Store PreProcessing results and only re-compute if necessary.
+- `Normalize` — Normalize images to float range [0.0, 1.0].
+
+## Member Function Documentation
+
+### registerTransformationModel
+
+```cpp
+template<typename T> bool ImFusion::ImageRegistration::registerTransformationModel (TransformationModel id, const std::string & name)
+```
+
+*inline, static*
+
+Registers a [AbstractImageRegistration](/cpp-sdk/4.5/api/classes/imfusion-abstractimageregistration) subclass to the avaiable transformation models.
+
+The template type T must derive from [AbstractImageRegistration](/cpp-sdk/4.5/api/classes/imfusion-abstractimageregistration). Each registered transformation model is a assigned to the given id. If a an id is already taken, false is returned. User defined transformation model should be assigned to ids starting from TransformationModel::UserDefined. It is up to the user to find non-overlapping ids when registering multiple models (e.g. use registeredTransformationModel to find a free id). The given name will be used to store and retrieve the configuration for the registration object.
+
+### unregisterTransformationModel
+
+```cpp
+bool ImFusion::ImageRegistration::unregisterTransformationModel (TransformationModel id)
+```
+
+*static*
+
+Unregisteres a transformation model.
+
+Returns true if the model is registered and was successfully unregistered.
+
+### computePreprocessing
+
+```cpp
+virtual bool ImFusion::ImageRegistration::computePreprocessing ()
+```
+
+*virtual*
+
+Applies the pre-processing options on the input images.
+
+The results of the pre-processing is always stored in extra images, the input images will remain unchanged. The pre-processed images share the transformation with the input images, i.e. changing the transformation on the pre-processed images also changes it on the input ones and vice versa. If several pre-processing options are applied on the same image, their results are combined into one image. The preprocessing options are applied in the following order:
+
+- RestrictMemory
+- [AbstractImageRegistration](/cpp-sdk/4.5/api/classes/imfusion-abstractimageregistration) preprocessing filter (only if IgnoreFiltering is not set)
+
+AdjustSpacing
+
+### compute
+
+```cpp
+void ImFusion::ImageRegistration::compute ()
+```
+
+*override, virtual*
+
+Starts the registration.
+
+### setTransformationModel
+
+```cpp
+void ImFusion::ImageRegistration::setTransformationModel (TransformationModel dof)
+```
+
+Sets the transformation model for the registration.
+
+If the transformation model changes the current registrationObject will be deleted and a new created. The configuration of the current model will be saved and the new model will be configured with any previously saved configuration for that model. Any attached identity deformations are removed from both images.
+
+### setMoving
+
+```cpp
+void ImFusion::ImageRegistration::setMoving (SharedImageSet * moving)
+```
+
+Sets the image which will be modified.
+
+Must be either image1 or image2. Calling this function will re-create the registration object if image1 is not fixed or image2 is not moving.
+
+### setFixed
+
+```cpp
+void ImFusion::ImageRegistration::setFixed (SharedImageSet * fixed)
+```
+
+Sets the image which will be fixed.
+
+Must be either image1 or image2. Calling this function will re-create the registration object if image1 is not fixed or image2 is not moving.
+
+### setPreprocessingOptions
+
+```cpp
+void ImFusion::ImageRegistration::setPreprocessingOptions (PreprocessingOptions options)
+```
+
+Sets which options should be enabled for preprocessing.
+
+The options are bitwise OR combination of [PreprocessingOptions](#preprocessingoptions).
+
+### setMaximumMemory
+
+```cpp
+void ImFusion::ImageRegistration::setMaximumMemory (int sizeInMB)
+```
+
+Restrict the memory used by the registration to the given amount in mebibyte.
+
+The value can be set in any case but will only have an effect if RestrictMemory is enabled. The restrict video memory as well. The mininum size is 64 MB (the value will be clamped).
+
+### configure
+
+```cpp
+void ImFusion::ImageRegistration::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### configuration
+
+```cpp
+void ImFusion::ImageRegistration::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality
+
+### setErodedZeroMask
+
+```cpp
+void ImFusion::ImageRegistration::setErodedZeroMask (SharedImageSet * img, int erosionSize = 1)
+```
+
+*static*
+
+Sets a zero-intensity mask onto the given image, eroded by one or more pixels to avoid numerical stepping problems.
+
+**Parameters:**
+
+- `erosionSize` — gives the number of pixels that are eroded.

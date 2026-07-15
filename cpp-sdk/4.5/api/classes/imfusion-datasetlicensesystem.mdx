@@ -1,0 +1,25 @@
+---
+title: "ImFusion::DatasetLicenseSystem"
+sidebarTitle: "DatasetLicenseSystem"
+---
+
+## Classes
+
+- struct [DatasetLicense](/cpp-sdk/4.5/api/structs/imfusion-datasetlicensesystem-datasetlicense)
+
+## Public Member Functions
+
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [DatasetLicense](/cpp-sdk/4.5/api/structs/imfusion-datasetlicensesystem-datasetlicense) &gt; & **definedLicenses** () const
+- const [DatasetLicense](/cpp-sdk/4.5/api/structs/imfusion-datasetlicensesystem-datasetlicense) \* **getLicenseById** (const QString &id) const
+- bool **doesLicenseIdExist** (const QString &id) const
+- bool **hasLicenses** () const
+- size_t **howManyLicensesWouldBeRemovedWithNewLicenses** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [DatasetLicense](/cpp-sdk/4.5/api/structs/imfusion-datasetlicensesystem-datasetlicense) &gt; &) const
+- bool **defineNewLicenses** ([std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [DatasetLicense](/cpp-sdk/4.5/api/structs/imfusion-datasetlicensesystem-datasetlicense) &gt; newLicenses)
+- void **addNewLicense** ([DatasetLicenseComponent::DatasetInfo](/cpp-sdk/4.5/api/structs/imfusion-datasetlicensecomponent-datasetinfo) license)
+- void **configure** (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p)
+- void **configuration** ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const
+
+## Public Attributes
+
+- Signal&lt; const [DatasetLicense](/cpp-sdk/4.5/api/structs/imfusion-datasetlicensesystem-datasetlicense) & &gt; **licenseRemovedPre**
+- Signal **licensesChanged**

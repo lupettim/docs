@@ -1,0 +1,97 @@
+---
+title: "ImFusion::TransferFunctionDisplayWidget"
+sidebarTitle: "TransferFunctionDisplayWidget"
+description: "Qt Widget for displaying an overview of a transfer function and providing basic interaction."
+---
+
+`#include <ImFusion/GUI/TransferFunctionWidget.h>`
+
+## Overview
+
+Qt Widget for displaying an overview of a transfer function and providing basic interaction.
+
+Usually not intended to be used directly, consider using the [TransferFunctionWidget](/cpp-sdk/4.5/api/classes/imfusion-transferfunctionwidget) instead.
+
+**See also:** [TransferFunctionWidget](/cpp-sdk/4.5/api/classes/imfusion-transferfunctionwidget)
+
+## Public Types
+
+- using **HistogramType** = [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt;unsigned int&gt;
+
+## Signals
+
+- void **zoomRangeChanged** (double, double)
+- void **mouseIntensityChanged** (double)
+
+## Public Member Functions
+
+- [TransferFunctionDisplayWidget](#transferfunctiondisplaywidget) ([TransferFunction](/cpp-sdk/4.5/api/classes/imfusion-transferfunction) \*transferFunction, QWidget \*parent=nullptr) — Standard constructor, creates a widget to setup the given transfer function.
+- **~TransferFunctionDisplayWidget** () override — Virtual Destructor.
+- bool **performLoadAction** () — Loads a transfer function from a file selected by the user.
+- bool **performSaveAction** () — Saves the current transfer function to a file specified by the user.
+- void **resetZoom** () — Resets the zoom to fit the entire intensity range.
+
+## Getters/Setters
+
+- enum **Mode** &#123; **Mode2D** , **Mode3D** &#125;
+- void [setCompactMode](#setcompactmode) (bool value)
+- bool **compactMode** () const — Returns the flag whether to use the compact mode or show the full widget.
+- void [setNonLinearOpacity](#setnonlinearopacity) (bool value) — Sets the flag whether to show a non-linear opacity scale.
+- bool **nonLinearOpacity** () const — Returns the flag whether to show a non-linear opacity scale.
+- bool **showThumbnails** () const — Returns the flag whether to show thumbnails.
+- void **setShowThumbnails** (bool value) — Sets the flag whether to show thumbnails.
+- bool **isCheckerboardDrawn** () const — Returns the flag whether to draw the checkerboard background.
+- void **setDrawCheckerboard** (bool value) — Sets the flag whether to draw the checkerboard background.
+- Mode **mode** () const — Returns the mode, either 2D or 3D in 2D, there is an implicit black-white scale drawn over the entire window when no tissues are defined in 2D, values outside of the window are clamped as if the colorscale extended infinitely in both direction in 3D, values outside of the window are not visible at all.
+- void **setMode** (Mode mode) const — Sets the active mode.
+- void **setTransferFunction** ([TransferFunction](/cpp-sdk/4.5/api/classes/imfusion-transferfunction) \*transferFunction) — Sets the transfer function this widget manipulates, may be 0.
+- void **setImage** (const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*image, int index) — Sets the image the TF is applied to (optional, may be nullptr). Used for displaying a histogram and modifying windowing.
+- void **setView** ([GUI::View](/cpp-sdk/4.5/api/classes/imfusion-gui-view) \*view) — Sets the view on which this transfer function is based (optional, may be nullptr) Used for rendering thumbnails and automatically requesting updates If the view is an instance of [ImageView2D](/cpp-sdk/4.5/api/classes/imfusion-imageview2d) or [ImageView3D](/cpp-sdk/4.5/api/classes/imfusion-imageview3d), the mode of the widget is changed accordingly.
+
+## Qt-related overrides
+
+- void **paintEvent** (QPaintEvent \*e) override
+- void **mousePressEvent** (QMouseEvent \*e) override
+- void **mouseMoveEvent** (QMouseEvent \*e) override
+- void **mouseReleaseEvent** (QMouseEvent \*e) override
+- void **wheelEvent** (QWheelEvent \*e) override
+- void **leaveEvent** (QEvent \*e) override
+- void **contextMenuEvent** (QContextMenuEvent \*e) override
+- QSize **sizeHint** () const override
+- QSize **minimumSizeHint** () const override
+- void **hideEvent** (QHideEvent \*e) override
+
+## Constructor & Destructor Documentation
+
+### TransferFunctionDisplayWidget
+
+```cpp
+ImFusion::TransferFunctionDisplayWidget::TransferFunctionDisplayWidget (TransferFunction * transferFunction, QWidget * parent = nullptr)
+```
+
+Standard constructor, creates a widget to setup the given transfer function.
+
+**Parameters:**
+
+- `transferFunction` — The transfer function this widget manipulates, may be 0
+- `parent` — Parent widget, may be 0.
+
+## Member Function Documentation
+
+### setCompactMode
+
+```cpp
+void ImFusion::TransferFunctionDisplayWidget::setCompactMode (bool value)
+```
+
+Sets whether to use the compact mode or show the full widget. The compact mode shows an overview and allows for altering the windowing only.
+
+### setNonLinearOpacity
+
+```cpp
+void ImFusion::TransferFunctionDisplayWidget::setNonLinearOpacity (bool value)
+```
+
+Sets the flag whether to show a non-linear opacity scale.
+
+The non-linear scale facilitates configuring low opacities.

@@ -1,0 +1,41 @@
+---
+title: "ImFusion::GUI::OrientationMeshOverlay"
+sidebarTitle: "OrientationMeshOverlay"
+description: "The OrientationMeshOverlay class wraps a GlOrientationMeshOverlay and does not provide any interactions."
+---
+
+`#include <ImFusion/GUI/OrientationMeshOverlay.h>`
+
+## Overview
+
+The [OrientationMeshOverlay](/cpp-sdk/4.5/api/classes/imfusion-gui-orientationmeshoverlay) class wraps a [GlOrientationMeshOverlay](/cpp-sdk/4.5/api/classes/imfusion-glorientationmeshoverlay) and does not provide any interactions.
+
+## Public Member Functions
+
+- [OrientationMeshOverlay](#orientationmeshoverlay) (const [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) &mesh, [View](/cpp-sdk/4.5/api/classes/imfusion-gui-view) \*view) — Constructs a new [OrientationMeshOverlay](/cpp-sdk/4.5/api/classes/imfusion-gui-orientationmeshoverlay) with the given mesh.
+- void [loadMesh](#loadmesh) (const [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) &mesh) — Updates the mesh of the overlay.
+- void **setBackgroundImage** ([std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) &gt; backgroundImage) — Set an optional background image to show behind the mesh.
+
+## Constructor & Destructor Documentation
+
+### OrientationMeshOverlay
+
+```cpp
+ImFusion::GUI::OrientationMeshOverlay::OrientationMeshOverlay (const Mesh & mesh, View * view)
+```
+
+Constructs a new [OrientationMeshOverlay](/cpp-sdk/4.5/api/classes/imfusion-gui-orientationmeshoverlay) with the given mesh.
+
+The modelView matrix of view is used to determine the orientation of the mesh. This is not necessarily the anchor view, e.g. the overlay could be part of one view but display the orientation of another. The mesh is not stored and can be deleted after this call.
+
+## Member Function Documentation
+
+### loadMesh
+
+```cpp
+void ImFusion::GUI::OrientationMeshOverlay::loadMesh (const Mesh & mesh)
+```
+
+Updates the mesh of the overlay.
+
+The mesh is not stored and can be deleted after this call.

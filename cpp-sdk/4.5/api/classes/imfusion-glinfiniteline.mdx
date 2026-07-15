@@ -1,0 +1,78 @@
+---
+title: "ImFusion::GlInfiniteLine"
+sidebarTitle: "GlInfiniteLine"
+description: "Line annotation."
+---
+
+`#include <ImFusion/GL/GlInfiniteLine.h>`
+
+## Overview
+
+Line annotation.
+
+## Public Member Functions
+
+- void [draw](#draw) (const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &[view](/cpp-sdk/4.5/api/classes/imfusion-glannotation)) override — Draw the object in 3D space.
+- bool **hitTestLine** (int x, int y, const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &[view](/cpp-sdk/4.5/api/classes/imfusion-glannotation)) const
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Set one or multiple properties.
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Retrieve the properties of this object.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [typeName](#typename) () const override — Return unique identifier for this object class used for serialization.
+
+## Protected Member Functions
+
+- void [updatePoints](#updatepoints) () override — Update the internal point structure.
+- void **renderLabel** () const
+
+## Member Function Documentation
+
+### draw
+
+```cpp
+void ImFusion::GlInfiniteLine::draw (const GlView & view)
+```
+
+*override, virtual*
+
+Draw the object in 3D space.
+
+### configure
+
+```cpp
+void ImFusion::GlInfiniteLine::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Set one or multiple properties.
+
+### configuration
+
+```cpp
+void ImFusion::GlInfiniteLine::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Retrieve the properties of this object.
+
+### typeName
+
+```cpp
+std::string ImFusion::GlInfiniteLine::typeName () const
+```
+
+*inline, override, virtual*
+
+Return unique identifier for this object class used for serialization.
+
+### updatePoints
+
+```cpp
+void ImFusion::GlInfiniteLine::updatePoints ()
+```
+
+*override, protected, virtual*
+
+Update the internal point structure.
+
+Should be implemented by subtypes which have custom data depending on the point data. Derived implementation needs to call base class implementation.

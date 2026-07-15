@@ -1,0 +1,169 @@
+---
+title: "ImFusion::DicomWriter"
+sidebarTitle: "DicomWriter"
+description: "The DicomWriter class can store a SharedImageSet in a DICOM dataset."
+---
+
+`#include <ImFusion/Dicom/DicomWriter.h>`
+
+## Overview
+
+The [DicomWriter](/cpp-sdk/4.5/api/classes/imfusion-dicomwriter) class can store a [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) in a DICOM dataset.
+
+The writer creates DicomIODs and DcmDatasets that correspond to the [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset). For classical single frame DICOM files, an [IOD](/cpp-sdk/4.5/api/classes/imfusion-dicom-iod) and DcmDataset will be generated per 2D frame in the image. For enhanced multi-frame DICOM files, a single [IOD](/cpp-sdk/4.5/api/classes/imfusion-dicom-iod) and DcmDataset is generated.
+
+The [DicomWriter](/cpp-sdk/4.5/api/classes/imfusion-dicomwriter) will automatically pick the most appropriate [Dicom::IOD](/cpp-sdk/4.5/api/classes/imfusion-dicom-iod) instance upon construction using the [Dicom::IOD_Registry](/cpp-sdk/4.5/api/classes/imfusion-dicom-iod-registry). The [Dicom::IOD](/cpp-sdk/4.5/api/classes/imfusion-dicom-iod) instance can also be changed later on using the resetIOD method.
+
+## Public Types
+
+- enum class Compression &#123; **LittleEndianImplicit** , **LittleEndianExplicit** , **DeflatedLittleEndianExplicit** , **BigEndianExplicit** , **JPEG** , **JPEG_lossless** , **JPEGLS_lossless** , **JPEGLS_lossy** , **JPEG2000** , **JPEG2000_lossless** &#125; — Enumeration of supported compression/storage types when writing DICOM.
+- enum class [Type](#type) &#123; File , Folder , Auto &#125; — [Type](#type) of DICOM storage to use.
+- using **Url** = [Filesystem::Url](/cpp-sdk/4.5/api/classes/imfusion-filesystem-url)
+
+## Public Member Functions
+
+- [DicomWriter](#dicomwriter) ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*imageSet, [Type](#type) type=Type::Auto, [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) \*progress=nullptr, [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [Dicom::IOD_Registry](/cpp-sdk/4.5/api/classes/imfusion-dicom-iod-registry) &gt; registry=nullptr) — Instantiates a new [DicomWriter](/cpp-sdk/4.5/api/classes/imfusion-dicomwriter) object with the given parameters.
+- [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* **imageSet** () const — Returns the source image.
+- void [createDatasets](#createdatasets) () — Creates the actual DcmDataset instances and fills them with tags according to the image.
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Dicom::DatasetIodPair](/cpp-sdk/4.5/api/structs/imfusion-dicom-datasetiodpair) &gt; & [datasets](#datasets) () const — List of DcmDatasets and corresponding IODs for each saved file.
+- [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [Dicom::IOD_Registry](/cpp-sdk/4.5/api/classes/imfusion-dicom-iod-registry) &gt; **iodRegistry** () const — Returns the registry used by this writer.
+- bool **isMultiFile** () const — Returns true if the image will be split over multiple files.
+- bool [save](#save-1-2) (const Url &uri) — Saves the DICOM dataset to the given URI, which must have a scheme of either "file" or "pacs".
+- bool [save](#save-2-2) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &path) — Convenience method to save the DICOM dataset to the file system without explicitly constructing an URI.
+- void [setCompression](#setcompression) (DicomWriter::Compression compression) — Sets the compression used when saving.
+- DicomWriter::Compression **compression** () const — Returns the compression used when saving.
+- void [setCompressionQuality](#setcompressionquality) (int quality) — Sets the quality setting of lossy compressions.
+- int **compressionQuality** () const — Returns the quality setting of lossy compressions.
+- void [setFilenameFormat](#setfilenameformat) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &filenameFormat) — Sets the output filename format.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **filenameFormat** () const — Returns the output filename format.
+- const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) & **currentWriterName** () const — Returns the current name of the writer used to generate the Dicom::IODs (see [Dicom::IOD_Registry](/cpp-sdk/4.5/api/classes/imfusion-dicom-iod-registry)).
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure filenameFormat, compression and compressionQuality.
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Retrieve the properties filenameFormat, compression and compressionQuality.
+
+## Member Enumeration Documentation
+
+### Type
+
+```cpp
+enum class ImFusion::DicomWriter::Type
+```
+
+*strong*
+
+[Type](#type) of DICOM storage to use.
+
+**Enumerator:**
+
+- `File` — If possible, write all image data to a single file.
+- `Folder` — Write each frame as separate DICOM file to a folder.
+- `Auto` — Automatically determine storage type based on image content.
+
+## Constructor & Destructor Documentation
+
+### DicomWriter
+
+```cpp
+ImFusion::DicomWriter::DicomWriter (SharedImageSet * imageSet, Type type = Type::Auto, Progress * progress = nullptr, std::shared_ptr < Dicom::IOD_Registry > registry = nullptr)
+```
+
+Instantiates a new [DicomWriter](/cpp-sdk/4.5/api/classes/imfusion-dicomwriter) object with the given parameters.
+
+**Parameters:**
+
+- `imageSet` — [Image](/cpp-sdk/4.5/api/classes/imfusion-image) data to store in DICOM format.
+- `type` — DICOM storage type to use (defaults to Auto).
+- `progress` — Optional progress object to use.
+
+## Member Function Documentation
+
+### createDatasets
+
+```cpp
+void ImFusion::DicomWriter::createDatasets ()
+```
+
+Creates the actual DcmDataset instances and fills them with tags according to the image.
+
+This might allocate a lot of memory depending of the size of the image. Calling this function again will replace the current dataset.
+
+### datasets
+
+```cpp
+const std::vector < Dicom::DatasetIodPair > & ImFusion::DicomWriter::datasets () const
+```
+
+List of DcmDatasets and corresponding IODs for each saved file.
+
+This list will be empty until createDatasets was called.
+
+### save
+
+```cpp
+bool ImFusion::DicomWriter::save (const Url & uri)
+```
+
+Saves the DICOM dataset to the given URI, which must have a scheme of either "file" or "pacs".
+
+Automatically writes pixel data and applies compression. All intermediate directories of the given path are created automatically.
+
+**Note:** If the URI is of scheme "file" and the [DicomWriter](/cpp-sdk/4.5/api/classes/imfusion-dicomwriter) is multi-file, a folder is expected, otherwise a file.
+
+### save
+
+```cpp
+bool ImFusion::DicomWriter::save (const std::string & path)
+```
+
+Convenience method to save the DICOM dataset to the file system without explicitly constructing an URI.
+
+Just pass a normal file/folder path.
+
+### setCompression
+
+```cpp
+void ImFusion::DicomWriter::setCompression (DicomWriter::Compression compression)
+```
+
+Sets the compression used when saving.
+
+The default is LittleEndianImplicit (uncompressed). The compression will only be used during saving.
+
+### setCompressionQuality
+
+```cpp
+void ImFusion::DicomWriter::setCompressionQuality (int quality)
+```
+
+Sets the quality setting of lossy compressions.
+
+The quality goes from 1 to 100, with 1 being the lowest quality and highest compression and 100 being the highest quality and the lowest compression. Values will be clamped to 1 and 100. Has no effect on lossless or no compression.
+
+### setFilenameFormat
+
+```cpp
+void ImFusion::DicomWriter::setFilenameFormat (const std::string & filenameFormat)
+```
+
+Sets the output filename format.
+
+Syntax: prefix$0..0$suffix. E.g. dicom_$0000$.dcm will set m_maxdigits to 4 and the dicom files will be named dicom_0000.dcm, dicom_0001.dcm etc.
+
+### configure
+
+```cpp
+void ImFusion::DicomWriter::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure filenameFormat, compression and compressionQuality.
+
+### configuration
+
+```cpp
+void ImFusion::DicomWriter::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Retrieve the properties filenameFormat, compression and compressionQuality.

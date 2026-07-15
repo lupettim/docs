@@ -1,0 +1,46 @@
+---
+title: "ImFusion::GUI::Menu::Action"
+sidebarTitle: "Action"
+description: "Represents an item inside a Menu where a callback function is called when user clicks on it."
+---
+
+`#include <ImFusion/GUI/Menu.h>`
+
+## Overview
+
+Represents an item inside a [Menu](/cpp-sdk/4.5/api/classes/imfusion-gui-menu) where a callback function is called when user clicks on it.
+
+Besides the default appearance it can also be of Checkable type where an underlying boolean state is toggled through the action (usually indicated by a checkmark icon), or of ExclusiveCheckable type where multiple actions comprise an enumeration of possible values of which only one can be selected (usually indicated by a radio button icon). By convention, a group of exclusive options is formed by the set of adjacent actions of this type where there is no [Separator](/cpp-sdk/4.5/api/structs/imfusion-gui-menu-separator) in-between.
+
+## Public Types
+
+- enum class [Type](#type) &#123; Default , Checkable , ExclusiveCheckable &#125; — Enumeration of available [Action](/cpp-sdk/4.5/api/structs/imfusion-gui-menu-action) variants.
+- using **ActivationCallback** = [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt;void()&gt;
+
+## Public Attributes
+
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **title** — Text to be displayed on the menu entry.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **description** — Optional text that explains the menu entry, to be shown as tooltip/and or in the status bar.
+- [Type](#type) **type** = Type::Default — [Type](#type) of the action.
+- bool **isChecked** = false — Flag if this action is currently checked/selected if m_type is Checkable or ExclusiveCheckable.
+- ActivationCallback **activationCallback** — Callback function to be called when this action was clicked by the user.
+- [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; uint8_t &gt; &gt; **icon** — Optional icon to show next to the menu entry.
+
+## Member Enumeration Documentation
+
+### Type
+
+```cpp
+enum class ImFusion::GUI::Menu::Action::Type
+```
+
+*strong*
+
+Enumeration of available [Action](/cpp-sdk/4.5/api/structs/imfusion-gui-menu-action) variants.
+
+**Enumerator:**
+
+- `Default` — Regular menu entry where some function is called when selected.
+- `Checkable` — [Menu](/cpp-sdk/4.5/api/classes/imfusion-gui-menu) entry representing a boolean state that is toggled when clicked.
+- `ExclusiveCheckable` — [Menu](/cpp-sdk/4.5/api/classes/imfusion-gui-menu) entry representing one of multiple mutually exclusive options that is selected when clicked.
+A group of exclusive options is formed by the set of adjacent actions of this type where there is no [Separator](/cpp-sdk/4.5/api/structs/imfusion-gui-menu-separator) in-between.

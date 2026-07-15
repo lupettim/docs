@@ -1,0 +1,91 @@
+---
+title: "ImFusion::GlIcon"
+sidebarTitle: "GlIcon"
+description: "Renders an icon as a billboard in world space The icon will be rendered always looking towards the camera, without depth test The position is set with setWorldP"
+---
+
+`#include <ImFusion/GL/GlIcon.h>`
+
+## Overview
+
+Renders an icon as a billboard in world space The icon will be rendered always looking towards the camera, without depth test The position is set with setWorldPosition or [GlObject::setMatrix](/cpp-sdk/4.5/api/classes/imfusion-globject).
+
+A rotation is set using setRotation The size of the icon is by default the size of the image, but it can be altered with setSize. A hover state can be set using setHover, which will render the icon lighter.
+
+## Public Member Functions
+
+- **GlIcon** ([std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) &gt; icon=&#123;&#125;) — Constructor with optional [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage). [Image](/cpp-sdk/4.5/api/classes/imfusion-image) can be later set with setIcon.
+- void **setIcon** ([std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) &gt; icon, bool updateSize=true) — Sets the icon to be rendered. updateSize can be set to disable updating a previously set size with the size of the icon.
+- void **setSize** (const vec2i &size) — Sets the size of the image. By default the size will be the size of the given icon.
+- void **setHover** (bool highlighted) — Sets the hover state of the icon. When enabled it will be rendered in a lighter color.
+- bool **hover** () const — Gets the hover state of the icon.
+- void **setWorldPosition** (const vec3 &worldPos) — Helper method to set the position of the icon in the world.
+- vec3 **worldPosition** () — Helper method get the position of the icon in the world.
+- void **setRotation** (double clockwiseRad) — Sets a rotation on the icon. Rotates clockwise with the given radians.
+- void [draw](#draw) (const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &view) override — Draw using a complete [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview). Renders in screen space.
+- [Geometry::AlignedBox](/cpp-sdk/4.5/api/classes/imfusion-geometry-alignedbox) [bounds](#bounds) () const override — Get the axis-aligned bounding box of this [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) in world space.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [typeName](#typename) () const override — Return unique identifier for this object class used for serialization.
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+## Member Function Documentation
+
+### draw
+
+```cpp
+void ImFusion::GlIcon::draw (const GlView & view)
+```
+
+*override, virtual*
+
+Draw using a complete [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview). Renders in screen space.
+
+### bounds
+
+```cpp
+Geometry::AlignedBox ImFusion::GlIcon::bounds () const
+```
+
+*override, virtual*
+
+Get the axis-aligned bounding box of this [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) in world space.
+
+Return an empty (default-constructed) AlignedBox object if the [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) does not reside in world space.
+
+### typeName
+
+```cpp
+std::string ImFusion::GlIcon::typeName () const
+```
+
+*override, virtual*
+
+Return unique identifier for this object class used for serialization.
+
+### configure
+
+```cpp
+void ImFusion::GlIcon::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### configuration
+
+```cpp
+void ImFusion::GlIcon::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality

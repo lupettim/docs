@@ -1,0 +1,129 @@
+---
+title: "ImFusion::ImageInfoDataComponent"
+sidebarTitle: "ImageInfoDataComponent"
+description: "DataComponent storing general information on the image origin."
+---
+
+`#include <ImFusion/Base/ImageInfoDataComponent.h>`
+
+## Overview
+
+[DataComponent](/cpp-sdk/4.5/api/classes/imfusion-datacomponent) storing general information on the image origin.
+
+Modeled after the DICOM patient-study-series hierarchy, it stores information on the patient, study and series the data set belongs to.
+
+## Public Types
+
+- enum class PatientSex &#123; **Unknown** , **Male** , **Female** , **Other** &#125; — Gender of the patient.
+- enum class Laterality &#123; **Unknown** , **Left** , **Right** &#125; — Laterality of (paired) body part examined.
+- enum class AnatomicalOrientationType &#123; **Unknown** , **Biped** , **Quadruped** &#125; — DICOM Anatomical Orientation Type.
+
+## Public Member Functions
+
+- **ImageInfoDataComponent** (const ImageInfoDataComponent &other)=default
+- ImageInfoDataComponent & **operator=** (const ImageInfoDataComponent &other)=default
+- bool **operator==** (const ImageInfoDataComponent &other) const
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [id](#id) () const override — Returns a unique string identifier for this type of data component.
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+- void **setModality** ([Data::Modality](/cpp-sdk/4.5/api/classes/imfusion-data) modality)
+
+## Public Attributes
+
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **m_patientId** — DICOM [Patient](/cpp-sdk/4.5/api/structs/imfusion-dicom-patient) ID.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **m_patientName** — [Patient](/cpp-sdk/4.5/api/structs/imfusion-dicom-patient) name.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **m_responsiblePerson** — Name of person with medical or welfare decision making authority for the [Patient](/cpp-sdk/4.5/api/structs/imfusion-dicom-patient).
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **m_patientBirthDate** — [Patient](/cpp-sdk/4.5/api/structs/imfusion-dicom-patient) date of birth in yyyyMMdd format.
+- PatientSex **m_patientSex** = PatientSex::Unknown — [Patient](/cpp-sdk/4.5/api/structs/imfusion-dicom-patient) sex.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **m_patientComment** — Additional information about the [Patient](/cpp-sdk/4.5/api/structs/imfusion-dicom-patient).
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **m_patientPosition** — Specifies position of the [Patient](/cpp-sdk/4.5/api/structs/imfusion-dicom-patient) relative to the imaging equipment.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **m_studyId** — DICOM [Study](/cpp-sdk/4.5/api/structs/imfusion-dicom-study) ID.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **m_studyDate** — [Study](/cpp-sdk/4.5/api/structs/imfusion-dicom-study) date in yyyyMMdd format.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **m_studyTime** — [Study](/cpp-sdk/4.5/api/structs/imfusion-dicom-study) time in HHmmss format, optionally with time zone offset &ZZXX.
+- [std::chrono::microseconds](http://en.cppreference.com/w/cpp/chrono/duration.html) [m_studyTimeExact](#m-studytimeexact) — [Study](/cpp-sdk/4.5/api/structs/imfusion-dicom-study) time in microseconds. 0 if the original study time was empty.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **m_studyTimezone** — [Study](/cpp-sdk/4.5/api/structs/imfusion-dicom-study) time zone abbreviation.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **m_studyDescription** — [Study](/cpp-sdk/4.5/api/structs/imfusion-dicom-study) description.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **m_studyInstanceUID** — Unique identifier for the [Study](/cpp-sdk/4.5/api/structs/imfusion-dicom-study).
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **m_seriesNumber** — DICOM [Series](/cpp-sdk/4.5/api/structs/imfusion-dicom-series) number. The value of this attribute should be unique for all [Series](/cpp-sdk/4.5/api/structs/imfusion-dicom-series) in a [Study](/cpp-sdk/4.5/api/structs/imfusion-dicom-study) created on the same equipment.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **m_seriesDate** — [Series](/cpp-sdk/4.5/api/structs/imfusion-dicom-series) date in yyyyMMdd format.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **m_seriesTime** — [Series](/cpp-sdk/4.5/api/structs/imfusion-dicom-series) time in HHmmss format.
+- [std::chrono::microseconds](http://en.cppreference.com/w/cpp/chrono/duration.html) [m_seriesTimeExact](#m-seriestimeexact) — [Series](/cpp-sdk/4.5/api/structs/imfusion-dicom-series) time in microseconds. 0 if the original series time was empty.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **m_seriesDescription** — [Series](/cpp-sdk/4.5/api/structs/imfusion-dicom-series) description.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **m_seriesInstanceUID** — Unique identifier of the [Series](/cpp-sdk/4.5/api/structs/imfusion-dicom-series).
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **m_modality** — DICOM modality string specifying the method used to create this series.
+- Laterality **m_laterality** = Laterality::Unknown — Laterality of (paired) body part examined.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **m_photometricInterpretation** — Specifies the intended interpretation of the pixel data (e.g. RGB, HSV, ...).
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **m_frameOfReferenceUID** — Uniquely identifies the Frame of Reference for a [Series](/cpp-sdk/4.5/api/structs/imfusion-dicom-series). Multiple [Series](/cpp-sdk/4.5/api/structs/imfusion-dicom-series) within a [Study](/cpp-sdk/4.5/api/structs/imfusion-dicom-study) may share a Frame of Reference UID.
+- AnatomicalOrientationType **m_orientationType** = AnatomicalOrientationType::Unknown — DICOM Anatomical Orientation Type.
+
+## Member Function Documentation
+
+### id
+
+```cpp
+std::string ImFusion::ImageInfoDataComponent::id () const
+```
+
+*override, virtual*
+
+Returns a unique string identifier for this type of data component.
+
+**Note:** To avoid conflicts make sure to include potential plugin names into this ID. Due to the modular architecture of the ImFusion library, uniqueness of IDs cannot be checked at compile time. However, [DataComponentFactory](/cpp-sdk/4.5/api/classes/imfusion-datacomponentfactory) will check the uniqueness of the ID during registration.
+
+### configure
+
+```cpp
+void ImFusion::ImageInfoDataComponent::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### configuration
+
+```cpp
+void ImFusion::ImageInfoDataComponent::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality
+
+## Member Data Documentation
+
+### m_studyTimeExact
+
+```cpp
+std::chrono::microseconds ImFusion::ImageInfoDataComponent::m_studyTimeExact
+```
+
+**Initial value:**
+```cpp
+                               =
+std::chrono::microseconds(0)
+```
+ fragment
+[Study](/cpp-sdk/4.5/api/structs/imfusion-dicom-study) time in microseconds. 0 if the original study time was empty.
+
+### m_seriesTimeExact
+
+```cpp
+std::chrono::microseconds ImFusion::ImageInfoDataComponent::m_seriesTimeExact
+```
+
+**Initial value:**
+```cpp
+                                =
+std::chrono::microseconds(0)
+```
+ fragment
+[Series](/cpp-sdk/4.5/api/structs/imfusion-dicom-series) time in microseconds. 0 if the original series time was empty.

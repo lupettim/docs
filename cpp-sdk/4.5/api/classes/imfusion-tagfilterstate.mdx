@@ -1,0 +1,55 @@
+---
+title: "ImFusion::TagFilterState"
+sidebarTitle: "TagFilterState"
+---
+
+## Public Types
+
+- enum **BoolFilter** &#123; **With** , **Without** , **Any** &#125;
+
+## Public Member Functions
+
+- void **setEmptyFilters** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [TagType](/cpp-sdk/4.5/api/structs/imfusion-tagtype) &gt; &tagTypes)
+- bool **isValid** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [TagType](/cpp-sdk/4.5/api/structs/imfusion-tagtype) &gt; &tagTypes) const
+- bool **hasFilter** () const
+- [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; bool(const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [TagValue](/cpp-sdk/4.5/api/unions/imfusion-tagvalue) &gt; &)&gt; **matchFunction** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [TagType](/cpp-sdk/4.5/api/structs/imfusion-tagtype) &gt; &types) const
+- void **setBoolFilter** (size_t tagIndex, BoolFilter state)
+- void **setEnumFilter** (size_t tagIndex, [std::set](http://en.cppreference.com/w/cpp/container/set.html)&lt; size_t &gt; enumIndices)
+- void **setFloatFilter** (size_t tagIndex, const QString &filterString)
+- void **setInvert** (bool invert)
+- void **setMatchAll** ()
+- void **setMatchAny** ()
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- bool **operator==** (const [TagFilterState](/cpp-sdk/4.5/api/classes/imfusion-tagfilterstate) &other)
+- bool **operator!=** (const [TagFilterState](/cpp-sdk/4.5/api/classes/imfusion-tagfilterstate) &other)
+
+## Member Function Documentation
+
+### configuration
+
+```cpp
+void ImFusion::TagFilterState::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality
+
+### configure
+
+```cpp
+void ImFusion::TagFilterState::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality

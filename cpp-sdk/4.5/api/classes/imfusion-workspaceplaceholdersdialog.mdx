@@ -1,0 +1,26 @@
+---
+title: "ImFusion::WorkspacePlaceholdersDialog"
+sidebarTitle: "WorkspacePlaceholdersDialog"
+description: "Dialog allowing the user to specify missing values for workspace placeholders."
+---
+
+`#include <ImFusion/GUI/WorkspacePlaceholdersDialog.h>`
+
+## Overview
+
+Dialog allowing the user to specify missing values for workspace placeholders.
+
+## Public Slots
+
+- void **accept** () override
+- void **reject** () override
+- void **setSingleCase** (bool flag)
+- void **setCaseNumber** (int val)
+- void **loadBatchFile** ()
+
+## Public Member Functions
+
+- **WorkspacePlaceholdersDialog** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; &placeholdersKeys, QWidget \*parent=0) — Construct settings dialog.
+- void **show** ()
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::map](http://en.cppreference.com/w/cpp/container/map.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html), [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; &gt; **getValues** () const
+- void **loadSpecificBatchFile** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &filename, bool setSingle)

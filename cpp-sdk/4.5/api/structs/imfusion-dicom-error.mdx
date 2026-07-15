@@ -1,0 +1,95 @@
+---
+title: "ImFusion::Dicom::Error"
+sidebarTitle: "Error"
+description: "Structure for storing errors occurring during loading/saving DICOM data."
+---
+
+`#include <ImFusion/Dicom/DicomError.h>`
+
+## Overview
+
+Structure for storing errors occurring during loading/saving DICOM data.
+
+## Public Types
+
+- enum class [Code](#code) : int &#123; **NoError** = 0 , MissingMandatoryElement = 1 , InvalidElementValue = 2 , UnsupportedElementValue = 3 , UnsupportedSOPClass = 4 , UnsupportedPerFrameElement = 5 , FileNotFound = 6 , UnsupportedImageType = 7 , InvalidPath = 8 , InternalError = 9 , UnicodeError = 10 , StandardExtension = 11 , ConnectionError = 12 , UnsupportedVolumeSpacing = 13 , InvalidFileFormat = 14 , PacsConnectionError = 15 , UnsupportedExport , InvalidExportInput , NetworkError = 18 , NetworkAuthError = 19 , Unknown = 99 &#125; — [Error](/cpp-sdk/4.5/api/structs/imfusion-dicom-error) code.
+- enum class [Type](#type) : int &#123; Warn = 0 , Err = 1 , Fatal &#125; — Type/severity of the error.
+
+## Public Member Functions
+
+- [Error](#error) ([Code](#code) code, [Type](#type) type, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &details, [TagProxy](/cpp-sdk/4.5/api/structs/imfusion-dicom-tagproxy) tag=[TagProxy](/cpp-sdk/4.5/api/structs/imfusion-dicom-tagproxy)()) — Default constructor.
+
+## Public Attributes
+
+- [Code](#code) **code** — [Error](/cpp-sdk/4.5/api/structs/imfusion-dicom-error) code.
+- [Type](#type) **type** — Type/severity of the error.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **details** — Additional information on the error.
+- [TagProxy](/cpp-sdk/4.5/api/structs/imfusion-dicom-tagproxy) **tag** — DICOM Tag that caused the error. This is only set for certain Codes (e.g. all containing 'ElementValue'). Might also be empty if the error is caused by a combination of multiple tags.
+
+## Member Enumeration Documentation
+
+### int
+
+```cpp
+enum class ImFusion::Dicom::Error::Code : int
+```
+
+*strong*
+
+[Error](/cpp-sdk/4.5/api/structs/imfusion-dicom-error) code.
+
+**Enumerator:**
+
+- `MissingMandatoryElement` — An element that is consider mandatory is missing from the dataset.
+- `InvalidElementValue` — An element has an invalid value according to the standard.
+- `UnsupportedElementValue` — An element has a value that is valid according to the standard but is currently not supported.
+- `UnsupportedSOPClass` — The SOP class of the dataset is not explicitly support and might be loaded by a fallback loader.
+- `UnsupportedPerFrameElement` — Not used at the moment. Might be removed in the future.
+- `FileNotFound` — The given file does not exist or cannot be opened for reading or writing.
+- `UnsupportedImageType` — The ImageType (0008, 0008) is not explicitly supported.
+- `InvalidPath` — The given path is not valid in the current context, e.g. passing a file when a folder is required.
+- `InternalError` — An error that should not occure and is most likely a bug or a not considered edge case.
+- `UnicodeError` — Some values could not be converted to UTF-8 and might be displayed wrong.
+- `StandardExtension` — Some tags or values are loaded with non-standard compliant behaviour.
+- `ConnectionError` — The PACS connection could not be established.
+- `UnsupportedVolumeSpacing` — Dataset looks like a volume but e.g. has unsupported non-uniform spacing.
+- `InvalidFileFormat` — The file cannot be loaded as a DICOM file. It might be corrupt or just not a DICOM file.
+- `PacsConnectionError` — A PACS connection could not be established or the PACS server refused the request.
+- `UnsupportedExport` — The given image can currently not be exported to DICOM. The reason might be an unsupported modality or image dimension among other things.
+- `InvalidExportInput` — The input for exporting is missing some mandatory information, e.g. a [DataComponent](/cpp-sdk/4.5/api/classes/imfusion-datacomponent) that is required for a particular SOP but is not present.
+- `NetworkError` — A network error occured while receiving something through DICOMweb.
+- `NetworkAuthError` — A network request failed due to wrong or missing authentication.
+- `Unknown` — Anything that is not covered by the above errors. Extensions might use custom error code starting from 100.
+
+### int
+
+```cpp
+enum class ImFusion::Dicom::Error::Type : int
+```
+
+*strong*
+
+Type/severity of the error.
+
+**Enumerator:**
+
+- `Warn` — Warnings such as missing mandatory tag or invalid value.
+- `Err` — Non-critical errors which don't abort but might lead to wrong display.
+- `Fatal` — Critical errors that might abort loading. Even if the loading is not aborted, the result must not be used without making the user aware of this error!
+
+## Constructor & Destructor Documentation
+
+### Error
+
+```cpp
+ImFusion::Dicom::Error::Error (Code code, Type type, const std::string & details, TagProxy tag = TagProxy ())
+```
+
+Default constructor.
+
+**Parameters:**
+
+- `code` — [Error](/cpp-sdk/4.5/api/structs/imfusion-dicom-error) code.
+- `type` — Type/severity of the error.
+- `details` — Additional information on the error.
+- `tag` — DICOM Tag that caused the error (defaults to emtpy tag).

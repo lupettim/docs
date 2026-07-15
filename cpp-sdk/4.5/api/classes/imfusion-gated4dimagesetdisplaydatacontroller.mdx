@@ -1,0 +1,99 @@
+---
+title: "ImFusion::Gated4DImageSetDisplayDataController"
+sidebarTitle: "Gated4DImageSetDisplayDataController"
+description: "GUI controller for synchronizing multiple 4D datasets through gating metadata."
+---
+
+`#include <ImFusion/GUI/Gated4DImageSetDisplayDataController.h>`
+
+## Overview
+
+[GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui) controller for synchronizing multiple 4D datasets through gating metadata.
+
+## Public Member Functions
+
+- **Gated4DImageSetDisplayDataController** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*sis)
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [title](#title) () const override — Returns the shown widget title if the controller is shown in a mode that supports this (e.g.
+- void [onSelectedDataChanged](#onselecteddatachanged) (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &selectedData) override — Called by [MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase) in the case that the selection in the data model has changed.
+- void [onVisibleDataChanged](#onvisibledatachanged) (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &visibleData) override — Called by [MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase) in the case that the currently visible data has changed.
+- void **selectionChanged** ()
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Location](/cpp-sdk/4.5/api/classes/imfusion-controller) &gt; [supportedLocations](#supportedlocations) () const override — Returns the list of locations in which this controller is allowed to be placed by the parent [MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase).
+- [Location](/cpp-sdk/4.5/api/classes/imfusion-controller) [preferredLocation](#preferredlocation) () const override — Returns the preferred location in which the parent [MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase) should place this controller.
+
+## Static Public Member Functions
+
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, DataController \*\*a=0)
+
+## Protected Member Functions
+
+- bool [supportsToolBar](#supportstoolbar) () const override — Subclasses can return true if they support showing their [GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui) in [Location::ToolBar](/cpp-sdk/4.5/api/classes/imfusion-controller).
+
+## Member Function Documentation
+
+### title
+
+```cpp
+std::string ImFusion::Gated4DImageSetDisplayDataController::title () const
+```
+
+*override, virtual*
+
+Returns the shown widget title if the controller is shown in a mode that supports this (e.g.
+
+when in dock). Unless overridden, it returns the factory name.
+
+### onSelectedDataChanged
+
+```cpp
+void ImFusion::Gated4DImageSetDisplayDataController::onSelectedDataChanged (const DataList &)
+```
+
+*override, virtual*
+
+Called by [MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase) in the case that the selection in the data model has changed.
+
+### onVisibleDataChanged
+
+```cpp
+void ImFusion::Gated4DImageSetDisplayDataController::onVisibleDataChanged (const DataList &)
+```
+
+*override, virtual*
+
+Called by [MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase) in the case that the currently visible data has changed.
+
+### supportedLocations
+
+```cpp
+std::vector < Location > ImFusion::Gated4DImageSetDisplayDataController::supportedLocations () const
+```
+
+*inline, override, virtual*
+
+Returns the list of locations in which this controller is allowed to be placed by the parent [MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase).
+
+If the controller should not be placed/wrapped by the host but stand by itself you should return a list containing only [Location::Naked](/cpp-sdk/4.5/api/classes/imfusion-controller).
+
+### preferredLocation
+
+```cpp
+Location ImFusion::Gated4DImageSetDisplayDataController::preferredLocation () const
+```
+
+*inline, override, virtual*
+
+Returns the preferred location in which the parent [MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase) should place this controller.
+
+If the controller should not be placed/wrapped by the host but stand by itself you should return [Location::Naked](/cpp-sdk/4.5/api/classes/imfusion-controller).
+
+### supportsToolBar
+
+```cpp
+bool ImFusion::Gated4DImageSetDisplayDataController::supportsToolBar () const
+```
+
+*inline, override, protected, virtual*
+
+Subclasses can return true if they support showing their [GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui) in [Location::ToolBar](/cpp-sdk/4.5/api/classes/imfusion-controller).
+
+This interface is used by the default implementation of [supportedLocations()](#supportedlocations) and [preferredLocation()](#preferredlocation) to decide whether to use [Location::ToolBar](/cpp-sdk/4.5/api/classes/imfusion-controller).

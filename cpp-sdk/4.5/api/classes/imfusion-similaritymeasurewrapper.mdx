@@ -1,0 +1,117 @@
+---
+title: "ImFusion::SimilarityMeasureWrapper"
+sidebarTitle: "SimilarityMeasureWrapper"
+description: "Wrapper for safe and configurable use of various similarity measures."
+---
+
+`#include <ImFusion/Reg/SimilarityMeasureWrapper.h>`
+
+## Overview
+
+Wrapper for safe and configurable use of various similarity measures.
+
+An actual similarity measure implementation class will only be instantiated upon call of either compute, or configure. Any exceptions occuring during initialization or computation are caught, and zero returned as measure.
+
+## Public Member Functions
+
+- **SimilarityMeasureWrapper** ([SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*img1, [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*img2, int mode) — Constructor which does not create an actual similarity measure yet.
+- **~SimilarityMeasureWrapper** () override — Destructor, deleting similarity measure instance hosted here.
+- void **setMode** (int mode) — Set similarity measure mode as defined in factory enumeration.
+- void **setUseGPU** (bool flag) — Specify if the OpenGL GPU implementation shall be used (true by default).
+- void **enableMasks** (bool enableMask1, bool enableMask2) — Set mask to implicit zero-mask, explicit, or disabled for either image.
+- bool [setImage1](#setimage1) ([SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*img1) override — Set or change the first image (if incompatible, similarity measure is cleared).
+- bool [setImage2](#setimage2) ([SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*img2) override — Set or change the second image (if incompatible, similarity measure is cleared).
+- void **setPatchSize** (int patchSize, int weighting=1, int absCorr=1) — Specify patch size and further options for the LNCC similarity measure.
+- int **mode** () const — Return current similarity measure mode.
+- bool **useGPU** () const — Return current GPU flag.
+- int **patchSize** () const — Return the current patch size.
+- int **patchWeighting** () const — Return the current patch variance weighting mode.
+- int **patchAbsCorr** () const — Return the patch absolute value option.
+- double [compute](#compute) (const [ImageTransformer](/cpp-sdk/4.5/api/classes/imfusion-imagetransformer) \*t, size_t \*overlap=nullptr) override — Compute the similarity measure, automatically creating it if needed.
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure the similarity measure, creating it to configure custom properties.
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Retrieve the configuration of the similarity measure.
+- [SimilarityMeasureImpl](/cpp-sdk/4.5/api/classes/imfusion-similaritymeasureimpl) \* [measure](#measure) (bool init=false) — Return the actual measure implementation class instance if available.
+- bool [supportsWeights](#supportsweights) () const override — Returns the state of weights-support of the wrapped similarity measure.
+- void [setWeights](#setweights) (const [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*weights1, const [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*weights2) override — Sets the weights for the wrapped similarity measure. Call just before compute, since this will initialize the actual measure.
+
+## Member Function Documentation
+
+### setImage1
+
+```cpp
+bool ImFusion::SimilarityMeasureWrapper::setImage1 (SharedImage * img1)
+```
+
+*override, virtual*
+
+Set or change the first image (if incompatible, similarity measure is cleared).
+
+### setImage2
+
+```cpp
+bool ImFusion::SimilarityMeasureWrapper::setImage2 (SharedImage * img2)
+```
+
+*override, virtual*
+
+Set or change the second image (if incompatible, similarity measure is cleared).
+
+### compute
+
+```cpp
+double ImFusion::SimilarityMeasureWrapper::compute (const ImageTransformer * t, size_t * overlap = nullptr)
+```
+
+*override, virtual*
+
+Compute the similarity measure, automatically creating it if needed.
+
+### configure
+
+```cpp
+void ImFusion::SimilarityMeasureWrapper::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure the similarity measure, creating it to configure custom properties.
+
+### configuration
+
+```cpp
+void ImFusion::SimilarityMeasureWrapper::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Retrieve the configuration of the similarity measure.
+
+### measure
+
+```cpp
+SimilarityMeasureImpl * ImFusion::SimilarityMeasureWrapper::measure (bool init = false)
+```
+
+Return the actual measure implementation class instance if available.
+
+If the optional init parameter is true, the actual implementation instance is created if necessary.
+
+### supportsWeights
+
+```cpp
+bool ImFusion::SimilarityMeasureWrapper::supportsWeights () const
+```
+
+*override, virtual*
+
+Returns the state of weights-support of the wrapped similarity measure.
+
+### setWeights
+
+```cpp
+void ImFusion::SimilarityMeasureWrapper::setWeights (const SharedImage * weights1, const SharedImage * weights2)
+```
+
+*override, virtual*
+
+Sets the weights for the wrapped similarity measure. Call just before compute, since this will initialize the actual measure.

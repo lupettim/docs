@@ -1,0 +1,55 @@
+---
+title: "ImFusion::GUI::ButtonOverlay"
+sidebarTitle: "ButtonOverlay"
+description: "ViewOverlay representing a clickable button."
+---
+
+`#include <ImFusion/GUI/ButtonOverlay.h>`
+
+## Overview
+
+[ViewOverlay](/cpp-sdk/4.5/api/classes/imfusion-gui-viewoverlay) representing a clickable button.
+
+This overlay renders a graphical icon that will be highlighted when the mouse is hovering over it. When the user clicks on the button it will perform the following two actions:
+
+1. The signalClicked will be emitted allowing you to perform any custom action as result.
+2. The corresponding [EventResult's context menu](/cpp-sdk/4.5/api/structs/imfusion-gui-eventresult) will be populated with the result of the optional [menu generator](#setmenugenerator) you can set. This provides an convenient way to show a basic [Menu](/cpp-sdk/4.5/api/classes/imfusion-gui-menu) as result.
+
+## Public Member Functions
+
+- **ButtonOverlay** ([std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) &gt; icon, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &tooltip) — Create a new [ButtonOverlay](/cpp-sdk/4.5/api/classes/imfusion-gui-buttonoverlay) showing the given *icon* and *tooltip*.
+- void **setIcon** ([SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*icon) — Set the icon to use for the button.
+- void **setIcon** ([std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) &gt; icon) — Set the icon to use for the button.
+- void [setMenuGenerator](#setmenugenerator) ([std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; [Menu](/cpp-sdk/4.5/api/classes/imfusion-gui-menu)()&gt; menuGenerator) — Set an optional context menu generator function that will be called when clicked.
+- const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) & **tooltip** () const — Returns the tooltip shown next to the map when hovering.
+- void **setTooltip** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &value) — Sets the tooltip shown next to the map when hovering.
+- GlButtonOverlay & **glOverlay** () const
+- [EventResult](/cpp-sdk/4.5/api/structs/imfusion-gui-eventresult) [handleInputEvent](#handleinputevent) (const [InputEvent](/cpp-sdk/4.5/api/classes/imfusion-gui-inputevent) &event) override — Handle a user event received from the parent [View](/cpp-sdk/4.5/api/classes/imfusion-gui-view).
+
+## Public Attributes
+
+- Signal **signalClicked** — Signal emitted when the user clicked on this button.
+
+## Member Function Documentation
+
+### setMenuGenerator
+
+```cpp
+void ImFusion::GUI::ButtonOverlay::setMenuGenerator (std::function < Menu ()> menuGenerator)
+```
+
+Set an optional context menu generator function that will be called when clicked.
+
+The returned [Menu](/cpp-sdk/4.5/api/classes/imfusion-gui-menu) will be forwarded to the [EventResult](/cpp-sdk/4.5/api/structs/imfusion-gui-eventresult) of the handled click event.
+
+### handleInputEvent
+
+```cpp
+EventResult ImFusion::GUI::ButtonOverlay::handleInputEvent (const InputEvent & event)
+```
+
+*override, virtual*
+
+Handle a user event received from the parent [View](/cpp-sdk/4.5/api/classes/imfusion-gui-view).
+
+The default implementation is empty.

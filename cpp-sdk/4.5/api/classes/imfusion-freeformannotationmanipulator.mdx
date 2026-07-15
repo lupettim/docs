@@ -1,0 +1,91 @@
+---
+title: "ImFusion::FreeformAnnotationManipulator"
+sidebarTitle: "FreeformAnnotationManipulator"
+description: "Manipulator for freeform annotations."
+---
+
+`#include <ImFusion/GUI/FreeformAnnotationManipulator.h>`
+
+## Overview
+
+[Manipulator](/cpp-sdk/4.5/api/classes/imfusion-manipulator) for freeform annotations.
+
+## Public Member Functions
+
+- **FreeformAnnotationManipulator** ([GlFreeform](/cpp-sdk/4.5/api/classes/imfusion-glfreeform) &annotation)
+- bool [sceneEvent](#sceneevent) (QEvent \*event, const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &view) override
+- void **setPenCursor** ()
+- void [setHoverCursor](#sethovercursor) () override — Sets cursor to open hand.
+- void [setInteractionCursor](#setinteractioncursor) () override — Sets cursor to closed (grabbing) hand.
+- void **setEndOnRelease** (bool v)
+- void **setResetModeAfterEdit** (bool v)
+- void **set3dPicking** (bool picking)
+- void [draw](#draw) (const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &view) override — Draw the object in 3D space.
+- [Geometry::AlignedBox](/cpp-sdk/4.5/api/classes/imfusion-geometry-alignedbox) [bounds](#bounds) () const override — Get the axis-aligned bounding box of this [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) in world space.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [typeName](#typename) () const override — Return unique identifier for this object class used for serialization.
+
+## Protected Member Functions
+
+- virtual bool **onCreate** (const [MouseEvent](/cpp-sdk/4.5/api/structs/imfusion-pointbasedannotationmanipulator-mouseevent) &event, vec3 &X, bool &update)
+
+## Member Function Documentation
+
+### sceneEvent
+
+```cpp
+bool ImFusion::FreeformAnnotationManipulator::sceneEvent (QEvent * event, const GlView & view)
+```
+
+*override, virtual*
+
+### setHoverCursor
+
+```cpp
+void ImFusion::FreeformAnnotationManipulator::setHoverCursor ()
+```
+
+*override, virtual*
+
+Sets cursor to open hand.
+
+### setInteractionCursor
+
+```cpp
+void ImFusion::FreeformAnnotationManipulator::setInteractionCursor ()
+```
+
+*override, virtual*
+
+Sets cursor to closed (grabbing) hand.
+
+### draw
+
+```cpp
+void ImFusion::FreeformAnnotationManipulator::draw (const GlView & view)
+```
+
+*override, virtual*
+
+Draw the object in 3D space.
+
+### bounds
+
+```cpp
+Geometry::AlignedBox ImFusion::FreeformAnnotationManipulator::bounds () const
+```
+
+*inline, override, virtual*
+
+Get the axis-aligned bounding box of this [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) in world space.
+
+Return an empty (default-constructed) AlignedBox object if the [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) does not reside in world space.
+
+### typeName
+
+```cpp
+std::string ImFusion::FreeformAnnotationManipulator::typeName () const
+```
+
+*inline, override, virtual*
+
+Return unique identifier for this object class used for serialization.

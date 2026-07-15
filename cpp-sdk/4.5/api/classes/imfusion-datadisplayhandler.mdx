@@ -1,0 +1,96 @@
+---
+title: "ImFusion::DataDisplayHandler"
+sidebarTitle: "DataDisplayHandler"
+description: "Interface to generically show/hide Data in a GUI::View and/or query visibility."
+---
+
+`#include <ImFusion/GUI/DataDisplayHandler.h>`
+
+## Overview
+
+Interface to generically show/hide [Data](/cpp-sdk/4.5/api/classes/imfusion-data) in a [GUI::View](/cpp-sdk/4.5/api/classes/imfusion-gui-view) and/or query visibility.
+
+In order to make a specific [Data](/cpp-sdk/4.5/api/classes/imfusion-data) type generically visualizable implement this interface and register the specialization with the [DataDisplayHandlerFactory](/cpp-sdk/4.5/api/classes/imfusion-datadisplayhandlerfactory). This enables SDK classes such as [GUI::Display](/cpp-sdk/4.5/api/classes/imfusion-gui-display), [GUI::View](/cpp-sdk/4.5/api/classes/imfusion-gui-view), and [DataWidget](/cpp-sdk/4.5/api/classes/imfusion-datawidget) to use them.
+
+## Public Member Functions
+
+- virtual bool [handlesType](#handlestype) (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data) const =0 — Check whether this specialization handles the given [Data](/cpp-sdk/4.5/api/classes/imfusion-data) type.
+- virtual bool [canBeShownInView](#canbeshowninview) (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data, const [GUI::View](/cpp-sdk/4.5/api/classes/imfusion-gui-view) &view) const =0 — Check whether a particular [Data](/cpp-sdk/4.5/api/classes/imfusion-data) can be shown in the given view.
+- virtual void [show](#show) ([Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data, [GUI::View](/cpp-sdk/4.5/api/classes/imfusion-gui-view) &view)=0 — Visualize the given data in the given view.
+- virtual void [hide](#hide) ([Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data, [GUI::View](/cpp-sdk/4.5/api/classes/imfusion-gui-view) &view)=0 — Remove the given data from the given view.
+- virtual void [onViewDeleted](#onviewdeleted) ([GUI::View](/cpp-sdk/4.5/api/classes/imfusion-gui-view) &view) — Called if a view associated with this [DataDisplayHandler](/cpp-sdk/4.5/api/classes/imfusion-datadisplayhandler) is destroyed.
+- virtual [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; QWidget &gt; [createDisplayOptionsWidget](#createdisplayoptionswidget) ([Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data, [GUI::DisplayBase](/cpp-sdk/4.5/api/classes/imfusion-gui-displaybase) &display, [GUI::View](/cpp-sdk/4.5/api/classes/imfusion-gui-view) &view) const — Provides an optional QtWidgets-based [GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui) to configure display options for the given data shown in *view*.
+
+## Member Function Documentation
+
+### handlesType
+
+```cpp
+virtual bool ImFusion::DataDisplayHandler::handlesType (const Data * data) const
+```
+
+*pure virtual*
+
+Check whether this specialization handles the given [Data](/cpp-sdk/4.5/api/classes/imfusion-data) type.
+
+Checks should be as narrow as possible to avoid potential overlap with other handlers.
+
+### canBeShownInView
+
+```cpp
+virtual bool ImFusion::DataDisplayHandler::canBeShownInView (const Data * data, const GUI::View & view) const
+```
+
+*pure virtual*
+
+Check whether a particular [Data](/cpp-sdk/4.5/api/classes/imfusion-data) can be shown in the given view.
+
+Used by [DataDisplayHandler](/cpp-sdk/4.5/api/classes/imfusion-datadisplayhandler) during view dispatch when calling [show()](#show). Should only be called if handlesType(data) == true.
+
+### show
+
+```cpp
+virtual void ImFusion::DataDisplayHandler::show (Data * data, GUI::View & view)
+```
+
+*pure virtual*
+
+Visualize the given data in the given view.
+
+Should only be called if (handlesType(data) == true) && (canBeShownInView(data, view) == true).
+
+### hide
+
+```cpp
+virtual void ImFusion::DataDisplayHandler::hide (Data * data, GUI::View & view)
+```
+
+*pure virtual*
+
+Remove the given data from the given view.
+
+**Warning:** Implementations must *not* access data beyond pointer comparison because the instance may already in the process of deletion when calling this function.
+
+### onViewDeleted
+
+```cpp
+virtual void ImFusion::DataDisplayHandler::onViewDeleted (GUI::View & view)
+```
+
+*inline, virtual*
+
+Called if a view associated with this [DataDisplayHandler](/cpp-sdk/4.5/api/classes/imfusion-datadisplayhandler) is destroyed.
+
+### createDisplayOptionsWidget
+
+```cpp
+virtual std::unique_ptr < QWidget > ImFusion::DataDisplayHandler::createDisplayOptionsWidget (Data * data, GUI::DisplayBase & display, GUI::View & view) const
+```
+
+*virtual*
+
+Provides an optional QtWidgets-based [GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui) to configure display options for the given data shown in *view*.
+
+This function is used to enable [InteractiveViewOptionsOverlay](/cpp-sdk/4.5/api/classes/imfusion-interactiveviewoptionsoverlay) showing a suitable [GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui) for all data shown in its corresponding view. The default implementation returns nullptr.
+
+**Note:** This function is still considered experimental and may be moved/changed in the future.

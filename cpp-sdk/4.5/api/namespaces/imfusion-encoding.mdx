@@ -1,0 +1,68 @@
+---
+title: "ImFusion::Encoding"
+sidebarTitle: "Encoding"
+description: "Functions for encoding and decoding of binary and text data."
+---
+
+## Overview
+
+Functions for encoding and decoding of binary and text data.
+
+## Functions
+
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [base64Encode](#base64encode-1-2) (const [ByteBufferView](/cpp-sdk/4.5/api/classes/imfusion-bytebufferview) &input) — Encodes any number of input bytes to a regular string using the Base64 encoding scheme.
+- [ByteBuffer](/cpp-sdk/4.5/api/classes/imfusion-bytebuffer) [base64Decode](#base64decode-1-2) ([std::string_view](http://en.cppreference.com/w/cpp/string/basic_string_view.html) input) — Decodes a Base64-encoded string back to the original binary data.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [base64Encode](#base64encode-2-2) (const T \*value) — Convenience overload to directly encode a trivially copyable type to a Base64 encoded string.
+- bool [base64Decode](#base64decode-2-2) ([std::string_view](http://en.cppreference.com/w/cpp/string/basic_string_view.html) input, T &output) — Convenience overload to directly decode a Base64 encoded string to a trivially copyable type.
+
+## Function Documentation
+
+### base64Encode
+
+```cpp
+std::string ImFusion::Encoding::base64Encode (const ByteBufferView & input)
+```
+
+Encodes any number of input bytes to a regular string using the Base64 encoding scheme.
+
+Uses the regular alphabet ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/ as specified in RFC 4648.
+
+**See also:** - [base64Decode()](#base64decode-1-2)
+- [https://datatracker.ietf.org/doc/html/rfc4648](https://datatracker.ietf.org/doc/html/rfc4648)
+
+### base64Decode
+
+```cpp
+ByteBuffer ImFusion::Encoding::base64Decode (std::string_view input)
+```
+
+Decodes a Base64-encoded string back to the original binary data.
+
+Uses the regular alphabet ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/ as specified in RFC 4648. Will return an empty [ByteBuffer](/cpp-sdk/4.5/api/classes/imfusion-bytebuffer) if the input buffer size is not a multiple of 4. If the input buffer contains invalid characters the result is undefined.
+
+**See also:** - [base64Encode()](#base64encode-1-2)
+- [https://datatracker.ietf.org/doc/html/rfc4648](https://datatracker.ietf.org/doc/html/rfc4648)
+
+### base64Encode
+
+```cpp
+template<typename T> std::string ImFusion::Encoding::base64Encode (const T * value)
+```
+
+Convenience overload to directly encode a trivially copyable type to a Base64 encoded string.
+
+*value* is taken by pointer to clearly distinguish this function from the const [ByteBufferView](/cpp-sdk/4.5/api/classes/imfusion-bytebufferview)& overload. Will return the empty string if nullptr.
+
+**See also:** [base64Encode(const ByteBufferView&)](#base64encode-1-2), [base64Decode()](#base64decode-1-2)
+
+### base64Decode
+
+```cpp
+template<typename T> bool ImFusion::Encoding::base64Decode (std::string_view input, T & output)
+```
+
+Convenience overload to directly decode a Base64 encoded string to a trivially copyable type.
+
+The return value indicated if decoding was successful; sizeof(output) has to match the size of the decoded *input*.
+
+**See also:** [base64Decode(std::string_view)](#base64decode-1-2), [base64Encode()](#base64encode-1-2)

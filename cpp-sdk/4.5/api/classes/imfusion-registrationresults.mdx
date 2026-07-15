@@ -1,0 +1,266 @@
+---
+title: "ImFusion::RegistrationResults"
+sidebarTitle: "RegistrationResults"
+description: "Class responsible for managing and storing the results of data registration."
+---
+
+`#include <ImFusion/Reg/RegistrationResults.h>`
+
+## Overview
+
+Class responsible for managing and storing the results of data registration.
+
+It provides functionality to add, remove, apply, and manage registration results.
+
+Registration results can be saved to and loaded from ImFusion Registration Results (IRR) files. These files may include data source information, enabling the class to load missing data when necessary to apply the results. Each registration result contains a transformation matrix and, optionally, a deformation.
+
+## Classes
+
+- struct [DataResult](/cpp-sdk/4.5/api/structs/imfusion-registrationresults-dataresult) — Represents the registration result for a single data object.
+- struct [Result](/cpp-sdk/4.5/api/structs/imfusion-registrationresults-result) — Represents a complete registration result, composed by multiple [DataResult](/cpp-sdk/4.5/api/structs/imfusion-registrationresults-dataresult) objects.
+- struct [DataSource](/cpp-sdk/4.5/api/structs/imfusion-registrationresults-datasource)
+
+## Public Member Functions
+
+- void [add](#add-1-2) (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &datalist, [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) name="", bool isGroundTruth=false, [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) regAlgConfig=&#123;&#125;) — Adds a new registration result based on the current state of the provided data.
+- void [add](#add-2-2) ([Result](/cpp-sdk/4.5/api/structs/imfusion-registrationresults-result) &&res) — Add a registration result Duplicates are not allowed by default.
+- bool [remove](#remove) (int index) — Removes the registration result at the specified index.
+- [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) [apply](#apply) (int index) — Applies the registration result at the specified index.
+- int **size** () const — Number of results.
+- [Result](/cpp-sdk/4.5/api/structs/imfusion-registrationresults-result) & **get** (int index) — Get the result at index.
+- const [Result](/cpp-sdk/4.5/api/structs/imfusion-registrationresults-result) & **get** (int index) const
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) &prop, const [Filesystem::Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path) &deformationFilePath="") const — Serialize the list of results into [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- int [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) &p, [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [Filesystem::Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path) &gt; originPath=std::nullopt) — Loads registration results from a [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+- bool [save](#save) (const [Filesystem::Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path) &path, bool includeDataNames=true) const — Saves the registration results to an ImFusion Registration Results (IRR) file.
+- int [load](#load) (const [Filesystem::Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path) &path) — Loads registration results from an ImFusion Registration Results (IRR) file.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; int &gt; [dataDeleted](#datadeleted) ([Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data) — Handles the removal of a data object, updating all affected results.
+- void [resolveData](#resolvedata) (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &dataList) — Resolves missing data by searching for it in the provided data list.
+- [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) [loadMissingData](#loadmissingdata) (int index=-1, [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) \*progress=nullptr) — Loads missing data for the specified result or all results.
+- bool **someDataMissing** () const — Returns true if there is at least one result which misses some data.
+- int [findResult](#findresult) (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data) const — Finds the index of a result that matches the provided data.
+- void **clear** () — Clears all registration results.
+- void **setGroundTruth** (int index, bool isGroundTruth) — Set the ground truth flag on the result at index.
+- bool **hasGroundTruth** () const — Whether there is at least one result marked as ground truth.
+- void **setName** (int index, [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) name) — Set the name of the result at index.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **name** (int index) const — Return the name of result at index.
+- [Filesystem::Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path) **commonPath** () — Find the longest common parent path of all the data included in the results.
+- const [std::unordered_map](http://en.cppreference.com/w/cpp/container/unordered_map.html)&lt; uint64_t, [DataSource](/cpp-sdk/4.5/api/structs/imfusion-registrationresults-datasource) &gt; & **dataSources** () const
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **filename** () const — Name of the file where the results were loaded from (if any).
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [Filesystem::Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path) &gt; **sourcePath** () const — Path of the file the results were loaded from (if any).
+
+## Static Public Member Functions
+
+- static mat4 **getRegistrationMatrix** (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*d) — Gets the registration matrix of d.
+- static [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **makePathAbsolute** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &filename, [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [Filesystem::Directory](/cpp-sdk/4.5/api/classes/imfusion-filesystem-directory) &gt; originFolder)
+- static [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **makePathRelative** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &filename, [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [Filesystem::Directory](/cpp-sdk/4.5/api/classes/imfusion-filesystem-directory) &gt; originFolder)
+
+## Public Attributes
+
+- Signal&lt; int &gt; **s_resultAdded** — Signal emitted when a new result is added.
+- Signal&lt; int &gt; **s_resultChanged** — Signal emitted when a result is changed.
+
+## Methods for iterating through results
+
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Result](/cpp-sdk/4.5/api/structs/imfusion-registrationresults-result) &gt;::iterator **begin** ()
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Result](/cpp-sdk/4.5/api/structs/imfusion-registrationresults-result) &gt;::iterator **end** ()
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Result](/cpp-sdk/4.5/api/structs/imfusion-registrationresults-result) &gt;::const_iterator **begin** () const
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Result](/cpp-sdk/4.5/api/structs/imfusion-registrationresults-result) &gt;::const_iterator **end** () const
+
+## Static methods for scanning a folder for results
+
+- static [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [RegistrationResults](/cpp-sdk/4.5/api/classes/imfusion-registrationresults) &gt; [scanFolder](#scanfolder) (const [Filesystem::Directory](/cpp-sdk/4.5/api/classes/imfusion-filesystem-directory) &folder)
+- static [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [Threading::StoppableThread](/cpp-sdk/4.5/api/classes/imfusion-threading-stoppablethread) &gt; [scanFolderAsync](#scanfolderasync) (const [Filesystem::Directory](/cpp-sdk/4.5/api/classes/imfusion-filesystem-directory) &folder, [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; void([std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [RegistrationResults](/cpp-sdk/4.5/api/classes/imfusion-registrationresults) &gt;)&gt; callback) — Recursively scans a folder in a background thread for .irr files.
+
+## Member Function Documentation
+
+### add
+
+```cpp
+void ImFusion::RegistrationResults::add (const DataList & datalist, std::string name = "", bool isGroundTruth = false, Properties regAlgConfig = {})
+```
+
+Adds a new registration result based on the current state of the provided data.
+
+**Parameters:**
+
+- `datalist` — List of data to include in the result.
+- `name` — Name of the result. If empty, a name is generated automatically.
+- `isGroundTruth` — Flag indicating whether the result is ground truth.
+- `regAlgConfig` — Configuration of the registration algorithm used to produce the result.
+
+### add
+
+```cpp
+void ImFusion::RegistrationResults::add (Result && res)
+```
+
+Add a registration result Duplicates are not allowed by default.
+
+Use setAllowDuplicates if you want to allow them.
+
+### remove
+
+```cpp
+bool ImFusion::RegistrationResults::remove (int index)
+```
+
+Removes the registration result at the specified index.
+
+**Parameters:**
+
+- `index` — Index of the result to remove.
+
+**Returns:** True if the result was successfully removed, false otherwise.
+
+### apply
+
+```cpp
+DataList ImFusion::RegistrationResults::apply (int index)
+```
+
+Applies the registration result at the specified index.
+
+**Parameters:**
+
+- `index` — Index of the result to apply.
+
+**Returns:** The list of data objects affected by the application.
+
+### configuration
+
+```cpp
+void ImFusion::RegistrationResults::configuration (Properties & prop, const Filesystem::Path & deformationFilePath = "") const
+```
+
+Serialize the list of results into [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+**Parameters:**
+
+- `prop` — Target [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties)
+- `deformationFilePath` — optional, path to a file where the supporting images for deformations will be stored
+
+### configure
+
+```cpp
+int ImFusion::RegistrationResults::configure (const Properties & p, std::optional < Filesystem::Path > originPath = std::nullopt)
+```
+
+Loads registration results from a [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+**Parameters:**
+
+- `p` — Source [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+- `originPath` — Optional path to the file the properties originated from of the properties, used for relative paths.
+
+**Returns:** The number of results loaded.
+
+### save
+
+```cpp
+bool ImFusion::RegistrationResults::save (const Filesystem::Path & path, bool includeDataNames = true) const
+```
+
+Saves the registration results to an ImFusion Registration Results (IRR) file.
+
+**Parameters:**
+
+- `path` — Path to the target file.
+- `includeNames` — Whether to include current data names in the saved data sources
+
+**Returns:** True if the save operation was successful, false otherwise.
+
+### load
+
+```cpp
+int ImFusion::RegistrationResults::load (const Filesystem::Path & path)
+```
+
+Loads registration results from an ImFusion Registration Results (IRR) file.
+
+**Parameters:**
+
+- `path` — Path to the source file.
+
+**Returns:** The number of results loaded, or -1 on failure.
+
+### dataDeleted
+
+```cpp
+std::vector < int > ImFusion::RegistrationResults::dataDeleted (Data * data)
+```
+
+Handles the removal of a data object, updating all affected results.
+
+**Parameters:**
+
+- `data` — Pointer to the data being removed.
+
+**Returns:** A list of indices of affected results.
+
+### resolveData
+
+```cpp
+void ImFusion::RegistrationResults::resolveData (const DataList & dataList)
+```
+
+Resolves missing data by searching for it in the provided data list.
+
+**Parameters:**
+
+- `dataList` — List of available data.
+
+### loadMissingData
+
+```cpp
+OwningDataList ImFusion::RegistrationResults::loadMissingData (int index = -1, Progress * progress = nullptr)
+```
+
+Loads missing data for the specified result or all results.
+
+**Parameters:**
+
+- `index` — Index of the result to consider, or -1 to consider all results.
+- `progress` — Optional progress tracker.
+
+**Returns:** An owning list of loaded data objects.
+
+### findResult
+
+```cpp
+int ImFusion::RegistrationResults::findResult (const DataList & data) const
+```
+
+Finds the index of a result that matches the provided data.
+
+**Parameters:**
+
+- `data` — List of data to match.
+
+**Returns:** The index of the matching result, or -1 if no match is found.
+
+### scanFolder
+
+```cpp
+std::vector < RegistrationResults > ImFusion::RegistrationResults::scanFolder (const Filesystem::Directory & folder)
+```
+
+*static*
+
+Recursively scans a folder for .irr files, loads the [RegistrationResults](/cpp-sdk/4.5/api/classes/imfusion-registrationresults) from them and returns them
+
+### scanFolderAsync
+
+```cpp
+std::unique_ptr < Threading::StoppableThread > ImFusion::RegistrationResults::scanFolderAsync (const Filesystem::Directory & folder, std::function < void(std::vector < RegistrationResults >)> callback)
+```
+
+*static*
+
+Recursively scans a folder in a background thread for .irr files.
+
+**Parameters:**
+
+- `folder` — The folder to scan.
+- `callback` — The callback to call when the scan is finished. Called by the background thread.
+
+**Returns:** Unique pointer to the thread that is scanning the folder.

@@ -1,0 +1,293 @@
+---
+title: "ImFusion::DemonsImageRegistration"
+sidebarTitle: "DemonsImageRegistration"
+description: "Registers two images with the Demons algorithm The algorithm modifies the GlDenseDeformation object attached to the moving image A number of variants of the sta"
+---
+
+`#include <ImFusion/Reg/DemonsImageRegistration.h>`
+
+## Overview
+
+Registers two images with the Demons algorithm The algorithm modifies the [GlDenseDeformation](/cpp-sdk/4.5/api/classes/imfusion-gldensedeformation) object attached to the moving image A number of variants of the standard demons algorithm (diffeomorphic vs additive, various gradient modes) are supported (cf.
+
+T. Vercauteren et al, " Diffeomorphic demons: efficient non-parametric image registration", Neuroimage (2009)).
+
+Masking:
+
+- If m_constrainDeformationByFixedImageMask is true:
+  - If a mask is defined on fixed [m_image1](/cpp-sdk/4.5/api/classes/imfusion-abstractimageregistration), it will be converted to an explicit mask and applied to the deformation field. This ensures that the moving [m_image2](/cpp-sdk/4.5/api/classes/imfusion-abstractimageregistration) retains its original values wherever the mask is active.
+  - If a mask is defined on the moving image ([m_image2](/cpp-sdk/4.5/api/classes/imfusion-abstractimageregistration)), this mask is only used during the demons force calculation.
+  - During force calculation, the force at a pixel is set to zero if either the moving or fixed image is masked at that pixel.
+  - In case of using an image set with multiple images as fixed (or moving), all images must have the same mask (respectively).
+- If m_constrainDeformationByFixedImageMask is false:
+  - Masks on fixed [m_image1](/cpp-sdk/4.5/api/classes/imfusion-abstractimageregistration) and moving [m_image2](/cpp-sdk/4.5/api/classes/imfusion-abstractimageregistration) are only used to constrain the forces calculated by computeDemonsForces to non-masked locations.
+  - Masks are not considered during vector field flow (diffeomorphic demons) or pyramid upsampling.
+
+## Public Types
+
+- enum class Adjustment &#123; **DIFFEOMORPHIC** = 0 , **ADDITIVE** = 1 , **AFFINE** = 2 &#125; — How to do the update step.
+- enum class [GradientType](#gradienttype) &#123; REFERENCE = 0 , MOVING = 1 , SYMMETRIC = 2 &#125; — The Demons image algorithm requires the approximation of a gradient.
+
+## Public Member Functions
+
+- [DemonsImageRegistration](#demonsimageregistration) ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*image1, [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*image2, bool alreadySplitChannels=false) — Constructor.
+- void [initializeTransformationModel](#initializetransformationmodel) () override
+- void [compute](#compute) () override — Execute the algorithm.
+- [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* [reference](#reference) () const override — Returns the image that will be iterated during the registration.
+- void **setFixedWeight** ([SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*weight) — Set a fixed weight image. This image is used across all channels if multiple channels are present. This is used in the smoothing of the forces to prioritize forces coming from the weighted area.
+- void [setImage2](#setimage2) ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*img) override
+- [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [GlDenseDeformation](/cpp-sdk/4.5/api/classes/imfusion-gldensedeformation) &gt; [deformation](#deformation) () const — Returns the deformation object that is currently modified This is a convenience method that casts moving to a [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset), retrieves its [deformation](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) and cast that to a [GlDenseDeformation](/cpp-sdk/4.5/api/classes/imfusion-gldensedeformation).
+- void [reset](#reset) () override — Calls setIdentity() on the deformation of the moving image.
+- bool [isDeformable](#isdeformable) () const override — Returns if the registration is non-linear or not.
+- virtual double [bestSimilarityValue](#bestsimilarityvalue) () const override — Returns the best value of the similarity measure after optimization (may return NaN if algorithm is not initialized).
+- void **setConstrainDeformationByFixedImageMask** (bool doConstrain) — If set, the deformation field will be computed only for the region specified by the mask of the fixed image.
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — [Configurable](/cpp-sdk/4.5/api/classes/imfusion-configurable) interface.
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+## Static Public Member Functions
+
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=0) — Expects two Volumes/Images.
+
+## Public Attributes
+
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; int &gt; [p_minLevel](#p-minlevel)
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; int &gt; **p_maxLevel** = &#123;"maxLevel", 0, this&#125; — Highest level of the resolution pyramid. Is initialized in the constructor.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; int &gt; **p_halfKernelSize** = &#123;"halfKernelSize", 2, this&#125; — Half kernel size for force smoothing.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; double &gt; **p_alpha** = &#123;"alpha", 2.0, this&#125; — The weighting of the difference squared term in denominator of demons algorithm.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; Adjustment &gt; **p_adjustment** = &#123;"adjustment", Adjustment::DIFFEOMORPHIC, this&#125;
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; [GradientType](#gradienttype) &gt; **p_gradientType** = &#123;"gradientType", GradientType::SYMMETRIC, this&#125;
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; int &gt; **p_maxIterations** = &#123;"maxIterations", 100, this&#125; — Maximum number of iterations per level.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; bool &gt; [p_restrictToInputs](#p-restricttoinputs) — If true, gradient estimate is set to zero outside the input images.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; double &gt; **p_damping** = &#123;"damping", 1.0, this&#125; — Scaling of update step.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; bool &gt; **p_useAdamOptimizer** = &#123;"useAdamOptimizer", false, this&#125; — Use Adam optimizer for adaptive per-voxel step sizes.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; double &gt; [p_tolAbs](#p-tolabs) — Stop iterating once the similarity measure difference per iteration reaches this threshold.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; bool &gt; **p_verbose** = &#123;"verbose", true, this&#125; — Print info messages.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; bool &gt; **p_noSmoothingFinalStep** = &#123;"noSmoothingFinalStep", false, this&#125; — If true, do not smooth after the final iteration.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; int &gt; **p_affineSkip** = &#123;"affineSkip", 1, this&#125; — Number of iterations to skip between affine smoothing for Adjustment::AFFINE.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; &gt; [p_channelWeights](#p-channelweights) — Weights for each channel. Forces are scaled by this amount (normalized by the total weight) in the update step. Only relevant for the multi-channel case.
+
+## Protected Member Functions
+
+- virtual void **runRegistration** ([SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*imageRef, [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*imageMoving, [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) \*[progress](/cpp-sdk/4.5/api/classes/imfusion-algorithm), bool isLastLevel) — Execute a single resolution pyramid level of the image registration.
+- void **runMultiChannelRegistration** ([std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \* &gt; imageRef, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \* &gt; imageMoving, [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) \*[progress](/cpp-sdk/4.5/api/classes/imfusion-algorithm), bool isLastLevel)
+- bool **createProgram** ()
+
+## Protected Attributes
+
+- [GL::ImageProgram](/cpp-sdk/4.5/api/classes/imfusion-gl-imageprogram) \* **m_progDemons** = nullptr — Shader program for demons force update.
+- bool **m_exportDeformationFields** = false
+- bool **m_logData** = false — Whether to write intermediate values to [DataLogger](/cpp-sdk/4.5/api/classes/imfusion-datalogger).
+- [VectorFieldFlowAlgorithm](/cpp-sdk/4.5/api/classes/imfusion-vectorfieldflowalgorithm) [m_vff](#m-vff) — Adjustment used for updating displacement field, cf. the Diffeomorphic Demons paper.
+- double **m_bestSimilarity** = [std::numeric_limits](http://en.cppreference.com/w/cpp/types/numeric_limits.html)&lt;double&gt;::quiet_NaN()
+- [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \* **m_fixedWeight** = nullptr — Best similarity value obtained after registration.
+- double **m_minWeight** = 0.01
+- bool **m_alreadySplitChannels** = false
+- bool **m_constrainDeformationByFixedImageMask** = true — [Mask](/cpp-sdk/4.5/api/classes/imfusion-mask) of fixed image will be applied to deformation field as explicit mask.
+
+## Member Enumeration Documentation
+
+### GradientType
+
+```cpp
+enum class ImFusion::DemonsImageRegistration::GradientType
+```
+
+*strong*
+
+The Demons image algorithm requires the approximation of a gradient.
+
+We support a number of options here. cf. T. Vercauteren et al, " Diffeomorphic demons: efficient non-parametric image registration", Neuroimage (2009)
+
+**Enumerator:**
+
+- `REFERENCE` — Use the gradient of the (fixed) reference image. Efficient, as can be computed once per image level.
+- `MOVING` — Use finite difference gradient of the moving image, including the deformation. Must be computed per iteration.
+- `SYMMETRIC` — Symmetric combination of the above options.
+
+## Constructor & Destructor Documentation
+
+### DemonsImageRegistration
+
+```cpp
+ImFusion::DemonsImageRegistration::DemonsImageRegistration (SharedImageSet * image1, SharedImageSet * image2, bool alreadySplitChannels = false)
+```
+
+Constructor.
+
+If alreadySplitChannels is true, the input images are assumed to be already split into channels. Otherwise the focus image is used for registration, and (in the multi-channel case) the image is split into single channel images internally for registration.
+
+## Member Function Documentation
+
+### initializeTransformationModel
+
+```cpp
+void ImFusion::DemonsImageRegistration::initializeTransformationModel ()
+```
+
+*override, virtual*
+
+### compute
+
+```cpp
+void ImFusion::DemonsImageRegistration::compute ()
+```
+
+*override, virtual*
+
+Execute the algorithm.
+
+### reference
+
+```cpp
+SharedImageSet * ImFusion::DemonsImageRegistration::reference () const
+```
+
+*override, virtual*
+
+Returns the image that will be iterated during the registration.
+
+### setImage2
+
+```cpp
+void ImFusion::DemonsImageRegistration::setImage2 (SharedImageSet * img)
+```
+
+*override, virtual*
+
+### deformation
+
+```cpp
+std::shared_ptr < GlDenseDeformation > ImFusion::DemonsImageRegistration::deformation () const
+```
+
+Returns the deformation object that is currently modified This is a convenience method that casts moving to a [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset), retrieves its [deformation](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) and cast that to a [GlDenseDeformation](/cpp-sdk/4.5/api/classes/imfusion-gldensedeformation).
+
+Returns nullptr, if any of the casts fail.
+
+### reset
+
+```cpp
+void ImFusion::DemonsImageRegistration::reset ()
+```
+
+*override, virtual*
+
+Calls setIdentity() on the deformation of the moving image.
+
+### isDeformable
+
+```cpp
+bool ImFusion::DemonsImageRegistration::isDeformable () const
+```
+
+*override, virtual*
+
+Returns if the registration is non-linear or not.
+
+### bestSimilarityValue
+
+```cpp
+virtual double ImFusion::DemonsImageRegistration::bestSimilarityValue () const
+```
+
+*inline, override, virtual*
+
+Returns the best value of the similarity measure after optimization (may return NaN if algorithm is not initialized).
+
+### configure
+
+```cpp
+void ImFusion::DemonsImageRegistration::configure (const Properties * p)
+```
+
+*override, virtual*
+
+[Configurable](/cpp-sdk/4.5/api/classes/imfusion-configurable) interface.
+
+### configuration
+
+```cpp
+void ImFusion::DemonsImageRegistration::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality
+
+## Member Data Documentation
+
+### p_minLevel
+
+```cpp
+Parameter <int> ImFusion::DemonsImageRegistration::p_minLevel
+```
+
+**Initial value:**
+```cpp
+= {"minLevel",
+                1,
+ this}
+```
+ fragment
+
+### p_restrictToInputs
+
+```cpp
+Parameter <bool> ImFusion::DemonsImageRegistration::p_restrictToInputs
+```
+
+**Initial value:**
+```cpp
+= {"restrictToInputs",
+ true,
+ this}
+```
+ fragment
+If true, gradient estimate is set to zero outside the input images.
+
+### p_tolAbs
+
+```cpp
+Parameter <double> ImFusion::DemonsImageRegistration::p_tolAbs
+```
+
+**Initial value:**
+```cpp
+= {"tolAbs",
+                   1e-6,
+ this}
+```
+ fragment
+Stop iterating once the similarity measure difference per iteration reaches this threshold.
+
+### p_channelWeights
+
+```cpp
+Parameter < std::vector <double> > ImFusion::DemonsImageRegistration::p_channelWeights
+```
+
+**Initial value:**
+```cpp
+               = {
+"channelWeights",
+std::vector<double>{},
+this}
+```
+ fragment
+Weights for each channel. Forces are scaled by this amount (normalized by the total weight) in the update step. Only relevant for the multi-channel case.
+
+### m_vff
+
+```cpp
+VectorFieldFlowAlgorithm ImFusion::DemonsImageRegistration::m_vff
+```
+
+*protected*
+
+Adjustment used for updating displacement field, cf. the Diffeomorphic Demons paper.
+
+Helper object used for computing flows of vector fields.

@@ -1,0 +1,212 @@
+---
+title: "ImFusion::GlDenseDeformation"
+sidebarTitle: "GlDenseDeformation"
+description: "The GlDenseDeformation class represents dense deformations based on a displacement map."
+---
+
+`#include <ImFusion/GL/GlDenseDeformation.h>`
+
+## Overview
+
+The [GlDenseDeformation](/cpp-sdk/4.5/api/classes/imfusion-gldensedeformation) class represents dense deformations based on a displacement map.
+
+## Public Member Functions
+
+- **GlDenseDeformation** (int width, int height, int slices) — Creates a deformation field of the given size.
+- **GlDenseDeformation** (const [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*img) — Creates a deformation field with the same size as img.
+- **GlDenseDeformation** (const [Image](/cpp-sdk/4.5/api/classes/imfusion-image) &img) — Creates a deformation field with the same size as img.
+- **GlDenseDeformation** (const [ImageDescriptor](/cpp-sdk/4.5/api/structs/imfusion-imagedescriptor) &desc)
+- **GlDenseDeformation** (const GlDenseDeformation &other) — Copy constructor.
+- [Deformation](/cpp-sdk/4.5/api/classes/imfusion-deformation) \* [clone](#clone) () const override — Returns a copy of the deformation.
+- bool [isIdentity](#isidentity) () const override — Returns if the current state of the deformation transformations the image or not.
+- void [setIdentity](#setidentity) () override — Sets all displacements to 0.
+- void **setChanged** () — Causes listeners to be notified because the deformation field was changed.
+- void **copyFrom** (const [Deformation](/cpp-sdk/4.5/api/classes/imfusion-deformation) &other, const [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) &image)
+- vec3 [displacement](#displacement-1-2) (const vec3 &pos) const override — Returns the displacement for pos (in world coordinates).
+- int [setIncludeArguments](#setincludearguments) ([GL::Program](/cpp-sdk/4.5/api/classes/imfusion-gl-program) &p, const [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*img=nullptr, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &prefix="deform") const override — Initializes the DenseDeformation shader header to deform the given image.
+- int [dimension](#dimension) () const override — Dimension of the displacement field, either 2 or 3.
+- mat4 [transformation](#transformation) () const — The world transformation of the displacement field.
+- void **setTransformation** (const mat4 &matrix)
+- void [setDisplacement](#setdisplacement) (const [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) &d) — Set displacement in mm.
+- const [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) & [displacementField](#displacementfield) () const — Returns the complete displacement field.
+- [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) & **displacementField** ()
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [id](#id) () const override — Returns a unique string identifier for this type of deformation.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &gt; [supportingImages](#supportingimages) () const override — Returns the images that, together with the configuration, defines the deformation.
+- virtual vec3 [displacement](#displacement-2-2) (const vec2 &pos) const — Returns the displacement at the world position pos.
+
+## Static Public Member Functions
+
+- static [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; GlDenseDeformation &gt; [createFrom](#createfrom) (const [Deformation](/cpp-sdk/4.5/api/classes/imfusion-deformation) &other, const [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) &image, [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [ImageDescriptorWorld](/cpp-sdk/4.5/api/classes/imfusion-imagedescriptorworld) &gt; domain=std::nullopt) — Create a new dense deformation field based on a given deformation and image.
+
+## Public Attributes
+
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; [GL::Sampler::Wrap](/cpp-sdk/4.5/api/classes/imfusion-gl-sampler) &gt; [p_samplerWrapping](#p-samplerwrapping) = &#123;"samplerWrapping", [GL::Sampler::Wrap::ClampToBorder](/cpp-sdk/4.5/api/classes/imfusion-gl-sampler), this&#125; — Wrap used for computing displacement outside of the stored image.
+
+## Protected Attributes
+
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) &gt; **m_disp** — Displacement field.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [GL::Sampler](/cpp-sdk/4.5/api/classes/imfusion-gl-sampler) &gt; **m_sampler**
+
+## Member Function Documentation
+
+### createFrom
+
+```cpp
+std::unique_ptr < GlDenseDeformation > ImFusion::GlDenseDeformation::createFrom (const Deformation & other, const SharedImage & image, std::optional < ImageDescriptorWorld > domain = std::nullopt)
+```
+
+*static*
+
+Create a new dense deformation field based on a given deformation and image.
+
+**Parameters:**
+
+- `other` — [Deformation](/cpp-sdk/4.5/api/classes/imfusion-deformation) to use as source, will be evaluated for every voxel of the new dense deformation field.
+- `image` — [Image](/cpp-sdk/4.5/api/classes/imfusion-image) to use as reference for size, spacing and transformation of the old deformation field.
+- `domain` — Domain of the new deformation field. If nullptr, then image is used.
+
+### clone
+
+```cpp
+Deformation * ImFusion::GlDenseDeformation::clone () const
+```
+
+*override, virtual*
+
+Returns a copy of the deformation.
+
+### isIdentity
+
+```cpp
+bool ImFusion::GlDenseDeformation::isIdentity () const
+```
+
+*override, virtual*
+
+Returns if the current state of the deformation transformations the image or not.
+
+### setIdentity
+
+```cpp
+void ImFusion::GlDenseDeformation::setIdentity ()
+```
+
+*override, virtual*
+
+Sets all displacements to 0.
+
+### displacement
+
+```cpp
+vec3 ImFusion::GlDenseDeformation::displacement (const vec3 & pos) const
+```
+
+*override, virtual*
+
+Returns the displacement for pos (in world coordinates).
+
+The returned displacement is also in world coordinates. The displacement indicates where pos originated from before applying the deformation.
+
+### setIncludeArguments
+
+```cpp
+int ImFusion::GlDenseDeformation::setIncludeArguments (GL::Program & p, const SharedImage * img = nullptr, const std::string & prefix = "deform") const
+```
+
+*override, virtual*
+
+Initializes the DenseDeformation shader header to deform the given image.
+
+Inside the shader the deformDisplacement function returns the displacement in texture coordinates. If you need them in world coordinates, transform them with [SharedImage::textureToWorldMatrix](/cpp-sdk/4.5/api/classes/imfusion-sharedimage).
+
+### dimension
+
+```cpp
+int ImFusion::GlDenseDeformation::dimension () const
+```
+
+*override, virtual*
+
+Dimension of the displacement field, either 2 or 3.
+
+### transformation
+
+```cpp
+mat4 ImFusion::GlDenseDeformation::transformation () const
+```
+
+The world transformation of the displacement field.
+
+This is the same as [displacementField()](#displacementfield).matrix().
+
+### setDisplacement
+
+```cpp
+void ImFusion::GlDenseDeformation::setDisplacement (const SharedImage & d)
+```
+
+Set displacement in mm.
+
+The given image must be a 3 channel FLOAT image.
+
+### displacementField
+
+```cpp
+const SharedImage & ImFusion::GlDenseDeformation::displacementField () const
+```
+
+Returns the complete displacement field.
+
+The returned image is always 3 channel FLOAT. Each pixel is a 3D displacement vector in mm (world coordinates). Use SharedImage::texture/pixelToWorld and SharedImage::worldToTexture/Pixel to convert between coordinates.
+
+### id
+
+```cpp
+std::string ImFusion::GlDenseDeformation::id () const
+```
+
+*inline, override, virtual*
+
+Returns a unique string identifier for this type of deformation.
+
+Usually the name of the class.
+
+**Note:** To avoid conflicts make sure to include potential plugin names into this ID. Due to the modular architecture of the ImFusion library, uniqueness of IDs cannot be checked at compile time. However, [DeformationFactory](/cpp-sdk/4.5/api/classes/imfusion-deformationfactory) will check the uniqueness of the ID during registration.
+
+**See also:** [DeformationFactory](/cpp-sdk/4.5/api/classes/imfusion-deformationfactory)
+
+### supportingImages
+
+```cpp
+std::unique_ptr < SharedImageSet > ImFusion::GlDenseDeformation::supportingImages () const
+```
+
+*override, virtual*
+
+Returns the images that, together with the configuration, defines the deformation.
+
+**See also:** [DeformationFactory](/cpp-sdk/4.5/api/classes/imfusion-deformationfactory)
+
+### displacement
+
+```cpp
+virtual vec3 ImFusion::Deformation::displacement (const vec2 & pos) const
+```
+
+*virtual*
+
+Returns the displacement at the world position pos.
+
+The base implementation just calls displacement(vec3(pos,0.0))
+
+## Member Data Documentation
+
+### p_samplerWrapping
+
+```cpp
+Parameter < GL::Sampler::Wrap > ImFusion::GlDenseDeformation::p_samplerWrapping = {"samplerWrapping", GL::Sampler::Wrap::ClampToBorder, this}
+```
+
+Wrap used for computing displacement outside of the stored image.
+
+The CPU version only supports clamp to border and clamp to edge.

@@ -1,0 +1,77 @@
+---
+title: "ImFusion::Seg::LabelMapRefinement"
+sidebarTitle: "LabelMapRefinement"
+description: "Helper class for post-processing a label map."
+---
+
+`#include <ImFusion/Seg/LabelMapRefinement.h>`
+
+## Overview
+
+Helper class for post-processing a label map.
+
+## Public Types
+
+- enum class SmoothingMode &#123; **Gaussian** = 0 , **Median** &#125; — Types of smoothing.
+
+## Public Member Functions
+
+- [LabelMapRefinement](#labelmaprefinement) (const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*image, [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &labelMap) — If image is provided, it is expected that image and labelMap contain the same number of images, and that each of the images are compatible with one-another.
+- void **setMask** ([ExplicitMask](/cpp-sdk/4.5/api/classes/imfusion-explicitmask) \*mask) — Set a mask to prevent certain values from being modified by the refinement For performance reasons, only [ExplicitMask](/cpp-sdk/4.5/api/classes/imfusion-explicitmask) (of compatible dimensions) are supported.
+- void **setAffectedLabel** (uint8_t label) — Set which of the label will be affected by the refinement operations 0 by default.
+- bool [setAffectedFrames](#setaffectedframes) (int firstFrame, int lastFrame) — Select the range of frame on which the operation is performed.
+- void [lockLabel](#locklabel) (uint8_t label, bool locked) — Determines which labels are locked.
+- void [removeSmallComponents](#removesmallcomponents) ([std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; int &gt; maxNumComponents, [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; size_t &gt; minComponentSizeInPixels) — Remove the small components from the label map.
+- void **keepNLargestComponents** (int n) — Keep only the n largest components of the label maps.
+- void **fillHoles** () — Fill any holes in the label map.
+- void **smooth** (int kernelSize, SmoothingMode mode) — Smooths the current label values in the label map.
+- void **imageBasedRefinement** (int kernelSize) — Applies a smoothing to the label map that takes into account the image intensities This operation requires that the 'image' was passed in the constructor.
+- void **dilate** (int kernelSize) — Dilates the current label values in the label map.
+- void **erode** (int kernelSize) — Erodes the current label values in the label map.
+
+## Constructor & Destructor Documentation
+
+### LabelMapRefinement
+
+```cpp
+ImFusion::Seg::LabelMapRefinement::LabelMapRefinement (const SharedImageSet * image, SharedImageSet & labelMap)
+```
+
+If image is provided, it is expected that image and labelMap contain the same number of images, and that each of the images are compatible with one-another.
+
+**Parameters:**
+
+- `image` — is optional. Some operations (documented below) require it
+- `labelMap` — the labelMap on which the transformations will be applied. Must be of type 'uint8_t'
+
+## Member Function Documentation
+
+### setAffectedFrames
+
+```cpp
+bool ImFusion::Seg::LabelMapRefinement::setAffectedFrames (int firstFrame, int lastFrame)
+```
+
+Select the range of frame on which the operation is performed.
+
+All frames between firstFrame (inclusive) and lastFrame (exclusive) will be affected. If firstFrame is -1 (the default), lastFrame is ignored and only the focus frame of the labelMap will be affected. Returns true if the frame selection is valid, false otherwise
+
+### lockLabel
+
+```cpp
+void ImFusion::Seg::LabelMapRefinement::lockLabel (uint8_t label, bool locked)
+```
+
+Determines which labels are locked.
+
+'true' means that a label is locked, and 'false' that it is not Operations will not modify any pixel value that has been locked No labels are locked by default
+
+### removeSmallComponents
+
+```cpp
+void ImFusion::Seg::LabelMapRefinement::removeSmallComponents (std::optional < int > maxNumComponents, std::optional < size_t > minComponentSizeInPixels)
+```
+
+Remove the small components from the label map.
+
+If maxNumComponents is specified, the components that are not part of the maxNumComponents largest ones will be removed. If minComponentSize is specified, the components smaller than this threshold (in pixels) will be removed.

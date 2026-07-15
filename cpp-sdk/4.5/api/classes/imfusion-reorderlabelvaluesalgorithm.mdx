@@ -1,0 +1,39 @@
+---
+title: "ImFusion::ReorderLabelValuesAlgorithm"
+sidebarTitle: "ReorderLabelValuesAlgorithm"
+description: "Stacks fragmented values of a single channel UByte/UShort-typed labelmap inplace into consecutive integer values [0, ..., n]."
+---
+
+`#include <ImFusion/Base/ReorderLabelValuesAlgorithm.h>`
+
+## Overview
+
+Stacks fragmented values of a single channel UByte/UShort-typed labelmap inplace into consecutive integer values [0, ..., n].
+
+Some segmentation maps have fragmented values, e.g. [0, 1, 2, 7, 8, 20] which should rather be [0, 1, 2, 3, 4, 5]. This algorithm makes sure that there are no holes in the integer ranges so that all values are consecutive. This is especially important if at least one value is over 255 so that the image cannot be converted to uint8 and thus cannot be converted to the LABEL modality and thus not be properly displayed as a label map
+
+## Public Member Functions
+
+- **ReorderLabelValuesAlgorithm** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &input)
+- void [compute](#compute) () override — Execute the algorithm.
+
+## Static Public Member Functions
+
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=0)
+
+## Public Attributes
+
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; bool &gt; **p_toUbyte** = &#123;"toUbyte", true, this&#125;
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; bool &gt; **p_forceCPU** = &#123;"forceCPU", false, this&#125;
+
+## Member Function Documentation
+
+### compute
+
+```cpp
+void ImFusion::ReorderLabelValuesAlgorithm::compute ()
+```
+
+*override, virtual*
+
+Execute the algorithm.

@@ -1,0 +1,27 @@
+---
+title: "ImFusion::DataComponentWithParentInterface"
+sidebarTitle: "DataComponentWithParentInterface"
+description: "Interface to augment a DataComponent with a parent of type Data ."
+---
+
+`#include <ImFusion/Base/DataComponentWithParentInterface.h>`
+
+## Overview
+
+Interface to augment a [DataComponent](/cpp-sdk/4.5/api/classes/imfusion-datacomponent) with a parent of type [Data](/cpp-sdk/4.5/api/classes/imfusion-data).
+
+Classes that implement this interface have to derive from [DataComponent](/cpp-sdk/4.5/api/classes/imfusion-datacomponent). Implementations of this interface can override the setParentData to set m_parentData and/or update properties of the [DataComponent](/cpp-sdk/4.5/api/classes/imfusion-datacomponent).
+
+**Warning:** This is an experimental feature and might be subject to changes or even removal in the future.
+
+## Public Member Functions
+
+- virtual void **setParentData** (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data)=0
+- **DataComponentWithParentInterface** (const DataComponentWithParentInterface &)
+- **DataComponentWithParentInterface** (const DataComponentWithParentInterface &&)
+- DataComponentWithParentInterface & **operator=** (const DataComponentWithParentInterface &)
+- DataComponentWithParentInterface & **operator=** (const DataComponentWithParentInterface &&)
+
+## Protected Attributes
+
+- const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \* **m_parentData** = nullptr

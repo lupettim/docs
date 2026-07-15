@@ -1,0 +1,142 @@
+---
+title: "ImFusion::GlUtils"
+sidebarTitle: "GlUtils"
+description: "Utility functions for working with OpenGL and/or GlImages."
+---
+
+## Overview
+
+Utility functions for working with OpenGL and/or GlImages.
+
+## Functions
+
+- [std::pair](http://en.cppreference.com/w/cpp/utility/pair.html)&lt; double, double &gt; [shiftScaleStorageToNormalized](#shiftscalestoragetonormalized) (const [ImageDescriptor](/cpp-sdk/4.5/api/structs/imfusion-imagedescriptor) &desc) — Returns the storage vs.
+- [std::pair](http://en.cppreference.com/w/cpp/utility/pair.html)&lt; double, double &gt; [shiftScaleOrignalToNormalized](#shiftscaleorignaltonormalized) (const [ImageDescriptor](/cpp-sdk/4.5/api/structs/imfusion-imagedescriptor) &desc) — Returns the original vs.
+- double [storageToNormalized](#storagetonormalized) (const [ImageDescriptor](/cpp-sdk/4.5/api/structs/imfusion-imagedescriptor) &desc, double intensity) — Transforms the given image intensity as stored on the CPU to the normalized intensity range as it is retrieved in GLSL shaders.
+- double **storageToNormalized** (const [Image](/cpp-sdk/4.5/api/classes/imfusion-image) \*image, double intensity)
+- double [normalizedToStorage](#normalizedtostorage) (const [ImageDescriptor](/cpp-sdk/4.5/api/structs/imfusion-imagedescriptor) &desc, double intensity) — Transforms the given image intensity from the normalized intensity range as it is retrieved in GLSL shaders to its actual value as stored on the CPU side.
+- double **normalizedToStorage** (const [Image](/cpp-sdk/4.5/api/classes/imfusion-image) \*image, double intensity)
+- vec2 [windowLevelOriginalToNormalized](#windowleveloriginaltonormalized) (const [ImageDescriptor](/cpp-sdk/4.5/api/structs/imfusion-imagedescriptor) &desc, double window, double level) — Transforms window/level from original value domain to normalized value domain.
+- vec2 **windowLevelOriginalToNormalized** (const [Image](/cpp-sdk/4.5/api/classes/imfusion-image) \*image, double window, double level)
+- vec2 [windowLevelNormalizedToOriginal](#windowlevelnormalizedtooriginal) (const [ImageDescriptor](/cpp-sdk/4.5/api/structs/imfusion-imagedescriptor) &desc, double window, double level) — Transforms window/level from normalized value domain to original value domain.
+- vec2 **windowLevelNormalizedToOriginal** (const [Image](/cpp-sdk/4.5/api/classes/imfusion-image) \*image, double window, double level)
+- bool [checkOpenGlStateDefaults](#checkopenglstatedefaults) () — Checks that the current OpenGL state is according to the defined default values.
+- void [resetOpenGlStateDefaults](#resetopenglstatedefaults) () — Resets the OpenGL state to the following results:
+
+## Function Documentation
+
+### shiftScaleStorageToNormalized
+
+```cpp
+std::pair < double, double > ImFusion::GlUtils::shiftScaleStorageToNormalized (const ImageDescriptor & desc)
+```
+
+Returns the storage vs.
+
+normalized (in [GL](/cpp-sdk/4.5/api/namespaces/imfusion-gl)) constants &#123;normShift, normScale&#125; such that
+
+```cpp
+storage = (normalized * normScale) + normShift
+normalized = (storage - normShift) / normScale;
+```
+ fragment
+
+**See also:** PixelValueDomains
+
+### shiftScaleOrignalToNormalized
+
+```cpp
+std::pair < double, double > ImFusion::GlUtils::shiftScaleOrignalToNormalized (const ImageDescriptor & desc)
+```
+
+Returns the original vs.
+
+normalized (in [GL](/cpp-sdk/4.5/api/namespaces/imfusion-gl)) constants &#123;totalShift, totalScale&#125; such that
+
+```cpp
+original = (normalized * totalScale) + totalShift
+normalized = (original - totalShift) / totalScale
+```
+ fragment
+
+**See also:** PixelValueDomains
+
+### storageToNormalized
+
+```cpp
+double ImFusion::GlUtils::storageToNormalized (const ImageDescriptor & desc, double intensity)
+```
+
+Transforms the given image intensity as stored on the CPU to the normalized intensity range as it is retrieved in GLSL shaders.
+
+Integral image types (both signed and unsigned) are mapped to [0, 1] range. Float image types keep their domain.
+
+**See also:** PixelValueDomains
+
+### normalizedToStorage
+
+```cpp
+double ImFusion::GlUtils::normalizedToStorage (const ImageDescriptor & desc, double intensity)
+```
+
+Transforms the given image intensity from the normalized intensity range as it is retrieved in GLSL shaders to its actual value as stored on the CPU side.
+
+Integral image types (both signed and unsigned) are mapped from [0, 1] range. Float image types keep their domain.
+
+**See also:** PixelValueDomains
+
+### windowLevelOriginalToNormalized
+
+```cpp
+vec2 ImFusion::GlUtils::windowLevelOriginalToNormalized (const ImageDescriptor & desc, double window, double level)
+```
+
+Transforms window/level from original value domain to normalized value domain.
+
+The return value encodes (window, level) as vec2.
+
+**See also:** PixelValueDomains
+
+### windowLevelNormalizedToOriginal
+
+```cpp
+vec2 ImFusion::GlUtils::windowLevelNormalizedToOriginal (const ImageDescriptor & desc, double window, double level)
+```
+
+Transforms window/level from normalized value domain to original value domain.
+
+The return value encodes (window, level) as vec2.
+
+**See also:** PixelValueDomains
+
+### checkOpenGlStateDefaults
+
+```cpp
+bool ImFusion::GlUtils::checkOpenGlStateDefaults ()
+```
+
+Checks that the current OpenGL state is according to the defined default values.
+
+All algorithms/renderers should reset the state to these settings when finished:
+
+- GL_DEPTH_DEST: disabled
+- glDepthFunc: GL_LESS
+- glClearDepth: 1.0
+- GL_BLEND: disabled
+- glBlendFunc: GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA
+- GL_SCISSOR_TEST: disabled
+
+### resetOpenGlStateDefaults
+
+```cpp
+void ImFusion::GlUtils::resetOpenGlStateDefaults ()
+```
+
+Resets the OpenGL state to the following results:
+
+- GL_DEPTH_DEST: disabled
+- glDepthFunc: GL_LESS
+- glClearDepth: 1.0
+- GL_BLEND: disabled
+- glBlendFunc: GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA
+- GL_SCISSOR_TEST: disabled

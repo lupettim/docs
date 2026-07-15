@@ -1,0 +1,192 @@
+---
+title: "ImFusion::DataComponentList"
+sidebarTitle: "DataComponentList"
+description: "Class for holding a collection of DataComponents."
+---
+
+`#include <ImFusion/Base/DataComponentList.h>`
+
+## Overview
+
+Class for holding a collection of DataComponents.
+
+DataComponents are uniquely identified by their type and [DataComponentList](/cpp-sdk/4.5/api/classes/imfusion-datacomponentlist) will hold only a single instance of a specific [DataComponent](/cpp-sdk/4.5/api/classes/imfusion-datacomponent) type.
+
+DataComponents inheriting from [LazyInstantiatedDataComponent](/cpp-sdk/4.5/api/classes/imfusion-lazyinstantiateddatacomponent) can never be deleted from a [DataComponentList](/cpp-sdk/4.5/api/classes/imfusion-datacomponentlist) due to their invariant that references remain valid over the lifetime of the parent [Data](/cpp-sdk/4.5/api/classes/imfusion-data). Therefore, the [assign()](#assign) and erase() may behave unexpected as they will not remove existing DataComponents of such types.
+
+Example:
+
+```cpp
+{
+ // store information at one place
+ SharedImageSet* image = ...;
+
+ // alternative 1:
+ auto adc = std::make_unique<AnatomyDataComponent>();
+    adc->add(Anatomy::ABDOMEN);
+    image->components().add(std::move(adc));
+
+ // alternative 2:
+    image->components().getOrCreate<AnatomyDataComponent>().add(Anatomy::ABDOMEN);
+}
+
+{
+ // retrieve information at some other place
+ SharedImageSet* image = ...;
+ if (AnatomyDataComponent* adc = image->components().get<AnatomyDataComponent>()) {
+ if (adc->contains(Anatomy::ABDOMEN))
+            ...
+    }
+}
+```
+ fragment
+
+## Public Member Functions
+
+- [DataComponentList](#datacomponentlist) (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*parentData=nullptr) — Constructor.
+- **DataComponentList** (const DataComponentList &other) — Copy constructor, cloning all DataComponents held by other.
+- **DataComponentList** (DataComponentList &&other) noexcept — Move constructor, taking ownership of all DataComponents held by other.
+- bool **operator==** (const [DataComponentList](#datacomponentlist) &other) const — Return true if all held components are the same, ignoring their order within the [DataComponentList](/cpp-sdk/4.5/api/classes/imfusion-datacomponentlist).
+- void [assign](#assign) (const [DataComponentList](#datacomponentlist) &rhs) — Copy assignment, removing all existing components where possible and cloning all DataComponents held by rhs.
+- T \* [add](#add-1-2) ([std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; T &gt; component) — Adds the given [DataComponent](/cpp-sdk/4.5/api/classes/imfusion-datacomponent) to the collection.
+- void [add](#add-2-2) (const [DataComponentList](#datacomponentlist) &other) — Adds all DataComponents in *other* to this one.
+- T \* [get](#get-1-2) () — Returns the [DataComponent](/cpp-sdk/4.5/api/classes/imfusion-datacomponent) exactly matching the given type.
+- const T \* [get](#get-2-2) () const — Returns the [DataComponent](/cpp-sdk/4.5/api/classes/imfusion-datacomponent) exactly matching the given type.
+- T & [getOrCreate](#getorcreate) (Args &&... ctorArgs) — Returns the [DataComponent](/cpp-sdk/4.5/api/classes/imfusion-datacomponent) exactly matching the given type.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [DataComponentBase](/cpp-sdk/4.5/api/classes/imfusion-datacomponentbase) \* &gt; **getAll** () — Returns all DataComponents without requiring any specific type.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; const [DataComponentBase](/cpp-sdk/4.5/api/classes/imfusion-datacomponentbase) \* &gt; **getAll** () const
+- bool **erase** () — Will erase the [DataComponent](/cpp-sdk/4.5/api/classes/imfusion-datacomponent) of the exact given type if possible.
+- bool **erase** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &id) — Will erase the [DataComponent](/cpp-sdk/4.5/api/classes/imfusion-datacomponent) of the exact given id if possible.
+- void **clear** () — Erases all data components in the list that are not persistent.
+- bool **empty** () const — Returns whether the list contains any [DataComponent](/cpp-sdk/4.5/api/classes/imfusion-datacomponent).
+- int **size** () const — Returns the total number of DataComponents.
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Writes the configuration of all DataComponents with non-empty string ID to the given properties.
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Restores the collection of components and their state from the given properties configuration.
+- void [swapWith](#swapwith) ([DataComponentList](#datacomponentlist) &other) — Swaps the data component lists.
+
+## Public Attributes
+
+- Signal **signalListChanged** — Emitted whenever the [DataComponentList](/cpp-sdk/4.5/api/classes/imfusion-datacomponentlist) changes by a [DataComponent](/cpp-sdk/4.5/api/classes/imfusion-datacomponent) being added or removed.
+
+## Protected Attributes
+
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [DataComponentBase](/cpp-sdk/4.5/api/classes/imfusion-datacomponentbase) &gt; &gt; **m_components** — Collection of components of this list.
+- const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \* **m_parentData** = nullptr
+
+## Constructor & Destructor Documentation
+
+### DataComponentList
+
+```cpp
+ImFusion::DataComponentList::DataComponentList (const Data * parentData = nullptr)
+```
+
+*inline*
+
+Constructor.
+
+**Parameters:**
+
+- `parentData` — Optionally a parent data can be provided which will be set for any [DataComponentWithParentInterface](/cpp-sdk/4.5/api/classes/imfusion-datacomponentwithparentinterface) added to the [DataComponentList](/cpp-sdk/4.5/api/classes/imfusion-datacomponentlist)
+
+## Member Function Documentation
+
+### assign
+
+```cpp
+void ImFusion::DataComponentList::assign (const DataComponentList & rhs)
+```
+
+Copy assignment, removing all existing components where possible and cloning all DataComponents held by rhs.
+
+**Note:** Due to certain DataComponent-invariants this list is not necessarily the same as *rhs* after assignment.
+
+### add
+
+```cpp
+template<typename T> T * ImFusion::DataComponentList::add (std::unique_ptr < T > component)
+```
+
+Adds the given [DataComponent](/cpp-sdk/4.5/api/classes/imfusion-datacomponent) to the collection.
+
+**Note:** If the list already contains a [DataComponent](/cpp-sdk/4.5/api/classes/imfusion-datacomponent) of the exact same type, its configuration will be overwritten with the one in *component*.
+
+**Note:** Do not store a pointer to *component* after calling this method since it may be deleted. Use the returned pointer in case you want to keep a reference to the added [DataComponent](/cpp-sdk/4.5/api/classes/imfusion-datacomponent) (this may be a different instance)!
+
+### add
+
+```cpp
+void ImFusion::DataComponentList::add (const DataComponentList & other)
+```
+
+Adds all DataComponents in *other* to this one.
+
+Any given [DataComponent](/cpp-sdk/4.5/api/classes/imfusion-datacomponent) of the exact same type will be overwritten.
+
+### get
+
+```cpp
+template<typename T> T * ImFusion::DataComponentList::get ()
+```
+
+Returns the [DataComponent](/cpp-sdk/4.5/api/classes/imfusion-datacomponent) exactly matching the given type.
+
+Returns 0 if this object does not have a component of the given type.
+
+**Examples:** [DicomExtensionExample3.cpp](/cpp-sdk/4.5/api/examples/dicom-extension3-8cpp).
+
+### get
+
+```cpp
+template<typename T> const T * ImFusion::DataComponentList::get () const
+```
+
+Returns the [DataComponent](/cpp-sdk/4.5/api/classes/imfusion-datacomponent) exactly matching the given type.
+
+Returns 0 if this object does not have a component of the given type.
+
+### getOrCreate
+
+```cpp
+template<typename T, typename... Args> T & ImFusion::DataComponentList::getOrCreate (Args &&... ctorArgs)
+```
+
+Returns the [DataComponent](/cpp-sdk/4.5/api/classes/imfusion-datacomponent) exactly matching the given type.
+
+If no such [DataComponent](/cpp-sdk/4.5/api/classes/imfusion-datacomponent) exists yet, a new one will be created first.
+
+**Parameters:**
+
+- `ctorArgs` — Arguments to be forwarded to the constructor of T in case the [DataComponent](/cpp-sdk/4.5/api/classes/imfusion-datacomponent) needs to be created.
+
+**Examples:** [DicomExtensionExample.cpp](/cpp-sdk/4.5/api/examples/dicom-extension-8cpp), and [DicomExtensionExample3.cpp](/cpp-sdk/4.5/api/examples/dicom-extension3-8cpp).
+
+### configuration
+
+```cpp
+void ImFusion::DataComponentList::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Writes the configuration of all DataComponents with non-empty string ID to the given properties.
+
+### configure
+
+```cpp
+void ImFusion::DataComponentList::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Restores the collection of components and their state from the given properties configuration.
+
+### swapWith
+
+```cpp
+void ImFusion::DataComponentList::swapWith (DataComponentList & other)
+```
+
+Swaps the data component lists.
+
+Permanent data components are kept in original data component list (and copied to other list). Temporary data components are removed from both lists.

@@ -1,0 +1,297 @@
+---
+title: "ImFusion::GlPolyRigidDeformation"
+sidebarTitle: "GlPolyRigidDeformation"
+description: "Poly-rigid deformation class."
+---
+
+`#include <ImFusion/Reg/GlPolyRigidDeformation.h>`
+
+## Overview
+
+Poly-rigid deformation class.
+
+Based on inverse distance weighting using the positions of the rigid segments before deformation. To-world matrices for both deformed and undeformed rigid segments have to be provided separately. Note that excessive stretching may cause tearing in the displacement field due to numerical limitations. Does not have a CPU mode.
+
+## Classes
+
+- struct [RigidSegmentParameters](/cpp-sdk/4.5/api/structs/imfusion-glpolyrigiddeformation-rigidsegmentparameters)
+
+## Public Types
+
+- enum class [Mode](#mode) &#123; **BACKWARD** = 0 , FORWARD = 1 , ONLYRIGID = 2 &#125;
+
+## Public Member Functions
+
+- [GlPolyRigidDeformation](#glpolyrigiddeformation-1-2) ([std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &gt; distVol, const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &refVol, [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*multiLabelMap=nullptr) — Constructor with distance volumes for the individual rigid segments Does not take ownership of.
+- **GlPolyRigidDeformation** ([std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &gt; distVol, const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &refVol, [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &gt; multiLabelMap) — Constructor with distance volumes for the individual rigid segments.
+- [GlPolyRigidDeformation](#glpolyrigiddeformation-2-2) ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &labelMap, const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &refVol) — Constructor that computes distance volumes from a label map.
+- **GlPolyRigidDeformation** (const GlPolyRigidDeformation &other) — Copy constructor. Warning: ownership of the labelMap is not transferred.
+- **~GlPolyRigidDeformation** () override — Destructor.
+- [Deformation](/cpp-sdk/4.5/api/classes/imfusion-deformation) \* [clone](#clone) () const override — Clone method which calls the copy constructor.
+- [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* **distanceVolumes** () — Access to the distance volumes in order to e.g. update its matrices.
+- void **setSegmentMatrices** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; mat4 &gt; &v) — Current/deformed to-world matrices of the rigid segments.
+- void **setInitialSegmentMatrices** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; mat4 &gt; &v) — Initial/undeformed to-world matrices of the rigid segments.
+- [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [GlDenseDeformation](/cpp-sdk/4.5/api/classes/imfusion-gldensedeformation) &gt; **forwardDef** ()
+- [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [GlDenseDeformation](/cpp-sdk/4.5/api/classes/imfusion-gldensedeformation) &gt; **backwardDef** ()
+- void **setSphereMode** (bool v)
+- void [setParametersToUse](#setparameterstouse) (const [RigidSegmentParameters](/cpp-sdk/4.5/api/structs/imfusion-glpolyrigiddeformation-rigidsegmentparameters) &params, int segmentIdx=-1) — Specify which parts of the rigid segment poses are used by the setParameters/parameters functions.
+- void [setParameters](#setparameters) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; &pars) override — Set the parameters of the deformation, effectively calls setSegmentMatrices.
+- void [parameters](#parameters) ([std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; &parsOut) const override — Retrieve the current parameters of the deformation.
+- void **setMode** ([Mode](#mode) mode) — Set the mode.
+- [Mode](#mode) **mode** ()
+- void **setUseDistanceExponentialAsParam** (bool v) — Sets whether to treat the distance exponential as an optimization parameter.
+- int [numberOfParameters](#numberofparameters) () const override — Returns the number of parameters e.g. for optimization.
+- void **setInversionSteps** (int v)
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [id](#id) () const override — Returns a unique string identifier for this type of deformation.
+
+## Public Attributes
+
+- Signal **signalCachedDeformChanged**
+
+## Protected Member Functions
+
+- **GlPolyRigidDeformation** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*multiLabel, const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &refVol) — Constructor that computes distance volumes from a multi-label map.
+- void **recomputeDeformation** () const — If m_dirty=true, sets m_dirty=false and recomputes deformation.
+
+## Protected Attributes
+
+- const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) & **m_refVol**
+- [Mode](#mode) **m_mode** = Mode::BACKWARD
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &gt; **m_distVol** — The distance volume(s).
+- int **m_convergenceFallbackMode** = 0 — No convergence: 0 = discard voxel, 1 = best guess, 2 = best guess unless it maps to rigid segment.
+- float **m_distanceExponential** = 1.5 — Exponential of the inverse distance for weighting.
+- int **m_inversionSteps** = 50
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; mat4 &gt; **m_segmentMats** — Current to-world matrices of the rigid segments.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; mat4 &gt; **m_segmentInitialMats** — Initial to-world matrices of the rigid segments.
+- bool **m_deformationDirty** = true — Indicates if the [Deformation](/cpp-sdk/4.5/api/classes/imfusion-deformation) needs to be recomputed.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [GL::ImageProgram](/cpp-sdk/4.5/api/classes/imfusion-gl-imageprogram) &gt; **m_extractDefProg**
+- [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [GlDenseDeformation](/cpp-sdk/4.5/api/classes/imfusion-gldensedeformation) &gt; **m_forwardDef**
+- [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [GlDenseDeformation](/cpp-sdk/4.5/api/classes/imfusion-gldensedeformation) &gt; **m_backwardDef**
+- bool **m_sphereMode** = false — Simplified mode using control points with spherical influence, not requiring distance volumes.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [RigidSegmentParameters](/cpp-sdk/4.5/api/structs/imfusion-glpolyrigiddeformation-rigidsegmentparameters) &gt; **m_segmentParamsToUse**
+- [RigidSegmentParameters](/cpp-sdk/4.5/api/structs/imfusion-glpolyrigiddeformation-rigidsegmentparameters) **m_defaultSegmentParams**
+- bool **m_distanceExponentialAsParam** = false
+- [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* **m_labelMap** = nullptr
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &gt; **m_labelMapOwner**
+
+## Methods implementing the required base class functionality
+
+- int [dimension](#dimension) () const override
+- vec3 [displacement](#displacement) (const vec3 &pos) const override — Does nothing due to lack of CPU mode.
+- vec3 [displacePoint](#displacepoint) (const vec3 &pos) const override — Returns the displaced position of the given point in world-coordinates.
+- int [setIncludeArguments](#setincludearguments) ([GL::Program](/cpp-sdk/4.5/api/classes/imfusion-gl-program) &p, const [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*img=nullptr, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &prefix="deform") const override — Override default arguments for [GlMask](/cpp-sdk/4.5/api/classes/imfusion-glmask) includes.
+- [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html)(const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &)&gt; [includeCodeSubstitution](#includecodesubstitution) () const override — Optionally the abstract include can provide a function to change the shader code.
+- bool [isIdentity](#isidentity) () const override — Checks whether the deformed and undeformed segment matrices match.
+- void [setIdentity](#setidentity) () override — Removes the deformation by pretenting the rigid segments have always been in the current position.
+
+## Methods implementing the Configurable interface
+
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+## Member Enumeration Documentation
+
+### Mode
+
+```cpp
+enum class ImFusion::GlPolyRigidDeformation::Mode
+```
+
+*strong*
+
+**Enumerator:**
+
+- `FORWARD` — Compute deformation based on forward model, then invert it.
+- `ONLYRIGID` — Compute deformation based on backwards model directly.
+
+## Constructor & Destructor Documentation
+
+### GlPolyRigidDeformation
+
+```cpp
+ImFusion::GlPolyRigidDeformation::GlPolyRigidDeformation (std::unique_ptr < SharedImageSet > distVol, const SharedImageSet & refVol, SharedImageSet * multiLabelMap = nullptr)
+```
+
+Constructor with distance volumes for the individual rigid segments Does not take ownership of.
+
+**Parameters:**
+
+- `multiLabelMap`
+
+### GlPolyRigidDeformation
+
+```cpp
+ImFusion::GlPolyRigidDeformation::GlPolyRigidDeformation (SharedImageSet & labelMap, const SharedImageSet & refVol)
+```
+
+Constructor that computes distance volumes from a label map.
+
+If labelMap is not already split into one frame per label, a temporary version of this type is created and owned by this object. In this case, updates via setParameters will not be propagated to the input label map.
+
+## Member Function Documentation
+
+### clone
+
+```cpp
+Deformation * ImFusion::GlPolyRigidDeformation::clone () const
+```
+
+*override, virtual*
+
+Clone method which calls the copy constructor.
+
+### dimension
+
+```cpp
+int ImFusion::GlPolyRigidDeformation::dimension () const
+```
+
+*override, virtual*
+
+Spatial dimensions of the input data (or rather the distance maps)
+
+### displacement
+
+```cpp
+vec3 ImFusion::GlPolyRigidDeformation::displacement (const vec3 & pos) const
+```
+
+*override, virtual*
+
+Does nothing due to lack of CPU mode.
+
+### displacePoint
+
+```cpp
+vec3 ImFusion::GlPolyRigidDeformation::displacePoint (const vec3 & pos) const
+```
+
+*override, virtual*
+
+Returns the displaced position of the given point in world-coordinates.
+
+### setIncludeArguments
+
+```cpp
+int ImFusion::GlPolyRigidDeformation::setIncludeArguments (GL::Program & p, const SharedImage * img = nullptr, const std::string & prefix = "deform") const
+```
+
+*override, virtual*
+
+Override default arguments for [GlMask](/cpp-sdk/4.5/api/classes/imfusion-glmask) includes.
+
+### string
+
+```cpp
+std::function < std::string (const std::string &)> ImFusion::GlPolyRigidDeformation::includeCodeSubstitution () const
+```
+
+*override, virtual*
+
+Optionally the abstract include can provide a function to change the shader code.
+
+This function will be called after the shader include has been loaded from [includePath()](/cpp-sdk/4.5/api/classes/imfusion-gl-abstractinclude) and receives the include code as argument. The function can then modify the code and is supposed to return the modified GLSL code. This can be used to include two instances of the same include by for example prefixing every uniform and function. The default implementation returns NULL and therefore does not change the code.
+
+### isIdentity
+
+```cpp
+bool ImFusion::GlPolyRigidDeformation::isIdentity () const
+```
+
+*override, virtual*
+
+Checks whether the deformed and undeformed segment matrices match.
+
+### setIdentity
+
+```cpp
+void ImFusion::GlPolyRigidDeformation::setIdentity ()
+```
+
+*override, virtual*
+
+Removes the deformation by pretenting the rigid segments have always been in the current position.
+
+### configure
+
+```cpp
+void ImFusion::GlPolyRigidDeformation::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### configuration
+
+```cpp
+void ImFusion::GlPolyRigidDeformation::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality
+
+### setParametersToUse
+
+```cpp
+void ImFusion::GlPolyRigidDeformation::setParametersToUse (const RigidSegmentParameters & params, int segmentIdx = -1)
+```
+
+Specify which parts of the rigid segment poses are used by the setParameters/parameters functions.
+
+setInitialSegmentMatrices should have been used beforehand to configure the number of rigid segments. If segmentIdx is less than zero, the configuration is applied to all segments.
+
+### setParameters
+
+```cpp
+void ImFusion::GlPolyRigidDeformation::setParameters (const std::vector < double > & pars)
+```
+
+*override, virtual*
+
+Set the parameters of the deformation, effectively calls setSegmentMatrices.
+
+### parameters
+
+```cpp
+void ImFusion::GlPolyRigidDeformation::parameters (std::vector < double > & parsOut) const
+```
+
+*override, virtual*
+
+Retrieve the current parameters of the deformation.
+
+### numberOfParameters
+
+```cpp
+int ImFusion::GlPolyRigidDeformation::numberOfParameters () const
+```
+
+*override, virtual*
+
+Returns the number of parameters e.g. for optimization.
+
+### id
+
+```cpp
+std::string ImFusion::GlPolyRigidDeformation::id () const
+```
+
+*inline, override, virtual*
+
+Returns a unique string identifier for this type of deformation.
+
+Usually the name of the class.
+
+**Note:** To avoid conflicts make sure to include potential plugin names into this ID. Due to the modular architecture of the ImFusion library, uniqueness of IDs cannot be checked at compile time. However, [DeformationFactory](/cpp-sdk/4.5/api/classes/imfusion-deformationfactory) will check the uniqueness of the ID during registration.
+
+**See also:** [DeformationFactory](/cpp-sdk/4.5/api/classes/imfusion-deformationfactory)

@@ -1,0 +1,35 @@
+---
+title: "Pixel Value Domains"
+description: "The ImFusionLib distinguishes between two pixel value representations: original and stored ."
+---
+
+The ImFusionLib distinguishes between two pixel value representations: *original* and *stored*. The *original* pixel values are the values as they are stored in the original source. For instance, in CT images originating from DICOM this could be Hounsfield Units. The *stored* pixel values, on the other hand, are values as they are stored in memory.
+
+The relationship between the two representations is defined by the [Image::scale](/cpp-sdk/4.5/api/classes/imfusion-image) and [Image::shift](/cpp-sdk/4.5/api/classes/imfusion-image) properties. The following conversion rules apply:
+
+```cpp
+original = (storage / scale) - shift
+```
+ fragment
+```cpp
+storage = (original + shift) * scale
+```
+ fragment
+*Original* pixel values should always be used for display purposes (e.g. HU values in a histogram) while most algorithm will use *storage* values internally for their computations.
+
+Be aware that when using [ApplicationController](/cpp-sdk/4.5/api/classes/imfusion-applicationcontroller) or [MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase) they will register a [prepare-data-callback](/cpp-sdk/4.5/api/classes/imfusion-datamodel) that will automatically convert signed images added to the [DataModel](/cpp-sdk/4.5/api/classes/imfusion-datamodel) to unsigned images by applying a shift with the negative minimum of the original values (see also [MemImage::prepare](/cpp-sdk/4.5/api/classes/imfusion-memimage)). This is the default behavior of the ImFusion Suite and allows for a wider range of supported algorithms as they don't need to deal with signed data. Doing so in custom applications is optional. Keep in mind, that you should not assume *original* and *storage* values to be the same.
+
+If not explicitly noted otherwise, all function arguments regarding pixel values expect *storage* values.
+
+When uploading images to OpenGL textures (i.e. [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage)) OpenGL will perform an implicit conversion to a normalized floating point value domain since texture access in GLSL shaders always returns `float`. Integral image types (both signed and unsigned) are mapped to a [0..1] range. Float image types keep their domain.
+
+When using ImFusion SDK primitives to convert between different image representations (e.g. [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) and [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage)) the correct conversion of value domains is performed automatically. If you need to convert between different pixel value domains manually, you can use the following helper functions:
+
+**Conversion between Original and Storage value domains:** - [Image::storageToOriginal()](/cpp-sdk/4.5/api/classes/imfusion-image)
+- [Image::originalToStorage()](/cpp-sdk/4.5/api/classes/imfusion-image)
+
+**Conversion between Storage and Normalized value domains:** - [GlUtils::storageToNormalized()](/cpp-sdk/4.5/api/namespaces/imfusion-glutils)
+- [GlUtils::normalizedToStorage()](/cpp-sdk/4.5/api/namespaces/imfusion-glutils)
+
+**Convert windowing parameters between Original and Normalized value domains:** - [GlUtils::windowLevelOriginalToNormalized()](/cpp-sdk/4.5/api/namespaces/imfusion-glutils)
+- [GlUtils::windowLevelNormalizedToOriginal()](/cpp-sdk/4.5/api/namespaces/imfusion-glutils)

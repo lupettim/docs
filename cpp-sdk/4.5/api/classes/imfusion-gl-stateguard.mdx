@@ -1,0 +1,93 @@
+---
+title: "ImFusion::GL::StateGuard"
+sidebarTitle: "StateGuard"
+description: "Guard to easily save and restore critical (modern) OpenGL state."
+---
+
+`#include <ImFusion/Core/GL/StateGuard.h>`
+
+## Overview
+
+Guard to easily save and restore critical (modern) OpenGL state.
+
+On instantiation [StateGuard](/cpp-sdk/4.5/api/classes/imfusion-gl-stateguard) will store selected parts of the current OpenGL state. On destruction [StateGuard](/cpp-sdk/4.5/api/classes/imfusion-gl-stateguard) will restore those settings, no matter of what has been happened in the meantime.
+
+Usage example:
+
+```cpp
+// open a scope block
+{
+ // store the current OpenGL state
+ StateGuard guard;
+
+ // perform a reduction on a custom FBO.
+    m_fbo->bind();
+ auto depthRange = m_reduction->reduce(inputDepthTex, m_fbo.get());
+
+ // Since the reduction has changed the viewport, we want to restore the original one
+    stateGuard.restoreState(StateGuard::Viewport);
+
+ // do some more rendering
+ // ...
+}
+// when the scope ends, guard will be destroyed and restore the previous OpenGL state
+// (including the viewport, which has been restored before).
+```
+ fragment
+
+## Public Types
+
+- enum [SaveFlags](#saveflags) &#123; **None** = 0 , Viewport = 1 &lt;&lt; 0 , FBO = 1 &lt;&lt; 1 , Program = 1 &lt;&lt; 2 , Blending = 1 &lt;&lt; 3 , DepthTest = 1 &lt;&lt; 4 , ScissorTest = 1 &lt;&lt; 5 , Smoothing = 1 &lt;&lt; 6 , Stencil = 1 &lt;&lt; 7 , FaceCulling = 1 &lt;&lt; 8 , Everything = Viewport | FBO | Program | Blending | DepthTest | ScissorTest | Smoothing | Stencil | FaceCulling &#125;
+
+## Public Member Functions
+
+- **StateGuard** ([Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; [SaveFlags](#saveflags) &gt; saveFlags=Everything) — Constructor, initializes the guard and saves the current state.
+- **StateGuard** (StateGuard &&rhs) — Move constructor needed to avoid double deletion when returning by value.
+- **~StateGuard** () — Destructor, restores the state of all save flags given originally, if not done before.
+- void [restoreState](#restorestate) ([Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; [SaveFlags](#saveflags) &gt; saveFlagsToClear) — Restores the state of the given save flags.
+- void [release](#release) ([Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; [SaveFlags](#saveflags) &gt; saveFlagsToRelease) — Marks the given save flags as restored without actually restoring them.
+
+## Member Enumeration Documentation
+
+### SaveFlags
+
+```cpp
+enum ImFusion::GL::StateGuard::SaveFlags
+```
+
+**Enumerator:**
+
+- `Viewport` — Save the viewport state (origin and extent).
+- `FBO` — Save the currently bound FBO.
+- `Program` — Save the currently bound shader/program.
+- `Blending` — Save the GL_BLEND enable and glBlendFunc states.
+- `DepthTest` — Save the GL_DEPTH_TEST, glDepthMask and glDepthFunc states.
+- `ScissorTest` — Save the GL_SCISSOR_TEST state.
+- `Smoothing` — Save the GL_LINE_SMOOTH and GL_POLYGON_SMOOTH states.
+- `Stencil` — Save GL_STENCIL_TEST+glStencilMask+glStencilFunc+glStencilOp states.
+- `FaceCulling` — Save the GL_CULL_FACE+glCullFace states (enable and mode).
+- `Everything` — convenience value to include all save flags
+
+## Member Function Documentation
+
+### restoreState
+
+```cpp
+void ImFusion::GL::StateGuard::restoreState (Flags < SaveFlags > saveFlagsToClear)
+```
+
+Restores the state of the given save flags.
+
+**Note:** Calling this method is optional, the state will always be restored on destruction of the [StateGuard](/cpp-sdk/4.5/api/classes/imfusion-gl-stateguard) object. Multiple subsequent calls to restoreState will always restore the original state during construction.
+
+### release
+
+```cpp
+void ImFusion::GL::StateGuard::release (Flags < SaveFlags > saveFlagsToRelease)
+```
+
+Marks the given save flags as restored without actually restoring them.
+
+In rare occasions you may want to delete a [StateGuard](/cpp-sdk/4.5/api/classes/imfusion-gl-stateguard) without actually restoring the original state.
+
+**Note:** This will completely dismiss the corresponding state, even an explicit [restoreState()](#restorestate) will no longer restore it after calling this function.

@@ -1,0 +1,24 @@
+---
+title: "ImFusion::Utils::FileGuard"
+sidebarTitle: "FileGuard"
+description: "Utility RAII class that deletes the given file when destructed."
+---
+
+`#include <ImFusionLabels/lib/include/ImFusion/Labels/Core/FileGuard.h>`
+
+## Overview
+
+Utility RAII class that deletes the given file when destructed.
+
+## Public Member Functions
+
+- **FileGuard** (const [Filesystem::File](/cpp-sdk/4.5/api/classes/imfusion-filesystem-file) &dir) — Constructor: Copies the File object, not the underlying file on the filesystem.
+- const [Filesystem::File](/cpp-sdk/4.5/api/classes/imfusion-filesystem-file) & **file** () const
+- **FileGuard** (FileGuard &&other) noexcept
+- FileGuard & **operator=** (FileGuard &&other) noexcept
+- **FileGuard** (const FileGuard &)=delete
+- FileGuard & **operator=** (const FileGuard &)=delete
+
+## Public Attributes
+
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [Filesystem::File](/cpp-sdk/4.5/api/classes/imfusion-filesystem-file) &gt; **m_file**

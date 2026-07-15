@@ -1,0 +1,31 @@
+---
+title: "ImFusion::GlRectangle"
+sidebarTitle: "GlRectangle"
+description: "Rectangle annotation."
+---
+
+`#include <ImFusion/GL/GlRectangle.h>`
+
+## Overview
+
+Rectangle annotation.
+
+## Public Member Functions
+
+- **GlRectangle** (double fixedWidth=-1, double fixedHeight=-1)
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; **rectangleCorners** () const
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [typeName](#typename) () const override — Return unique identifier for this object class used for serialization.
+- bool **hitTestLine** (int x, int y, const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &[view](/cpp-sdk/4.5/api/classes/imfusion-glannotation)) const
+- bool **cropParameters** (const [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*img, vec3i &lowerOut, vec3i &upperOut) const — Convert the rectangle to cropping parameters on the given image, return true if successful.
+
+## Member Function Documentation
+
+### typeName
+
+```cpp
+std::string ImFusion::GlRectangle::typeName () const
+```
+
+*inline, override, virtual*
+
+Return unique identifier for this object class used for serialization.

@@ -1,0 +1,135 @@
+---
+title: "ImFusion::AbstractImageRegistration"
+sidebarTitle: "AbstractImageRegistration"
+description: "The AbstractImageRegistration class is an interface for all image-based registrations."
+---
+
+`#include <ImFusion/Reg/AbstractImageRegistration.h>`
+
+## Overview
+
+The [AbstractImageRegistration](/cpp-sdk/4.5/api/classes/imfusion-abstractimageregistration) class is an interface for all image-based registrations.
+
+Each registration always targets two independend images.
+
+## Public Types
+
+- enum **PreProcessingFilter** &#123; **None** , **LC2_GradientMagnitude** &#125; — [Status](/cpp-sdk/4.5/api/classes/imfusion-algorithm) codes.
+
+## Public Member Functions
+
+- **AbstractImageRegistration** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*image1, [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*image2)
+- virtual void [initializeTransformationModel](#initializetransformationmodel) ()=0
+- virtual PreProcessingFilter [requiredPreprocessingFilter](#requiredpreprocessingfilter) () const — Returns which pre-processing is required for the current registration settings.
+- virtual [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* **image1** () const
+- virtual [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* **image2** () const
+- virtual [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* [reference](#reference) () const =0 — Returns the image that will be iterated during the registration.
+- virtual void **setImage1** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*img)
+- virtual void **setImage2** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*img)
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+- virtual void [reset](#reset) ()=0 — Resets the registration of both images to the initial state.
+- virtual bool [isDeformable](#isdeformable) () const =0 — Returns if the registration is non-linear or not.
+- virtual double [bestSimilarityValue](#bestsimilarityvalue) () const =0 — Returns the best value of the similarity measure after optimization (may return NaN if algorithm is not intialized).
+
+## Protected Member Functions
+
+- bool **complainAboutDeformationOnFixedImage** ()
+
+## Protected Attributes
+
+- [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* **m_image1** — First image of the registration.
+- [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* **m_image2** — Second image of the registration.
+- [PointCorrAlgorithm](/cpp-sdk/4.5/api/classes/imfusion-pointcorralgorithm) \* **m_pcAlg** — Optional point correspondences for evaluation.
+
+## Member Function Documentation
+
+### initializeTransformationModel
+
+```cpp
+virtual void ImFusion::AbstractImageRegistration::initializeTransformationModel ()
+```
+
+*pure virtual*
+
+### requiredPreprocessingFilter
+
+```cpp
+virtual PreProcessingFilter ImFusion::AbstractImageRegistration::requiredPreprocessingFilter () const
+```
+
+*virtual*
+
+Returns which pre-processing is required for the current registration settings.
+
+The default implementation returns None.
+
+### reference
+
+```cpp
+virtual SharedImageSet * ImFusion::AbstractImageRegistration::reference () const
+```
+
+*pure virtual*
+
+Returns the image that will be iterated during the registration.
+
+### configure
+
+```cpp
+void ImFusion::AbstractImageRegistration::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### configuration
+
+```cpp
+void ImFusion::AbstractImageRegistration::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality
+
+### reset
+
+```cpp
+virtual void ImFusion::AbstractImageRegistration::reset ()
+```
+
+*pure virtual*
+
+Resets the registration of both images to the initial state.
+
+**Warning:** Algorithms may not support this fully and only partially reset to the initial state, e.g. because they do not store the initial deformation.
+
+### isDeformable
+
+```cpp
+virtual bool ImFusion::AbstractImageRegistration::isDeformable () const
+```
+
+*pure virtual*
+
+Returns if the registration is non-linear or not.
+
+### bestSimilarityValue
+
+```cpp
+virtual double ImFusion::AbstractImageRegistration::bestSimilarityValue () const
+```
+
+*pure virtual*
+
+Returns the best value of the similarity measure after optimization (may return NaN if algorithm is not intialized).

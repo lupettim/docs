@@ -1,0 +1,17 @@
+---
+title: "ImFusion::GlView::ViewStateGuard"
+sidebarTitle: "ViewStateGuard"
+description: "Temporarily changes the GL::ViewState of a GlView and resetting to the original value on destruction."
+---
+
+`#include <ImFusion/GL/GlView.h>`
+
+## Overview
+
+Temporarily changes the [GL::ViewState](/cpp-sdk/4.5/api/classes/imfusion-gl-viewstate) of a [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) and resetting to the original value on destruction.
+
+The main use case is to allow wrapper GlObjects (e.g. GlProjectiveObject) for temporarily modifying the [GL::ViewState](/cpp-sdk/4.5/api/classes/imfusion-gl-viewstate) of a view when calling draw() on the wrapped [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject).
+
+## Public Member Functions
+
+- **ViewStateGuard** (const GlView &view, const [GL::ViewState](/cpp-sdk/4.5/api/classes/imfusion-gl-viewstate) &viewState)

@@ -1,0 +1,128 @@
+---
+title: "ImFusion::OpenCV"
+sidebarTitle: "OpenCV"
+description: "Conversion between ImFusion and OpenCV image containers and primitives."
+---
+
+## Overview
+
+Conversion between ImFusion and [OpenCV](/cpp-sdk/4.5/api/namespaces/imfusion-opencv) image containers and primitives.
+
+## Functions
+
+- bool **convert** ([MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) \*imgIn, cv::Mat &matOut, bool container=true) — Convert 2D image to [OpenCV](/cpp-sdk/4.5/api/namespaces/imfusion-opencv), possibly in container mode Warning: [Container](/cpp-sdk/4.5/api/namespaces/imfusion-container) mode does not support correctly colored images (RGB vs BGR).
+- cv::Mat **convert** ([MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) \*img, bool container=true)
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; double &gt; &gt; **convert** (cv::Mat &matIn)
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) &gt; [convert](#convert-1-3) (cv::Mat &matIn, [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; PixelType &gt; targetType, bool convertBGR2RGB=true) — Converts an [OpenCV](/cpp-sdk/4.5/api/namespaces/imfusion-opencv) image to a [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage).
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; mat4 &gt; [convert](#convert-2-3) (const cv::Mat &rotation, const cv::Mat &translation) — Converts an [OpenCV](/cpp-sdk/4.5/api/namespaces/imfusion-opencv) pose representation (rotation and translation) into a homogeneous SE(3) transform (4x4).
+- bool [convert](#convert-3-3) (const mat4 &se3Transform, cv::Mat &rvecOut, cv::Mat &tvecOut) — Converts a homogeneous SE(3) transform (4x4) into [OpenCV](/cpp-sdk/4.5/api/namespaces/imfusion-opencv) pose parameters (Rodrigues rvec and translation tvec).
+- int **type** (const [Image](/cpp-sdk/4.5/api/classes/imfusion-image) \*desc) — Get [OpenCV](/cpp-sdk/4.5/api/namespaces/imfusion-opencv) data type from ImFusion type and channels.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; cv::Point2f &gt; **convertToPoint2fVector** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec2f &gt; &p)
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; cv::Point2d &gt; **convertToPoint2dVector** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec2f &gt; &p)
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; cv::Point2f &gt; **convertToPoint2fVector** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec2 &gt; &p)
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; cv::Point2d &gt; **convertToPoint2dVector** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec2 &gt; &p)
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; cv::Point3f &gt; **convertToPoint3fVector** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3f &gt; &p)
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; cv::Point3d &gt; **convertToPoint3dVector** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3f &gt; &p)
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; cv::Point3f &gt; **convertToPoint3fVector** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; &p)
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; cv::Point3d &gt; **convertToPoint3dVector** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; &p)
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec2 &gt; **convertFromPoint2fVector** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; cv::Point2f &gt; &p)
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec2 &gt; **convertFromPoint2dVector** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; cv::Point2d &gt; &p)
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; **convertFromPoint3fVector** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; cv::Point3f &gt; &p)
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; **convertFromPoint3dVector** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; cv::Point3d &gt; &p)
+- [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [GlDenseDeformation](/cpp-sdk/4.5/api/classes/imfusion-gldensedeformation) &gt; [convertOpenCVDistortionToDeformation](#convertopencvdistortiontodeformation) (const [Image](/cpp-sdk/4.5/api/classes/imfusion-image) &imgDesc, const [std::array](http://en.cppreference.com/w/cpp/container/array.html)&lt; double, 5 &gt; &distCoeffs, const mat3 &Kin, const mat3 &Kout, bool rescaleByExtent=true, bool flipY=false) — Converts [OpenCV](/cpp-sdk/4.5/api/namespaces/imfusion-opencv) undistort map to [GlDenseDeformation](/cpp-sdk/4.5/api/classes/imfusion-gldensedeformation).
+- [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [GlDenseDeformation](/cpp-sdk/4.5/api/classes/imfusion-gldensedeformation) &gt; [convertOpenCVDistortionToInverseDeformation](#convertopencvdistortiontoinversedeformation) (int width, int height, const [std::array](http://en.cppreference.com/w/cpp/container/array.html)&lt; double, 5 &gt; &distCoeffs, const mat3 &Kin, bool flipY=false) — Obtains a deformation field to model camera distortion using [OpenCV](/cpp-sdk/4.5/api/namespaces/imfusion-opencv).
+
+## Function Documentation
+
+### convert
+
+```cpp
+std::unique_ptr < MemImage > ImFusion::OpenCV::convert (cv::Mat & matIn, std::optional < PixelType > targetType, bool convertBGR2RGB = true)
+```
+
+Converts an [OpenCV](/cpp-sdk/4.5/api/namespaces/imfusion-opencv) image to a [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage).
+
+**Parameters:**
+
+- `matIn` — The input image
+- `targetType` — The PixelType the returned image should have, if not given a target format is chosen that matches the pixel format of *matIn*. (default is std::nullopt)
+- `convertBGR2RGB` — Only for three-channel color images: whether to convert the OpenCV-default BGR format to the RGB format used in [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) (default is true)
+
+**Returns:** a new [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage)
+
+### convert
+
+```cpp
+std::optional < mat4 > ImFusion::OpenCV::convert (const cv::Mat & rotation, const cv::Mat & translation)
+```
+
+Converts an [OpenCV](/cpp-sdk/4.5/api/namespaces/imfusion-opencv) pose representation (rotation and translation) into a homogeneous SE(3) transform (4x4).
+
+This function accepts a rotation either as a 3x3 rotation matrix \(R\) or as a Rodrigues rotation vector \(\omega\) (3x1 or 1x3). The translation must be a 3-element vector (3x1 or 1x3).
+
+**Note:** Input matrices must be single-channel and of floating-point type (CV_32F or CV_64F). Conversion between float and double is handled internally by OpenCV/Eigen conversion utilities, but non-floating types are rejected.
+
+**Note:** If `rotation` is provided as a Rodrigues vector, it is converted to a 3x3 rotation matrix via cv::Rodrigues().
+
+**Note:** If `translation` is provided as a row vector (1x3), it is transposed internally to match a column vector.
+
+**Parameters:**
+
+- `rotation` — Rotation as either:
+3x3 matrix or
+3-element vector (shape 3x1 or 1x3). Must be single-channel CV_32F or CV_64F.
+- `translation` — Translation vector (shape 3x1 or 1x3). Must be single-channel CV_32F or CV_64F.
+
+**Returns:** A 4x4 homogeneous transform on success; std::nullopt on invalid input (wrong type/shape/empty).
+
+### convert
+
+```cpp
+bool ImFusion::OpenCV::convert (const mat4 & se3Transform, cv::Mat & rvecOut, cv::Mat & tvecOut)
+```
+
+Converts a homogeneous SE(3) transform (4x4) into [OpenCV](/cpp-sdk/4.5/api/namespaces/imfusion-opencv) pose parameters (Rodrigues rvec and translation tvec).
+
+**Note:** The routine validates that the rotation block is (approximately) a proper rotation matrix by checking:
+- \(\det(R) \approx 1\)
+- \(R R^T \approx I\)
+
+**Parameters:**
+
+- `se3Transform` — Homogeneous 4x4 transform. The top-left 3x3 block is interpreted as rotation, and the top-right 3x1 block as translation.
+- `rvecOut` — Output Rodrigues rotation vector, a 3x1 CV_64F matrix
+- `tvecOut` — Output translation vector, a 3x1 CV_64F matrix.
+
+**Returns:** true on success, false if the rotation is not orthonormal and positive-definite.
+
+### convertOpenCVDistortionToDeformation
+
+```cpp
+std::shared_ptr < GlDenseDeformation > ImFusion::OpenCV::convertOpenCVDistortionToDeformation (const Image & imgDesc, const std::array < double, 5 > & distCoeffs, const mat3 & Kin, const mat3 & Kout, bool rescaleByExtent = true, bool flipY = false)
+```
+
+Converts [OpenCV](/cpp-sdk/4.5/api/namespaces/imfusion-opencv) undistort map to [GlDenseDeformation](/cpp-sdk/4.5/api/classes/imfusion-gldensedeformation).
+
+**See also:** cv::initUndistortRectifyMap If
+
+**Parameters:**
+
+- `rescaleByExtent` — is false, output deformation is in pixel coordinates. Otherwise output deformation is in pixel coordinates component wise divided by extent of
+- `imgDesc.`
+- `flipY` — determins whether to flip the Y coordinate from [OpenCV](/cpp-sdk/4.5/api/namespaces/imfusion-opencv) representation
+
+### convertOpenCVDistortionToInverseDeformation
+
+```cpp
+std::shared_ptr < GlDenseDeformation > ImFusion::OpenCV::convertOpenCVDistortionToInverseDeformation (int width, int height, const std::array < double, 5 > & distCoeffs, const mat3 & Kin, bool flipY = false)
+```
+
+Obtains a deformation field to model camera distortion using [OpenCV](/cpp-sdk/4.5/api/namespaces/imfusion-opencv).
+
+**Parameters:**
+
+- `distCoeffs` — are OpenCV-style distortion coefficients
+- `Kin` — is the camera matrix (onto pixel coordinates).
+- `flipY` — determins whether to flip the Y coordinate from [OpenCV](/cpp-sdk/4.5/api/namespaces/imfusion-opencv) representation
+
+**See also:** cv::initUndistortRectifyMap Warning: output deformation is in pixel coordinates.

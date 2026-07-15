@@ -1,0 +1,72 @@
+---
+title: "ImFusion::OptimizerSeries"
+sidebarTitle: "OptimizerSeries"
+description: "Series of multiple successive optimizations bundled in one execution."
+---
+
+`#include <ImFusion/Base/OptimizerSeries.h>`
+
+## Overview
+
+[Series](/cpp-sdk/4.5/api/structs/imfusion-dicom-series) of multiple successive optimizations bundled in one execution.
+
+## Public Member Functions
+
+- void **addOptimizer** ([std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [Optimizer](/cpp-sdk/4.5/api/classes/imfusion-optimizer) &gt; opt)
+- int [execute](#execute) (double \*x) override — Execute the optimization given initial parameters of full dimensionality. Negative return values indicate an error.
+- void [abort](#abort) () override — [Request](/cpp-sdk/4.5/api/classes/imfusion-request) to abort the optimization.
+
+## Implements the Configurable interface
+
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+## Member Function Documentation
+
+### execute
+
+```cpp
+int ImFusion::OptimizerSeries::execute (double * x)
+```
+
+*override, virtual*
+
+Execute the optimization given initial parameters of full dimensionality. Negative return values indicate an error.
+
+### abort
+
+```cpp
+void ImFusion::OptimizerSeries::abort ()
+```
+
+*override, virtual*
+
+[Request](/cpp-sdk/4.5/api/classes/imfusion-request) to abort the optimization.
+
+### configure
+
+```cpp
+void ImFusion::OptimizerSeries::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### configuration
+
+```cpp
+void ImFusion::OptimizerSeries::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality

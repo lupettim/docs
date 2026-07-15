@@ -1,0 +1,21 @@
+---
+title: "ImFusion::DeformableIcp::IterationInfo"
+sidebarTitle: "IterationInfo"
+description: "Used to report information about an iteration."
+---
+
+`#include <ImFusion/Reg/DeformableIcp.h>`
+
+## Overview
+
+Used to report information about an iteration.
+
+## Public Attributes
+
+- [Phase](/cpp-sdk/4.5/api/classes/imfusion-deformableicp) **phase** = [Phase::None](/cpp-sdk/4.5/api/classes/imfusion-deformableicp) — [Phase](/cpp-sdk/4.5/api/classes/imfusion-deformableicp) of the algorithm.
+- int **iter** = -1 — Iteration number.
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; double &gt; **lambda** — Regularization parameter.
+- double **rmse** = [std::numeric_limits](http://en.cppreference.com/w/cpp/types/numeric_limits.html)&lt;double&gt;::infinity() — Absolute RMSE.
+- double **relRmse** = [std::numeric_limits](http://en.cppreference.com/w/cpp/types/numeric_limits.html)&lt;double&gt;::infinity() — Relative RMSE = Absolute RMSE / RMS radius of fixed points.
+- double **relRmseDiff** = [std::numeric_limits](http://en.cppreference.com/w/cpp/types/numeric_limits.html)&lt;double&gt;::infinity() — Difference between relative RMSEs of current and previous iteration.
+- [StoppingReason](/cpp-sdk/4.5/api/classes/imfusion-deformableicp) **stoppingReason** = [StoppingReason::None](/cpp-sdk/4.5/api/classes/imfusion-deformableicp) — Reason for stopping iterations.

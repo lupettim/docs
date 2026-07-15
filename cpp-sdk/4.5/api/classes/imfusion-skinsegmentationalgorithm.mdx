@@ -1,0 +1,71 @@
+---
+title: "ImFusion::SkinSegmentationAlgorithm"
+sidebarTitle: "SkinSegmentationAlgorithm"
+description: "Segment the skin surface from a CT or MRI volume."
+---
+
+`#include <ImFusion/Seg/SkinSegmentationAlgorithm.h>`
+
+## Overview
+
+Segment the skin surface from a CT or MRI volume.
+
+The algorithm attempts to automatically segment the skin surface in a single surface as label map. It applies a thresholding step, connected component analysis, morphological filtering, and tries to remove enclosed air regions before composing the final label volume.
+
+## Public Member Functions
+
+- **SkinSegmentationAlgorithm** (const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &volume) — Constructor with input CT or MRI volume.
+
+## Public Attributes
+
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; double &gt; &gt; **p_threshold** = &#123;"threshold", std::nullopt, this&#125;
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; double &gt; **p_resampleSpacing** = &#123;"resampleSpacing", 0.0, this&#125;
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; bool &gt; **p_padding** = &#123;"padding", false, this&#125;
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; int &gt; **p_paddingSize** = &#123;"paddingSize", 2, this&#125;
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; [PaddingMode](/cpp-sdk/4.5/api/namespaces/imfusion) &gt; **p_paddingMode** = &#123;"paddingMode", [PaddingMode::Clamp](/cpp-sdk/4.5/api/namespaces/imfusion), this&#125;
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; int &gt; **p_closingKernelSize** = &#123;"closingKernelSize", 3, this&#125;
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; int &gt; **p_mattingKernelSize** = &#123;"mattingKernelSize", 11, this&#125;
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; bool &gt; **p_applySubvoxelRefinement** = &#123;"applySubvoxelRefinement", false, this&#125;
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; double &gt; **p_subvoxelRefinementContrast** = &#123;"subvoxelRefinementContrast", 0.1, this&#125;
+
+## Protected Member Functions
+
+- void **refineSubvoxel** ()
+
+## Protected Attributes
+
+- const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) & **m_volumeIn** — Input CT or MRI volume.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &gt; **m_labelOut** — Output skin label volume.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [PointCloud](/cpp-sdk/4.5/api/classes/imfusion-pointcloud) &gt; **m_subvoxelSegmentation** — Subvoxel result.
+
+## Methods implementing the Algorithm interface
+
+- void [compute](#compute) () override — Execute the algorithm.
+- [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) [takeOutput](#takeoutput) () override — Return any new [Data](/cpp-sdk/4.5/api/classes/imfusion-data) that was created by the [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) during the last call to [compute()](#compute).
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=nullptr)
+
+## Member Function Documentation
+
+### compute
+
+```cpp
+void ImFusion::SkinSegmentationAlgorithm::compute ()
+```
+
+*override, virtual*
+
+Execute the algorithm.
+
+### takeOutput
+
+```cpp
+OwningDataList ImFusion::SkinSegmentationAlgorithm::takeOutput ()
+```
+
+*override, virtual*
+
+Return any new [Data](/cpp-sdk/4.5/api/classes/imfusion-data) that was created by the [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) during the last call to [compute()](#compute).
+
+The default implementation will return an empty list.
+
+**Note:** Since ownership of the data is transferred, you can call this method only once between calls to [compute()](#compute).

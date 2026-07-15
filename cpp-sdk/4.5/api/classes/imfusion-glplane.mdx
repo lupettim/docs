@@ -1,0 +1,112 @@
+---
+title: "ImFusion::GlPlane"
+sidebarTitle: "GlPlane"
+description: "Plane Annotation."
+---
+
+`#include <ImFusion/GL/GlPlane.h>`
+
+## Overview
+
+Plane Annotation.
+
+## Public Member Functions
+
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [typeName](#typename) () const override — Return unique identifier for this object class used for serialization.
+- void **setPlane** (const [Geometry::Plane](/cpp-sdk/4.5/api/classes/imfusion-geometry-plane) &pl)
+- void **changeMatrixByNormal** (const vec3 &normal)
+- void **changeMatrixByGlobalCenter** (const vec3 &[center](#center))
+- void **setWidth** (const double &width)
+- const double **width** () const
+- void **setHeight** (const double &height)
+- const double **height** () const
+- vec3 [center](#center) () const override — Return the center of the object in local coordinates without considering any matrix.
+- vec3 [extent](#extent) () const override — Return the extent of the object in local coordinates without considering any matrix.
+- void [draw](#draw) (const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &[view](/cpp-sdk/4.5/api/classes/imfusion-glannotation)) override — Draw the object in 3D space.
+- [Geometry::AlignedBox](/cpp-sdk/4.5/api/classes/imfusion-geometry-alignedbox) [bounds](#bounds) () const override — Get the axis-aligned bounding box of this [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) in world space.
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Set one or multiple properties.
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Retrieve the properties of this object.
+
+## Protected Attributes
+
+- vec3 **m_normal**
+- vec3 **m_center**
+- double **m_width** = 200
+- double **m_height** = 200
+- vec3 **m_points** [4]
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [GL::VertexBuffer](/cpp-sdk/4.5/api/classes/imfusion-gl-vertexbuffer) &gt; **m_vbo**
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [GL::IndexBuffer](/cpp-sdk/4.5/api/classes/imfusion-gl-indexbuffer) &gt; **m_ibo**
+
+## Member Function Documentation
+
+### typeName
+
+```cpp
+std::string ImFusion::GlPlane::typeName () const
+```
+
+*inline, override, virtual*
+
+Return unique identifier for this object class used for serialization.
+
+### center
+
+```cpp
+vec3 ImFusion::GlPlane::center () const
+```
+
+*inline, override, virtual*
+
+Return the center of the object in local coordinates without considering any matrix.
+
+### extent
+
+```cpp
+vec3 ImFusion::GlPlane::extent () const
+```
+
+*inline, override, virtual*
+
+Return the extent of the object in local coordinates without considering any matrix.
+
+### draw
+
+```cpp
+void ImFusion::GlPlane::draw (const GlView & view)
+```
+
+*override, virtual*
+
+Draw the object in 3D space.
+
+### bounds
+
+```cpp
+Geometry::AlignedBox ImFusion::GlPlane::bounds () const
+```
+
+*override, virtual*
+
+Get the axis-aligned bounding box of this [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) in world space.
+
+Return an empty (default-constructed) AlignedBox object if the [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) does not reside in world space.
+
+### configure
+
+```cpp
+void ImFusion::GlPlane::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Set one or multiple properties.
+
+### configuration
+
+```cpp
+void ImFusion::GlPlane::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Retrieve the properties of this object.

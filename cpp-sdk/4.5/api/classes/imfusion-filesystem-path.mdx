@@ -1,0 +1,329 @@
+---
+title: "ImFusion::Filesystem::Path"
+sidebarTitle: "Path"
+description: "Entity representing a path in the filesystem."
+---
+
+`#include <ImFusion/Core/Filesystem/Path.h>`
+
+## Overview
+
+Entity representing a path in the filesystem.
+
+Such an object is concerned only with the lexical and syntactic aspects of a path. The path does not necessarily exist in external storage, and the pathname is not necessarily valid for the current operating system or for a particular file system. Use the [Directory](/cpp-sdk/4.5/api/classes/imfusion-filesystem-directory) and [File](/cpp-sdk/4.5/api/classes/imfusion-filesystem-file) classes to actually interact with the filesystem.
+
+A [Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path) consists of a series of components, which are separated by the generic path separator '/'. For convenience, member functions also accept the native separator (e.g. the '\\endiskip' on Windows systems) as input and will convert accordingly. The output of all member functions will be in the generic format. You can use makeNative() to extract a string representaion suitable for the underlying OS API.
+
+A path can be decomposed into it's individual parts and has the generic form of
+
+```cpp
+[/|C:/][foo/bar/][<baseName>.can.have.multiple.dots.<extension>]
+\_____/           \__________\____________________/___________/
+<root>               <fullBaseName>          <fullExtension>
+\_____________/  \_____________________________________________/
+ <parentPath>                      <filename>
+```
+ fragment
+Note that the root component is platform-dependent.
+
+All interfaces of [Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path) assume the path to be encoded in UTF-8. Potentially required conversion to a platform-specific encoding (e.g. UTF-16 on Windows) is handled internally.
+
+Technically, a [Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path) is just a wrapper around a [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) providing a different set of member functions and expressing intent through the type. Since conversion from and to string is transparent and does not change/lose any data (except for transforming native separators to their generic from, see above), the conversion operators from and to [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) are defined implicit.
+
+**Examples:** [Filesystem.cpp](/cpp-sdk/4.5/api/examples/filesystem-8cpp).
+
+## Public Member Functions
+
+- **Path** ()=default — Default-constructed paths are empty by definition.
+- **Path** (const [std::string_view](http://en.cppreference.com/w/cpp/string/basic_string_view.html) &path) — Instantiate a path from a given string.
+- **Path** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &path)
+- **Path** (const char \*path)
+- [Path](#path) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &base, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &path) — Instantiate a path concatenating the two given strings for convenience.
+- bool [operator==](#operator) (const Path &other) const — Two paths are equal when their representing strings are lexically equal.
+- bool **operator!=** (const Path &other) const
+- Path **operator/** (const Path &other) const — Concatenate paths. The right hand argument should be a relative path.
+- Path **operator+** (const Path &other) const — Basic string concatenation of paths without introducing any directory separator.
+- bool **operator&lt;** (const [Filesystem::Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path) &other) const noexcept — Lexicographically compares this path with *other*.
+- **operator std::string** () const — Provide implicit conversion to [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) since it's not a narrowing conversion.
+- **operator std::string_view** () const — Provide implicit conversion to [std::string_view](http://en.cppreference.com/w/cpp/string/basic_string_view.html) since it's not a narrowing conversion.
+
+## Convert to Related Types
+
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **string** () const — Return the path as string in generic format.
+- [File](/cpp-sdk/4.5/api/classes/imfusion-filesystem-file) **asFile** () const — Constructs a [File](/cpp-sdk/4.5/api/classes/imfusion-filesystem-file) instance from this path, convenience function for Filesystem::File(\*this).
+- [Directory](/cpp-sdk/4.5/api/classes/imfusion-filesystem-directory) **asDirectory** () const — Constructs a [Directory](/cpp-sdk/4.5/api/classes/imfusion-filesystem-directory) instance from this path, convenience function for Filesystem::Directory(\*this).
+
+## Path Decomposition into Components
+
+- Path [parentPath](#parentpath) () const — Return this path without the last component (filename).
+- [Directory](/cpp-sdk/4.5/api/classes/imfusion-filesystem-directory) [parentDirectory](#parentdirectory) () const — Return this path without the last component (filename).
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [filename](#filename) () const — Return the last component of the path (independent of whether it represents an actual file or not).
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [baseName](#basename) () const — Gets the base resource name until the first dot (essentially [filename](#filename) - [fullExtension](#fullextension)).
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [fullBaseName](#fullbasename) () const — Gets the base resource name until the last dot (essentially [filename](#filename) - [extension](#extension)).
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [extension](#extension) () const — Gets the last extension of the path *not* including the dot (essentially [filename](#filename) - [fullBaseName](#fullbasename)).
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [fullExtension](#fullextension) () const — Gets the full extension of the path *not* including the first dot (essentially [filename](#filename) - [baseName](#basename)).
+- size_t **length** () const — Returns the length of the path, convenience function for string().length().
+
+## Query Filesystem Properties
+
+- bool [exists](#exists) () const — Check if a resource exists under the given path.
+- bool **isRelative** () const — Check if the path is relative.
+- bool **isAbsolute** () const — Check if the path is absolute.
+- bool **isFile** () const — Check whether the resource exists and represents a file.
+- bool **isDirectory** () const — Check whether the resource exists and represents a directory.
+- bool **isSymlink** () const — Check whether the resource exists and represents a symlink.
+- [SpaceInfo](/cpp-sdk/4.5/api/structs/imfusion-filesystem-spaceinfo) **spaceInfo** () const — Returns space information about the filesystem on which this path is located In case of an error, returns 0_bytes in all fields.
+- time_t **lastModified** () const — Gets the time of the last modification to the path.
+
+## Derive or Modify Paths
+
+- Path [makeRelativeTo](#makerelativeto) (const Path &basePath) const — Returns path made relative to *basePath*.
+- Path [makeAbsolute](#makeabsolute) () const — It creates a copy if the path is absolute, otherwise it prepends the path with the current working directory.
+- Path [makeNormalized](#makenormalized) () const — Returns a copy of the path where redundant elements such as .
+- Path [makeCanonical](#makecanonical) () const — It converts the path into an absolute path, cleans it up by removing and resolving elements such as .
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **makeNative** () const — Returns the native string representation of the path, using native path separator, character type, and encoding so that it is suitable for usage with the API of the underlying OS.
+- Path **resolveSymlink** () const — Resolves the full path to the symlink. If not a symlink, returns an empty [Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path).
+- void **replaceFilename** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &newFilename) — Replaces the [filename()](#filename) component with the given string.
+- void **replaceExtension** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &newExtension) — Replaces the [extension()](#extension) component with the given string.
+
+## Constructor & Destructor Documentation
+
+### Path
+
+```cpp
+ImFusion::Filesystem::Path::Path (const std::string & base, const std::string & path)
+```
+
+Instantiate a path concatenating the two given strings for convenience.
+
+Has the same effect as Path(base) / Path(path).
+
+**Parameters:**
+
+- `base` — The first part of the path
+- `path` — The second part of the path
+
+## Member Function Documentation
+
+### operator
+
+```cpp
+bool ImFusion::Filesystem::Path::operator== (const Path & other) const
+```
+
+*inline*
+
+Two paths are equal when their representing strings are lexically equal.
+
+To determine if two paths resolve to the same entity use [makeCanonical()](#makecanonical).
+
+### parentPath
+
+```cpp
+Path ImFusion::Filesystem::Path::parentPath () const
+```
+
+Return this path without the last component (filename).
+
+If the path ends with a trailing slash, the last component is considered present (yet empty).
+
+```cpp
+Path("/foo/bar.txt").parentPath();  ->  "/foo"
+Path("/foo/bar").parentPath();      ->  "/foo"
+Path("/foo/bar/").parentPath();     ->  "/foo/bar"
+Path("/").parentPath();             ->  ""
+Path(".").parentPath();             ->  ""
+Path("..").parentPath();            ->  ""
+```
+ fragment
+
+**Examples:** [Filesystem.cpp](/cpp-sdk/4.5/api/examples/filesystem-8cpp).
+
+### parentDirectory
+
+```cpp
+Directory ImFusion::Filesystem::Path::parentDirectory () const
+```
+
+Return this path without the last component (filename).
+
+If the path ends with a trailing slash, the last component is considered present (yet empty).
+
+```cpp
+Path("/foo/bar.txt").parentPath();  ->  "/foo"
+Path("/foo/bar").parentPath();      ->  "/foo"
+Path("/foo/bar/").parentPath();     ->  "/foo/bar"
+Path("/").parentPath();             ->  ""
+Path(".").parentPath();             ->  ""
+Path("..").parentPath();            ->  ""
+```
+ fragment
+Convenience function for [parentPath()](#parentpath).asDirectory().
+
+### filename
+
+```cpp
+std::string ImFusion::Filesystem::Path::filename () const
+```
+
+Return the last component of the path (independent of whether it represents an actual file or not).
+
+If the path ends with a trailing slash the last filename is considered empty.
+
+```cpp
+Path("/foo/bar.txt").filename();  ->  "bar.txt"
+Path("/foo/bar").filename();      ->  "bar"
+Path("/foo/bar/").filename();     ->  ""
+Path("/").filename();             ->  ""
+Path(".").filename();             ->  "."
+Path("..").filename();            ->  ".."
+```
+ fragment
+
+### baseName
+
+```cpp
+std::string ImFusion::Filesystem::Path::baseName () const
+```
+
+Gets the base resource name until the first dot (essentially [filename](#filename) - [fullExtension](#fullextension)).
+
+If the path ends with a trailing slash the last filename is considered empty.
+
+```cpp
+Path("./directory1/myfile.tar.gz").baseName();  ->  "myfile"
+Path("./directory1/myfile.pdf").baseName();     ->  "myfile"
+Path("./directory1/myfile").baseName();         ->  "myfile"
+Path("./directory1/").baseName();               ->  ""
+Path("/").baseName();                           ->  ""
+```
+ fragment
+
+**Examples:** [Filesystem.cpp](/cpp-sdk/4.5/api/examples/filesystem-8cpp).
+
+### fullBaseName
+
+```cpp
+std::string ImFusion::Filesystem::Path::fullBaseName () const
+```
+
+Gets the base resource name until the last dot (essentially [filename](#filename) - [extension](#extension)).
+
+If the path ends with a trailing slash the last filename is considered empty.
+
+```cpp
+Path("./directory1/myfile.tar.gz").fullBaseName();  ->  "myfile.tar"
+Path("./directory1/myfile.pdf").fullBaseName();     ->  "myfile"
+Path("./directory1/myfile").fullBaseName();         ->  "myfile"
+Path("./directory1/").fullBaseName();               ->  ""
+Path("/").fullBaseName();                           ->  ""
+```
+ fragment
+
+**Examples:** [Filesystem.cpp](/cpp-sdk/4.5/api/examples/filesystem-8cpp).
+
+### extension
+
+```cpp
+std::string ImFusion::Filesystem::Path::extension () const
+```
+
+Gets the last extension of the path *not* including the dot (essentially [filename](#filename) - [fullBaseName](#fullbasename)).
+
+```cpp
+Path("./directory1/myfile.pdf").extension();     ->  "pdf"
+Path("./directory1/myfile.pdf.gz").extension();  ->  "gz"
+Path("./directory1/myfile").extension();         ->  ""
+Path("./directory1/").extension();               ->  ""
+```
+ fragment
+
+**Examples:** [Filesystem.cpp](/cpp-sdk/4.5/api/examples/filesystem-8cpp).
+
+### fullExtension
+
+```cpp
+std::string ImFusion::Filesystem::Path::fullExtension () const
+```
+
+Gets the full extension of the path *not* including the first dot (essentially [filename](#filename) - [baseName](#basename)).
+
+```cpp
+Path("./directory1/myfile.pdf").fullExtension();     ->  "pdf"
+Path("./directory1/myfile.pdf.gz").fullExtension();  ->  "pdf.gz"
+Path("./directory1/myfile").fullExtension();         ->  ""
+Path("./directory1/").fullExtension();               ->  ""
+```
+ fragment
+
+**Examples:** [Filesystem.cpp](/cpp-sdk/4.5/api/examples/filesystem-8cpp).
+
+### exists
+
+```cpp
+bool ImFusion::Filesystem::Path::exists () const
+```
+
+Check if a resource exists under the given path.
+
+It returns false if the path is not valid. If it is a relative path, it prepends the current working directory to it.
+
+**Returns:** True if a resource under the path exists
+
+### makeRelativeTo
+
+```cpp
+Path ImFusion::Filesystem::Path::makeRelativeTo (const Path & basePath) const
+```
+
+Returns path made relative to *basePath*.
+
+Treats empty or identical paths as corner cases, not errors. Does not resolve symlinks. Does not first normalize *this* or *basePath*.
+
+**Parameters:**
+
+- `basePath` — The path we take as reference.
+
+**Examples:** [Filesystem.cpp](/cpp-sdk/4.5/api/examples/filesystem-8cpp).
+
+### makeAbsolute
+
+```cpp
+Path ImFusion::Filesystem::Path::makeAbsolute () const
+```
+
+It creates a copy if the path is absolute, otherwise it prepends the path with the current working directory.
+
+**Returns:** An absolute path
+
+### makeNormalized
+
+```cpp
+Path ImFusion::Filesystem::Path::makeNormalized () const
+```
+
+Returns a copy of the path where redundant elements such as .
+
+, .., and / are removed. Unlike [makeCanonical()](#makecanonical) this function will *not* convert to an absolute path, resolve symlinks, or access the underlying filesystem in any form.
+
+```cpp
+Path("foo/./bar/..").makeNormalized();                   ->  "foo"
+Path("foo/./bar/../..").makeNormalized();                ->  "."
+Path("foo/.///bar/../").makeNormalized();                ->  "foo/"
+Path("foo/./bar/../file..with..dots").makeNormalized();  ->  "foo/file..with..dots"
+```
+ fragment
+
+### makeCanonical
+
+```cpp
+Path ImFusion::Filesystem::Path::makeCanonical () const
+```
+
+It converts the path into an absolute path, cleans it up by removing and resolving elements such as .
+
+, .., and resolves symbolic links. If the resource does not exist, it returns an empty path.
+
+**See also:** Use [makeNormalized()](#makenormalized) if you want to clean a path from redundant elements independent of symlinks or the existence of the resource.
+
+**Examples:** [Filesystem.cpp](/cpp-sdk/4.5/api/examples/filesystem-8cpp).

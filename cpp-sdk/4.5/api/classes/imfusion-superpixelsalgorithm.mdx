@@ -1,0 +1,103 @@
+---
+title: "ImFusion::SuperpixelsAlgorithm"
+sidebarTitle: "SuperpixelsAlgorithm"
+description: "Algorithm for computing superpixels (SLIC method)."
+---
+
+`#include <ImFusion/Base/SuperpixelsAlgorithm.h>`
+
+## Overview
+
+[Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) for computing superpixels (SLIC method).
+
+## Public Member Functions
+
+- **SuperpixelsAlgorithm** ([SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*imgIn) — Creates the spline.
+- **~SuperpixelsAlgorithm** () override — Destroy the spline.
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Set one or multiple properties.
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Retrieve the properties of this object.
+- void [compute](#compute) () override — Compute the result.
+- [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) [takeOutput](#takeoutput) () override — If the algorithm creates new image data, it has to be transferred here.
+- [Superpixel](/cpp-sdk/4.5/api/classes/imfusion-superpixel) **getSuperpixel** (int k) const — Get info on a particular superpixel.
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Superpixel](/cpp-sdk/4.5/api/classes/imfusion-superpixel) &gt; & **getSuperpixels** () const — Get all superpixels.
+- int **nbSuperpixels** () const — Get actual number of superpixels.
+- void **updateSuperpixelsStats** () — Compute the additional superpixels statistics.
+
+## Static Public Member Functions
+
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a) — If data is compatible with algorithm return true. If a is not zero, create algorithm with input data.
+
+## Protected Member Functions
+
+- void **initSuperpixels** ()
+- void **assignLabelsToSuperpixels** ()
+- double **updateSuperpixels** ()
+- int **enforceLabelConnectivity2D** ()
+- int **enforceLabelConnectivity3D** ()
+- void **assignUnlabelledPixels** ()
+- void **removeEmptySuperpixels** ()
+- void **finalizeLabels** ()
+- bool **checkParameters** () const
+
+## Protected Attributes
+
+- [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \* **m_imgIn**
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; float &gt; &gt; **m_img**
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; float &gt; &gt; **m_minDist**
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; float &gt; &gt; **m_imageDist**
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; int &gt; &gt; **m_labels**
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; float &gt; &gt; **m_imageSimplified**
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Superpixel](/cpp-sdk/4.5/api/classes/imfusion-superpixel) &gt; **m_superpixels**
+- bool **m_verbose**
+- size_t **m_workingSize**
+- bool **m_skipRefinement**
+- bool **m_randomInit**
+- int **m_numberSp**
+- int **m_maxSizeSpTarget**
+- float **m_adaptiveness**
+- int **m_maxIter**
+- bool **m_randomIndices**
+- bool **m_exportSimplifiedImage**
+- int **m_maxSizeSp**
+
+## Member Function Documentation
+
+### configure
+
+```cpp
+void ImFusion::SuperpixelsAlgorithm::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Set one or multiple properties.
+
+### configuration
+
+```cpp
+void ImFusion::SuperpixelsAlgorithm::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Retrieve the properties of this object.
+
+### compute
+
+```cpp
+void ImFusion::SuperpixelsAlgorithm::compute ()
+```
+
+*override, virtual*
+
+Compute the result.
+
+### takeOutput
+
+```cpp
+OwningDataList ImFusion::SuperpixelsAlgorithm::takeOutput ()
+```
+
+*override, virtual*
+
+If the algorithm creates new image data, it has to be transferred here.

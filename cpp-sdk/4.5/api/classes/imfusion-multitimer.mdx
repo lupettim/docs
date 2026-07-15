@@ -1,0 +1,80 @@
+---
+title: "ImFusion::MultiTimer"
+sidebarTitle: "MultiTimer"
+description: "This class can be used to help the developer to profile the run time of different parts of the same process."
+---
+
+`#include <ImFusion/Core/Timer.h>`
+
+## Overview
+
+This class can be used to help the developer to profile the run time of different parts of the same process.
+
+Each time startTaskTimer is called, it will start registering the run time of that specific task, and it stops the timer of any other running task. the report which contains run time of each task is logged periodically in order to prevent flooding the logs.
+
+calling startTaskTimer searches if the provided task name has been run before. If yes, then it will add the run time to its total run time, if not it will create an new entry for the task name. this search need a small overhead, but since we use unordered_map to store the tasks names, this should not slow down the execution of the process.
+
+**See also:** [Timer](/cpp-sdk/4.5/api/classes/imfusion-timer), [LoggingTimer](/cpp-sdk/4.5/api/classes/imfusion-loggingtimer)
+
+The following code shows a use case example:
+
+```cpp
+MultiTimer timer("my algorithm");
+
+for (int i = 0; i < 10; ++i)
+{
+    timer.startTaskTimer("task 1");
+ std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    timer.startTaskTimer("task 2");
+ std::this_thread::sleep_for(std::chrono::milliseconds(150));
+    timer.startTaskTimer("task 3");
+ std::this_thread::sleep_for(std::chrono::milliseconds(85));
+}
+timer.stopCurrentTaskTimer();
+```
+ fragment
+here is the resulting report from the code above:
+
+```cpp
+[my algorithm] task 1 => Avg. time: 100.076 ms | num:  10   | total: 1.001 s
+[my algorithm] task 2 => Avg. time: 150.103 ms | num:  10   | total: 1.501 s
+[my algorithm] task 3 => Avg. time: 85.082 ms  | num:  10   | total: 850.821 ms
+```
+ fragment
+
+## Public Member Functions
+
+- [MultiTimer](#multitimer) ([std::string_view](http://en.cppreference.com/w/cpp/string/basic_string_view.html) component, int logIntervalsSeconds=5, Log::Level logLevel=Log::Level::Info) — constructor of the class
+- **~MultiTimer** () — the deconstructor will automatically log the run time report
+- void **startTaskTimer** ([std::string_view](http://en.cppreference.com/w/cpp/string/basic_string_view.html) taskName) — starts the timer the specified tasks, it also stops the timer of the previous task if it is still running
+- void [stopCurrentTaskTimer](#stopcurrenttasktimer) (bool forcePrint=false) — stops the timer of the current task
+
+## Constructor & Destructor Documentation
+
+### MultiTimer
+
+```cpp
+ImFusion::MultiTimer::MultiTimer (std::string_view component, int logIntervalsSeconds = 5, Log::Level logLevel = Log::Level::Info)
+```
+
+constructor of the class
+
+**Parameters:**
+
+- `component` — the name of the process, which will be printed on each line of the report
+- `logIntervalsSeconds` — the time interval between two consecutive logs (in seconds)
+- `logLevel` — leg level used to print the report
+
+## Member Function Documentation
+
+### stopCurrentTaskTimer
+
+```cpp
+void ImFusion::MultiTimer::stopCurrentTaskTimer (bool forcePrint = false)
+```
+
+stops the timer of the current task
+
+**Parameters:**
+
+- `forcePrint` — prints the run time report without taking in consideration logIntervalsSeconds

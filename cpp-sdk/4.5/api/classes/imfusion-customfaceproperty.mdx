@@ -1,0 +1,32 @@
+---
+title: "ImFusion::CustomFaceProperty< T >"
+sidebarTitle: "CustomFaceProperty< T >"
+description: "A custom property using faces/triangles as geometry elements."
+---
+
+`#include <ImFusion/Mesh/MeshCustomProperties.h>`
+
+## Overview
+
+template&lt;typename T&gt;
+
+class ImFusion::CustomFaceProperty&lt; T &gt;
+A custom property using faces/triangles as geometry elements.
+
+## Public Member Functions
+
+- void [clone](#clone) (Mesh &otherMesh) const override — Creates a property of the same type and storage name on another mesh, does not copy any data.
+
+## Member Function Documentation
+
+### clone
+
+```cpp
+template<typename T> void ImFusion::CustomFaceProperty < T >::clone (Mesh & otherMesh) const
+```
+
+*override, virtual*
+
+Creates a property of the same type and storage name on another mesh, does not copy any data.
+
+If the target mesh already had a property with matching type and name, it will connect to that one.

@@ -1,0 +1,66 @@
+---
+title: "ImFusion::SimilarityMeasurePatchBased_GL"
+sidebarTitle: "SimilarityMeasurePatchBased_GL"
+description: "Helper class for patch based similarity measures."
+---
+
+`#include <ImFusion/Reg/SimilarityMeasurePatchBased.h>`
+
+## Overview
+
+Helper class for patch based similarity measures.
+
+## Public Member Functions
+
+- [SimilarityMeasurePatchBased_GL](#similaritymeasurepatchbased-gl) ([SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*img1, [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*img2, int numAux) — numAux determines the number of auxiliary textures required for the accumulation
+- virtual bool [compute3D](#compute3d) ([GL::ImageProgram](/cpp-sdk/4.5/api/classes/imfusion-gl-imageprogram) \*program, bool reduceLastPass=true) — Performes the 3 accumulation passes.
+- virtual bool [compute2D](#compute2d) ([GL::ImageProgram](/cpp-sdk/4.5/api/classes/imfusion-gl-imageprogram) \*program) — Performes the 2 accumulation passes.
+- void **setPerPixelBuffer** ([SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*img) — Sets an optional buffer where the resulting value is written per pixel. Expected to be the same size as img1.
+- bool **supportsWeights** () const
+
+## Protected Attributes
+
+- [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \* **m_img1_**
+- [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \* **m_img2_**
+- [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \* **m_perPixel**
+- [GL::Framebuffer](/cpp-sdk/4.5/api/classes/imfusion-gl-framebuffer) \* **m_fbo**
+- [GL::Sampler](/cpp-sdk/4.5/api/classes/imfusion-gl-sampler) \* **m_sampler**
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) \* &gt; **m_aux**
+
+## Constructor & Destructor Documentation
+
+### SimilarityMeasurePatchBased_GL
+
+```cpp
+ImFusion::SimilarityMeasurePatchBased_GL::SimilarityMeasurePatchBased_GL (SharedImage * img1, SharedImage * img2, int numAux)
+```
+
+numAux determines the number of auxiliary textures required for the accumulation
+
+numAux must be a multiple of 2 and larger than 1.
+
+## Member Function Documentation
+
+### compute3D
+
+```cpp
+virtual bool ImFusion::SimilarityMeasurePatchBased_GL::compute3D (GL::ImageProgram * program, bool reduceLastPass = true)
+```
+
+*virtual*
+
+Performes the 3 accumulation passes.
+
+program has to be enabled before calling this function. The uniform 'pass' is always set to the current pass. The auxiliary buffers will be bound to the uniforms aux0 to auxN where N is numAux-1. In the first pass, the first half of m_aux are bound as rendering targets. In the second pass, the first half of m_aux is bound to the uniforms and the second half as rendering targets. In the third pass, the second half of m_aux is bound to the uniforms and the first slice of m_aux[0] as rendering target. The final values are accumulated in the first slice of m_aux[0]. If reduceLastPass is false the accumulating is not performed and m_aux[0] will contain the final values per pixel.
+
+### compute2D
+
+```cpp
+virtual bool ImFusion::SimilarityMeasurePatchBased_GL::compute2D (GL::ImageProgram * program)
+```
+
+*virtual*
+
+Performes the 2 accumulation passes.
+
+program has to be enabled before calling this function. The uniform 'pass' is always set to the current pass. The auxiliary buffers will be bound to the uniforms aux0 to auxN where N is numAux-1. In the first pass, m_aux[1] to m_aux[N-1] are bound as rendering targets. In the second pass, m_aux[1] to m_aux[N-1] are bound to the uniforms and m_aux[0] as rendering target. The final values are accumulated in m_aux[0].

@@ -1,0 +1,77 @@
+---
+title: "ImFusion::Container"
+sidebarTitle: "Container"
+description: "Collection of utility functions operating on STL containers."
+---
+
+## Overview
+
+Collection of utility functions operating on STL containers.
+
+**See also:** Container Utilities
+
+## Classes
+
+- class [LRUCache](/cpp-sdk/4.5/api/classes/imfusion-container-lrucache) — Templated container class implementing a Least Recently Used Cache.
+- class [SmallVector](/cpp-sdk/4.5/api/classes/imfusion-container-smallvector) — A small-buffer-optimized variant of [std::vector](http://en.cppreference.com/w/cpp/container/vector.html) that stores up to N elements without heap allocation.
+- class [SparseArray](/cpp-sdk/4.5/api/classes/imfusion-container-sparsearray) — A sparse paged array for memory-efficient storage of sparse data.
+
+## Search for elements
+
+- auto **find** (ContainerT &&container, const T &value) -&gt; decltype(container.begin()) — Convenience function wrapping [std::find()](http://en.cppreference.com/w/cpp/algorithm/find.html) for the given container.
+- auto **findIf** (ContainerT &&container, UnaryPredicate &&predicate) -&gt; decltype(container.begin()) — Convenience function wrapping [std::find_if()](http://en.cppreference.com/w/cpp/algorithm/find.html) for the given container.
+- auto findPtr (ContainerT &&container, T &&pointer) -&gt; decltype(container.begin()) — Convenience function to search for a raw pointer in a container of smart pointers.
+- auto findIfMember (ContainerT &&container, T ElementType::\*member, const T &value) -&gt; decltype(container.begin()) — Return an iterator to the first element where *member* equals *value*.
+- auto tryGet (const MapT &map, const typename MapT::key_type &key) -&gt; const typename MapT::mapped_type \* — Returns a pointer to the value mapped to `key`, or nullptr if the key is absent.
+- auto tryGet (MapT &map, const typename MapT::key_type &key) -&gt; typename MapT::mapped_type \* — Mutable overload of tryGet() — returns a pointer to the mapped value for in-place modification.
+- auto **tryGet** (MapT &&, const typename MapT::key_type &) -&gt; typename MapT::mapped_type \*=delete
+- int64_t indexOf (ContainerT &&container, const T &value) — Find the index of the first element that is equal to *value* inside *container*.
+- int64_t indexOfIf (ContainerT &&container, UnaryPredicate &&predicate) — Find the index of the first element that matches *predicate*.
+- int64_t indexOfPtr (ContainerT &&container, T &&pointer) — Convenience function to get the index of the first occurence of *pointer* in a container of smart pointers.
+- bool **contains** (const ContainerT &container, const T &value) — Return true if *container* contains *value* or false otherwise.
+- bool **containsIf** (const ContainerT &container, UnaryPredicate &&predicate) — Return true if *container* contains any value that matches *predicate*.
+- bool containsPtr (const ContainerT &container, T &&pointer) — Convenience function check whether a container of smart pointers contains a given raw pointer.
+- bool containsIfMember (const ContainerT &container, T ElementType::\*member, const T &value) — Return true if the container contains an element where *member* equals *value*.
+- int64_t countValue (const ContainerT &c, const T &value) — Return the number of elements in *c* that are equal to *value*.
+- int64_t countIf (const ContainerT &c, UnaryPredicate &&pred) — Return the number of elements in *c* that match the given predicate.
+
+## Erase or extract elements from containers
+
+- int64_t erase (ContainerT &container, T &&value) — Convenience function to remove and erase all elements matching *value* from *container*.
+- int64_t eraseIf (ContainerT &container, UnaryPredicate &&predicate) — Convenience function to remove and erase all elements from *container* that match the *predicate*.
+- int64_t eraseDuplicates (ContainerT &container) — Removes all duplicates from the given container by calling [std::sort()](http://en.cppreference.com/w/cpp/algorithm/sort.html), [std::unique()](http://en.cppreference.com/w/cpp/algorithm/unique.html) and std::erase().
+- int64_t eraseDuplicatesStable (ContainerT &container) — Removes all duplicates from the given container keeping the original order intact.
+- ContainerT extractIf (ContainerT &container, UnaryPredicate &&predicate) — Move-extracts all elements from *container* that match the given *predicate*.
+
+## Transform elements
+
+- auto transformed (ContainerT &&container, UnaryOp &&op) -&gt; [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::decay_t](http://en.cppreference.com/w/cpp/types/decay.html)&lt; decltype(op(\*[std::begin](http://en.cppreference.com/w/cpp/iterator/begin.html)(container)))&gt; &gt; — A container-based wrapper for [std::transform](http://en.cppreference.com/w/cpp/algorithm/transform.html).
+- auto transformed ([std::initializer_list](http://en.cppreference.com/w/cpp/utility/initializer_list.html)&lt; T &gt; elements, UnaryOperation &&op) -&gt; [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::decay_t](http://en.cppreference.com/w/cpp/types/decay.html)&lt; decltype(op(\*elements.begin()))&gt; &gt; — An overload for the container-based wrapper for [std::transform](http://en.cppreference.com/w/cpp/algorithm/transform.html), taking an initializer list as the container.
+- auto transformed (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; T &gt; &containerA, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; U &gt; &containerB, BinaryOperation &&op) -&gt; [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::decay_t](http://en.cppreference.com/w/cpp/types/decay.html)&lt; decltype(op(containerA.front(), containerB.front()))&gt; &gt; — A container-based wrapper for [std::transform](http://en.cppreference.com/w/cpp/algorithm/transform.html) taking two constainers.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; T \* &gt; asRawPointers (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; SmartPtr&lt; T &gt; &gt; &container) — Converts a vector of smart pointers (such as [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html) or [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)) to a vector of corresponding raw pointers.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; T &gt; casted (const ContainerT &container) — Converts the input *container* to a [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt;T&gt; by casting each element to T.
+- void forEachZip (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; T &gt; &containerA, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; U &gt; &containerB, BinaryOperation &&op) — A convenience function which applies a binary operator to two containers.
+- ContainerT filtered (const ContainerT &container, UnaryPred &&pred) — [Filters](/cpp-sdk/4.5/api/namespaces/imfusion-filters) certain elements out of a container.
+- auto filteredTransform (const ContainerT &container, UnaryPred &&predicate, UnaryOperation &&op) -&gt; [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::decay_t](http://en.cppreference.com/w/cpp/types/decay.html)&lt; decltype(op(\*container.begin()))&gt; &gt; — Combines filtered() and transformed() into a single pass operation.
+
+## Accumulate elements
+
+- auto accumulate (const ContainerT &c) -&gt; typename ContainerT::value_type — A container-based wrapper for [std::accumulate](http://en.cppreference.com/w/cpp/algorithm/accumulate.html).
+- T accumulate (const ContainerT &c, T init) — A container-based wrapper for [std::accumulate](http://en.cppreference.com/w/cpp/algorithm/accumulate.html).
+- T accumulate (const ContainerT &c, T init, BinaryOp &&op) — A container-based wrapper for [std::accumulate](http://en.cppreference.com/w/cpp/algorithm/accumulate.html).
+
+## Iterate over a range having acces to both the index and the value of each element.
+
+- auto enumerate (Iterator begin, Iterator end) — Helper function to have access to both the index and value of each element during iteration.
+- auto enumerate ([Container](/cpp-sdk/4.5/api/namespaces/imfusion-container) &content) — Helper function to have access to both the index and value of each element during iteration.
+- auto enumerate ([Container](/cpp-sdk/4.5/api/namespaces/imfusion-container) &&content) — Helper function to have access to both the index and value of each element during iteration.
+
+## Other Functions
+
+- bool **allOf** (const ContainerT &container, UnaryPredicate &&predicate) — Checks whether all elements in *container* match *predicate*.
+- bool **anyOf** (const ContainerT &container, UnaryPredicate &&predicate) — Checks whether any element in *container* match *predicate*.
+- bool **noneOf** (const ContainerT &container, UnaryPredicate &&predicate) — Checks whether no elements in *container* match *predicate*.
+- bool allEqual (const ContainerT &container, BinaryPredicate &&predicate) — A container-based algorithms that checks whether all elements in a container are equal to each other.
+- bool allEqual (const ContainerT &container) — A container-based algorithm that checks whether all elements in a container are equal to each other.
+- void renameKey (ContainerT &container, const typename ContainerT::key_type &oldKey, const typename ContainerT::key_type &newKey) — Convenience function to change the key for a map entry.
+- void naturalSort (ContainerT &container) — Utility function implementing a "natural sort" algorithm for strings.

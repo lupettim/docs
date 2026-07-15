@@ -1,0 +1,122 @@
+---
+title: "ImFusion::ImageStatisticsAlgorithm"
+sidebarTitle: "ImageStatisticsAlgorithm"
+---
+
+## Classes
+
+- struct [ChannelStatistics](/cpp-sdk/4.5/api/structs/imfusion-imagestatisticsalgorithm-channelstatistics)
+
+## Public Member Functions
+
+- **ImageStatisticsAlgorithm** (const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*imageSet)
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*) override — Set one or multiple properties.
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*) const override — Retrieve the properties of this object.
+- void [compute](#compute) () override — Compute the result.
+- [ChannelStatistics](/cpp-sdk/4.5/api/structs/imfusion-imagestatisticsalgorithm-channelstatistics) [channelStatistics](#channelstatistics-1-5) () const — Calculate the per-channel statistics on the currently selected [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) image of the [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) used to create this object.
+- [ChannelStatistics](/cpp-sdk/4.5/api/structs/imfusion-imagestatisticsalgorithm-channelstatistics) [channelStatistics](#channelstatistics-2-5) (const [GlLine](/cpp-sdk/4.5/api/classes/imfusion-glline) &line) const — Calculate the per-channel statistics under the given line on the currently selected [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) image of the [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) used to create this object.
+- [ChannelStatistics](/cpp-sdk/4.5/api/structs/imfusion-imagestatisticsalgorithm-channelstatistics) [channelStatistics](#channelstatistics-3-5) (const [GlRectangle](/cpp-sdk/4.5/api/classes/imfusion-glrectangle) &rectangle) const — Calculate the per-channel statistics under the given rectangle on the currently selected [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) image of the [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) used to create this object.
+- [ChannelStatistics](/cpp-sdk/4.5/api/structs/imfusion-imagestatisticsalgorithm-channelstatistics) [channelStatistics](#channelstatistics-4-5) (const [GlCircle](/cpp-sdk/4.5/api/classes/imfusion-glcircle) &circle) const — Calculate the per-channel statistics under the given circle on the currently selected [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) image of the [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) used to create this object.
+- [ChannelStatistics](/cpp-sdk/4.5/api/structs/imfusion-imagestatisticsalgorithm-channelstatistics) [channelStatistics](#channelstatistics-5-5) (const [GlMask](/cpp-sdk/4.5/api/classes/imfusion-glmask) &mask) const — Calculate the per-channel statistics on the currently selected [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) image of the [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) used to create this object, taking the given mask into consideration.
+- [std::map](http://en.cppreference.com/w/cpp/container/map.html)&lt; unsigned char, [ChannelStatistics](/cpp-sdk/4.5/api/structs/imfusion-imagestatisticsalgorithm-channelstatistics) &gt; [channelStatisticsFromLabelMap](#channelstatisticsfromlabelmap) (const [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) &labelMap, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; unsigned char &gt; &labels=&#123;&#125;) const — Calculate the per-channel statistics on the currently selected [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) image of the [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) used to create this object, for each of the labels in the given label map.
+- const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* **image** () const — The [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) used to create this object.
+
+## Static Public Member Functions
+
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a) — If data is compatible with algorithm return true. If a is not null, create the algorithm with the given input data.
+- static [ChannelStatistics](/cpp-sdk/4.5/api/structs/imfusion-imagestatisticsalgorithm-channelstatistics) **channelStatistics** (const [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) &image, const [GlMask](/cpp-sdk/4.5/api/classes/imfusion-glmask) \*mask=nullptr) — Calculate the per-channel statistics on the given image.
+- static [ChannelStatistics](/cpp-sdk/4.5/api/structs/imfusion-imagestatisticsalgorithm-channelstatistics) **channelStatistics** (const [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) &image, const [GlLine](/cpp-sdk/4.5/api/classes/imfusion-glline) &line, const mat4 &worldToImage, const [GlMask](/cpp-sdk/4.5/api/classes/imfusion-glmask) \*mask=nullptr) — Calculate the per-channel statistics on the region of the given image under the given line.
+- static [ChannelStatistics](/cpp-sdk/4.5/api/structs/imfusion-imagestatisticsalgorithm-channelstatistics) **channelStatistics** (const [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) &image, const [GlRectangle](/cpp-sdk/4.5/api/classes/imfusion-glrectangle) &rect, const mat4 &worldToImage, const [GlMask](/cpp-sdk/4.5/api/classes/imfusion-glmask) \*mask=nullptr) — Calculate the per-channel statistics on the region of the given image under the given rectangle.
+- static [ChannelStatistics](/cpp-sdk/4.5/api/structs/imfusion-imagestatisticsalgorithm-channelstatistics) **channelStatistics** (const [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) &image, const [GlCircle](/cpp-sdk/4.5/api/classes/imfusion-glcircle) &circle, const mat4 &worldToImage, const [GlMask](/cpp-sdk/4.5/api/classes/imfusion-glmask) \*mask=nullptr) — Calculate the per-channel statistics on the region of the given image under the given circle.
+
+## Member Function Documentation
+
+### configure
+
+```cpp
+void ImFusion::ImageStatisticsAlgorithm::configure (const Properties *)
+```
+
+*inline, override, virtual*
+
+Set one or multiple properties.
+
+### configuration
+
+```cpp
+void ImFusion::ImageStatisticsAlgorithm::configuration (Properties *) const
+```
+
+*inline, override, virtual*
+
+Retrieve the properties of this object.
+
+### compute
+
+```cpp
+void ImFusion::ImageStatisticsAlgorithm::compute ()
+```
+
+*inline, override, virtual*
+
+Compute the result.
+
+### channelStatistics
+
+```cpp
+ChannelStatistics ImFusion::ImageStatisticsAlgorithm::channelStatistics () const
+```
+
+Calculate the per-channel statistics on the currently selected [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) image of the [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) used to create this object.
+
+If the [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) this instance was initialized with has a mask, it will be taken into consideration.
+
+### channelStatistics
+
+```cpp
+ChannelStatistics ImFusion::ImageStatisticsAlgorithm::channelStatistics (const GlLine & line) const
+```
+
+Calculate the per-channel statistics under the given line on the currently selected [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) image of the [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) used to create this object.
+
+If the [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) this instance was initialized with has a mask, it will be taken into consideration.
+
+### channelStatistics
+
+```cpp
+ChannelStatistics ImFusion::ImageStatisticsAlgorithm::channelStatistics (const GlRectangle & rectangle) const
+```
+
+Calculate the per-channel statistics under the given rectangle on the currently selected [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) image of the [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) used to create this object.
+
+If the [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) this instance was initialized with has a mask, it will be taken into consideration.
+
+### channelStatistics
+
+```cpp
+ChannelStatistics ImFusion::ImageStatisticsAlgorithm::channelStatistics (const GlCircle & circle) const
+```
+
+Calculate the per-channel statistics under the given circle on the currently selected [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) image of the [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) used to create this object.
+
+If the [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) this instance was initialized with has a mask, it will be taken into consideration.
+
+### channelStatistics
+
+```cpp
+ChannelStatistics ImFusion::ImageStatisticsAlgorithm::channelStatistics (const GlMask & mask) const
+```
+
+Calculate the per-channel statistics on the currently selected [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) image of the [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) used to create this object, taking the given mask into consideration.
+
+If the [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) this instance was initialized with has a mask, it will NOT be taken into consideration.
+
+### channelStatisticsFromLabelMap
+
+```cpp
+std::map < unsigned char, ChannelStatistics > ImFusion::ImageStatisticsAlgorithm::channelStatisticsFromLabelMap (const GlImage & labelMap, const std::vector < unsigned char > & labels = {}) const
+```
+
+Calculate the per-channel statistics on the currently selected [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) image of the [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) used to create this object, for each of the labels in the given label map.
+
+The label map must be single channel and have unsigned char component type.

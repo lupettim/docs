@@ -1,0 +1,69 @@
+---
+title: "ImFusion::LoopManipulator"
+sidebarTitle: "LoopManipulator"
+---
+
+## Public Member Functions
+
+- **LoopManipulator** ([GlLoop](/cpp-sdk/4.5/api/classes/imfusion-glloop) &annotation)
+- bool [sceneEvent](#sceneevent) (QEvent \*event, const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &view) override
+- bool [onCreate](#oncreate) (const [MouseEvent](/cpp-sdk/4.5/api/structs/imfusion-pointbasedannotationmanipulator-mouseevent) &event, vec3 &X, bool &update, const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &view) override — Handler for mouse events in the InteractionCreate mode.
+- bool [onMove](#onmove) (const [MouseEvent](/cpp-sdk/4.5/api/structs/imfusion-pointbasedannotationmanipulator-mouseevent) &event, vec3 &X, bool &update) override — Handler for mouse events in the InteractionMove mode.
+- bool [onEdit](#onedit) (const [MouseEvent](/cpp-sdk/4.5/api/structs/imfusion-pointbasedannotationmanipulator-mouseevent) &event, vec3 &X, bool &update, const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &view) override — Handler for mouse events in the InteractionEdit mode.
+- Qt::Key **undoAddPointKey** () const — Returns the keyboard key to undo the last point placement.
+- void **setUndoAddPointKey** (Qt::Key value) — Sets the keyboard key to undo the last point placement.
+
+## Member Function Documentation
+
+### sceneEvent
+
+```cpp
+bool ImFusion::LoopManipulator::sceneEvent (QEvent * event, const GlView & view)
+```
+
+*override, virtual*
+
+### onCreate
+
+```cpp
+bool ImFusion::LoopManipulator::onCreate (const MouseEvent & event, vec3 & X, bool & update, const GlView & view)
+```
+
+*override, virtual*
+
+Handler for mouse events in the InteractionCreate mode.
+
+**Parameters:**
+
+- `event` — mouse event
+- `update` — true if the point set was changed (output parameter)
+
+### onMove
+
+```cpp
+bool ImFusion::LoopManipulator::onMove (const MouseEvent & event, vec3 & X, bool & update)
+```
+
+*override, virtual*
+
+Handler for mouse events in the InteractionMove mode.
+
+**Parameters:**
+
+- `event` — mouse event
+- `update` — true if the point set was changed (output parameter)
+
+### onEdit
+
+```cpp
+bool ImFusion::LoopManipulator::onEdit (const MouseEvent & event, vec3 & X, bool & update, const GlView & view)
+```
+
+*override, virtual*
+
+Handler for mouse events in the InteractionEdit mode.
+
+**Parameters:**
+
+- `event` — mouse event
+- `update` — true if the point set was changed (output parameter)

@@ -1,0 +1,184 @@
+---
+title: "ImFusion::GlobalSettings"
+sidebarTitle: "GlobalSettings"
+description: "Class for storing and retrieving persistent global settings."
+---
+
+`#include <ImFusion/Core/GlobalSettings.h>`
+
+## Overview
+
+Class for storing and retrieving persistent global settings.
+
+This class allows you to load and store single values, as well as entire [Configurable](/cpp-sdk/4.5/api/classes/imfusion-configurable) objects in a persistent manner across application sessions.
+
+This class must be initialized with [init()](#init-1-2) before any usage. Typically this would be done on program startup. In order for the changes to settings to be persisted, sync() must be called. This is typically done on program exit, but can also be called at any time.
+
+There are several interfaces provided for loading and storing settings:
+
+- Objects of types that inherit from *[Configurable](/cpp-sdk/4.5/api/classes/imfusion-configurable)* can be loaded and stored directly:
+  ```cpp
+  class MyConfigurable: public Configurable
+  {
+  public:
+   Parameter<int> mySetting{"mySetting", 10, this};
+   Parameter<std::string> myOtherSetting{"myOtherSetting", "default", this};
+  } myObject;
+
+  // configure myObject with settings stored for MyConfigurable if they exist
+  GlobalSettings::load(myObject);
+
+  // store the configuration of myObject in the settings for MyConfigurable
+  GlobalSettings::store(myObject);
+  ```
+   fragment
+- [Settings](/cpp-sdk/4.5/api/classes/imfusion-settings) for [Configurable](/cpp-sdk/4.5/api/classes/imfusion-configurable) types can also be loaded and stored without an instance:
+  ```cpp
+  // load settings for MyConfigurable
+  auto properties = GlobalSettings::load<MyConfigurable>();
+
+  // store settings for MyConfigurable
+  GlobalSettings::store<MyConfigurable>(properties.value());
+  ```
+   fragment
+
+  **Note:** The names used for the settings of [Configurable](/cpp-sdk/4.5/api/classes/imfusion-configurable) types are determined automatically based on the type name. Overloads are provided to specify a custom name if needed.
+- Single values can be loaded and stored with a name:
+  ```cpp
+  // load an integer value
+  auto value = GlobalSettings::loadValue<int>("myIntValue");
+
+  // store a double value with a default
+  GlobalSettings::storeValue("myDoubleValue", 42.0, 0.0);
+  ```
+   fragment
+
+  **Note:** The names can be nested using the / character (cf. path spec of [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties)).
+
+  All operations on this class are thread-safe, but the user is responsible for the thread-safety of the [Configurable](/cpp-sdk/4.5/api/classes/imfusion-configurable) objects themselves. The sync operation is also safe across multiple processes through an advisory file lock.
+
+The setting are stored in the following locations by default depending on the platform:
+
+- Linux: $HOME/.config/&lt;org&gt;/&lt;app&gt;.json
+- Mac: $HOME/Library/Preferences/&lt;org&gt;/&lt;app&gt;.json
+- Windows: APPDATA%/&lt;org&gt;/&lt;app&gt;.json
+
+Where *org* and *app* must be specified by calling [init()](#init-1-2) once in the application.
+
+**See also:** [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) for more information on serialization.
+
+## Static Public Member Functions
+
+- static void [init](#init-1-2) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &org, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &app) — Initialize the [Settings](/cpp-sdk/4.5/api/classes/imfusion-settings) with the default file location.
+- static void [init](#init-2-2) (const [Filesystem::Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path) &configFilePath) — Initialize the [Settings](/cpp-sdk/4.5/api/classes/imfusion-settings) with a custom file location.
+- static bool [load](#load-1-2) (T &configurable) — Loads the parameters for [Configurable](/cpp-sdk/4.5/api/classes/imfusion-configurable) type *T* from global settings into *configurable*.
+- static bool [load](#load-2-2) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name, [Configurable](/cpp-sdk/4.5/api/classes/imfusion-configurable) &configurable) — Load the parameters for *name* from the global settings into *configurable*.
+- static [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) &gt; **load** () — Load the parameters for [Configurable](/cpp-sdk/4.5/api/classes/imfusion-configurable) type *T* from the global settings.
+- static [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) &gt; **load** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name) — Load the parameters for *name* from the global settings.
+- static [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; T &gt; **loadValue** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name) — Load the value for *name* from the global settings.
+- static void **store** (const T &configurable) — Stores the parameters for [Configurable](/cpp-sdk/4.5/api/classes/imfusion-configurable) type *T* in the global settings from *configurable*.
+- static void **store** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name, const [Configurable](/cpp-sdk/4.5/api/classes/imfusion-configurable) &configurable) — Store the parameters for *name* in the global settings from *configurable*.
+- static void **store** (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) &properties) — Store the parameters for [Configurable](/cpp-sdk/4.5/api/classes/imfusion-configurable) type *T* in the global settings from *properties*.
+- static void **store** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name, const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) &properties) — Store the parameters for *name* in the global settings from *properties*.
+- static void **storeValue** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name, const T &value) — Store the value for *name* in the global settings.
+- static void **storeValue** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name, const T &value, const T &defaultValue) — Store the value for *name* in the global settings with a default value.
+- static bool [remove](#remove-1-2) () — Remove the settings for [Configurable](/cpp-sdk/4.5/api/classes/imfusion-configurable) type *T* from the global settings.
+- static bool [remove](#remove-2-2) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name) — Remove the settings for *name* from the global settings.
+- static bool **sync** () noexcept — Synchronize the settings with disk.
+- static bool **importFrom** (const [Filesystem::Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path) &path) — Import settings from a file.
+- static bool **exportTo** (const [Filesystem::Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path) &path) — Export settings to a file.
+- static const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) & **properties** () — Return the entire global settings as a [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) instance.
+- static void **setToDefaults** () — Set setting parameters that have default values to their defaults.
+- static void [setTo](#setto) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) &properties) — Set the entire global settings to the given properties.
+- static [Filesystem::Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path) **filePath** () — Return the path to the settings file.
+- static [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **settingsName** () — Return the name used for the settings of the type *T*.
+
+## Member Function Documentation
+
+### init
+
+```cpp
+void ImFusion::GlobalSettings::init (const std::string & org, const std::string & app)
+```
+
+*static*
+
+Initialize the [Settings](/cpp-sdk/4.5/api/classes/imfusion-settings) with the default file location.
+
+At most one of the [init()](#init-1-2) overloads must be called at most once per process. Subsequent calls will be ignored.
+
+### init
+
+```cpp
+void ImFusion::GlobalSettings::init (const Filesystem::Path & configFilePath)
+```
+
+*static*
+
+Initialize the [Settings](/cpp-sdk/4.5/api/classes/imfusion-settings) with a custom file location.
+
+At most one of the [init()](#init-1-2) overloads must be called at most once per process. Subsequent calls will be ignored.
+
+### load
+
+```cpp
+template<typename T> bool ImFusion::GlobalSettings::load (T & configurable)
+```
+
+*static*
+
+Loads the parameters for [Configurable](/cpp-sdk/4.5/api/classes/imfusion-configurable) type *T* from global settings into *configurable*.
+
+Returns false if no settings for *T* were found.
+
+### load
+
+```cpp
+bool ImFusion::GlobalSettings::load (const std::string & name, Configurable & configurable)
+```
+
+*static*
+
+Load the parameters for *name* from the global settings into *configurable*.
+
+Returns false if no settings for *name* were found.
+
+### remove
+
+```cpp
+template<typename T> bool ImFusion::GlobalSettings::remove ()
+```
+
+*static*
+
+Remove the settings for [Configurable](/cpp-sdk/4.5/api/classes/imfusion-configurable) type *T* from the global settings.
+
+Returns true if the settings existed.
+
+**Note:** This may cause an immediate write to disk.
+
+### remove
+
+```cpp
+bool ImFusion::GlobalSettings::remove (const std::string & name)
+```
+
+*static*
+
+Remove the settings for *name* from the global settings.
+
+Returns true if the settings existed.
+
+**Note:** This may cause an immediate write to disk.
+
+### setTo
+
+```cpp
+void ImFusion::GlobalSettings::setTo (const Properties & properties)
+```
+
+*static*
+
+Set the entire global settings to the given properties.
+
+This will not remove any settings currently on disk after sync(), but will overwrite the values if different.

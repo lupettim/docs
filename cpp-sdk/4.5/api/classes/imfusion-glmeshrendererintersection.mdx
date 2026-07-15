@@ -1,0 +1,59 @@
+---
+title: "ImFusion::GlMeshRendererIntersection"
+sidebarTitle: "GlMeshRendererIntersection"
+description: "Renders the intersection between a Mesh and a Geometry::Plane using lines."
+---
+
+`#include <ImFusion/Mesh/Rendering/GlMeshRendererIntersection.h>`
+
+## Overview
+
+Renders the intersection between a [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) and a [Geometry::Plane](/cpp-sdk/4.5/api/classes/imfusion-geometry-plane) using lines.
+
+This low-level renderer renders lines at every position where a face of the input mesh intersects with the input plane. Optionally, it can will fill the inside of the mesh using a fill color.
+
+This class does not implement the [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) interface by design as it is meant to serve as a reusable component to be integrated into high-level classes.
+
+## Classes
+
+- struct [DisplayOptions](/cpp-sdk/4.5/api/structs/imfusion-glmeshrendererintersection-displayoptions) — Complete record of rendering options for [GlMeshRendererIntersection](/cpp-sdk/4.5/api/classes/imfusion-glmeshrendererintersection).
+
+## Public Member Functions
+
+- void [render](#render) (const [MeshGl](/cpp-sdk/4.5/api/classes/imfusion-meshgl) &mesh, const [DisplayOptions](/cpp-sdk/4.5/api/structs/imfusion-glmeshrendererintersection-displayoptions) &options, const [Geometry::Plane](/cpp-sdk/4.5/api/classes/imfusion-geometry-plane) &plane, const [GL::ViewState](/cpp-sdk/4.5/api/classes/imfusion-gl-viewstate) &viewState, const [GL::OrderIndependentTransparency](/cpp-sdk/4.5/api/classes/imfusion-gl-orderindependenttransparency) \*oit=nullptr) const — Renders the intersection between *mesh* and *plane* into the currently active OpenGL context.
+- void [renderWithCustomOptions](#renderwithcustomoptions) (const [MeshGl](/cpp-sdk/4.5/api/classes/imfusion-meshgl) &mesh, const [DisplayOptions](/cpp-sdk/4.5/api/structs/imfusion-glmeshrendererintersection-displayoptions) &options, const vec4 &lineColor, const [Geometry::Plane](/cpp-sdk/4.5/api/classes/imfusion-geometry-plane) &plane, const [GL::ViewState](/cpp-sdk/4.5/api/classes/imfusion-gl-viewstate) &viewState, const [GL::OrderIndependentTransparency](/cpp-sdk/4.5/api/classes/imfusion-gl-orderindependenttransparency) \*oit=nullptr) const — Renders the intersection between *mesh* and *plane* into the currently active OpenGL context.
+
+## Member Function Documentation
+
+### render
+
+```cpp
+void ImFusion::GlMeshRendererIntersection::render (const MeshGl & mesh, const DisplayOptions & options, const Geometry::Plane & plane, const GL::ViewState & viewState, const GL::OrderIndependentTransparency * oit = nullptr) const
+```
+
+Renders the intersection between *mesh* and *plane* into the currently active OpenGL context.
+
+**Parameters:**
+
+- `mesh` — The mesh to render.
+- `options` — The rendering options to use.
+- `plane` — The plane to intersect the mesh with.
+- `viewState` — The [GL::ViewState](/cpp-sdk/4.5/api/classes/imfusion-gl-viewstate) to use.
+- `oit` — An optional pointer to a [GL::OrderIndependentTransparency](/cpp-sdk/4.5/api/classes/imfusion-gl-orderindependenttransparency) instance to use.
+
+### renderWithCustomOptions
+
+```cpp
+void ImFusion::GlMeshRendererIntersection::renderWithCustomOptions (const MeshGl & mesh, const DisplayOptions & options, const vec4 & lineColor, const Geometry::Plane & plane, const GL::ViewState & viewState, const GL::OrderIndependentTransparency * oit = nullptr) const
+```
+
+Renders the intersection between *mesh* and *plane* into the currently active OpenGL context.
+
+**Parameters:**
+
+- `mesh` — The mesh to render.
+- `options` — The rendering options to use.
+- `lineColor` — Custom line color to use instead of the one in *options*.
+- `plane` — The plane to intersect the mesh with.
+- `viewState` — The [GL::ViewState](/cpp-sdk/4.5/api/classes/imfusion-gl-viewstate) to use.
+- `oit` — An optional pointer to a [GL::OrderIndependentTransparency](/cpp-sdk/4.5/api/classes/imfusion-gl-orderindependenttransparency) instance to use.

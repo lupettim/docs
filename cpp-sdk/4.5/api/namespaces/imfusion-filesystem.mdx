@@ -1,0 +1,43 @@
+---
+title: "ImFusion::Filesystem"
+sidebarTitle: "Filesystem"
+description: "Classes and functions to manipulate files and directories, and the paths that identify them."
+---
+
+## Overview
+
+Classes and functions to manipulate files and directories, and the paths that identify them.
+
+**See also:** Filesystem Library
+
+## Classes
+
+- class [File](/cpp-sdk/4.5/api/classes/imfusion-filesystem-file) — Entity representing a file in the filesystem.
+- class [Directory](/cpp-sdk/4.5/api/classes/imfusion-filesystem-directory) — Entity representing a [Directory](/cpp-sdk/4.5/api/classes/imfusion-filesystem-directory) in the filesystem.
+- struct [SpaceInfo](/cpp-sdk/4.5/api/structs/imfusion-filesystem-spaceinfo) — Simple structure representing the total and remaining disk space.
+- class [Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path) — Entity representing a path in the filesystem.
+- class [TemporaryFile](/cpp-sdk/4.5/api/classes/imfusion-filesystem-temporaryfile) — Temporary file which deletes itself upon going out of scope.
+- class [TemporaryDirectory](/cpp-sdk/4.5/api/classes/imfusion-filesystem-temporarydirectory) — Temporary directory which deletes itself upon going out of scope.
+- class [Url](/cpp-sdk/4.5/api/classes/imfusion-filesystem-url) — Entity representing a URL (Uniform [Resource](/cpp-sdk/4.5/api/namespaces/imfusion-resource) Locator).
+
+## Enumerations
+
+- enum class CopyOptions &#123; CopyOptions::None = 0 , CopyOptions::SkipExistingFiles = 1 &lt;&lt; 0 , CopyOptions::OverwriteExistingFiles = 1 &lt;&lt; 1 , CopyOptions::Recursive = 1 &lt;&lt; 3 , CopyOptions::DirectoriesOnly = 1 &lt;&lt; 4 &#125; — Bitflag enumeration to configure calls to copy().
+
+## Functions
+
+- [Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path) currentWorkingDirectory () — Returns the current working directory.
+- bool setCurrentWorkingDirectory (const [Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path) &path) — Sets the current working directory.
+- [Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path) **tempDirectory** () — Returns the location of the directory for temporary files for the current platform.
+- [Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path) homeDirectory () — Returns the location of the "home" directory if possible, otherwise returns an empty [Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path) object and logs an error message.
+- [Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path) configDirectory () — Returns the location of the directory for configuration files for the current platform.
+- [Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path) randomPath (const [Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path) &model="%%%%-%%%%-%%%%-%%%%") — Generates a random path based on the provided model, where it replaces each percent sign character by a random hexadecimal digit.
+- [Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path) commonParentDirectory (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path) &gt; &filepaths) — Returns the most common parent directory of all given files.
+- bool **isPortableFilename** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &filename) — Checks whether the given string forms a valid filename on common environments such as POSIX and Windows.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **makePortableFilename** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &filename, char replacementCharacter='_') — Checks the given string for any characters that would be invalid on common environments such as POSIX and Windows and replaces them with the provided *replacementCharacter*.
+- [Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path) removeTrailingSlash (const [Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path) &path) — Returns a [Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path) with no trailing path separators (On Windows '\' as well as POSIX '/' will be considered).
+- bool copy (const [Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path) &source, const [Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path) &destination, [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; CopyOptions &gt; copyOptions=CopyOptions::None, [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; bool(const [Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path) &sourcePath)&gt; filter=nullptr) — Copies files and/or directories from *source* to *destination* based on the provided options and optional filter.
+- bool rename (const [Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path) &from, const [Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path) &to) — Rename the given file/directory.
+- bool createDirectories (const [Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path) &path) — Recursively creates the directories in the given path in case they do not exist yet.
+- bool remove (const [Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path) &path) — Non-recursively deletes the given file/directory.
+- bool removeRecursive (const [Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path) &path) — Recursively deletes the given file/directory and all of its contents.

@@ -1,0 +1,140 @@
+---
+title: "ImFusion::GUI::RadiologyViewGroup"
+sidebarTitle: "RadiologyViewGroup"
+description: "Convenience class to setup a set of views typically available in radiology workstations."
+---
+
+`#include <ImFusion/GUI/RadiologyViewGroup.h>`
+
+## Overview
+
+Convenience class to setup a set of views typically available in radiology workstations.
+
+This class will create a total of 5 views and add them to the parent display passed during construction:
+
+- 1 [SliceView](/cpp-sdk/4.5/api/classes/imfusion-gui-sliceview) for showing 2D data
+- 3 SliceViews for showing 3D data as axial, sagittal, and coronal MPRs
+- 1 [VolumeView](/cpp-sdk/4.5/api/classes/imfusion-gui-volumeview) for showing 3D data
+
+In addition it provides a series of convenience functionality for these views:
+
+- A set of named accessor functions to directly retrieve a specific view.
+- A set of functions to modify the visible datasets in all views at once.
+- A set of helper functions to perform advanced actions such as centering the views at a specific location or align the MPR views to the voxel grid.
+- Customizable property linking of the 3 MPR views so that they all share the same appearance.
+
+The relationship between [RadiologyViewGroup](/cpp-sdk/4.5/api/classes/imfusion-gui-radiologyviewgroup) and its views is bi-directional: you can call [SliceView::viewGroup()](/cpp-sdk/4.5/api/classes/imfusion-gui-sliceview) and [VolumeView::viewGroup()](/cpp-sdk/4.5/api/classes/imfusion-gui-volumeview) to query its siblings.
+
+Since it is such a common use case, the [Display](/cpp-sdk/4.5/api/classes/imfusion-gui-display) interface provides a virtual member function Display::mainViewGroup() to be implemented by subclasses. This enables generic code to show data on the main views if available.
+
+## Public Types
+
+- enum class [Link](#link) &#123; None = 0 , Everything = 0xFFFF , ZoomFactor = 1 &lt;&lt; 0 , ZoomMode = 1 &lt;&lt; 1 , Interpolation = 1 &lt;&lt; 2 , Flip = 1 &lt;&lt; 3 , BlendingMode = 1 &lt;&lt; 4 , BlendingFactor = 1 &lt;&lt; 5 &#125; — Enumeration of properties that can be linked between the axial, sagittal, and coronal MPR views.
+
+## Public Member Functions
+
+- **RadiologyViewGroup** ([Display](/cpp-sdk/4.5/api/classes/imfusion-gui-display) &display)
+- [SliceIndicator](/cpp-sdk/4.5/api/classes/imfusion-gui-sliceindicator) & **mprIndicators** () — Returns the [SliceIndicator](/cpp-sdk/4.5/api/classes/imfusion-gui-sliceindicator) instance used to visualize the position/extent of the MPR views in all other MPR and 3D views.
+
+## Public Attributes
+
+- Signal&lt; const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &, const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) & &gt; [signalVisibleDataChanged](#signalvisibledatachanged) — Emitted when visibleData() changes.
+
+## Access to the views
+
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [View](/cpp-sdk/4.5/api/classes/imfusion-gui-view) \* &gt; **views** () const — Returns all views of this view group.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [SliceView](/cpp-sdk/4.5/api/classes/imfusion-gui-sliceview) \* &gt; **mprViews** () — Returns the three MPR views of this group.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [View](/cpp-sdk/4.5/api/classes/imfusion-gui-view) \* &gt; **dataViews** (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*dataset) const — Returns all views that currently have *dataset* as their visible data.
+- [SliceView](/cpp-sdk/4.5/api/classes/imfusion-gui-sliceview) & **view2d** () — Returns the [SliceView](/cpp-sdk/4.5/api/classes/imfusion-gui-sliceview) for showing 2D data.
+- [SliceView](/cpp-sdk/4.5/api/classes/imfusion-gui-sliceview) & **viewAxial** () — Returns the axial MPR [SliceView](/cpp-sdk/4.5/api/classes/imfusion-gui-sliceview) for showing 3D data.
+- [SliceView](/cpp-sdk/4.5/api/classes/imfusion-gui-sliceview) & **viewSagittal** () — Returns the sagittal MPR [SliceView](/cpp-sdk/4.5/api/classes/imfusion-gui-sliceview) for showing 3D data.
+- [SliceView](/cpp-sdk/4.5/api/classes/imfusion-gui-sliceview) & **viewCoronal** () — Returns the coronal MPR [SliceView](/cpp-sdk/4.5/api/classes/imfusion-gui-sliceview) for showing 3D data.
+- [VolumeView](/cpp-sdk/4.5/api/classes/imfusion-gui-volumeview) & **view3d** () — Returns the [VolumeView](/cpp-sdk/4.5/api/classes/imfusion-gui-volumeview) for showing 3D data.
+
+## Show/hide datasets in this view group
+
+- int [showData](#showdata) ([Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*dataset) — Appends *data* to the visible data on all compatible views of this group by calling [showData()](#showdata) on them.
+- void **hideData** (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*dataset) — Removes *data* from the set of visible data by calling hideData() on all specified views comprising this group.
+- void **replaceData** ([Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*which, [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*with) — Replaces all occurrence of *which* in the set of visible data with *with* in all views comprising this group.
+- void **setVisibleData** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &datasets) — Replace the visible data of all views with the one in *datasets*.
+- [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) **visibleData** () const — Returns the union of the currently visible data in all views comprising this group.
+
+## Show/hide ViewObjects and GlObjects in this view group
+
+- void **addObject** ([ViewObject](/cpp-sdk/4.5/api/classes/imfusion-gui-viewobject) \*object) — Convenience function to add *object* to all views of this view group.
+- void **addObject** ([GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) \*object) — Convenience function to add *object* to all views of this view group.
+- void **removeObject** ([ViewObject](/cpp-sdk/4.5/api/classes/imfusion-gui-viewobject) \*object) — Convenience function to remove *object* from all views of this view group.
+- void **removeObject** ([GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) \*object) — Convenience function to remove *object* from all views of this view group.
+
+## Conduct actions on the views
+
+- void **reset** ([Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; [SliceView::ResetOptions](/cpp-sdk/4.5/api/classes/imfusion-gui-sliceview) &gt; sliceResetOptions=SliceView::ResetOptions::Everything, [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; [VolumeView::ResetOptions](/cpp-sdk/4.5/api/classes/imfusion-gui-volumeview) &gt; volumeResetOptions=VolumeView::ResetOptions::Everything) — Performs a reset of all views comprising this group according to the given reset options by calling [SliceView::reset()](/cpp-sdk/4.5/api/classes/imfusion-gui-sliceview) / [VolumeView::reset()](/cpp-sdk/4.5/api/classes/imfusion-gui-volumeview).
+- void **centerOnData** (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) &dataset, bool suppressAnimation=false) — Reset view matrices of MPR and 3D views so that they are centered on the provided *dataset*.
+- void **centerOnLocation** (const vec3 &point, [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; vec3 &gt; axialViewNormal=std::nullopt, bool suppressAnimation=false) — Center the three MPR views and the volume view on the given *point* optionally also adjusting the rotational part.
+- void [setMprViewMatrices](#setmprviewmatrices) (const mat4 &matrix, bool suppressAnimation=false) — Sets the matrix of each MPR view according to their original plane.
+- void **alignMprViewsToVoxelGrid** (bool suppressAnimation=false) — Aligns all MPR views to the main axes of the first shown volume.
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; vec3 &gt; **intersectionCenter** () const — Return the world coordinate where all three slice views intersect or nullopt in case no intersection exists.
+
+## MPR view linking
+
+- [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; [Link](#link) &gt; **mprLinks** () const — Returns the set of properties that should be linked between the three MPR views.
+- void **setMprLinks** ([Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; [Link](#link) &gt; value) — Sets the set of properties that should be linked between the three MPR views.
+
+## Member Enumeration Documentation
+
+### Link
+
+```cpp
+enum class ImFusion::GUI::RadiologyViewGroup::Link
+```
+
+*strong*
+
+Enumeration of properties that can be linked between the axial, sagittal, and coronal MPR views.
+
+**Enumerator:**
+
+- `None` — Synchronize none of the below.
+- `Everything` — Synchronize all of the below.
+- `ZoomFactor` — Synchronize [SliceView::zoomFactor()](/cpp-sdk/4.5/api/classes/imfusion-gui-sliceview).
+- `ZoomMode` — Synchronize [SliceView::zoomMode()](/cpp-sdk/4.5/api/classes/imfusion-gui-sliceview).
+- `Interpolation` — Synchronize [SliceView::interpolationMode()](/cpp-sdk/4.5/api/classes/imfusion-gui-sliceview).
+- `Flip` — Synchronize SliceView::flipY().
+- `BlendingMode` — Synchronize [SliceView::blendingMode()](/cpp-sdk/4.5/api/classes/imfusion-gui-sliceview).
+- `BlendingFactor` — Synchronize [SliceView::blendingFactor()](/cpp-sdk/4.5/api/classes/imfusion-gui-sliceview).
+
+## Member Function Documentation
+
+### showData
+
+```cpp
+int ImFusion::GUI::RadiologyViewGroup::showData (Data * dataset)
+```
+
+Appends *data* to the visible data on all compatible views of this group by calling [showData()](#showdata) on them.
+
+**Returns:** The number of views to which *data* was added.
+
+**See also:** setVisibleData() for replacing the the entire set of shown data.
+
+### setMprViewMatrices
+
+```cpp
+void ImFusion::GUI::RadiologyViewGroup::setMprViewMatrices (const mat4 & matrix, bool suppressAnimation = false)
+```
+
+Sets the matrix of each MPR view according to their original plane.
+
+The rotation part of *matrix* sets the rotation of the axial view, the sagittal and coronal views according to their [GlSliceView::originalPlaneMatrix()](/cpp-sdk/4.5/api/classes/imfusion-glsliceview). The tranlational part of *matrix* defines the intersection point of the three MPR views.
+
+## Member Data Documentation
+
+### signalVisibleDataChanged
+
+```cpp
+Signal <const DataList &, const DataList &> ImFusion::GUI::RadiologyViewGroup::signalVisibleDataChanged
+```
+
+Emitted when visibleData() changes.
+
+The parameters are the visible data before and after the change.

@@ -1,0 +1,58 @@
+---
+title: "ImFusion::FrameBasedPointCloudIoAlgorithm"
+sidebarTitle: "FrameBasedPointCloudIoAlgorithm"
+description: "Algorithm for reading and writing frame-dependent point clouds."
+---
+
+`#include <ImFusion/IO/FrameBasedPointCloudIoAlgorithm.h>`
+
+## Overview
+
+[Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) for reading and writing frame-dependent point clouds.
+
+**Note:** Note that this algorithm does not store the dependent TrackedSharedImageSets. The user of this algorithm needs to make sure that they are saved/read independently, and their number and order matches for saving and reading. Due to the way the ImFusion Suite context menu is automatically populated, *reading* a frame-based point cloud works by selecting the dependent TrackedSharedImageSets and selecting this algorithm from the *export* sub-menu. This algorithm is not part of the SDK on purpose.
+
+## Public Member Functions
+
+- **FrameBasedPointCloudIoAlgorithm** ([FrameBasedPointCloud](/cpp-sdk/4.5/api/classes/imfusion-framebasedpointcloud) \*pc) — Constructor to create algorithm instance saving a given point cloud.
+- **FrameBasedPointCloudIoAlgorithm** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [TrackedSharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-trackedsharedimageset) \* &gt; &tsiss) — Constructor to create algorithm instance reading a point cloud for the given TrackedSharedImageSets.
+- **~FrameBasedPointCloudIoAlgorithm** () override — Destructor.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; [supportedFileExtensions](#supportedfileextensions) () const override — Returns "sbpc".
+- void [compute](#compute) () override — Performs the IO operation.
+- [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) [takeOutput](#takeoutput) () override — Returns the read point cloid.
+
+## Static Public Member Functions
+
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=0) — Factory method to check for applicability or to create the algorithm.
+
+## Member Function Documentation
+
+### supportedFileExtensions
+
+```cpp
+std::vector < std::string > ImFusion::FrameBasedPointCloudIoAlgorithm::supportedFileExtensions () const
+```
+
+*override, virtual*
+
+Returns "sbpc".
+
+### compute
+
+```cpp
+void ImFusion::FrameBasedPointCloudIoAlgorithm::compute ()
+```
+
+*override, virtual*
+
+Performs the IO operation.
+
+### takeOutput
+
+```cpp
+OwningDataList ImFusion::FrameBasedPointCloudIoAlgorithm::takeOutput ()
+```
+
+*override, virtual*
+
+Returns the read point cloid.

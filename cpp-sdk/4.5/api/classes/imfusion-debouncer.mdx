@@ -1,0 +1,40 @@
+---
+title: "ImFusion::Debouncer"
+sidebarTitle: "Debouncer"
+description: "Class that can be used to limit the frequency of calls to a function."
+---
+
+`#include <ImFusion/GUI/Debouncer.h>`
+
+## Overview
+
+Class that can be used to limit the frequency of calls to a function.
+
+Every time the debouncer is called, the underlying function is called only if this would not violate the frequency limit, otherwise the call is scheduled as soon as the frequency limit allows. If a call was already scheduled, then no further call is scheduled.
+
+WARNING: Not every call to the debouncer will correspond to a call to the underlying function. WARNING: A [Debouncer](/cpp-sdk/4.5/api/classes/imfusion-debouncer) instance can be called from any thread but the underlying function will always be called in QT Main Thread
+
+This drawing summarizes the behaviour of the class
+
+```cpp
+Call to debouncer            X----X------------------X-------------XXX--X-X------
+Call to underlying function  X--------X--------------X-------------X---------X---
+Min wait interval            |________|_________|    |_________|   |_________|
+```
+ fragment
+It is possible to specify useScheduling=false in the constructor to use this class as a rate limiter. This mode doesn't use QT to schedule calls but simply drop calls that happen in intervals shorter than minWaitMs This drawing summarizes the behaviour of the class with useScheduling=false
+
+```cpp
+Call to debouncer            X----X------------------X-------------XXX--X-X------
+Call to underlying function  X-----------------------X-------------X-------------
+Min wait interval            |________|              |_________|   |_________|
+```
+ fragment
+
+## Public Member Functions
+
+- **Debouncer** ([std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; void()&gt; f, int minWaitMs=15, bool useScheduling=true)
+- bool **run** (bool forceImmediate=false)
+- void **setMinWait** (int minWaitMs)
+- void **setFpsLimit** (int fps)
+- void **setFunction** ([std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; void()&gt; f)

@@ -1,0 +1,77 @@
+---
+title: "ImFusion::ImageDescriptorWorld"
+sidebarTitle: "ImageDescriptorWorld"
+description: "Convenience struct extending an ImageDescriptor to also include a matrix describing the image orientation in world coordinates."
+---
+
+`#include <ImFusion/Base/ImageDescriptorWorld.h>`
+
+## Overview
+
+Convenience struct extending an [ImageDescriptor](/cpp-sdk/4.5/api/structs/imfusion-imagedescriptor) to also include a matrix describing the image orientation in world coordinates.
+
+This struct can be useful for describing the geometrical properties of an image without need to hold the (heavy) image content. As such it can be used for representing reference geometries (see [ImageResamplingAlgorithm](/cpp-sdk/4.5/api/classes/imfusion-imageresamplingalgorithm)), or for one-line creation of a new [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) (see SharedImage(const ImageDescriptorWorld&)).
+
+**See also:** [ImageDescriptor](/cpp-sdk/4.5/api/structs/imfusion-imagedescriptor), [Using Image Data](/cpp-sdk/4.5/api/guides/image-data-tutorial)
+
+## Public Types
+
+- enum Comparison &#123; **Everything** = 0 , **IgnorePixelType** = 1 &lt;&lt; 0 , **IgnoreWidth** = 1 &lt;&lt; 1 , **IgnoreHeight** = 1 &lt;&lt; 2 , **IgnoreSlices** = 1 &lt;&lt; 3 , **IgnoreDimensions** = IgnoreWidth | IgnoreHeight | IgnoreSlices , **IgnoreChannels** = 1 &lt;&lt; 4 , **IgnoreSpacing** = 1 &lt;&lt; 5 , **IgnoreShiftScale** = 1 &lt;&lt; 6 , **IgnoreMatrix** = 1 &lt;&lt; 12 &#125; — Bitflag enumeration to be used with [isApprox()](#isapprox) to select which aspects of the descriptor should be compared.
+
+## Public Member Functions
+
+- **ImageDescriptorWorld** (const [ImageDescriptor](/cpp-sdk/4.5/api/structs/imfusion-imagedescriptor) &desc, const mat4 &matrixToWorld)
+- **ImageDescriptorWorld** (const [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) &sharedImage)
+- const [ImageDescriptor](/cpp-sdk/4.5/api/structs/imfusion-imagedescriptor) & **descriptor** () const
+- [ImageDescriptor](/cpp-sdk/4.5/api/structs/imfusion-imagedescriptor) & **descriptor** ()
+- const mat4 & **matrixToWorld** () const — Returns the transformation matrix from image space to world space.
+- void **setMatrixToWorld** (const mat4 &value) — Sets the transformation matrix from image space to world space.
+- mat4 **matrixFromWorld** () const — Returns the transformation matrix from world space to image space.
+- void **setMatrixFromWorld** (const mat4 &value) — Sets the transformation matrix from world space to image space.
+- bool [isApprox](#isapprox) (const ImageDescriptorWorld &other, [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; Comparison &gt; partsToCompare=Comparison::Everything) const — Convenience function to perform partial comparison of two [ImageDescriptorWorld](/cpp-sdk/4.5/api/classes/imfusion-imagedescriptorworld) instances.
+- bool [isSpatiallyCompatible](#isspatiallycompatible) (const ImageDescriptorWorld &other) const — Convenience function to compare two image world descriptors (for instance to know whether a resampling is necessary).
+- void **configure** (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) — Deserialize an image descriptor from [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void **configuration** ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const — Serialize an image descriptor to [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+## Transformation between pixel and image space
+
+- vec3 **pixelToImage** (const vec3 &pixel) const — Convert a 3D pixel/voxel position to image coordinates.
+- vec3 **imageToPixel** (const vec3 &world) const — Convert 3D image coordinates to pixel/voxel position.
+- mat4 **pixelToImageMatrix** () const — Returns a 4x4 matrix to transform from image pixel space to image space.
+- mat4 **imageToPixelMatrix** () const — Returns a 4x4 matrix to transform from image space to image pixel space.
+
+## Transformations between pixel and world space
+
+- vec3 **pixelToWorld** (const vec3 &pixel) const — Convert a 3D pixel/voxel position to world coordinates taking into account the image matrix.
+- vec3 **worldToPixel** (const vec3 &world) const — Convert 3D world coordinates to pixel/voxel position taking into account the image matrix.
+- mat4 **pixelToWorldMatrix** () const — Returns a 4x4 matrix to transform from image pixel space to world space.
+- mat4 **worldToPixelMatrix** () const — Returns a 4x4 matrix to transform from world space to image pixel space.
+
+## Transformations from/to OpenGL texture coordinates ([0..1] range)
+
+- mat4 **textureToWorldMatrix** () const — Returns a 4x4 matrix to transform from texture space to world space.
+- mat4 **worldToTextureMatrix** () const — Returns a 4x4 matrix to transform from world space to texture space.
+- mat4 **textureToImageMatrix** () const — Returns a 4x4 matrix to transform from texture space to image space.
+- mat4 **imageToTextureMatrix** () const — Returns a 4x4 matrix to transform from image space to texture space.
+
+## Member Function Documentation
+
+### isApprox
+
+```cpp
+bool ImFusion::ImageDescriptorWorld::isApprox (const ImageDescriptorWorld & other, Flags < Comparison > partsToCompare = Comparison::Everything) const
+```
+
+Convenience function to perform partial comparison of two [ImageDescriptorWorld](/cpp-sdk/4.5/api/classes/imfusion-imagedescriptorworld) instances.
+
+This function will use approximate comparison of floating point members. Use the bitflag *partsToCompare* to select which aspects of the descriptor should be considered.
+
+### isSpatiallyCompatible
+
+```cpp
+bool ImFusion::ImageDescriptorWorld::isSpatiallyCompatible (const ImageDescriptorWorld & other) const
+```
+
+Convenience function to compare two image world descriptors (for instance to know whether a resampling is necessary).
+
+Two descriptors are compatible if their dimensions, matrix and spacing are identical. Has the same effect as [isApprox](#isapprox)(other, &#123;ImageDescriptorWorld::IgnorePixelType, ImageDescriptorWorld::IgnoreChannels, ImageDescriptorWorld::IgnoreShiftScale&#125;).

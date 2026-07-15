@@ -1,0 +1,33 @@
+---
+title: "ImFusion::FrequencyFilter2D"
+sidebarTitle: "FrequencyFilter2D"
+description: "Apply arbitrary frequency filters to 2D input."
+---
+
+`#include <ImFusion/Base/FrequencyFilter.h>`
+
+## Overview
+
+Apply arbitrary frequency filters to 2D input.
+
+This class takes a filter response defined by a given lambda function and applies it to 2D float image. Filter response is defined as a spectral density multiplier for the given frequency in units of oscillations per image width/height. This function is sampled according to the resolution of the forward [FFT](/cpp-sdk/4.5/api/classes/imfusion-fft) of the input signal. The required Fourier transformations to and from frequency space are handled internally using the [CpuFFT](/cpp-sdk/4.5/api/namespaces/imfusion-cpufft) class.
+
+## Public Member Functions
+
+- **FrequencyFilter2D** (const [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; vec2f(float, float)&gt; &filterResponse=[](float, float) &#123; return vec2f::Ones();&#125;)
+- void [setFilterFunction](#setfilterfunction) (const [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; vec2f(float, float)&gt; &filterResponse, bool normalize=false) — Set the frequency response function.
+- void **apply** (const [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; float &gt; &signalIn, [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; float &gt; &signalOut) const — Apply the current frequency response function to the given time domain signal.
+
+## Member Function Documentation
+
+### setFilterFunction
+
+```cpp
+void ImFusion::FrequencyFilter2D::setFilterFunction (const std::function < vec2f(float, float)> & filterResponse, bool normalize = false)
+```
+
+*inline*
+
+Set the frequency response function.
+
+If normalize is set to true, the frequencies given to the response function will be normalized w.r.t. the frequency range of the [FFT](/cpp-sdk/4.5/api/classes/imfusion-fft) result.

@@ -1,0 +1,35 @@
+---
+title: "ImFusion::DataDescriptor::TypeSpecificData"
+sidebarTitle: "TypeSpecificData"
+---
+
+## Public Member Functions
+
+- void **setHasData** (bool b)
+- bool **hasData** () const
+- uint64_t & **fileTimestamp** ()
+- const uint64_t & **fileTimestamp** () const
+- virtual QString **dataPath** () const =0
+- virtual QString [projectId](#projectid) () const =0 — Returns the ID of this layer as defined in the project.
+
+## Protected Member Functions
+
+- **TypeSpecificData** (DataDescriptor \*)
+
+## Protected Attributes
+
+- bool **m_hasData** = false
+- uint64_t **m_fileTimestamp** = 0
+- DataDescriptor \* **m_dataDescriptor** = nullptr
+
+## Member Function Documentation
+
+### projectId
+
+```cpp
+virtual QString ImFusion::DataDescriptor::TypeSpecificData::projectId () const
+```
+
+*pure virtual*
+
+Returns the ID of this layer as defined in the project.

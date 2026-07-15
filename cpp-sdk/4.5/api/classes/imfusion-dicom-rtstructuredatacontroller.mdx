@@ -1,0 +1,46 @@
+---
+title: "ImFusion::Dicom::RTStructureDataController"
+sidebarTitle: "RTStructureDataController"
+description: "A DataController for PointClouds that contain a RTStructureDataComponent ."
+---
+
+`#include <ImFusion/Dicom/GUI/RTStructureDataController.h>`
+
+## Overview
+
+A [DataController](/cpp-sdk/4.5/api/classes/imfusion-datacontroller) for PointClouds that contain a [RTStructureDataComponent](/cpp-sdk/4.5/api/classes/imfusion-dicom-rtstructuredatacomponent).
+
+It generates rendering data for the RTStructureAnnotations (which are usually managed by [RTStructureDataDisplayHandler](/cpp-sdk/4.5/api/classes/imfusion-dicom-rtstructuredatadisplayhandler)). The meshes are generated with [RTStructureToLabelMap](/cpp-sdk/4.5/api/classes/imfusion-rtstructuretolabelmap) and [LabelToMeshAlgorithm](/cpp-sdk/4.5/api/classes/imfusion-labeltomeshalgorithm) in a separate thread. It also shows a list of all RT Structure Sets together with a checkbox to make them visible in the display (providing similar features as the [DataWidget](/cpp-sdk/4.5/api/classes/imfusion-datawidget)).
+
+## Public Member Functions
+
+- void [init](#init) () override — Two-step initialization function to be implemented by subclasses.
+- void [onVisibleDataChanged](#onvisibledatachanged) (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data) override — Called by [MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase) in the case that the currently visible data has changed.
+
+## Static Public Member Functions
+
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, DataController \*\*a=0)
+
+## Member Function Documentation
+
+### init
+
+```cpp
+void ImFusion::Dicom::RTStructureDataController::init ()
+```
+
+*override, virtual*
+
+Two-step initialization function to be implemented by subclasses.
+
+This function is called by [setMainWindowBase()](/cpp-sdk/4.5/api/classes/imfusion-controller) after the [m_disp](/cpp-sdk/4.5/api/classes/imfusion-controller) and [m_main](/cpp-sdk/4.5/api/classes/imfusion-controller) attributes have been set and hence a complete initialization of the controller is possible at this point.
+
+### onVisibleDataChanged
+
+```cpp
+void ImFusion::Dicom::RTStructureDataController::onVisibleDataChanged (const DataList &)
+```
+
+*override, virtual*
+
+Called by [MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase) in the case that the currently visible data has changed.

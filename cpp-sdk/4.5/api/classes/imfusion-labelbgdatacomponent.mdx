@@ -1,0 +1,23 @@
+---
+title: "ImFusion::LabelBgDataComponent"
+sidebarTitle: "LabelBgDataComponent"
+---
+
+## Public Member Functions
+
+- **LabelBgDataComponent** (const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*=nullptr)
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [id](#id) () const override — Returns a unique string identifier for this type of data component.
+
+## Member Function Documentation
+
+### id
+
+```cpp
+std::string ImFusion::LabelBgDataComponent::id () const
+```
+
+*inline, override, virtual*
+
+Returns a unique string identifier for this type of data component.
+
+**Note:** To avoid conflicts make sure to include potential plugin names into this ID. Due to the modular architecture of the ImFusion library, uniqueness of IDs cannot be checked at compile time. However, [DataComponentFactory](/cpp-sdk/4.5/api/classes/imfusion-datacomponentfactory) will check the uniqueness of the ID during registration.

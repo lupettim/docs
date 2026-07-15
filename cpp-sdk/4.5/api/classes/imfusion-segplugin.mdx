@@ -1,0 +1,69 @@
+---
+title: "ImFusion::SegPlugin"
+sidebarTitle: "SegPlugin"
+description: "Plugin for algorithms from Seg module."
+---
+
+`#include <ImFusion/Seg/SegPlugin.h>`
+
+## Overview
+
+Plugin for algorithms from [Seg](/cpp-sdk/4.5/api/namespaces/imfusion-seg) module.
+
+## Public Member Functions
+
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [author](#author) () const override — Name of the author of the plugin for informative purposes.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [description](#description) () const override — Description of the plugin purpose/functionality for informative purposes.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; [dependencies](#dependencies) () const override — Optional list of plugin IDs on which this plugin depends.
+
+## Static Public Member Functions
+
+- static const char \* **id** ()
+
+## Protected Member Functions
+
+- [Status](/cpp-sdk/4.5/api/classes/imfusion-pluginbase) [init](#init) () override — Perform plugin initialization, for instance by populating factories and registering custom types with the host application.
+
+## Member Function Documentation
+
+### author
+
+```cpp
+std::string ImFusion::SegPlugin::author () const
+```
+
+*inline, override, virtual*
+
+Name of the author of the plugin for informative purposes.
+
+### description
+
+```cpp
+std::string ImFusion::SegPlugin::description () const
+```
+
+*inline, override, virtual*
+
+Description of the plugin purpose/functionality for informative purposes.
+
+### dependencies
+
+```cpp
+std::vector < std::string > ImFusion::SegPlugin::dependencies () const
+```
+
+*override, virtual*
+
+Optional list of plugin IDs on which this plugin depends.
+
+Initialization of this plugin will fail if any of the plugins in this list can not be loaded or initialized for any reason.
+
+### init
+
+```cpp
+Status ImFusion::SegPlugin::init ()
+```
+
+*override, protected, virtual*
+
+Perform plugin initialization, for instance by populating factories and registering custom types with the host application.

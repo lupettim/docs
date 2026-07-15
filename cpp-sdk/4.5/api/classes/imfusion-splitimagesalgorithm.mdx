@@ -1,0 +1,100 @@
+---
+title: "ImFusion::SplitImagesAlgorithm"
+sidebarTitle: "SplitImagesAlgorithm"
+description: "Algorithm to split images into a set of subimages."
+---
+
+`#include <ImFusion/Base/SplitImagesAlgorithm.h>`
+
+## Overview
+
+[Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) to split images into a set of subimages.
+
+## Public Member Functions
+
+- **SplitImagesAlgorithm** (const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*images) — Creates the algorithm instance with a series of images.
+- **~SplitImagesAlgorithm** () override — Destructor.
+
+## Methods implementing the Configurable interface
+
+- enum class **Device** &#123; **CPU** , **GPU** &#125;
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; vec3i &gt; **p_maxSizeSubDivisions** = &#123;"maxSize", vec3i(-1, -1, -1), this&#125; — Maximum dimensions of the extracted patches.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; int &gt; **p_pixelsOverlap** = &#123;"overlap", 0, this&#125; — Minimal pixel overlap of the extracted patches, the exact overlap is automatically deduced.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; vec3i &gt; **p_subImagesDimDivisor** = &#123;"dimensionDivisor", vec3i::Ones(), this&#125; — Each dimension in an extracted patch is guaranteed to be a multiple of the corresponding dimensionDivisor.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; bool &gt; **p_weighted** = &#123;"weighted", false, this&#125; — Legacy parameter: Turn On/Off Cosine weighted recombination of images.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; Device &gt; **p_device** = &#123;"device", Device::CPU, this&#125; — Device to run the computation, either Cpu or Gpu.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; [PaddingMode](/cpp-sdk/4.5/api/namespaces/imfusion) &gt; **p_paddingMode** = &#123;"paddingMode", [PaddingMode::Mirror](/cpp-sdk/4.5/api/namespaces/imfusion), this&#125; — Set padding mode used for the input image.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; bool &gt; **p_extendImage** = &#123;"extendImage", false, this&#125; — Pad the image with twice the overlap amount.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; bool &gt; **p_ensureInputImageMultipleOfDivisor** = &#123;"ensureInputImageMultipleOfDivisor", true, this&#125; — Pad the image before splitting, such that is a multiple of DimensionDivisor in every dimension.
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+- bool **checkConfigurationParameters** () — Returns whether the parameters are properly set (if not, the algorithm will not produce any output).
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) &gt; **recombineImages** (const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*subImages) const — Recombine a set of subimages.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) &gt; **recombineImages** (const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*subImages, const [ImageDescriptorWorld](/cpp-sdk/4.5/api/classes/imfusion-imagedescriptorworld) &refDescriptor) const
+- void **setInput** (const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*sis) — Update input image.
+
+## Methods implementing the algorithm interface
+
+- void [compute](#compute) () override — Applies the processing.
+- [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) [takeOutput](#takeoutput) () override — If new data was created, make it available here.
+- static bool [createCompatible](#createcompatible) (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=nullptr)
+
+## Member Function Documentation
+
+### createCompatible
+
+```cpp
+bool ImFusion::SplitImagesAlgorithm::createCompatible (const DataList & data, Algorithm ** a = nullptr)
+```
+
+*static*
+
+Factory method to check for applicability or to create the algorithm
+
+### compute
+
+```cpp
+void ImFusion::SplitImagesAlgorithm::compute ()
+```
+
+*override, virtual*
+
+Applies the processing.
+
+### takeOutput
+
+```cpp
+OwningDataList ImFusion::SplitImagesAlgorithm::takeOutput ()
+```
+
+*override, virtual*
+
+If new data was created, make it available here.
+
+### configure
+
+```cpp
+void ImFusion::SplitImagesAlgorithm::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### configuration
+
+```cpp
+void ImFusion::SplitImagesAlgorithm::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality

@@ -1,0 +1,83 @@
+---
+title: "ImFusion::MeshDisplayOptions"
+sidebarTitle: "MeshDisplayOptions"
+description: "DataComponent to store the configuration how meshes should be rendered by default (through MeshDisplayHandler)."
+---
+
+`#include <ImFusion/Base/MeshDisplayOptions.h>`
+
+## Overview
+
+[DataComponent](/cpp-sdk/4.5/api/classes/imfusion-datacomponent) to store the configuration how meshes should be rendered by default (through MeshDisplayHandler).
+
+[MeshDisplayOptions](/cpp-sdk/4.5/api/classes/imfusion-meshdisplayoptions) are attached to the [DataComponentList](/cpp-sdk/4.5/api/classes/imfusion-datacomponentlist) of its parent [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) so that they can be accessed easily from everywhere. MeshDisplayHandler will query them to configure its renderers.
+
+**See also:** MeshDisplayHandler, MeshRendererSurface, MeshRendererIntersection, MeshRendererNormals
+
+## Public Types
+
+- enum [RenderMode2d](#rendermode2d) &#123; Intersection , Surface , SurfaceWithClipping &#125; — Enumeration of options how a mesh should be shown in MPR views.
+
+## Public Member Functions
+
+- bool **operator==** (const MeshDisplayOptions &rhs) const
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [id](#id) () const override — Returns a unique string identifier for this type of data component.
+- void **setUseFaceNormals** (bool value) — Convenience function to set p_useFaceNormals of both p_surfaceRendering and p_normalsRendering at once.
+- bool **usesFaceNormals** () const — Convenience function to check if p_useFaceNormals is set of both p_surfaceRendering and p_normalsRendering.
+
+## Public Attributes
+
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; [RenderMode2d](#rendermode2d) &gt; **p_renderMode2d** = &#123;"renderMode2d", RenderMode2d::Intersection, this&#125;
+- [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty)&lt; [GlMeshRendererIntersection::DisplayOptions](/cpp-sdk/4.5/api/structs/imfusion-glmeshrendererintersection-displayoptions) &gt; [p_intersectionRendering](#p-intersectionrendering)
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; bool &gt; **p_showSurface** = &#123;"showSurface", true, this&#125;
+- [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty)&lt; [GlMeshRendererSurface::DisplayOptions](/cpp-sdk/4.5/api/structs/imfusion-glmeshrenderersurface-displayoptions) &gt; **p_surfaceRendering** = &#123;"surfaceRendering", [GlMeshRendererSurface::DisplayOptions](/cpp-sdk/4.5/api/structs/imfusion-glmeshrenderersurface-displayoptions)(), this&#125;
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; bool &gt; **p_showContours** = &#123;"showContours", false, this&#125;
+- [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty)&lt; [GlMeshRendererContours::DisplayOptions](/cpp-sdk/4.5/api/structs/imfusion-glmeshrenderercontours-displayoptions) &gt; **p_contourRendering** = &#123;"contourRendering", [GlMeshRendererContours::DisplayOptions](/cpp-sdk/4.5/api/structs/imfusion-glmeshrenderercontours-displayoptions)(), this&#125;
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; bool &gt; **p_showNormals** = &#123;"showNormals", false, this&#125;
+- [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty)&lt; [GlMeshRendererNormals::DisplayOptions](/cpp-sdk/4.5/api/structs/imfusion-glmeshrenderernormals-displayoptions) &gt; **p_normalsRendering** = &#123;"normalsRendering", [GlMeshRendererNormals::DisplayOptions](/cpp-sdk/4.5/api/structs/imfusion-glmeshrenderernormals-displayoptions)(), this&#125;
+
+## Member Enumeration Documentation
+
+### RenderMode2d
+
+```cpp
+enum ImFusion::MeshDisplayOptions::RenderMode2d
+```
+
+Enumeration of options how a mesh should be shown in MPR views.
+
+**Enumerator:**
+
+- `Intersection` — Render intersection with MPR plane only.
+- `Surface` — Additionally render the mesh using MeshRendererSurface projected onto the MPR without any clipping.
+- `SurfaceWithClipping` — Additionally render the mesh using MeshRendererSurface clipped against the MPR plane.
+
+## Member Function Documentation
+
+### id
+
+```cpp
+std::string ImFusion::MeshDisplayOptions::id () const
+```
+
+*inline, override, virtual*
+
+Returns a unique string identifier for this type of data component.
+
+**Note:** To avoid conflicts make sure to include potential plugin names into this ID. Due to the modular architecture of the ImFusion library, uniqueness of IDs cannot be checked at compile time. However, [DataComponentFactory](/cpp-sdk/4.5/api/classes/imfusion-datacomponentfactory) will check the uniqueness of the ID during registration.
+
+## Member Data Documentation
+
+### p_intersectionRendering
+
+```cpp
+SubProperty < GlMeshRendererIntersection::DisplayOptions > ImFusion::MeshDisplayOptions::p_intersectionRendering
+```
+
+**Initial value:**
+```cpp
+= {"intersectionRendering",
+ GlMeshRendererIntersection::DisplayOptions(),
+ this}
+```
+ fragment

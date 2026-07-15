@@ -1,0 +1,17 @@
+---
+title: "ImFusion::MincIO"
+sidebarTitle: "MincIO"
+description: "Class for reading and writing MINC images."
+---
+
+`#include <ImFusion/IO/MincIO.h>`
+
+## Overview
+
+Class for reading and writing MINC images.
+
+## Static Public Member Functions
+
+- static [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) &gt; **loadMINCImage** (const char \*filename, mat4 &matrixOut, bool verbose=false) — Load a MINC file.
+- static bool **loadXFMMatrix** (const char \*filename, mat4 &matrixOut) — Load a transformation matrix from XFM file, returns true upon success.
+- static bool **loadTAGFilePoints** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &filename, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; &pointsAOut, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; &pointsBOut) — Load point correspondences from TAG format.

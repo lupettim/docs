@@ -1,0 +1,52 @@
+---
+title: "ImFusion::MatrixParameterWidget"
+sidebarTitle: "MatrixParameterWidget"
+description: "Widget containing a transformation matrix widget and a transformation stash."
+---
+
+`#include <ImFusion/GUI/MatrixParameterWidget.h>`
+
+## Overview
+
+Widget containing a transformation matrix widget and a transformation stash.
+
+## Public Slots
+
+- void **setMatrix** (const mat4 &matrix) — Sets the matrix.
+- void **setMatrixSilent** (const mat4 &matrix)
+- void **applyMatrix** ()
+- void **save** ()
+- void **load** ()
+- void **remove** ()
+- void **rename** (int index, const QString &text)
+
+## Signals
+
+- void **matrixChanged** (const mat4 &mat)
+
+## Public Member Functions
+
+- **MatrixParameterWidget** (const mat4 &resetMat=mat4::Identity(), QWidget \*parent=nullptr, [Pose::TransformationConvention](/cpp-sdk/4.5/api/namespaces/imfusion-pose) conv=[Pose::FROMWORLD](/cpp-sdk/4.5/api/namespaces/imfusion-pose), bool rigid=false)
+- **MatrixParameterWidget** ([Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data, QWidget \*parent=0, bool rigid=false, bool showISGroup=true)
+- mat4 **matrix** () const
+- [TransformationMatrixWidget](/cpp-sdk/4.5/api/classes/imfusion-transformationmatrixwidget) \* **transWidget** () const
+
+## Protected Member Functions
+
+- void **setDataMatrix** (const mat4 &mat)
+- void **selectionChanged** ()
+- void **onTransformationChanged** (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data)
+- void **onDataDeleted** (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data)
+- void **connectSignals** ()
+- void **updateSavedTransformations** ()
+
+## Protected Attributes
+
+- Ui_MatrixParameterWidget \* **m_ui** = nullptr
+- [TransformationMatrixWidget](/cpp-sdk/4.5/api/classes/imfusion-transformationmatrixwidget) \* **m_transWidget** = nullptr
+- [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* **m_is** = nullptr
+- [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \* **m_data** = nullptr
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; mat4 &gt; &gt; **m_savedMatrices**
+- bool **m_changedHere** = false — True while a change from this dialog is being applied.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [TransformationStashDataComponent](/cpp-sdk/4.5/api/classes/imfusion-transformationstashdatacomponent) &gt; **m_savedTransformations** — Contains all stored transformation.
+- QStringListModel **m_savedTransformationsModel** — Model reflecting m_savedTransformations.

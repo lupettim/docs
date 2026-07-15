@@ -1,0 +1,25 @@
+---
+title: "ImFusion::TrackingInstrument"
+sidebarTitle: "TrackingInstrument"
+description: "Class for information of a tracking instrument."
+---
+
+`#include <ImFusion/Base/TrackingInstrument.h>`
+
+## Overview
+
+Class for information of a tracking instrument.
+
+## Public Member Functions
+
+- bool **operator==** (const TrackingInstrument &other) const
+- bool **operator!=** (const TrackingInstrument &other) const
+
+## Public Attributes
+
+- [TrackerID](/cpp-sdk/4.5/api/classes/imfusion-trackerid) **id**
+- mat4 **matrix** = mat4::Identity() — Most recent position of the instrument's tip.
+- double **quality** = 0.0 — Visibility of the instrument; The value must be NaN if quality is not provided by the device.
+- unsigned long long **timeStamp** = 0 — Timestamp in milliseconds.
+- int **statusFlags** = 0x0 — Bit field for status flags.
+- bool **active** = true — Whether the tool is active or inactive.

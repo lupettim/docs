@@ -1,0 +1,44 @@
+---
+title: "ImFusion::Filesystem::TemporaryFile"
+sidebarTitle: "TemporaryFile"
+description: "Temporary file which deletes itself upon going out of scope."
+---
+
+`#include <ImFusion/Core/Filesystem/TemporaryFile.h>`
+
+## Overview
+
+Temporary file which deletes itself upon going out of scope.
+
+## Public Types
+
+- enum class Policy &#123; **Create** , **CreateRecursive** , **DoNotCreate** &#125; — [TemporaryFile](/cpp-sdk/4.5/api/classes/imfusion-filesystem-temporaryfile) Construction Policy.
+
+## Public Member Functions
+
+- [TemporaryFile](#temporaryfile) (const [Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path) &[path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-file)=&#123;&#125;, Policy policy=Policy::CreateRecursive) — Constructs a [TemporaryFile](/cpp-sdk/4.5/api/classes/imfusion-filesystem-temporaryfile) with a given path and policy.
+
+## Constructor & Destructor Documentation
+
+### TemporaryFile
+
+```cpp
+ImFusion::Filesystem::TemporaryFile::TemporaryFile (const Path & path = {}, Policy policy = Policy::CreateRecursive)
+```
+
+*explicit*
+
+Constructs a [TemporaryFile](/cpp-sdk/4.5/api/classes/imfusion-filesystem-temporaryfile) with a given path and policy.
+
+**Parameters:**
+
+- `path` — The path where the temporary file will be created. Relative paths are considered relative to the current working directory.
+If [path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-file) is empty (default), a file with a randomized name is created in the system's temporary file directory.
+If [path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-file) represents a directory, a file with a randomized name is created in [path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-file).
+If [path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-file) represents a file, it will be used for the filename and path. The path can optionally include percent sign characters to specify replacement by a random hexadecimal digit. For example: [TemporaryFile](#temporaryfile)("/my/tempfile/directory%%/%%%%%.png");
+[ImFusion::Filesystem::TemporaryFile::TemporaryFile](#temporaryfile)TemporaryFile(const Path &path=&#123;&#125;, Policy policy=Policy::CreateRecursive)Constructs a TemporaryFile with a given path and policy.
+ fragment
+- `policy` — The policy of how the temporary file should be created.
+Create: Create the file immediately upon construction. If [path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-file) is not empty, and the parent directory of the given path doesn't exit, this will not create them.
+CreateRecursive (default): Create the file and parent directories immediately upon construction.
+DoNotCreate: Will not create the file on the filesystem. You can subsequently create the file manually by calling [create()](/cpp-sdk/4.5/api/classes/imfusion-filesystem-file).

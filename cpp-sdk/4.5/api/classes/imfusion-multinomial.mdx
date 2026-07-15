@@ -1,0 +1,45 @@
+---
+title: "ImFusion::Multinomial"
+sidebarTitle: "Multinomial"
+---
+
+## Public Member Functions
+
+- [Multinomial](#multinomial) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; &probabilities) — Creates a multinomial distribution.
+- size_t **sample** () const — Extracts a single sample from the distribution.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; size_t &gt; [multisample](#multisample) (size_t numSamples, bool distinct=true) const — Extracts multiple samples from the distribution.
+- void **setSeed** (uint32_t seed)
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; & **extractProbability** () const — extracts the probabilities for each element
+
+## Constructor & Destructor Documentation
+
+### Multinomial
+
+```cpp
+ImFusion::Multinomial::Multinomial (const std::vector < double > & probabilities)
+```
+
+*explicit*
+
+Creates a multinomial distribution.
+
+**Parameters:**
+
+- `probabilities` — vector of probabilities (can be un-normalized)
+
+## Member Function Documentation
+
+### multisample
+
+```cpp
+std::vector < size_t > ImFusion::Multinomial::multisample (size_t numSamples, bool distinct = true) const
+```
+
+Extracts multiple samples from the distribution.
+
+**Parameters:**
+
+- `numSamples` — desired number of samples
+- `distinct` — whether the samples should be distinct
+
+**Returns:** extracted samples

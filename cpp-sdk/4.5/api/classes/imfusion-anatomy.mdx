@@ -1,0 +1,44 @@
+---
+title: "ImFusion::Anatomy"
+sidebarTitle: "Anatomy"
+description: "Class representing a single anatomy code ID from the SNOMED CT database."
+---
+
+`#include <ImFusion/Base/Anatomy.h>`
+
+## Overview
+
+Class representing a single anatomy code ID from the SNOMED CT database.
+
+This class stores a single integer code from the international SNOMED CT (Systematized Nomenclature of Medicine - Clinical Terms) database, further abbreviated as SCT as in DICOM. Conversion from and to strings is possible on the subset of values supported by the DICOM tag BodyPartExamined, see the following table: [http://dicom.nema.org/medical/dicom/current/output/chtml/part16/chapter_L.html#table_L-1](http://dicom.nema.org/medical/dicom/current/output/chtml/part16/chapter_L.html#table_L-1)
+
+**See also:** [AnatomyDataComponent](/cpp-sdk/4.5/api/classes/imfusion-anatomydatacomponent)
+
+## Public Types
+
+- enum [SctId](#sctid) &#123; **ABDOMEN** = 818981001 , **ANKLE** = 70258002 , **ARM** = 40983000 , **APPENDIX** = 66754008 , **BILEDUCT** = 28273000 , **BLADDER** = 89837001 , **BRAIN** = 12738006 , **BREAST** = 76752008 , **CAROTID** = 69105007 , **CSPINE** = 122494005 , **CTSPINE** = 297171002 , **CHEST** = 43799004 , **COLON** = 71854001 , **DUODENUM** = 38848004 , **EAR** = 117590005 , **ELBOW** = 16953009 , **WHOLEBODY** = 38266002 , **EXTREMITY** = 66019005 , **EYE** = 81745001 , **FACE** = 89545001 , **FEMUR** = 71341001 , **FIBULA** = 87342007 , **FINGER** = 7569003 , **FOOT** = 56459004 , **FOREARM** = 14975008 , **GALLBLADDER** = 28231008 , **HAND** = 85562004 , **HEAD** = 69536005 , **HEART** = 80891009 , **HIP** = 24136001 , **HUMERUS** = 85050009 , **JAW** = 661005 , **KIDNEY** = 64033007 , **KNEE** = 72696002 , **LIVER** = 10200004 , **LEG** = 30021000 , **LSPINE** = 122496007 , **LSSPINE** = 297173004 , **LUNG** = 39607008 , **MOUTH** = 123851003 , **NECK** = 45048000 , **NOSE** = 45206002 , **PANCREAS** = 15776009 , **PATELLA** = 64234005 , **PELVIS** = 816092008 , **PROSTATE** = 41216001 , **RADIUS** = 62413002 , **RECTUM** = 34402009 , **RIB** = 113197003 , **SSPINE** = 54735007 , **SCAPULA** = 79601000 , **SHOULDER** = 16982005 , **SKULL** = 89546000 , **SPINE** = 421060004 , **SPLEEN** = 78961009 , **STERNUM** = 56873002 , **STOMACH** = 69695003 , **THIGH** = 68367000 , **TSPINE** = 122495006 , **TLSPINE** = 297172009 , **THORAX** = 43799004 , **THUMB** = 76505004 , **THYROID** = 69748006 , **TIBIA** = 12611008 , **TOE** = 29707007 , **TONGUE** = 21974007 , **WRIST** = 74670003 &#125; — [Selection](/cpp-sdk/4.5/api/classes/imfusion-selection) of SCT IDs that are most likely to be useful in source code.
+
+## Public Member Functions
+
+- **Anatomy** ([SctId](#sctid) id) — Constructor with SCT ID as enum.
+- **Anatomy** (int64_t sctId) — Constructor with SCT ID as integer.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **name** () const — Returns the capital code string name of the anatomy, or an empty string if not available.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **description** () const — Returns the description of the anatomy, or an empty string if not available.
+- int64_t **sctId** () const — Returns the SCT ID value.
+
+## Static Public Member Functions
+
+- static [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; Anatomy &gt; **fromText** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &str) — Return vector of valid anatomies found in the provided string.
+- static [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; Anatomy &gt; **knownAnatomies** () — Returns a vector of all the anatomies listed in [Anatomy::SctId](#sctid).
+
+## Member Enumeration Documentation
+
+### SctId
+
+```cpp
+enum ImFusion::Anatomy::SctId
+```
+
+[Selection](/cpp-sdk/4.5/api/classes/imfusion-selection) of SCT IDs that are most likely to be useful in source code.
+
+Detailed information can be retrieved e.g. through such links: ABDOMEN = [http://snomed.info/id/818981001](http://snomed.info/id/818981001)

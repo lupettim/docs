@@ -1,0 +1,205 @@
+---
+title: "ImFusion::ImageResamplingAlgorithm"
+sidebarTitle: "ImageResamplingAlgorithm"
+description: "Algorithm for resampling an image to a target dimension or resolution, optionally with respect to another image."
+---
+
+`#include <ImFusion/Base/ImageResamplingAlgorithm.h>`
+
+## Overview
+
+[Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) for resampling an image to a target dimension or resolution, optionally with respect to another image.
+
+If a reference image is not provided the size of the output can be either explicitly specified, or implicitly determined by setting a target spacing, binning or relative size w.r.t. the input (in percentage). Only one of these strategies can be active at a time, as specified by the resamplingMode field. The value of the other target fields will be ignored. The algorithm offers convenience methods to jointly update the value of a target field and change the resampling mode accordingly.
+
+In case you provide a reference image it will its pixel grid (dimensions, spacing, pose matrix) for the output. However, the pixel type as well as shift/scale will remain the same as in the input image.
+
+The algorithm supports Linear and Nearest interpolation modes. In the Linear case (default), when accessing the input image at a fractional coordinate, the obtained value will be computed by linearly interpolating between the closest pixels/voxels. In the Nearest case, the value of the closest pixel/voxel will be used instead.
+
+Furthermore, multiple reduction modes are also supported. In contrast to the interpolation mode, which affects how the value of the input image at a given (potentially fractional) coordinate is extracted, this determines what happens when multiple input pixels/voxels contribute to the value of a single output pixel/voxel. In Nearest mode, the value of the closest input pixel/voxel is used as-is. Alternatively, the Minimum, Maximum or Average value of the neighboring pixel/voxels can be used.
+
+By default, the image will be modified in-place; a new one can be created instead by changing the value of the createNewImage parameter.
+
+By default, the resulting image will have an altered physical extent, since the original extent may not be divisible by the target spacing. The algorithm can modify the target spacing to exactly maintain the physical extent, by toggling the preserveExtent parameter.
+
+If the keepZeroValues parameter is set to true, the input pixels/voxels having zero value will not be modified by the resampling process.
+
+## Public Types
+
+- enum [ResamplingMode](#resamplingmode) &#123; TARGET_DIM = 0 , TARGET_PERCENT = 1 , TARGET_SPACING = 2 , TARGET_BINNING = 3 &#125; — Enum for new dimension computation.
+
+## Public Member Functions
+
+- **ImageResamplingAlgorithm** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*inImages, const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*refImages=nullptr)
+- **ImageResamplingAlgorithm** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*inImages, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [ImageDescriptorWorld](/cpp-sdk/4.5/api/classes/imfusion-imagedescriptorworld) &gt; refWorldDescriptor)
+- void [compute](#compute) () override — Execute the algorithm.
+- [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) [takeOutput](#takeoutput) () override — Return any new [Data](/cpp-sdk/4.5/api/classes/imfusion-data) that was created by the [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) during the last call to [compute()](#compute).
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+- void **setTargetDimensions** (const vec3i &newDims) — Set the desired dimension for the output image - changes the resampling mode to TARGET_DIMS.
+- void **setTargetPercent** (const vec3i &newPercent) — Set the target dimension for the output image as a percentage of the input - changes the resampling mode to TARGET_PERCENT.
+- void **setTargetSpacing** (double newSpacing) — Set an isotropic target spacing - changes the resampling mode to TARGET_SPACING.
+- void **setTargetSpacing** (const vec3 &newSpacing) — Set the target spacing - changes the resampling mode to TARGET_SPACING.
+- bool [setTargetMinSpacing](#settargetminspacing-1-2) (double minSpacing) — Set the target spacing with the spacing of the input image, replacing the value in each dimension with the maximum between the original and the provided value.
+- bool [setTargetMinSpacing](#settargetminspacing-2-2) (const vec3 &minSpacing) — Set the target spacing with the spacing of the input image, replacing the value in each dimension with the maximum between the original and the provided value.
+- void **setTargetBinning** (const vec3i &newBinning) — Set the binning to be used to create output image and compute its size - changes the resampling mode to TARGET_BINNING.
+- void **setCreateNew** (bool createNew)
+- void **setCloneDeformation** (bool cloneDeformation)
+- void **setVerbose** (bool newVerbose)
+- void **setForceCPU** (bool newForceCPU)
+- void **setInterpolationMode** ([InterpolationMode](/cpp-sdk/4.5/api/namespaces/imfusion) mode)
+- void **setKeepZeroValues** (bool keepZero)
+- void **setReductionMode** ([ReductionMode](/cpp-sdk/4.5/api/namespaces/imfusion) mode)
+- void **setPreserveExtent** (bool presExt)
+- bool **resamplingNeeded** (int frame=-1) const — Return whether resampling is needed or the specified settings result in the same image size and spacing.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) &gt; [processImage](#processimage-1-2) (int frame, bool always=false) — Compute resampling on one frame, return resulting image if applicable.
+- [std::pair](http://en.cppreference.com/w/cpp/utility/pair.html)&lt; [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) &gt;, [DataComponentList](/cpp-sdk/4.5/api/classes/imfusion-datacomponentlist) &gt; [processImage](#processimage-2-2) (const [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) &image, const [DataComponentList](/cpp-sdk/4.5/api/classes/imfusion-datacomponentlist) &components) const override — Compute resampling on one frame, return resulting image if applicable.
+- void **setInput** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*newInImages, const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*newRefImages, bool reconfigureFromNewData) — Replaces the input of the algorithm If reconfigureFromNewData is true, the algorithm reconfigures itself based on meta data of the new input.
+- void **setInput** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*newInImages, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [ImageDescriptorWorld](/cpp-sdk/4.5/api/classes/imfusion-imagedescriptorworld) &gt; worldImageDescriptor, bool reconfigureFromNewData) — If reconfigureFromNewData is true, the algorithm reconfigures itself based on meta data of the new input.
+
+## Static Public Member Functions
+
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a)
+
+## Public Attributes
+
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; bool &gt; **p_createNewImage** = &#123;"createNewImage", true&#125; — Whether to compute the result in-place or in a newly allocated image.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; bool &gt; **p_cloneDeformation** = &#123;"cloneDeformation", true, this&#125; — Whether to clone deformation from original image before attaching to result.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; bool &gt; **p_forceCPU** = &#123;"forceCPU", false, this&#125; — Whether to force the computation on the CPU.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; bool &gt; **p_preserveExtent** = &#123;"preserveExtent", false, this&#125; — Whether to update the target spacing to keep exactly the physical dimensions of the input image.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; bool &gt; **p_keepZeroValues** = &#123;"keepZeroValues", false&#125; — Whether to to interpret 0 values as mask values, discarding its neighbors.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; bool &gt; **p_verbose** = &#123;"verbose", false, this&#125; — Whether to enable advanced logging.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; [ReductionMode](/cpp-sdk/4.5/api/namespaces/imfusion) &gt; **p_reductionMode** = &#123;"reductionMode", [ReductionMode::Average](/cpp-sdk/4.5/api/namespaces/imfusion)&#125; — Mode for image reduction (e.g. downsampling, resampling, binning).
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; [InterpolationMode](/cpp-sdk/4.5/api/namespaces/imfusion) &gt; **p_interpolationMode** = &#123;"interpolationMode", [InterpolationMode::Linear](/cpp-sdk/4.5/api/namespaces/imfusion)&#125; — Mode for image interpolation.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; [ResamplingMode](#resamplingmode) &gt; **p_resamplingMode** = &#123;"resamplingMode", TARGET_PERCENT&#125; — How the output image size should be obtained (explicit dimensions, percentage relative to the input image, ...).
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; vec3i &gt; **p_targetDimensions** = &#123;"targetDimensions", vec3i::Zero()&#125; — Target dimensions for the new image.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; vec3i &gt; **p_targetPercent** = &#123;"targetPercent", vec3i&#123;100, 100, 100&#125;&#125; — Target dimensions for the new image, relatively to the input one.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; vec3 &gt; **p_targetSpacing** = &#123;"targetSpacing", vec3::Zero()&#125; — Target spacing for the new image.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; vec3i &gt; **p_targetBinning** = &#123;"targetBinning", vec3i::Ones()&#125; — How many pixels from the input image should be combined into an output pixel.
+
+## Protected Attributes
+
+- [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* **m_inImages**
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [ImageDescriptorWorld](/cpp-sdk/4.5/api/classes/imfusion-imagedescriptorworld) &gt; **m_refDescriptors**
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &gt; **m_outImages**
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [GL::ImageProgram](/cpp-sdk/4.5/api/classes/imfusion-gl-imageprogram) &gt; **m_program**
+- [std::pair](http://en.cppreference.com/w/cpp/utility/pair.html)&lt; [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [Mask](/cpp-sdk/4.5/api/classes/imfusion-mask) &gt;, [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [Mask](/cpp-sdk/4.5/api/classes/imfusion-mask) &gt; &gt; **m_masks**
+
+## Member Enumeration Documentation
+
+### ResamplingMode
+
+```cpp
+enum ImFusion::ImageResamplingAlgorithm::ResamplingMode
+```
+
+Enum for new dimension computation.
+
+**Enumerator:**
+
+- `TARGET_DIM` — The size of the output will be targetDimensions.
+- `TARGET_PERCENT` — The size of the output will be targetPercentage w.r.t. the input size in each axis.
+- `TARGET_SPACING` — The size of the output will be computed according to the input image spacing and targetSpacing.
+- `TARGET_BINNING` — The size of the output will be computed by dividing the input image size by the targetBinning in each dimension.
+
+## Member Function Documentation
+
+### compute
+
+```cpp
+void ImFusion::ImageResamplingAlgorithm::compute ()
+```
+
+*override, virtual*
+
+Execute the algorithm.
+
+### takeOutput
+
+```cpp
+OwningDataList ImFusion::ImageResamplingAlgorithm::takeOutput ()
+```
+
+*override, virtual*
+
+Return any new [Data](/cpp-sdk/4.5/api/classes/imfusion-data) that was created by the [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) during the last call to [compute()](#compute).
+
+The default implementation will return an empty list.
+
+**Note:** Since ownership of the data is transferred, you can call this method only once between calls to [compute()](#compute).
+
+### configure
+
+```cpp
+void ImFusion::ImageResamplingAlgorithm::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### configuration
+
+```cpp
+void ImFusion::ImageResamplingAlgorithm::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality
+
+### setTargetMinSpacing
+
+```cpp
+bool ImFusion::ImageResamplingAlgorithm::setTargetMinSpacing (double minSpacing)
+```
+
+Set the target spacing with the spacing of the input image, replacing the value in each dimension with the maximum between the original and the provided value.
+
+**Parameters:**
+
+- `minSpacing` — the minimum value that the target spacing should have in each direction
+
+**Returns:** true if the final target spacing is different than the input image spacing
+
+### setTargetMinSpacing
+
+```cpp
+bool ImFusion::ImageResamplingAlgorithm::setTargetMinSpacing (const vec3 & minSpacing)
+```
+
+Set the target spacing with the spacing of the input image, replacing the value in each dimension with the maximum between the original and the provided value.
+
+**Parameters:**
+
+- `minSpacing` — the minimum value that the target spacing should have in each direction
+
+**Returns:** true if the final target spacing is different than the input image spacing
+
+### processImage
+
+```cpp
+std::unique_ptr < SharedImage > ImFusion::ImageResamplingAlgorithm::processImage (int frame, bool always = false)
+```
+
+Compute resampling on one frame, return resulting image if applicable.
+
+If the always flag is enabled, the output image will always be created even if no resampling would be needed.
+
+### processImage
+
+```cpp
+std::pair < std::shared_ptr < SharedImage >, DataComponentList > ImFusion::ImageResamplingAlgorithm::processImage (const SharedImage & image, const DataComponentList & components) const
+```
+
+*override, virtual*
+
+Compute resampling on one frame, return resulting image if applicable.

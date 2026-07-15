@@ -1,0 +1,39 @@
+---
+title: "ImFusion::GlMeshRendererNormals"
+sidebarTitle: "GlMeshRendererNormals"
+description: "Renders the normals of a Mesh using line primitives."
+---
+
+`#include <ImFusion/Mesh/Rendering/GlMeshRendererNormals.h>`
+
+## Overview
+
+Renders the normals of a [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) using line primitives.
+
+This low-level renderer renders lines starting from each vertex of the mesh pointing in the direction of the local normal. The GlMeshBuffers instance passed to [render()](#render) defines whether to use vertex or face normals.
+
+This class does not implement the [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) interface by design as it is meant to serve as a reusable component to be integrated into high-level classes.
+
+## Classes
+
+- struct [DisplayOptions](/cpp-sdk/4.5/api/structs/imfusion-glmeshrenderernormals-displayoptions) — Complete record of rendering options for [GlMeshRendererNormals](/cpp-sdk/4.5/api/classes/imfusion-glmeshrenderernormals).
+
+## Public Member Functions
+
+- void [render](#render) (const [MeshGl](/cpp-sdk/4.5/api/classes/imfusion-meshgl) &mesh, const [DisplayOptions](/cpp-sdk/4.5/api/structs/imfusion-glmeshrenderernormals-displayoptions) &options, const [GL::ViewState](/cpp-sdk/4.5/api/classes/imfusion-gl-viewstate) &viewState) const — Renders the normals of *mesh* into the currently active OpenGL context.
+
+## Member Function Documentation
+
+### render
+
+```cpp
+void ImFusion::GlMeshRendererNormals::render (const MeshGl & mesh, const DisplayOptions & options, const GL::ViewState & viewState) const
+```
+
+Renders the normals of *mesh* into the currently active OpenGL context.
+
+**Parameters:**
+
+- `mesh` — The mesh to render.
+- `options` — The rendering options to use.
+- `viewState` — The [GL::ViewState](/cpp-sdk/4.5/api/classes/imfusion-gl-viewstate) to use.

@@ -1,0 +1,72 @@
+---
+title: "ImFusion::Geometry::LineBase"
+sidebarTitle: "LineBase"
+description: "Common interface of Line and LineSegment ."
+---
+
+`#include <ImFusion/Core/Geometry/Line.h>`
+
+## Overview
+
+Common interface of [Line](/cpp-sdk/4.5/api/classes/imfusion-geometry-line) and [LineSegment](/cpp-sdk/4.5/api/classes/imfusion-geometry-linesegment).
+
+Unless stated otherwise, all operations that involve comparisons use the same tolerance epsilon as vec3::isApprox (which is 1e-12).
+
+**See also:** Intersections between geometry primitives can be computed using the sets of free functions Geometry::intersection() and Geometry::intersects().
+
+## Public Member Functions
+
+- virtual vec3 [direction](#direction) () const =0 — Returns the normalized direction vector.
+- const vec3 & **point** () const — Returns a point on the line.
+- vec3 **closestPoint** (const vec3 &p) const — Returns the point on the line closest to p.
+- double **distanceToPoint** (const vec3 &p) const — Returns the L2 distance between p and the closest point on the line.
+- bool **includesPoint** (const vec3 &p) const — Returns if the distance between p and the closest point on the line is less than epsilon.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; [cylinderWallIntersection](#cylinderwallintersection) (const [Line](/cpp-sdk/4.5/api/classes/imfusion-geometry-line) &axis, double radius) const — Computes the intersection points with the outer wall of a cylinder of infinite length, specified by radius and central axis.
+
+## Protected Member Functions
+
+- **LineBase** (const vec3 &p)
+
+## Protected Attributes
+
+- vec3 **m_point** — A point on the line.
+
+## Point projections
+
+- double **pointToLambda** (const vec3 &p) const — Projects p onto the (extended) line and returns the unclamped lambda.
+- vec3 **lambdaToPoint** (double lambda) const — Returns point() + lambda\*direction().
+- virtual double [clampLambda](#clamplambda) (double lambda) const =0 — Clamps lambda to the extent of the line.
+
+## Member Function Documentation
+
+### direction
+
+```cpp
+virtual vec3 ImFusion::Geometry::LineBase::direction () const
+```
+
+*pure virtual*
+
+Returns the normalized direction vector.
+
+If the object has no well defined direction, e.g. a line segment of zero length, the return value will be zero.
+
+### clampLambda
+
+```cpp
+virtual double ImFusion::Geometry::LineBase::clampLambda (double lambda) const
+```
+
+*pure virtual*
+
+Clamps lambda to the extent of the line.
+
+### cylinderWallIntersection
+
+```cpp
+std::vector < vec3 > ImFusion::Geometry::LineBase::cylinderWallIntersection (const Line & axis, double radius) const
+```
+
+Computes the intersection points with the outer wall of a cylinder of infinite length, specified by radius and central axis.
+
+Will return 0, 1 or 2 intersection points.

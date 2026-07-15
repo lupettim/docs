@@ -1,0 +1,132 @@
+---
+title: "ImFusion::Log::FileSink"
+sidebarTitle: "FileSink"
+description: "Default implementation for a Logger that writes to the filesystem."
+---
+
+`#include <ImFusion/Core/Log/FileSink.h>`
+
+## Overview
+
+Default implementation for a Logger that writes to the filesystem.
+
+## Public Types
+
+- enum [Options](#options) &#123; None = 0 , Truncate = 1 &lt;&lt; 0 , SequentialThreadIds = 1 &lt;&lt; 1 &#125; — Configuration options.
+- enum class [Result](#result) &#123; NoActionNeeded , Successful , Failed &#125; — Enumeration of possible return values of [rotateFiles()](#rotatefiles).
+
+## Public Member Functions
+
+- [FileSink](#filesink) (const [Filesystem::Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path) &filename, [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; [Options](#options) &gt; options=Options::None) — Instantiates a new FileLogger.
+- [Result](#result) [rotateFiles](#rotatefiles) ([ByteSize](/cpp-sdk/4.5/api/classes/imfusion-bytesize) sizeLimit, int numArchived) — Performs log file rotation for this sink if applicable.
+- const [Filesystem::Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path) & **filename** () const — Returns the path of the log file.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Filesystem::Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path) &gt; **filenames** () const — Returns the path of the log file as well as a best-effort list of archived log files.
+
+## Protected Member Functions
+
+- void [logImpl](#logimpl) (const [LogCapture](/cpp-sdk/4.5/api/structs/imfusion-log-sink-logcapture) &capture) override — Performs the actual logging of the given message.
+- void [flush](#flush) () override — Ensure that all log captures are fully committed/written.
+- void **openLogfile** ([Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; [Options](#options) &gt; options)
+- void **closeLogfile** ()
+
+## Protected Attributes
+
+- [Filesystem::Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path) **m_filename**
+- [std::ofstream](http://en.cppreference.com/w/cpp/io/basic_ofstream.html) **m_file**
+- bool **m_isRotating** = false
+- bool **m_useThreadMap** = false
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [LogCapture](/cpp-sdk/4.5/api/structs/imfusion-log-sink-logcapture) &gt; **m_queuedCaptures**
+- [std::unordered_map](http://en.cppreference.com/w/cpp/container/unordered_map.html)&lt; [std::thread::id](http://en.cppreference.com/w/cpp/thread/thread/id.html), size_t &gt; **m_threadMap**
+
+## Member Enumeration Documentation
+
+### Options
+
+```cpp
+enum ImFusion::Log::FileSink::Options
+```
+
+Configuration options.
+
+**Enumerator:**
+
+- `None` — Append log output to the log file.
+- `Truncate` — Clear the log file.
+- `SequentialThreadIds` — Use sequential thread IDs starting from 0 instead of the ones from the OS.
+
+### Result
+
+```cpp
+enum class ImFusion::Log::FileSink::Result
+```
+
+*strong*
+
+Enumeration of possible return values of [rotateFiles()](#rotatefiles).
+
+**Enumerator:**
+
+- `NoActionNeeded` — No log file rotation was performed since the log file size was lower than the threshold.
+- `Successful` — [Log](/cpp-sdk/4.5/api/namespaces/imfusion-log) file rotation succeeded.
+- `Failed` — [Log](/cpp-sdk/4.5/api/namespaces/imfusion-log) file rotation failed and was aborted.
+
+## Constructor & Destructor Documentation
+
+### FileSink
+
+```cpp
+ImFusion::Log::FileSink::FileSink (const Filesystem::Path & filename, Flags < Options > options = Options::None)
+```
+
+Instantiates a new FileLogger.
+
+**Parameters:**
+
+- `filename` — File name for the log file.
+- `options` — Configuration options.
+
+**Exceptions:**
+
+- `std::runtime_error` — The constructor will throw if it can not open *filename* for any reason.
+
+## Member Function Documentation
+
+### rotateFiles
+
+```cpp
+Result ImFusion::Log::FileSink::rotateFiles (ByteSize sizeLimit, int numArchived)
+```
+
+Performs log file rotation for this sink if applicable.
+
+If the current log file size exceeds sizeLimit a log file rotation will be performed keeping up to numArchived archived files around in addition to the active log file. If the total number of archived log files exceeds this threshold the oldest archived log file will be deleted.
+
+Archived files will be named &lt;logfile-basename&gt;_N.&lt;logfile-extension&gt; where N is counted from 1 to numArchived.
+
+**Warning:** This function is not thread-safe. Do not call it while another thread might write to this sink as it might lose or corrupt the log file. It is safest if you call this function directly after construction and before calling Log::addSink().
+
+### logImpl
+
+```cpp
+void ImFusion::Log::FileSink::logImpl (const LogCapture & capture)
+```
+
+*override, protected, virtual*
+
+Performs the actual logging of the given message.
+
+Called by [log()](/cpp-sdk/4.5/api/classes/imfusion-log-sink) after filtering.
+
+**Parameters:**
+
+- `capture` — [Log](/cpp-sdk/4.5/api/namespaces/imfusion-log) capture
+
+### flush
+
+```cpp
+void ImFusion::Log::FileSink::flush ()
+```
+
+*override, protected, virtual*
+
+Ensure that all log captures are fully committed/written.

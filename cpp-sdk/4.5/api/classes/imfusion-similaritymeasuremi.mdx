@@ -1,0 +1,116 @@
+---
+title: "ImFusion::SimilarityMeasureMI"
+sidebarTitle: "SimilarityMeasureMI"
+description: "Computes the Mutual Information of two images."
+---
+
+`#include <ImFusion/Reg/SimilarityMeasureMI.h>`
+
+## Overview
+
+Computes the Mutual Information of two images.
+
+The marginal entropies of both images are determined by computing the histogram of the images. The number of bins used for these histograms can be set with image1Bins and image2Bins properties. The joint entropy is determined by computing the 2D joint histogram, with image1JointBins in one direction and image2JointBins in the other direction.
+
+If the number of bins does not correspond to the value range of the data type, the bin for each value is determined by:
+
+```cpp
+bin = round((value-min)/(max-min) * (bins-1))
+```
+ fragment
+For 8- and 16-bit, the min value is 0 and the max value 256 and 65536 respectively. All other types use the actual min and max value in the image.
+
+See also:
+
+- [https://en.wikipedia.org/wiki/Mutual_information](https://en.wikipedia.org/wiki/Mutual_information)
+- [https://en.wikipedia.org/wiki/Entropy_%28information_theory%29](https://en.wikipedia.org/wiki/Entropy_%28information_theory%29)
+
+## Public Member Functions
+
+- **SimilarityMeasureMI** ([SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*img1, [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*img2)
+- void **setImage1Bins** (int bins) — Sets the number of bins the first images histogram.
+- int **image1Bins** () const
+- void **setImage2Bins** (int bins) — Sets the number of bins the second images histogram.
+- int **image2Bins** () const
+- [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \* [histogramJoint](#histogramjoint) () — Returns the joint histogram of both images.
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Set one or multiple properties.
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Retrieve the properties of this object.
+- double **computeEntropy** (const [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; unsigned int &gt; &histogram) const — Computes the Shanon entropy using the histogram.
+- bool [supportsWeights](#supportsweights) () const override — Queries the capability whether this similarity measure supports pixel-wise weights.
+
+## Static Public Member Functions
+
+- static void **defaultConfiguration** ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p)
+
+## Protected Member Functions
+
+- virtual void **updateHistogramSize** ()=0
+- void **createDebugTexture** ()
+- void [updateRanges](#updateranges) () const — Extracts the value range of the images and sets the m_img1_range and m_img2_range values.
+
+## Protected Attributes
+
+- int **m_bins1**
+- int **m_bins2**
+- [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \* **m_histogramJoint**
+- bool **m_exportJointHistogram**
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [std::pair](http://en.cppreference.com/w/cpp/utility/pair.html)&lt; double, double &gt; &gt; **m_img1Range** — Value range of the first image.
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [std::pair](http://en.cppreference.com/w/cpp/utility/pair.html)&lt; double, double &gt; &gt; **m_img2Range** — Value range of the second image.
+
+## Member Function Documentation
+
+### histogramJoint
+
+```cpp
+SharedImage * ImFusion::SimilarityMeasureMI::histogramJoint ()
+```
+
+Returns the joint histogram of both images.
+
+The joint histogram is empty before compute is called.
+
+### configure
+
+```cpp
+void ImFusion::SimilarityMeasureMI::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Set one or multiple properties.
+
+The default implementation retrieves the mask mode (param names "maskModeImg1" and "maskModeImg2")
+
+### configuration
+
+```cpp
+void ImFusion::SimilarityMeasureMI::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Retrieve the properties of this object.
+
+The default implementation stores the mask mode (param names "maskModeImg1" and "maskModeImg2")
+
+### supportsWeights
+
+```cpp
+bool ImFusion::SimilarityMeasureMI::supportsWeights () const
+```
+
+*inline, override, virtual*
+
+Queries the capability whether this similarity measure supports pixel-wise weights.
+
+### updateRanges
+
+```cpp
+void ImFusion::SimilarityMeasureMI::updateRanges () const
+```
+
+*protected*
+
+Extracts the value range of the images and sets the m_img1_range and m_img2_range values.
+
+Calling this in the constructor may not be enough as the image data can be written after the construction depending on the pre-apply flag.

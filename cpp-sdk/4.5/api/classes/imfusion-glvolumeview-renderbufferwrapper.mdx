@@ -1,0 +1,60 @@
+---
+title: "ImFusion::GlVolumeView::RenderBufferWrapper"
+sidebarTitle: "RenderBufferWrapper"
+description: "Helper class to allow the injection of custom render buffers surrounding the entire render pipeline."
+---
+
+`#include <ImFusion/GL/GlVolumeView.h>`
+
+## Overview
+
+Helper class to allow the injection of custom render buffers surrounding the entire render pipeline.
+
+If such an wrapper is defined and applied to the volume view, the rendering pipeline executes as follows:
+
+- createRenderBuffer() is called before the final rendering pass to the parent view. This allows to instantiate a new [GL::OffscreenRenderHelper::RenderBuffer](/cpp-sdk/4.5/api/structs/imfusion-gl-offscreenrenderhelper-renderbuffer).
+- The final rendering pass is computed, effectively rendering into the render buffer.
+- drawAndBlendToParent() is called. Here, a custom shader can be executed to modify the rendering, before actually blending the buffer to the parent.
+
+Example usage:
+
+```cpp
+class GlPlaneLineRendering : public GlRenderBufferWrapper
+{
+public:
+    ...
+
+ void createRenderBuffer(const GlView& view) override
+ {
+        m_renderBuffer = std::make_unique<GL::OffscreenRenderHelper::RenderBuffer>(
+ GL::OffscreenRenderHelper::cachedInstance().create(view.state().viewport().size()));
+    }
+
+ void drawAndBlendToParent(const GlView& view) override
+ {
+ GL::Blending blending(GL::Blending::Preset::AlphaBlending);
+ GL::StateGuard guard(GL::StateGuard::DepthTest);
+        glDisable(GL_DEPTH_TEST);
+
+        m_prog->enable();
+        ...
+ GL::FullscreenSquare::cachedInstance().drawFilled();
+        m_prog->disable();
+
+        guard.restoreState(GL::StateGuard::DepthTest);
+        glEnable(GL_DEPTH_TEST);
+        m_renderBuffer->blendToParent(GL::OffscreenRenderHelper::ColorPostProcessing::DivideBySqrtAlpha);
+        m_renderBuffer.reset();
+    }
+
+private:
+ std::unique_ptr<GL::Program> m_prog;
+ std::unique_ptr<GL::OffscreenRenderHelper::RenderBuffer> m_renderBuffer;
+};
+```
+ fragment
+
+## Public Member Functions
+
+- virtual void **createRenderBuffer** (const GlView &view)=0
+- virtual void **drawAndBlendToParent** (const GlView &view)=0

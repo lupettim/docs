@@ -1,0 +1,59 @@
+---
+title: "ImFusion::MergeTrackingSequencesAlgorithm"
+sidebarTitle: "MergeTrackingSequencesAlgorithm"
+description: "Merges multiple tracking sequences into a new one."
+---
+
+`#include <ImFusion/Base/MergeTrackingSequencesAlgorithm.h>`
+
+## Overview
+
+Merges multiple tracking sequences into a new one.
+
+## Public Member Functions
+
+- **MergeTrackingSequencesAlgorithm** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [TrackingSequence](/cpp-sdk/4.5/api/classes/imfusion-trackingsequence) \* &gt; &sequences) — Constructor.
+- **~MergeTrackingSequencesAlgorithm** () override — Destructor.
+
+## Protected Attributes
+
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [TrackingSequence](/cpp-sdk/4.5/api/classes/imfusion-trackingsequence) \* &gt; **m_sequences** — [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) input for processing.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [TrackingSequence](/cpp-sdk/4.5/api/classes/imfusion-trackingsequence) &gt; **m_trackingOutput** — Output if m_createNew is set to true.
+
+## Methods implementing the algorithm interface
+
+- void [compute](#compute) () override — Applies the processing.
+- [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) [takeOutput](#takeoutput) () override — If new data was created, make it available here.
+- static bool [createCompatible](#createcompatible) (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=0)
+
+## Member Function Documentation
+
+### createCompatible
+
+```cpp
+bool ImFusion::MergeTrackingSequencesAlgorithm::createCompatible (const DataList & data, Algorithm ** a = 0)
+```
+
+*static*
+
+Factory method to check for applicability or to create the algorithm
+
+### compute
+
+```cpp
+void ImFusion::MergeTrackingSequencesAlgorithm::compute ()
+```
+
+*override, virtual*
+
+Applies the processing.
+
+### takeOutput
+
+```cpp
+OwningDataList ImFusion::MergeTrackingSequencesAlgorithm::takeOutput ()
+```
+
+*override, virtual*
+
+If new data was created, make it available here.

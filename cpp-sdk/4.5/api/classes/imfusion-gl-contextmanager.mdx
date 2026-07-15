@@ -1,0 +1,141 @@
+---
+title: "ImFusion::GL::ContextManager"
+sidebarTitle: "ContextManager"
+description: "Singleton class to manage access to OpenGL contexts."
+---
+
+`#include <ImFusion/Core/GL/ContextManager.h>`
+
+## Overview
+
+[Singleton](/cpp-sdk/4.5/api/classes/imfusion-singleton) class to manage access to OpenGL contexts.
+
+The [ContextManager](/cpp-sdk/4.5/api/classes/imfusion-gl-contextmanager) maintains two OpenGL contexts for the ImFusion SDK:
+
+- The *main* context, which will be associated with the application's main thread. It can be queried through ContextManager::mainContext() and used for all OpenGL processing happening in the main thread. Other parts of the SDK (e.g. [DisplayWidget](/cpp-sdk/4.5/api/classes/imfusion-displaywidget)) will implicitly use this context for their needs.
+- The *background* context, which will be associated with the [ContextManager](/cpp-sdk/4.5/api/classes/imfusion-gl-contextmanager)'s background processing thread. This will be used every time you use the [runWithOpenGL()](#runwithopengl) interface from any other thread than the main thread.
+
+**Note:** Initialization and deinitialization is handled through GL::init() and GL::deinit(). Trying to access this class without the [GL](/cpp-sdk/4.5/api/namespaces/imfusion-gl) back end being initialized will yield undefined behavior.
+
+**Note:** Threadsafe class: Member functions can be called concurrently from any thread.
+
+## Public Member Functions
+
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; Context &gt; [createContext](#createcontext) () — Convenience method to create a OpenGL context for the calling thread.
+- void [ensureLocalContext](#ensurelocalcontext) () — Convenience method that creates a [GL](/cpp-sdk/4.5/api/namespaces/imfusion-gl) context for the local thread if necessary.
+- void [releaseLocalContext](#releaselocalcontext) () — Delete a local context previously created by [ensureLocalContext()](#ensurelocalcontext) and free its resources.
+- void [runWithOpenGL](#runwithopengl) (const [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; void()&gt; &func, bool forceBackgroundThread=false) — Ensures that the given function is run in a valid OpenGL context.
+- Context \* **mainContext** () const — Access the main OpenGL context instance.
+
+## Static Public Member Functions
+
+- static ContextManager & **get** () — Return the singleton instance of the manager.
+- static bool [hasCurrent](#hascurrent) () — Returns whether the calling thread has a current OpenGL context.
+- static bool [makeCurrent](#makecurrent) () — Convenience method to make the main context current.
+- static bool **doneCurrent** () — Convenience method to release the currently active context of the calling thread. Can be called from any thread.
+- static void \* [currentContextId](#currentcontextid) () — Returns a platform-specific handle to the currently active OpenGL context.
+- static bool **useCoreContext** ()
+- static bool **openGlDisabled** ()
+
+## Member Function Documentation
+
+### createContext
+
+```cpp
+std::unique_ptr < Context > ImFusion::GL::ContextManager::createContext ()
+```
+
+Convenience method to create a OpenGL context for the calling thread.
+
+The context will be shared with the main and background context. This function returns nullptr if called from the main or background processing thread because creating another local context would violate the one-context-per-thread rule.
+
+**Note:** The function returns a unique_ptr to the created context. The pointer must not go out of scope until it is no longer needed. When the pointer goes out of scope, the context will be destroyed and OpenGL will no longer be available for this thread.
+
+Example:
+
+```cpp
+std::thread newThread([]() {
+ std::unique_ptr<Context> ctx = ContextManager::get().createContext();
+ // OpenGL will be available in this thread as long as `ctx` remains alive
+});
+```
+ fragment
+
+### ensureLocalContext
+
+```cpp
+void ImFusion::GL::ContextManager::ensureLocalContext ()
+```
+
+Convenience method that creates a [GL](/cpp-sdk/4.5/api/namespaces/imfusion-gl) context for the local thread if necessary.
+
+If a [GL](/cpp-sdk/4.5/api/namespaces/imfusion-gl) context already exists for the calling thread (i.e. because it is the main or background thread, or because this function has already been called in the same thread), it will do nothing. It is safe to just call this function once before making use of OpenGL in code where the executing thread is undetermined (e.g. thread pool) to avoid problems related to the absence of a [GL](/cpp-sdk/4.5/api/namespaces/imfusion-gl) context.
+
+**Warning:** A context created by this function will stay alive until the termination of the program or a call to [releaseLocalContext()](#releaselocalcontext) on the same thread. An OpenGL context is an expensive resource and you can easily swamp your system when using this function carelessly! Do not use this function out of laziness but only if manually managing a per-thread context (e.g. using [createContext()](#createcontext)) is not possible.
+
+**Exceptions:**
+
+- `std::runtime_error` — If the current thread does not yet have a current context and context creation has failed for whatever reason.
+
+### releaseLocalContext
+
+```cpp
+void ImFusion::GL::ContextManager::releaseLocalContext ()
+```
+
+Delete a local context previously created by [ensureLocalContext()](#ensurelocalcontext) and free its resources.
+
+This function will do nothing if the current thread does not have a local context.
+
+### runWithOpenGL
+
+```cpp
+void ImFusion::GL::ContextManager::runWithOpenGL (const std::function < void()> & func, bool forceBackgroundThread = false)
+```
+
+Ensures that the given function is run in a valid OpenGL context.
+
+If the calling thread has a current OpenGL context and *forceBackgroundThread* is false it will call *func* directly. Otherwise it will run *func* in a separate thread using the background OpenGL thread managed by [ContextManager](/cpp-sdk/4.5/api/classes/imfusion-gl-contextmanager).
+
+**Warning:** The blocking nature of this function makes it susceptible to deadlocks in certain call graphs. Prefer using [createContext()](#createcontext) in order to make OpenGL available in custom threads.
+
+**Parameters:**
+
+- `func` — Function object to call from a valid OpenGL context.
+- `forceBackgroundThread` — Set to true to force execution on background thread.
+
+### hasCurrent
+
+```cpp
+bool ImFusion::GL::ContextManager::hasCurrent ()
+```
+
+*static*
+
+Returns whether the calling thread has a current OpenGL context.
+
+### makeCurrent
+
+```cpp
+bool ImFusion::GL::ContextManager::makeCurrent ()
+```
+
+*static*
+
+Convenience method to make the main context current.
+
+Will only work if called from the main thread.
+
+**Warning:** Calling this function from any other thread than the main thread is not allowed. In such case the function will not have any effect and return false.
+
+### currentContextId
+
+```cpp
+void * ImFusion::GL::ContextManager::currentContextId ()
+```
+
+*static*
+
+Returns a platform-specific handle to the currently active OpenGL context.
+
+**Note:** There is a 1-to-1 mapping of existing OpenGL contexts to the pointers returned. If there is no context current, this function will return 0. Apart from this you can not make any assumptions on the underlying type of the return value.

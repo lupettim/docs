@@ -1,0 +1,82 @@
+---
+title: "ImFusion::GUI::MouseEvent"
+sidebarTitle: "MouseEvent"
+description: "Mouse events are triggered whenever the status of the mouse has changed wrt."
+---
+
+`#include <ImFusion/GUI/InputEvent.h>`
+
+## Overview
+
+Mouse events are triggered whenever the status of the mouse has changed wrt.
+
+the receiving GUI element.
+
+A mouse event can be sourced from many different origins which are enumerated in [Type](#type). Not all of the members/properties of a [MouseEvent](/cpp-sdk/4.5/api/classes/imfusion-gui-mouseevent) make sense for all the types:
+
+- button() should only be used for Press, Release, or DoubleClick events
+- wheelAngleDelta() should only be used for Wheel events.
+- For Leave events you should not use any of the members/properties. Leave events are special in this regard since they are only meant to notify the receiver that the mouse has left the boundaries of the receiver (once this is the case it will usually no longer receive any other mouse events and would otherwise not be capable of observing this).
+
+Note that button() and allButtons() have different meanings even though they are named similarly: the former indicates which single mouse button triggered an event while the latter indicates which mouse buttons are pressed down when the event was emitted. This difference is particularly important for the Release event where the released mouse button is stored in button() but *not* in allButtons() (because it was just released).
+
+The data type of wheelAngleDelta is two-dimensional since many windowing systems support both horizontal and vertical scroll events. The traditional 1D mouse wheel used for scrolling vertically is mapped to the Y axis of the vec2. Some mice allow the user to tilt the wheel to perform horizontal scrolling (and many touchpads support a horizontal scrolling gesture) which will be mapped to the X axis of the vec2.
+
+## Public Types
+
+- enum class [Type](#type) &#123; Press , Release , Move , Wheel , DoubleClick , Leave &#125; — Enumeration of reasons for the event.
+- enum class Button &#123; **None** = 0 , **Left** = 1 &lt;&lt; 0 , **Middle** = 1 &lt;&lt; 1 , **Right** = 1 &lt;&lt; 2 &#125; — Enumeration of named mouse buttons.
+
+## Public Member Functions
+
+- [MouseEvent](#mouseevent) ([Type](#type) type, Button sourceButton, [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; Button &gt; allButtons, const vec2 &position, const vec2 &wheelAngleDelta=vec2::Zero(), [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; [KeyboardModifier](/cpp-sdk/4.5/api/classes/imfusion-gui-inputevent) &gt; [modifiers](/cpp-sdk/4.5/api/classes/imfusion-gui-inputevent)=[KeyboardModifier::None](/cpp-sdk/4.5/api/classes/imfusion-gui-inputevent), [LocalToGlobalCoordMapping](/cpp-sdk/4.5/api/classes/imfusion-gui-inputevent) mappingFunction=nullptr) — Constructor for a [MouseEvent](/cpp-sdk/4.5/api/classes/imfusion-gui-mouseevent).
+- [Type](#type) **type** () const — Returns the reason for emitting this event.
+- Button **button** () const — Returns the button that caused a Press, Release, or DoubleClick event; do not use for other events.
+- [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; Button &gt; **allButtons** () const — Returns the state of all mouse buttons when emitting this event; do not use for Leave events.
+- const vec2 & **position** () const — Returns the position of the mouse pointer wrt. the main GUI element; do not use for Leave events.
+- const vec2 & **wheelAngleDelta** () const — Returns the angle in degrees that the mouse wheel was rotated in horizontal/vertical direction; use only for Wheel events.
+
+## Static Public Member Functions
+
+- static [MouseEvent](#mouseevent) **makeLeaveEvent** () — Convenience factory function to create a [MouseEvent](/cpp-sdk/4.5/api/classes/imfusion-gui-mouseevent) of Type::Leave.
+
+## Member Enumeration Documentation
+
+### Type
+
+```cpp
+enum class ImFusion::GUI::MouseEvent::Type
+```
+
+*strong*
+
+Enumeration of reasons for the event.
+
+**Enumerator:**
+
+- `Press` — A mouse button was pressed.
+- `Release` — A mouse button was released.
+- `Move` — The mouse was moved.
+- `Wheel` — The mouse wheel was rotated.
+- `DoubleClick` — A double click event was registered.
+- `Leave` — The mouse pointer left the region of the GUI element.
+
+## Constructor & Destructor Documentation
+
+### MouseEvent
+
+```cpp
+ImFusion::GUI::MouseEvent::MouseEvent (Type type, Button sourceButton, Flags < Button > allButtons, const vec2 & position, const vec2 & wheelAngleDelta = vec2::Zero(), Flags < KeyboardModifier > modifiers = KeyboardModifier::None, LocalToGlobalCoordMapping mappingFunction = nullptr)
+```
+
+Constructor for a [MouseEvent](/cpp-sdk/4.5/api/classes/imfusion-gui-mouseevent).
+
+**Parameters:**
+
+- `type` — Reason for emitting this event.
+- `sourceButton` — The button that caused a Press, Release, or DoubleClick event, should be None for all other types.
+- `allButtons` — The state of all mouse buttons when emitting this event, should be None forLeave events.
+- `position` — Position of the mouse pointer wrt. the main GUI element, should be zero forLeave events.
+- `wheelAngleDelta` — Angle in degrees that the mouse wheel was rotated in horizontal/vertical direction, should be zero for all event types except for Wheel.
+- `modifiers` — List of pressed keyboard modifier keys, should be zero forLeave events.
+- `mappingFunction` — Optional mapping function used by [mapToGlobalCoord()](/cpp-sdk/4.5/api/classes/imfusion-gui-inputevent) to convert event coordinates to global coordinates if the underlying windowing system supports it; [mapToGlobalCoord()](/cpp-sdk/4.5/api/classes/imfusion-gui-inputevent) will use the identity function if empty.

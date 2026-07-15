@@ -1,0 +1,59 @@
+---
+title: "ImFusion::ImFusionLibPlugin"
+sidebarTitle: "ImFusionLibPlugin"
+description: "Specialized interface for a plugin for the ImFusionLib."
+---
+
+`#include <ImFusion/Base/ImFusionLibPlugin.h>`
+
+## Overview
+
+Specialized interface for a plugin for the ImFusionLib.
+
+In addition to the base interface it provides the [setApplicationController()](#setapplicationcontroller) member function that can be called by host applications with an [ApplicationController](/cpp-sdk/4.5/api/classes/imfusion-applicationcontroller) so that plugins get access to it.
+
+**Note:** In contrast to the legacy ImFusionPlugin interface, you must conduct license checks and factory registration yourself in [init()](/cpp-sdk/4.5/api/classes/imfusion-pluginbase). A typical plugin initialization function has the following structure:
+```cpp
+PluginBase::Status MyPlugin::init() {
+ // conduct license check if necessary at the beginning
+ if (!isLicensed("<feature code for plugin>"))
+ return Status::LicenseCheckFailed;
+
+ // instantiate necessary factories and register them with FactoryRegistry
+    m_algFactory = std::make_unique<MyAlgorithmFactory>();
+    m_algCtrlFactory = std::make_unique<MyAlgorithmControllerFactory>();
+ registerFactories(m_algFactory.get(), m_algCtrlFactory.get(), nullptr);
+
+ // perform registration of further factories etc.
+    [...]
+
+ return Status::Success;
+}
+```
+ fragment
+
+**See also:** - [ImFusionPlugin Migration](/cpp-sdk/4.5/api/guides/plugin-migration)
+- Plugin Architecture
+
+## Public Member Functions
+
+- virtual void [setApplicationController](#setapplicationcontroller) ([ApplicationController](/cpp-sdk/4.5/api/classes/imfusion-applicationcontroller) &) — Gives the plugin access to the application controller.
+
+## Protected Member Functions
+
+- bool **isLicensed** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &featureCode) const — Helper function to check whether *featureCode* is included in the currently activated license.
+- void **registerFactories** ([std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [AlgorithmFactory](/cpp-sdk/4.5/api/classes/imfusion-algorithmfactory) &gt; algorithmFactory, [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [AlgorithmControllerFactory](/cpp-sdk/4.5/api/classes/imfusion-algorithmcontrollerfactory) &gt; controllerFactory, [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [DataAnnotationFactory](/cpp-sdk/4.5/api/classes/imfusion-dataannotationfactory) &gt; annotationFactory) — Helper function to register the given factories with the [FactoryRegistry](/cpp-sdk/4.5/api/classes/imfusion-factoryregistry).
+
+## Member Function Documentation
+
+### setApplicationController
+
+```cpp
+virtual void ImFusion::ImFusionLibPlugin::setApplicationController (ApplicationController &)
+```
+
+*inline, virtual*
+
+Gives the plugin access to the application controller.
+
+Plugins should not rely on this method being called in all setups.

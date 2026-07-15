@@ -1,0 +1,43 @@
+---
+title: "ImFusion::PointDistanceReg"
+sidebarTitle: "PointDistanceReg"
+description: "Registers a point set to a distance volume."
+---
+
+`#include <ImFusion/Base/PointDistanceReg.h>`
+
+## Overview
+
+Registers a point set to a distance volume.
+
+## Public Member Functions
+
+- **PointDistanceReg** (const [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; float &gt; \*dist, vec3 ofs=vec3::Zero()) — Constructor providing the distance volume and optional offset.
+- **~PointDistanceReg** () override — Destructor.
+- void **setInitialMatrix** (const mat4 \*m) — Optionally provide an initial alignment matrix.
+- void **setReferenceMatrix** (const mat4 &m) — Set the optional reference matrix around which the relative pose will be applied.
+- void **setAngleAxis** (bool flag) — Enable or disable angle-axis parameterization of the rotation.
+- void **setWeightingAfterTransformation** (bool after) — Weigh the distances before or after applying the transformation.
+- void **setDistanceOutput** (double \*ptr) — Provide a pointer used for storing individual point distances.
+- void **addPriorityBox** (const vec3 &minCorner, const vec3 &maxCorner, double weight) — Optionally defines rectangular regions with different weighting.
+- double [evaluate](#evaluate) (int n, const double \*x, double \*dx=0) override — Returns point distance for a certain pose.
+- double **computeDistance** (const vec3 &point) const — Returns the distance of a given point to the surface model in mm.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; & **points** () — Read-write access to the point set.
+- void **setPointWeights** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; &w)
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; **pointWeights** () const
+- void **setMatrix** (const mat4 &mat) — Set the current transformation matrix.
+- const mat4 & **matrix** () const — Access the current transformation matrix.
+- mat4 **matrix** (int n, const double \*x) const — Return transformation matrix given relative pose parameters.
+- int **removeOutliers** (int n, const double \*x, double threshold) — Remove outliers from current points w.r.t. the input pose parameters, returns the number of such outliers.
+
+## Member Function Documentation
+
+### evaluate
+
+```cpp
+double ImFusion::PointDistanceReg::evaluate (int n, const double * x, double * dx = 0)
+```
+
+*override, virtual*
+
+Returns point distance for a certain pose.

@@ -1,0 +1,94 @@
+---
+title: "ImFusion::Selectable"
+sidebarTitle: "Selectable"
+description: "Interface for Data that supports having a Selection ."
+---
+
+`#include <ImFusion/Base/Selectable.h>`
+
+## Overview
+
+Interface for [Data](/cpp-sdk/4.5/api/classes/imfusion-data) that supports having a [Selection](/cpp-sdk/4.5/api/classes/imfusion-selection).
+
+The interface is thread safe. However, when modified the signalSelectionChanged is emitted on the thread causing the modification.
+
+**Invariant:** The implementations overriding any of the non-abstract methods must take care to acquire the mutex before accessing the underlying selection and emit the signalSelectionChanged on any change to the underlying selection.
+
+**Note:** Threadsafe class: Member functions can be called concurrently from any thread.
+
+## Public Member Functions
+
+- **Selectable** (const Selectable &)
+- **Selectable** (Selectable &&)
+- Selectable & **operator=** (const Selectable &)
+- Selectable & **operator=** (Selectable &&)
+- virtual [Selection](/cpp-sdk/4.5/api/classes/imfusion-selection) [selection](#selection) () const
+- virtual int [focus](#focus) () const
+- virtual void [setSelection](#setselection) (const [Selection](/cpp-sdk/4.5/api/classes/imfusion-selection) &sel) — Set the underlying selection.
+- virtual void [setFocus](#setfocus) (int index) — Set focus of the selection.
+- virtual int [size](#size) () const =0
+
+## Public Attributes
+
+- ProtectedSignal **signalSelectionChanged** — Signals that the selection or size might have changed.
+
+## Protected Attributes
+
+- [std::mutex](http://en.cppreference.com/w/cpp/thread/mutex.html) **m_selectionMutex** — Mutex protecting the selection.
+- [Selection](/cpp-sdk/4.5/api/classes/imfusion-selection) **m_sel**
+
+## Member Function Documentation
+
+### selection
+
+```cpp
+virtual Selection ImFusion::Selectable::selection () const
+```
+
+*virtual*
+
+**Returns:** A copy of the underlying selection.
+
+### focus
+
+```cpp
+virtual int ImFusion::Selectable::focus () const
+```
+
+*virtual*
+
+**Returns:** The index of the focus of the selection.
+
+### setSelection
+
+```cpp
+virtual void ImFusion::Selectable::setSelection (const Selection & sel)
+```
+
+*virtual*
+
+Set the underlying selection.
+
+Checks and clamps the index to be within the range defined by [size()](#size). Emits signalSelectionChanged if `sel` is different from the underlying selection.
+
+### setFocus
+
+```cpp
+virtual void ImFusion::Selectable::setFocus (int index)
+```
+
+*virtual*
+
+Set focus of the selection.
+
+Checks and clamps the index to be within the range defined by [size()](#size). Emits signalSelectionChanged if `index` is different from the underlying selection's focus.
+
+### size
+
+```cpp
+virtual int ImFusion::Selectable::size () const
+```
+
+*pure virtual*
+
+**Returns:** Total number of elements.

@@ -1,0 +1,78 @@
+---
+title: "ImFusion::LinearImageRegistration"
+sidebarTitle: "LinearImageRegistration"
+description: "Registers two images using a rigid/affine transformation."
+---
+
+`#include <ImFusion/Reg/LinearImageRegistration.h>`
+
+## Overview
+
+Registers two images using a rigid/affine transformation.
+
+Performs a non-linear optimization to find the maximum of a similarity measure that indicates an alignment of the two images.
+
+## Public Member Functions
+
+- **LinearImageRegistration** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*image1, [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*image2) — Creates a registration that keeps image1 fixed and moves image2.
+- void [initializeTransformationModel](#initializetransformationmodel) () override — Does nothing because all images already have a matrix.
+- double [evaluate](#evaluate) (int n, const double \*x, double \*dx=0) override — Assembles the matrix and calls evaluate(const mat4&).
+- int [numberOfParameters](#numberofparameters) () const final — Returns 6 for rigid and 12 for affine transformation. Since it is called in the constructor it is defined final.
+- void [reset](#reset) () override — Resets the transformation of moving to its initial transformation.
+- bool [isDeformable](#isdeformable) () const override — Returns if the registration is non-linear or not.
+
+## Static Public Member Functions
+
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=0) — Expects two Volumes/Images or two Volumes/Images and a third [Data](/cpp-sdk/4.5/api/classes/imfusion-data) as moving object (see constructors).
+
+## Member Function Documentation
+
+### initializeTransformationModel
+
+```cpp
+void ImFusion::LinearImageRegistration::initializeTransformationModel ()
+```
+
+*override, virtual*
+
+Does nothing because all images already have a matrix.
+
+### evaluate
+
+```cpp
+double ImFusion::LinearImageRegistration::evaluate (int n, const double * x, double * dx = 0)
+```
+
+*override, virtual*
+
+Assembles the matrix and calls evaluate(const mat4&).
+
+### numberOfParameters
+
+```cpp
+int ImFusion::LinearImageRegistration::numberOfParameters () const
+```
+
+*final, virtual*
+
+Returns 6 for rigid and 12 for affine transformation. Since it is called in the constructor it is defined final.
+
+### reset
+
+```cpp
+void ImFusion::LinearImageRegistration::reset ()
+```
+
+*override, virtual*
+
+Resets the transformation of moving to its initial transformation.
+
+### isDeformable
+
+```cpp
+bool ImFusion::LinearImageRegistration::isDeformable () const
+```
+
+*override, virtual*
+
+Returns if the registration is non-linear or not.

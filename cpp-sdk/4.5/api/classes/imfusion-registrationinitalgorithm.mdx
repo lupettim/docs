@@ -1,0 +1,75 @@
+---
+title: "ImFusion::RegistrationInitAlgorithm"
+sidebarTitle: "RegistrationInitAlgorithm"
+description: "Initialize the registration of two volumes by moving the second one."
+---
+
+`#include <ImFusion/Reg/RegistrationInitAlgorithm.h>`
+
+## Overview
+
+Initialize the registration of two volumes by moving the second one.
+
+## Public Types
+
+- enum class **Mode** &#123; **BoundingBox** = 0 , **CenterOfMass** = 1 &#125; — [Status](/cpp-sdk/4.5/api/classes/imfusion-algorithm) codes.
+
+## Public Member Functions
+
+- **RegistrationInitAlgorithm** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &image1, [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &image2) — Constructor with two volumes, second is the moving one that will be shifted.
+- void **setMode** (Mode mode) — Set the initialization mode, bounding box center = "BoundingBox" (0), center of mass = "CenterOfMass" (1).
+- Mode **mode** () const — Return the initialization mode.
+
+## Static Public Member Functions
+
+- static vec3 **centerOfMass** ([SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) &img) — Compute the center of mass of an image in 2D or 3D.
+
+## Implementation of the Algorithm interface
+
+- void [compute](#compute) () override — Execute the algorithm.
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=0)
+
+## Implementation of the Configurable interface
+
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+## Member Function Documentation
+
+### compute
+
+```cpp
+void ImFusion::RegistrationInitAlgorithm::compute ()
+```
+
+*override, virtual*
+
+Execute the algorithm.
+
+### configure
+
+```cpp
+void ImFusion::RegistrationInitAlgorithm::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### configuration
+
+```cpp
+void ImFusion::RegistrationInitAlgorithm::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality

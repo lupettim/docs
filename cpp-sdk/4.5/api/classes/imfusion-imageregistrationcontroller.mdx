@@ -1,0 +1,45 @@
+---
+title: "ImFusion::ImageRegistrationController"
+sidebarTitle: "ImageRegistrationController"
+---
+
+## Public Slots
+
+- void **run** ()
+- void **updatePreprocessing** ()
+- void **exportPreprocessing** ()
+- void **showIntermediateImages** (bool show)
+- void **selectIntermediate** (int index)
+- void **setMoving** (int which)
+- void **setTransformationModel** (int index)
+- void **setPreprocessingMode** (int mode)
+- void **setMaximumMemory** (double sizeInMB)
+- void **setRestrictMemoryEnabled** (bool enable)
+- void **setFilteringEnabled** (bool enable)
+- void **setAdjustSpacingEnabled** (bool enable)
+- void **setNormalizationEnabled** (bool enable)
+- void **setCachingEnabled** (bool enable)
+- void **reset** ()
+- void **regInit** ()
+- void **createOptimizer** ()
+- void **showMovingComboBox** (bool show)
+
+## Public Member Functions
+
+- **ImageRegistrationController** ([ImageRegistration](/cpp-sdk/4.5/api/classes/imfusion-imageregistration) \*[algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithmcontroller), QWidget \*parent=0)
+- void [init](#init) () override — Two-step initialization function to be implemented by subclasses.
+- [ParametricImageRegistrationController](/cpp-sdk/4.5/api/classes/imfusion-parametricimageregistrationcontroller) \* **parametricController** () const
+
+## Member Function Documentation
+
+### init
+
+```cpp
+void ImFusion::ImageRegistrationController::init ()
+```
+
+*override, virtual*
+
+Two-step initialization function to be implemented by subclasses.
+
+This function is called by [setMainWindowBase()](/cpp-sdk/4.5/api/classes/imfusion-controller) after the [m_disp](/cpp-sdk/4.5/api/classes/imfusion-controller) and [m_main](/cpp-sdk/4.5/api/classes/imfusion-controller) attributes have been set and hence a complete initialization of the controller is possible at this point.

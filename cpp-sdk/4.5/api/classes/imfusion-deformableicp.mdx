@@ -1,0 +1,314 @@
+---
+title: "ImFusion::DeformableIcp"
+sidebarTitle: "DeformableIcp"
+description: "Implements a regularized-least-squares-based iterative closest point (ICP) procedure for deformable registration of two sets of points."
+---
+
+`#include <ImFusion/Reg/DeformableIcp.h>`
+
+## Overview
+
+Implements a regularized-least-squares-based iterative closest point (ICP) procedure for deformable registration of two sets of points.
+
+The Frobenius norm of a user-defined regularization matrix (e.g. a Laplacian) applied to point displacements is used as regularization term. The regularization is gradually reduced by multiplying the regularization parameter \(\lambda\) by a factor smaller than 1 each iteration. Point correspondences are re-established each iteration using bi- or unidirectional nearest neighbor search. In each iteration, a sparse linear system is solved to compute the closed-form solution of:
+
+\[\mathbf D_i = \arg\min_&#123;\mathbf D&#125; \left\&#123;
+\frac&#123;1&#125;&#123;2n&#125; \|\mathbf S_i^&#123;y\leftarrow x&#125; \mathbf D - (\mathbf Y-\mathbf S_i^&#123;y\leftarrow x&#125;\mathbf X_0)\|_F^2 +
+\frac&#123;1&#125;&#123;2m&#125; \|\mathbf D - (\mathbf S_i^&#123;x\leftarrow y&#125;\mathbf Y-\mathbf X_0)\|_F^2 +
+\lambda_i \|\mathbf L \mathbf D\|_F^2
+\right\&#125;
+\]
+
+where
+
+- \(i\) is the iteration number ( \(i=0\) refers to the initial configuration),
+- \(\mathbf X_i \in \mathbb R^&#123;m\times 3&#125;\) are the \(m\) moving points,
+- \(\mathbf Y \in \mathbb R^&#123;n\times 3&#125;\) are the \(n\) fixed points,
+- \(\mathbf D_i \in \mathbb R^&#123;m\times 3&#125;\) are displacements of the moving points,
+- \(\mathbf S_i^&#123;y\leftarrow x&#125; \in \mathbb R^&#123;n\times m&#125;\) extracts for each point in \(\mathbf Y\) the row of the nearest point in \(\mathbf X_&#123;i-1&#125;\),
+- \(\mathbf S_i^&#123;x\leftarrow y&#125; \in \mathbb R^&#123;m\times n&#125;\) extracts for each point in \(\mathbf X_&#123;i-1&#125;\) the row of the nearest point in \(\mathbf Y\),
+- \(\mathbf L \in \mathbb R^&#123;p\times m&#125;\) is the regularization matrix (typically \(p=m\)), and
+- \(\lambda_i = r^&#123;i-1&#125; \lambda_0\) is the regularization parameter ( \(r\) is the \(\lambda\) reduction factor).
+
+The moving points are then updated with \(\mathbf X_i = \mathbf X_0 + \mathbf D_i\).
+
+Iterations are stopped if the relative RMSE or \(\lambda\) falls below a specified threshold or the maximum number of iterations has been reached. The same stopping criteria apply for an optional iterative rigid or rigid-then-rigid-and-scaling pre-alignment. Additionally, the pre-alignment is also stopped if the difference of relative RMSEs between successive iterations falls below a threshold.
+
+The method is similar to [1] in that it also performs "optimal" steps in each iteration and uses a decreasing regularization parameter, but it differs in the type of regularization (Laplacian or similar applied to displacements vs. difference of locally affine transformations between neighboring points). To speed up the registration, this method also uses a more greedy iteration scheme by omitting the inner loop described in [1]. Furthermore, this method uses bidirectional point correspondences by default, while [1] establishes correspondences with respect to the moving points only.
+
+[1] [https://doi.org/10.1109/CVPR.2007.383165](https://doi.org/10.1109/CVPR.2007.383165)
+
+## Classes
+
+- struct [IterationInfo](/cpp-sdk/4.5/api/structs/imfusion-deformableicp-iterationinfo) — Used to report information about an iteration.
+- struct [AdvancedProperties](/cpp-sdk/4.5/api/structs/imfusion-deformableicp-advancedproperties)
+- struct [RansacProperties](/cpp-sdk/4.5/api/structs/imfusion-deformableicp-ransacproperties)
+
+## Public Types
+
+- enum class [PreAlignment](#prealignment) &#123; None , Rigid , RigidThenRigidAndScaling &#125; — Pre-alignment modes.
+- enum class [CorrespondenceMode](#correspondencemode) &#123; NearestOfFixedInMoving , NearestOfMovingInFixed , NearestBidirectional &#125; — Used to define how point correspondences are established using nearest neighbor search.
+- enum class [StoppingReason](#stoppingreason) &#123; None , Lambda , RelRmse , RelRmseDiff , MaxIter , Callback &#125; — Used to report why iterations have been stopped. Stopping criteria are evaluated in this order.
+- enum class [Phase](#phase) &#123; None , Centroids , Rigid , RigidAndScaling , Deformable &#125; — Used to report in which phase the algorithm is in.
+
+## Public Member Functions
+
+- **DeformableIcp** () — Constructor.
+- **~DeformableIcp** ()=default — Destructor.
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+- [Algorithm::Status](/cpp-sdk/4.5/api/classes/imfusion-algorithm) [compute](#compute) (const matX3 &pointsFixed, matX3 &pointsMoving) — Registers the moving points in-place to the fixed points.
+- void **setNormals** (const matX3 \*normalsFixed) — Sets normals for the fixed points. If set, point-to-plane instead of point-to-point ICP will be used.
+- void [setRegularizationMatrix](#setregularizationmatrix) (const Eigen::SparseMatrix&lt; double &gt; \*matrix) — Sets the regularization matrix (typically a differential operator like the Laplacian).
+- void [setRegularizationWeights](#setregularizationweights) (const vecX \*weights) — Sets regularization weights.
+- void [setExtractionMatrix](#setextractionmatrix) (const Eigen::SparseMatrix&lt; double &gt; \*matrix) — Sets a matrix that is applied to the moving points in all computations except the regularization term.
+- void [setRegions](#setregions) (const vecXi \*regionsFixed, const vecXi \*regionsMoving) — Assigns a region number to each fixed and each moving point.
+- void [setCorrespondenceModePerRegion](#setcorrespondencemodeperregion) (const [std::map](http://en.cppreference.com/w/cpp/container/map.html)&lt; int, [CorrespondenceMode](#correspondencemode) &gt; &directionPerRegion) — Sets region-specific correspondence modes.
+- const [std::map](http://en.cppreference.com/w/cpp/container/map.html)&lt; int, [CorrespondenceMode](#correspondencemode) &gt; & **correspondenceModePerRegion** () const — Returns the region-specific correspondence modes. See [setCorrespondenceModePerRegion()](#setcorrespondencemodeperregion) for details.
+- void [setWeightPerRegion](#setweightperregion) (const [std::map](http://en.cppreference.com/w/cpp/container/map.html)&lt; int, double &gt; &weightPerRegion) — Sets region-specific weights.
+- const [std::map](http://en.cppreference.com/w/cpp/container/map.html)&lt; int, double &gt; & **weightPerRegion** () const — Returns the region-specific weights. See [setWeightPerRegion()](#setweightperregion) for details.
+- void [setIterationCallback](#setiterationcallback) ([std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; bool(const [IterationInfo](/cpp-sdk/4.5/api/structs/imfusion-deformableicp-iterationinfo) &)&gt; callback) — Sets a function that is called at the end of each iteration.
+- void **setProgressTask** ([Progress::Task](/cpp-sdk/4.5/api/classes/imfusion-progress-task) \*task) — Sets the progress task to be used.
+- void [setCustomTerm](#setcustomterm) ([std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; const Eigen::SparseMatrix&lt; double &gt; &(const [IterationInfo](/cpp-sdk/4.5/api/structs/imfusion-deformableicp-iterationinfo) &, const matX3 &pointsMoving)&gt; lhs, [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; const matX3 &(const [IterationInfo](/cpp-sdk/4.5/api/structs/imfusion-deformableicp-iterationinfo) &, const matX3 &pointsMoving)&gt; rhs) — For power users only.
+- void [setPreIterationFixedPointsProcessing](#setpreiterationfixedpointsprocessing) ([std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; matX3(const [IterationInfo](/cpp-sdk/4.5/api/structs/imfusion-deformableicp-iterationinfo) &, const matX3 &pointsFixed, const matX3 &pointsMoving, const vecXi \*idsMoving)&gt; processing) — For power users only.
+- [IterationInfo](/cpp-sdk/4.5/api/structs/imfusion-deformableicp-iterationinfo) **lastIterationInfo** () const — Returns information about the most recent completed iteration.
+
+## Public Attributes
+
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; bool &gt; **p_firstAlignCentroids** = &#123;"firstAlignCentroids", true, this&#125; — Whether to first translate the moving points so that their centroid aligns with the fixed points' centroid.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; [PreAlignment](#prealignment) &gt; **p_preAlignment** = &#123;"preAlignment", PreAlignment::RigidThenRigidAndScaling, this&#125; — Which pre-alignment to perform.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; bool &gt; **p_onlyPreAlignment** = &#123;"onlyPreAlignment", false, this&#125; — Whether to stop after pre-alignment.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; double &gt; **p_initLogLambda** = &#123;"initLogLambda", 2., this&#125; — Initial value of the regularization parameter's logarithm.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; double &gt; [p_lambdaReductionFactor](#p-lambdareductionfactor) = &#123;"lambdaReductionFactor", 0.8, this&#125; — Factor smaller than 1 by which the regularization parameter (not its logarithm) is reduced each iteration.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; double &gt; **p_stoppingLogLambda** = &#123;"stoppingLogLambda", -4., this&#125; — If the regularization parameter's logarithm is less than or equal to this value, iterations are stopped.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; [CorrespondenceMode](#correspondencemode) &gt; [p_correspondenceMode](#p-correspondencemode) = &#123;"correspondenceMode", CorrespondenceMode::NearestBidirectional, this&#125; — Defines how point correspondences are established using nearest neighbor search.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; bool &gt; **p_updateWhileIterating** = &#123;"updateWhileIterating", false, this&#125; — Whether to update the display via the progress task while iterating.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; bool &gt; **p_verbose** = &#123;"verbose", false, this&#125; — Whether to print additional information (used regions, current phase, timings) to the log.
+- [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty)&lt; [AdvancedProperties](/cpp-sdk/4.5/api/structs/imfusion-deformableicp-advancedproperties) &gt; **p_advanced** = &#123;"advanced", [AdvancedProperties](/cpp-sdk/4.5/api/structs/imfusion-deformableicp-advancedproperties)(), this&#125;
+- [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty)&lt; [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [RansacProperties](/cpp-sdk/4.5/api/structs/imfusion-deformableicp-ransacproperties) &gt; &gt; **p_preAlignmentRansac** = &#123;"preAlignmentRansac", std::nullopt, this&#125; — If set, the algorithm will use [RANSAC](/cpp-sdk/4.5/api/classes/imfusion-ransac) to make the pre-alignment more robust.
+
+## Member Enumeration Documentation
+
+### PreAlignment
+
+```cpp
+enum class ImFusion::DeformableIcp::PreAlignment
+```
+
+*strong*
+
+Pre-alignment modes.
+
+**Enumerator:**
+
+- `None` — No pre-alignment.
+- `Rigid` — ICP pre-alignment using a rigid transformation.
+- `RigidThenRigidAndScaling` — Two subsequent runs of ICP pre-alignment:
+
+Using a rigid transformation;
+Using a rigid-and-scaling transformation.
+
+### CorrespondenceMode
+
+```cpp
+enum class ImFusion::DeformableIcp::CorrespondenceMode
+```
+
+*strong*
+
+Used to define how point correspondences are established using nearest neighbor search.
+
+**Enumerator:**
+
+- `NearestOfFixedInMoving` — For each point in fixed mesh, find nearest point in moving mesh.
+- `NearestOfMovingInFixed` — For each point in moving mesh, find nearest point in fixed mesh.
+- `NearestBidirectional` — For each point in both meshes, find nearest point in other mesh.
+
+### StoppingReason
+
+```cpp
+enum class ImFusion::DeformableIcp::StoppingReason
+```
+
+*strong*
+
+Used to report why iterations have been stopped. Stopping criteria are evaluated in this order.
+
+**Enumerator:**
+
+- `None` — None of the stopping criteria is fulfilled.
+- `Lambda` — Logarithm of regularization parameter lambda is less than or equal to p_stoppingLogLambda.
+- `RelRmse` — Relative RMSE is less than or equal to p_stoppingRelRmse.
+- `RelRmseDiff` — Difference of relative RMSE between iterations is less than or equal to p_stoppingRelRmseDiff.
+- `MaxIter` — Number of iterations is greater than or equal to p_maxIter.
+- `Callback` — The user-defined callback has returned false.
+
+### Phase
+
+```cpp
+enum class ImFusion::DeformableIcp::Phase
+```
+
+*strong*
+
+Used to report in which phase the algorithm is in.
+
+**Enumerator:**
+
+- `None` — The algorithm has not started with any of the phases below.
+- `Centroids` — The algorithm is aligning the centroids.
+- `Rigid` — The algorithm is performing the rigid pre-alignment.
+- `RigidAndScaling` — The algorithm is performing the rigid-and-scaling pre-alignment.
+- `Deformable` — The algorithm is performing the deformable registration.
+
+## Member Function Documentation
+
+### configure
+
+```cpp
+void ImFusion::DeformableIcp::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### configuration
+
+```cpp
+void ImFusion::DeformableIcp::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality
+
+### compute
+
+```cpp
+Algorithm::Status ImFusion::DeformableIcp::compute (const matX3 & pointsFixed, matX3 & pointsMoving)
+```
+
+Registers the moving points in-place to the fixed points.
+
+If normals for the fixed points are provided, point-to-plane ICP is performed instead of point-to-point ICP.
+
+### setRegularizationMatrix
+
+```cpp
+void ImFusion::DeformableIcp::setRegularizationMatrix (const Eigen::SparseMatrix< double > * matrix)
+```
+
+Sets the regularization matrix (typically a differential operator like the Laplacian).
+
+The number of columns of this matrix must be the same as the number of moving points.
+
+### setRegularizationWeights
+
+```cpp
+void ImFusion::DeformableIcp::setRegularizationWeights (const vecX * weights)
+```
+
+Sets regularization weights.
+
+The number of weights must be the same as the number of moving points.
+
+### setExtractionMatrix
+
+```cpp
+void ImFusion::DeformableIcp::setExtractionMatrix (const Eigen::SparseMatrix< double > * matrix)
+```
+
+Sets a matrix that is applied to the moving points in all computations except the regularization term.
+
+This matrix can be used to extract a subset of points and/or to linearly interpolate new points to be registered while still regularizing the original set of moving points. The number of columns of this matrix must be the same as the number of moving points.
+
+### setRegions
+
+```cpp
+void ImFusion::DeformableIcp::setRegions (const vecXi * regionsFixed, const vecXi * regionsMoving)
+```
+
+Assigns a region number to each fixed and each moving point.
+
+Each region is treated separately when establishing point correspondences. Negative region numbers can be used to define regions to be ignored.
+
+### setCorrespondenceModePerRegion
+
+```cpp
+void ImFusion::DeformableIcp::setCorrespondenceModePerRegion (const std::map < int, CorrespondenceMode > & directionPerRegion)
+```
+
+Sets region-specific correspondence modes.
+
+Keys of the map have to be region numbers. The map does not have to include all regions. p_correspondenceMode is used for the remaining regions.
+
+### setWeightPerRegion
+
+```cpp
+void ImFusion::DeformableIcp::setWeightPerRegion (const std::map < int, double > & weightPerRegion)
+```
+
+Sets region-specific weights.
+
+Keys of the map have to be region numbers. The map does not have to include all regions. A weight of 1 is used for the remaining regions.
+
+### setIterationCallback
+
+```cpp
+void ImFusion::DeformableIcp::setIterationCallback (std::function < bool(const IterationInfo &)> callback)
+```
+
+Sets a function that is called at the end of each iteration.
+
+If this function returns false, the iterations are stopped.
+
+### setCustomTerm
+
+```cpp
+void ImFusion::DeformableIcp::setCustomTerm (std::function < const Eigen::SparseMatrix< double > &(const IterationInfo &, const matX3 &pointsMoving)> lhs, std::function < const matX3 &(const IterationInfo &, const matX3 &pointsMoving)> rhs)
+```
+
+For power users only.
+
+Sets a custom term to add to the left- and right-hand side of the normal equation. pointsMoving will contain all moving points before applying the extraction matrix.
+
+### setPreIterationFixedPointsProcessing
+
+```cpp
+void ImFusion::DeformableIcp::setPreIterationFixedPointsProcessing (std::function < matX3(const IterationInfo &, const matX3 &pointsFixed, const matX3 &pointsMoving, const vecXi *idsMoving)> processing)
+```
+
+For power users only.
+
+Sets a function that is applied to the fixed points before each iteration. pointsMoving will contain all moving points after applying the extraction matrix. If regions are used, the function is called for each region, pointsFixed will contain only the fixed points for this region, idsMoving will contain the indices of pointsMoving corresponding to pointsFixed and the function must return only the processed fixed points for this region.
+
+## Member Data Documentation
+
+### p_lambdaReductionFactor
+
+```cpp
+Parameter <double> ImFusion::DeformableIcp::p_lambdaReductionFactor = {"lambdaReductionFactor", 0.8, this}
+```
+
+Factor smaller than 1 by which the regularization parameter (not its logarithm) is reduced each iteration.
+
+A larger factor should yield better point correspondences, but also increases the computation time. 0.8 is usually a good compromise.
+
+### p_correspondenceMode
+
+```cpp
+Parameter < CorrespondenceMode > ImFusion::DeformableIcp::p_correspondenceMode = {"correspondenceMode", CorrespondenceMode::NearestBidirectional, this}
+```
+
+Defines how point correspondences are established using nearest neighbor search.
+
+If regions are used and individual correspondence modes have been set for some but not all regions, this value is still used for the other regions.

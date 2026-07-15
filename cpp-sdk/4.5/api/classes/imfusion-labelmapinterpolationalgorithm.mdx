@@ -1,0 +1,65 @@
+---
+title: "ImFusion::LabelMapInterpolationAlgorithm"
+sidebarTitle: "LabelMapInterpolationAlgorithm"
+description: "Algorithm to run a 3D interpolatation of a label map with sparsely labelled slices EITHER Input is a 3D label map with a couple of non-zero z-slices, output is"
+---
+
+`#include <ImFusion/Seg/LabelMapInterpolationAlgorithm.h>`
+
+## Overview
+
+[Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) to run a 3D interpolatation of a label map with sparsely labelled slices EITHER Input is a 3D label map with a couple of non-zero z-slices, output is the interpolated volume OR Input is a set of 2D label maps some of them being not empty, output is the interpolated 2D sequence.
+
+## Public Member Functions
+
+- **LabelMapInterpolationAlgorithm** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*inputLabel) — Main constructor.
+- **~LabelMapInterpolationAlgorithm** () — Destructor.
+
+## Public Attributes
+
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; int &gt; [p_numInterpolationsPerStep](#p-numinterpolationsperstep)
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; int &gt; **p_morphoKernelSize** = &#123;"morphoKernelSize", 3, this&#125;
+
+## Methods implementing the algorithm interface
+
+- [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) [takeOutput](#takeoutput) () override — If new data was created, make it available here.
+- void [compute](#compute) () override — Execute the algorithm.
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=0) — If data is compatible with algorithm return true. If a is not zero, create algorithm with input data.
+
+## Member Function Documentation
+
+### takeOutput
+
+```cpp
+OwningDataList ImFusion::LabelMapInterpolationAlgorithm::takeOutput ()
+```
+
+*override, virtual*
+
+If new data was created, make it available here.
+
+### compute
+
+```cpp
+void ImFusion::LabelMapInterpolationAlgorithm::compute ()
+```
+
+*override, virtual*
+
+Execute the algorithm.
+
+## Member Data Documentation
+
+### p_numInterpolationsPerStep
+
+```cpp
+Parameter <int> ImFusion::LabelMapInterpolationAlgorithm::p_numInterpolationsPerStep
+```
+
+**Initial value:**
+```cpp
+= {"numInterpolationsPerStep",
+                1,
+                *this}
+```
+ fragment

@@ -1,0 +1,112 @@
+---
+title: "ImFusion::GlSliceIndicator"
+sidebarTitle: "GlSliceIndicator"
+description: "Renderer to show the position/orientation of GlSlice instances in context of other Views."
+---
+
+`#include <ImFusion/GL/GlSliceIndicator.h>`
+
+## Overview
+
+Renderer to show the position/orientation of [GlSlice](/cpp-sdk/4.5/api/classes/imfusion-glslice) instances in context of other Views.
+
+This [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) will visualize existing [GlSlice](/cpp-sdk/4.5/api/classes/imfusion-glslice)[View]s in other SliceViews and VolumeViews by rendering indicators at the location where the slices are in the coordinate system of the parent view. By default this will be lines the slices intersect in SliceViews and an outline/border in VolumeViews. The appearance can be customized: the [RenderMode2d](#rendermode2d) applies to all slices(), while the [RenderMode3d](#rendermode3d) is a per-slice setting.
+
+**See also:** - [GUI::SliceIndicator](/cpp-sdk/4.5/api/classes/imfusion-gui-sliceindicator) for a wrapper class that add input event handling to manipulate the [GlSlice](/cpp-sdk/4.5/api/classes/imfusion-glslice) position and orientation by dragging the intersection lines in other SliceViews.
+
+## Public Types
+
+- enum class [RenderMode2d](#rendermode2d) &#123; Nothing = 0 , Line = 1 &lt;&lt; 1 , Thickness = 1 &lt;&lt; 2 , OrientationMarkers = 1 &lt;&lt; 3 &#125; — Enumeration for selecting how to render the cross-section between this MPR and other MPR slice views.
+- enum class [RenderMode3d](#rendermode3d) &#123; Nothing = 0 , Border = 1 &lt;&lt; 0 , ImageContent = 1 &lt;&lt; 1 , Centerlines = 1 &lt;&lt; 2 , Plane = 1 &lt;&lt; 3 &#125; — Enumeration for selecting what to render inside a [GlVolumeView](/cpp-sdk/4.5/api/classes/imfusion-glvolumeview).
+
+## Public Member Functions
+
+- **GlSliceIndicator** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; const GlSlice \* &gt; &slices=&#123;&#125;) — Instantiate a new instance that will show indicators for the given *slices*.
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; const GlSlice \* &gt; & **slices** () const — Returns the list of slice views for which to render.
+- void **setSlices** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; const GlSlice \* &gt; &value) — Sets the list of slice views for which to render.
+- [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; [RenderMode2d](#rendermode2d) &gt; **renderMode2d** () const — Returns what is shown when rendering the cross-section with other MPR views.
+- void **setRenderMode2d** ([Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; [RenderMode2d](#rendermode2d) &gt; value) — Sets what is shown when rendering the cross-section with other MPR views.
+- [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; [RenderMode3d](#rendermode3d) &gt; **renderMode3d** (const GlSlice \*sliceView) const — Returns what is shown when *sliceView* is rendered inside a [GlVolumeView](/cpp-sdk/4.5/api/classes/imfusion-glvolumeview).
+- void **setRenderMode3d** (const GlSlice \*sliceView, [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; [RenderMode3d](#rendermode3d) &gt; value) — Sets what is shown when *sliceView* is rendered inside a [GlVolumeView](/cpp-sdk/4.5/api/classes/imfusion-glvolumeview).
+- double **lineWidth** () const — Returns the width of rendered lines.
+- void **setLineWidth** (double value) — Sets the width of rendered lines.
+- bool **hidesOrientationMarkersForObliqueAngles** () const — Returns the whether to hide orientation markers if the angle between slice plane exceeds a few degrees.
+- void **setHideOrientationMarkersForObliqueAngles** (bool value) — Sets the whether to hide orientation markers if the angle between slice plane exceeds a few degrees.
+- bool **showsCrosshairIn3d** () const — Returns the flag whether to render lines forming a cross in 3D where the MPR planes intersect.
+- void **setShowCrosshairIn3d** (bool value) — Sets the flag whether to render lines forming a cross in 3D where the MPR planes intersect.
+- [ImageInfoDataComponent::AnatomicalOrientationType](/cpp-sdk/4.5/api/classes/imfusion-imageinfodatacomponent) **defaultAnatomicalOrientation** () const — Returns the anatomical orientation type to use for orientation markers if unknown/unspecified.
+- void **setDefaultAnatomicalOrientation** ([ImageInfoDataComponent::AnatomicalOrientationType](/cpp-sdk/4.5/api/classes/imfusion-imageinfodatacomponent) value) — Sets the anatomical orientation type to use for orientation markers if unknown/unspecified.
+- void [draw](#draw) (const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &view) override — Draw the object in 3D space.
+- [Geometry::AlignedBox](/cpp-sdk/4.5/api/classes/imfusion-geometry-alignedbox) [bounds](#bounds) () const override — Get the axis-aligned bounding box of this [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) in world space.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [typeName](#typename) () const override — Return unique identifier for this object class used for serialization.
+
+## Member Enumeration Documentation
+
+### RenderMode2d
+
+```cpp
+enum class ImFusion::GlSliceIndicator::RenderMode2d
+```
+
+*strong*
+
+Enumeration for selecting how to render the cross-section between this MPR and other MPR slice views.
+
+**Enumerator:**
+
+- `Nothing` — Don't render MPR cross-sections at all.
+- `Line` — Render the actual MPR cross-section lines.
+- `Thickness` — Render slice thickness indicators in MPR cross-sections.
+- `OrientationMarkers` — Render orientation markers in MPR cross-sections.
+
+### RenderMode3d
+
+```cpp
+enum class ImFusion::GlSliceIndicator::RenderMode3d
+```
+
+*strong*
+
+Enumeration for selecting what to render inside a [GlVolumeView](/cpp-sdk/4.5/api/classes/imfusion-glvolumeview).
+
+**Enumerator:**
+
+- `Nothing` — Don't render MPR cross-sections at all.
+- `Border` — Render the surrounding border of the slice.
+- `ImageContent` — Render the actual image content.
+- `Centerlines` — Render the centerlines of the slice.
+- `Plane` — Render the slice as semi-transparent plane.
+
+## Member Function Documentation
+
+### draw
+
+```cpp
+void ImFusion::GlSliceIndicator::draw (const GlView & view)
+```
+
+*override, virtual*
+
+Draw the object in 3D space.
+
+### bounds
+
+```cpp
+Geometry::AlignedBox ImFusion::GlSliceIndicator::bounds () const
+```
+
+*override, virtual*
+
+Get the axis-aligned bounding box of this [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) in world space.
+
+Return an empty (default-constructed) AlignedBox object if the [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) does not reside in world space.
+
+### typeName
+
+```cpp
+std::string ImFusion::GlSliceIndicator::typeName () const
+```
+
+*inline, override, virtual*
+
+Return unique identifier for this object class used for serialization.

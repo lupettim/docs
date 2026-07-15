@@ -1,0 +1,97 @@
+---
+title: "ImFusion::ExpandableGroupBox"
+sidebarTitle: "ExpandableGroupBox"
+description: "This class is a container widget that can expand and collapse another widget."
+---
+
+`#include <ImFusion/GUI/ExpandableGroupBox.h>`
+
+## Overview
+
+This class is a container widget that can expand and collapse another widget.
+
+The [ExpandableGroupBoxButton](/cpp-sdk/4.5/api/classes/imfusion-expandablegroupboxbutton) widget consists of a button and a container area below which holds a custom widget. Toggling the button will show/hide the contained widget. Therefore, showing and hiding the contained widget itself has the same effect as clicking the button. Additionally this widget supports custom actions that are displayed as (icon only) toolbuttons on the right of the expand/collapse button. Deleting the contained widget will also delete this object. If the [ExpandableGroupBox](/cpp-sdk/4.5/api/classes/imfusion-expandablegroupbox) is resizable, a handle at the bottom allows to dynamically resize the widget vertically. The container widget has a ExpandableGroupBoxContainer property which is set to true, to make it identifiable e.g. in a style sheet.
+
+## Public Slots
+
+- void **expand** () — Expands the group box.
+- void **collapse** () — Collapses the group box.
+- void **setExpanded** (bool expanded) — Expands or collapses the group box (default: expanded).
+- void **setResizable** (bool isResizable) — Makes the group box vertical resizable (default: disabled).
+- void **setTitle** (const QString &title) — Sets the title of the group box.
+- void [setIcon](#seticon) (const QIcon &icon) — Sets the icon of the group box.
+- void **clearAndDeleteLater** ()
+- void **setVisible** (bool visible) override
+- void [addAction](#addaction) (QAction \*action) — Adds a new action to the right side of the expand/collapse button.
+- void **removeAction** (QAction \*action) — Removes an action that was previously added with addAction.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; QAction \* &gt; **actions** () — Lists all actions.
+- void **addPage** (QWidget \*widget) — Calls setWidget if no containing widget is set, does nothing otherwise (required by the Qt designer plugin).
+
+## Signals
+
+- void **expansionChanged** (bool expanded)
+- void **resizableChanged** (bool isResizable)
+- void **titleChanged** (QString title)
+- void **iconChanged** (QIcon icon)
+- void **actionAdded** (QAction \*action)
+- void **actionRemoved** (QAction \*action)
+
+## Public Member Functions
+
+- **ExpandableGroupBox** (QWidget \*parent=0) — Creates an empty group box.
+- QSize **sizeHint** () const override
+- void [setWidget](#setwidget) (QWidget \*widget) — Sets the contained widget.
+- QWidget \* **widget** () — Returns the contained widget if any or nullptr otherwise.
+- QString **title** () const
+- QIcon **icon** () const
+- bool **isExpanded** () const
+- bool **isResizable** () const
+- void **setCollapsible** (bool collapsible) — Sets if box is collapsible.
+- bool **isCollapsible** () — Returns if box is collapsible.
+- void **setDraggable** (bool value) — Sets the flag whether the box is draggable with the mouse when clicking on the top button.
+- bool **isDraggable** () const — Returns the flag whether the box is draggable with the mouse when clicking on the top button.
+- int **count** () const — Returns 1 if widget is set, 0 otherwise (required by the Qt designer plugin).
+- int **currentIndex** () const — Returns 0 (required by the Qt designer plugin).
+
+## Properties
+
+- QString **title**
+- QIcon **icon**
+- bool **expanded**
+- bool **resizable**
+
+## Member Function Documentation
+
+### setWidget
+
+```cpp
+void ImFusion::ExpandableGroupBox::setWidget (QWidget * widget)
+```
+
+Sets the contained widget.
+
+This will change the widgets parent.
+
+### setIcon
+
+```cpp
+void ImFusion::ExpandableGroupBox::setIcon (const QIcon & icon)
+```
+
+*slot*
+
+Sets the icon of the group box.
+
+The default icon is an arrow pointing down if the box is expanded or pointing right otherwise. The QIcon::On state is used for the expanded group box, QIcon::Off for the collapsed one.
+
+### addAction
+
+```cpp
+void ImFusion::ExpandableGroupBox::addAction (QAction * action)
+```
+
+*slot*
+
+Adds a new action to the right side of the expand/collapse button.
+
+The toolbutton representing the action will be icon only, so make sure the action has an icon otherwise the button will not be visible but still clickable. Its in the users responsibility to assure the widget is wide enough to hold all actions.

@@ -1,0 +1,152 @@
+---
+title: "ImFusion::DataWidget"
+sidebarTitle: "DataWidget"
+description: "Graphical user interface for the DataModel/DataItemModel."
+---
+
+`#include <ImFusion/GUI/DataWidget.h>`
+
+## Overview
+
+Graphical user interface for the DataModel/DataItemModel.
+
+This class provides a Qt-based [GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui) representing the underlying [DataModel](/cpp-sdk/4.5/api/classes/imfusion-datamodel). Furthermore, manages the visibility of its contents in a [DisplayWidgetMulti](/cpp-sdk/4.5/api/classes/imfusion-displaywidgetmulti), and can instantiate Algorithms in the parent [ApplicationController](/cpp-sdk/4.5/api/classes/imfusion-applicationcontroller). Internally, it uses the [DataDisplayModel](/cpp-sdk/4.5/api/classes/imfusion-datadisplaymodel) to augment the input [DataItemModel](/cpp-sdk/4.5/api/classes/imfusion-dataitemmodel) with the visibility information from the display and the [DataWidgetMenu](/cpp-sdk/4.5/api/classes/imfusion-datawidgetmenu) to show a context menu for the selected datasets.
+
+You can configure convenience functionality such as the "quick selection" functionality that synchronizes item selection with visibility in the display, or the automatic linking of poses or windowing. Finally, you can customize the visual appearance by providing a custom [DataWidgetItemDelegate](/cpp-sdk/4.5/api/classes/imfusion-datawidgetitemdelegate).
+
+**See also:** [DataModel](/cpp-sdk/4.5/api/classes/imfusion-datamodel), [DataItemModel](/cpp-sdk/4.5/api/classes/imfusion-dataitemmodel), [DefaultDataWidgetItemDelegate](/cpp-sdk/4.5/api/classes/imfusion-defaultdatawidgetitemdelegate), [DataWidgetMenu](/cpp-sdk/4.5/api/classes/imfusion-datawidgetmenu)
+
+## Public Slots
+
+- void **showContextMenu** (const QPoint &pos) — Opens a context menu at pos.
+- void **setShowThumbnails** (bool enable, bool storeInGlobalSettings=true) — Sets if data thumbnails should be displayed or not.
+- void **enableQuickSelection** (bool enable, bool storeInGlobalSettings=true) — Enables quick selection i.e. the data visibility changes together with the selection.
+- void **setAutoLinkWindowing** (bool enable, bool storeInGlobalSettings=true) — Enables automatic creation of [LinkWindowing](/cpp-sdk/4.5/api/classes/imfusion-linkwindowing) links per modality.
+- void **setAutoLinkPose** (bool enable, bool storeInGlobalSettings=true) — Enables automatic creation of [LinkPose](/cpp-sdk/4.5/api/classes/imfusion-linkpose) links when grouping [Data](/cpp-sdk/4.5/api/classes/imfusion-data).
+- void **setEnableDeleteKeyboardShortcut** (bool enable) — Enables deleting the selected data when the user presses the &lt;delete&gt; key.
+- void **setDataGroupingOption** ([DataGroupingModel::GroupingOption](/cpp-sdk/4.5/api/classes/imfusion-datagroupingmodel) option, bool storeInGlobalSettings=true) — Sets the grouping-option for grouping of data by patientID/seriesID in the TreeView. Optionally stores the option in the global settings.
+
+## Public Member Functions
+
+- [DataWidget](#datawidget-1-2) ([DataItemModel](/cpp-sdk/4.5/api/classes/imfusion-dataitemmodel) &dataItemModel, [DisplayWidgetMulti](/cpp-sdk/4.5/api/classes/imfusion-displaywidgetmulti) &display, [ApplicationController](/cpp-sdk/4.5/api/classes/imfusion-applicationcontroller) &appCtrl, QMainWindow \*mainWindow=nullptr) — Creates the widget using data from dataItemModel.
+- [DataWidget](#datawidget-2-2) ([MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase) \*main) — Creates the widget from *main's* data model, display, and with *main* as application controller and main window.
+- [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) **selectedData** () const — Convenience method to retrieve the currently selected data.
+- const QItemSelectionModel \* **selectionModel** () const — Returns the selection model used by the tree view displaying the [DataModel](/cpp-sdk/4.5/api/classes/imfusion-datamodel).
+- QItemSelectionModel \* **selectionModel** ()
+- [DataFilterModel](/cpp-sdk/4.5/api/classes/imfusion-datafiltermodel) \* **filterModel** () — Returns the filter model used by the tree view displaying the [DataModel](/cpp-sdk/4.5/api/classes/imfusion-datamodel).
+- [DataDisplayModel](/cpp-sdk/4.5/api/classes/imfusion-datadisplaymodel) \* **displayModel** () — Returns the wrapper model to augment the input [DataItemModel](/cpp-sdk/4.5/api/classes/imfusion-dataitemmodel) with dataset visibility information.
+- void **setItemDelegate** ([std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [DataWidgetItemDelegate](/cpp-sdk/4.5/api/classes/imfusion-datawidgetitemdelegate) &gt; itemDelegate) — Assigns a new item delegate defining how to render the individual items in the tree view.
+- bool **eventFilter** (QObject \*o, QEvent \*e) override
+- QSize **minimumSizeHint** () const override — Prescribes a minimum size for the widget when resized.
+- bool **isAutoLinkPoseEnabled** () const
+- void [updateThumbnail](#updatethumbnail) ([Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data) — Re-creates the thumbnails of the given data.
+- bool [linkWindowing](#linkwindowing) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* &gt; &images) — Links the windowing properties of the given images.
+- bool [unlinkWindowing](#unlinkwindowing) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* &gt; &images) — Unlinks the windowing properties of the given images.
+- [DataGroup](/cpp-sdk/4.5/api/classes/imfusion-datagroup) \* [groupData](#groupdata) (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data) — Groups the given data and adds "Group Data" to the history of [AlgorithmController](/cpp-sdk/4.5/api/classes/imfusion-algorithmcontroller).
+- QModelIndex **index** (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data, int column=DataDisplayModel::COLUMN_DATA) const — Finds the index of the data in the [DataModel](/cpp-sdk/4.5/api/classes/imfusion-datamodel).
+- void [deleteData](#deletedata) (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data) — Deletes the given data from the [DataModel](/cpp-sdk/4.5/api/classes/imfusion-datamodel).
+- void [moveDataUp](#movedataup) ([Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data) — Moves the data down by one position and add "Move Data" to the history of [AlgorithmController](/cpp-sdk/4.5/api/classes/imfusion-algorithmcontroller).
+- void [moveDataDown](#movedatadown) ([Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data) — Moves the data up by one position and add "Move Data" to the history of [AlgorithmController](/cpp-sdk/4.5/api/classes/imfusion-algorithmcontroller).
+- void **moveDataTo** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*newParent) — Re-parents all datasets in *data* so that they appear underneath *newParent*.
+- void **expandItem** (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data) — Expands the tree view for the given dataset.
+- void **collapseItem** (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data) — Collapses the tree view for the given dataset.
+- bool **isItemExpanded** (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data) — Returns whether the tree view item for the given dataset is currently expanded or not.
+
+## Constructor & Destructor Documentation
+
+### DataWidget
+
+```cpp
+ImFusion::DataWidget::DataWidget (DataItemModel & dataItemModel, DisplayWidgetMulti & display, ApplicationController & appCtrl, QMainWindow * mainWindow = nullptr)
+```
+
+Creates the widget using data from dataItemModel.
+
+**Parameters:**
+
+- `dataItemModel` — Input data model to show.
+- `display` — Display widget to apply dataset visibility changes to.
+- `appCtrl` — Parent [ApplicationController](/cpp-sdk/4.5/api/classes/imfusion-applicationcontroller) to launch algorithms in.
+- `mainWindow` — Optional QMainWindow, only used for showing image information in the status bar.
+
+### DataWidget
+
+```cpp
+ImFusion::DataWidget::DataWidget (MainWindowBase * main)
+```
+
+Creates the widget from *main's* data model, display, and with *main* as application controller and main window.
+
+Does not use the annotation model (because it is not guaranteed to be valid at this point).
+
+## Member Function Documentation
+
+### updateThumbnail
+
+```cpp
+void ImFusion::DataWidget::updateThumbnail (Data * data)
+```
+
+Re-creates the thumbnails of the given data.
+
+If the data is nullptr all thumbnails are re-created.
+
+### linkWindowing
+
+```cpp
+bool ImFusion::DataWidget::linkWindowing (const std::vector < SharedImageSet * > & images)
+```
+
+Links the windowing properties of the given images.
+
+Each image can only be in a single linking group. E.g. it is not possible to first link A and B, and afterwards B and C. Returns true if a new link between the images could be created.
+
+### unlinkWindowing
+
+```cpp
+bool ImFusion::DataWidget::unlinkWindowing (const std::vector < SharedImageSet * > & images)
+```
+
+Unlinks the windowing properties of the given images.
+
+Removes each image in the list from a linked group. The given images can be in different linked groups. Empty or single item groups are removed automatically. Returns true if at least one link was removed.
+
+### groupData
+
+```cpp
+DataGroup * ImFusion::DataWidget::groupData (const DataList & data)
+```
+
+Groups the given data and adds "Group Data" to the history of [AlgorithmController](/cpp-sdk/4.5/api/classes/imfusion-algorithmcontroller).
+
+Contrary to DataModel::group, the grouping will be reproduced by a workspace.
+
+### deleteData
+
+```cpp
+void ImFusion::DataWidget::deleteData (const DataList & data)
+```
+
+Deletes the given data from the [DataModel](/cpp-sdk/4.5/api/classes/imfusion-datamodel).
+
+Only data that [MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase) allows to be deleted gets deleted. This might open a dialog to ask the user for confirmation (see [MainWindowBase::canBeDeleted](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase)). Contrary to [DataModel::remove](/cpp-sdk/4.5/api/classes/imfusion-datamodel), the deletion will be reproduced by a workspace.
+
+### moveDataUp
+
+```cpp
+void ImFusion::DataWidget::moveDataUp (Data * data)
+```
+
+Moves the data down by one position and add "Move Data" to the history of [AlgorithmController](/cpp-sdk/4.5/api/classes/imfusion-algorithmcontroller).
+
+Contrary to [DataModel::move](/cpp-sdk/4.5/api/classes/imfusion-datamodel), the grouping will be reproduced by a workspace.
+
+### moveDataDown
+
+```cpp
+void ImFusion::DataWidget::moveDataDown (Data * data)
+```
+
+Moves the data up by one position and add "Move Data" to the history of [AlgorithmController](/cpp-sdk/4.5/api/classes/imfusion-algorithmcontroller).
+
+Contrary to [DataModel::move](/cpp-sdk/4.5/api/classes/imfusion-datamodel), the grouping will be reproduced by a workspace.

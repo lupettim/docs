@@ -1,0 +1,20 @@
+---
+title: "ImFusion::Statistics"
+sidebarTitle: "Statistics"
+---
+
+## Public Member Functions
+
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **toString** (bool extendedVersion=false) const — format statistics as a string, extendedVersion shows all information
+
+## Public Attributes
+
+- double **min** = [std::numeric_limits](http://en.cppreference.com/w/cpp/types/numeric_limits.html)&lt;double&gt;::max()
+- double **max** = [std::numeric_limits](http://en.cppreference.com/w/cpp/types/numeric_limits.html)&lt;double&gt;::lowest()
+- double **mean** = 0.0
+- double **sd** = 0.0 — standard deviation
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **unit** — Unit of the above values. E.g. "HU", "bq/ml" or empty if no known unit.
+- size_t **count** = 0
+- size_t **zerosCount** = 0
+- size_t **positivesCount** = 0
+- vec3 **centerOfMass** = vec3::Zero()

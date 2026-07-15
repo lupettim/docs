@@ -1,0 +1,72 @@
+---
+title: "ImFusion::Dicom::DicomParameter< T >"
+sidebarTitle: "DicomParameter< T >"
+description: "A specialized Parameter<T> class that can additionally serialize from and to DICOM."
+---
+
+`#include <ImFusion/Dicom/DicomParameter.h>`
+
+## Overview
+
+template&lt;typename T&gt;
+
+class ImFusion::Dicom::DicomParameter&lt; T &gt;
+A specialized Parameter&lt;T&gt; class that can additionally serialize from and to DICOM.
+
+Especially useful for DataComponents that represent a DICOM module. This class can be used in non-DCMTK code, but instantiating it will require DCMTK. Because of this limitation, it can currently only be used with bool, int, double and [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html).
+
+Example:
+
+```cpp
+struct MyStruct: public Configurable {
+    DicomParameter<std::string> p_patientName{"patientName", "", *this, DCM_PatientName};
+
+ void loadFromDicom(DcmItem& dataset) { DicomParameterHelper::loadFromDicom(dataset, m_params); }
+ void saveToDicom(DcmItem& dataset) { DicomParameterHelper::saveToDicom(dataset, m_params); }
+}
+
+MyStruct test;
+test.p_patientName = "Totorro";
+
+DcmDataset dataset;
+test.saveToDicom(dataset);
+test.loadFromDicom(dataset);
+```
+ fragment
+
+## Public Member Functions
+
+- **DicomParameter** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &[name](/cpp-sdk/4.5/api/classes/imfusion-parameterbase), U &&[value](/cpp-sdk/4.5/api/classes/imfusion-parameter), const DcmTag &tag, WritePolicy writePolicy=WritePolicy::Always)
+- **DicomParameter** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &[name](/cpp-sdk/4.5/api/classes/imfusion-parameterbase), U &&[value](/cpp-sdk/4.5/api/classes/imfusion-parameter), Configurable \*[parent](/cpp-sdk/4.5/api/classes/imfusion-parameterbase), const DcmTag &tag, WritePolicy writePolicy=WritePolicy::Always)
+- **DicomParameter** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &[name](/cpp-sdk/4.5/api/classes/imfusion-parameterbase), U &&[value](/cpp-sdk/4.5/api/classes/imfusion-parameter), Configurable &[parent](/cpp-sdk/4.5/api/classes/imfusion-parameterbase), const DcmTag &tag, WritePolicy writePolicy=WritePolicy::Always)
+- **DicomParameter** (const DicomParameter&lt; T &gt; &other)
+- DicomParameter&lt; T &gt; & **operator=** (const DicomParameter&lt; T &gt; &other)
+- DicomParameter&lt; T &gt; & **operator=** (U &&[value](/cpp-sdk/4.5/api/classes/imfusion-parameter))
+- void [load](#load) (DcmItem &item) override — Loads the parameter value from the given dataset.
+- void [save](#save) (DcmItem &item) const override — Saves the parameter value to the given dataset.
+
+## Member Function Documentation
+
+### load
+
+```cpp
+template<typename T> void ImFusion::Dicom::DicomParameter < T >::load (DcmItem & item)
+```
+
+*override, virtual*
+
+Loads the parameter value from the given dataset.
+
+If the dataset does not contain the tag or there is an error retrieving the value, the default value of the parameter will be used. If the parameter does not have an default value, the value remains unchanged.
+
+### save
+
+```cpp
+template<typename T> void ImFusion::Dicom::DicomParameter < T >::save (DcmItem & item) const
+```
+
+*override, virtual*
+
+Saves the parameter value to the given dataset.
+
+This overwrites any existing value with the same tag. Depending on the WritePolicy, empty values will not be written (and actively removed if already existing).

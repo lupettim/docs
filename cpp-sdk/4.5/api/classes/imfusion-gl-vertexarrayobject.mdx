@@ -1,0 +1,86 @@
+---
+title: "ImFusion::GL::VertexArrayObject"
+sidebarTitle: "VertexArrayObject"
+description: "Wrapper around an OpenGL Vertex Array Object (VAO) to define the vertex attribute specification for rendering."
+---
+
+`#include <ImFusion/Core/GL/VertexBuffer.h>`
+
+## Overview
+
+Wrapper around an OpenGL Vertex Array Object (VAO) to define the vertex attribute specification for rendering.
+
+In the vast majority of use cases you do not need to use this class explicitly because [VertexBuffer](/cpp-sdk/4.5/api/classes/imfusion-gl-vertexbuffer) will take care of it internally. However, it may be useful in one of the following situations:
+
+- Hot render loops where the same VBO is rendered multiple times with the exact same attribute configuration can be accelerated by setting up a [VertexArrayObject](/cpp-sdk/4.5/api/classes/imfusion-gl-vertexarrayobject) instance once and using this to issue draw commands.
+- You store rendering data in multiple VBOs and need to pass them to the same shader in a combined fashion.
+
+After instantiating a [VertexArrayObject](/cpp-sdk/4.5/api/classes/imfusion-gl-vertexarrayobject) you must call [setAttributes()](#setattributes-1-2) once in order to configure the VBO and optionally IBO mapping to the shader input. Afterwards, you can call its draw() functions as many times as you like. Keep in mind that the currently bound VAO is part of the global OpenGL state and other library calls may change it at any time.
+
+```cpp
+// setup VBOs first
+VertexBuffer vertices = ...;
+vertices.bind();
+vertices.setData(...);
+VertexBuffer otherVertexData = ...;
+otherVertexData.bind();
+otherVertexData.setData(...);
+
+// Instantiate the VAO and configure its vertex attributes to pull data from the given VBOs.
+// From now on vbo will use this fixed vertex array object during subsequent draw calls.
+// The first two attributes in VBO `vertices` will be passed to input locations 0 and 3 of
+// the vertex shader, the first two attributes in `otherVertexData` to locations 1 and 2.
+VertexArrayObject vao;
+vao.setAttributes({{&vertices, {0, 3}}, {&otherVertexData, {1, 2}}});
+
+for (...) {
+ // Perform the rendering, make sure to *not* change the VBO attribute configuration.
+ // If you draw other VBOs/VAOs in between you will need to rebind `vao`.
+    vao.draw(...);
+}
+```
+ fragment
+
+**Note:** This interface is still experimental and its API may change in the future.
+
+**See also:** - [https://www.khronos.org/opengl/wiki/Vertex_Specification#Vertex_Array_Object](https://www.khronos.org/opengl/wiki/Vertex_Specification#Vertex_Array_Object)
+- [VertexBuffer](/cpp-sdk/4.5/api/classes/imfusion-gl-vertexbuffer)
+- [IndexBuffer](/cpp-sdk/4.5/api/classes/imfusion-gl-indexbuffer)
+
+## Public Member Functions
+
+- void [setAttributes](#setattributes-1-2) (const [VertexBuffer](/cpp-sdk/4.5/api/classes/imfusion-gl-vertexbuffer) &vbo, const [IndexBuffer](/cpp-sdk/4.5/api/classes/imfusion-gl-indexbuffer) \*ibo=nullptr) — Configure the VAO with the current attribute configuration of the vertex buffer and an optional index buffer.
+- void [setAttributes](#setattributes-2-2) ([std::initializer_list](http://en.cppreference.com/w/cpp/utility/initializer_list.html)&lt; [std::pair](http://en.cppreference.com/w/cpp/utility/pair.html)&lt; const [VertexBuffer](/cpp-sdk/4.5/api/classes/imfusion-gl-vertexbuffer) \*, [std::initializer_list](http://en.cppreference.com/w/cpp/utility/initializer_list.html)&lt; int &gt; &gt; &gt; vboMapping, const [IndexBuffer](/cpp-sdk/4.5/api/classes/imfusion-gl-indexbuffer) \*ibo=nullptr) — Configure the VAO with the current attribute configuration of multiple vertex buffers and an optional index buffer.
+- void **bind** () const — Rebind the VAO, useful if you issued any other rendering command in between.
+- void **draw** (Primitive mode) const — Renders a single primitive using all vertices of the previously bound VBOs/IBO.
+- void **drawInstanced** (Primitive mode, int32_t count) const — Renders multiple instances of the same primitive using all vertices of the previously bound VBOs/IBO.
+
+## Static Public Member Functions
+
+- static void **unbind** () — Unbind any previously bound VAO.
+
+## Member Function Documentation
+
+### setAttributes
+
+```cpp
+void ImFusion::GL::VertexArrayObject::setAttributes (const VertexBuffer & vbo, const IndexBuffer * ibo = nullptr)
+```
+
+Configure the VAO with the current attribute configuration of the vertex buffer and an optional index buffer.
+
+Use the other overload to configure the VAO to use vertex data from multiple VBOs.
+
+**Warning:** Both *vbo* and *ibo* must be fully configured at this point. You may exchange the underlying data but must not change any attribute configuration afterwards when using the VAO.
+
+### setAttributes
+
+```cpp
+void ImFusion::GL::VertexArrayObject::setAttributes (std::initializer_list < std::pair < const VertexBuffer *, std::initializer_list < int > > > vboMapping, const IndexBuffer * ibo = nullptr)
+```
+
+Configure the VAO with the current attribute configuration of multiple vertex buffers and an optional index buffer.
+
+*vboMapping* receives a list of vertex buffers paired with a list of the vertex buffer input locations for each attribute in the VBO. All provided VBOs must hold the same number of elements per attribute. The [VertexBuffer](/cpp-sdk/4.5/api/classes/imfusion-gl-vertexbuffer) pointers must not be null.
+
+**Warning:** All VBOs and the optional IBO must be fully configured at this point. You may exchange the underlying data but must not change any attribute configuration afterwards when using the VAO.

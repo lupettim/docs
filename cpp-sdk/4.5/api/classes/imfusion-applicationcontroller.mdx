@@ -1,0 +1,316 @@
+---
+title: "ImFusion::ApplicationController"
+sidebarTitle: "ApplicationController"
+description: "The basic ApplicationController provides essential interfaces of the SDK but no graphical user interface."
+---
+
+`#include <ImFusion/GUI/ApplicationController.h>`
+
+## Overview
+
+The basic [ApplicationController](/cpp-sdk/4.5/api/classes/imfusion-applicationcontroller) provides essential interfaces of the SDK but no graphical user interface.
+
+Depending on the constructor arguments, instantiating this class can also take care of proper initialization (e.g. factories, OpenGL contexts, etc.) of the ImFusion SDK. In this case you do not need to call [Framework::init()](/cpp-sdk/4.5/api/namespaces/imfusion-framework) explicitly.
+
+While it is technically possible to have multiple [ApplicationController](/cpp-sdk/4.5/api/classes/imfusion-applicationcontroller) instances at the same time, such setups are discouraged and may be considered undefined/unsupported behavior.
+
+**See also:** [What is the correct way to initialize the ImFusionLib and its plugins?](/cpp-sdk/4.5/api/guides/f-a-q)
+
+## Public Member Functions
+
+- [ApplicationController](#applicationcontroller) ([std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [DataModel](/cpp-sdk/4.5/api/classes/imfusion-datamodel) &gt; dataModel, [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [Framework::InitConfig](/cpp-sdk/4.5/api/structs/imfusion-framework-initconfig) &gt; sdkInitConfig) — Instantiate and initialize the [ApplicationController](/cpp-sdk/4.5/api/classes/imfusion-applicationcontroller) interface.
+- void [load](#load) (int argc, char \*\*argv) — Load configuration file and optional further parameters.
+- void **loadAll** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; &fileNames) — Loads all files passed as arguments.
+- virtual bool [loadWorkspace](#loadworkspace) (const [Filesystem::Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path) &filename, const [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [std::map](http://en.cppreference.com/w/cpp/container/map.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html), [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; &gt; &=std::nullopt) — Loads a workspace file from the path denoted by filename.
+- virtual [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) \* [progress](#progress) () — Returns the optional [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) instance that can be used to report progress updates.
+- virtual bool [open](#open-1-2) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &filename, [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) \*outDataList=nullptr) — Opens a generic file and adds it to the [DataModel](/cpp-sdk/4.5/api/classes/imfusion-datamodel).
+- virtual void [closeAll](#closeall) () — Closes all data, algorithms and annotations.
+- virtual void [addAlgorithm](#addalgorithm) ([std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) &gt; a, const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*config=nullptr) — Adds an algorithm.
+- virtual void [removeAlgorithm](#removealgorithm) ([Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*a, bool del=true) — Removes the algorithm and deletes it if del is true.
+- virtual void **clearAlgorithms** () — Removes all algorithm and deletes it if del is true.
+- virtual void **executeAlgorithms** () — Executes all algorithms. TODO: delete algorithms afterwards?
+- virtual void **addAlgorithmToHistory** (const [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) &a, bool allowReplayWorkspaces=true) — Adds an already executed algorithm to the history.
+- void [registerAlgorithm](#registeralgorithm) (const [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) &alg) — Registers the algorithm.
+- void **updateRegisteredAlgorithm** (const [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) &alg) — Update the description of a recorded algorithm.
+- void [ignoreDataInHistory](#ignoredatainhistory) ([Data](/cpp-sdk/4.5/api/classes/imfusion-data) &data) — Ignore the given [Data](/cpp-sdk/4.5/api/classes/imfusion-data) in the algorithm history/workspace.
+- void [ignoreAnnotationInHistory](#ignoreannotationinhistory) ([InteractiveObject](/cpp-sdk/4.5/api/classes/imfusion-interactiveobject) &annotation) — Ignore the given Annotation in the algorithm history/workspace.
+- const Workspace & **algorithmHistory** () const — Return the workspace instance modeling list of executed algorithms and their input/output data.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \* &gt; **algorithms** () const — Returns the list of all algorithms.
+- virtual [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \* &gt; **dependingAlgorithms** (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data) const — Returns the algorithms that depend on data.
+- virtual [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \* &gt; **dependingAlgorithms** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data) const — Returns the algorithms that depend on exactly the provided data list.
+- virtual [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \* **getAlgorithm** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &id) const — Returns the first algorithm with the given id or nullptr if not existing.
+- T \* [getAlgorithm](#getalgorithm) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &id="") const — Returns the first algorithm of the given type, optionally with id filtering.
+- virtual [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::map](http://en.cppreference.com/w/cpp/container/map.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html), [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; &gt; [askWorkspacePlaceholders](#askworkspaceplaceholders) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; &placeholderKeys) — Asks the user the value of some placeholders and returns the input of the user.
+- virtual void **addPlaceholder** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &value) — Adds a placeholder value to m_placeholders (or overwrites it if it already exists).
+- virtual [std::map](http://en.cppreference.com/w/cpp/container/map.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html), [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **placeholders** () const — Gets the currently set placeholders.
+- virtual void **setPlaceholders** (const [std::map](http://en.cppreference.com/w/cpp/container/map.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html), [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; &placeholders) — Sets the placeholders.
+- virtual bool **saveWorkspace** (const [Filesystem::Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path) &filename, [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [std::set](http://en.cppreference.com/w/cpp/container/set.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; &gt; selectedDataComps=std::nullopt) — Save current workspace to a iws file Selected data components passed as parameter are also saved.
+- virtual [DataModel](/cpp-sdk/4.5/api/classes/imfusion-datamodel) \* **dataModel** ()
+- virtual const [DataModel](/cpp-sdk/4.5/api/classes/imfusion-datamodel) \* **dataModel** () const
+- void [loadPlugins](#loadplugins) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; &pluginFolders=[std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt;()) — Load and register/initializes all ImFusion plugins from the specified folders.
+- virtual bool [canBeDeleted](#canbedeleted) (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data) — Check whether data can be deleted or loaded algorithms depend on it.
+
+## Public Attributes
+
+- Signal&lt; const [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \* &gt; **signalAlgorithmRemoved** — Signal emitted just before an [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) is removed.
+
+## Protected Member Functions
+
+- virtual void [configureAlgorithm](#configurealgorithm) ([Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*) — Called before an [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) is executed, allows for custom configuration.
+- virtual bool [open](#open-2-2) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &algorithm, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name, [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) \*outDataList, bool addToRecentFiles=true, const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p=nullptr, [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) \*pathOut=nullptr) — Open a specific file type.
+- virtual bool [prepareData](#preparedata) ([Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data) const — Prepares data for processing and display.
+- virtual [AlgorithmController](/cpp-sdk/4.5/api/classes/imfusion-algorithmcontroller) \* [getAlgorithmController](#getalgorithmcontroller) (const [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*) const — Returns the controller of the algorithm or nullptr if not existing (default implementation).
+- bool **checkDicomMagicByte** (const [Filesystem::Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path) &filename) const — Checks the given file whether it contains the DICOM magic byte ("DICM" at bytes 128 ff.).
+- virtual bool [openWithIoAlgorithms](#openwithioalgorithms) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; &algs, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &filename, [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) \*dataOut) — Uses the first of the given algs to open filename, store them in the [DataModel](/cpp-sdk/4.5/api/classes/imfusion-datamodel) and optionally put them in dataOut.
+
+## Protected Attributes
+
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [DataModel](/cpp-sdk/4.5/api/classes/imfusion-datamodel) &gt; **m_dataModel**
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; Workspace &gt; **m_algorithmHistory** — History of executed algorithms and their input/output data.
+- [std::map](http://en.cppreference.com/w/cpp/container/map.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html), [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **m_placeholders** — Placeholders as extra command line arguments.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) &gt; &gt; **m_algorithms** — List of all active Algorithms.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) &gt; **m_algorithmTemplates** — List of templates that newly instantiated algorithms should be configured from.
+- [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) **m_untrackedData** — [Data](/cpp-sdk/4.5/api/classes/imfusion-data) that has been added to the data model but is not yet assigned to an output of an algorithm.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \* &gt; **m_ignoredData** — [Data](/cpp-sdk/4.5/api/classes/imfusion-data) that has been explicitly marked to be ignored in workspaces.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [InteractiveObject](/cpp-sdk/4.5/api/classes/imfusion-interactiveobject) \* &gt; **m_ignoredAnnotations** — Annotations that have been explicitly marked to be ignored in workspaces.
+- bool **m_prepareShiftOnly** = true — Only shift intensities during prepareData.
+- bool **m_prepareNoShiftScale** = false — Do not shift or scale intensities during prepareData, overrides m_prepareShiftOnly.
+- bool **m_prepareDownsample** = false — Downsample data during prepareData.
+
+## Static Protected Attributes
+
+- static [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **m_logFileLocation** — Path to the log file (empty if not set).
+
+## Constructor & Destructor Documentation
+
+### ApplicationController
+
+```cpp
+ImFusion::ApplicationController::ApplicationController (std::unique_ptr < DataModel > dataModel, std::optional < Framework::InitConfig > sdkInitConfig)
+```
+
+Instantiate and initialize the [ApplicationController](/cpp-sdk/4.5/api/classes/imfusion-applicationcontroller) interface.
+
+**Parameters:**
+
+- `dataModel` — [DataModel](/cpp-sdk/4.5/api/classes/imfusion-datamodel) to use for storing [Data](/cpp-sdk/4.5/api/classes/imfusion-data), must not be null.
+- `sdkInitConfig` — Flag and parameters whether to call [Framework::init()](/cpp-sdk/4.5/api/namespaces/imfusion-framework) during construction. Leave the Optional empty in case you have manually initialized the framework already.
+
+**See also:** [Framework::init()](/cpp-sdk/4.5/api/namespaces/imfusion-framework), [LicenseManagerSDK](/cpp-sdk/4.5/api/namespaces/imfusion-licensemanagersdk)
+
+## Member Function Documentation
+
+### load
+
+```cpp
+void ImFusion::ApplicationController::load (int argc, char ** argv)
+```
+
+Load configuration file and optional further parameters.
+
+****Deprecated**:** "Use instead one of the member functions `loadAll`, `loadWorkspace`, `loadImf`."
+
+### loadWorkspace
+
+```cpp
+virtual bool ImFusion::ApplicationController::loadWorkspace (const Filesystem::Path & filename, const std::optional < std::map < std::string, std::string > > & = std::nullopt)
+```
+
+*virtual*
+
+Loads a workspace file from the path denoted by filename.
+
+Loads the properties from the file and calls loadWorkspace(const Properties\*).
+
+### progress
+
+```cpp
+virtual Progress * ImFusion::ApplicationController::progress ()
+```
+
+*inline, virtual*
+
+Returns the optional [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) instance that can be used to report progress updates.
+
+### open
+
+```cpp
+virtual bool ImFusion::ApplicationController::open (const std::string & filename, DataList * outDataList = nullptr)
+```
+
+*virtual*
+
+Opens a generic file and adds it to the [DataModel](/cpp-sdk/4.5/api/classes/imfusion-datamodel).
+
+The algorithm used to open the file is decided on the extension. You can provide an optional *outDataList* parameter to receive the list of loaded data. Returns true on success, false otherwise.
+
+### closeAll
+
+```cpp
+virtual void ImFusion::ApplicationController::closeAll ()
+```
+
+*virtual*
+
+Closes all data, algorithms and annotations.
+
+### addAlgorithm
+
+```cpp
+virtual void ImFusion::ApplicationController::addAlgorithm (std::unique_ptr < Algorithm > a, const Properties * config = nullptr)
+```
+
+*virtual*
+
+Adds an algorithm.
+
+Subclasses overriding this method may change or even delete the pointer. The optional config is used to configure the algorithm before it is added to the list of algorithms.
+
+### removeAlgorithm
+
+```cpp
+virtual void ImFusion::ApplicationController::removeAlgorithm (Algorithm * a, bool del = true)
+```
+
+*virtual*
+
+Removes the algorithm and deletes it if del is true.
+
+### registerAlgorithm
+
+```cpp
+void ImFusion::ApplicationController::registerAlgorithm (const Algorithm & alg)
+```
+
+Registers the algorithm.
+
+Current untracked data (m_untrackedData) is marked as output of alg.
+
+### ignoreDataInHistory
+
+```cpp
+void ImFusion::ApplicationController::ignoreDataInHistory (Data & data)
+```
+
+Ignore the given [Data](/cpp-sdk/4.5/api/classes/imfusion-data) in the algorithm history/workspace.
+
+AlgorithmControllers that add temporary data to the [DataModel](/cpp-sdk/4.5/api/classes/imfusion-datamodel) should call this function to mark the data as its side-product. This will avoid potentially corrupt workspaces due to wrong tracking of data origin.
+
+### ignoreAnnotationInHistory
+
+```cpp
+void ImFusion::ApplicationController::ignoreAnnotationInHistory (InteractiveObject & annotation)
+```
+
+Ignore the given Annotation in the algorithm history/workspace.
+
+AlgorithmControllers that add temporary annotations to the [AnnotationModel](/cpp-sdk/4.5/api/classes/imfusion-annotationmodel) should call this function to mark the data as its side-product. This will avoid potentially corrupt workspaces due to wrong tracking of data origin.
+
+### getAlgorithm
+
+```cpp
+template<typename T> T * ImFusion::ApplicationController::getAlgorithm (const std::string & id = "") const
+```
+
+Returns the first algorithm of the given type, optionally with id filtering.
+
+Returns nullptr if not existing
+
+### askWorkspacePlaceholders
+
+```cpp
+virtual std::vector < std::map < std::string, std::string > > ImFusion::ApplicationController::askWorkspacePlaceholders (const std::vector < std::string > & placeholderKeys)
+```
+
+*virtual*
+
+Asks the user the value of some placeholders and returns the input of the user.
+
+### loadPlugins
+
+```cpp
+void ImFusion::ApplicationController::loadPlugins (const std::vector < std::string > & pluginFolders = std::vector < std::string >())
+```
+
+Load and register/initializes all ImFusion plugins from the specified folders.
+
+If *pluginFolders* is empty, the following default search paths are used:
+
+Windows platforms:
+
+- IMFUSION_PLUGIN_PATH environment variable
+- &lt;executable-path&gt;/plugins
+- &lt;ImFusionLib.dll-path&gt;/plugins
+
+Unix platforms:
+
+- IMFUSION_PLUGIN_PATH environment variable
+- &lt;ImFusionLib.so-path&gt;/../lib/ImFusionLib/plugins
+
+Plugin names defined in the environment variable IMFUSION_PLUGIN_BLACKLIST as a semi-colon-separated list (e.g. "Foo.dll;Bar.dll") will not be loaded by this function. This mechanism can also be used to explicitly ignore libraries that might conflict with or crash the application.
+
+****Deprecated**:** "Use PluginManager::registerPlugins() and PluginManager::initAllRegisteredPlugins() instead"
+
+Will additionally call ImFusionPlugin::setApplicationController() on every loaded plugin.
+
+### canBeDeleted
+
+```cpp
+virtual bool ImFusion::ApplicationController::canBeDeleted (const Data * data)
+```
+
+*virtual*
+
+Check whether data can be deleted or loaded algorithms depend on it.
+
+### configureAlgorithm
+
+```cpp
+virtual void ImFusion::ApplicationController::configureAlgorithm (Algorithm *)
+```
+
+*inline, protected, virtual*
+
+Called before an [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) is executed, allows for custom configuration.
+
+### open
+
+```cpp
+virtual bool ImFusion::ApplicationController::open (const std::string & algorithm, const std::string & name, DataList * outDataList, bool addToRecentFiles = true, const Properties * p = nullptr, std::string * pathOut = nullptr)
+```
+
+*protected, virtual*
+
+Open a specific file type.
+
+### prepareData
+
+```cpp
+virtual bool ImFusion::ApplicationController::prepareData (Data * data) const
+```
+
+*protected, virtual*
+
+Prepares data for processing and display.
+
+Callback of DataModel::setPrepareCallback
+
+### getAlgorithmController
+
+```cpp
+virtual AlgorithmController * ImFusion::ApplicationController::getAlgorithmController (const Algorithm *) const
+```
+
+*inline, protected, virtual*
+
+Returns the controller of the algorithm or nullptr if not existing (default implementation).
+
+### openWithIoAlgorithms
+
+```cpp
+virtual bool ImFusion::ApplicationController::openWithIoAlgorithms (const std::vector < std::string > & algs, const std::string & filename, DataList * dataOut)
+```
+
+*protected, virtual*
+
+Uses the first of the given algs to open filename, store them in the [DataModel](/cpp-sdk/4.5/api/classes/imfusion-datamodel) and optionally put them in dataOut.

@@ -1,0 +1,73 @@
+---
+title: "ImFusion::Dicom::VolumetricImageIOD"
+sidebarTitle: "VolumetricImageIOD"
+description: "The VolumetricImageIOD is a generic IOD for volumetric data that is stored slice by slice."
+---
+
+`#include <ImFusion/Dicom/DicomIOD.h>`
+
+## Overview
+
+The [VolumetricImageIOD](/cpp-sdk/4.5/api/classes/imfusion-dicom-volumetricimageiod) is a generic [IOD](/cpp-sdk/4.5/api/classes/imfusion-dicom-iod) for volumetric data that is stored slice by slice.
+
+The frame loaded by this class usually has some kind of transformation. Multiple frames with the same orientation and an uniform spacing can be combined into a volume.
+
+If numberOfFrames is greater than 1, the frames are stacked from feet to head with a spacing of spacingBetweenSlices (or sliceThickness).
+
+Relevant IODs:
+
+- CT [Image](/cpp-sdk/4.5/api/structs/imfusion-dicom-image)[http://dicom.nema.org/medical/dicom/current/output/chtml/part03/sect_A.3.3.html](http://dicom.nema.org/medical/dicom/current/output/chtml/part03/sect_A.3.3.html)
+- MR [Image](/cpp-sdk/4.5/api/structs/imfusion-dicom-image)[http://dicom.nema.org/medical/dicom/current/output/chtml/part03/sect_A.4.3.html](http://dicom.nema.org/medical/dicom/current/output/chtml/part03/sect_A.4.3.html)
+
+## Public Member Functions
+
+- **VolumetricImageIOD** (DcmDataset &[dataset](/cpp-sdk/4.5/api/classes/imfusion-dicom-iod), const OFString &[sopClassUID](/cpp-sdk/4.5/api/classes/imfusion-dicom-iod))
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [FrameDescriptorSet](/cpp-sdk/4.5/api/namespaces/imfusion-dicom) &gt; [sortAndGroupFrames](#sortandgroupframes) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [FrameDescriptor](/cpp-sdk/4.5/api/structs/imfusion-dicom-framedescriptor) &gt; &frames) const override — Sorts and groups the frame into volumetric groups if possible.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [FrameDescriptor](/cpp-sdk/4.5/api/structs/imfusion-dicom-framedescriptor) &gt; [loadFrames](#loadframes) () override — Loads all frames and initializes the matrix of each [FrameDescriptor](/cpp-sdk/4.5/api/structs/imfusion-dicom-framedescriptor).
+- void [save](#save) ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &imageSet, int sharedImageIndex, int sliceIndex) override — Stores the general image descriptor and metadata of *imageSet* in the DICOM data set.
+
+## Public Attributes
+
+- [ImagePlane](/cpp-sdk/4.5/api/classes/imfusion-dicom-imageplane) **imagePlane**
+- [Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element)&lt; int &gt; **echoNumbers**
+- [Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element)&lt; int &gt; **acquisitionNumber**
+- [Dicom::Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element)&lt; [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; int &gt; &gt; **sliceVector** — The following elements are used for sorting if numberOfFrames is greater 1:
+- [Dicom::Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element)&lt; [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; int &gt; &gt; **angularViewVector**
+
+## Member Function Documentation
+
+### sortAndGroupFrames
+
+```cpp
+std::vector < FrameDescriptorSet > ImFusion::Dicom::VolumetricImageIOD::sortAndGroupFrames (const std::vector < FrameDescriptor > & frames) const
+```
+
+*override, virtual*
+
+Sorts and groups the frame into volumetric groups if possible.
+
+MR images might be split into groups according to their echo numbers.
+
+WARNING: This method currently removes duplicate frames that have the same instance number and instance uid. This will be removed in the future.
+
+### loadFrames
+
+```cpp
+std::vector < FrameDescriptor > ImFusion::Dicom::VolumetricImageIOD::loadFrames ()
+```
+
+*override, virtual*
+
+Loads all frames and initializes the matrix of each [FrameDescriptor](/cpp-sdk/4.5/api/structs/imfusion-dicom-framedescriptor).
+
+### save
+
+```cpp
+void ImFusion::Dicom::VolumetricImageIOD::save (SharedImageSet & imageSet, int sharedImageIndex, int sliceIndex)
+```
+
+*override, virtual*
+
+Stores the general image descriptor and metadata of *imageSet* in the DICOM data set.
+
+*sharedImageIndex* and *sliceIndex* describe which part of the image set should be stored.

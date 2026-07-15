@@ -1,0 +1,51 @@
+---
+title: "ImFusion::SplitOverlappingLabelsAlgorithm"
+sidebarTitle: "SplitOverlappingLabelsAlgorithm"
+description: "Algorithm to split overlapping labels into separate instances It is possible for a label to (admittedly, this is somewhat rare, the main setting this happens is"
+---
+
+`#include <ImFusion/Base/SplitOverlappingLabelsAlgorithm.h>`
+
+## Overview
+
+[Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) to split overlapping labels into separate instances It is possible for a label to (admittedly, this is somewhat rare, the main setting this happens is when loading dicom seg files) contain an encoding that specifies how individual pixel values should be assigned to classes.
+
+This allows for labels to overlap. This algorithm converts such an overlapping label into a set of individual (binary) labels, one for each instance.
+
+**See also:** [LabelOverlapEncoder](/cpp-sdk/4.5/api/classes/imfusion-labeloverlapencoder)
+
+## Public Member Functions
+
+- **SplitOverlappingLabelsAlgorithm** (const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &inputLabel)
+- void [compute](#compute) () override — Execute the algorithm.
+- [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) [takeOutput](#takeoutput) () override — Return any new [Data](/cpp-sdk/4.5/api/classes/imfusion-data) that was created by the [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) during the last call to [compute()](#compute).
+
+## Static Public Member Functions
+
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=nullptr)
+
+## Member Function Documentation
+
+### compute
+
+```cpp
+void ImFusion::SplitOverlappingLabelsAlgorithm::compute ()
+```
+
+*override, virtual*
+
+Execute the algorithm.
+
+### takeOutput
+
+```cpp
+OwningDataList ImFusion::SplitOverlappingLabelsAlgorithm::takeOutput ()
+```
+
+*override, virtual*
+
+Return any new [Data](/cpp-sdk/4.5/api/classes/imfusion-data) that was created by the [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) during the last call to [compute()](#compute).
+
+The default implementation will return an empty list.
+
+**Note:** Since ownership of the data is transferred, you can call this method only once between calls to [compute()](#compute).

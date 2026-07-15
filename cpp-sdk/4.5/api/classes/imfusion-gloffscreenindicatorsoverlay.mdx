@@ -1,0 +1,74 @@
+---
+title: "ImFusion::GlOffscreenIndicatorsOverlay"
+sidebarTitle: "GlOffscreenIndicatorsOverlay"
+description: "The GlOffscreenIndicatorOverlay provides indicators to data that is outside of the current view area."
+---
+
+`#include <ImFusion/GL/GlOffscreenIndicatorsOverlay.h>`
+
+## Overview
+
+The GlOffscreenIndicatorOverlay provides indicators to data that is outside of the current view area.
+
+**See also:** OffscreenIndicatorOverlay.
+
+## Public Member Functions
+
+- **GlOffscreenIndicatorsOverlay** ([GlSliceView](/cpp-sdk/4.5/api/classes/imfusion-glsliceview) \*view)
+- void [render](#render) (const [GL::Viewport](/cpp-sdk/4.5/api/structs/imfusion-gl-viewport) &viewport) override — render the overlay with the given width and height
+- void [setVisibleData](#setvisibledata) (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) &gt; &gt; thumbnails) — Sets the data that is currently visible in view.
+- void [setHoveredData](#sethovereddata) (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data) — Highlight the indicator for the given data.
+- [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \* [indicatorAt](#indicatorat) (const vec2 &point, int width, int height) — Returns the indicator at the given position if any.
+- bool [boundingBox](#boundingbox) (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data, vec3 \*center, vec3 \*extent=nullptr) const — Returns the bounding box of data in world coordinates.
+
+## Member Function Documentation
+
+### render
+
+```cpp
+void ImFusion::GlOffscreenIndicatorsOverlay::render (const GL::Viewport & viewport)
+```
+
+*override, virtual*
+
+render the overlay with the given width and height
+
+### setVisibleData
+
+```cpp
+void ImFusion::GlOffscreenIndicatorsOverlay::setVisibleData (const DataList & data, std::vector < std::unique_ptr < SharedImage > > thumbnails)
+```
+
+Sets the data that is currently visible in view.
+
+Only indicators to the data in the list are rendered. The thumbnails list must have the same length as the data list and provides an icon for each data (can be 0 if not icon is available).
+
+### setHoveredData
+
+```cpp
+void ImFusion::GlOffscreenIndicatorsOverlay::setHoveredData (const Data * data)
+```
+
+Highlight the indicator for the given data.
+
+Only one indicator can be highlighted at a time. 0 clears any highlighting.
+
+### indicatorAt
+
+```cpp
+Data * ImFusion::GlOffscreenIndicatorsOverlay::indicatorAt (const vec2 & point, int width, int height)
+```
+
+Returns the indicator at the given position if any.
+
+point must be in overlay coordinates.
+
+### boundingBox
+
+```cpp
+bool ImFusion::GlOffscreenIndicatorsOverlay::boundingBox (const Data * data, vec3 * center, vec3 * extent = nullptr) const
+```
+
+Returns the bounding box of data in world coordinates.
+
+TODO: would be nicer to have that in the [Data](/cpp-sdk/4.5/api/classes/imfusion-data) class

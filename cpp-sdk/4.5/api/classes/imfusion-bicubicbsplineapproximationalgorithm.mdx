@@ -1,0 +1,64 @@
+---
+title: "ImFusion::BicubicBSplineApproximationAlgorithm"
+sidebarTitle: "BicubicBSplineApproximationAlgorithm"
+description: "Algorithm that approximates the content of a SharedImageSet with a bicubic B-spline."
+---
+
+`#include <ImFusion/Base/BicubicBSplineApproximation.h>`
+
+## Overview
+
+[Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) that approximates the content of a [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) with a bicubic B-spline.
+
+## Public Member Functions
+
+- **BicubicBSplineApproximationAlgorithm** (const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*image=nullptr)
+- void **setInput** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*newInput) — Change input image.
+- void [compute](#compute) () override — Computes the fitted BSpline surfaces.
+- [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) [takeOutput](#takeoutput) () override — Retrieve the BSpline surfaces.
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure the algorithm using [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+## Static Public Member Functions
+
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=nullptr) — Method for [AlgorithmFactory](/cpp-sdk/4.5/api/classes/imfusion-algorithmfactory) for selecting viable algorithms based on input data.
+- static [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; **samplePoints** (const [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) &image, int numSamplePoints, [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*samplingMask=nullptr) — Sample values from the input image.
+- static [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; **imageToPoints** (const [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) &image, [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*samplingMask=nullptr) — Convert image to data points.
+
+## Public Attributes
+
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; vec2i &gt; **p_gridSize** = &#123;"gridSize", vec2i::Ones(), this&#125; — Initial number of control points in x and y (final grid resolution may change depending on the number of levels).
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; bool &gt; **p_randomSampling** = &#123;"randomSampling", false, this&#125; — Whether points should be sampled or all pixels should be used, if true p_numSamplePoints has no effect.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; int &gt; **p_numSamplePoints** = &#123;"numSamplePoints", 1000, this&#125; — Number of points to be sampled from each image.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; int &gt; **p_numLevels** = &#123;"numLevels", 4, this&#125; — Number of refinement levels for the estimation.
+
+## Member Function Documentation
+
+### compute
+
+```cpp
+void ImFusion::BicubicBSplineApproximationAlgorithm::compute ()
+```
+
+*override, virtual*
+
+Computes the fitted BSpline surfaces.
+
+### takeOutput
+
+```cpp
+OwningDataList ImFusion::BicubicBSplineApproximationAlgorithm::takeOutput ()
+```
+
+*override, virtual*
+
+Retrieve the BSpline surfaces.
+
+### configure
+
+```cpp
+void ImFusion::BicubicBSplineApproximationAlgorithm::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure the algorithm using [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).

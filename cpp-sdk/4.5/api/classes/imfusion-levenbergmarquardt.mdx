@@ -1,0 +1,79 @@
+---
+title: "ImFusion::LevenbergMarquardt"
+sidebarTitle: "LevenbergMarquardt"
+description: "Levenberg-Marquardt optimizer."
+---
+
+`#include <ImFusion/Base/LevenbergMarquardt.h>`
+
+## Overview
+
+Levenberg-Marquardt optimizer.
+
+## Public Member Functions
+
+- **LevenbergMarquardt** () — Constructor The Levenberg Marquardt algorithm tries to minimize the sum of squares of a cost function with m_numMeasurements values over m_numParameters parameters.
+- void [init](#init) (int numParameters, int numMeasurements) — Initialize buffers used in Levenberg Marquardt algorithm.
+- int [runWithFiniteDifferences](#runwithfinitedifferences) (Eigen::VectorXd &p, const T &x, const FuncEps &computeEps, double finiteDifferenceStepSize, int maxIter, double deltaTol, double fTol, [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) \*progress=nullptr, double lambda=0.01) — Run Levenberg Marquard using a finite-difference approximation of the Jacobian.
+- int [run](#run) (Eigen::VectorXd &p, const T &x, const FuncEps &computeEps, const FuncJ &computeJ, int maxIter, double deltaTol, double fTol, [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) \*progress=nullptr, double lambda=0.01) — Run Levenberg Marquardt.
+
+## Member Function Documentation
+
+### init
+
+```cpp
+void ImFusion::LevenbergMarquardt::init (int numParameters, int numMeasurements)
+```
+
+*inline*
+
+Initialize buffers used in Levenberg Marquardt algorithm.
+
+**Parameters:**
+
+- `numParameters` — number of parameters
+- `numMeasurements` — number of measurements The Levenberg Marquardt algorithm tries to minimize the sum of squares of a cost function with m_numMeasurements values over m_numParameters parameters.
+
+### runWithFiniteDifferences
+
+```cpp
+template<typename FuncEps, typename T> int ImFusion::LevenbergMarquardt::runWithFiniteDifferences (Eigen::VectorXd & p, const T & x, const FuncEps & computeEps, double finiteDifferenceStepSize, int maxIter, double deltaTol, double fTol, Progress * progress = nullptr, double lambda = 0.01)
+```
+
+*inline*
+
+Run Levenberg Marquard using a finite-difference approximation of the Jacobian.
+
+**Parameters:**
+
+- `p` — Initial parameter estimate. Is Replaced by optimized parameters by the algorithm.
+- `x` — auxiliary parameters. These are not directly used in the algorithm, but are passed to computeEps and computeJ as the second argument.
+- `computeEps` — Cost function with signature: void computeEps(const Eigen::Matrix&lt;double,numParameters,1&gt; &p, const T &x, Eigen::VectorXd &eps)
+- `finiteDifferenceStepSize` — Step size used for finite differences computing the Jacobian
+- `maxIter` — Maximum number of iterations
+- `deltaTol` — Update norm tolerance
+- `fTol` — Function tolerance
+- `progress` — Optional progress object for algorithm progress output.
+- `lambda` — Initial damping factor used by algorithm, defaults to 0.01 return &gt;= 0 if successful, -1 otherwise. 0 = delta error below tolerance, 1 = function error below tolerance, 2 = max iterations reached, 3 = cancelled by user
+
+### run
+
+```cpp
+template<typename FuncEps, typename FuncJ, typename T> int ImFusion::LevenbergMarquardt::run (Eigen::VectorXd & p, const T & x, const FuncEps & computeEps, const FuncJ & computeJ, int maxIter, double deltaTol, double fTol, Progress * progress = nullptr, double lambda = 0.01)
+```
+
+*inline*
+
+Run Levenberg Marquardt.
+
+**Parameters:**
+
+- `p` — Initial parameter estimate. Is Replaced by optimized parameters by the algorithm.
+- `x` — auxiliary parameters. These are not directly used in the algorithm, but are passed to computeEps and computeJ as the second argument.
+- `computeEps` — Cost function with signature: void computeEps(const Eigen::Matrix&lt;double,numParameters,1&gt; &p, const T &x, Eigen::VectorXd &eps)
+- `computeJ` — Function with signature void computeJ(const Eigen::Matrix&lt;double,numParameters,1&gt; &p, const T &x, Eigen::Matrix&lt;double,numMeasurements,numParameters&gt; &J) for computing the Jacobian
+- `maxIter` — Maximum number of iterations
+- `deltaTol` — Update norm tolerance
+- `fTol` — Function tolerance
+- `progress` — Optional progress object for algorithm progress output.
+- `lambda` — Initial damping factor used by algorithm, defaults to 0.01 return &gt;= 0 if successful, -1 otherwise. 0 = delta error below tolerance, 1 = function error below tolerance, 2 = max iterations reached, 3 = cancelled by user

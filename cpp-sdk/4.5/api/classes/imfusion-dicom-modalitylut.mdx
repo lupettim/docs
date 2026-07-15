@@ -1,0 +1,57 @@
+---
+title: "ImFusion::Dicom::ModalityLUT"
+sidebarTitle: "ModalityLUT"
+description: "Modality LUT Module (PS 3.3 C.11.1)."
+---
+
+`#include <ImFusion/Dicom/DicomModule.h>`
+
+## Overview
+
+Modality LUT [Module](/cpp-sdk/4.5/api/classes/imfusion-dicom-module) (PS 3.3 C.11.1).
+
+**See also:** [http://dicom.nema.org/medical/dicom/current/output/chtml/part03/sect_C.11.html#sect_C.11.1](http://dicom.nema.org/medical/dicom/current/output/chtml/part03/sect_C.11.html#sect_C.11.1)
+
+## Classes
+
+- class [LutItem](/cpp-sdk/4.5/api/classes/imfusion-dicom-modalitylut-lutitem)
+
+## Public Member Functions
+
+- **ModalityLUT** ([ModuleList](/cpp-sdk/4.5/api/classes/imfusion-dicom-modulelist) &parent, [Type](/cpp-sdk/4.5/api/classes/imfusion-dicom-module) type, bool searchIntoSubs=false)
+- bool [load](#load) ([ImageDescriptor](/cpp-sdk/4.5/api/structs/imfusion-imagedescriptor) &desc) const — Loads rescale intercept and scale.
+- void **save** (const [ImageDescriptor](/cpp-sdk/4.5/api/structs/imfusion-imagedescriptor) &desc)
+- void **loadRescaleType** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &image) const
+- bool [burnInLut](#burninlut) ([MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) &mem) const — Applies the first LUT [Sequence](/cpp-sdk/4.5/api/classes/imfusion-dicom-sequence) in lut to the intensities found in the given image.
+
+## Public Attributes
+
+- [Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element)&lt; double &gt; **rescaleIntercept**
+- [Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element)&lt; double &gt; **rescaleSlope**
+- [Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **rescaleType**
+- [Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element)&lt; bool &gt; **pixelRepresentationIsSigned**
+- [Sequence](/cpp-sdk/4.5/api/classes/imfusion-dicom-sequence)&lt; [LutItem](/cpp-sdk/4.5/api/classes/imfusion-dicom-modalitylut-lutitem) &gt; **lut**
+
+## Member Function Documentation
+
+### load
+
+```cpp
+bool ImFusion::Dicom::ModalityLUT::load (ImageDescriptor & desc) const
+```
+
+Loads rescale intercept and scale.
+
+Returns true if values were loaded or false otherwise. Automatically registers an error when existing values cannot be loaded.
+
+### burnInLut
+
+```cpp
+bool ImFusion::Dicom::ModalityLUT::burnInLut (MemImage & mem) const
+```
+
+Applies the first LUT [Sequence](/cpp-sdk/4.5/api/classes/imfusion-dicom-sequence) in lut to the intensities found in the given image.
+
+**Parameters:**
+
+- `mem`

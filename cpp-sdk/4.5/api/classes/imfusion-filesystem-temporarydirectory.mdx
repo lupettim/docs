@@ -1,0 +1,43 @@
+---
+title: "ImFusion::Filesystem::TemporaryDirectory"
+sidebarTitle: "TemporaryDirectory"
+description: "Temporary directory which deletes itself upon going out of scope."
+---
+
+`#include <ImFusion/Core/Filesystem/TemporaryDirectory.h>`
+
+## Overview
+
+Temporary directory which deletes itself upon going out of scope.
+
+## Public Types
+
+- enum class Policy &#123; **Create** , **CreateRecursive** , **DoNotCreate** &#125; — [TemporaryDirectory](/cpp-sdk/4.5/api/classes/imfusion-filesystem-temporarydirectory) Construction Policy.
+
+## Public Member Functions
+
+- [TemporaryDirectory](#temporarydirectory) (const [Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path) &[path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-directory)=&#123;&#125;, Policy policy=Policy::CreateRecursive) — Constructs a [TemporaryDirectory](/cpp-sdk/4.5/api/classes/imfusion-filesystem-temporarydirectory) with a given path and policy.
+
+## Constructor & Destructor Documentation
+
+### TemporaryDirectory
+
+```cpp
+ImFusion::Filesystem::TemporaryDirectory::TemporaryDirectory (const Path & path = {}, Policy policy = Policy::CreateRecursive)
+```
+
+*explicit*
+
+Constructs a [TemporaryDirectory](/cpp-sdk/4.5/api/classes/imfusion-filesystem-temporarydirectory) with a given path and policy.
+
+**Parameters:**
+
+- `path` — The path where the temporary directory will be created. Relative paths are considered relative to the current working directory.
+If [path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-directory) is empty (default), a directory with a randomized name is created in the system's temporary file directory.
+Otherwise [path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-directory) will be used for the temporary directory. The path can optionally include percent sign characters to specify replacement by a random hexadecimal digit. For example: [TemporaryDirectory](#temporarydirectory)("/my/tempfile/directory%%/%%%%");
+[ImFusion::Filesystem::TemporaryDirectory::TemporaryDirectory](#temporarydirectory)TemporaryDirectory(const Path &path=&#123;&#125;, Policy policy=Policy::CreateRecursive)Constructs a TemporaryDirectory with a given path and policy.
+ fragment
+- `policy` — The policy of how the temporary directory should be created.
+Create: Create the directory immediately upon construction. If [path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-directory) is not empty, and the parent directory of the given path doesn't exit, this will not create them.
+CreateRecursive (default): Create the directory and parent directories immediately upon construction.
+DoNotCreate: Will not create the directory on the filesystem. You can subsequently create the directory manually by calling [create()](/cpp-sdk/4.5/api/classes/imfusion-filesystem-directory).

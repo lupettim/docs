@@ -1,0 +1,38 @@
+---
+title: "ImFusion::InteractionOrthoView2D"
+sidebarTitle: "InteractionOrthoView2D"
+description: "Ortho 2D view interaction."
+---
+
+`#include <ImFusion/GUI/InteractionOrthoView2D.h>`
+
+## Overview
+
+Ortho 2D view interaction.
+
+## Public Member Functions
+
+- **InteractionOrthoView2D** ([ImageView2D](/cpp-sdk/4.5/api/classes/imfusion-imageview2d) &view)
+- bool [sceneEvent](#sceneevent) (QEvent \*event) override — Modify the view parameters based on the mouse events.
+- bool **changePose** (QMouseEvent \*event)
+
+## Additional Inherited Members
+
+- static bool [addMappedViewAction](/cpp-sdk/4.5/api/classes/imfusion-viewinteraction) (ViewActionType viewAction, Qt::MouseButton button, Qt::KeyboardModifiers modifiers)
+- static bool **removeMappedViewAction** (ViewActionType viewAction, Qt::MouseButton button, Qt::KeyboardModifiers modifiers) — Removes mapping from `viewAction` to *MouseAction* defined by `button` and `modifiers` Returns true if removing succeeds, or false if this mapping does not exists.
+- static void **resetActionMapping** () — Loads the default view interaction mapping.
+- static const ViewActionMap & **globalViewActionMap** () — Const access to the global view action mapper.
+- static void **setGlobalViewActionMap** (const ViewActionMap &map) — Sets the global view action map.
+- static bool **hasConflicts** (const ViewActionMap &actionMap, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::pair](http://en.cppreference.com/w/cpp/utility/pair.html)&lt; ViewActionType, ViewActionType &gt; &gt; &conflictingActions) — Checks if the mapping defined in `actionMap` has any conflicts.
+
+## Member Function Documentation
+
+### sceneEvent
+
+```cpp
+bool ImFusion::InteractionOrthoView2D::sceneEvent (QEvent * event)
+```
+
+*override, virtual*
+
+Modify the view parameters based on the mouse events.

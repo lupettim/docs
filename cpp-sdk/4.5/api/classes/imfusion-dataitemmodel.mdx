@@ -1,0 +1,151 @@
+---
+title: "ImFusion::DataItemModel"
+sidebarTitle: "DataItemModel"
+description: "Wrapper class to transform the DataModel into a QAbstractItemModel so that it can be used in Qt views."
+---
+
+`#include <ImFusion/GUI/DataItemModel.h>`
+
+## Overview
+
+Wrapper class to transform the [DataModel](/cpp-sdk/4.5/api/classes/imfusion-datamodel) into a QAbstractItemModel so that it can be used in Qt views.
+
+The underlying parentModel() will be represented as a tree with a single column. If a [DataGroup](/cpp-sdk/4.5/api/classes/imfusion-datagroup) has a proxy child, the index of the group will represent the proxy child data instead of the group. Furthermore, if a dataset implements the [CompoundData](/cpp-sdk/4.5/api/classes/imfusion-compounddata) interface (without being a [DataGroup](/cpp-sdk/4.5/api/classes/imfusion-datagroup)) the corresponding [DataItemModel](/cpp-sdk/4.5/api/classes/imfusion-dataitemmodel) index will have the nested datasets ([CompoundData::children()](/cpp-sdk/4.5/api/classes/imfusion-compounddata)) as children. These children have the ElementType::Internal instead of ElementType::Regular to illustrate their nature that they are internal to the parent dataset and not owned by/accessible through the underlying [DataModel](/cpp-sdk/4.5/api/classes/imfusion-datamodel).
+
+A set of custom [Roles](#roles) enables you to query additional metadata from the datasets.
+
+![](/images/cpp-api/DataModelVisualization.png)
+
+*Illustration how the original dataset hierarchy in the DataModel is represented in DataItemModel bookkeeping structure and eventually displayed in the DataWidget*
+
+**See also:** - [DataModel](/cpp-sdk/4.5/api/classes/imfusion-datamodel), [DataWidget](/cpp-sdk/4.5/api/classes/imfusion-datawidget), [DataDisplayModel](/cpp-sdk/4.5/api/classes/imfusion-datadisplaymodel), [DataFilterModel](/cpp-sdk/4.5/api/classes/imfusion-datafiltermodel), DataViewModel
+- [https://doc.qt.io/qt-6/qabstractitemmodel.html](https://doc.qt.io/qt-6/qabstractitemmodel.html)
+
+## Classes
+
+- struct [Item](/cpp-sdk/4.5/api/structs/imfusion-dataitemmodel-item) — Internal record to implement bookkeeping of the hierarchy in the underlying [DataModel](/cpp-sdk/4.5/api/classes/imfusion-datamodel).
+
+## Public Types
+
+- enum [Roles](#roles) &#123; DataRole = Qt::UserRole + 1 , DescriptionRole = Qt::UserRole + 2 , AttributesRole = Qt::UserRole + 3 , AttributesToolTipRole = Qt::UserRole + 4 , LinksRole = Qt::UserRole + 7 , LinksToolTipRole = Qt::UserRole + 8 , LinksIndexRole = Qt::UserRole + 9 , ElementTypeRole = Qt::UserRole + 10 &#125; — Enumeration of special roles supported by the model.
+- enum class [ElementType](#elementtype) &#123; Regular , Internal &#125; — Value type of Roles::ElementTypeRole.
+
+## Signals
+
+- void **dataAdded** ([Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data) — Signal emitted whenever a new dataset has been added.
+- void **dataAboutToBeRemoved** ([Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data) — Signal emitted directly before a dataset will be removed from the model.
+- void **dataRemoved** ([Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data) — Signal emitted whenever a new dataset has been removed; careful: *data* is no longer valid.
+
+## Public Member Functions
+
+- **Q_ENUM** ([ElementType](#elementtype))
+- **DataItemModel** ([DataModel](/cpp-sdk/4.5/api/classes/imfusion-datamodel) &parentModel) — Instantiates a new [DataItemModel](/cpp-sdk/4.5/api/classes/imfusion-dataitemmodel) representing the given [DataModel](/cpp-sdk/4.5/api/classes/imfusion-datamodel), which must remain valid for the entire lifetime.
+- [DataModel](/cpp-sdk/4.5/api/classes/imfusion-datamodel) & **parentModel** () — Returns the underlying [DataModel](/cpp-sdk/4.5/api/classes/imfusion-datamodel).
+- const [DataModel](/cpp-sdk/4.5/api/classes/imfusion-datamodel) & **parentModel** () const
+- QModelIndex [index](#index) (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data) const — QModelIndices for this item model are constructed as follows:
+- [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \* **get** (const QModelIndex &[index](#index)) const — Returns the data at the index or nullptr if the index does not exist.
+- void **enableThumbnails** (bool enabled, int thumbnailSizePx) — Enables thumbnail generation when data with Qt::DecorationRole is requested (default is enabled).
+- bool **thumbnailsEnabled** () const — Returns whether thumbnail generation is enabled.
+- QVariant **data** (const QModelIndex &[index](#index), int role=Qt::DisplayRole) const override
+- bool **setData** (const QModelIndex &[index](#index), const QVariant &value, int role=Qt::EditRole) override
+- Qt::ItemFlags **flags** (const QModelIndex &[index](#index)) const override
+- QModelIndex **parent** (const QModelIndex &[index](#index)) const override
+- int **columnCount** (const QModelIndex &parent=QModelIndex()) const override
+- int **rowCount** (const QModelIndex &parent=QModelIndex()) const override
+- QModelIndex **index** (int row, int column, const QModelIndex &parent=QModelIndex()) const override
+
+## Protected Member Functions
+
+- QModelIndex **index** (const [Item](/cpp-sdk/4.5/api/structs/imfusion-dataitemmodel-item) \*item) const
+- QString **description** (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data) const
+- void [registerData](#registerdata) ([Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data, const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*parent, bool isInternalRestructuring) — Updates the internal bookkeeping to track *data* being added as a child of *parent*.
+- void [unregisterData](#unregisterdata) ([Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data, bool isInternalRestructuring) — Updates the internal bookkeeping to no longer track *data*.
+- void **moveRegisteredData** ([Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data, const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*newParent) — Updates the internal bookkeeping after *data* has moved inside/to *newParent*.
+- void **onParentModelDataAdded** ([Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data)
+- void **onParentModelDataAboutToBeRemoved** ([Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data)
+- void **onParentModelDataMoved** ([Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data)
+- void **onProxyChildChanged** ([DataGroup](/cpp-sdk/4.5/api/classes/imfusion-datagroup) \*parent, bool isInternalRestructuring)
+- void **assertItemMapConsistency** (bool checkChildren, bool checkProxyChildSignal) const
+
+## Protected Attributes
+
+- [DataModel](/cpp-sdk/4.5/api/classes/imfusion-datamodel) \* **m_parentModel**
+- [Item](/cpp-sdk/4.5/api/structs/imfusion-dataitemmodel-item) **m_rootItem**
+- [std::unordered_map](http://en.cppreference.com/w/cpp/container/unordered_map.html)&lt; const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*, [Item](/cpp-sdk/4.5/api/structs/imfusion-dataitemmodel-item) \* &gt; **m_itemMap**
+- bool **m_thumbnailsEnabled** = true
+- int **m_thumbnailSizePx** = 32
+
+## Member Enumeration Documentation
+
+### Roles
+
+```cpp
+enum ImFusion::DataItemModel::Roles
+```
+
+Enumeration of special roles supported by the model.
+
+**Enumerator:**
+
+- `DataRole` — The pointer to the data (use with variant.value&lt;ImFusion::Data\*&gt;()).
+- `DescriptionRole` — A short description of the data type (e.g. '2D [Image](/cpp-sdk/4.5/api/classes/imfusion-image)' or 'Ultrasound Sweep').
+- `AttributesRole` — A QList of QIcons representing special attributes of the data (e.g. multichannel, stream, mask, deformation...).
+- `AttributesToolTipRole` — A QList of QString representing a tool tip for the elements of AttributesRole.
+- `LinksRole` — A QList of QIcons representing links of the data.
+- `LinksToolTipRole` — A QList of QString representing a tool tip for the elements of LinksRole.
+- `LinksIndexRole` — A QList of the indices of the links in the DataModels list.
+- `ElementTypeRole` — The [ElementType](#elementtype) of the data.
+
+### ElementType
+
+```cpp
+enum class ImFusion::DataItemModel::ElementType
+```
+
+*strong*
+
+Value type of Roles::ElementTypeRole.
+
+**Enumerator:**
+
+- `Regular` — A regular [Data](/cpp-sdk/4.5/api/classes/imfusion-data) instance owned and maintained by the underlying [DataModel](/cpp-sdk/4.5/api/classes/imfusion-datamodel).
+- `Internal` — A [Data](/cpp-sdk/4.5/api/classes/imfusion-data) instance that is implicitly bound to/owned by the parent dataset, not accessible through the underlying [DataModel](/cpp-sdk/4.5/api/classes/imfusion-datamodel).
+
+## Member Function Documentation
+
+### index
+
+```cpp
+QModelIndex ImFusion::DataItemModel::index (const Data * data) const
+```
+
+QModelIndices for this item model are constructed as follows:
+
+- The index for the root node is the (invalid) default QModelIndex()
+- The index's row is the index of the element within the parent group
+- The index's column is always 0
+- The index's internalPointer points to the corresponding [DataItemModel::Item](/cpp-sdk/4.5/api/structs/imfusion-dataitemmodel-item) instance
+
+### registerData
+
+```cpp
+void ImFusion::DataItemModel::registerData (Data * data, const Data * parent, bool isInternalRestructuring)
+```
+
+*protected*
+
+Updates the internal bookkeeping to track *data* being added as a child of *parent*.
+
+Will emit the dataAdded() signal unless *isInternalRestructuring* is true.
+
+### unregisterData
+
+```cpp
+void ImFusion::DataItemModel::unregisterData (Data * data, bool isInternalRestructuring)
+```
+
+*protected*
+
+Updates the internal bookkeeping to no longer track *data*.
+
+Will emit the dataAboutToBeRemoved() signal unless *isInternalRestructuring* is true.

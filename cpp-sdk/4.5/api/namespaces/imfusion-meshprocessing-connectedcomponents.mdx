@@ -1,0 +1,116 @@
+---
+title: "ImFusion::MeshProcessing::ConnectedComponents"
+sidebarTitle: "ConnectedComponents"
+description: "Mesh processing algorithms based on connected component analysis."
+---
+
+## Overview
+
+[Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) processing algorithms based on connected component analysis.
+
+## Classes
+
+- struct [ConnectedComponent](/cpp-sdk/4.5/api/structs/imfusion-meshprocessing-connectedcomponents-connectedcomponent)
+- struct [ConnectedComponentInfo](/cpp-sdk/4.5/api/structs/imfusion-meshprocessing-connectedcomponents-connectedcomponentinfo)
+
+## Functions
+
+- [ConnectedComponentInfo](/cpp-sdk/4.5/api/structs/imfusion-meshprocessing-connectedcomponents-connectedcomponentinfo) [labelConnectedComponents](#labelconnectedcomponents) (const [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) &mesh) — Determines the connected triangles.
+- bool [reduceToNumberOfLargestComponents](#reducetonumberoflargestcomponents) ([Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) &mesh, int numComponents, const [ConnectedComponentInfo](/cpp-sdk/4.5/api/structs/imfusion-meshprocessing-connectedcomponents-connectedcomponentinfo) \*info=nullptr) — Removes small connected components.
+- bool [reduceToComponentsByLabel](#reducetocomponentsbylabel) ([Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) &mesh, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; unsigned int &gt; &componentsToKeep, const [ConnectedComponentInfo](/cpp-sdk/4.5/api/structs/imfusion-meshprocessing-connectedcomponents-connectedcomponentinfo) \*info=nullptr) — Removes all connected components that are not among the specified ones.
+- bool [reduceToComponentsByArea](#reducetocomponentsbyarea) ([Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) &mesh, float minConnectedArea, float maxConnectedArea, const [ConnectedComponentInfo](/cpp-sdk/4.5/api/structs/imfusion-meshprocessing-connectedcomponents-connectedcomponentinfo) \*info=nullptr) — Removes all connected components that are not within the specified area range.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) &gt; &gt; [splitConnectedComponents](#splitconnectedcomponents) (const [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) &mesh, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; unsigned int &gt; &componentsToExtract=&#123;&#125;, const [ConnectedComponentInfo](/cpp-sdk/4.5/api/structs/imfusion-meshprocessing-connectedcomponents-connectedcomponentinfo) \*info=nullptr) — Split connected components in separate meshes.
+- void **analyzeLabels** ([TriMesh](/cpp-sdk/4.5/api/classes/imfusion-trimesh) \*mesh, int assignedLabels, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; int &gt; &labels, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; int &gt; &labelsSize, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; float &gt; &labelsArea)
+
+## Function Documentation
+
+### labelConnectedComponents
+
+```cpp
+ConnectedComponentInfo ImFusion::MeshProcessing::ConnectedComponents::labelConnectedComponents (const Mesh & mesh)
+```
+
+Determines the connected triangles.
+
+Known duplicate vertices will be taken into account
+
+**Parameters:**
+
+- `mesh` — mesh
+
+**Returns:** connected component info
+
+**Note:** Consider removing duplicated vertices by calling [Cleaning::mergeCloseVertices](/cpp-sdk/4.5/api/namespaces/imfusion-meshprocessing-cleaning) before this
+
+### reduceToNumberOfLargestComponents
+
+```cpp
+bool ImFusion::MeshProcessing::ConnectedComponents::reduceToNumberOfLargestComponents (Mesh & mesh, int numComponents, const ConnectedComponentInfo * info = nullptr)
+```
+
+Removes small connected components.
+
+**Parameters:**
+
+- `mesh` — mesh
+- `numComponents` — number of largest connected components that should be kept
+- `info` — optional connected component info obtained from labelConnectedComponents. If not provided this info will be re-computed internally. It is recommended to pass this information in order to improve the speed
+
+**Returns:** true upon success
+
+**Note:** Consider removing duplicated vertices by calling [Cleaning::mergeCloseVertices](/cpp-sdk/4.5/api/namespaces/imfusion-meshprocessing-cleaning) before this
+
+### reduceToComponentsByLabel
+
+```cpp
+bool ImFusion::MeshProcessing::ConnectedComponents::reduceToComponentsByLabel (Mesh & mesh, const std::vector < unsigned int > & componentsToKeep, const ConnectedComponentInfo * info = nullptr)
+```
+
+Removes all connected components that are not among the specified ones.
+
+**Parameters:**
+
+- `mesh` — mesh
+- `componentsToKeep` — labels of connected components that should remain
+- `info` — optional connected component info obtained from labelConnectedComponents. If not provided this info will be re-computed internally. It is recommended to pass this information in order to improve the speed
+
+**Returns:** true upon success
+
+**Note:** Consider removing duplicated vertices by calling [Cleaning::mergeCloseVertices](/cpp-sdk/4.5/api/namespaces/imfusion-meshprocessing-cleaning) before this
+
+### reduceToComponentsByArea
+
+```cpp
+bool ImFusion::MeshProcessing::ConnectedComponents::reduceToComponentsByArea (Mesh & mesh, float minConnectedArea, float maxConnectedArea, const ConnectedComponentInfo * info = nullptr)
+```
+
+Removes all connected components that are not within the specified area range.
+
+**Parameters:**
+
+- `mesh` — mesh
+- `minConnectedArea` — minimum allowed area of triangles for the remaining connected components
+- `maxConnectedArea` — maximum allowed area of triangles for the remaining connected components
+- `info` — optional connected component info obtained from labelConnectedComponents. If not provided this info will be re-computed internally. It is recommended to pass this information in order to improve the speed
+
+**Returns:** true upon success
+
+**Note:** Consider removing duplicated vertices by calling [Cleaning::mergeCloseVertices](/cpp-sdk/4.5/api/namespaces/imfusion-meshprocessing-cleaning) before this
+
+### splitConnectedComponents
+
+```cpp
+std::vector < std::unique_ptr < Mesh > > ImFusion::MeshProcessing::ConnectedComponents::splitConnectedComponents (const Mesh & mesh, const std::vector < unsigned int > & componentsToExtract = {}, const ConnectedComponentInfo * info = nullptr)
+```
+
+Split connected components in separate meshes.
+
+**Parameters:**
+
+- `mesh` — mesh
+- `componentsToExtract` — optional parameter specifying the labels of components to extract. If empty, all components will be extracted
+- `info` — optional connected component info obtained from labelConnectedComponents. If not provided this info will be re-computed internally. It is recommended to pass this information in order to improve the speed
+
+**Returns:** new meshes each containing a separate connected component
+
+**Note:** Consider removing duplicated vertices by calling [Cleaning::mergeCloseVertices](/cpp-sdk/4.5/api/namespaces/imfusion-meshprocessing-cleaning) before this

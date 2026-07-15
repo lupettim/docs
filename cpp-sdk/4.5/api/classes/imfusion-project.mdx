@@ -1,0 +1,377 @@
+---
+title: "ImFusion::Project"
+sidebarTitle: "Project"
+---
+
+## Classes
+
+- struct [Settings](/cpp-sdk/4.5/api/structs/imfusion-project-settings)
+- struct [SettingsUpdate](/cpp-sdk/4.5/api/structs/imfusion-project-settingsupdate)
+- class [TypeSpecificData](/cpp-sdk/4.5/api/classes/imfusion-project-typespecificdata)
+- struct [PixelwiseLabelType](/cpp-sdk/4.5/api/structs/imfusion-project-pixelwiselabeltype)
+- struct [GeometricAnnotationType](/cpp-sdk/4.5/api/structs/imfusion-project-geometricannotationtype)
+- struct [Permissions](/cpp-sdk/4.5/api/structs/imfusion-project-permissions) — [Permissions](/cpp-sdk/4.5/api/structs/imfusion-project-permissions) a user has regarding a project.
+- struct [ImportResult](/cpp-sdk/4.5/api/structs/imfusion-project-importresult)
+- struct [ProjectImportResult](/cpp-sdk/4.5/api/structs/imfusion-project-projectimportresult)
+
+## Public Types
+
+- enum **ProjectType** &#123; **NoProjectType** = 0 , **PixelwiseProject** = 1 &lt;&lt; 0 , **ImagewiseProject** = 1 &lt;&lt; 1 , **GeometricAnnotationsProject** = 1 &lt;&lt; 4 &#125;
+- enum class **DataType** &#123; **InvalidDataType** = 0 , **SingleChannelImages** = 1 &lt;&lt; 0 , **MultiChannelImages** = 1 &lt;&lt; 1 , **SingleChannelVolumes** = 1 &lt;&lt; 2 , **MultiChannelVolumes** = 1 &lt;&lt; 3 , **AnyDataType** = SingleChannelImages | MultiChannelImages | SingleChannelVolumes | MultiChannelVolumes &#125;
+- enum **Version** &#123; **V0** = 0 , **V1** , **V2** , **V3** , **V4** , **V5** , **V6** , **V7** , **V8** , **V9** , **V10** , **V11** , **V12** , **V13** , **V14** , **V15** , **V16** , **V17** , **V18** , **V19** , **V20** , **V21** , **V22** , **V23** , **VERSION_COUNT** &#125;
+- enum class **LayersToModify** &#123; **All** , **CurrentOnly** &#125;
+- enum **ImportProjectOption** &#123; **ImportNewOnes** = 1 &lt;&lt; 0 , **ForceCopy** = 1 &lt;&lt; 1 , **UpdateExisting** = 1 &lt;&lt; 2 , **CopyLabelData** = 1 &lt;&lt; 3 , **CopyTags** = 1 &lt;&lt; 4 &#125;
+- enum **LoadStatus** &#123; **OK** = 0 , **INTERRUPTED** , **NOT_FOUND** , **NOT_COMPATIBLE** &#125;
+- enum class [FailureAction](#failureaction) &#123; Discard , Retry , Export &#125;
+- using **ProjectTypes** = [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt;ProjectType&gt;
+- using **DataTypes** = [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt;DataType&gt;
+- using **PixelwiseData** = [TypeSpecificData](/cpp-sdk/4.5/api/classes/imfusion-project-typespecificdata)&lt;[PixelwiseLabelType](/cpp-sdk/4.5/api/structs/imfusion-project-pixelwiselabeltype)&gt;
+- using **GeometricAnnotationData** = [TypeSpecificData](/cpp-sdk/4.5/api/classes/imfusion-project-typespecificdata)&lt;[GeometricAnnotationType](/cpp-sdk/4.5/api/structs/imfusion-project-geometricannotationtype)&gt;
+- using **TypeMapping** = [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt;[std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt;size_t&gt;&gt;
+- using **WarningMessage** = [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html)
+- using **FailureActionAndPath** = [std::tuple](http://en.cppreference.com/w/cpp/utility/tuple.html)&lt;[FailureAction](#failureaction), [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html)&gt; — The additional path to a folder is only used together with Export.
+
+## Public Member Functions
+
+- **Project** (const Project &)=delete
+- Project & **operator=** (const Project &)=delete
+- [Utils::Expected](/cpp-sdk/4.5/api/classes/imfusion-utils-expected)&lt; [std::pair](http://en.cppreference.com/w/cpp/utility/pair.html)&lt; [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; Project &gt;, WarningMessage &gt;, [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; [copyToRemote](#copytoremote) (const [Filesystem::Url](/cpp-sdk/4.5/api/classes/imfusion-filesystem-url) &remoteUrl, const [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [std::set](http://en.cppreference.com/w/cpp/container/set.html)&lt; QString &gt; &gt; &descriptorIdsToCopy=std::nullopt, [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [Network::AuthorizationProvider](/cpp-sdk/4.5/api/classes/imfusion-network-authorizationprovider) &gt; [authProvider](#authprovider)=nullptr, [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) \*progress=nullptr) const — Copies the current project to a remote server, with or without data.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **addDummyDescriptor** ([std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [DataDescriptor](/cpp-sdk/4.5/api/classes/imfusion-datadescriptor) &gt; desc)
+- [ImportResult](/cpp-sdk/4.5/api/structs/imfusion-project-importresult) [import](#import-1-2) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Import::Entry](/cpp-sdk/4.5/api/structs/imfusion-import-entry) &gt; &entries, bool copyData, LayersToModify layersToModify, [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) \*progress) — Imports the given entries to the project.
+- [ImportResult](/cpp-sdk/4.5/api/structs/imfusion-project-importresult) [import](#import-2-2) (const [Import::Entry](/cpp-sdk/4.5/api/structs/imfusion-import-entry) &entry, bool copyData, [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*preloadedImage, [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [Dicom::DatasetCache](/cpp-sdk/4.5/api/classes/imfusion-dicom-datasetcache) &gt; dicomCache, [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) \*progress) — Imports a single entry to the project.
+- bool **importLayers** ([std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* &gt; layers, LayersToModify layersToModify, [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) \*progress=nullptr)
+- [ProjectImportResult](/cpp-sdk/4.5/api/structs/imfusion-project-projectimportresult) **importDescriptorsFromProject** (const Project &p, [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; ImportProjectOption &gt; flags, bool dryRun, [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) \*progress=nullptr)
+- bool **deleteDescriptors** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [DataDescriptor](/cpp-sdk/4.5/api/classes/imfusion-datadescriptor) \* &gt; &descs)
+- void **setCurrentDataSet** ([std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [DataSet](/cpp-sdk/4.5/api/classes/imfusion-dataset) &gt; data)
+- [Utils::Expected](/cpp-sdk/4.5/api/classes/imfusion-utils-expected)&lt; [DataSet](/cpp-sdk/4.5/api/classes/imfusion-dataset) \*, [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **loadDataSet** ([DataDescriptor](/cpp-sdk/4.5/api/classes/imfusion-datadescriptor) &desc, [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) \*progress)
+- bool **unloadCurrentDataSet** ([Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) \*progress)
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [DataSet](/cpp-sdk/4.5/api/classes/imfusion-dataset) &gt; **takeCurrentDataSet** ()
+- void [switchDataSetWithProgress](#switchdatasetwithprogress) ([DataDescriptor](/cpp-sdk/4.5/api/classes/imfusion-datadescriptor) &desc, QWidget \*parent) — Switches to another dataset.
+- void [setFailureCallback](#setfailurecallback) ([std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; FailureActionAndPath([std::string](http://en.cppreference.com/w/cpp/string/basic_string.html))&gt; callback) — Set a callback for failures that require some action from the user.
+- [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; FailureActionAndPath([std::string](http://en.cppreference.com/w/cpp/string/basic_string.html))&gt; **failureCallback** () const
+- void **generateMissingThumbnails** ([Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) \*progress=nullptr) const
+- const QString & **name** () const
+- const QString & **projectPath** () const
+- int **projectId** () const — Returns the id of the remote project or -1 for local projects.
+- int **revision** () const
+- ProjectTypes **projectType** () const
+- DataTypes **dataType** () const
+- const QString & **disabledActions** () const
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [TagType](/cpp-sdk/4.5/api/structs/imfusion-tagtype) &gt; & **tagTypes** () const
+- bool **supportsInternalDataStorage** () const
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [ExternalDataStorage](/cpp-sdk/4.5/api/structs/imfusion-externaldatastorage) &gt; & **supportedExternalDataStorage** () const
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [ExternalDataStorage](/cpp-sdk/4.5/api/structs/imfusion-externaldatastorage) &gt; **findExternalDataStorage** (int id) const
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [DataDescriptor](/cpp-sdk/4.5/api/classes/imfusion-datadescriptor) &gt; &gt; & **dataDescriptors** () const
+- [DataDescriptor](/cpp-sdk/4.5/api/classes/imfusion-datadescriptor) \* **findDescriptorFromID** (const QString &identifier) const
+- [DataSet](/cpp-sdk/4.5/api/classes/imfusion-dataset) \* **currentData** () const
+- [Experiments](/cpp-sdk/4.5/api/classes/imfusion-experiments) & **experiments** ()
+- bool **applySettingsChange** (const [SettingsUpdate](/cpp-sdk/4.5/api/structs/imfusion-project-settingsupdate) &update)
+- [TagSystem](/cpp-sdk/4.5/api/classes/imfusion-tagsystem) & **tagSystem** ()
+- const [TagSystem](/cpp-sdk/4.5/api/classes/imfusion-tagsystem) & **tagSystem** () const
+- bool **isReadOnly** () const
+- bool **isLocal** () const
+- bool **isDummy** () const
+- bool **isRemote** () const
+- bool **supportsExperiments** () const
+- const [Permissions](/cpp-sdk/4.5/api/structs/imfusion-project-permissions) & [permissions](#permissions) () const — [Permissions](/cpp-sdk/4.5/api/structs/imfusion-project-permissions) of the current user for this project.
+- const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) & **serverVersion** () const — Version number of the remote server or empty string for local projects.
+- bool [isSupportRemoteIoAlgorithm](#issupportremoteioalgorithm) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &id) const — Checks whether the [IoAlgorithm](/cpp-sdk/4.5/api/classes/imfusion-ioalgorithm) id is supported by the server.
+- bool **allowsData2D** () const
+- bool **allowsData3D** () const
+- bool **allowsDataSingleChannel** () const
+- bool **allowsDataMultiChannel** () const
+- bool **isDatasetCompatible** (const [ImageMetadata](/cpp-sdk/4.5/api/structs/imfusion-imagemetadata) &meta) const
+- [DatasetLicenseSystem](/cpp-sdk/4.5/api/classes/imfusion-datasetlicensesystem) & **datasetLicenses** ()
+- const [DatasetLicenseSystem](/cpp-sdk/4.5/api/classes/imfusion-datasetlicensesystem) & **datasetLicenses** () const
+- bool **applyNewLayers** (ProjectTypes newProjectType, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; PixelwiseData &gt; &gt; pixelwiseLayers, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; TypeMapping &gt; &pixelwiseTypeMapping, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; GeometricAnnotationData &gt; &gt; geometricAnnotationLayers, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; TypeMapping &gt; &geometricAnnotationTypeMapping, [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) \*progress=nullptr)
+- bool **hasMultipleLayers** () const
+- const PixelwiseData \* **pixelwise** ([std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; size_t &gt;=&#123;&#125;) const
+- const GeometricAnnotationData \* **geometricAnnotations** ([std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; size_t &gt;=&#123;&#125;) const
+- const QVector&lt; QRgb &gt; & [pixelwiseColorTable](#pixelwisecolortable) ([std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; size_t &gt; layerIndex=&#123;&#125;) const — Returns the QImage color table for the given pixelwise layer (or the active one).
+- size_t **numberPixelwiseLayers** () const
+- size_t **numberGeometricAnnotationLayers** () const
+- void **setActivePixelwise** ([std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; size_t &gt;)
+- void **setActiveGeometricAnnotations** ([std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; size_t &gt;)
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; size_t &gt; **activePixelwise** () const
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; size_t &gt; **activeGeometricAnnotations** () const
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; PixelwiseData &gt; &gt; & **pixelwiseLayers** () const
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; GeometricAnnotationData &gt; &gt; & **geometricAnnotationLayers** () const
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- const [Network::AuthorizationProvider](/cpp-sdk/4.5/api/classes/imfusion-network-authorizationprovider) & [authProvider](#authprovider) () const — Provides authorization for a remote project and other web resources.
+- [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [Network::AuthorizationProvider](/cpp-sdk/4.5/api/classes/imfusion-network-authorizationprovider) &gt; **authProviderShared** () const
+- int **latestRemoteEventTimestamp** () const
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; int &gt; **queryAndApplyNewerEvents** ()
+- bool **applyRemoteEvent** (int timestamp, const QJsonObject &jsonEvent)
+- QString [loadInstructions](#loadinstructions) () const — Loads instructions for this project.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; [datasetGroupingHierarchy](#datasetgroupinghierarchy) () const — Returns the values the project can be grouped by.
+- void [setDatasetGroupingHierarchy](#setdatasetgroupinghierarchy) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; &grouping) — Changes the grouping hierarchy.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; [datasetGroupingHierachy](#datasetgroupinghierachy) () const
+- void [setDatasetGroupingHierachy](#setdatasetgroupinghierachy) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; &grouping)
+
+## Static Public Member Functions
+
+- static QJsonObject [toJson](#tojson) ([Settings](/cpp-sdk/4.5/api/structs/imfusion-project-settings) settings, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [TagType](/cpp-sdk/4.5/api/structs/imfusion-tagtype) &gt; &tagTypes, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; PixelwiseData &gt; &gt; &pixelwiseLayers, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; GeometricAnnotationData &gt; &gt; &geometricAnnotationLayers) — Converts the project parameters to JSON as used by the server.
+- static [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; [fromJson](#fromjson) (const QJsonObject &json, Project &project) — Configures the given project according to the JSON object.
+- static [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; Project &gt; **loadLocalProject** (QString projectDir, const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) &prop, bool readOnly) — all the static functions below may throw if the data passed is invalid, with a human-readable exception message
+- static [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; Project &gt; **loadRemoteProject** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &projectUrl, [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [Network::AuthorizationProvider](/cpp-sdk/4.5/api/classes/imfusion-network-authorizationprovider) &gt; [authProvider](#authprovider), [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) \*progress=nullptr)
+- static [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; Project &gt; **createNewRemoteProject** ([Settings](/cpp-sdk/4.5/api/structs/imfusion-project-settings) settings, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [TagType](/cpp-sdk/4.5/api/structs/imfusion-tagtype) &gt; &tagTypes, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; PixelwiseData &gt; &gt; &pixelwiseLayers, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; GeometricAnnotationData &gt; &gt; &geometricAnnotationLayers, [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [Network::AuthorizationProvider](/cpp-sdk/4.5/api/classes/imfusion-network-authorizationprovider) &gt; [authProvider](#authprovider), [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) \*progress)
+- static [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; Project &gt; **createNewLocalProject** ([Settings](/cpp-sdk/4.5/api/structs/imfusion-project-settings) settings, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; PixelwiseData &gt; &gt; pixelwiseLayers, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; GeometricAnnotationData &gt; &gt; geometricAnnotationLayers)
+- static [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; Project &gt; **dummyProject** (ProjectTypes t, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; PixelwiseData &gt; &gt; pixelwiseLayers, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; GeometricAnnotationData &gt; &gt; geometricAnnotationLayers)
+- static [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; Project &gt; **dummyProject** (const QJsonObject &config)
+- static [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; Project &gt; **dummyProject** (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) &projectDB)
+- static bool **isDatasetCompatible** (const DataTypes &types, const [ImageMetadata](/cpp-sdk/4.5/api/structs/imfusion-imagemetadata) &meta)
+- static bool **isRemoteProjectPath** (const QString &projectPath)
+
+## Public Attributes
+
+- Signal **descriptorsAdded**
+- Signal&lt; [DataDescriptor](/cpp-sdk/4.5/api/classes/imfusion-datadescriptor) \* &gt; **descriptorModified**
+- Signal **descriptorOwningStateChanged**
+- Signal&lt; const [DataDescriptor](/cpp-sdk/4.5/api/classes/imfusion-datadescriptor) \* &gt; **descriptorDeletedPre**
+- Signal **descriptorsDeleted**
+- Signal&lt; const [DataDescriptor](/cpp-sdk/4.5/api/classes/imfusion-datadescriptor) \* &gt; **descriptorThumbnailChanged**
+- Signal&lt; const [DataDescriptor](/cpp-sdk/4.5/api/classes/imfusion-datadescriptor) \*, const QString & &gt; **descriptorAnnotationThumbnailChanged**
+- Signal&lt; [DataSet](/cpp-sdk/4.5/api/classes/imfusion-dataset) & &gt; **dataUnloadedPre**
+- Signal&lt; const [DataDescriptor](/cpp-sdk/4.5/api/classes/imfusion-datadescriptor) & &gt; **dataLoadedPre**
+- Signal&lt; [DataSet](/cpp-sdk/4.5/api/classes/imfusion-dataset) & &gt; **dataLoadedPost**
+- Signal&lt; [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &, [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) \* &gt; **imageLoadedPost**
+- Signal **nameChanged**
+- Signal&lt; const QString &, const QString & &gt; **directoryChanged**
+- Signal **tagsChangedPre**
+- Signal **tagsChangedPost**
+- Signal **layersChangedPre**
+- Signal **layersChangedPost**
+- Signal **anyActiveLayerChangedPre**
+- Signal **anyActiveLayerChangedPost**
+- Signal&lt; const PixelwiseData \* &gt; **activePixelwiseLayerChanged**
+- Signal&lt; const GeometricAnnotationData \* &gt; **activeAnnotationLayerChanged**
+- Signal&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **unhandledRemoteEvent**
+
+## Static Public Attributes
+
+- static const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **LoadInterrupted**
+
+## Member Enumeration Documentation
+
+### FailureAction
+
+```cpp
+enum class ImFusion::Project::FailureAction
+```
+
+*strong*
+
+**Enumerator:**
+
+- `Discard` — Don't save and potentially discard all changes (does not actively resets the changes, but just ignores the failing save).
+- `Retry` — Try saving again with same settings.
+- `Export` — Export all layers to an external file and discard the changes.
+
+## Member Function Documentation
+
+### toJson
+
+```cpp
+QJsonObject ImFusion::Project::toJson (Settings settings, const std::vector < TagType > & tagTypes, const std::vector < std::unique_ptr < PixelwiseData > > & pixelwiseLayers, const std::vector < std::unique_ptr < GeometricAnnotationData > > & geometricAnnotationLayers)
+```
+
+*static*
+
+Converts the project parameters to JSON as used by the server.
+
+If this is a new project, Settings.m_projectPath should be empty and all ids should be -1. New tags, layers or labels should also use ids of -1 when editing an existing project.
+
+### fromJson
+
+```cpp
+std::optional < std::string > ImFusion::Project::fromJson (const QJsonObject & json, Project & project)
+```
+
+*static*
+
+Configures the given project according to the JSON object.
+
+This assumes that the project is empty and doesn't have any layers or tags yet. Returns an error message on failure. In case of an error the project might be only half configured and it's probably not a good idea to use it afterwards.
+
+### copyToRemote
+
+```cpp
+Utils::Expected < std::pair < std::unique_ptr < Project >, WarningMessage >, std::string > ImFusion::Project::copyToRemote (const Filesystem::Url & remoteUrl, const std::optional < std::set < QString > > & descriptorIdsToCopy = std::nullopt, std::shared_ptr < Network::AuthorizationProvider > authProvider = nullptr, Progress * progress = nullptr) const
+```
+
+Copies the current project to a remote server, with or without data.
+
+The current project can be local or remote. \remoteUrl URL of the remote labels server. \descriptorIdsToCopy selector for which datasets to upload:
+
+- std::nullopt (default): copy all datasets
+- empty set: copy the project skeleton only (no datasets uploaded)
+- non-empty set: copy only the listed descriptor ids \authProvider authorization provider for the remote server (nullptr (default) triggers an interactive login dialog).
+
+### import
+
+```cpp
+ImportResult ImFusion::Project::import (const std::vector < Import::Entry > & entries, bool copyData, LayersToModify layersToModify, Progress * progress)
+```
+
+Imports the given entries to the project.
+
+copyData specifies whether the datasets should be copied to the project folder or not. If the entries contain labelmaps, they are imported after the regular datasets (see importLayers for details). The [ImportResult](/cpp-sdk/4.5/api/structs/imfusion-project-importresult) object contains info about datasets that could be loaded, those that could not be loaded (and the error message associated)
+
+### import
+
+```cpp
+ImportResult ImFusion::Project::import (const Import::Entry & entry, bool copyData, SharedImageSet * preloadedImage, std::shared_ptr < Dicom::DatasetCache > dicomCache, Progress * progress)
+```
+
+Imports a single entry to the project.
+
+This might result in multiple descriptors if the entry loads as multiple [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset). copyData specifies if the loaded entry will be stored in the project directory for local projecs. The image will be saved automatically to the project folder when necessary. For remote projects copyData specifies whether the loaded entry will be converted to ImFusionFile before uploading.
+
+A thumbnail for the image is generated automatically.
+
+When copyData is true, a preloadedImage can be passed that will be used instead of loading an image from entry path. preloadedImage can only be used with copyData=true to avoid inconsistencies. If preloadedImage is not the image of entry.m_path or if it was modified after loading, adding it copyData=false would use the wrong metadata and thumbnail. The windowing and data components of preloadedImage might get modified by this method.
+
+### switchDataSetWithProgress
+
+```cpp
+void ImFusion::Project::switchDataSetWithProgress (DataDescriptor & desc, QWidget * parent)
+```
+
+Switches to another dataset.
+
+If there is a currentData, it is saved before loadDataSet is called. This method creates a progress dialog and will show a message box if an error occures. It must therefore only be called from UI code. Use loadDataSet otherwise.
+
+### setFailureCallback
+
+```cpp
+void ImFusion::Project::setFailureCallback (std::function < FailureActionAndPath (std::string)> callback)
+```
+
+Set a callback for failures that require some action from the user.
+
+The callback receives a string containing a description of the error. The callback should decide on an action (e.g. with a dialog) and return the result. The callback might be called multiple times (e.g. retrying multiple times).
+
+### permissions
+
+```cpp
+const Permissions & ImFusion::Project::permissions () const
+```
+
+*inline*
+
+[Permissions](/cpp-sdk/4.5/api/structs/imfusion-project-permissions) of the current user for this project.
+
+For local projects, all permissions are always true.
+
+### isSupportRemoteIoAlgorithm
+
+```cpp
+bool ImFusion::Project::isSupportRemoteIoAlgorithm (const std::string & id) const
+```
+
+Checks whether the [IoAlgorithm](/cpp-sdk/4.5/api/classes/imfusion-ioalgorithm) id is supported by the server.
+
+The server can optionally restrict the number of supported [IoAlgorithm](/cpp-sdk/4.5/api/classes/imfusion-ioalgorithm).
+
+### pixelwiseColorTable
+
+```cpp
+const QVector< QRgb > & ImFusion::Project::pixelwiseColorTable (std::optional < size_t > layerIndex = {}) const
+```
+
+Returns the QImage color table for the given pixelwise layer (or the active one).
+
+The result is lazily computed and cached until the layers change.
+
+### configuration
+
+```cpp
+void ImFusion::Project::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality
+
+### configure
+
+```cpp
+void ImFusion::Project::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### authProvider
+
+```cpp
+const Network::AuthorizationProvider & ImFusion::Project::authProvider () const
+```
+
+Provides authorization for a remote project and other web resources.
+
+Also available for local projects, in which case it's only used for datasets that are stored as DICOMweb or another web resource.
+
+### loadInstructions
+
+```cpp
+QString ImFusion::Project::loadInstructions () const
+```
+
+Loads instructions for this project.
+
+For remote projects, instructions are loaded from the server. For local projects, instructions are loaded from an instructions.html in the project directory. Returns an empty string if the project doesn't have any instructions.
+
+### datasetGroupingHierarchy
+
+```cpp
+std::vector < std::string > ImFusion::Project::datasetGroupingHierarchy () const
+```
+
+Returns the values the project can be grouped by.
+
+By default this is "Patient", "Study", "Series". It corresponds to the ImageMetadata::m_grouping field. Each group depends on the previous, e.g. grouping by "Study" will first group by "Patient" and then by "Study" inside each "Patient" group. This property is mainly used to show the grouping options in the UI.
+
+### setDatasetGroupingHierarchy
+
+```cpp
+void ImFusion::Project::setDatasetGroupingHierarchy (const std::vector < std::string > & grouping)
+```
+
+Changes the grouping hierarchy.
+
+This only changes the hierarchy in the project, but won't change the current grouping in the datasets (because there is no generic way to determine a mapping). There is currently also no signal, because we assume that this is only changed from scripts and not through the Labels UI.
+
+### datasetGroupingHierachy
+
+```cpp
+std::vector < std::string > ImFusion::Project::datasetGroupingHierachy () const
+```
+
+*inline*
+
+****Deprecated**:** Use [datasetGroupingHierarchy()](#datasetgroupinghierarchy) instead.
+
+****Deprecated**:** "Use datasetGroupingHierarchy() instead"
+
+### setDatasetGroupingHierachy
+
+```cpp
+void ImFusion::Project::setDatasetGroupingHierachy (const std::vector < std::string > & grouping)
+```
+
+*inline*
+
+****Deprecated**:** Use [setDatasetGroupingHierarchy()](#setdatasetgroupinghierarchy) instead.
+
+****Deprecated**:** "Use setDatasetGroupingHierarchy() instead"

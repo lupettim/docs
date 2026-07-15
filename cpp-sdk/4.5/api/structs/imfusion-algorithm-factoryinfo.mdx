@@ -1,0 +1,24 @@
+---
+title: "ImFusion::Algorithm::FactoryInfo"
+sidebarTitle: "FactoryInfo"
+description: "Struct describing how an Algorithm was instantiated by the AlgorithmFactory ."
+---
+
+`#include <ImFusion/Base/Algorithm.h>`
+
+## Overview
+
+Struct describing how an [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) was instantiated by the [AlgorithmFactory](/cpp-sdk/4.5/api/classes/imfusion-algorithmfactory).
+
+This information is mainly used for (de)serialization to and from workspaces.
+
+## Public Member Functions
+
+- **FactoryInfo** ([std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) id, [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) name, [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) input)
+- **FactoryInfo** ([std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) name, [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) input) — Provided for backwards compatibility. Will set id to name.
+
+## Public Attributes
+
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **id** — [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) id as used by the factory.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **name** — [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) name as used by the factory.
+- [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) **input** — Input data used by the factory.

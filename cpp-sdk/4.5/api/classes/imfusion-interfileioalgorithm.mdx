@@ -1,0 +1,66 @@
+---
+title: "ImFusion::InterfileIoAlgorithm"
+sidebarTitle: "InterfileIoAlgorithm"
+description: "IoAlgorithm for loading and saving images stored in Interfile format."
+---
+
+`#include <ImFusion/IO/InterfileIoAlgorithm.h>`
+
+## Overview
+
+[IoAlgorithm](/cpp-sdk/4.5/api/classes/imfusion-ioalgorithm) for loading and saving images stored in Interfile format.
+
+This algorithm only supports a subset of the complete Interfile specification. Currently supported:
+
+- Only 'Tomographic' type of data is supported
+- loading pixel data (except bit and ASCII datatypes)
+- loading of single 2D and 3D images
+- loading patient and study info
+- loading of spacing and rescaling
+
+## Public Member Functions
+
+- **InterfileIoAlgorithm** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*sis, IoMode [ioMode](/cpp-sdk/4.5/api/classes/imfusion-ioalgorithm))
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; [supportedFileExtensions](#supportedfileextensions) () const override — Return supported file extensions (for file based IO).
+- void [compute](#compute) () override — Execute the algorithm.
+- [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) [takeOutput](#takeoutput) () override — Return any new [Data](/cpp-sdk/4.5/api/classes/imfusion-data) that was created by the [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) during the last call to [compute()](#compute).
+
+## Static Public Member Functions
+
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=nullptr)
+
+## Member Function Documentation
+
+### supportedFileExtensions
+
+```cpp
+std::vector < std::string > ImFusion::InterfileIoAlgorithm::supportedFileExtensions () const
+```
+
+*override, virtual*
+
+Return supported file extensions (for file based IO).
+
+### compute
+
+```cpp
+void ImFusion::InterfileIoAlgorithm::compute ()
+```
+
+*override, virtual*
+
+Execute the algorithm.
+
+### takeOutput
+
+```cpp
+OwningDataList ImFusion::InterfileIoAlgorithm::takeOutput ()
+```
+
+*override, virtual*
+
+Return any new [Data](/cpp-sdk/4.5/api/classes/imfusion-data) that was created by the [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) during the last call to [compute()](#compute).
+
+The default implementation will return an empty list.
+
+**Note:** Since ownership of the data is transferred, you can call this method only once between calls to [compute()](#compute).

@@ -1,0 +1,133 @@
+---
+title: "ImFusion::Seg::StructuresViewAlgorithm"
+sidebarTitle: "StructuresViewAlgorithm"
+description: "ImFusion::Algorithm that wraps around a StructuresView and adds a couple of convenience functions."
+---
+
+`#include <ImFusion/Seg/StructuresViewAlgorithm.h>`
+
+## Overview
+
+ImFusion::Algorithm that wraps around a [StructuresView](/cpp-sdk/4.5/api/classes/imfusion-seg-structuresview) and adds a couple of convenience functions.
+
+This algorithm provides the following set of extra features over a [StructuresView](/cpp-sdk/4.5/api/classes/imfusion-seg-structuresview):
+
+- You can optionally set a [DataModel](/cpp-sdk/4.5/api/classes/imfusion-datamodel) to use as storage backend. In this case, the algorithm will subscribe to all changes of the [DataModel](/cpp-sdk/4.5/api/classes/imfusion-datamodel) and configure the underlying [StructuresView](/cpp-sdk/4.5/api/classes/imfusion-seg-structuresview) to always show all label maps (images with Modality::LABEL) that are present in the [DataModel](/cpp-sdk/4.5/api/classes/imfusion-datamodel).
+- When using a [DataModel](/cpp-sdk/4.5/api/classes/imfusion-datamodel) as storage backend, you can use the convenience functions such as [createStructure()](#createstructure)/deleteStructure(), that will change the underlying [DataModel](/cpp-sdk/4.5/api/classes/imfusion-datamodel) and create/delete label maps if needed. These functions have no effect if there is no [DataModel](/cpp-sdk/4.5/api/classes/imfusion-datamodel) assigned.
+
+**See also:** [StructuresView](/cpp-sdk/4.5/api/classes/imfusion-seg-structuresview), [StructuresViewAlgorithmController](/cpp-sdk/4.5/api/classes/imfusion-seg-structuresviewalgorithmcontroller)
+
+## Public Member Functions
+
+- **StructuresViewAlgorithm** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* &gt; &labelMaps) — Creates a [StructuresViewAlgorithm](/cpp-sdk/4.5/api/classes/imfusion-seg-structuresviewalgorithm) representing a static set of label maps.
+- **StructuresViewAlgorithm** ([DataModel](/cpp-sdk/4.5/api/classes/imfusion-datamodel) &dataModel) — Creates a [StructuresViewAlgorithm](/cpp-sdk/4.5/api/classes/imfusion-seg-structuresviewalgorithm) dynamically representing all label maps in the given [DataModel](/cpp-sdk/4.5/api/classes/imfusion-datamodel).
+- [StructuresView](/cpp-sdk/4.5/api/classes/imfusion-seg-structuresview) & **structuresView** () — Returns the underlying [StructuresView](/cpp-sdk/4.5/api/classes/imfusion-seg-structuresview).
+- const [StructuresView](/cpp-sdk/4.5/api/classes/imfusion-seg-structuresview) & **structuresView** () const
+- [DataModel](/cpp-sdk/4.5/api/classes/imfusion-datamodel) \* **dataModel** () const — Returns the optional pointer to a [DataModel](/cpp-sdk/4.5/api/classes/imfusion-datamodel) to use as storage backend.
+- void **setDataModel** ([DataModel](/cpp-sdk/4.5/api/classes/imfusion-datamodel) \*value) — Sets the optional pointer to a [DataModel](/cpp-sdk/4.5/api/classes/imfusion-datamodel) to use as storage backend.
+- void [detectLabels](#detectlabels) () — Calls [LabelDataComponent::detectLabels()](/cpp-sdk/4.5/api/classes/imfusion-labeldatacomponent) for every registered label map.
+- [Structure](/cpp-sdk/4.5/api/classes/imfusion-seg-structure) \* [createStructure](#createstructure) (const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &referenceImage, bool reuseExistingLabelMapIfPossible) — Creates a new [Structure](/cpp-sdk/4.5/api/classes/imfusion-seg-structure) for the given reference image.
+- void [deleteStructure](#deletestructure) ([Structure](/cpp-sdk/4.5/api/classes/imfusion-seg-structure) \*structure) — Deletes the given structure from the underlying storage backend.
+- const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* [referenceImageOf](#referenceimageof) (const [Structure](/cpp-sdk/4.5/api/classes/imfusion-seg-structure) &structure) const — Returns the reference image that is used for the given structure.
+- [StructureStatistics](/cpp-sdk/4.5/api/structs/imfusion-seg-structurestatistics) [computeStatistics](#computestatistics) (const [Structure](/cpp-sdk/4.5/api/classes/imfusion-seg-structure) &s) const — Computes statistics (voxel count, volume, bounding box statistics, connected components) for the given structure.
+- void [compute](#compute) () override — Execute the algorithm.
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+## Static Public Member Functions
+
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=0) — If data is compatible with algorithm return true. If a is not zero, create algorithm with input data.
+
+## Member Function Documentation
+
+### detectLabels
+
+```cpp
+void ImFusion::Seg::StructuresViewAlgorithm::detectLabels ()
+```
+
+Calls [LabelDataComponent::detectLabels()](/cpp-sdk/4.5/api/classes/imfusion-labeldatacomponent) for every registered label map.
+
+If a [DataModel](/cpp-sdk/4.5/api/classes/imfusion-datamodel) is set, it additionally checks whether any data sets of modality LABEL are in there, which are not yet registered (this can happen if the modality has changed after adding them to the [DataModel](/cpp-sdk/4.5/api/classes/imfusion-datamodel)).
+
+### createStructure
+
+```cpp
+Structure * ImFusion::Seg::StructuresViewAlgorithm::createStructure (const SharedImageSet & referenceImage, bool reuseExistingLabelMapIfPossible)
+```
+
+Creates a new [Structure](/cpp-sdk/4.5/api/classes/imfusion-seg-structure) for the given reference image.
+
+If reuseExistingLabelMapIfPossible is true, it will check whether there is already an existing label map for referenceImage and if there are still free label configurations available. If so, it will use that label map instead of creating a new one. Furthermore, this function will automatically create a [LinkPose](/cpp-sdk/4.5/api/classes/imfusion-linkpose) instance in the [DataModel](/cpp-sdk/4.5/api/classes/imfusion-datamodel) to keep the poses of label map and reference image in sync.
+
+**Note:** This function has no effect if there is no [DataModel](/cpp-sdk/4.5/api/classes/imfusion-datamodel) configured.
+
+### deleteStructure
+
+```cpp
+void ImFusion::Seg::StructuresViewAlgorithm::deleteStructure (Structure * structure)
+```
+
+Deletes the given structure from the underlying storage backend.
+
+All pixels of the label map that have the structure's label value are set to 0. If this was the last structure of the label map, the whole label map will be deleted (from the [DataModel](/cpp-sdk/4.5/api/classes/imfusion-datamodel)).
+
+**Note:** This function has no effect if there is no [DataModel](/cpp-sdk/4.5/api/classes/imfusion-datamodel) configured.
+
+### referenceImageOf
+
+```cpp
+const SharedImageSet * ImFusion::Seg::StructuresViewAlgorithm::referenceImageOf (const Structure & structure) const
+```
+
+Returns the reference image that is used for the given structure.
+
+Only considers structures that where created using [createStructure()](#createstructure).
+
+### computeStatistics
+
+```cpp
+StructureStatistics ImFusion::Seg::StructuresViewAlgorithm::computeStatistics (const Structure & s) const
+```
+
+Computes statistics (voxel count, volume, bounding box statistics, connected components) for the given structure.
+
+**Note:** if the label map is 2d, only surface area and pixel count have meaningful values
+
+### compute
+
+```cpp
+void ImFusion::Seg::StructuresViewAlgorithm::compute ()
+```
+
+*override, virtual*
+
+Execute the algorithm.
+
+### configure
+
+```cpp
+void ImFusion::Seg::StructuresViewAlgorithm::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### configuration
+
+```cpp
+void ImFusion::Seg::StructuresViewAlgorithm::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality

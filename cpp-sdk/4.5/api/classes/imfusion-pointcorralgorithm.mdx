@@ -1,0 +1,203 @@
+---
+title: "ImFusion::PointCorrAlgorithm"
+sidebarTitle: "PointCorrAlgorithm"
+description: "Algorithm for defining point correspondences on a pair of images."
+---
+
+`#include <ImFusion/GL/PointCorrAlgorithm.h>`
+
+## Overview
+
+[Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) for defining point correspondences on a pair of images.
+
+[PointCorrAlgorithm](/cpp-sdk/4.5/api/classes/imfusion-pointcorralgorithm) wraps around the basic [PointCorr](/cpp-sdk/4.5/api/classes/imfusion-pointcorr) class and enriches it with automatic conversion between different coordinate systems, and handling of image transformations and deformations. Essentially, [PointCorrAlgorithm](/cpp-sdk/4.5/api/classes/imfusion-pointcorralgorithm) distinguished between two different coordinate systems:
+
+- [Image](/cpp-sdk/4.5/api/classes/imfusion-image) coordinate system: The point correspondences are stored in the image's local image coordinate system. If the image's transformation matrix or deformation changes, the point correspondences are automatically updated accordingly.
+- World coordinate system: The point correspondences are stored in the global world coordinate system before deformations(!), so are linked to deformations but not transformations. You can query/define the coordinate system to use for each of the two images by `world()/setWorld`(). The currently set coordinate system for an image is also referred to as "storage coordinate system". If the world-image mapping of this image changes, the stored points will be kept constant in the storage coord system.
+
+The internal [PointCorr](/cpp-sdk/4.5/api/classes/imfusion-pointcorr) class, which is used for registration purposes, will periodically be updated with point correspondences in world space.
+
+The result of this algorithm is applied to the first input image.
+
+## Classes
+
+- struct [CorrItem](/cpp-sdk/4.5/api/structs/imfusion-pointcorralgorithm-corritem) — Structure encapsulating a single point correspondence item defined by a pair of points.
+
+## Public Member Functions
+
+- **PointCorrAlgorithm** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*img1, [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*img2, bool moveFirstImage=true) — Creates the algorithm instance with two images.
+- void **setMoveFirstImage** (bool v) — Denote whether the first input image is moved/deformed. Otherwise the second one is.
+- void [setWorld](#setworld) (bool flag, int idx=0) — Denote whether points shall be in world or in image coordinates.
+- double **evaluate** () — Evaluate average error considering whether points are in image or world coordinates.
+- const [PointCorr](/cpp-sdk/4.5/api/classes/imfusion-pointcorr) & **corrInternal** () const — Read access to the internal point correspondence container. Its points may be outdated.
+- [PointCorr](/cpp-sdk/4.5/api/classes/imfusion-pointcorr) & [corrInternal](#corrinternal) () — Write access to the internal point correspondence container, needed e.g.
+- [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* **img** (int idx=0) — Return one of the used images.
+- bool **world** (int idx=0) const — Return if the points for an image are in world coordinates.
+- bool **findCorrespondences** () const — Return the flag for finding correspondences.
+- void **setFindCorrespondences** (bool val) — Set the flag for finding correspondences (automatic point pairing).
+- void **setRegistrationMode** (int mode) — Set registration mode: 0 = rigid (default), 1 = affine, 2 = TPS.
+- int **registrationMode** () const
+- void **setExportAsPointClouds** (bool flag) — Specify whether [compute()](#compute) shall export point clouds rather than execute the registration.
+- bool **exportAsPointClouds** () const — Return the export to point clouds flag.
+- void [add](#add) (const vec4 &p1, const vec4 &p2) — Adds the two given points to the set of point correspondences.
+- void [insert](#insert) (int index, const vec4 &p1, const vec4 &p2) — Adds the two given points to the set of point correspondences at the given index.
+- void [set](#set) (int index, const vec4 &p1, const vec4 &p2) — Sets the point correspondences at the given index to the two given points.
+- void **remove** (int index) — Removes the point correspondence at the given index.
+- void **clear** () — Removes all point correspondences.
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [CorrItem](/cpp-sdk/4.5/api/structs/imfusion-pointcorralgorithm-corritem) &gt; & **corrs** () const — Returns a const version of the list of point correspondences.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [CorrItem](/cpp-sdk/4.5/api/structs/imfusion-pointcorralgorithm-corritem) &gt; & [writableCorrs](#writablecorrs) () — Returns a writable version of the list of point correspondences.
+- int **size** () const — Returns the number of point correspondences.
+- void [updatePoints](#updatepoints) () — Updates the internal [PointCorr](/cpp-sdk/4.5/api/classes/imfusion-pointcorr) instance with the current world positions of all point correspondences.
+- vec4 **worldToStorage** (int index, const vec3 &p) — Converts given point from world space to storage space of the image with the given index.
+- vec4 **storageToWorld** (int index, const vec4 &p) — Converts given point from storage space of the image with the given index to world space.
+- bool **loadTagFile** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &filename, bool swap) — Load point correspondences from MINC/TAG format.
+
+## Public Attributes
+
+- Signal **signalErrorChanged** — Signal emitted every time the point correspondences error has changed (e.g. changed points, transformation, ...).
+- Signal **signalPointsChanged**
+
+## Methods implementing the Algorithm interface
+
+- void [compute](#compute) () override — Execute the algorithm.
+- [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) [takeOutput](#takeoutput) () override — Return any new [Data](/cpp-sdk/4.5/api/classes/imfusion-data) that was created by the [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) during the last call to [compute()](#compute).
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=0)
+
+## Methods implementing the Configurable interface
+
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+## Listeners implementation
+
+- void **deformationChanged** (const [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*img)
+- void **onDeformationEvent** (const [DeformationEvent](/cpp-sdk/4.5/api/classes/imfusion-deformationevent) &event)
+- void **transformationChanged** (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data)
+
+## Member Function Documentation
+
+### setWorld
+
+```cpp
+void ImFusion::PointCorrAlgorithm::setWorld (bool flag, int idx = 0)
+```
+
+Denote whether points shall be in world or in image coordinates.
+
+If this method is called when points are loaded already, they are converted accordingly.
+
+### corrInternal
+
+```cpp
+PointCorr & ImFusion::PointCorrAlgorithm::corrInternal ()
+```
+
+*inline*
+
+Write access to the internal point correspondence container, needed e.g.
+
+for its [ErrorFunction](/cpp-sdk/4.5/api/classes/imfusion-errorfunction) interface
+
+**Note:** Please be aware, that any changes are of temporary nature only since [PointCorrAlgorithm](/cpp-sdk/4.5/api/classes/imfusion-pointcorralgorithm) may overwrite its contents at any time.
+
+### add
+
+```cpp
+void ImFusion::PointCorrAlgorithm::add (const vec4 & p1, const vec4 & p2)
+```
+
+Adds the two given points to the set of point correspondences.
+
+Both points have to be in the storage coordinate system of the corresponding image.
+
+### insert
+
+```cpp
+void ImFusion::PointCorrAlgorithm::insert (int index, const vec4 & p1, const vec4 & p2)
+```
+
+Adds the two given points to the set of point correspondences at the given index.
+
+Both points have to be in the storage coordinate system of the corresponding image.
+
+### set
+
+```cpp
+void ImFusion::PointCorrAlgorithm::set (int index, const vec4 & p1, const vec4 & p2)
+```
+
+Sets the point correspondences at the given index to the two given points.
+
+Both points have to be in the storage coordinate system of the corresponding image.
+
+### writableCorrs
+
+```cpp
+std::vector < CorrItem > & ImFusion::PointCorrAlgorithm::writableCorrs ()
+```
+
+Returns a writable version of the list of point correspondences.
+
+**Note:** Calling this method sets the dirty for the internal [PointCorr](/cpp-sdk/4.5/api/classes/imfusion-pointcorr) instance.
+
+### updatePoints
+
+```cpp
+void ImFusion::PointCorrAlgorithm::updatePoints ()
+```
+
+Updates the internal [PointCorr](/cpp-sdk/4.5/api/classes/imfusion-pointcorr) instance with the current world positions of all point correspondences.
+
+If a point correspondence item has a [GlPoint](/cpp-sdk/4.5/api/classes/imfusion-glpoint) annotation assigned, its coordinates are updated as well.
+
+### compute
+
+```cpp
+void ImFusion::PointCorrAlgorithm::compute ()
+```
+
+*override, virtual*
+
+Execute the algorithm.
+
+### takeOutput
+
+```cpp
+OwningDataList ImFusion::PointCorrAlgorithm::takeOutput ()
+```
+
+*override, virtual*
+
+Return any new [Data](/cpp-sdk/4.5/api/classes/imfusion-data) that was created by the [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) during the last call to [compute()](#compute).
+
+The default implementation will return an empty list.
+
+**Note:** Since ownership of the data is transferred, you can call this method only once between calls to [compute()](#compute).
+
+### configure
+
+```cpp
+void ImFusion::PointCorrAlgorithm::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### configuration
+
+```cpp
+void ImFusion::PointCorrAlgorithm::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality

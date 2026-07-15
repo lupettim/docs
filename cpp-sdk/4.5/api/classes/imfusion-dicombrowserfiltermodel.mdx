@@ -1,0 +1,163 @@
+---
+title: "ImFusion::DicomBrowserFilterModel"
+sidebarTitle: "DicomBrowserFilterModel"
+description: "A QSortFilterProxyModel specifically for a DicomBrowserModel ."
+---
+
+`#include <ImFusion/Dicom/GUI/DicomBrowserFilterModel.h>`
+
+## Overview
+
+A QSortFilterProxyModel specifically for a [DicomBrowserModel](/cpp-sdk/4.5/api/classes/imfusion-dicombrowsermodel).
+
+Check [https://doc.qt.io/qt-5/model-view-programming.html](https://doc.qt.io/qt-5/model-view-programming.html) for details about Qt's Model/View architecture.
+
+**Warning:** Do not use the QRegularExpression based filter options with Qt 5. Those are only supported starting from Qt 6!
+
+Example:
+
+```cpp
+auto model = new DicomBrowserModel();
+model->scanDirectory(...); // can also be scanned later
+
+auto filter = new DicomBrowserFilterModel();
+filter->setSourceModel(model);
+filter->setSortRole(DicomBrowserModel::SortRole); // Optional but sorting by SortRole is usually better than the default DisplayRole
+
+auto view = new QTreeView();
+view->setModel(filter);
+```
+ fragment
+
+## Public Slots
+
+- void [setOriginalOnly](#setoriginalonly) (bool flag) — If enabled only images with an [Image](/cpp-sdk/4.5/api/classes/imfusion-image) Type (0008, 0008) of "ORIGINAL" will be part of the model.
+- void [setModalitiesFilter](#setmodalitiesfilter) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; QString &gt; &modalities) — Only show series that have a Modality (0008,0060) matching a value in the given list.
+- void [setDateFilter](#setdatefilter) (const [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [std::tuple](http://en.cppreference.com/w/cpp/utility/tuple.html)&lt; QDate, QDate &gt; &gt; &dateFilter) — [Filters](/cpp-sdk/4.5/api/namespaces/imfusion-filters) out series which date is outside the given date interval or series that don't specify an explicit date.
+- void **setImagesVisible** (bool hide) — Sets whether the sub-entries for images below series should be visible or not (visible by default).
+
+## Signals
+
+- void **modalitiesFilterChanged** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; QString &gt; &modalities)
+- void **dateFilterChanged** (const [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [std::tuple](http://en.cppreference.com/w/cpp/utility/tuple.html)&lt; QDate, QDate &gt; &gt; &dateFilter)
+
+## Public Member Functions
+
+- **DicomBrowserFilterModel** (QObject \*parent=nullptr)
+- bool [filterAcceptsPatient](#filteracceptspatient) (const DicomBrowserModel::Patient &patient, bool checkStudies=true) const — Accepts the patient when the name or comment matches the current filterRegExp.
+- bool [filterAcceptsStudy](#filteracceptsstudy) (const DicomBrowserModel::Study &study, bool checkSeries=true) const — Accepts the study when the description or id matches the current filterRegExp.
+- bool [filterAcceptsSeries](#filteracceptsseries) (const DicomBrowserModel::Series &series) const — Accepts the series when the description matches the current filterRegExp.
+- bool **filterAcceptsRow** (int sourceRow, const QModelIndex &sourceParent) const override — Calls filterAcceptsPatient, filterAcceptsStudy or filterAcceptsSeries depending on the index.
+- bool **lessThan** (const QModelIndex &left, const QModelIndex &right) const override
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; QString &gt; & **modalitiesFilter** () const — Returns the current filtered modalities.
+- const [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [std::tuple](http://en.cppreference.com/w/cpp/utility/tuple.html)&lt; QDate, QDate &gt; &gt; & **studyDateFilter** () const — Returns the current filter for the study date.
+- bool **imagesVisible** () const — Returns whether images are visible.
+- void **setFilterInvalidSeries** (bool enable) — If enabled, filters out invalid [Dicom](/cpp-sdk/4.5/api/namespaces/imfusion-dicom) series, i.e. series containing images with the following invalid tags: bitsAllocated, width, height, channels.
+- bool **setData** (const QModelIndex &index, const QVariant &value, int role) override — Overrides base class to make sure the check/uncheck behavior is consistent with the filtering.
+- QList&lt; [Dicom::Series](/cpp-sdk/4.5/api/structs/imfusion-dicom-series) \* &gt; **selectedSeries** () const — Returns all currently checked [Series](/cpp-sdk/4.5/api/structs/imfusion-dicom-series) that are accepted by the filter.
+
+## Static Public Member Functions
+
+- static [std::tuple](http://en.cppreference.com/w/cpp/utility/tuple.html)&lt; QDate, QDate &gt; [getFilterDateRange](#getfilterdaterange) (const [Dicom::Series](/cpp-sdk/4.5/api/structs/imfusion-dicom-series) &series) — Returns the date range of the series that is used for filtering.
+
+## Properties
+
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; QString &gt; **modalitiesFilter**
+
+## Member Function Documentation
+
+### filterAcceptsPatient
+
+```cpp
+bool ImFusion::DicomBrowserFilterModel::filterAcceptsPatient (const DicomBrowserModel::Patient & patient, bool checkStudies = true) const
+```
+
+Accepts the patient when the name or comment matches the current filterRegExp.
+
+When checkStudies is true, the patient is accepted when filterAcceptsStudy returns true for any study of this patient.
+
+### filterAcceptsStudy
+
+```cpp
+bool ImFusion::DicomBrowserFilterModel::filterAcceptsStudy (const DicomBrowserModel::Study & study, bool checkSeries = true) const
+```
+
+Accepts the study when the description or id matches the current filterRegExp.
+
+When checkSeries is true, the patient is accepted when filterAcceptsSeries returns true for any series of this study. A study is also accepted if its parent patient is accepted by filterAcceptsPatient.
+
+### filterAcceptsSeries
+
+```cpp
+bool ImFusion::DicomBrowserFilterModel::filterAcceptsSeries (const DicomBrowserModel::Series & series) const
+```
+
+Accepts the series when the description matches the current filterRegExp.
+
+A series is also accepted if its parent study is accepted by filterAcceptsStudy.
+
+### getFilterDateRange
+
+```cpp
+std::tuple < QDate, QDate > ImFusion::DicomBrowserFilterModel::getFilterDateRange (const Dicom::Series & series)
+```
+
+*static*
+
+Returns the date range of the series that is used for filtering.
+
+See setDateFilter for details.
+
+### setOriginalOnly
+
+```cpp
+void ImFusion::DicomBrowserFilterModel::setOriginalOnly (bool flag)
+```
+
+*slot*
+
+If enabled only images with an [Image](/cpp-sdk/4.5/api/classes/imfusion-image) Type (0008, 0008) of "ORIGINAL" will be part of the model.
+
+Disabled by default.
+
+### setModalitiesFilter
+
+```cpp
+void ImFusion::DicomBrowserFilterModel::setModalitiesFilter (const std::vector < QString > & modalities)
+```
+
+*slot*
+
+Only show series that have a Modality (0008,0060) matching a value in the given list.
+
+Passing an empty list will not filter any series (default).
+
+### setDateFilter
+
+```cpp
+void ImFusion::DicomBrowserFilterModel::setDateFilter (const std::optional < std::tuple < QDate, QDate > > & dateFilter)
+```
+
+*slot*
+
+[Filters](/cpp-sdk/4.5/api/namespaces/imfusion-filters) out series which date is outside the given date interval or series that don't specify an explicit date.
+
+The date of the series is determined by the following tags:
+
+1. [Series](/cpp-sdk/4.5/api/structs/imfusion-dicom-series) Date (0008,0031)
+2. Acquisition Date (0008,0032)
+3. [Study](/cpp-sdk/4.5/api/structs/imfusion-dicom-study) Date (0008,0020)
+
+The first date in this order that is valid will be used, the other are ignored. The Acquisition Date is only used when all images of the series have a valid Acquisition Date. When the Acquisition Date is used, the series will be filtered out when the range of Acquisition Dates is not completely inside the filter range.
+
+If set to std::nullopt, no date filtering is performed (default) Examples:
+
+```cpp
+DicomBrowserFilterModel filter;
+filter.setSourceModel(...);
+// Filter between 2000 and 2010:
+filter.setDateFilter(std::make_tuple(QDate(2000, 1, 1), QDate(2010, 12, 31)));
+// Remove filter again:
+filter.setDateFilter(std::nullopt);
+```
+ fragment

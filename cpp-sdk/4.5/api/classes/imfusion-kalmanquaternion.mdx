@@ -1,0 +1,22 @@
+---
+title: "ImFusion::KalmanQuaternion"
+sidebarTitle: "KalmanQuaternion"
+description: "Kalman filter for quaternions."
+---
+
+`#include <ImFusion/Base/KalmanQuaternion.h>`
+
+## Overview
+
+Kalman filter for quaternions.
+
+## Public Member Functions
+
+- void **init** (const Eigen::Vector4d &measurement, double sigma) — Inits Kalman filter.
+- Eigen::Matrix&lt; double, 7, 1 &gt; **getState** () const — Returns current state of Kalman filter.
+- double **getProcessSigma** () const — Returns process noise sigma.
+- double **getMeasurementSigma** () const — Returns measurement noise sigma.
+- void **setProcessSigma** (double sigmaProcess) — Sets process noise sigma.
+- void **setMeasurementSigma** (double sigmaMeasurement) — Sets measurement noise sigma.
+- Eigen::Vector4d **update** (const Eigen::Vector4d &measurement, double dt) — Updates Kalman filter using new measurement and returns corrected measurement.
+- Eigen::Vector4d **update** (double dt) — Updates Kalman filter using prediction model only.

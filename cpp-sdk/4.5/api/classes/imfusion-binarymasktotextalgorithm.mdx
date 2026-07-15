@@ -1,0 +1,72 @@
+---
+title: "ImFusion::BinaryMaskToTextAlgorithm"
+sidebarTitle: "BinaryMaskToTextAlgorithm"
+description: "Algorithm for loading and exporting a binary mask from a text file."
+---
+
+`#include <ImFusion/IO/BinaryMaskToTextAlgorithm.h>`
+
+## Overview
+
+[Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) for loading and exporting a binary mask from a text file.
+
+## Public Member Functions
+
+- **BinaryMaskToTextAlgorithm** ([SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) &imgIn, [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*mask=nullptr)
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Set one or multiple properties.
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Retrieve the properties of this object.
+- void [compute](#compute) () override — Compute the result.
+- [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) [takeOutput](#takeoutput) () override — If the algorithm creates new image data, it has to be transferred here.
+
+## Static Public Member Functions
+
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a) — If data is compatible with algorithm return true. If a is not zero, create algorithm with input data.
+
+## Protected Attributes
+
+- [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \* **m_img**
+- [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \* **m_mask**
+- bool **m_ownMask**
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **m_filename**
+
+## Member Function Documentation
+
+### configure
+
+```cpp
+void ImFusion::BinaryMaskToTextAlgorithm::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Set one or multiple properties.
+
+### configuration
+
+```cpp
+void ImFusion::BinaryMaskToTextAlgorithm::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Retrieve the properties of this object.
+
+### compute
+
+```cpp
+void ImFusion::BinaryMaskToTextAlgorithm::compute ()
+```
+
+*override, virtual*
+
+Compute the result.
+
+### takeOutput
+
+```cpp
+OwningDataList ImFusion::BinaryMaskToTextAlgorithm::takeOutput ()
+```
+
+*override, virtual*
+
+If the algorithm creates new image data, it has to be transferred here.

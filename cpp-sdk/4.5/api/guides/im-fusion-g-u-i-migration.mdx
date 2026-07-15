@@ -1,0 +1,72 @@
+---
+title: "ImFusionGUI Migration Guide"
+description: "With SDK version 4.0 we introduced the new ImFusionGUI component to provide a platform-independent abstraction layer for interactive GUI applications."
+---
+
+With SDK version 4.0 we introduced the new ImFusionGUI component to provide a platform-independent abstraction layer for interactive GUI applications.
+
+Previously, our visualization stack relied on Qt for input event handling and embedding into a OpenGL-enabled display surface.
+
+ImFusionGUI was designed to mostly follow the established display and view architecture and provide generic types for input events that can be used with all major GUI platform toolkits. However, in several instances we decided to improve the architecture to make it simpler and easier to maintain so that there is not always a 1-1 mapping between the old and the new API. Please follow this document to get detailed information on what has changed.
+
+The old architecture was using QEvent for representing user input events and handler functions usually exhibit a signature in the form bool sceneEvent(QEvent\* event). The new architecture uses the [GUI::InputEvent](/cpp-sdk/4.5/api/classes/imfusion-gui-inputevent) class instead and the canonical form for a handler function is [GUI::EventResult](/cpp-sdk/4.5/api/structs/imfusion-gui-eventresult) handleInputEvent(const InputEvent& event).
+
+An important change is that InputEvents are now immutable. Furthermore, event handlers shall never change any global GUI state (e.g. changing the mouse cursor, spawning a context menu). Instead, all feedback wrt. to the GUI is to be indicate through the [GUI::EventResult](/cpp-sdk/4.5/api/structs/imfusion-gui-eventresult) struct that they return. Since InputEvents are often propagated to a series of cascading handlers until propagation shall stop the EventResult offers a [combine()](/cpp-sdk/4.5/api/structs/imfusion-gui-eventresult) function to conveniently merge their payload.
+
+### DataDisplayHandler
+
+The [DataDisplayHandler](/cpp-sdk/4.5/api/classes/imfusion-datadisplayhandler) interface exhibits a breaking change because the base interface type for views and displays has changed: The signature of all pure virtual member functions now expects a [GUI::View](/cpp-sdk/4.5/api/classes/imfusion-gui-view) instad of an [InteractiveView](/cpp-sdk/4.5/api/classes/imfusion-interactiveview) and a [GUI::DisplayBase](/cpp-sdk/4.5/api/classes/imfusion-gui-displaybase) instead of a [DisplayWidgetMulti](/cpp-sdk/4.5/api/classes/imfusion-displaywidgetmulti) as parameters.
+
+**Note:** Concrete implementations of DataDisplayHandlers usually conduct RTTI (e.g. dynamic_cast) to determine a view type and implement dispatch logic. Make sure to update those checks if you need to support the new [GUI::SliceView](/cpp-sdk/4.5/api/classes/imfusion-gui-sliceview) and [GUI::VolumeView](/cpp-sdk/4.5/api/classes/imfusion-gui-volumeview) classes.
+
+ It might make sense to conduct RTTI on the [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) inside instead of on the [GUI::View](/cpp-sdk/4.5/api/classes/imfusion-gui-view) to simplify the code/logic: for instance you have a single check for a [GlSliceView](/cpp-sdk/4.5/api/classes/imfusion-glsliceview) instead of two separate checks for [ImageView2D](/cpp-sdk/4.5/api/classes/imfusion-imageview2d) and [GUI::SliceView](/cpp-sdk/4.5/api/classes/imfusion-gui-sliceview).
+
+### DisplayWidget[Multi]
+
+Significant architectural changes were made to the successors of [DisplayWidget](/cpp-sdk/4.5/api/classes/imfusion-displaywidget) and [DisplayWidgetMulti](/cpp-sdk/4.5/api/classes/imfusion-displaywidgetmulti). Not only do they no longer depend on any Qt classes but their extensive set of functionality and responsibilities was split into multiple dedicated classes for a cleaner separation of concerns and improved reusability:
+
+- The pure abstract [GUI::DisplayBase](/cpp-sdk/4.5/api/classes/imfusion-gui-displaybase) interface serves as minimal common denominator and intended to be passed to consumers that only need to query the current viewport, views, layout, or to request a render update.
+- The [GUI::Display](/cpp-sdk/4.5/api/classes/imfusion-gui-display) class strives to be a minimal working implementation of this interface where you can actually add and render views, and forward input events to them. However, all extra functionality needs to be implemented manually. It is conceptually similar to the original [DisplayWidget](/cpp-sdk/4.5/api/classes/imfusion-displaywidget), however without any dependency on Qt.
+- The [GUI::RadiologyDisplay](/cpp-sdk/4.5/api/classes/imfusion-gui-radiologydisplay) class provides a similar functionality as the original [DisplayWidgetMulti](/cpp-sdk/4.5/api/classes/imfusion-displaywidgetmulti), however instead of all this extra functionality being merged into a single class it merely composes the following utility classes:
+  - The [GUI::DisplayAutoLayouter](/cpp-sdk/4.5/api/classes/imfusion-gui-displayautolayouter) manages a library of layouting functions to generate suitable DisplayLayouts any number of currently visible views. Also, the functionality for temporarily hiding showing views and rearranging their order is located here.
+  - The [GUI::RadiologyViewGroup](/cpp-sdk/4.5/api/classes/imfusion-gui-radiologyviewgroup) is technically the counterpart of the old [ViewGroup](/cpp-sdk/4.5/api/classes/imfusion-viewgroup) class to conveniently create and maintain a set of image views typically found in radiology workstation. The RadiologyDisplay comes with one RadiologyViewGroup preinstalled so that these standard views are always available.
+  - The [GUI::RadiologyViewOverlays](/cpp-sdk/4.5/api/classes/imfusion-gui-radiologyviewoverlays) class enables you to manage the existence and behavior of ViewOverlays that are common in radiology workstations.
+- The [GUI::QtDisplayWidget](/cpp-sdk/4.5/api/classes/imfusion-gui-qtdisplaywidget) and [GUI::QtDisplayWindow](/cpp-sdk/4.5/api/classes/imfusion-gui-qtdisplaywindow) classes provide wrappers to embed any DisplayBase into a Qt-based application, either using a QOpenGLWidget or a QWindow as OpenGL backend.
+
+### InteractiveViews
+
+The new equivalent of the old [InteractiveView](/cpp-sdk/4.5/api/classes/imfusion-interactiveview) is the [GUI::View](/cpp-sdk/4.5/api/classes/imfusion-gui-view) base class. Except for some general cleanup and renaming of some of the member functions the architecture and design has remained the same.
+
+- [GUI::SliceView](/cpp-sdk/4.5/api/classes/imfusion-gui-sliceview) is the replacement for [ImageView2D](/cpp-sdk/4.5/api/classes/imfusion-imageview2d).
+- [GUI::VolumeView](/cpp-sdk/4.5/api/classes/imfusion-gui-volumeview) is the replacement for [ImageView3D](/cpp-sdk/4.5/api/classes/imfusion-imageview3d).
+- There are no replacements yet for [CurvedView](/cpp-sdk/4.5/api/classes/imfusion-curvedview) or [PlotView](/cpp-sdk/4.5/api/classes/imfusion-plotview).
+
+### InteractiveOverlays
+
+Use [GUI::ViewOverlay](/cpp-sdk/4.5/api/classes/imfusion-gui-viewoverlay) as base class for view overlays. The general architecture is still the same except for:
+
+- The [GUI::ViewOverlay::Anchor](/cpp-sdk/4.5/api/classes/imfusion-gui-viewoverlay) is no longer a property of the ViewOverlay but instead maintained by the parent view.
+- The [OverlayInteraction](/cpp-sdk/4.5/api/classes/imfusion-overlayinteraction) interface was not migrated to the new API since it did not serve any benefit because there was always a 1-1 mapping between overlay and overlay interaction instances. Input event handling is now to be implemented directly by overriding the virtual virtual handleInputEvent() member function.
+
+Almost all InteractiveOverlays have been migrated to the new architecture. The class name remained the same except for dropping the Interactive prefix and being moved to the ImFusion::GUI namespace instead. For some overlays the original InteractiveOverlay variant was kept as a temporary deprecation layer.
+
+### InteractiveObjects
+
+Use [GUI::ViewObject](/cpp-sdk/4.5/api/classes/imfusion-gui-viewobject) as base class for interactive scene objects to be rendered inside a view. The general architecture is mostly the same except for:
+
+- The [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) wrapped inside the ViewObject must not be null. If you need to migrate old code that was using an [InteractiveObject](/cpp-sdk/4.5/api/classes/imfusion-interactiveobject) without a [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) but only a [Manipulator](/cpp-sdk/4.5/api/classes/imfusion-manipulator) convert it to a [GUI::View::EventHandler](/cpp-sdk/4.5/api/classes/imfusion-gui-view-eventhandler) instead as this is the more idiomatic design.
+- The [GUI::ViewObject](/cpp-sdk/4.5/api/classes/imfusion-gui-viewobject) base interface does not hold an equivalent of an exchangeable [Manipulator](/cpp-sdk/4.5/api/classes/imfusion-manipulator) but has only a virtual handleInputEvent() member function to be overridden. Use the [GUI::TypedViewObject](/cpp-sdk/4.5/api/classes/imfusion-gui-typedviewobject) instead if you need better composability and want to reuse a single [GUI::ViewObject::EventHandler](/cpp-sdk/4.5/api/classes/imfusion-gui-viewobject-eventhandler) type for multiple view objects.
+
+The ImFusion::GUI component now uses consistently OpenGL coordinates (the same coordinate system as the underlying GlViews etc.), which means that the origin is in the lower-left corner of the viewport. This applies to all interfaces such as [GUI::DisplayBase](/cpp-sdk/4.5/api/classes/imfusion-gui-displaybase), [GUI::View](/cpp-sdk/4.5/api/classes/imfusion-gui-view), [GUI::ViewOverlay](/cpp-sdk/4.5/api/classes/imfusion-gui-viewoverlay), and [GUI::InputEvent](/cpp-sdk/4.5/api/classes/imfusion-gui-inputevent).
+
+Previously, [DisplayWidget](/cpp-sdk/4.5/api/classes/imfusion-displaywidget) and [InteractiveView](/cpp-sdk/4.5/api/classes/imfusion-interactiveview) were using Qt coordinate system where the origin is in the upper-left corner requiring a flip along the Y axis whenever one needed to convert to and from the coorindate system of the underlying renderers.
+
+The new ImFusionGUI component was designed carefully to be interchangeable with the old framework to allow for a fluent transition during migration. This means that except for very few cases you can use classes inheriting from the new interfaces inside an old [InteractiveView](/cpp-sdk/4.5/api/classes/imfusion-interactiveview), as well as use classes still based on the old API inside the new API.
+
+### Adapters
+
+We designed a special compatibility layer of "adapters" for use cases where a component outside the GUI framework shall be able to work with both the old DisplayWidgetMulti-based framework and with the new [GUI::RadiologyDisplay](/cpp-sdk/4.5/api/classes/imfusion-gui-radiologydisplay)-based framework (e.g. [Controllers](/cpp-sdk/4.5/api/classes/imfusion-controller)). These adapters mimic the interface of the old framework and forward the calls to the corresponding instance of either the old or the new framework that they wrap. This enables you to implement a transition period where your existing code supports both frameworks at the same time.
+
+For instance, existing code that expects a DisplayWidgetMulti-style API can use the [DisplayWidgetMultiAdapter](/cpp-sdk/4.5/api/classes/imfusion-displaywidgetmultiadapter) to transparently forward calls to either an actual [DisplayWidgetMulti](/cpp-sdk/4.5/api/classes/imfusion-displaywidgetmulti) (in which case the calls are simply forwarded) or a [GUI::RadiologyDisplay](/cpp-sdk/4.5/api/classes/imfusion-gui-radiologydisplay) (in which case the corresponding new API is used). There are also the [InteractiveViewAdapter](/cpp-sdk/4.5/api/classes/imfusion-interactiveviewadapter), [ImageView2DAdapter](/cpp-sdk/4.5/api/classes/imfusion-imageview2dadapter), [ImageView3DAdapter](/cpp-sdk/4.5/api/classes/imfusion-imageview3dadapter), and [ViewGroupAdapter](/cpp-sdk/4.5/api/classes/imfusion-viewgroupadapter) classes that implement the same behavior for their corresponding classes.
+
+**Warning:** To mimic existing use cases these adapter classes have nullable/pointer semantics and can be 'null'. If they are null conversion to bool will yield false, comparison to nullptr will be true, and you must not call any of its other member functions.

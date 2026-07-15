@@ -1,0 +1,31 @@
+---
+title: "ImFusion::GUI::View::EventHandler"
+sidebarTitle: "EventHandler"
+description: "Interface to be used as base class for event handlers of Views."
+---
+
+`#include <ImFusion/GUI/View.h>`
+
+## Overview
+
+Interface to be used as base class for event handlers of Views.
+
+You can register any number of event handlers with a view, see [View::addEventHandler()](/cpp-sdk/4.5/api/classes/imfusion-gui-view).
+
+## Public Member Functions
+
+- virtual [EventResult](/cpp-sdk/4.5/api/structs/imfusion-gui-eventresult) [handleInputEvent](#handleinputevent) (const [InputEvent](/cpp-sdk/4.5/api/classes/imfusion-gui-inputevent) &event)=0 — This function is called by sources of input events in order to dispatch them to the handlers.
+
+## Member Function Documentation
+
+### handleInputEvent
+
+```cpp
+virtual EventResult ImFusion::GUI::View::EventHandler::handleInputEvent (const InputEvent & event)
+```
+
+*pure virtual*
+
+This function is called by sources of input events in order to dispatch them to the handlers.
+
+In case there are more than one InputEventHandlers dispatchers are intended call this function consecutively until the first handler indicates to stop by returning a result where [EventResult::stopPropagation()](/cpp-sdk/4.5/api/structs/imfusion-gui-eventresult) is true.

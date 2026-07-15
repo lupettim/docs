@@ -1,0 +1,70 @@
+---
+title: "ImFusion::MetaImage"
+sidebarTitle: "MetaImage"
+description: "Support for loading and saving MetaImage files."
+---
+
+## Overview
+
+Support for loading and saving [MetaImage](/cpp-sdk/4.5/api/namespaces/imfusion-metaimage) files.
+
+[MetaImage](/cpp-sdk/4.5/api/namespaces/imfusion-metaimage) files are either split into header (.mhd) and data (.raw) files, or stored in a single (.mha) file containing the combined header information and image data.
+
+## Classes
+
+- struct [SaveOptions](/cpp-sdk/4.5/api/structs/imfusion-metaimage-saveoptions) — Most properties of a [MetaImage](/cpp-sdk/4.5/api/namespaces/imfusion-metaimage) header can be deduced from a [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset), the ones in [SaveOptions](/cpp-sdk/4.5/api/structs/imfusion-metaimage-saveoptions) can not.
+- class [MetaImageHeader](/cpp-sdk/4.5/api/classes/imfusion-metaimage-metaimageheader)
+
+## Functions
+
+- bool [save](#save) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &headerFileName, const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &img, [SaveOptions](/cpp-sdk/4.5/api/structs/imfusion-metaimage-saveoptions) opts=&#123;&#125;) — Save a [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) in [MetaImage](/cpp-sdk/4.5/api/namespaces/imfusion-metaimage) format.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &gt; [load](#load) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &headerFileName, [MetaImageHeader](/cpp-sdk/4.5/api/classes/imfusion-metaimage-metaimageheader) \*outHeader=nullptr, bool prepare=false, bool strictSyntax=false, bool ignoreHalfPixelOffset=false, [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*outContainer=nullptr, bool \*outSuccess=nullptr, [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) \*prog=nullptr) — Load a [MetaImage](/cpp-sdk/4.5/api/namespaces/imfusion-metaimage) file into a [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset).
+- bool **save** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &headerFileName, const [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) &img, [SaveOptions](/cpp-sdk/4.5/api/structs/imfusion-metaimage-saveoptions) opts=&#123;&#125;) — Convenience functions:
+- bool **save** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &headerFileName, const [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) &img, [SaveOptions](/cpp-sdk/4.5/api/structs/imfusion-metaimage-saveoptions) opts=&#123;&#125;)
+- [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) &gt; [loadSharedImage](#loadsharedimage) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &headerFileName, [MetaImageHeader](/cpp-sdk/4.5/api/classes/imfusion-metaimage-metaimageheader) \*outHeader=nullptr, bool prepare=false, bool strictSyntax=false, bool ignoreHalfPixelOffset=false, bool \*outSuccess=nullptr)
+
+## Variables
+
+- const int **currentImFusionMetaImageVersion** = 1 — Version of this loader.
+
+## Function Documentation
+
+### save
+
+```cpp
+bool ImFusion::MetaImage::save (const std::string & headerFileName, const SharedImageSet & img, SaveOptions opts = {})
+```
+
+Save a [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) in [MetaImage](/cpp-sdk/4.5/api/namespaces/imfusion-metaimage) format.
+
+**Parameters:**
+
+- `headerFileName` — Filename extension determines whether to use .mha or .mhd format, if no extension is given .mhd extension appended.
+- `img` — image(s) to save.
+
+### load
+
+```cpp
+std::unique_ptr < SharedImageSet > ImFusion::MetaImage::load (const std::string & headerFileName, MetaImageHeader * outHeader = nullptr, bool prepare = false, bool strictSyntax = false, bool ignoreHalfPixelOffset = false, SharedImageSet * outContainer = nullptr, bool * outSuccess = nullptr, Progress * prog = nullptr)
+```
+
+Load a [MetaImage](/cpp-sdk/4.5/api/namespaces/imfusion-metaimage) file into a [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset).
+
+**Parameters:**
+
+- `headerFileName` — The absolute path of the [MetaImage](/cpp-sdk/4.5/api/namespaces/imfusion-metaimage) header file.
+- `header` — Store the read [MetaImageHeader](/cpp-sdk/4.5/api/classes/imfusion-metaimage-metaimageheader) in \*outHeader if not nullptr.
+- `prepare` — If (prepare || m_msb), call [MemImage::prepare](/cpp-sdk/4.5/api/classes/imfusion-memimage) on the result,
+- `outContainer` — An optional [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) into which to load the data. In this case (if outSuccess != nullptr), \*outSuccess = true on success and nullptr is returned.
+- `strictSyntax` — determines whether or not to fail when unexpected data is encountered (such as trailing non-whitespace characters after numbers).
+- `ignoreHalfPixelOffset` — should be set if no half-pixel offset to the Position/Orientation provided should be applied. Returns nullptr on failure.
+
+### loadSharedImage
+
+```cpp
+std::shared_ptr < SharedImage > ImFusion::MetaImage::loadSharedImage (const std::string & headerFileName, MetaImageHeader * outHeader = nullptr, bool prepare = false, bool strictSyntax = false, bool ignoreHalfPixelOffset = false, bool * outSuccess = nullptr)
+```
+
+**Parameters:**
+
+- `outSuccess` — If more than one image is present in the dataset, outSuccess is set to false and first image returned.

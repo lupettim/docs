@@ -1,0 +1,67 @@
+---
+title: "ImFusion::PointCorrespondenceController"
+sidebarTitle: "PointCorrespondenceController"
+description: "Controller for defining point correspondences."
+---
+
+`#include <ImFusion/GUI/PointCorrespondenceController.h>`
+
+## Overview
+
+[Controller](/cpp-sdk/4.5/api/classes/imfusion-controller) for defining point correspondences.
+
+## Public Slots
+
+- void **showContextMenu** (const QPoint &pos)
+- void **contextMenuEvaluate** (QAction \*a) — Evaluate action chosen in context menu.
+- void **onExportAsAnnotations** () — Export point correspondences as labels to annotations.
+- void **onExportAsPointClouds** () — Export point correspondences as point clouds to the data model.
+- void **onImportFromAnnotations** () — Import point correspondences from annotations (labels). Only the pairs of labels which have the same name for both images will be imported.
+- void **onAdd1** () — Add point to first image.
+- void **onAdd2** () — Add point to second image.
+- void **onDelete** () — Delete the last single point or pair from list.
+- void **onClear** () — Clear all points.
+- void **onRegister** () — Register the point correspondences.
+- void **onLoad** () — Load point correspondences from text files.
+- void **onSave** () — Save point correspondences to text files.
+- void **onBlendFactor** (double val) — Gets called when the view blend factor has changed.
+- void **onItemChanged** (QListWidgetItem \*item) — Text for correspondence in correspondence list was edited.
+- void **onShowNamesStateChanged** (int state) — Checkbox for showing names selected/deselected.
+- void **onPointsEditableStateChanged** (int state) — Checkbox for points editable selected/deselected.
+- void **onPointSizeChanged** (int val) — Value of slider for point size has changed.
+- void **onSelectionChanged** () — Current selection in correspondence list has changed.
+- void **onCoordinates1Changed** (int val) — [Selection](/cpp-sdk/4.5/api/classes/imfusion-selection) of first coordinate system has changed.
+- void **onCoordinates2Changed** (int val) — [Selection](/cpp-sdk/4.5/api/classes/imfusion-selection) of second coordinate system has changed.
+- void **onMoveDown** () — Move selection down.
+- void **onMoveUp** () — Move selection up.
+- void **onUndoRegister** () — Undo the last registration.
+
+## Public Member Functions
+
+- **PointCorrespondenceController** ([PointCorrAlgorithm](/cpp-sdk/4.5/api/classes/imfusion-pointcorralgorithm) \*alg) — Constructor with algorithm instance.
+- **~PointCorrespondenceController** () override — Destructor, also removes the points.
+- void [init](#init) () override — Initialize the controller.
+- void [onManipulatorEvent](#onmanipulatorevent) ([Manipulator](/cpp-sdk/4.5/api/classes/imfusion-manipulator) \*src, void \*eventData) override — Called when current point has been set.
+- void **transformationChanged** (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data) — Update shown points if they are in image coordinates and matrix has changed.
+
+## Member Function Documentation
+
+### init
+
+```cpp
+void ImFusion::PointCorrespondenceController::init ()
+```
+
+*override, virtual*
+
+Initialize the controller.
+
+### onManipulatorEvent
+
+```cpp
+void ImFusion::PointCorrespondenceController::onManipulatorEvent (Manipulator * src, void * eventData)
+```
+
+*override, virtual*
+
+Called when current point has been set.

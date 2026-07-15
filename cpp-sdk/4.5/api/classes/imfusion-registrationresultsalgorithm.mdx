@@ -1,0 +1,200 @@
+---
+title: "ImFusion::RegistrationResultsAlgorithm"
+sidebarTitle: "RegistrationResultsAlgorithm"
+description: "Store registration results for data combinations."
+---
+
+`#include <ImFusion/Reg/RegistrationResultsAlgorithm.h>`
+
+## Overview
+
+Store registration results for data combinations.
+
+This class allows for storage of registration results, where a result includes the transformation matrix of one or multiple (image) data sets - the most typical scenario will be data pairs. In addition, deformation instances and parameters can be kept track of. No input data is provided here, pointers to the data instances are provided through the corresponding controller. Saving and loading through workspaces / properties uses the name string of each involved data set.
+
+## Public Member Functions
+
+- [RegistrationResults](/cpp-sdk/4.5/api/classes/imfusion-registrationresults) & **results** ()
+- [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) **setSelected** (int index) — Select the result at index and apply it, returning affected data.
+- int **selected** () const — Return the index of the selected (last applied) result.
+- bool [add](#add) (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, bool checkIfChanged, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &[name](#name)="") — Add a registration result using the state of the data provided if checkIfChanged is enabled, the result is only added if it is different from the selected one.
+- void [remove](#remove) (int index) — Remove the registration result at the given index.
+- [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) [apply](#apply) (int index) — Apply result at the given index, returning affected data.
+- void [setName](#setname) (int index, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &[name](#name)) — Set the name of the result at the given index.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [name](#name) (int index) const — Return the name of result at the given index.
+- int [findResult](#findresult) (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data) const — Returns the index of a result if its data and transformation all match, or -1 if none is found.
+- int [size](#size) () const
+- void [resolveDataAfterConfigure](#resolvedataafterconfigure) ([DataModel](/cpp-sdk/4.5/api/classes/imfusion-datamodel) &dataModel)
+
+## Static Public Member Functions
+
+- static [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **suggestedName** (const [Optimizer](/cpp-sdk/4.5/api/classes/imfusion-optimizer) \*opt) — Tool method to describe a registration result from an optimizer instance.
+
+## Public Attributes
+
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; [Filesystem::Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path) &gt; **p_deformationStorageDir** = &#123;"deformationStorageDir", "", \*this&#125; — Filepath to store dense deformations upon serialization / load from in resolveDataAfterConfigure.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; bool &gt; **p_restoreDeformationsByHashId** = &#123;"restoreDeformationsByHashId", false, \*this&#125; — Use hash value of data to map data and dense deformation.
+
+## Protected Member Functions
+
+- const [RegistrationResults::DataResult](/cpp-sdk/4.5/api/structs/imfusion-registrationresults-dataresult) \* **getCurrentDataResult** (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data) const
+
+## Protected Attributes
+
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [RegistrationResults](/cpp-sdk/4.5/api/classes/imfusion-registrationresults) &gt; **m_resultsOwn**
+- [RegistrationResults](/cpp-sdk/4.5/api/classes/imfusion-registrationresults) **m_results**
+- int **m_selected** = -1 — Index of selected (i.e. last applied) result.
+
+## Methods implementing the Algorithm interface
+
+- void [compute](#compute) () override — Empty compute method.
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure registration results, data is retrieved with name strings.
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Store configuration with all registration results.
+- static bool [createCompatible](#createcompatible) (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=nullptr)
+
+## Methods operating on the currently selected registration result
+
+- void [copyToClipboard](#copytoclipboard) (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data, bool asParameters) const
+- bool **setOnOtherData** (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*srcData, const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &dstData, bool checkOnly=false) — Set the transformation of the chosen data on other data sets.
+- int **moveOtherResults** (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data, bool checkOnly=false) — Move the chosen data on other suited results to the active transformation, return on how many.
+- [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) **selectedData** () const — Return the datasets of the currently selected registration result.
+
+## Member Function Documentation
+
+### createCompatible
+
+```cpp
+bool ImFusion::RegistrationResultsAlgorithm::createCompatible (const DataList & data, Algorithm ** a = nullptr)
+```
+
+*static*
+
+Factory create method, data must be empty
+
+### compute
+
+```cpp
+void ImFusion::RegistrationResultsAlgorithm::compute ()
+```
+
+*override, virtual*
+
+Empty compute method.
+
+### configure
+
+```cpp
+void ImFusion::RegistrationResultsAlgorithm::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure registration results, data is retrieved with name strings.
+
+### configuration
+
+```cpp
+void ImFusion::RegistrationResultsAlgorithm::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Store configuration with all registration results.
+
+### add
+
+```cpp
+bool ImFusion::RegistrationResultsAlgorithm::add (const DataList & data, bool checkIfChanged, const std::string & name = "")
+```
+
+Add a registration result using the state of the data provided if checkIfChanged is enabled, the result is only added if it is different from the selected one.
+
+Optionally, a name of the result can be provided. The method returns true if the result was added.
+
+****Deprecated**:** "Use `RegistrationResults` directly or access it through `results()`"
+
+### remove
+
+```cpp
+void ImFusion::RegistrationResultsAlgorithm::remove (int index)
+```
+
+*inline*
+
+Remove the registration result at the given index.
+
+****Deprecated**:** "Use `RegistrationResults` directly or access it through `results()`"
+
+### apply
+
+```cpp
+DataList ImFusion::RegistrationResultsAlgorithm::apply (int index)
+```
+
+*inline*
+
+Apply result at the given index, returning affected data.
+
+****Deprecated**:** "Use `setSelected(index)` instead"
+
+### setName
+
+```cpp
+void ImFusion::RegistrationResultsAlgorithm::setName (int index, const std::string & name)
+```
+
+*inline*
+
+Set the name of the result at the given index.
+
+****Deprecated**:** "Use `RegistrationResults` directly or access it through `results()`"
+
+### name
+
+```cpp
+std::string ImFusion::RegistrationResultsAlgorithm::name (int index) const
+```
+
+*inline*
+
+Return the name of result at the given index.
+
+****Deprecated**:** "Use `RegistrationResults` directly or access it through `results()`"
+
+### findResult
+
+```cpp
+int ImFusion::RegistrationResultsAlgorithm::findResult (const DataList & data) const
+```
+
+*inline*
+
+Returns the index of a result if its data and transformation all match, or -1 if none is found.
+
+****Deprecated**:** "Use `RegistrationResults` directly or access it through `results()`"
+
+### size
+
+```cpp
+int ImFusion::RegistrationResultsAlgorithm::size () const
+```
+
+*inline*
+
+****Deprecated**:** "Use `RegistrationResults` directly or access it through `results()`"
+
+### resolveDataAfterConfigure
+
+```cpp
+void ImFusion::RegistrationResultsAlgorithm::resolveDataAfterConfigure (DataModel & dataModel)
+```
+
+****Deprecated**:** "Use `RegistrationResults` directly or access it through `results()`"
+
+### copyToClipboard
+
+```cpp
+void ImFusion::RegistrationResultsAlgorithm::copyToClipboard (const Data * data, bool asParameters) const
+```
+
+Copy the transformation of the provided data to the clipboard, as matrix or parameters

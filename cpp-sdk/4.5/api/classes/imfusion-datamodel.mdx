@@ -1,0 +1,188 @@
+---
+title: "ImFusion::DataModel"
+sidebarTitle: "DataModel"
+description: "Container for datasets holding ownership and managing a hierarchical list of persistent data."
+---
+
+`#include <ImFusion/Base/DataModel.h>`
+
+## Overview
+
+[Container](/cpp-sdk/4.5/api/namespaces/imfusion-container) for datasets holding ownership and managing a hierarchical list of persistent data.
+
+In most cases there will be only one [DataModel](/cpp-sdk/4.5/api/classes/imfusion-datamodel) instance per application. The data is saved as a tree with any kind of [Data](/cpp-sdk/4.5/api/classes/imfusion-data) instances in the leafs and [DataGroup](/cpp-sdk/4.5/api/classes/imfusion-datagroup) instances in the nodes. Furthermore, it ensures the invariant that [Data::name()](/cpp-sdk/4.5/api/classes/imfusion-data) is unique for all elements in the model.
+
+[DataModel](/cpp-sdk/4.5/api/classes/imfusion-datamodel) will take ownership of all added datasets and created DataGroups and enables you to browse/query them. However (in contrast to [DataItemModel](/cpp-sdk/4.5/api/classes/imfusion-dataitemmodel)), it will not expose the children of [CompoundData](/cpp-sdk/4.5/api/classes/imfusion-compounddata) (except for [DataGroup](/cpp-sdk/4.5/api/classes/imfusion-datagroup)) since they are owned by their parent dataset and considered internal.
+
+In addition to serving the actual datasets, [DataModel](/cpp-sdk/4.5/api/classes/imfusion-datamodel) also manages a set of [DataLinks](/cpp-sdk/4.5/api/classes/imfusion-datalink) that can be used to synchronize properties across multiple datasets.
+
+**Note:** [DataModel](/cpp-sdk/4.5/api/classes/imfusion-datamodel) does monitor its DataGroups for changes from the outside, and will attempt to handle them (including emitting the corresponding signals) correctly. However, doing so is discouraged. You should prefer using [DataModel](/cpp-sdk/4.5/api/classes/imfusion-datamodel)'s [add()](#add), [move()](#move), and [remove()](#remove) functions instead because they may be more robust wrt. maintaining invariants.
+
+**See also:** [Data](/cpp-sdk/4.5/api/classes/imfusion-data), [DataGroup](/cpp-sdk/4.5/api/classes/imfusion-datagroup), [DataLink](/cpp-sdk/4.5/api/classes/imfusion-datalink), [DataItemModel](/cpp-sdk/4.5/api/classes/imfusion-dataitemmodel)
+
+## Public Member Functions
+
+- void [setPrepareDataCallback](#setpreparedatacallback) ([std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; bool([Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*)&gt; prepareData) — Sets an optional callback that is called just before new data is added.
+
+## Public Attributes
+
+- Signal&lt; [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \* &gt; **signalDataAdded** — Emitted whenever a new dataset has been added; recursively for children of added groups.
+- Signal&lt; [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \* &gt; **signalDataAboutToBeRemoved** — Emitted directly before a dataset is removed; recursively for children of removed groups.
+- Signal&lt; [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \* &gt; **signalDataMoved** — Signal emitted whenever a dataset in the model has been moved to a new position.
+- Signal&lt; [DataLink](/cpp-sdk/4.5/api/classes/imfusion-datalink) \* &gt; **signalLinkAdded** — Signal emitted whenever a new [DataLink](/cpp-sdk/4.5/api/classes/imfusion-datalink) has been added.
+- Signal&lt; [DataLink](/cpp-sdk/4.5/api/classes/imfusion-datalink) \* &gt; **signalLinkAboutToBeRemoved** — Signal emitted directly before a [DataLink](/cpp-sdk/4.5/api/classes/imfusion-datalink) will be removed from the model.
+
+## Protected Member Functions
+
+- virtual bool **addImpl** ([Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name, [DataGroup](/cpp-sdk/4.5/api/classes/imfusion-datagroup) \*group)
+- virtual [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **generateName** (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data) const
+- virtual [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **makeUniqueName** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &baseName, [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data) const
+
+## Protected Attributes
+
+- [DataGroup](/cpp-sdk/4.5/api/classes/imfusion-datagroup) **m_data** — Root node containing all top-level datasets managed by the [DataModel](/cpp-sdk/4.5/api/classes/imfusion-datamodel).
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [DataLink](/cpp-sdk/4.5/api/classes/imfusion-datalink) &gt; &gt; **m_links** — List of all DataLinks managed by the [DataModel](/cpp-sdk/4.5/api/classes/imfusion-datamodel).
+- [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; bool([Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*)&gt; **m_prepareData** — Optional callback used to check if new [Data](/cpp-sdk/4.5/api/classes/imfusion-data) may be added to the model.
+
+## Manage the datasets of the model
+
+- bool [add](#add) ([std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [Data](/cpp-sdk/4.5/api/classes/imfusion-data) &gt; data, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &baseName="", [DataGroup](/cpp-sdk/4.5/api/classes/imfusion-datagroup) \*parentGroup=nullptr) — Adds data to the model and acquires ownership of the object.
+- bool **add** ([OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) &&dataList, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &baseName="", [DataGroup](/cpp-sdk/4.5/api/classes/imfusion-datagroup) \*parentGroup=nullptr)
+- virtual [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [Data](/cpp-sdk/4.5/api/classes/imfusion-data) &gt; [remove](#remove) ([Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data) — Removes data from anywhere in the model and returns ownership to the caller.
+- void **clear** () — Deletes all data from the model by calling remove on all data.
+- virtual bool [move](#move) ([Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data, [DataGroup](/cpp-sdk/4.5/api/classes/imfusion-datagroup) \*newParent, int position=-1) — Moves data from anywhere in the model to any new position.
+- [DataGroup](/cpp-sdk/4.5/api/classes/imfusion-datagroup) \* [createGroup](#creategroup) (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &children) — Creates a new group from the given list of children.
+
+## Query datasets from the model
+
+- bool **contains** (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data) const — Returns true if the model contains *data*.
+- [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \* **get** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name) — Returns the data called *name* if it exists and nullptr otherwise.
+- const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \* **get** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name) const
+- [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) **getAll** ([Data::Kind](/cpp-sdk/4.5/api/classes/imfusion-data) kind=[Data::UNKNOWN](/cpp-sdk/4.5/api/classes/imfusion-data), [Data::Modality](/cpp-sdk/4.5/api/classes/imfusion-data) modality=[Data::Modality::NA](/cpp-sdk/4.5/api/classes/imfusion-data)) const — Returns the flat list of all data of the given *kind* and *modality* in this model in a depth-first order.
+- [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \* **getFirst** (const [std::set](http://en.cppreference.com/w/cpp/container/set.html)&lt; [Data::Kind](/cpp-sdk/4.5/api/classes/imfusion-data) &gt; &kind=&#123;&#125;, const [std::set](http://en.cppreference.com/w/cpp/container/set.html)&lt; [Data::Modality](/cpp-sdk/4.5/api/classes/imfusion-data) &gt; &modality=&#123;&#125;) const — Returns the first data in this model which matches the *kind* and *modality* criteria.
+- const [DataGroup](/cpp-sdk/4.5/api/classes/imfusion-datagroup) & **getRootNode** () const — Returns the root node of the data model under which all top-level data resides.
+- [DataGroup](/cpp-sdk/4.5/api/classes/imfusion-datagroup) & **getRootNode** ()
+- [DataGroup](/cpp-sdk/4.5/api/classes/imfusion-datagroup) \* **getParent** (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data) const — Locates the parent node of the given dataset or nullptr if *data* is not part of the model.
+- [DataGroup](/cpp-sdk/4.5/api/classes/imfusion-datagroup) \* **getCommonParent** ([DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) dataList) const — Returns the closest parent all datasets in dataList share or nullptr if no such parent exists.
+
+## Manage links between datasets of the model
+
+- void **addLink** ([std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [DataLink](/cpp-sdk/4.5/api/classes/imfusion-datalink) &gt; link) — Add the given [DataLink](/cpp-sdk/4.5/api/classes/imfusion-datalink) to be managed by the [DataModel](/cpp-sdk/4.5/api/classes/imfusion-datamodel).
+- void **removeLink** ([DataLink](/cpp-sdk/4.5/api/classes/imfusion-datalink) \*link) — Remove the given [DataLink](/cpp-sdk/4.5/api/classes/imfusion-datalink) from the [DataModel](/cpp-sdk/4.5/api/classes/imfusion-datamodel), will be deleted.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [DataLink](/cpp-sdk/4.5/api/classes/imfusion-datalink) \* &gt; **links** () const — Return list of all DataLinks managed by this [DataModel](/cpp-sdk/4.5/api/classes/imfusion-datamodel).
+- bool **hasLink** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \* &gt; &data) — Checks if the two data object passed are linked with the corresponding LinkType.
+- Link \* [linkData](#linkdata) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \* &gt; &data) — Ensure that the given data is linked together using the template [DataLink](/cpp-sdk/4.5/api/classes/imfusion-datalink) type.
+- void [unlinkData](#unlinkdata) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \* &gt; &data, const [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; bool(const [DataLink](/cpp-sdk/4.5/api/classes/imfusion-datalink) \*)&gt; &mayDeleteLinkOp=nullptr) — Removes all [Data](/cpp-sdk/4.5/api/classes/imfusion-data) instances in *data* from all links of type Link.
+
+## Member Function Documentation
+
+### add
+
+```cpp
+bool ImFusion::DataModel::add (std::unique_ptr < Data > data, const std::string & baseName = "", DataGroup * parentGroup = nullptr)
+```
+
+Adds data to the model and acquires ownership of the object.
+
+**Parameters:**
+
+- `data` — One or multiple [Data](/cpp-sdk/4.5/api/classes/imfusion-data) instance to add to the model.
+- `baseName` — [Base](/cpp-sdk/4.5/api/structs/imfusion-dicom-base) display name of the data. Since [DataModel](/cpp-sdk/4.5/api/classes/imfusion-datamodel) ensures unique naming of all held data, it may add a number to make *baseName* unique. If no name is provided, the name of *data* is used (i.e. result of data-&gt;name()). If both of them are empty, a default name is generated depending on the data type.
+- `parentGroup` — Optional [DataGroup](/cpp-sdk/4.5/api/classes/imfusion-datagroup) underneath which *data* should be added. By default the data is added to the root level.
+
+**Returns:** Returns false if the provided data could not be added to the model for any reason.
+
+### remove
+
+```cpp
+virtual std::unique_ptr < Data > ImFusion::DataModel::remove (Data * data)
+```
+
+*virtual*
+
+Removes data from anywhere in the model and returns ownership to the caller.
+
+This will also remove the data if it is part of a group. Returns nullptr if *data* could not be deleted or is not part of model.
+
+**Note:** If *data* is the Data::proxyChild() of the parent group, it will remove the entire group.
+
+### move
+
+```cpp
+virtual bool ImFusion::DataModel::move (Data * data, DataGroup * newParent, int position = -1)
+```
+
+*virtual*
+
+Moves data from anywhere in the model to any new position.
+
+**Parameters:**
+
+- `data` — [Data](/cpp-sdk/4.5/api/classes/imfusion-data) instance to move.
+- `newParent` — Parent [DataGroup](/cpp-sdk/4.5/api/classes/imfusion-datagroup) to which *data* should be moved, will use the root node if nullptr.
+- `position` — Position within *newParent* where *data* should be moved to, will move to the end if negative.
+
+### createGroup
+
+```cpp
+DataGroup * ImFusion::DataModel::createGroup (const DataList & children)
+```
+
+Creates a new group from the given list of children.
+
+The data in *children* will be moved from anywhere in the model to the new group that will be created underneath the common parent of *children*. Returns nullptr on failure for instance if *children* contains datasets that are not part of the model.
+
+### linkData
+
+```cpp
+template<class Link> Link * ImFusion::DataModel::linkData (const std::vector < Data * > & data)
+```
+
+Ensure that the given data is linked together using the template [DataLink](/cpp-sdk/4.5/api/classes/imfusion-datalink) type.
+
+This function employs the following logic:
+
+- None of the data participates in an existing link of type Link -&gt; create a new link
+- Any of the data already participates in one link of type Link -&gt; add the other data to the existing link.
+- The data participates in multiple different links of type Link -&gt; merge all existing links together into a new one.
+
+If a [Data](/cpp-sdk/4.5/api/classes/imfusion-data) instance in *data* is not accepted by the given Link type (see [DataLink::accepts()](/cpp-sdk/4.5/api/classes/imfusion-datalink)), it will not be added to the link.
+
+**Note:** Due to the merging logic that may happen when combining multiple existing links, any additional state of a participating [DataLink](/cpp-sdk/4.5/api/classes/imfusion-datalink) may be reset when using this function.
+
+**Template Parameters:** | Link | Link type to use, must inherit from [DataLink](/cpp-sdk/4.5/api/classes/imfusion-datalink). |
+| --- | --- |
+
+**Parameters:**
+
+- `data` — List of [Data](/cpp-sdk/4.5/api/classes/imfusion-data) instances to link together.
+
+**Returns:** Link instance that links *data* together, will be null if the instantiated Link would be empty.
+
+### unlinkData
+
+```cpp
+template<class Link> void ImFusion::DataModel::unlinkData (const std::vector < Data * > & data, const std::function < bool(const DataLink *)> & mayDeleteLinkOp = nullptr)
+```
+
+Removes all [Data](/cpp-sdk/4.5/api/classes/imfusion-data) instances in *data* from all links of type Link.
+
+If an existing [DataLink](/cpp-sdk/4.5/api/classes/imfusion-datalink) holds references to less than two [Data](/cpp-sdk/4.5/api/classes/imfusion-data) instances after the unlink process, it will be removed unless *mayDeleteLinkOp* is set and returns false for it.
+
+**Template Parameters:** | Link | Link type to use, must inherit from [DataLink](/cpp-sdk/4.5/api/classes/imfusion-datalink). |
+| --- | --- |
+
+**Parameters:**
+
+- `data` — List of [Data](/cpp-sdk/4.5/api/classes/imfusion-data) instances to unlink.
+- `mayDeleteLinkOp` — Optional function to specify if a [DataLink](/cpp-sdk/4.5/api/classes/imfusion-datalink) may be deleted if it becomes empty.
+
+### setPrepareDataCallback
+
+```cpp
+void ImFusion::DataModel::setPrepareDataCallback (std::function < bool(Data *)> prepareData)
+```
+
+Sets an optional callback that is called just before new data is added.
+
+If the callback returns false, the [Data](/cpp-sdk/4.5/api/classes/imfusion-data) won't be added to the model.

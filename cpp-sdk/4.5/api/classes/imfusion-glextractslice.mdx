@@ -1,0 +1,54 @@
+---
+title: "ImFusion::GlExtractSlice"
+sidebarTitle: "GlExtractSlice"
+description: "Extract slice from 3D volume."
+---
+
+`#include <ImFusion/GL/GlExtractSlice.h>`
+
+## Overview
+
+Extract slice from 3D volume.
+
+## Public Member Functions
+
+- **GlExtractSlice** ([GL::Framebuffer](/cpp-sdk/4.5/api/classes/imfusion-gl-framebuffer) \*fbo=0) — Constructor.
+- **~GlExtractSlice** () override — Destructor.
+- void **setParameters** (const mat4 &sliceMatrix, double physicalWidth, double physicalHeight, bool mergeChannels=true)
+- void **setParameters** (const [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) \*texVolumeMask, const vec3f corners[4], float length, int lengthSamples, const vec3f &direction, [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) \*texSliceMask)
+- void **setSlice** (const [Slice](/cpp-sdk/4.5/api/classes/imfusion-slice) &slice)
+- void [compute](#compute) (const [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) &imgIn, [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) &imgOut) override — Execute the filter on the image.
+- bool [good](#good) () const override — Return true if the filter can be used, in particular if the shaders are available.
+
+## Protected Attributes
+
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [GL::ImageProgram](/cpp-sdk/4.5/api/classes/imfusion-gl-imageprogram) &gt; **m_program**
+- const [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) \* **m_texVolumeMask**
+- [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) \* **m_texSliceMask** = nullptr
+- vec3f **m_corners** [4]
+- float **m_length** = 0
+- int **m_lengthSamples** = 0
+- vec3f **m_direction** = vec3f::Zero()
+- bool **m_mergeChannels** = true
+
+## Member Function Documentation
+
+### compute
+
+```cpp
+void ImFusion::GlExtractSlice::compute (const GlImage & imgIn, GlImage & imgOut)
+```
+
+*override, virtual*
+
+Execute the filter on the image.
+
+### good
+
+```cpp
+bool ImFusion::GlExtractSlice::good () const
+```
+
+*override, virtual*
+
+Return true if the filter can be used, in particular if the shaders are available.

@@ -1,0 +1,33 @@
+---
+title: "ImFusion::ImFusionFileGroup"
+sidebarTitle: "ImFusionFileGroup"
+description: "Groups for combining different data (with additional properties) within the ImFusion file format."
+---
+
+`#include <ImFusion/Base/ImFusionFile.h>`
+
+## Overview
+
+Groups for combining different data (with additional properties) within the ImFusion file format.
+
+**See also:** ImFusionFile
+
+## Public Member Functions
+
+- **ImFusionFileGroup** (int id)
+- int **groupId** () const — Get group id.
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \* &gt; **data** () const — Get list of data items in group.
+- int **usage** ([Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*d) const — Get usage hint for a data item.
+- void **add** ([Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data, int usage) — Add data item to group with its usage hint.
+- void **setProperties** ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) — Set properties.
+- const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \* **properties** () const — Get properties.
+- void **setPresent** (bool v) — Set group's present state.
+- bool **isPresent** () const — Get group's present state.
+
+## Protected Attributes
+
+- int **m_id** — Group id.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \* &gt; **m_data** — [Data](/cpp-sdk/4.5/api/classes/imfusion-data) items in group.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; int &gt; **m_dataUsages** — Usage hints for data items in group.
+- [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \* **m_properties** — ImFusion file group properties.
+- bool **m_present** — file group is present in file

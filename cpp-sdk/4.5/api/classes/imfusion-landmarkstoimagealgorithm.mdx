@@ -1,0 +1,79 @@
+---
+title: "ImFusion::LandmarksToImageAlgorithm"
+sidebarTitle: "LandmarksToImageAlgorithm"
+description: "Algorithm to generate learning data (heatmaps or label maps) from the position of landmarks in images."
+---
+
+`#include <ImFusion/Base/LandmarksToImageAlgorithm.h>`
+
+## Overview
+
+[Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) to generate learning data (heatmaps or label maps) from the position of landmarks in images.
+
+If matrices are provided in the constructors, input point clouds are assumed to be in world space coordinates. Otherwise, they will be treated as image coordinates (still in mm).
+
+## Public Types
+
+- enum class [Mode](#mode) &#123; Labels , Weights , Vectors , WeightsPrecise &#125; — [Status](/cpp-sdk/4.5/api/classes/imfusion-algorithm) codes.
+
+## Public Member Functions
+
+- **LandmarksToImageAlgorithm** ([std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [ImageDescriptor](/cpp-sdk/4.5/api/structs/imfusion-imagedescriptor) &gt; imageDescriptors, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; mat4 &gt; matrices, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [PointCloud](/cpp-sdk/4.5/api/classes/imfusion-pointcloud) \* &gt; &gt; pointClouds) — Constructors.
+- **LandmarksToImageAlgorithm** ([ImageDescriptor](/cpp-sdk/4.5/api/structs/imfusion-imagedescriptor) imageDescriptor, mat4 matrix, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [PointCloud](/cpp-sdk/4.5/api/classes/imfusion-pointcloud) \* &gt; pointClouds)
+- **LandmarksToImageAlgorithm** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*image, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [PointCloud](/cpp-sdk/4.5/api/classes/imfusion-pointcloud) \* &gt; &gt; pointClouds)
+- **LandmarksToImageAlgorithm** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*image, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [PointCloud](/cpp-sdk/4.5/api/classes/imfusion-pointcloud) \* &gt; pointClouds)
+- **~LandmarksToImageAlgorithm** () override — Destructor.
+- void [compute](#compute) () override — Execute the algorithm.
+- [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) [takeOutput](#takeoutput) () override — If the algorithm creates new image data, it has to be transferred here.
+
+## Static Public Member Functions
+
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=nullptr) — If data is compatible with algorithm return true. If a is not zero, create algorithm with input data.
+
+## Public Attributes
+
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; [Mode](#mode) &gt; **p_mode** = &#123;"Mode", Mode::Labels, this&#125; — [Encoding](/cpp-sdk/4.5/api/namespaces/imfusion-encoding) mode of the landmarks.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; double &gt; **p_sphereRadius** = &#123;"Sphere Radius", 5.0, this&#125; — Sphere radius in millimeters.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; bool &gt; **p_sharpBlobs** = &#123;"Sharp Blobs", false, this&#125; — Whether blobs are sharp or have a longer tail.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; double &gt; **p_backgroundValue** = &#123;"Background Value", 0, this&#125; — Background value for the output (only used when p_mode is Mode::Weights).
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; int &gt; **p_filterKernelSize** = &#123;"Filter Kernel Size", 30, this&#125; — Size in pixels of the Gaussian filter applied to the heatmap (only used when p_mode is Mode::Weights).
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; double &gt; **p_workingResolution** = &#123;"Working Resolution", 1.0, this&#125; — Resolution of the output heat map (only used when p_mode is Mode::Vectors).
+
+## Member Enumeration Documentation
+
+### Mode
+
+```cpp
+enum class ImFusion::LandmarksToImageAlgorithm::Mode
+```
+
+*strong*
+
+**Enumerator:**
+
+- `Labels` — Binary label map of spheres with specified radius around each landmark.
+- `Weights` — The above followed by Gaussian smoothing, as well as chosen background value.
+- `Vectors` — Voxel-wise vectors.
+- `WeightsPrecise` — Smooth blob creation by setting single pixels and smoothing them, creating equally sized blobs.
+
+## Member Function Documentation
+
+### compute
+
+```cpp
+void ImFusion::LandmarksToImageAlgorithm::compute ()
+```
+
+*override, virtual*
+
+Execute the algorithm.
+
+### takeOutput
+
+```cpp
+OwningDataList ImFusion::LandmarksToImageAlgorithm::takeOutput ()
+```
+
+*override, virtual*
+
+If the algorithm creates new image data, it has to be transferred here.

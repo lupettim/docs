@@ -1,0 +1,63 @@
+---
+title: "ImFusion::DicomPluginSettings"
+sidebarTitle: "DicomPluginSettings"
+description: "Provides settings used by different parts of the DicomPlugin ."
+---
+
+`#include <ImFusion/Dicom/DicomPluginSettings.h>`
+
+## Overview
+
+Provides settings used by different parts of the [DicomPlugin](/cpp-sdk/4.5/api/classes/imfusion-dicomplugin).
+
+## Classes
+
+- struct [PacsServer](/cpp-sdk/4.5/api/structs/imfusion-dicompluginsettings-pacsserver)
+
+## Public Member Functions
+
+- **DicomPluginSettings** () — Creates a new [Settings](/cpp-sdk/4.5/api/classes/imfusion-settings) object and retrieves setting values from the backend.
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [DicomPluginSettings::PacsServer](/cpp-sdk/4.5/api/structs/imfusion-dicompluginsettings-pacsserver) &gt; **pacsServers** () const
+- void **setPacsServers** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [DicomPluginSettings::PacsServer](/cpp-sdk/4.5/api/structs/imfusion-dicompluginsettings-pacsserver) &gt; &servers)
+
+## Public Attributes
+
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; int &gt; **cacheSize** &#123;"cacheSize", 2048, this&#125; — Maximum cache size in MB for DICOM datasets.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; Log::Level &gt; **dcmtkLogLevel** &#123;"dcmtkLogLevel", Log::Level::Error, this&#125; — [Log](/cpp-sdk/4.5/api/namespaces/imfusion-log) level of dcmtk library.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; Dicom::AnonymizationProfile &gt; **anonymisePatients** &#123;"anonymisePatients", Dicom::AnonymizationProfile::None, this&#125; — Option to anonymise any patient related information in all loaded DICOM datasets.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **pacsClientAe** &#123;"pacsClientAe", "IMFDCMCLIENT", this&#125; — Application-Entity title of the PACS client.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; unsigned int &gt; **pacsClientPort** &#123;"pacsClientPort", 104, this&#125; — Port of the PACS client.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **pacsClientConfiguration** &#123;"pacsClientConfiguration", "", this&#125; — Path to the configuration file of the PACS client. See [https://support.dcmtk.org/docs/file_asconfig.html](https://support.dcmtk.org/docs/file_asconfig.html) for details.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; int &gt; **pacsConnectionTimeout** &#123;"pacsConnectionTimeout", 10, this&#125; — Timeout of PACS connections.
+
+## Member Function Documentation
+
+### configure
+
+```cpp
+void ImFusion::DicomPluginSettings::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### configuration
+
+```cpp
+void ImFusion::DicomPluginSettings::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality

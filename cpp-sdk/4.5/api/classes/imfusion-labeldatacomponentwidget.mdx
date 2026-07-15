@@ -1,0 +1,58 @@
+---
+title: "ImFusion::LabelDataComponentWidget"
+sidebarTitle: "LabelDataComponentWidget"
+description: "Widget to display and manipulate the per-data rendering options of a 3D view."
+---
+
+`#include <ImFusion/GUI/LabelDataComponentWidget.h>`
+
+## Overview
+
+Widget to display and manipulate the per-data rendering options of a 3D view.
+
+**See also:** [Data::Modality::LABEL](/cpp-sdk/4.5/api/classes/imfusion-data), [LabelDataComponent](/cpp-sdk/4.5/api/classes/imfusion-labeldatacomponent)
+
+## Public Types
+
+- enum class [VisibilityMode](#visibilitymode) &#123; Visibility2d , Visibility3d , VisibilityAll &#125; — Enumeration to define which visibility flags of [LabelDataComponent](/cpp-sdk/4.5/api/classes/imfusion-labeldatacomponent) are to be modified by this widget.
+
+## Public Member Functions
+
+- [LabelDataComponentWidget](#labeldatacomponentwidget) ([GUI::DisplayBase](/cpp-sdk/4.5/api/classes/imfusion-gui-displaybase) \*display, [VisibilityMode](#visibilitymode) vm, QWidget \*parent=nullptr)
+- **LabelDataComponentWidget** ([GUI::DisplayBase](/cpp-sdk/4.5/api/classes/imfusion-gui-displaybase) \*display, [VisibilityMode](#visibilitymode) vm, QString title, QWidget \*parent)
+- void **setReferenceData** ([LabelDataComponent](/cpp-sdk/4.5/api/classes/imfusion-labeldatacomponent) \*ldc, const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*referenceSis, int which=-1) — Sets the [LabelDataComponent](/cpp-sdk/4.5/api/classes/imfusion-labeldatacomponent) to edit and optionally the reference image.
+- void **setDetectLabelsButtonVisibility** (bool isVisible) — Sets whether the Detect Labels button is visible or not.
+- void **showNumericColor** (bool show) — Sets whether the color picker shows numeric values.
+
+## Member Enumeration Documentation
+
+### VisibilityMode
+
+```cpp
+enum class ImFusion::LabelDataComponentWidget::VisibilityMode
+```
+
+*strong*
+
+Enumeration to define which visibility flags of [LabelDataComponent](/cpp-sdk/4.5/api/classes/imfusion-labeldatacomponent) are to be modified by this widget.
+
+**Enumerator:**
+
+- `Visibility2d` — Modify only 2D label visibility.
+- `Visibility3d` — Modify only 3D label visibility.
+- `VisibilityAll` — Modify both 2D and 3D label visibility.
+
+## Constructor & Destructor Documentation
+
+### LabelDataComponentWidget
+
+```cpp
+ImFusion::LabelDataComponentWidget::LabelDataComponentWidget (GUI::DisplayBase * display, VisibilityMode vm, QWidget * parent = nullptr)
+```
+
+*explicit*
+
+**Parameters:**
+
+- `display` — Pointer to the display so that we can notify it for updates.
+- `referenceView` — Pointer to an optional reference view in which the data is shown to be forwarded to the [TransferFunctionWidget](/cpp-sdk/4.5/api/classes/imfusion-transferfunctionwidget).

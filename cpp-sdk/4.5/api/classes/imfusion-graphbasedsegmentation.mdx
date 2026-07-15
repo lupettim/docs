@@ -1,0 +1,140 @@
+---
+title: "ImFusion::GraphBasedSegmentation"
+sidebarTitle: "GraphBasedSegmentation"
+description: "Image segmentation in 2D or 3D using graph-based segmentation."
+---
+
+`#include <ImFusion/Seg/GraphBasedSegmentation.h>`
+
+## Overview
+
+[Image](/cpp-sdk/4.5/api/classes/imfusion-image) segmentation in 2D or 3D using graph-based segmentation.
+
+## Public Member Functions
+
+- **GraphBasedSegmentation** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*image, [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*labels, [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*prior=nullptr) — [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) is created with image and labels, the latter will be updated with the result.
+- **~GraphBasedSegmentation** () override — Destructor.
+- void [compute](#compute) () override — Execute the algorithm.
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Set one or multiple properties.
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Retrieve the properties of this object.
+- [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) [takeOutput](#takeoutput) () override — If the algorithm creates new image data, it has to be transferred here.
+- virtual void [prepareForComputation](#prepareforcomputation) () — Execute some pre-processing (e.g. crop the data).
+- void **setSolver** (int solver) — Specify a custom solver to be used.
+- void **setSolverParameters** (int iter, double tol) — Specify the maximum number of steps for iterative solvers.
+- void **setAdaptiveness** (double val) — Specify the adaptiveness to the image (lower means a smoother segmentation).
+- void **setAutoCrop** (bool flag) — If true, the segmentation problem is cropped with the bounding box of the labels.
+- void **setVerbose** (bool flag) — Set the verbose flag.
+- void **setUseSuperpixels** (bool flag) — Set the superpixels flag.
+- void **setPyramidLevels** (int numLevels, int minLevel) — Set the pyramid levels.
+- void **setNumPyramidLevels** (int numLevels) — Set the numbers of pyramid levels.
+- void **setMinPyramidLevel** (int minLevel) — Set the minimum pyramid level.
+- int **numPyramidLevels** () const — Get the number of pyramid levels.
+- int **minPyramidLevel** () const — Get the minimum pyramid level.
+- void **setPriorWeight** (double weight) — Set the prior weight.
+- void **setSuperpixelsConfiguration** (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*superpixelsProperties) — Set the superpixels configuration.
+- void [convertToLabels](#converttolabels) (bool entireImage=true) — Convert the segmentation result into foreground and background labels.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; &gt; **extractSegmentation2D** (double smoothness, double exportRes, bool closeAnnotation=true) — Extract the segmentation as a set of point-based contours (only for 2D images).
+- [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) \* **extractSegmentation3D** (double smoothness, double exportRes, bool closeAnnotation=true) — Extract the segmentation as a mesh (only for 3D images).
+- void **clearResult** () — Clear the segmentation from the label image.
+- [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* **probabilityImage** () — Create and return a probability image from the segmentation result (takes ownsership).
+- size_t **memoryEstimation** (int minLevel) — Returns an estimation of the required memory with the current configuration.
+- int **currentObjectLabel** (int ind) const — Returns the current label for the foreground for one particular image.
+- void **setCurrentObjectLabel** (int label, int ind) — Set the current label for the foreground for one particular image.
+
+## Static Public Member Functions
+
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=0) — If data is compatible with algorithm return true. If a is not zero, create algorithm with input data.
+
+## Protected Attributes
+
+- [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* **m_image** — Input image data.
+- [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* **m_labels** — [Image](/cpp-sdk/4.5/api/classes/imfusion-image) containing the labels.
+- [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* **m_prior** — Prior probability map.
+- [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* **m_probability** — Output probability of the graph Laplacian problem.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &gt; **m_labelsCopy** — Copy of the labels (used to remember prev label map when segmenting multiple objects).
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; int &gt; **m_currentObjectLabel** — Current label for the foreground, for each image.
+- [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) &gt; **m_workingImage** — Working cropped version of the image.
+- [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) &gt; **m_workingLabels** — Working cropped version of the labels.
+- vec3i **m_ofs** — Offset of cropped segmentation.
+- vec3i **m_dim** — Dimension of cropped segmentation.
+- double **m_bboxMargin** — Margin percentage for bounding box.
+- bool **m_verbose** — Display messages.
+- [GraphLaplacianAlgorithm](/cpp-sdk/4.5/api/classes/imfusion-graphlaplacianalgorithm) \* **m_graphAlgo** — Graph segmentation algorithm.
+- int **m_solver** — Custom solver to be used.
+- int **m_iterations** — Maximum number of iterations of the solver.
+- double **m_tolerance** — Tolerance of the solver.
+- bool **m_autoCrop** — Flag for cropping the segmentation with the labels.
+- double **m_adaptiveness** — [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) controlling the adaptiveness to the image.
+- int **m_numLevels** — Number of pyramid levels.
+- int **m_minLevel** — Minimum pyramid level (1 = lowest).
+- bool **m_exportProbability** — Accept the segmentation after computation.
+- bool **m_applyWindowLevel** — whether window/level of the input image should be considered
+- double **m_previousWindow** — window of the image in the previous computation
+- double **m_previousLevel** — level of the image in the previous computation
+- bool **m_autoAccept** — Automatically accept the result (lose seeds).
+- double **m_priorWeight** — Weight of the prior term.
+- int **m_filterSize** — Size of the smoothing filter.
+- bool **m_useSuperpixels** — Flag for superpixels.
+- [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \* **m_superpixelsProperties** — [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) for superpixel algorithm.
+
+## Member Function Documentation
+
+### compute
+
+```cpp
+void ImFusion::GraphBasedSegmentation::compute ()
+```
+
+*override, virtual*
+
+Execute the algorithm.
+
+### configure
+
+```cpp
+void ImFusion::GraphBasedSegmentation::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Set one or multiple properties.
+
+### configuration
+
+```cpp
+void ImFusion::GraphBasedSegmentation::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Retrieve the properties of this object.
+
+### takeOutput
+
+```cpp
+OwningDataList ImFusion::GraphBasedSegmentation::takeOutput ()
+```
+
+*override, virtual*
+
+If the algorithm creates new image data, it has to be transferred here.
+
+### prepareForComputation
+
+```cpp
+virtual void ImFusion::GraphBasedSegmentation::prepareForComputation ()
+```
+
+*virtual*
+
+Execute some pre-processing (e.g. crop the data).
+
+### convertToLabels
+
+```cpp
+void ImFusion::GraphBasedSegmentation::convertToLabels (bool entireImage = true)
+```
+
+Convert the segmentation result into foreground and background labels.
+
+If the entireImage parameter is true, all pixels outside of the cropping region are marked as background.

@@ -1,0 +1,35 @@
+---
+title: "ImFusion::AlgorithmBrowserDialog"
+sidebarTitle: "AlgorithmBrowserDialog"
+description: "Qt dialog showing a list of compatible Algorithms and enables the user to navigate and execute them."
+---
+
+`#include <ImFusion/GUI/AlgorithmBrowserDialog.h>`
+
+## Overview
+
+Qt dialog showing a list of compatible Algorithms and enables the user to navigate and execute them.
+
+## Public Member Functions
+
+- [AlgorithmBrowserDialog](#algorithmbrowserdialog) ([ApplicationController](/cpp-sdk/4.5/api/classes/imfusion-applicationcontroller) &appController, QWidget \*parent=nullptr, Qt::WindowFlags windowFlags=Qt::WindowFlags()) — Instantiates a new algorithm browser.
+- const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) & **selectedData** () const — Returns the list of currently selected data defining which algorithms are executable.
+- void **setSelectedData** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &value) — Sets the list of currently selected data defining which algorithms are executable.
+
+## Protected Member Functions
+
+- bool **eventFilter** (QObject \*, QEvent \*) override
+
+## Constructor & Destructor Documentation
+
+### AlgorithmBrowserDialog
+
+```cpp
+ImFusion::AlgorithmBrowserDialog::AlgorithmBrowserDialog (ApplicationController & appController, QWidget * parent = nullptr, Qt::WindowFlags windowFlags = Qt::WindowFlags())
+```
+
+*explicit*
+
+Instantiates a new algorithm browser.
+
+If [ApplicationController](/cpp-sdk/4.5/api/classes/imfusion-applicationcontroller) is of type [MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase) it will initialize the browser with the currently selected data.

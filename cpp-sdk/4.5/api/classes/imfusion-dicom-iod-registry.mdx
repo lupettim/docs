@@ -1,0 +1,269 @@
+---
+title: "ImFusion::Dicom::IOD_Registry"
+sidebarTitle: "IOD_Registry"
+description: "A registry that assigns a IOD implementation to a SOP class UID."
+---
+
+`#include <ImFusion/Dicom/DicomIOD_Registry.h>`
+
+## Overview
+
+A registry that assigns a [IOD](/cpp-sdk/4.5/api/classes/imfusion-dicom-iod) implementation to a SOP class UID.
+
+Both the [DicomLoader](/cpp-sdk/4.5/api/classes/imfusion-dicomloader) and [DicomWriter](/cpp-sdk/4.5/api/classes/imfusion-dicomwriter) use an instance of this class to determine how DICOM files should be loaded or saved. The [IOD_Registry](/cpp-sdk/4.5/api/classes/imfusion-dicom-iod-registry) offers some static methods that can extend the content of the default [IOD_Registry](/cpp-sdk/4.5/api/classes/imfusion-dicom-iod-registry).
+
+The most common use-case of the [IOD_Registry](/cpp-sdk/4.5/api/classes/imfusion-dicom-iod-registry) is enabled or disabling certain extensions. E.g. to enable the OverlayExtension:
+
+```cpp
+auto registry = Dicom::IOD_Registry::createDefault();
+auto overlayExt = registry->findExtension<Dicom::OverlayExtension>();
+if (overlayExt)
+    overlayExt->setEnabled(true);
+DicomLoader loader(..., std::move(registry));
+```
+ fragment
+,
+
+## Public Types
+
+- using **ContainerFactory** = [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt;[std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt;[SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset)&gt;(DcmDataset&, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html)&)&gt;
+
+## Public Member Functions
+
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &gt; [createContainer](#createcontainer) (DcmDataset &dataset) const — Creates a [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) instance for the given dataset.
+- void **addExtension** ([std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [Extension](/cpp-sdk/4.5/api/classes/imfusion-dicom-extension) &gt; extension) — Add a [Extension](/cpp-sdk/4.5/api/classes/imfusion-dicom-extension) to this instance.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; const [Extension](/cpp-sdk/4.5/api/classes/imfusion-dicom-extension) \* &gt; **extensions** () const — Return all Extensions available on this instance.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Extension](/cpp-sdk/4.5/api/classes/imfusion-dicom-extension) \* &gt; **extensions** ()
+- T \* [findExtension](#findextension) () — Find and return the first [Extension](/cpp-sdk/4.5/api/classes/imfusion-dicom-extension) that matches the type T.
+- void [addDatasetHandler](#adddatasethandler) ([std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [DatasetHandler](/cpp-sdk/4.5/api/classes/imfusion-dicom-datasethandler) &gt;()&gt; handlerConstruction) — Add a new [DatasetHandler](/cpp-sdk/4.5/api/classes/imfusion-dicom-datasethandler) for loading proprietary / non-standard DICOM image formats, or non-image datasets to this instance.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [DatasetHandler](/cpp-sdk/4.5/api/classes/imfusion-dicom-datasethandler) &gt; &gt; [createDatasetHandlers](#createdatasethandlers) () — Creates all registered [DatasetHandler](/cpp-sdk/4.5/api/classes/imfusion-dicom-datasethandler) objects \experimental.
+- bool [enableFallbackLoader](#enablefallbackloader) () const — Returns the flag whether to use a fallback loader in case the series has an unsupported SOP.
+- void [setEnableFallbackLoader](#setenablefallbackloader) (bool value) — Sets the flag whether to use a fallback loader in case the series has an unsupported SOP.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [IOD](/cpp-sdk/4.5/api/classes/imfusion-dicom-iod) &gt; [createLoaderIOD](#createloaderiod) (DcmDataset &dataset, const [ErrorRecorder](/cpp-sdk/4.5/api/classes/imfusion-dicom-errorrecorder) \*errorRecorder=nullptr, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &pathInfo="") — Creates the corresponding [IOD](/cpp-sdk/4.5/api/classes/imfusion-dicom-iod) object for the datasets SOP class UID.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **availableWriterIODs** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &image, const [ErrorRecorder](/cpp-sdk/4.5/api/classes/imfusion-dicom-errorrecorder) \*errorRecorder=nullptr) — Returns a list of writers that can save the given image.
+- bool **isMultiFrameIOD** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name) const — Returns true if the writer with the given name supports multiple frames in one dataset.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [IOD](/cpp-sdk/4.5/api/classes/imfusion-dicom-iod) &gt; [createWriterIOD](#createwriteriod) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name, DcmDataset &dataset, [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &image, const [ErrorRecorder](/cpp-sdk/4.5/api/classes/imfusion-dicom-errorrecorder) \*errorRecorder=nullptr) const — Creates the [IOD](/cpp-sdk/4.5/api/classes/imfusion-dicom-iod) for the writer with the given name.
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+## Static Public Member Functions
+
+- static [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; IOD_Registry &gt; [createDefault](#createdefault) () — Create a registry instance containing all default IODs and Extensions.
+- static [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; IOD_Registry &gt; [createEmpty](#createempty) () — Create an empty registry instance without any Extensions.
+- static void [registerContainerFactory](#registercontainerfactory) (ContainerFactory factory) — Register a factory for [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) subclasses.
+- static void [registerDefaultExtension](#registerdefaultextension) ([std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; const [Extension](/cpp-sdk/4.5/api/classes/imfusion-dicom-extension) &gt; extension) — Register a [Extension](/cpp-sdk/4.5/api/classes/imfusion-dicom-extension) that should be available by default.
+- static void [registerLoaderIOD](#registerloaderiod-1-2) (const char \*sopClassUID) — Registers a new [IOD](/cpp-sdk/4.5/api/classes/imfusion-dicom-iod).
+- static void [registerLoaderIOD](#registerloaderiod-2-2) ([std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; [IOD](/cpp-sdk/4.5/api/classes/imfusion-dicom-iod) \*(DcmDataset &, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &sopClassUID)&gt; canLoad) — Registers a new [IOD](/cpp-sdk/4.5/api/classes/imfusion-dicom-iod) for loading a [Dicom](/cpp-sdk/4.5/api/namespaces/imfusion-dicom) dataset.
+- static void [registerDefaultDatasetHandler](#registerdefaultdatasethandler) ([std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [DatasetHandler](/cpp-sdk/4.5/api/classes/imfusion-dicom-datasethandler) &gt;()&gt; handlerConstruction) — Registers a new [DatasetHandler](/cpp-sdk/4.5/api/classes/imfusion-dicom-datasethandler) that should available by default.
+- static void [registerWriterIOD](#registerwriteriod) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name, bool isMultiframe, [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html)([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &)&gt; canWrite) — Registers a new [IOD](/cpp-sdk/4.5/api/classes/imfusion-dicom-iod) for writing a [Dicom](/cpp-sdk/4.5/api/namespaces/imfusion-dicom) dataset.
+
+## Member Function Documentation
+
+### createDefault
+
+```cpp
+std::unique_ptr < IOD_Registry > ImFusion::Dicom::IOD_Registry::createDefault ()
+```
+
+*static*
+
+Create a registry instance containing all default IODs and Extensions.
+
+It comes with at least the following extensions:
+
+- [GeneralEquipmentExtension](/cpp-sdk/4.5/api/classes/imfusion-dicom-generalequipmentextension)
+- [VOILUTExtension](/cpp-sdk/4.5/api/classes/imfusion-dicom-voilutextension)
+- [RealWorldValueMappingExtension](/cpp-sdk/4.5/api/classes/imfusion-dicom-realworldvaluemappingextension)
+- OverlayExtension
+
+### createEmpty
+
+```cpp
+std::unique_ptr < IOD_Registry > ImFusion::Dicom::IOD_Registry::createEmpty ()
+```
+
+*static*
+
+Create an empty registry instance without any Extensions.
+
+Currently still contains all IODs but this might change in the future!
+
+### registerContainerFactory
+
+```cpp
+void ImFusion::Dicom::IOD_Registry::registerContainerFactory (ContainerFactory factory)
+```
+
+*static*
+
+Register a factory for [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) subclasses.
+
+Certain DICOMs should be loaded as a specialized sub-class of [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset), e.g. as a UltrasoundSweep or ConeBeamData. Factories should only return a new object if the given DICOM dataset fullfills all requirements of the corresponding specialized [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset). Otherwise they should return nullptr.
+
+### createContainer
+
+```cpp
+std::unique_ptr < SharedImageSet > ImFusion::Dicom::IOD_Registry::createContainer (DcmDataset & dataset) const
+```
+
+Creates a [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) instance for the given dataset.
+
+This might create a sub-class of [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) such as UltrasoundSweep or ConeBeamData. Never returns nullptr.
+
+### registerDefaultExtension
+
+```cpp
+void ImFusion::Dicom::IOD_Registry::registerDefaultExtension (std::unique_ptr < const Extension > extension)
+```
+
+*static*
+
+Register a [Extension](/cpp-sdk/4.5/api/classes/imfusion-dicom-extension) that should be available by default.
+
+The given loader instance will only be used as a kind of template to clone the instances from which will receive the actual DICOM data.
+
+### findExtension
+
+```cpp
+template<typename T> T * ImFusion::Dicom::IOD_Registry::findExtension ()
+```
+
+Find and return the first [Extension](/cpp-sdk/4.5/api/classes/imfusion-dicom-extension) that matches the type T.
+
+Return nullptr if no such loader exists.
+
+### registerLoaderIOD
+
+```cpp
+template<typename T> void ImFusion::Dicom::IOD_Registry::registerLoaderIOD (const char * sopClassUID)
+```
+
+*static*
+
+Registers a new [IOD](/cpp-sdk/4.5/api/classes/imfusion-dicom-iod).
+
+Replaces any [IOD](/cpp-sdk/4.5/api/classes/imfusion-dicom-iod) with the same SOP class UID. A single [IOD](/cpp-sdk/4.5/api/classes/imfusion-dicom-iod) can be registered for several SOP class UIDs.
+
+### registerLoaderIOD
+
+```cpp
+void ImFusion::Dicom::IOD_Registry::registerLoaderIOD (std::function < IOD *(DcmDataset &, const std::string &sopClassUID)> canLoad)
+```
+
+*static*
+
+Registers a new [IOD](/cpp-sdk/4.5/api/classes/imfusion-dicom-iod) for loading a [Dicom](/cpp-sdk/4.5/api/namespaces/imfusion-dicom) dataset.
+
+The function should return a valid [IOD](/cpp-sdk/4.5/api/classes/imfusion-dicom-iod) implementation that can load the given dataset or 0 otherwise. The sopClassUID is provided for convenience. Loaders are queried in reverse order of registration i.e. the last registered loader is queried first.
+
+### registerDefaultDatasetHandler
+
+```cpp
+void ImFusion::Dicom::IOD_Registry::registerDefaultDatasetHandler (std::function < std::unique_ptr < DatasetHandler >()> handlerConstruction)
+```
+
+*static*
+
+Registers a new [DatasetHandler](/cpp-sdk/4.5/api/classes/imfusion-dicom-datasethandler) that should available by default.
+
+\experimental
+
+### addDatasetHandler
+
+```cpp
+void ImFusion::Dicom::IOD_Registry::addDatasetHandler (std::function < std::unique_ptr < DatasetHandler >()> handlerConstruction)
+```
+
+Add a new [DatasetHandler](/cpp-sdk/4.5/api/classes/imfusion-dicom-datasethandler) for loading proprietary / non-standard DICOM image formats, or non-image datasets to this instance.
+
+\experimental
+
+### createDatasetHandlers
+
+```cpp
+std::vector < std::unique_ptr < DatasetHandler > > ImFusion::Dicom::IOD_Registry::createDatasetHandlers ()
+```
+
+Creates all registered [DatasetHandler](/cpp-sdk/4.5/api/classes/imfusion-dicom-datasethandler) objects \experimental.
+
+### enableFallbackLoader
+
+```cpp
+bool ImFusion::Dicom::IOD_Registry::enableFallbackLoader () const
+```
+
+Returns the flag whether to use a fallback loader in case the series has an unsupported SOP.
+
+**Note:** The fallback loader will use the [MultiFrameImageIOD](/cpp-sdk/4.5/api/classes/imfusion-dicom-multiframeimageiod) class to read the series and may end up with incomplete/invalid data.
+
+### setEnableFallbackLoader
+
+```cpp
+void ImFusion::Dicom::IOD_Registry::setEnableFallbackLoader (bool value)
+```
+
+Sets the flag whether to use a fallback loader in case the series has an unsupported SOP.
+
+Enabled by default.
+
+**Note:** The fallback loader will use the [MultiFrameImageIOD](/cpp-sdk/4.5/api/classes/imfusion-dicom-multiframeimageiod) class to read the series and may end up with incomplete/invalid data.
+
+### createLoaderIOD
+
+```cpp
+std::unique_ptr < IOD > ImFusion::Dicom::IOD_Registry::createLoaderIOD (DcmDataset & dataset, const ErrorRecorder * errorRecorder = nullptr, const std::string & pathInfo = "")
+```
+
+Creates the corresponding [IOD](/cpp-sdk/4.5/api/classes/imfusion-dicom-iod) object for the datasets SOP class UID.
+
+Returned object must be deleted by caller.
+
+### registerWriterIOD
+
+```cpp
+template<typename T> void ImFusion::Dicom::IOD_Registry::registerWriterIOD (const std::string & name, bool isMultiframe, std::function < std::string (SharedImageSet &)> canWrite)
+```
+
+*static*
+
+Registers a new [IOD](/cpp-sdk/4.5/api/classes/imfusion-dicom-iod) for writing a [Dicom](/cpp-sdk/4.5/api/namespaces/imfusion-dicom) dataset.
+
+Each writer is uniquely identified by its name. The canWrite method should return a SOP class UID if the registered writer can save the given image or an empty string otherwise. The function is allowed to return different SOP class UID for different images. The isMultiframe flag defines if the [IOD](/cpp-sdk/4.5/api/classes/imfusion-dicom-iod) can store multiple frames in one dataset or not.
+
+### createWriterIOD
+
+```cpp
+std::unique_ptr < IOD > ImFusion::Dicom::IOD_Registry::createWriterIOD (const std::string & name, DcmDataset & dataset, SharedImageSet & image, const ErrorRecorder * errorRecorder = nullptr) const
+```
+
+Creates the [IOD](/cpp-sdk/4.5/api/classes/imfusion-dicom-iod) for the writer with the given name.
+
+If no writer with that name is registered, 0 is returned.
+
+### configure
+
+```cpp
+void ImFusion::Dicom::IOD_Registry::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### configuration
+
+```cpp
+void ImFusion::Dicom::IOD_Registry::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality

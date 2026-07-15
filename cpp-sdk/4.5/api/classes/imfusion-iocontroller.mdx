@@ -1,0 +1,76 @@
+---
+title: "ImFusion::IoController"
+sidebarTitle: "IoController"
+description: "Controller for image IO."
+---
+
+`#include <ImFusion/GUI/IoController.h>`
+
+## Overview
+
+[Controller](/cpp-sdk/4.5/api/classes/imfusion-controller) for image IO.
+
+## Public Slots
+
+- virtual void **run** ()
+
+## Public Member Functions
+
+- **IoController** ([IoAlgorithm](/cpp-sdk/4.5/api/classes/imfusion-ioalgorithm) \*[algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithmcontroller), bool multiFileSelection=false, bool noOutput=false) — Constructor with the algorithm instance.
+- void [init](#init) () override — Initializes the widget.
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Set one or multiple properties.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Location](/cpp-sdk/4.5/api/classes/imfusion-controller) &gt; [supportedLocations](#supportedlocations) () const override — Returns the list of locations in which this controller is allowed to be placed by the parent [MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase).
+- [Location](/cpp-sdk/4.5/api/classes/imfusion-controller) [preferredLocation](#preferredlocation) () const override — Returns the preferred location in which the parent [MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase) should place this controller.
+
+## Protected Attributes
+
+- [IoAlgorithm](/cpp-sdk/4.5/api/classes/imfusion-ioalgorithm) \* **m_alg** — The algorithm instance.
+- bool **m_multiFileSelection**
+- bool **m_noOutput** — If set, no error will be displayed if the algorithm does not produce any output.
+- [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \* **m_glProperties**
+
+## Member Function Documentation
+
+### init
+
+```cpp
+void ImFusion::IoController::init ()
+```
+
+*override, virtual*
+
+Initializes the widget.
+
+### configure
+
+```cpp
+void ImFusion::IoController::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Set one or multiple properties.
+
+### supportedLocations
+
+```cpp
+std::vector < Location > ImFusion::IoController::supportedLocations () const
+```
+
+*override, virtual*
+
+Returns the list of locations in which this controller is allowed to be placed by the parent [MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase).
+
+If the controller should not be placed/wrapped by the host but stand by itself you should return a list containing only [Location::Naked](/cpp-sdk/4.5/api/classes/imfusion-controller).
+
+### preferredLocation
+
+```cpp
+Location ImFusion::IoController::preferredLocation () const
+```
+
+*override, virtual*
+
+Returns the preferred location in which the parent [MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase) should place this controller.
+
+If the controller should not be placed/wrapped by the host but stand by itself you should return [Location::Naked](/cpp-sdk/4.5/api/classes/imfusion-controller).

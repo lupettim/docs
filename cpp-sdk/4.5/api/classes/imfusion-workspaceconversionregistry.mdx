@@ -1,0 +1,34 @@
+---
+title: "ImFusion::WorkspaceConversionRegistry"
+sidebarTitle: "WorkspaceConversionRegistry"
+description: "Singleton to manage registered workspace conversion functions and apply them to workspace file."
+---
+
+`#include <ImFusion/GUI/WorkspaceConversion.h>`
+
+## Overview
+
+[Singleton](/cpp-sdk/4.5/api/classes/imfusion-singleton) to manage registered workspace conversion functions and apply them to workspace file.
+
+**See also:** [Workspace](/cpp-sdk/4.5/api/classes/imfusion-workspace)
+
+## Public Member Functions
+
+- void **addConversion** ([WorkspaceConversionFunction](/cpp-sdk/4.5/api/structs/imfusion-workspaceconversionfunction) conversionFunction) — Registers the given conversion function, which will be executed every time a workspace is loaded that has a version number less or equal to *version*.
+- void [convertWorkspace](#convertworkspace) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) &properties, int inputVersion, int targetVersion, const [Filesystem::Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path) &workspaceFile) const — Executes all conversion functions that were registered for a version number in the range of [inputVersion, targetVersion).
+
+## Static Public Member Functions
+
+- static WorkspaceConversionRegistry & **instance** ()
+
+## Member Function Documentation
+
+### convertWorkspace
+
+```cpp
+void ImFusion::WorkspaceConversionRegistry::convertWorkspace (Properties & properties, int inputVersion, int targetVersion, const Filesystem::Path & workspaceFile) const
+```
+
+Executes all conversion functions that were registered for a version number in the range of [inputVersion, targetVersion).
+
+Their order is defined by version and order of registration. Provide the absolute workspace file path to allow resolving relative paths within the workspace.

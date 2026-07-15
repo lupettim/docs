@@ -1,0 +1,23 @@
+---
+title: "ImFusion::DateFilterWidget"
+sidebarTitle: "DateFilterWidget"
+---
+
+## Public Types
+
+- enum class **Presentation** : int &#123; **Range** = 0 , **NewerThan** = 1 , **OlderThan** = 2 &#125;
+- enum class **TimeUnit** : int &#123; **Years** = 0 , **Months** = 1 , **Days** = 2 &#125;
+- using **Filter** = [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt;[std::tuple](http://en.cppreference.com/w/cpp/utility/tuple.html)&lt;QDate, QDate&gt;&gt;
+
+## Public Slots
+
+- void **setDateFilter** (const Filter &filter)
+
+## Signals
+
+- void **dateFilterChanged** (const Filter &)
+
+## Public Member Functions
+
+- **DateFilterWidget** (const QString &label, QWidget \*parent=nullptr)
+- Filter **dateFilter** () const

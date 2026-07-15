@@ -1,0 +1,109 @@
+---
+title: "ImFusion::TrackedSharedImageSetDisplayDataController"
+sidebarTitle: "TrackedSharedImageSetDisplayDataController"
+description: "GUI controller for adjusting TrackedSharedImageSet visualization."
+---
+
+`#include <ImFusion/GUI/TrackedSharedImageSetDisplayDataController.h>`
+
+## Overview
+
+[GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui) controller for adjusting [TrackedSharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-trackedsharedimageset) visualization.
+
+## Public Slots
+
+- void **onSelectionChanged** () — Invokes the method selectionChanged(const SharedImageSet\*) with m_us.
+- void **onAnnotationDeleting** ([InteractiveObject](/cpp-sdk/4.5/api/classes/imfusion-interactiveobject) \*annot) — Removes internal references if a mesh is manually deleted from annotation model.
+- void **updateTrackingTargets** () — Updates the number and matrix of the tracking mesh objects.
+
+## Public Member Functions
+
+- **TrackedSharedImageSetDisplayDataController** ([TrackedSharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-trackedsharedimageset) \*tsis)
+- void [init](#init) () override — Two-step initialization function to be implemented by subclasses.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [title](#title) () const override — Returns the shown widget title if the controller is shown in a mode that supports this (e.g.
+- void **selectionChanged** () — Update overlays.
+- void [onVisibleDataChanged](#onvisibledatachanged) (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data) override — React when a different image set is selected.
+- void **setTrackingQualityBarVisibilityMode** ([GlScalarBarOverlay::RenderMode](/cpp-sdk/4.5/api/classes/imfusion-glscalarbaroverlay) mode)
+- [GlScalarBarOverlay::RenderMode](/cpp-sdk/4.5/api/classes/imfusion-glscalarbaroverlay) **trackingQualityBarVisibilityMode** () const
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Location](/cpp-sdk/4.5/api/classes/imfusion-controller) &gt; [supportedLocations](#supportedlocations) () const override — Returns the list of locations in which this controller is allowed to be placed by the parent [MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase).
+- [Location](/cpp-sdk/4.5/api/classes/imfusion-controller) [preferredLocation](#preferredlocation) () const override — Returns the preferred location in which the parent [MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase) should place this controller.
+
+## Static Public Member Functions
+
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, DataController \*\*a=0)
+
+## Protected Member Functions
+
+- bool [supportsToolBar](#supportstoolbar) () const override — Subclasses can return true if they support showing their [GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui) in [Location::ToolBar](/cpp-sdk/4.5/api/classes/imfusion-controller).
+
+## Member Function Documentation
+
+### init
+
+```cpp
+void ImFusion::TrackedSharedImageSetDisplayDataController::init ()
+```
+
+*override, virtual*
+
+Two-step initialization function to be implemented by subclasses.
+
+This function is called by [setMainWindowBase()](/cpp-sdk/4.5/api/classes/imfusion-controller) after the [m_disp](/cpp-sdk/4.5/api/classes/imfusion-controller) and [m_main](/cpp-sdk/4.5/api/classes/imfusion-controller) attributes have been set and hence a complete initialization of the controller is possible at this point.
+
+### title
+
+```cpp
+std::string ImFusion::TrackedSharedImageSetDisplayDataController::title () const
+```
+
+*override, virtual*
+
+Returns the shown widget title if the controller is shown in a mode that supports this (e.g.
+
+when in dock). Unless overridden, it returns the factory name.
+
+### onVisibleDataChanged
+
+```cpp
+void ImFusion::TrackedSharedImageSetDisplayDataController::onVisibleDataChanged (const DataList & data)
+```
+
+*override, virtual*
+
+React when a different image set is selected.
+
+### supportedLocations
+
+```cpp
+std::vector < Location > ImFusion::TrackedSharedImageSetDisplayDataController::supportedLocations () const
+```
+
+*inline, override, virtual*
+
+Returns the list of locations in which this controller is allowed to be placed by the parent [MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase).
+
+If the controller should not be placed/wrapped by the host but stand by itself you should return a list containing only [Location::Naked](/cpp-sdk/4.5/api/classes/imfusion-controller).
+
+### preferredLocation
+
+```cpp
+Location ImFusion::TrackedSharedImageSetDisplayDataController::preferredLocation () const
+```
+
+*inline, override, virtual*
+
+Returns the preferred location in which the parent [MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase) should place this controller.
+
+If the controller should not be placed/wrapped by the host but stand by itself you should return [Location::Naked](/cpp-sdk/4.5/api/classes/imfusion-controller).
+
+### supportsToolBar
+
+```cpp
+bool ImFusion::TrackedSharedImageSetDisplayDataController::supportsToolBar () const
+```
+
+*inline, override, protected, virtual*
+
+Subclasses can return true if they support showing their [GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui) in [Location::ToolBar](/cpp-sdk/4.5/api/classes/imfusion-controller).
+
+This interface is used by the default implementation of [supportedLocations()](#supportedlocations) and [preferredLocation()](#preferredlocation) to decide whether to use [Location::ToolBar](/cpp-sdk/4.5/api/classes/imfusion-controller).

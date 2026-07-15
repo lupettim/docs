@@ -1,0 +1,96 @@
+---
+title: "ImFusion::GlCrosshair"
+sidebarTitle: "GlCrosshair"
+description: "Renders a crosshair as two symmetrical and orthogonal lines, with a gap in the center with a given length."
+---
+
+`#include <ImFusion/GL/GlCrosshair.h>`
+
+## Overview
+
+Renders a crosshair as two symmetrical and orthogonal lines, with a gap in the center with a given length.
+
+Crosshair total size and gap is defined side to side. As follows for one of the crosshair lines:
+
+```cpp
+<-------  size  ------->
+ -----           -----
+|     | <-gap-> |     |
+ -----           -----
+```
+ fragment
+
+## Public Member Functions
+
+- virtual void [draw](#draw) (const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &view) override — Draw the object in 3D space.
+- virtual [Geometry::AlignedBox](/cpp-sdk/4.5/api/classes/imfusion-geometry-alignedbox) [bounds](#bounds) () const override — Get the axis-aligned bounding box of this [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) in world space.
+- virtual [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [typeName](#typename) () const override — Return unique identifier for this object class used for serialization.
+- void **setLineWidth** (double width) — Sets the crosshair line width.
+- void **setCenterGap** (vec2i size) — Sets the gap size in the crosshair center in pixels.
+- void **setSize** (vec2i size) — Sets the total crosshair size in pixels, horizontal and vertical.
+- void **setColor** (vec4 color) — Sets the crosshair lines color.
+- void **setProjectionDistance** (double distance) — Sets the projection limit of the crosshair in mm.
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+## Member Function Documentation
+
+### draw
+
+```cpp
+virtual void ImFusion::GlCrosshair::draw (const GlView & view)
+```
+
+*override, virtual*
+
+Draw the object in 3D space.
+
+### bounds
+
+```cpp
+virtual Geometry::AlignedBox ImFusion::GlCrosshair::bounds () const
+```
+
+*override, virtual*
+
+Get the axis-aligned bounding box of this [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) in world space.
+
+Return an empty (default-constructed) AlignedBox object if the [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) does not reside in world space.
+
+### typeName
+
+```cpp
+virtual std::string ImFusion::GlCrosshair::typeName () const
+```
+
+*override, virtual*
+
+Return unique identifier for this object class used for serialization.
+
+### configure
+
+```cpp
+void ImFusion::GlCrosshair::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### configuration
+
+```cpp
+void ImFusion::GlCrosshair::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality

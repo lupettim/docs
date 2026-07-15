@@ -1,0 +1,42 @@
+---
+title: "Threading / Concurrency"
+description: "A core design principle of the ImFusion SDK is that its API not thread-safe by default, unless explicitly advised."
+---
+
+**Note:** *General guideline regarding concurrency within the ImFusion SDK:*
+
+ All classes / interfaces are **not** thread-safe by default, unless explicitly advised.
+
+A core design principle of the ImFusion SDK is that its API **not** thread-safe by default, unless explicitly advised. Thus, the majority of the core data structures is not designed to be used from multiple threads concurrently. Apart from a few explicit exceptions such as the Concurrency in the Stream Plugin, all function calls to the public API must only originate from the same thread that performed the initialization, i.e. the thread that called [Framework::init()](/cpp-sdk/4.5/api/namespaces/imfusion-framework) or instantiated the [ApplicationController](/cpp-sdk/4.5/api/classes/imfusion-applicationcontroller). In particular, all code interacting with the main [GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui) must always be executed on the main [GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui) thread.
+
+You can create and use instances of classes on separate threads as long as you ensure that they remain self-contained and do not interact with the rest of the framework. If they do you must implement proper synchronization primitives (e.g. mutexes, message passing via event loops) yourself. For instance, you can use a classic fork-and-join approach such as OpenMP parallel for to parallelize expensive computations. Be advised, that you must take extra precautions if your parallelized algorithm uses OpenGL (see Concurrent OpenGL).
+
+Many classes and algorithms of the ImFusion SDK internally use OpenGL to leverage the computing power of GPUs. The architecture of the OpenGL library is designed to rely a lot on global (technically thread-local) state. Therefore, all calls to GL functions, and by extension to ImFusion classes using OpenGL internally, require that an OpenGL context is being *current* (active) at call-time.
+
+[Framework initalization](/cpp-sdk/4.5/api/namespaces/imfusion-framework) will take care to create an OpenGL context for the main thread. Thus, it is safe to call any GL functionality on the main thread.
+
+If code running on separate threads requires OpenGL, you need to create and activate a separate GL context for this thread (there must be a 1-1 mapping between threads and contexts). Furthermore, if you want to exchange GL data (e.g. textures/images) between threads their GL contexts need to be shared. Setting this up is easy by using the [GL::ContextManager](/cpp-sdk/4.5/api/classes/imfusion-gl-contextmanager):
+
+```cpp
+// launch a separate worker thread
+std::thread newThread([]() {
+ // by default this thread will not support OpenGL
+
+ // create a new GL context for the current thread and share it with the main context of the SDK
+ std::unique_ptr<GL::Context> ctx = GL::ContextManager::get().createContext();
+
+ // OpenGL will be available in this thread as long as `ctx` remains alive
+});
+```
+ fragment
+
+**Note:** When sharing data between OpenGL context/threads, you must ensure proper synchronization to avoid race conditions, both on the CPU side (e.g. using [std::mutex](http://en.cppreference.com/w/cpp/thread/mutex.html)) and on the GPU side (e.g. using [GL::SyncObject](/cpp-sdk/4.5/api/classes/imfusion-gl-syncobject)).
+
+**See also:** - OpenGL
+- OpenGL Wrapper Library
+
+The API of the ImFusionStream is a notable exception from the general single-threaded execution model of the ImFusion SDK. Due to the nature of real-time streaming, a single-threaded execution can not be guaranteed when processing live streaming inputs.
+
+Usually, producers of streamed data run on separate threads and notify their consumers synchronously on that particular thread via Stream::signalStreamData. In order to not block the producer thread with expensive computations, post-processing of the stream data is supposed to be done on a separate thread. The payload data is passed via a const [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html) to avoid lifetime issues and avoid shared mutable state.
+
+If the streamed data needs to be passed to the main application (e.g. the [DisplayWidget](/cpp-sdk/4.5/api/classes/imfusion-displaywidget) for visualization) you need to ensure proper synchronization since you may access it only from the main thread. The easiest way to achieve this is to use the event loop of the GUI toolkit (e.g. Qt) to pass the processed data to the main thread and have it consumed there.

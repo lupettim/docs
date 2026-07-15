@@ -1,0 +1,61 @@
+---
+title: "ImFusion::Curve"
+sidebarTitle: "Curve"
+description: "Interpolation and fitting of a 1D curve."
+---
+
+`#include <ImFusion/Base/Curve.h>`
+
+## Overview
+
+Interpolation and fitting of a 1D curve.
+
+If no x values are provided, equal-spaced data locations within 0..1 are used. Interpolation is done with Hermite cubic splines and conditioning to avoid overshoot of the curve.
+
+## Public Member Functions
+
+- **Curve** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; &y) — Creates curve with equal-spaced data values to interpolate.
+- **Curve** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; &x, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; &y) — Creates curve with arbitrary data positions and values.
+- **Curve** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; &points)
+- bool [fit](#fit) (int n, bool adaptConst=false, bool optimize=false) — Fit curve using desired dimension, optionally optimizing point locations.
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; & **x** () const — Access to the support points of the curve.
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; & **y** () const — Access to the function values of the curve.
+
+## Curve and error evaluation
+
+- double [evaluate](#evaluate-1-2) (double x) const
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; **evaluate** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; &x) const — Evaluate the curve function at multiple locations.
+- void **evaluate** ([std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; &points) const — Evaluate the curve at multiple locations and write the result back in the same vector.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; [evaluate](#evaluate-2-2) (int n) const — Evaluate the curve with a chosen resolution.
+- double **error** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; &y) const — Compute the mean error of the curve and the provided regular spaced data.
+- double **error** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; &x, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; &y) const — Compute the mean error of the curve and the provided data in x and y.
+
+## Member Function Documentation
+
+### fit
+
+```cpp
+bool ImFusion::Curve::fit (int n, bool adaptConst = false, bool optimize = false)
+```
+
+Fit curve using desired dimension, optionally optimizing point locations.
+
+**Returns:** False if no data point locations given in m_x, true otherwise.
+
+### evaluate
+
+```cpp
+double ImFusion::Curve::evaluate (double x) const
+```
+
+Evaluate the curve function at a single location
+
+### evaluate
+
+```cpp
+std::vector < double > ImFusion::Curve::evaluate (int n) const
+```
+
+Evaluate the curve with a chosen resolution.
+
+The curve is evaluated with n samples in a regular grid defined by the minimum and maximum of the data point locations (not necessarily 0..1).

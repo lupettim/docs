@@ -1,0 +1,44 @@
+---
+title: "ImFusion::Interaction2D"
+sidebarTitle: "Interaction2D"
+---
+
+## Public Member Functions
+
+- **Interaction2D** ([GUI::SliceView](/cpp-sdk/4.5/api/classes/imfusion-gui-sliceview) &view)
+- void **setCenter** (const vec3 &center)
+- void **setScale** (double scale)
+- void **setZoom** (double zoom)
+- void **setSlice** (const [Slice](/cpp-sdk/4.5/api/classes/imfusion-slice) &slice)
+- int **width** () const
+- int **height** () const
+- double **scale** () const
+- double **zoom** () const
+- vec3 **center** () const
+- [Slice](/cpp-sdk/4.5/api/classes/imfusion-slice) **slice** () const
+- [Slice](/cpp-sdk/4.5/api/classes/imfusion-slice) **originalSlice** () const
+- [GUI::EventResult](/cpp-sdk/4.5/api/structs/imfusion-gui-eventresult) [handleMouseEvent](#handlemouseevent) (const [GUI::MouseEvent](/cpp-sdk/4.5/api/classes/imfusion-gui-mouseevent) &event) override
+- [GUI::EventResult](/cpp-sdk/4.5/api/structs/imfusion-gui-eventresult) [handleContextMenuEvent](#handlecontextmenuevent) (const [GUI::ContextMenuEvent](/cpp-sdk/4.5/api/classes/imfusion-gui-contextmenuevent) &event) override
+
+## Public Attributes
+
+- Signal **resetPressed**
+- Signal&lt; vec3 &gt; **doubleClicked**
+
+## Member Function Documentation
+
+### handleMouseEvent
+
+```cpp
+GUI::EventResult ImFusion::Interaction2D::handleMouseEvent (const GUI::MouseEvent & event)
+```
+
+*override, virtual*
+
+### handleContextMenuEvent
+
+```cpp
+GUI::EventResult ImFusion::Interaction2D::handleContextMenuEvent (const GUI::ContextMenuEvent & event)
+```
+
+*override, virtual*

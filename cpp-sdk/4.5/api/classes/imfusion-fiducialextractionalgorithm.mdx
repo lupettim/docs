@@ -1,0 +1,89 @@
+---
+title: "ImFusion::FiducialExtractionAlgorithm"
+sidebarTitle: "FiducialExtractionAlgorithm"
+description: "Extract spherical fiducials from data set in 2D and 3D."
+---
+
+`#include <ImFusion/Seg/FiducialExtractionAlgorithm.h>`
+
+## Overview
+
+Extract spherical fiducials from data set in 2D and 3D.
+
+## Classes
+
+- struct [Fiducial](/cpp-sdk/4.5/api/structs/imfusion-fiducialextractionalgorithm-fiducial)
+
+## Public Types
+
+- enum class **Mode** &#123; **Fiducials2D** , **Fiducials3D** &#125; — [Status](/cpp-sdk/4.5/api/classes/imfusion-algorithm) codes.
+
+## Public Member Functions
+
+- **FiducialExtractionAlgorithm** (const [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*img, Mode mode)
+- const [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \* **img** () const
+- void **setMode** (FiducialExtractionAlgorithm::Mode mode)
+- Mode **mode** () const
+- void **setMinContrast** (double v)
+- double **minContrast** () const
+- void **setSlice** (int slice)
+- int **slice** () const
+- void **setSliceStep** (int sliceStep)
+- int **sliceStep** () const
+- void **setRoiSize** (double roiSize)
+- double **roiSize** () const
+- void **setDiameter** (double diameter)
+- double **diameter** () const
+- void **setFixedDiameter** (bool fixedDiameter)
+- bool **fixedDiameter** () const
+- void **setGlobalDetection** (bool global)
+- bool **globalDetection** () const
+- void **setMinCoverage** (double minCoverage)
+- double **minCoverage** () const
+- void **setScoreThreshold** (double thresh)
+- double **scoreThreshold** () const
+- void **setDetectOnSlice** (bool detectOnSlice)
+- bool **detectOnSlice** () const
+- void **setPoint** (const vec3 &point)
+- const vec3 & **point** () const
+- void [compute](#compute) () override — Execute the algorithm.
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Fiducial](/cpp-sdk/4.5/api/structs/imfusion-fiducialextractionalgorithm-fiducial) &gt; & **fiducials** () const
+- void **abort** ()
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Set one or multiple properties.
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Retrieve the properties of this object.
+
+## Static Public Member Functions
+
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=0) — If data is compatible with algorithm return true. If a is not zero, create algorithm with input data.
+
+## Member Function Documentation
+
+### compute
+
+```cpp
+void ImFusion::FiducialExtractionAlgorithm::compute ()
+```
+
+*override, virtual*
+
+Execute the algorithm.
+
+### configure
+
+```cpp
+void ImFusion::FiducialExtractionAlgorithm::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Set one or multiple properties.
+
+### configuration
+
+```cpp
+void ImFusion::FiducialExtractionAlgorithm::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Retrieve the properties of this object.

@@ -1,0 +1,258 @@
+---
+title: "ImFusion::ImFusionImage"
+sidebarTitle: "ImFusionImage"
+description: "Loading and saving of the ImFusion image format."
+---
+
+`#include <ImFusion/Base/ImFusionImage.h>`
+
+## Overview
+
+Loading and saving of the ImFusion image format.
+
+## Classes
+
+- class [ImFusionImageHeader](/cpp-sdk/4.5/api/classes/imfusion-imfusionimage-imfusionimageheader) — For image types, the corresponding data block contains the following header.
+
+## Public Member Functions
+
+- **ImFusionImage** () — Constructor with filename to load or save.
+- **~ImFusionImage** () override — Deletes all auxiliary storage however not any loaded data.
+- void [setCompressionOptions](#setcompressionoptions) (int mode, int passes, int dx, int dy) — Set options for image compression.
+- void **setCompressionOptions** ([ImFusionFile::CompressionMode](/cpp-sdk/4.5/api/classes/imfusion-imfusionfile) mode, int passes, int dx, int dy)
+- [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \* [loadInstance](#loadinstance) (unsigned int type, unsigned int headerSize) override — Create specialized instance for a given data type or return null if not supported.
+- unsigned int [saveType](#savetype) (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data) override — Return type for saving a given data instance or null if not supported.
+- bool [load](#load) (unsigned int type, [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data, [std::istream](http://en.cppreference.com/w/cpp/io/basic_istream.html) &file, [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) \*p=0) override — Load specified data type into given class instance from file, return true upon success.
+- bool [save](#save) ([Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data, [std::ostream](http://en.cppreference.com/w/cpp/io/basic_ostream.html) &file, [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) \*p=0) override — Save a data instance to file, return true if successful.
+- bool [loadFromAsyncFormat](#loadfromasyncformat) ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*is, [std::istream](http://en.cppreference.com/w/cpp/io/basic_istream.html) &file, [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) \*p=0) — Loads a [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) that was saved using the async save methods.
+- void **setCurrentFilePath** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &path) — Sets the path of the current IMF file being loaded/saved.
+- const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) & **currentFilePath** () const — Returns the path of the current IMF file being loaded/saved.
+
+## Static Public Member Functions
+
+- static unsigned int **imageSaveType** (const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*is) — Return the first 9 bits of the save type of a given [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset).
+
+## Protected Member Functions
+
+- virtual bool **loadHeader** ([std::istream](http://en.cppreference.com/w/cpp/io/basic_istream.html) &file) — Load the file header, return true upon success.
+- virtual unsigned char **saveHeader** ([std::ostream](http://en.cppreference.com/w/cpp/io/basic_ostream.html) &file, [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*is, [ImageCompression](/cpp-sdk/4.5/api/classes/imfusion-imagecompression) \*c, int nf) — Save the file header, return the data format.
+- bool **loadFrame** ([std::istream](http://en.cppreference.com/w/cpp/io/basic_istream.html) &file, const [ImageDescriptor](/cpp-sdk/4.5/api/structs/imfusion-imagedescriptor) &d, const mat4 &m, const double t, unsigned int blockType, [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*is) — Loads an image data frame, returns true if successful.
+- [ImageDescriptor](/cpp-sdk/4.5/api/structs/imfusion-imagedescriptor) **loadDescriptor** ([std::istream](http://en.cppreference.com/w/cpp/io/basic_istream.html) &file) — Load an image descriptor.
+- void **saveDescriptor** ([std::ostream](http://en.cppreference.com/w/cpp/io/basic_ostream.html) &file, const [ImageDescriptor](/cpp-sdk/4.5/api/structs/imfusion-imagedescriptor) &d, int reverseScaling=1) — Save an image descriptor.
+- mat4 **loadMatrix** ([std::istream](http://en.cppreference.com/w/cpp/io/basic_istream.html) &file) — Load a transformation matrix.
+- void **saveMatrix** ([std::ostream](http://en.cppreference.com/w/cpp/io/basic_ostream.html) &file, const mat4 &m) — Save a matrix.
+- void **saveImage** ([std::ostream](http://en.cppreference.com/w/cpp/io/basic_ostream.html) &file, const [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) \*img, unsigned char format) const — Save a single image given compression format.
+- void **loadImage** ([std::istream](http://en.cppreference.com/w/cpp/io/basic_istream.html) &file, [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; T &gt; \*img) const — Template method to load a compressed image.
+- void **saveImage** ([std::ostream](http://en.cppreference.com/w/cpp/io/basic_ostream.html) &file, const [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; T &gt; \*img, unsigned char format) const — Template method to actually save an image with compression.
+- [Data::Modality](/cpp-sdk/4.5/api/classes/imfusion-data) **computeModality** (unsigned int blockType) const — Assemble image modality from block type and data format.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **currentFileDirectory** () const — Returns the directory of the ImFusion file currently being loaded/saved.
+- virtual bool **loadCompressedImageSet** ([std::istream](http://en.cppreference.com/w/cpp/io/basic_istream.html) &file, [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*is) — Decompress and load a shared image set.
+- virtual bool **saveCompressedImageSet** ([std::ostream](http://en.cppreference.com/w/cpp/io/basic_ostream.html) &file, [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*is) — Compress and save a shared image set.
+
+## Protected Attributes
+
+- [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) \* **m_progress** — Optional progress callback interface.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [ImageDescriptor](/cpp-sdk/4.5/api/structs/imfusion-imagedescriptor) &gt; **m_desc** — [Image](/cpp-sdk/4.5/api/classes/imfusion-image) descriptors for per frame data.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; mat4 &gt; **m_matrices** — Matrix transformation for per frame data.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; **m_timestamps** — Timestamp for per frame data.
+- [ImFusionImageHeader](/cpp-sdk/4.5/api/classes/imfusion-imfusionimage-imfusionimageheader) \* **m_header** — The image format header.
+- [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) **m_data** — List of all loaded image data.
+
+## Options which are handed through to the ImageCompression class
+
+- int **m_cMode** — Main compression mode.
+- int **m_cPasses** — Number of passes for image compression.
+- int **m_cDiffX** — X range for difference compression.
+- int **m_cDiffY** — X range for difference compression.
+
+## Members for streaming
+
+- [std::iostream](http://en.cppreference.com/w/cpp/io/basic_iostream.html) \* **m_stream** — file stream
+- unsigned long long **m_streamWritten** — number of bytes written
+- unsigned long long **m_streamStartPos** — start offset
+
+## Members of async. saving
+
+- [ImFusionImageHeader](/cpp-sdk/4.5/api/classes/imfusion-imfusionimage-imfusionimageheader) **m_asyncHeader** — Header of the current stream (with unknown frame number).
+- [std::streampos](http://en.cppreference.com/w/cpp/io/fpos.html) **m_asyncPosHeader** — Header position in current stream.
+- int **m_asyncFrameCounter** — Frame counter (to fix header afterwards).
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [ImageCompressionCodec](/cpp-sdk/4.5/api/classes/imfusion-imagecompressioncodec) &gt; **m_asyncCompressor** — FFMPEP image compression engine.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **m_currentFilePath** — Path of the current IMF file being loaded/saved.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **m_asyncFilePath** — Path to the binary file with the actual images.
+
+## Methods for saving a SharedImageSet async
+
+- bool [startSaveAsync](#startsaveasync) ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*is, [std::ostream](http://en.cppreference.com/w/cpp/io/basic_ostream.html) &file, [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) \*p=0) — Prepares the asynchronous saving of images.
+- bool [addFrameAsync](#addframeasync) (const [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) \*memImg, [std::ostream](http://en.cppreference.com/w/cpp/io/basic_ostream.html) &file) — Saves a single image frame to the file.
+- bool [closeAsync](#closeasync-1-2) ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*is, [std::ostream](http://en.cppreference.com/w/cpp/io/basic_ostream.html) &file, bool saveTimestamps=false) — Finalizes the asynchronous save operation.
+- bool [closeAsync](#closeasync-2-2) ([std::ostream](http://en.cppreference.com/w/cpp/io/basic_ostream.html) &file, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; &timestamps) — Finalizes the asynchronous save operation with explicit timestamps.
+
+## Methods for streaming images into file
+
+- bool [beginBlockWrite](#beginblockwrite) ([std::iostream](http://en.cppreference.com/w/cpp/io/basic_iostream.html) &io) override — Begin block to be written into file. Returns true if successful, false otherwise.
+- bool **blockWriteImage** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*is) — Stream image with header into block. Returns true if successful, false otherwise.
+- unsigned long long [endBlockWrite](#endblockwrite) () override — Finish block written into file. Returns number of bytes written to the block.
+
+## Member Function Documentation
+
+### setCompressionOptions
+
+```cpp
+void ImFusion::ImFusionImage::setCompressionOptions (int mode, int passes, int dx, int dy)
+```
+
+Set options for image compression.
+
+****Deprecated**:** "Use setCompressionOptions(ImFusionFile::CompressionMode mode, int passes, int dx, int dy) instead."
+
+### loadInstance
+
+```cpp
+Data * ImFusion::ImFusionImage::loadInstance (unsigned int type, unsigned int headerSize)
+```
+
+*override, virtual*
+
+Create specialized instance for a given data type or return null if not supported.
+
+### saveType
+
+```cpp
+unsigned int ImFusion::ImFusionImage::saveType (const Data * data)
+```
+
+*override, virtual*
+
+Return type for saving a given data instance or null if not supported.
+
+### load
+
+```cpp
+bool ImFusion::ImFusionImage::load (unsigned int type, Data * data, std::istream & file, Progress * p = 0)
+```
+
+*override, virtual*
+
+Load specified data type into given class instance from file, return true upon success.
+
+### save
+
+```cpp
+bool ImFusion::ImFusionImage::save (Data * data, std::ostream & file, Progress * p = 0)
+```
+
+*override, virtual*
+
+Save a data instance to file, return true if successful.
+
+### startSaveAsync
+
+```cpp
+bool ImFusion::ImFusionImage::startSaveAsync (SharedImageSet * is, std::ostream & file, Progress * p = 0)
+```
+
+Prepares the asynchronous saving of images.
+
+Initializes the file format and writes the header. The provided [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) must already contain at least one image to ensure correct metadata extraction. This method does not save any image data, it only uses metadata of the provided [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset); call [addFrameAsync()](#addframeasync) for each frame to be saved.
+
+**Parameters:**
+
+- `is` — [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) containing at least one image for metadata extraction
+- `file` — Output stream to write to
+- `p` — Optional progress callback interface
+
+**Returns:** true if successful, false otherwise
+
+### addFrameAsync
+
+```cpp
+bool ImFusion::ImFusionImage::addFrameAsync (const MemImage * memImg, std::ostream & file)
+```
+
+Saves a single image frame to the file.
+
+Must be called after [startSaveAsync()](#startsaveasync) and before [closeAsync()](#closeasync-1-2). This method is blocking and writes the frame data immediately to the stream. Call this method once for each frame in the sequence.
+
+**Parameters:**
+
+- `memImg` — Pointer to the image frame to save (must be unsigned char type)
+- `file` — Output stream to write to (must be the same as passed to startSaveAsync beforehand)
+
+**Returns:** true if successful, false otherwise
+
+### closeAsync
+
+```cpp
+bool ImFusion::ImFusionImage::closeAsync (SharedImageSet * is, std::ostream & file, bool saveTimestamps = false)
+```
+
+Finalizes the asynchronous save operation.
+
+Must be called after all frames have been written with [addFrameAsync()](#addframeasync). This method updates the file header with the correct frame count and optionally appends timestamps. Without calling this method, the saved file will not be readable.
+
+**Parameters:**
+
+- `is` — [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) to extract timestamps from (can be nullptr if saveTimestamps is false)
+- `file` — Output stream to write to (must be the same as passed to startSaveAsync/addFrameAsync beforehand)
+- `saveTimestamps` — If true, timestamps from the [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) are appended to the file
+
+**Returns:** true if successful, false otherwise
+
+### closeAsync
+
+```cpp
+bool ImFusion::ImFusionImage::closeAsync (std::ostream & file, const std::vector < double > & timestamps)
+```
+
+Finalizes the asynchronous save operation with explicit timestamps.
+
+Same as the other [closeAsync()](#closeasync-1-2) overload but accepts timestamps as a vector instead of extracting them from a [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset). This is particularly useful when the async-saving should be disentangled from the lifetime of the [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) container, allowing the container to be destroyed before finalization.
+
+**Parameters:**
+
+- `file` — Output file stream to write to
+- `timestamps` — [Vector](/cpp-sdk/4.5/api/classes/imfusion-vector) of timestamps to append (one per frame). If empty, no timestamps are saved.
+
+**Returns:** true if successful, false otherwise
+
+**See also:** [closeAsync(SharedImageSet\*, std::ostream&, bool)](#closeasync-1-2)
+
+### loadFromAsyncFormat
+
+```cpp
+bool ImFusion::ImFusionImage::loadFromAsyncFormat (SharedImageSet * is, std::istream & file, Progress * p = 0)
+```
+
+Loads a [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) that was saved using the async save methods.
+
+Reads a file that was created with [startSaveAsync()](#startsaveasync), [addFrameAsync()](#addframeasync), and [closeAsync()](#closeasync-1-2). Internally calls [load()](#load) to read the image data, and then reads any timestamps that were appended at the end of the file.
+
+**Parameters:**
+
+- `is` — [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) to load the data into
+- `file` — Input file stream to read from
+- `p` — Optional progress callback interface
+
+**Returns:** true if successful, false otherwise
+
+**See also:** [startSaveAsync()](#startsaveasync), [addFrameAsync()](#addframeasync), [closeAsync()](#closeasync-1-2)
+
+### beginBlockWrite
+
+```cpp
+bool ImFusion::ImFusionImage::beginBlockWrite (std::iostream & io)
+```
+
+*override, virtual*
+
+Begin block to be written into file. Returns true if successful, false otherwise.
+
+### endBlockWrite
+
+```cpp
+unsigned long long ImFusion::ImFusionImage::endBlockWrite ()
+```
+
+*override, virtual*
+
+Finish block written into file. Returns number of bytes written to the block.

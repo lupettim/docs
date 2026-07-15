@@ -1,0 +1,64 @@
+---
+title: "ImFusion::Mahony"
+sidebarTitle: "Mahony"
+description: "Mahony sensor fusion."
+---
+
+`#include <ImFusion/Base/IMUPoseIntegration.h>`
+
+## Overview
+
+[Mahony](/cpp-sdk/4.5/api/classes/imfusion-mahony) sensor fusion.
+
+Based on [https://github.com/PaulStoffregen/MahonyAHRS](https://github.com/PaulStoffregen/MahonyAHRS). Converges slightly faster than [Madgwick](/cpp-sdk/4.5/api/classes/imfusion-madgwick), but supposed to be less accurate. See [https://en.wikipedia.org/wiki/PID_controller](https://en.wikipedia.org/wiki/PID_controller) for the configuration constants
+
+## Public Member Functions
+
+- void [reset](#reset) () override — Restores the initial state.
+- Eigen::Quaterniond [orientationQuaternion](#orientationquaternion) () const override — Returns the orientation of the most recent state.
+- vec3 [position](#position) () const override — Returns the position in world coords.
+- void [update](#update) (const vec3 &angularVelocityDegPerSec, const vec3 &linAcc, const vec3 &mag, double timestampSeconds) override — Propagates the physical state using a new measurement.
+- void **update** (double gx, double gy, double gz, double ax, double ay, double az, double mx, double my, double mz, double timestamp) — Propagates the physical state using a new measurement.
+- void **updateIMU** (double gx, double gy, double gz, double ax, double ay, double az, double timestamp) — Propagates the physical state using a new measurement without magnetic information.
+
+## Member Function Documentation
+
+### reset
+
+```cpp
+void ImFusion::Mahony::reset ()
+```
+
+*override, virtual*
+
+Restores the initial state.
+
+### orientationQuaternion
+
+```cpp
+Eigen::Quaterniond ImFusion::Mahony::orientationQuaternion () const
+```
+
+*override, virtual*
+
+Returns the orientation of the most recent state.
+
+### position
+
+```cpp
+vec3 ImFusion::Mahony::position () const
+```
+
+*override, virtual*
+
+Returns the position in world coords.
+
+### update
+
+```cpp
+void ImFusion::Mahony::update (const vec3 & angularVelocityDegPerSec, const vec3 & linAcc, const vec3 & mag, double timestampSeconds)
+```
+
+*override, virtual*
+
+Propagates the physical state using a new measurement.

@@ -1,0 +1,51 @@
+---
+title: "ImFusion::DefaultDataWidgetItemDelegate"
+sidebarTitle: "DefaultDataWidgetItemDelegate"
+description: "Default implementation of the DataWidgetDelegate that is used for instance in the ImFusion Suite."
+---
+
+`#include <ImFusion/GUI/DataWidgetItemDelegate.h>`
+
+## Overview
+
+Default implementation of the DataWidgetDelegate that is used for instance in the ImFusion Suite.
+
+**See also:** [DataWidget](/cpp-sdk/4.5/api/classes/imfusion-datawidget)
+
+## Public Member Functions
+
+- **DefaultDataWidgetItemDelegate** (QTreeView \*parent)
+- void [paint](#paint) (QPainter \*painter, const QStyleOptionViewItem &option, const QModelIndex &index) const override — Renders the individual items of the model.
+- QSize **sizeHint** (const QStyleOptionViewItem &option, const QModelIndex &index) const override
+- bool **editorEvent** (QEvent \*event, QAbstractItemModel \*model, const QStyleOptionViewItem &option, const QModelIndex &index) override
+- bool **helpEvent** (QHelpEvent \*event, QAbstractItemView \*view, const QStyleOptionViewItem &option, const QModelIndex &index) override
+- void **updateEditorGeometry** (QWidget \*editor, const QStyleOptionViewItem &option, const QModelIndex &index) const override
+- void [resetHover](#resethover) () override — Called if the parent [DataWidget](/cpp-sdk/4.5/api/classes/imfusion-datawidget) received a Qt::LeaveEvent to remove any potential hover effect renderings.
+
+## Protected Member Functions
+
+- void **initStyleOption** (QStyleOptionViewItem \*option, const QModelIndex &index) const override
+
+## Member Function Documentation
+
+### paint
+
+```cpp
+void ImFusion::DefaultDataWidgetItemDelegate::paint (QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index) const
+```
+
+*override*
+
+Renders the individual items of the model.
+
+Depending on the column in the model index, it renders thumbnail+name or the visibility button(s).
+
+### resetHover
+
+```cpp
+void ImFusion::DefaultDataWidgetItemDelegate::resetHover ()
+```
+
+*override, virtual*
+
+Called if the parent [DataWidget](/cpp-sdk/4.5/api/classes/imfusion-datawidget) received a Qt::LeaveEvent to remove any potential hover effect renderings.

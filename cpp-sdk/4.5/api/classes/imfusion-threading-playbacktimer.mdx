@@ -1,0 +1,213 @@
+---
+title: "ImFusion::Threading::PlaybackTimer"
+sidebarTitle: "PlaybackTimer"
+description: "Recurring timer class that allows for playback over a range at given timestamps/intervals."
+---
+
+`#include <ImFusion/Core/Threading/PlaybackTimer.h>`
+
+## Overview
+
+Recurring timer class that allows for playback over a range at given timestamps/intervals.
+
+For setup you provide a number of frames together with their corresponding timestamps as well as a callback function. During playback this class will then call the callback function for each frame at its scheduled time passing the frame index as argument.
+
+By default, if a scheduled frame was missed for any reason (e.g. a previous callback taking too long) [PlaybackTimer](/cpp-sdk/4.5/api/classes/imfusion-threading-playbacktimer) will skip that frame and and play the currently scheduled one instead.
+
+**Warning:** The callback function is called from a separate thread. Therefore, you must ensure proper synchronization and thread safety when accessing shared data.
+
+Example:
+
+```cpp
+using namespace std::chrono_literals;
+
+PlaybackTimer pt;
+pt.setRangeTimestamps(std::vector<std::chrono::nanoseconds>{1s, 1100ms, 2s});
+pt.setCallback([](size_t frame) {
+ // this function will be called by PlaybackTimer three times:
+ //   after 1 second with frame = 0
+ //   after 1.1 seconds with frame = 1
+ //   after 2 seconds with frame = 2
+});
+pt.start();
+```
+ fragment
+
+**See also:** [Timer](/cpp-sdk/4.5/api/classes/imfusion-timer)
+
+## Public Types
+
+- using [CallbackFunction](#callbackfunction) = [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt;void(size_t frameIndex)&gt; — Signature of the callback function used by the playback thread.
+
+## Public Member Functions
+
+- void [setRangeConstantFps](#setrangeconstantfps) (size_t numFrames, double fps) — Configure playback to use a constant interval between frames.
+- void [setRangeConstantInterval](#setrangeconstantinterval) (size_t numFrames, [std::chrono::nanoseconds](http://en.cppreference.com/w/cpp/chrono/duration.html) interval) — Configure playback to use a constant interval between frames.
+- void [setRangeTimestamps](#setrangetimestamps-1-2) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::chrono::nanoseconds](http://en.cppreference.com/w/cpp/chrono/duration.html) &gt; &timestamps, bool startImmediately=false) — Configure playback to use specific timestamps for each frame.
+- void [setRangeTimestamps](#setrangetimestamps-2-2) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; &timestampsSeconds, bool startImmediately=false) — Configure playback to use specific timestamps for each frame.
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::chrono::nanoseconds](http://en.cppreference.com/w/cpp/chrono/duration.html) &gt; & [rangeTimestamps](#rangetimestamps) () const — Return the configured range of frames and their corresponding timestamps.
+- void [setCallback](#setcallback) (const [CallbackFunction](#callbackfunction) &callbackFunction) — Set the callback function that is going to be called for each frame.
+- void [setLooped](#setlooped) (bool value) — Set whether the timer shall start over from the beginning once it reaches the end of the frames.
+- bool **isLooped** () const — Return whether the timer starts over from the beginning once it reaches the end of the frames.
+- void [setSkipDelayedFrames](#setskipdelayedframes) (bool value) — Set whether to skip frames in case their subsequent frame is already due.
+- bool **isSkippingDelayedFrames** () const — Return whether to skip frames in case their subsequent frame is already due.
+- void **setUseAbsoluteTimesteps** (bool value) — If set to true, the current time is not taken into account, and the timer will wait for the amount of time equal to difference between consecutive timestamps In this case all the frames will be played.
+- bool **useAbsoluteTimesteps** () const
+- void [start](#start) (size_t startIndex=0) — Start the timer thread.
+- void **stop** () — Stop the timer thread.
+- bool [isRunning](#isrunning) () const — Return if the timer thread is currently running.
+- void [pause](#pause) () — Temporarily pause the playback.
+- void **resume** () — Resume the playback.
+- bool **isPaused** () const — Return if the timer thread is currently running and paused.
+
+## Member Typedef Documentation
+
+### CallbackFunction
+
+```cpp
+using ImFusion::Threading::PlaybackTimer::CallbackFunction = std::function <void(size_t frameIndex)>
+```
+
+Signature of the callback function used by the playback thread.
+
+The *frameIndex* describes the index of the current frame.
+
+## Member Function Documentation
+
+### setRangeConstantFps
+
+```cpp
+void ImFusion::Threading::PlaybackTimer::setRangeConstantFps (size_t numFrames, double fps)
+```
+
+Configure playback to use a constant interval between frames.
+
+**Note:** If the timer is already running, this function has no effect until restart.
+
+**Parameters:**
+
+- `numFrames` — Number of frames to play
+- `fps` — Time interval between frames in terms of frames per second
+
+### setRangeConstantInterval
+
+```cpp
+void ImFusion::Threading::PlaybackTimer::setRangeConstantInterval (size_t numFrames, std::chrono::nanoseconds interval)
+```
+
+Configure playback to use a constant interval between frames.
+
+**Note:** If the timer is already running, this function has no effect until restart.
+
+**Parameters:**
+
+- `numFrames` — Number of frames to play
+- `interval` — Time interval between frames
+
+### setRangeTimestamps
+
+```cpp
+void ImFusion::Threading::PlaybackTimer::setRangeTimestamps (const std::vector < std::chrono::nanoseconds > & timestamps, bool startImmediately = false)
+```
+
+Configure playback to use specific timestamps for each frame.
+
+**Note:** If the timer is already running, this function has no effect until restart.
+
+**Parameters:**
+
+- `timestamps` — Set of timestamps in terms of nanoseconds. The number of timestamps defines the number of frames played. The list of timestamps must be ordered in an ascending fashion.
+- `startImmediately` — Flag whether the timestamps shall be normalized wrt. the first frame, i.e. the first frame starts at time 0 and all subsequent frames relative to it.
+
+### setRangeTimestamps
+
+```cpp
+void ImFusion::Threading::PlaybackTimer::setRangeTimestamps (const std::vector < double > & timestampsSeconds, bool startImmediately = false)
+```
+
+Configure playback to use specific timestamps for each frame.
+
+**Note:** If the timer is already running, this function has no effect until restart.
+
+**Parameters:**
+
+- `timestampsSeconds` — Set of timestamps in terms of seconds. The number of timestamps defines the number of frames played. The list of timestamps must be ordered in an ascending fashion.
+- `startImmediately` — Flag whether the timestamps shall be normalized wrt. the first frame, i.e. the first frame starts at time 0 and all subsequent frames relative to it.
+
+### rangeTimestamps
+
+```cpp
+const std::vector < std::chrono::nanoseconds > & ImFusion::Threading::PlaybackTimer::rangeTimestamps () const
+```
+
+*inline*
+
+Return the configured range of frames and their corresponding timestamps.
+
+**Note:** If the timer was running while the timestamps were changed the last time, this function will already return the newly set timestamps even though the currently running playback thread is still using the original ones.
+
+### setCallback
+
+```cpp
+void ImFusion::Threading::PlaybackTimer::setCallback (const CallbackFunction & callbackFunction)
+```
+
+Set the callback function that is going to be called for each frame.
+
+**Note:** If the timer is already running, this function has no effect until restart.
+
+**Warning:** The callback function is called from a separate thread. Therefore, you must ensure proper synchronization and thread safety when accessing shared data.
+
+### setLooped
+
+```cpp
+void ImFusion::Threading::PlaybackTimer::setLooped (bool value)
+```
+
+Set whether the timer shall start over from the beginning once it reaches the end of the frames.
+
+By default, this setting is off.
+
+### setSkipDelayedFrames
+
+```cpp
+void ImFusion::Threading::PlaybackTimer::setSkipDelayedFrames (bool value)
+```
+
+Set whether to skip frames in case their subsequent frame is already due.
+
+This can for instance happen if the time between frames is less than the time needed to process the callback.
+
+### start
+
+```cpp
+void ImFusion::Threading::PlaybackTimer::start (size_t startIndex = 0)
+```
+
+Start the timer thread.
+
+This function has no effect if the timer is already running, or if the range/timestamps or the callback function are empty.
+
+**Parameters:**
+
+- `startIndex` — Optional frame index to start from
+
+### isRunning
+
+```cpp
+bool ImFusion::Threading::PlaybackTimer::isRunning () const
+```
+
+Return if the timer thread is currently running.
+
+This function will return true also in case it is paused.
+
+### pause
+
+```cpp
+void ImFusion::Threading::PlaybackTimer::pause ()
+```
+
+Temporarily pause the playback.
+
+This function has no effect if the timer is not started or if the playback is already paused.

@@ -1,0 +1,127 @@
+---
+title: "ImFusion::GlFlattenTrackingDeformation"
+sidebarTitle: "GlFlattenTrackingDeformation"
+description: "Deformation model based on flattening a tracking sequence."
+---
+
+`#include <ImFusion/GL/GlFlattenTrackingDeformation.h>`
+
+## Overview
+
+[Deformation](/cpp-sdk/4.5/api/classes/imfusion-deformation) model based on flattening a tracking sequence.
+
+This class takes a tracking sequence, assumes every matrix to represent a plane, and creates a 3D deformation that maps them to parallel equidistant planes along the z dimension. Use cases are for example to flatten a 3D CT/MRI volume along a catheter with ultrasound imaging or video, similar to curved MPRs.
+
+## Public Member Functions
+
+- **GlFlattenTrackingDeformation** (const [TrackingSequence](/cpp-sdk/4.5/api/classes/imfusion-trackingsequence) &tracking, double frameSpacing) — Constructor with tracking sequence to use and frame increment spacing in mm.
+- **GlFlattenTrackingDeformation** (const GlFlattenTrackingDeformation &other)
+- void **setFrameSpacing** (double val) — Change the frame increment spacing in mm.
+- void **setFadeOff** (double val) — Set the optional fadeoff, it will be enabled if greater zero.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [id](#id) () const override — Returns a unique string identifier for this type of deformation.
+
+## Static Public Member Functions
+
+- static bool **isSupported** () — Compute shader support is required (i.e. [GL](/cpp-sdk/4.5/api/namespaces/imfusion-gl) 4.3, not on Mac).
+
+## Methods of the Deformation base class
+
+- virtual [Deformation](/cpp-sdk/4.5/api/classes/imfusion-deformation) \* [clone](#clone) () const override — Returns a copy of the deformation.
+- virtual vec3 [displacement](#displacement) (const vec3 &pos) const override — Returns the displacement for pos (in world coordinates).
+- vec3 [displacePoint](#displacepoint) (const vec3 &point) const override — Returns the displaced position of the given point in world-coordinates.
+- virtual bool [isIdentity](#isidentity) () const override — Returns if the current state of the deformation transformations the image or not.
+- virtual void [setIdentity](#setidentity) () override — Sets all displacements to 0.
+- virtual int [setIncludeArguments](#setincludearguments) ([GL::Program](/cpp-sdk/4.5/api/classes/imfusion-gl-program) &p, const [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*img, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &prefix="deform") const override — Override default arguments for [GlMask](/cpp-sdk/4.5/api/classes/imfusion-glmask) includes.
+- virtual int [dimension](#dimension) () const override — Returns the dimension of the deformation.
+
+## Member Function Documentation
+
+### clone
+
+```cpp
+virtual Deformation * ImFusion::GlFlattenTrackingDeformation::clone () const
+```
+
+*override, virtual*
+
+Returns a copy of the deformation.
+
+### displacement
+
+```cpp
+virtual vec3 ImFusion::GlFlattenTrackingDeformation::displacement (const vec3 & pos) const
+```
+
+*override, virtual*
+
+Returns the displacement for pos (in world coordinates).
+
+The returned displacement is also in world coordinates. The displacement indicates where pos originated from before applying the deformation.
+
+### displacePoint
+
+```cpp
+vec3 ImFusion::GlFlattenTrackingDeformation::displacePoint (const vec3 & point) const
+```
+
+*override, virtual*
+
+Returns the displaced position of the given point in world-coordinates.
+
+This method will estimate the inverse displacement.
+
+### isIdentity
+
+```cpp
+virtual bool ImFusion::GlFlattenTrackingDeformation::isIdentity () const
+```
+
+*override, virtual*
+
+Returns if the current state of the deformation transformations the image or not.
+
+### setIdentity
+
+```cpp
+virtual void ImFusion::GlFlattenTrackingDeformation::setIdentity ()
+```
+
+*override, virtual*
+
+Sets all displacements to 0.
+
+### setIncludeArguments
+
+```cpp
+virtual int ImFusion::GlFlattenTrackingDeformation::setIncludeArguments (GL::Program & p, const SharedImage * img, const std::string & prefix = "deform") const
+```
+
+*override, virtual*
+
+Override default arguments for [GlMask](/cpp-sdk/4.5/api/classes/imfusion-glmask) includes.
+
+### dimension
+
+```cpp
+virtual int ImFusion::GlFlattenTrackingDeformation::dimension () const
+```
+
+*override, virtual*
+
+Returns the dimension of the deformation.
+
+### id
+
+```cpp
+std::string ImFusion::GlFlattenTrackingDeformation::id () const
+```
+
+*inline, override, virtual*
+
+Returns a unique string identifier for this type of deformation.
+
+Usually the name of the class.
+
+**Note:** To avoid conflicts make sure to include potential plugin names into this ID. Due to the modular architecture of the ImFusion library, uniqueness of IDs cannot be checked at compile time. However, [DeformationFactory](/cpp-sdk/4.5/api/classes/imfusion-deformationfactory) will check the uniqueness of the ID during registration.
+
+**See also:** [DeformationFactory](/cpp-sdk/4.5/api/classes/imfusion-deformationfactory)

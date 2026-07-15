@@ -1,0 +1,132 @@
+---
+title: "ImFusion::InteractiveSegmentationController"
+sidebarTitle: "InteractiveSegmentationController"
+description: "Controller for interactive segmentation."
+---
+
+`#include <ImFusion/Seg/InteractiveSegmentationController.h>`
+
+## Overview
+
+[Controller](/cpp-sdk/4.5/api/classes/imfusion-controller) for interactive segmentation.
+
+## Public Slots
+
+- void **onRunSeg** (bool stopDraw=true)
+- void **onAcceptSeg** (bool convertLabels=true)
+- void **onAcceptSegAndContinue** ()
+- void **onDrawIn** ()
+- void **onDrawOut** ()
+- void **onDrawErase** ()
+- void **onRemoveContour** ()
+- void **onDrawContour** ()
+- void **onConvertContour** ()
+- void **onUndo** ()
+- void **onClear** ()
+- void **onSetSize** (int size)
+- void **onSetTransparency** (int val)
+- void **onSetBrushAdaptiveness** (int val)
+- void **onToggleAvoidOtherLabels** (bool flag)
+- void **onExportLabelMap** ()
+- void **onExportAnnotation** ()
+- void **onChangeStats** ()
+- void **updateStats** ()
+- void **onAdaptivenessChange** (int val)
+- void **onSmoothnessChange** (int val)
+- void **onMemoryEstimationChange** ()
+- void **onSuperpixelsChange** (int val)
+- void **onResolutionChange** (int val)
+- void **onRandomForestSelect** ()
+- void **onInitFromPrediction** ()
+- void **onInitFromSegmentation** ()
+- void **initFromSegmentation** (QAction \*)
+
+## Public Member Functions
+
+- **InteractiveSegmentationController** ([InteractiveSegmentationAlgorithm](/cpp-sdk/4.5/api/classes/imfusion-interactivesegmentationalgorithm) \*[algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithmcontroller))
+- void [init](#init) () override — Two-step initialization function to be implemented by subclasses.
+- void [onAlgorithmParametersChanged](#onalgorithmparameterschanged) () override — Callback called when the [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm)'s signalParametersChanged signal was emitted.
+- void [onAlgorithmOutputChanged](#onalgorithmoutputchanged) () override — Callback called when the [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm)'s signalOutputChanged signal was emitted.
+- void **dataDeleted** (const [ImFusion::Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data)
+- void **selectionChanged** ()
+- void [onSelectedDataChanged](#onselecteddatachanged) (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data) override — Called by [MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase) in the case that the selection in the data model has changed.
+- bool **eventFilter** (QObject \*o, QEvent \*e) override
+- void **setAllowMultipleLabels** (bool enable) — Enables or disables option to create multiple labels (default: enabled).
+- int **exportResolution** () const
+- void **setExportResolution** (int resolution)
+- int **exportSmoothness** () const
+- void **setExportSmoothness** (int smoothness)
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+## Member Function Documentation
+
+### init
+
+```cpp
+void ImFusion::InteractiveSegmentationController::init ()
+```
+
+*override, virtual*
+
+Two-step initialization function to be implemented by subclasses.
+
+This function is called by [setMainWindowBase()](/cpp-sdk/4.5/api/classes/imfusion-controller) after the [m_disp](/cpp-sdk/4.5/api/classes/imfusion-controller) and [m_main](/cpp-sdk/4.5/api/classes/imfusion-controller) attributes have been set and hence a complete initialization of the controller is possible at this point.
+
+### onAlgorithmParametersChanged
+
+```cpp
+void ImFusion::InteractiveSegmentationController::onAlgorithmParametersChanged ()
+```
+
+*override, virtual*
+
+Callback called when the [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm)'s signalParametersChanged signal was emitted.
+
+### onAlgorithmOutputChanged
+
+```cpp
+void ImFusion::InteractiveSegmentationController::onAlgorithmOutputChanged ()
+```
+
+*override, virtual*
+
+Callback called when the [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm)'s signalOutputChanged signal was emitted.
+
+### onSelectedDataChanged
+
+```cpp
+void ImFusion::InteractiveSegmentationController::onSelectedDataChanged (const DataList &)
+```
+
+*override, virtual*
+
+Called by [MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase) in the case that the selection in the data model has changed.
+
+### configure
+
+```cpp
+void ImFusion::InteractiveSegmentationController::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### configuration
+
+```cpp
+void ImFusion::InteractiveSegmentationController::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality

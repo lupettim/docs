@@ -1,0 +1,29 @@
+---
+title: "ImFusion::GL::ViewState::PixelIncrementWorld"
+sidebarTitle: "PixelIncrementWorld"
+description: "Helper struct to store the result of unprojectPixelIncrementOrtho() and unprojectPixelIncrementPerspective() ."
+---
+
+`#include <ImFusion/Core/GL/ViewState.h>`
+
+## Overview
+
+Helper struct to store the result of [unprojectPixelIncrementOrtho()](/cpp-sdk/4.5/api/classes/imfusion-gl-viewstate) and [unprojectPixelIncrementPerspective()](/cpp-sdk/4.5/api/classes/imfusion-gl-viewstate).
+
+## Public Attributes
+
+- vec3 **x** — Offset in world space corresponding to moving 1px in X direction in viewport space.
+- vec3 **y** — Offset in world space corresponding to moving 1px in Y direction in viewport space.
+- vec3 [z](#z) — Offset in world space corresponding to moving 1 unit in Z (depth) direction in viewport space.
+
+## Member Data Documentation
+
+### z
+
+```cpp
+vec3 ImFusion::GL::ViewState::PixelIncrementWorld::z
+```
+
+Offset in world space corresponding to moving 1 unit in Z (depth) direction in viewport space.
+
+Be advised that due to the non-linear scale of the depth buffer you should not rely on the length of this vector but only its orientation.

@@ -1,0 +1,75 @@
+---
+title: "ImFusion::AffineRescaledParameterOptimization"
+sidebarTitle: "AffineRescaledParameterOptimization"
+description: "Decorator that subtracts shift , then multiplies by scale to every value before it is passed to the optimizer."
+---
+
+`#include <ImFusion/Base/ParameterOptimization.h>`
+
+## Overview
+
+Decorator that subtracts shift, then multiplies by scale to every value before it is passed to the optimizer.
+
+Useful for adapting the step-size to the different parameters over which optimization occurs.
+
+## Public Member Functions
+
+- **AffineRescaledParameterOptimization** (const ParameterWrapperBase &arg, double shift, double scale)
+- **AffineRescaledParameterOptimization** (const AffineRescaledParameterOptimization &other)
+- int [dim](#dim) () const override — The number of (scalar) parameters wrapped by this object.
+- void [deserialize](#deserialize) (const double \*x) override — Update the stored references from a double representation.
+- void [serialize](#serialize) (double \*x) const override — Updates a double representation from the stored references.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [name](#name) (int i) const override — Name of the ith parameter, used for display purposes.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; ParameterWrapperBase &gt; [clone](#clone) () const override — Clone function.
+
+## Member Function Documentation
+
+### dim
+
+```cpp
+int ImFusion::AffineRescaledParameterOptimization::dim () const
+```
+
+*inline, override, virtual*
+
+The number of (scalar) parameters wrapped by this object.
+
+### deserialize
+
+```cpp
+void ImFusion::AffineRescaledParameterOptimization::deserialize (const double * v)
+```
+
+*override, virtual*
+
+Update the stored references from a double representation.
+
+### serialize
+
+```cpp
+void ImFusion::AffineRescaledParameterOptimization::serialize (double * v) const
+```
+
+*override, virtual*
+
+Updates a double representation from the stored references.
+
+### name
+
+```cpp
+std::string ImFusion::AffineRescaledParameterOptimization::name (int i) const
+```
+
+*inline, override, virtual*
+
+Name of the ith parameter, used for display purposes.
+
+### clone
+
+```cpp
+std::unique_ptr < ParameterWrapperBase > ImFusion::AffineRescaledParameterOptimization::clone () const
+```
+
+*inline, override, virtual*
+
+Clone function.

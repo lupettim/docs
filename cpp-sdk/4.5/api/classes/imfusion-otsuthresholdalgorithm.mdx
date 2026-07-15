@@ -1,0 +1,115 @@
+---
+title: "ImFusion::OtsuThresholdAlgorithm"
+sidebarTitle: "OtsuThresholdAlgorithm"
+description: "Computes the Otsu threshold of an image."
+---
+
+`#include <ImFusion/Base/OtsuThresholdAlgorithm.h>`
+
+## Overview
+
+Computes the Otsu threshold of an image.
+
+In Mode::CenterAtZero, the algorithm subtracts the computed threshold from a float-converted copy of the input so that the threshold is centered at zero. In Mode::BinaryMask, it returns a binary mask with value 1 for pixels above or equal to the threshold and 0 otherwise.
+
+In Mode::CenterAtZero, the output keeps the input modality. In Mode::BinaryMask, the output modality is set to [Data::LABEL](/cpp-sdk/4.5/api/classes/imfusion-data). The input must be a single-frame, single-channel image of any scalar pixel type.
+
+A public static helper is also provided to compute the Otsu threshold directly from a valid image.
+
+**Note:** Sets status to [Status::Error](/cpp-sdk/4.5/api/classes/imfusion-algorithm) if the input has no intensity variation (constant image), since no meaningful threshold can be computed in that case.
+
+## Public Types
+
+- enum class [Mode](#mode) &#123; CenterAtZero , BinaryMask &#125; — Output modes.
+
+## Public Member Functions
+
+- [OtsuThresholdAlgorithm](#otsuthresholdalgorithm) (const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &image)
+- void [compute](#compute) () override — Execute the algorithm.
+- [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) [takeOutput](#takeoutput) () override — Return any new [Data](/cpp-sdk/4.5/api/classes/imfusion-data) that was created by the [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) during the last call to [compute()](#compute).
+
+## Static Public Member Functions
+
+- static double [computeOtsuThreshold](#computeotsuthreshold) (const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &image, int numBins=256) — Computes the Otsu threshold of a valid image.
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=nullptr)
+
+## Public Attributes
+
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; [Mode](#mode) &gt; **p_mode** = &#123;"mode", Mode::CenterAtZero, this&#125; — Controls whether the output is a zero-centered float image or a binary label image.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; int &gt; **p_numBins** = &#123;"numBins", 256, this&#125; — Number of histogram bins used to estimate the Otsu threshold, minimum valid value is 2.
+
+## Member Enumeration Documentation
+
+### Mode
+
+```cpp
+enum class ImFusion::OtsuThresholdAlgorithm::Mode
+```
+
+*strong*
+
+Output modes.
+
+**Enumerator:**
+
+- `CenterAtZero` — Return a float image with the Otsu threshold centered at zero.
+- `BinaryMask` — Return a uint8 mask with value 1 for pixels above or equal to the threshold and 0 otherwise.
+
+## Constructor & Destructor Documentation
+
+### OtsuThresholdAlgorithm
+
+```cpp
+ImFusion::OtsuThresholdAlgorithm::OtsuThresholdAlgorithm (const SharedImageSet & image)
+```
+
+*explicit*
+
+**Parameters:**
+
+- `image` — Input image on which the Otsu threshold will be computed.
+
+## Member Function Documentation
+
+### computeOtsuThreshold
+
+```cpp
+double ImFusion::OtsuThresholdAlgorithm::computeOtsuThreshold (const SharedImageSet & image, int numBins = 256)
+```
+
+*static*
+
+Computes the Otsu threshold of a valid image.
+
+The threshold is returned in the original pixel value domain.
+
+**Parameters:**
+
+- `image` — Input image. Must contain exactly one single-channel image with non-zero intensity range.
+- `numBins` — Number of histogram bins used to estimate the threshold. Must be at least 2.
+
+**Returns:** Otsu threshold in the original pixel value domain.
+
+### compute
+
+```cpp
+void ImFusion::OtsuThresholdAlgorithm::compute ()
+```
+
+*override, virtual*
+
+Execute the algorithm.
+
+### takeOutput
+
+```cpp
+OwningDataList ImFusion::OtsuThresholdAlgorithm::takeOutput ()
+```
+
+*override, virtual*
+
+Return any new [Data](/cpp-sdk/4.5/api/classes/imfusion-data) that was created by the [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) during the last call to [compute()](#compute).
+
+The default implementation will return an empty list.
+
+**Note:** Since ownership of the data is transferred, you can call this method only once between calls to [compute()](#compute).

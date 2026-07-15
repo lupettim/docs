@@ -1,0 +1,60 @@
+---
+title: "ImFusion::GlCoordinateSystem"
+sidebarTitle: "GlCoordinateSystem"
+description: "GlObject to render an illustration of a coordinate system into the scene."
+---
+
+`#include <ImFusion/GL/GlCoordinateSystem.h>`
+
+## Overview
+
+[GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) to render an illustration of a coordinate system into the scene.
+
+For each of the three main axes, renders a 3D arrow as well as a label.
+
+## Public Member Functions
+
+- double **scaling** () const — Returns the scaling factor for the rendered axes.
+- void **setScaling** (double value) — Sets the scaling factor for the rendered axes.
+- bool **showLabels** () const — Returns whether the labels are shown.
+- void **setShowLabels** (bool value) — Sets whether to show the labels.
+- bool **drawAxesNegative** () const — Returns whether the axes are drawn in the negative range.
+- void **setDrawAxesNegative** (bool value) — Sets whether to draw the axes in the negative range.
+- void **setColor** (int idx, const vec3 &c) — Sets the rendering color of the specified axis and its label.
+- void [draw](#draw) (const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &view) override — Draw the object in 3D space.
+- [Geometry::AlignedBox](/cpp-sdk/4.5/api/classes/imfusion-geometry-alignedbox) [bounds](#bounds) () const override — Get the axis-aligned bounding box of this [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) in world space.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [typeName](#typename) () const override — Return unique identifier for this object class used for serialization.
+
+## Member Function Documentation
+
+### draw
+
+```cpp
+void ImFusion::GlCoordinateSystem::draw (const GlView & view)
+```
+
+*override, virtual*
+
+Draw the object in 3D space.
+
+### bounds
+
+```cpp
+Geometry::AlignedBox ImFusion::GlCoordinateSystem::bounds () const
+```
+
+*override, virtual*
+
+Get the axis-aligned bounding box of this [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) in world space.
+
+Return an empty (default-constructed) AlignedBox object if the [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) does not reside in world space.
+
+### typeName
+
+```cpp
+std::string ImFusion::GlCoordinateSystem::typeName () const
+```
+
+*override, virtual*
+
+Return unique identifier for this object class used for serialization.

@@ -1,0 +1,77 @@
+---
+title: "ImFusion::SplitMeshAlgorithm"
+sidebarTitle: "SplitMeshAlgorithm"
+description: "Mesh splitting based on vertex or face labels."
+---
+
+`#include <ImFusion/Mesh/SplitMeshAlgorithm.h>`
+
+## Overview
+
+[Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) splitting based on vertex or face labels.
+
+The class extracts subsets of a mesh according to label-based criteria. If an auxiliary label image is provided, triangles are kept either when all vertices sample the specified label or when any vertex samples it. If no auxiliary label image is provided, triangles are selected based on mesh labels: either by keeping only triangles with a specified face label, or by keeping only triangles where all vertices or any vertex has a specified vertex label.
+
+## Public Types
+
+- enum class [Mode](#mode) &#123; VertexLabelAny = 0 , VertexLabelAll = 1 , FaceLabelAny = 2 , ImageLabelAll = 3 , ImageLabelAny = 4 &#125; — [Status](/cpp-sdk/4.5/api/classes/imfusion-algorithm) codes.
+
+## Public Member Functions
+
+- **SplitMeshAlgorithm** (const [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) &mesh) — If a mesh is provided without a label, the only valid options for [Mode](#mode) are VertexLabelAll, VertexLabelAny, and FaceLabelAny.
+- **SplitMeshAlgorithm** (const [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) &mesh, const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &label) — If a mesh is provided together with a label image, the only valid options for [Mode](#mode) are ImageLabelAll and ImageLabelAny.
+- void [compute](#compute) () override — Execute the algorithm.
+- [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) [takeOutput](#takeoutput) () override — Return any new [Data](/cpp-sdk/4.5/api/classes/imfusion-data) that was created by the [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) during the last call to [compute()](#compute).
+
+## Static Public Member Functions
+
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=nullptr)
+
+## Public Attributes
+
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; [Mode](#mode) &gt; **p_mode** = &#123;"mode", Mode::VertexLabelAny, this&#125;
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; unsigned int &gt; &gt; **p_labelValues** = &#123;"labelValues", [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt;unsigned int&gt;&#123;1&#125;, this&#125; — What label values to extract.
+
+## Member Enumeration Documentation
+
+### Mode
+
+```cpp
+enum class ImFusion::SplitMeshAlgorithm::Mode
+```
+
+*strong*
+
+**Enumerator:**
+
+- `VertexLabelAny` — Split mesh based on vertex label, output mesh(es) will contain all faces that have at least one vertex with the given label. If a label map is passed, this is used to provide vertex labels.
+- `VertexLabelAll` — Split mesh based on vertex label, output mesh(es) will contain only faces where all vertices have the given label. If a label map is passed, this is used to provide vertex labels.
+- `FaceLabelAny` — Split mesh based on face labels.
+- `ImageLabelAll` — Split mesh based on vertex label, output mesh(es) will contain all faces that have at least one vertex with the given label. Label map is used to provide vertex labels.
+- `ImageLabelAny` — Split mesh based on vertex label, output mesh(es) will contain only faces where all vertices have the given label. Label map is used to provide vertex labels.
+
+## Member Function Documentation
+
+### compute
+
+```cpp
+void ImFusion::SplitMeshAlgorithm::compute ()
+```
+
+*override, virtual*
+
+Execute the algorithm.
+
+### takeOutput
+
+```cpp
+OwningDataList ImFusion::SplitMeshAlgorithm::takeOutput ()
+```
+
+*override, virtual*
+
+Return any new [Data](/cpp-sdk/4.5/api/classes/imfusion-data) that was created by the [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) during the last call to [compute()](#compute).
+
+The default implementation will return an empty list.
+
+**Note:** Since ownership of the data is transferred, you can call this method only once between calls to [compute()](#compute).

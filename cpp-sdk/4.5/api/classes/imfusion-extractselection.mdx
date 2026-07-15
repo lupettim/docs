@@ -1,0 +1,94 @@
+---
+title: "ImFusion::ExtractSelection"
+sidebarTitle: "ExtractSelection"
+description: "Algorithm to extract the current selection into a new object instance ( SharedImageSet or TrackingSequence )."
+---
+
+`#include <ImFusion/Base/ExtractSelection.h>`
+
+## Overview
+
+[Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) to extract the current selection into a new object instance ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) or [TrackingSequence](/cpp-sdk/4.5/api/classes/imfusion-trackingsequence)).
+
+It will clone the input data with all aspects (e.g. DataComponents, [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties)) but only the selected frames or samples. Example:
+
+```cpp
+SharedImageSet inputWith10Images = ...;    // some SharedImageSet with 10 images
+Selection sel;
+sel.setFirst(2);
+sel.setLast(4);
+inputWith10Images.setSelection(sel);       // select images 2, 3, and 4
+
+ExtractSelection esAlgorithm({&inputWith10Images});
+esAlgorithm.compute();
+std::unique_ptr<SharedImageSet> result = esAlgorithm.takeOutput().extractFirstImage();
+// `result` will be a copy of `inputWith10Images` but only containing images 2, 3, and 4
+```
+ fragment
+
+## Public Member Functions
+
+- **ExtractSelection** (const [TrackingSequence](/cpp-sdk/4.5/api/classes/imfusion-trackingsequence) \*ts) — Creates the algorithm instance with a tracking sequence.
+- **ExtractSelection** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* &gt; &img) — Creates the algorithm instance with a set of images.
+- void [compute](#compute) () override — Execute the algorithm.
+- [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) [takeOutput](#takeoutput) () override — Return any new [Data](/cpp-sdk/4.5/api/classes/imfusion-data) that was created by the [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) during the last call to [compute()](#compute).
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+## Static Public Member Functions
+
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=nullptr)
+
+## Member Function Documentation
+
+### compute
+
+```cpp
+void ImFusion::ExtractSelection::compute ()
+```
+
+*override, virtual*
+
+Execute the algorithm.
+
+### takeOutput
+
+```cpp
+OwningDataList ImFusion::ExtractSelection::takeOutput ()
+```
+
+*override, virtual*
+
+Return any new [Data](/cpp-sdk/4.5/api/classes/imfusion-data) that was created by the [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) during the last call to [compute()](#compute).
+
+The default implementation will return an empty list.
+
+**Note:** Since ownership of the data is transferred, you can call this method only once between calls to [compute()](#compute).
+
+### configure
+
+```cpp
+void ImFusion::ExtractSelection::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### configuration
+
+```cpp
+void ImFusion::ExtractSelection::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality

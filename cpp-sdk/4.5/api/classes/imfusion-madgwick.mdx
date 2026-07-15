@@ -1,0 +1,65 @@
+---
+title: "ImFusion::Madgwick"
+sidebarTitle: "Madgwick"
+description: "Madgwick sensor fusion."
+---
+
+`#include <ImFusion/Base/IMUPoseIntegration.h>`
+
+## Overview
+
+[Madgwick](/cpp-sdk/4.5/api/classes/imfusion-madgwick) sensor fusion.
+
+Adapted from [https://github.com/PaulStoffregen/MadgwickAHRS](https://github.com/PaulStoffregen/MadgwickAHRS)
+
+## Public Member Functions
+
+- void **setBeta** (double val) — Explicit parameter override, use with care.
+- void **setDescentsPerStep** (int val) — Define descents per step.
+- void **setBetaFromGyroError** (double gyroSigmaInDegreesPerSec) — Conversion as used in the original paper: [http://x-io.co.uk/res/doc/madgwick_internal_report.pdf](http://x-io.co.uk/res/doc/madgwick_internal_report.pdf).
+- void [update](#update) (const vec3 &angularVelocityDegPerSec, const vec3 &linAcc, const vec3 &mag, double timestampSeconds) override — Propagates the physical state using a new measurement.
+- Eigen::Quaterniond [orientationQuaternion](#orientationquaternion) () const override — Returns the orientation of the most recent state.
+- vec3 [position](#position) () const override — Returns the position in world coords.
+- void [reset](#reset) () override — Restores the initial state.
+
+## Member Function Documentation
+
+### update
+
+```cpp
+void ImFusion::Madgwick::update (const vec3 & angularVelocityDegPerSec, const vec3 & linAcc, const vec3 & mag, double timestampSeconds)
+```
+
+*override, virtual*
+
+Propagates the physical state using a new measurement.
+
+### orientationQuaternion
+
+```cpp
+Eigen::Quaterniond ImFusion::Madgwick::orientationQuaternion () const
+```
+
+*override, virtual*
+
+Returns the orientation of the most recent state.
+
+### position
+
+```cpp
+vec3 ImFusion::Madgwick::position () const
+```
+
+*override, virtual*
+
+Returns the position in world coords.
+
+### reset
+
+```cpp
+void ImFusion::Madgwick::reset ()
+```
+
+*override, virtual*
+
+Restores the initial state.

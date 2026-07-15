@@ -1,0 +1,95 @@
+---
+title: "ImFusion::MaskEditor"
+sidebarTitle: "MaskEditor"
+---
+
+## Public Types
+
+- enum class **MaskType** &#123; **None** , **Intensity** , **Explicit** , **Cropping** , **Skipping** , **ExplicitIntensity** &#125;
+- enum **Mode** &#123; **IndividualMasks** , **SharedMask** &#125; — [Status](/cpp-sdk/4.5/api/classes/imfusion-algorithm) codes.
+
+## Public Member Functions
+
+- **MaskEditor** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*image)
+- void [compute](#compute) () override — Execute the algorithm.
+- void **setMaskMode** (Mode mode)
+- Mode **maskMode** () const
+- void **setMaskType** (MaskType type, int which=-1)
+- MaskType **maskType** (int which=-1) const
+- [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* **image** () const
+- void **setIntensityMaskValue** (float f, int which=-1)
+- float **intensityMaskValue** (int which=-1) const
+- void **setIntensityMaskUseRange** (bool enable, int which=-1)
+- bool **intensityMaskIsUsingRange** (int which=-1)
+- void **setIntensityMaskValueRange** (float min, float max, int which=-1)
+- void **intensityMaskValueRange** (float &min, float &max, int which=-1)
+- void **setExplicitIntensityMaskValueRange** (float min, float max, int which=-1)
+- void **explicitIntensityMaskValueRange** (float &min, float &max, int which=-1)
+- void **setExplicitIntensityMaskClampToBorder** (bool isClampToBorder, int which=-1)
+- void **setExplicitIntensityMaskBorderColor** (bool isInsideMask, int which=-1)
+- [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [Mask](/cpp-sdk/4.5/api/classes/imfusion-mask) &gt; **mask** (int which=-1) const
+- [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [IntensityMask](/cpp-sdk/4.5/api/classes/imfusion-intensitymask) &gt; **intensityMask** (int which=-1) const
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **toString** (MaskType type) const
+- MaskType **fromString** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &str) const
+- void **setExtractMask** (bool enable)
+- [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) [takeOutput](#takeoutput) () override — Return any new [Data](/cpp-sdk/4.5/api/classes/imfusion-data) that was created by the [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) during the last call to [compute()](#compute).
+
+## Static Public Member Functions
+
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=0) — Only created for single images with or without a mask.
+
+## Member Function Documentation
+
+### compute
+
+```cpp
+void ImFusion::MaskEditor::compute ()
+```
+
+*override, virtual*
+
+Execute the algorithm.
+
+### configure
+
+```cpp
+void ImFusion::MaskEditor::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### configuration
+
+```cpp
+void ImFusion::MaskEditor::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality
+
+### takeOutput
+
+```cpp
+OwningDataList ImFusion::MaskEditor::takeOutput ()
+```
+
+*override, virtual*
+
+Return any new [Data](/cpp-sdk/4.5/api/classes/imfusion-data) that was created by the [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) during the last call to [compute()](#compute).
+
+The default implementation will return an empty list.
+
+**Note:** Since ownership of the data is transferred, you can call this method only once between calls to [compute()](#compute).

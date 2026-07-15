@@ -1,0 +1,51 @@
+---
+title: "Geometry Migration Guide"
+description: "Basic geometric primitives like lines, triangles or circles have been redesigned and are now part of the Core module."
+---
+
+Basic geometric primitives like lines, triangles or circles have been redesigned and are now part of the Core module.
+
+You can find the new implementation headers under Core/Geometry. Note that these classes are currently in a namespace called Geometry2. The old geometry classes in Base/Geometry.h are still available, but have been deprecated and will be removed. As such it is not advised using them in new code anymore. Once that removal has been completed, the Geometry2 namespace in Core will be changed to just [Geometry](/cpp-sdk/4.5/api/namespaces/imfusion-geometry).
+
+Note that both the interface and the behaviour of these classes has changed, in order to correctly accomodate edge cases and provide more consistency. In general, you should expect all intersection functions to potentially produce different results for edge cases now. For other changes, consult the section on the individual classes below.
+
+There are a few concepts that hold generally for all Core [Geometry](/cpp-sdk/4.5/api/namespaces/imfusion-geometry) classes:
+
+- Unless the header documentation explicitly says otherwise for a given method, both the boundary and the enclosed volume/area/interval are considered to be part of the object.
+- Classes representing 2D objects no longer allow 3D input. If usage in the z=0 plane is desired, which some of the [Base](/cpp-sdk/4.5/api/structs/imfusion-dicom-base) classes did implicitly, the caller has to make that conversion.
+- All Core [Geometry](/cpp-sdk/4.5/api/namespaces/imfusion-geometry) objects are immutable.
+- Distances are regular, unsigned L2 distances unless the function name and documentation explicitly say otherwise (e.g. Plane::signedDistanceToPoint).
+
+The old Line class has been replaced by distinct Line and LineSegment classes. Note that with the default constructor argument, the Line in [Base](/cpp-sdk/4.5/api/structs/imfusion-dicom-base) is finite and you consequently want to replace it with LineSegment. Take care when converting to the new Line constructor: since this object does not have an end point, the second argument is a direction vector now.
+
+There is an abstract interface used by both for cases where code has to accomodate either scenario, which basically provides a single point and a direction.
+
+The direction vector of these classes is normalized now, while the lambda values used by various functions are lengths in whatever units the constructor input had (typically mm). The Base::Line class instead used a normalized lambda and non-normalized direction vector.
+
+The constructor taking a vec4 was ambiguous and no longer exists, use the static function fromComputerVisionNormalForm to achieve the same result. There also exists a corresponding computerVisionNormalForm function, which converts the Plane to a vec4 in this convention and is intended for use with older code.
+
+The distance function in the old class produced a signed distance depending on the direction of the plane normal, for matching results the new signedDistanceToPoint should be used.
+
+The normal used by this object is now normalized.
+
+Triangle has no known change in behaviour besides the intersection functions.
+
+The new rectangle is purely 2D and does not derive from Cuboid anymore. As such some functionality is no longer available. For cases where an axis-aligned rectangle in 3D is required, the workaround of using a Cuboid with zero thickness is still available.
+
+These objects can not be put into an explicitly invalid state anymore. If it is necessary to indicate that the object does not exist, it is recommended to use [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html).
+
+Both classes use the top&gt;bottom convention for the corresponding getters.
+
+The distance function in the old class did not consider the enclosed area to be part of the object. To replicate this behaviour, use the new closestPointOnBoundary.
+
+The new ellipse is defined by its center point, major semi-axis (the vector from the center to the furthest point) and the length of the minor semi-axis (the distance from the center to the boundary when following a direction perpendicular to the major axis). The direction of this minor axis is automatically chosen by the constructor.
+
+The old version took the length of both axes and the angle between the first axis and the x-axis instead. You can use vec = (cos(angle), sin(angle)) and angle = atan2(vec.y, vec.x) to convert between those systems.
+
+The distance function in the old class did not consider the enclosed area to be part of the object. To replicate this behaviour, use the new closestPointOnBoundary.
+
+The arc length calculation is now signed and produces a negative result when going backwards, i.e. end angle less then start angle.
+
+The new polygon class is purely 2D and as such does not have to check for being planar anymore.
+
+It also no longer allows zero-length edges, as such the constructor will drop any vertices that are duplicates of their neighbour. The triangulate function returns indices corresponding to the vertices held by the polygon, so it is advisable to query the filtered list instead of using the constructor input.

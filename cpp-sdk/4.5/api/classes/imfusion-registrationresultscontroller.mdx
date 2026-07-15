@@ -1,0 +1,66 @@
+---
+title: "ImFusion::RegistrationResultsController"
+sidebarTitle: "RegistrationResultsController"
+description: "GUI controller managing registration results."
+---
+
+`#include <ImFusion/Reg/RegistrationResultsController.h>`
+
+## Overview
+
+[GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui) controller managing registration results.
+
+This controller allows to conveniently add registration results on the currently visible (image) data of the main 3D view group, and toggle between them later.
+
+## Classes
+
+- class [ListItemDelegate](/cpp-sdk/4.5/api/classes/imfusion-registrationresultscontroller-listitemdelegate) — Custom Item Delegate that paints an item in the results list If data(Qt::UserRole + 1).toBool() is true it adds a "GT" symbol next to the result.
+
+## Public Slots
+
+- void **onAdd** () — Add new registration result using the currently visible data.
+- void **onRemove** () — Remove the currently selected result.
+- void **onReload** () — Apply the currently selected result.
+- void **onSelect** (int index) — Select another result with given index.
+- void **onDataDeleting** ([Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data) — A data instance is about to be deleted from the data model.
+- void **showContextMenu** (const QPoint &pos) — [Context](/cpp-sdk/4.5/api/classes/imfusion-gl-context) menu with tools to copy or set current result on other data.
+- void **onOpenBrowser** () — On open browser button clicked.
+- void **onExport** () — On export button clicked.
+- void **onLoad** () — On load button clicked.
+
+## Public Member Functions
+
+- **RegistrationResultsController** ([RegistrationResultsAlgorithm](/cpp-sdk/4.5/api/classes/imfusion-registrationresultsalgorithm) \*alg) — Constructor with corresponding algorithm instance.
+- **~RegistrationResultsController** () override — Destructor, deleting the UI.
+- void [init](#init) () override — Initializes the controller, also applying last result.
+- void [load](#load) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &path, bool loadData, bool append=false) — Load results.
+- [RegistrationResults](/cpp-sdk/4.5/api/classes/imfusion-registrationresults) & **results** ()
+- void **loadMissingData** (int index=-1) — Calls [RegistrationResults::loadMissingData](/cpp-sdk/4.5/api/classes/imfusion-registrationresults) on the underlying [RegistrationResults](/cpp-sdk/4.5/api/classes/imfusion-registrationresults) and add the data to the [DataModel](/cpp-sdk/4.5/api/classes/imfusion-datamodel).
+- void **removeResult** (int index) — Remove result at specified index.
+- void **removeResultsWithoutData** () — Remove results that do not have any data associated with them.
+
+## Member Function Documentation
+
+### init
+
+```cpp
+void ImFusion::RegistrationResultsController::init ()
+```
+
+*override, virtual*
+
+Initializes the controller, also applying last result.
+
+### load
+
+```cpp
+void ImFusion::RegistrationResultsController::load (const std::string & path, bool loadData, bool append = false)
+```
+
+Load results.
+
+**Parameters:**
+
+- `path` — path to ImFusion Registration Results (IRR) file
+- `loadData` — whether to load the data necessary for the loaded results
+- `append` — whether to append the results to the existing ones

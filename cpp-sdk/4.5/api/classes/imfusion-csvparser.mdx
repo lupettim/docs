@@ -1,0 +1,58 @@
+---
+title: "ImFusion::CSVParser"
+sidebarTitle: "CSVParser"
+description: "Converts a CSV file into a Table , with customizable delimiters and optional headers."
+---
+
+`#include <ImFusion/GUI/CSVParseDialog.h>`
+
+## Overview
+
+Converts a CSV file into a [Table](/cpp-sdk/4.5/api/classes/imfusion-table), with customizable delimiters and optional headers.
+
+User should call parse when the delimiters and headers options are set as desired. Optionally a [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) object can be passed in to monitor the progress of the parsing, as well as limit the number of rows to parse.
+
+## Public Member Functions
+
+- **CSVParser** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &filename="") — Constructs a CSV parser. Optionally specify the filename of the CSV file to parse.
+- void **setFilename** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &filename) — Sets or updates the filename to parse.
+- void **setDelimiters** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; char &gt; &delimiters) — Sets which delimiters to use for parsing the CSV file.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; char &gt; **delimiters** () — Returns the delimiters currently in use.
+- void **setContainsHeaders** (bool headers) — Sets if the CSV file contains a first row of headers and should be used as headers in the table.
+- bool **containsHeaders** () — Sets if the headers should be included as a row in the table.
+- void **parse** ([Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) \*progress=nullptr, int maxRows=-1) — Updates the internal table using the current set of delimiters and header options Optional progress and maximum number of rows to process.
+- [Table](/cpp-sdk/4.5/api/classes/imfusion-table) & **table** () — Returns the extracted table from the CSV.
+- void **clearTable** () — Clears the table, call parse again to refill it.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **filename** ()
+- virtual void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- virtual void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+## Member Function Documentation
+
+### configure
+
+```cpp
+virtual void ImFusion::CSVParser::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### configuration
+
+```cpp
+virtual void ImFusion::CSVParser::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality

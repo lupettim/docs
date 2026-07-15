@@ -1,0 +1,113 @@
+---
+title: "ImFusion::GlTree"
+sidebarTitle: "GlTree"
+description: "Point tree annotation."
+---
+
+`#include <ImFusion/GL/GlTree.h>`
+
+## Overview
+
+Point tree annotation.
+
+## Public Member Functions
+
+- **GlTree** ([Tree](/cpp-sdk/4.5/api/classes/imfusion-tree) \*tree)
+- [Geometry::AlignedBox](/cpp-sdk/4.5/api/classes/imfusion-geometry-alignedbox) [bounds](#bounds) () const override — Get the axis-aligned bounding box of this [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) in world space.
+- vec3 [center](#center) () const override — Return the center of the object in local coordinates without considering any matrix.
+- vec3 [extent](#extent) () const override — Return the extent of the object in local coordinates without considering any matrix.
+- void [setMatrix](#setmatrix) (const mat4 &m) override — Set the modelview matrix of this object.
+- const mat4 & [matrix](#matrix) () const override — Return the modelview matrix.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [typeName](#typename) () const override — Return unique identifier for this object class used for serialization.
+- void **setPointColor** (const vec3 &[color](/cpp-sdk/4.5/api/classes/imfusion-glannotation)) — Set point color.
+- vec3 **pointColor** () — Get point color.
+- void **setPointSize** (float s) — Set the point size.
+- float **pointSize** () — Retrieve the point size.
+- virtual void [setTree](#settree) ([Tree](/cpp-sdk/4.5/api/classes/imfusion-tree) \*tree) — Set the underlying tree data which is to be visualized.
+- [Tree](/cpp-sdk/4.5/api/classes/imfusion-tree) \* **tree** () — Get the underlying tree data.
+- const [Tree](/cpp-sdk/4.5/api/classes/imfusion-tree) \* **tree** () const
+
+## Protected Member Functions
+
+- void **onDataDeleted** (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*d)
+- void **onTransformationChanged** (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*d)
+
+## Protected Attributes
+
+- [Tree](/cpp-sdk/4.5/api/classes/imfusion-tree) \* **m_tree** = nullptr
+- vec3 **m_pointColor** = vec3(1, 1, 0)
+- float **m_pointSize** = 1.0f
+
+## Member Function Documentation
+
+### bounds
+
+```cpp
+Geometry::AlignedBox ImFusion::GlTree::bounds () const
+```
+
+*override, virtual*
+
+Get the axis-aligned bounding box of this [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) in world space.
+
+Return an empty (default-constructed) AlignedBox object if the [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) does not reside in world space.
+
+### center
+
+```cpp
+vec3 ImFusion::GlTree::center () const
+```
+
+*override, virtual*
+
+Return the center of the object in local coordinates without considering any matrix.
+
+### extent
+
+```cpp
+vec3 ImFusion::GlTree::extent () const
+```
+
+*override, virtual*
+
+Return the extent of the object in local coordinates without considering any matrix.
+
+### setMatrix
+
+```cpp
+void ImFusion::GlTree::setMatrix (const mat4 & m)
+```
+
+*override, virtual*
+
+Set the modelview matrix of this object.
+
+### matrix
+
+```cpp
+const mat4 & ImFusion::GlTree::matrix () const
+```
+
+*override, virtual*
+
+Return the modelview matrix.
+
+### typeName
+
+```cpp
+std::string ImFusion::GlTree::typeName () const
+```
+
+*override, virtual*
+
+Return unique identifier for this object class used for serialization.
+
+### setTree
+
+```cpp
+virtual void ImFusion::GlTree::setTree (Tree * tree)
+```
+
+*virtual*
+
+Set the underlying tree data which is to be visualized.

@@ -1,0 +1,80 @@
+---
+title: "ImFusion::ScalarParameterWrapper< T >"
+sidebarTitle: "ScalarParameterWrapper< T >"
+description: "Wrap a single scalar into a ParameterWrapperBase instance."
+---
+
+`#include <ImFusion/Base/ParameterOptimization.h>`
+
+## Overview
+
+template&lt;typename T&gt;
+
+class ImFusion::ScalarParameterWrapper&lt; T &gt;
+Wrap a single scalar into a [ParameterWrapperBase](/cpp-sdk/4.5/api/classes/imfusion-parameterwrapperbase) instance.
+
+This class is templated to allow for double, [std::vector&lt;double&gt;](http://en.cppreference.com/w/cpp/container/vector.html) and [Parameter&lt;double&gt;](/cpp-sdk/4.5/api/classes/imfusion-parameter) types.
+
+**Warning:** : For [Parameter&lt;double&gt;](/cpp-sdk/4.5/api/classes/imfusion-parameter) types, each deserialize may trigger a signalChanged
+
+## Public Member Functions
+
+- **ScalarParameterWrapper** (T &value, [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; [name](#name)=std::nullopt)
+- **ScalarParameterWrapper** (const ScalarParameterWrapper &)=default
+- int [dim](#dim) () const override — The number of (scalar) parameters wrapped by this object.
+- void [deserialize](#deserialize) (const double \*v) override — Update the stored references from a double representation.
+- void [serialize](#serialize) (double \*v) const override — Updates a double representation from the stored references.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [name](#name) (int i) const override — Name of the ith parameter, used for display purposes.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; ParameterWrapperBase &gt; [clone](#clone) () const override — Clone function.
+
+## Member Function Documentation
+
+### dim
+
+```cpp
+template<typename T> int ImFusion::ScalarParameterWrapper < T >::dim () const
+```
+
+*override, virtual*
+
+The number of (scalar) parameters wrapped by this object.
+
+### deserialize
+
+```cpp
+template<typename T> void ImFusion::ScalarParameterWrapper < T >::deserialize (const double * v)
+```
+
+*override, virtual*
+
+Update the stored references from a double representation.
+
+### serialize
+
+```cpp
+template<typename T> void ImFusion::ScalarParameterWrapper < T >::serialize (double * v) const
+```
+
+*override, virtual*
+
+Updates a double representation from the stored references.
+
+### name
+
+```cpp
+template<typename T> std::string ImFusion::ScalarParameterWrapper < T >::name (int i) const
+```
+
+*override, virtual*
+
+Name of the ith parameter, used for display purposes.
+
+### clone
+
+```cpp
+template<typename T> std::unique_ptr < ParameterWrapperBase > ImFusion::ScalarParameterWrapper < T >::clone () const
+```
+
+*override, virtual*
+
+Clone function.

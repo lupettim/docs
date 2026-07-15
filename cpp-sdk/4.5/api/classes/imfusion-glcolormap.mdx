@@ -1,0 +1,25 @@
+---
+title: "ImFusion::GlColormap"
+sidebarTitle: "GlColormap"
+description: "Wrapper around GlImage to create 1D look-up tables that provides presets for common used colormaps."
+---
+
+`#include <ImFusion/GL/GlColormap.h>`
+
+## Overview
+
+Wrapper around [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) to create 1D look-up tables that provides presets for common used colormaps.
+
+## Public Types
+
+- enum **Preset** &#123; **Grayscale** , **Jet** , **HotIron** , **PET** , **HotMetalBlue** , **PET20Step** , **DopplerCFM** , **Viridis** , **Inferno** , **CoolWarmDivergent** &#125; — Pixel/voxel data type, equivalent to OpenGL defines.
+
+## Public Member Functions
+
+- **GlColormap** (Preset preset, int [width](/cpp-sdk/4.5/api/classes/imfusion-image)=256, int specialFormat=0)
+- Preset **preset** () const
+
+## Static Public Member Functions
+
+- static [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **presetToString** (Preset p) — Converts the given preset to a string representation, e.g. used during serialization.
+- static Preset **stringToPreset** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &s) — Converts a string representation of a preset from *presetToString()* back to a Preset, e.g. used during deserialization.

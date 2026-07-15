@@ -1,0 +1,54 @@
+---
+title: "ImFusion::GlText"
+sidebarTitle: "GlText"
+---
+
+## Public Member Functions
+
+- **GlText** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &text="", const vec2 &offset=vec2::Zero(), const vec4 &color=vec4::Ones(), int fontSize=12)
+- void **setText** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &text)
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **text** ()
+- void **setColor** (const vec3 &color)
+- void **setColor** (const vec4 &color)
+- vec4 **color** ()
+- void **setOffset** (const vec2 &offset)
+- vec2 **offset** ()
+- void **setFontSize** (int size)
+- int **fontSize** ()
+- void [draw](#draw) (const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &view) override — Draw the object in 3D space.
+- [Geometry::AlignedBox](/cpp-sdk/4.5/api/classes/imfusion-geometry-alignedbox) [bounds](#bounds) () const override — Get the axis-aligned bounding box of this [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) in world space.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [typeName](#typename) () const override — Return unique identifier for this object class used for serialization.
+
+## Member Function Documentation
+
+### draw
+
+```cpp
+void ImFusion::GlText::draw (const GlView & view)
+```
+
+*override, virtual*
+
+Draw the object in 3D space.
+
+### bounds
+
+```cpp
+Geometry::AlignedBox ImFusion::GlText::bounds () const
+```
+
+*inline, override, virtual*
+
+Get the axis-aligned bounding box of this [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) in world space.
+
+Return an empty (default-constructed) AlignedBox object if the [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) does not reside in world space.
+
+### typeName
+
+```cpp
+std::string ImFusion::GlText::typeName () const
+```
+
+*inline, override, virtual*
+
+Return unique identifier for this object class used for serialization.

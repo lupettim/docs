@@ -1,0 +1,21 @@
+---
+title: "ImFusion::Log::Sink::LogCapture"
+sidebarTitle: "LogCapture"
+description: "Structure storing a single log event."
+---
+
+`#include <ImFusion/Core/Log/Sink.h>`
+
+## Overview
+
+Structure storing a single log event.
+
+## Public Attributes
+
+- std::chrono::system_clock::time_point **time** — Time point when the log even happened.
+- Log::Level **level** — Severity of the log event.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **category** — Category of the log event.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **message** — [Log](/cpp-sdk/4.5/api/namespaces/imfusion-log) message.
+- const char \* **fileName** — File name of message origin (optional).
+- int **lineNumber** — Line number of message origin (optional).
+- [std::thread::id](http://en.cppreference.com/w/cpp/thread/thread/id.html) **threadId** — Thread ID of the origin thread.

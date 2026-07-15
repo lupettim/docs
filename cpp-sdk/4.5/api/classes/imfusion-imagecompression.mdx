@@ -1,0 +1,81 @@
+---
+title: "ImFusion::ImageCompression"
+sidebarTitle: "ImageCompression"
+description: "Saving and loading of compressed image data."
+---
+
+`#include <ImFusion/Base/ImageCompression.h>`
+
+## Overview
+
+Saving and loading of compressed image data.
+
+## Public Member Functions
+
+- **ImageCompression** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*is, const [ImageDescriptor](/cpp-sdk/4.5/api/structs/imfusion-imagedescriptor) &desc, int frames=1) — Constructor for loading data with empty image set container.
+- **ImageCompression** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*is) — Constructor with an allocated image set container to load, analyze or save.
+- **~ImageCompression** () — Destructor deleting auxiliary variables but not image data.
+- void **setProgress** ([Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) \*p) — Set optional progress callback.
+- void **setOptions** (int numRuns, int diffRX, int diffRY) — Set options for thorough compression.
+- unsigned long long **analyze** () — Process the image data with given settings and return predicted size in KB.
+- unsigned long long **size** (int mode) const — Return size in KB for a given compression mode after analysis.
+- int **scaling** () const — Return the integer intensity scaling that was found during analysis.
+- bool **load** ([std::istream](http://en.cppreference.com/w/cpp/io/basic_istream.html) &file) — Loads a compressed image from file.
+- bool **save** ([std::ostream](http://en.cppreference.com/w/cpp/io/basic_ostream.html) &file, bool borderRLE) — Save an image set using thorough compression, return true upon success.
+- bool [saveOnTheFly](#saveonthefly) ([std::ostream](http://en.cppreference.com/w/cpp/io/basic_ostream.html) &file, const [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) \*img) — Save an image or single image frame right on the fly.
+
+## Static Public Member Functions
+
+- static bool [compress](#compress) (const [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) \*img, int mode, int level, unsigned char \*buffer, int &bufferSize) — Compress image.
+- static bool [uncompress](#uncompress) (unsigned char \*buffer, int bufferSize, int mode, [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) \*img) — Uncompress image.
+
+## Member Function Documentation
+
+### saveOnTheFly
+
+```cpp
+bool ImFusion::ImageCompression::saveOnTheFly (std::ostream & file, const MemImage * img)
+```
+
+Save an image or single image frame right on the fly.
+
+The numRuns parameter is ignored, full 8 or 16 bit range is assumed for default [Huffman](/cpp-sdk/4.5/api/classes/imfusion-huffman) codes, previous frame codes are disabled.
+
+### compress
+
+```cpp
+bool ImFusion::ImageCompression::compress (const MemImage * img, int mode, int level, unsigned char * buffer, int & bufferSize)
+```
+
+*static*
+
+Compress image.
+
+**Parameters:**
+
+- `img` — image to compress
+- `mode` — compression mode: 0 = zlib default strategy, 1 = zlib huffman, 2 = zlib rle, 3 = png
+- `level` — compression level ranging from 0 (no compression) to 9 (maximum compression). Has no effect for huffman and rle mode
+- `buffer` — output buffer. Size should be at least twice the size of the input image in bytes
+- `bufferSize` — size of provided output buffer on input, number of bytes written on return
+
+**Returns:** true if successful, false otherwise
+
+### uncompress
+
+```cpp
+bool ImFusion::ImageCompression::uncompress (unsigned char * buffer, int bufferSize, int mode, MemImage * img)
+```
+
+*static*
+
+Uncompress image.
+
+**Parameters:**
+
+- `buffer` — input buffer
+- `bufferSize` — size of input buffer
+- `mode` — compression mode: 0 = zlib default strategy, 1 = zlib huffman, 2 = zlib rle, 3 = png
+- `img` — uncompressed image
+
+**Returns:** true if successful, false otherwise

@@ -1,0 +1,144 @@
+---
+title: "ImFusion::Pose"
+sidebarTitle: "Pose"
+description: "Conversion of pose matrices."
+---
+
+## Overview
+
+Conversion of pose matrices.
+
+Set of more advanced function on poses.
+
+## Enumerations
+
+- enum [TransformationConvention](#transformationconvention) &#123; FROMWORLD = 0 , TOWORLD = 1 &#125; — Convention of matrix transformations.
+
+## Functions
+
+- mat4 **eulerToMat** (const vec3 &trans, const vec3 &rot) — Convert a translation and Euler angles to a homogeneous transformation matrix. Angles are in degrees.
+- mat3 **eulerToMat** (const vec3 &rot) — Convert Euler angles to a rotation matrix. Angles are in degrees.
+- mat4 **eulerToMat** (const double \*pose) — Convenience method using input from a double pointer with at least 6 values. Angles are in degrees.
+- void **matToEuler** (const mat4 &M, vec3 &transOut, vec3 &rotOut) — Convert a homogeneous transformation matrix to translation and Euler angles. Angles are in degrees.
+- vec3 **matToEuler** (const mat3 &M) — Convert a rotation matrix to Euler angles. Angles are in degrees.
+- void **matToEuler** (const mat4 &M, double \*poseOut) — Convenience method converting matrix into a double pointer. Angles are in degrees.
+- mat4 **eulerDerivative** (int paramIndex, const double \*params) — Compute the derivative of a Euler matrix with respect to a parameter (between 0 and 5).
+- void **eulerMatToLog** (const mat4 &M, vec3 &transLog, vec3 &rotLog) — Compute the logarithm a Euler matrix on the Lie algebra.
+- mat4 **logToEulerMat** (const vec3 &transLog, const vec3 &rotLog) — Compute the exponential of an element on the Lie algebra of Euler matrices.
+- mat4 **affineToMat** (const vec3 &trans, const vec3 &rot, const vec3 &scale, const vec3 &shear, bool linearScale=false) — Compose a homogeneous transformation matrix from affine parameters.
+- mat4 [affineToMat](#affinetomat) (const double \*pose, bool linearScale=false) — Convenience method using input from a double pointer with at least 12 values.
+- mat4 **affineDerivative** (int paramIndex, const double \*params, bool linearScale=false) — Compute the derivative of an affine matrix with respect to a parameter (between 0 and 11) The 12 pose parameters are translation(3), rotation(3), scale(3), shear(3).
+- void **matToAffine** (const mat4 &M, vec3 &transOut, vec3 &rotOut, vec3 &scaleOut, vec3 &shearOut, bool linearScale=false) — Decompose a homogeneous transformation matrix into affine parameters.
+- mat4 **scaleMat** (const vec3 &scale, bool linearScale=false) — Return a non-uniform scaling matrix based on logarithmic input parameters.
+- mat4 **shearMat** (const vec3 &shear) — Return a matrix with sheared values in the upper right.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **matToString** (const mat4 &pose, bool inDegrees=true) — Return a one line string that contains the pose rotation in the form of AngleAxis and its translation.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **matToStringEuler** (const mat4 &pose, bool inDegrees=true) — Return a one line string that contains the pose rotation in the form of euler angles and its translation.
+- Eigen::Quaterniond **computeQuaternionAverage** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; Eigen::Quaterniond &gt; &quats) — Computes the average rotation of the provided quaternions `quats`.
+- Eigen::Quaterniond **computeQuaternionWeightedAverage** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; Eigen::Quaterniond &gt; &quats, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; &weights) — Computes the weighted average rotation of the provided quaternions `quats` with non-negative weights `weights`.
+- mat4 [computeAveragePose](#computeaveragepose) (It begin, It end, [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; mat4(It &)&gt; functor=([](It &it) &#123; return \*it;&#125;)) — Return the average pose of the matrices iterated from `begin` to `end`.
+- mat4 **computeAveragePose** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; mat4 &gt; &matrices) — Return the average pose of the matrices in vector `matrices`.
+- double **geodesicDistance** (const isom3 &pose1, const isom3 &pose2) — Return the geodesic distance between two poses in the manifold SE(3), following Esposito et al. 2019, eq. (5) (doi: 10.1109/TMI.2019.2898480).
+- mat4 [interpolate](#interpolate) ([TransformationConvention](#transformationconvention) tConv, const mat4 &M1, const mat4 &M2, double t, double tr=-1.0) — Interpolate between two euclidean transformations.
+- mat4 [interpolateAxisAngle](#interpolateaxisangle) (const mat4 &M1, const mat4 &M2, double t) — Interpolate between two euclidean transformations.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; mat4 &gt; **distributeMotion** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; mat4 &gt; &matrices, const mat4 &motion) — Distribute a rigid motion in equal steps onto a chain of transformations.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; mat4 &gt; [distributeMotion2](#distributemotion2) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; mat4 &gt; &matrices, const mat4 &motion) — Distribute a rigid motion in equal steps onto a chain of transformations.
+- void **smooth** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; mat4 &gt; &M, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; mat4 &gt; &Ms, int windowSize=2) — Smooth poses by averaging over window.
+- void [smoothKalman](#smoothkalman) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; mat4 &gt; &measurement, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; mat4 &gt; &prediction, const vec2 &modelSigma=vec2::Ones(), const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec2 &gt; &measurementSigma=[std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec2 &gt;()) — Smooth poses using Kalman filter.
+- void [distance](#distance) (const mat4 &M1, const mat4 &M2, double &tOut, double &rOut, double \*allOut=0, bool absoluteTrans=false) — Return distance in translation and rotation of two rigid matrices.
+- mat4 **registerPointClouds** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; &ptCloud1, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; &ptCloud2, double \*outError=nullptr, bool includeScaling=false, int nbIterations=1000) — Register two point clouds with a global transformation using [RANSAC](/cpp-sdk/4.5/api/classes/imfusion-ransac) and ICP (requires PCL).
+- void **save** (const char \*filename, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; mat4 &gt; &matrices, bool rigidPars=false) — Save matrices or its rigid pose parameters to a text file.
+- mat4 **demeanMatrices** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; mat4 &gt; &mat, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; mat4 &gt; &demeanedMat) — Helper function to remove subtract a mean registration of a set of matrices.
+
+## Enumeration Type Documentation
+
+### TransformationConvention
+
+```cpp
+enum ImFusion::Pose::TransformationConvention
+```
+
+Convention of matrix transformations.
+
+**Enumerator:**
+
+- `FROMWORLD` — Transformation matrix maps from the world coordinate system to the data one, i.e.
+\(x_&#123;data&#125; = matrix \*
+                     &lt; x_&#123;world&#125;\). Default for images.
+- `TOWORLD` — Transformation matrix maps from the data coordinate system to the world one, i.e.
+\(x_&#123;world&#125; = matrix \*
+                     &lt; x_&#123;data&#125;\). Default for everything but images.
+
+## Function Documentation
+
+### affineToMat
+
+```cpp
+mat4 ImFusion::Pose::affineToMat (const double * pose, bool linearScale = false)
+```
+
+Convenience method using input from a double pointer with at least 12 values.
+
+The 12 pose parameters are translation(3), rotation(3), scale(3), shear(3)
+
+### computeAveragePose
+
+```cpp
+template<typename It> mat4 ImFusion::Pose::computeAveragePose (It begin, It end, std::function < mat4(It &)> functor = ([](It& it) { return *it; }))
+```
+
+Return the average pose of the matrices iterated from `begin` to `end`.
+
+Iterators must be random access iterators. The `functor` can be used to map differently from iterator to matrix.
+
+### interpolate
+
+```cpp
+mat4 ImFusion::Pose::interpolate (TransformationConvention tConv, const mat4 & M1, const mat4 & M2, double t, double tr = -1.0)
+```
+
+Interpolate between two euclidean transformations.
+
+The rotations are interpolated using quaternion slerp. If the optional parameter tr &gt;= 0, t is used as separate weight for translation, tr for rotation and affine parameters. If tConv is set to FROMWORLD, the interpolation will be perform in the inverse space, i.e. M1 and M2 are inverted, interpolated, the result is inverted again and then returned.
+
+### interpolateAxisAngle
+
+```cpp
+mat4 ImFusion::Pose::interpolateAxisAngle (const mat4 & M1, const mat4 & M2, double t)
+```
+
+Interpolate between two euclidean transformations.
+
+Only works with rigid poses. For affine poses, use [Pose::interpolate()](#interpolate). The rotations are interpolated using Axis-Angle representation.
+
+### distributeMotion2
+
+```cpp
+std::vector < mat4 > ImFusion::Pose::distributeMotion2 (const std::vector < mat4 > & matrices, const mat4 & motion)
+```
+
+Distribute a rigid motion in equal steps onto a chain of transformations.
+
+**Parameters:**
+
+- `matrices` — list of matrices. Each matrix is the relative transformation to the previous matrix.
+- `motion` — relative change of the motion
+
+### smoothKalman
+
+```cpp
+void ImFusion::Pose::smoothKalman (const std::vector < mat4 > & measurement, std::vector < mat4 > & prediction, const vec2 & modelSigma = vec2::Ones(), const std::vector < vec2 > & measurementSigma = std::vector < vec2 >())
+```
+
+Smooth poses using Kalman filter.
+
+modelSigma gives the sigma of the process noise for the quaternions and the translation. measurementSigma gives the sigma of the measurement noise for the quaternions and the translation.
+
+### distance
+
+```cpp
+void ImFusion::Pose::distance (const mat4 & M1, const mat4 & M2, double & tOut, double & rOut, double * allOut = 0, bool absoluteTrans = false)
+```
+
+Return distance in translation and rotation of two rigid matrices.
+
+If the optional parameter allOut is specified, it has to point to space for size values where the absolute value of individual translation and rotation differences are stored.

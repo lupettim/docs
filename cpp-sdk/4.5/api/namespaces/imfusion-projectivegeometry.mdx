@@ -1,0 +1,344 @@
+---
+title: "ImFusion::ProjectiveGeometry"
+sidebarTitle: "ProjectiveGeometry"
+description: "Collection of functions dealing with projective geometry."
+---
+
+## Overview
+
+Collection of functions dealing with projective geometry.
+
+## Functions
+
+- void **normalizePoints2D** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec2 &gt; &ptsIn, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec2 &gt; &ptsOut, mat3 \*T=0) — Normalize points so that their centroid is at the origin and their average distance from the origin is sqrt(2).
+- void **normalizePoints2D** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; &ptsIn, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; &ptsOut, mat3 \*T=0) — Normalize points so that their centroid is at the origin and their average distance from the origin is sqrt(2).
+- void **normalizePoints3D** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec4 &gt; &ptsIn, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec4 &gt; &ptsOut, mat4 \*T=0) — Normalize points so that their centroid is at the origin and their average distance from the origin is sqrt(2).
+- bool **computeHomography2D** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; &x1, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; &x2, mat3 &H) — Compute homography H so that H\*x1 = x2. x1 and x2 are vectors of points in homogeneous coordinates.
+- void [computeProjectionMatrix](#computeprojectionmatrix-1-3) (const vec3 &C, const vec3 &p1, const vec3 &p2, const vec3 &p3, const vec3 &p4, int w, int h, mat3 &K, mat3 &R, vec3 &t) — Compute projection matrix for source-detector geometry p1, p2, p3 and p4 are the detector corner points in the order top-left, top-right, bottom-right and bottom-left as seen from the source.
+- bool [computeProjectionMatrix](#computeprojectionmatrix-2-3) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; &X, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec2 &gt; &x, mat34 &P1, mat34 &P2, bool &P2IsAPossibleSolution) — Estimate projection matrix from point correspondences.
+- bool [computeCameraPose](#computecamerapose-1-2) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; &X, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec2 &gt; &x, const mat3 &K, const vec5 &distCoeffs, mat4 &T, double \*mre=nullptr, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec2 &gt; \*reprojectedPoints=nullptr) — Estimate camera pose (i.e.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::tuple](http://en.cppreference.com/w/cpp/utility/tuple.html)&lt; double, mat4 &gt; &gt; [computeCameraPose](#computecamerapose-2-2) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; &X, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec2 &gt; &x, const mat3 &K, const vec5 &distCoeffs, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec2 &gt; &gt; \*reprojectedPoints=nullptr) — Computes the camera pose (transformation from world to camera) from 3D-2D point correspondences, camera intrinsics and distortion coefficients.
+- bool [computeProjectionMatrix](#computeprojectionmatrix-3-3) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; &X, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec2 &gt; &x, mat34 &P) — Compute projection matrix from point correspondences.
+- bool **computeProjective3D** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec4 &gt; &x1, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec4 &gt; &x2, mat4 &P) — Compute general 3D projective transformation so that P\*x1 = x2.
+- bool **computeAffine3D** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec4 &gt; &x1, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec4 &gt; &x2, mat4 &T) — Compute 3D affine transformation so that T\*x1 = x2.
+- void [normalizePoints](#normalizepoints-1-2) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec2 &gt; &pts, mat3 &T) — Compute normalizing transformation for 2D points so that they are centered on the origin and the average distance from the origin is sqrt(2).
+- void [normalizePoints](#normalizepoints-2-2) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; &pts, mat4 &T) — Compute normalizing transformation for 3D points so that they are centered on the origin and the average distance from the origin is sqrt(2).
+- double [computeReprojectionError](#computereprojectionerror-1-2) (const mat34 &P, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; &X, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec2 &gt; &x) — Compute reprojection error.
+- double [computeReprojectionError](#computereprojectionerror-2-2) (const mat3 &K, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; mat3 &gt; &R, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; &t, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; &X, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec2 &gt; &gt; &x, const Eigen::Matrix&lt; unsigned char, Eigen::Dynamic, Eigen::Dynamic &gt; &vis) — Compute reprojection error over a sequence.
+- double [triangulatePoint](#triangulatepoint) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec2 &gt; &x, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; mat34 &gt; &P, vec3 &X, bool nonLinearRefinement=false) — Triangulate point given image measurements and projection matrices.
+- void [convertComputerVisionToOpenGlProjectionMatrix](#convertcomputervisiontoopenglprojectionmatrix) (const mat3 &K, const mat3 &R, const vec3 &t, int width, int height, double near, double far, mat4 &PM, mat4 &MV, bool flipImageYAxis=false) — Convert a projection matrix to OpenGL representation from [OpenCV](/cpp-sdk/4.5/api/namespaces/imfusion-opencv) convention In [OpenCV](/cpp-sdk/4.5/api/namespaces/imfusion-opencv) convention the y-axis is flipped compared to OpenGL, and pixel coordinates are used.
+- void [convertOpenGlToComputerVisionProjectionMatrix](#convertopengltocomputervisionprojectionmatrix) (const mat4 &PM, int width, int height, mat34 &P) — Convert an OpenGL projection matrix to computer vision representation.
+- void [decomposeProjectionMatrix](#decomposeprojectionmatrix) (const mat34 &P, mat3 &K, mat3 &R, vec3 &t, bool checkOpenCVConvention=true) — Decompose projection matrix into K, R and t.
+- vec3 [reproject](#reproject-1-2) (const mat4 &projMat, const vec2 &imgPoint2D, double physicalWidth, vec3 &sourceOut3D, vec3 &imgOut3D, vec3 &zDirOut, double &fac) — Reprojects a point on the image plane using an OpenGL projection matrix.
+- vec3 [reproject](#reproject-2-2) (const mat4 &projMat, const vec2 &imgPoint2D, double physicalWidth, vec3 &sourceOut3D, vec3 &imgOut3D) — Reprojects a point on the image plane using an OpenGL projection matrix.
+- void [unproject](#unproject) (const mat3 &invK, double dist, const vec2 &pt2d, vec3 &pt3d) — Unprojects a point on the image plane, where dist corresponds to the distance of pt3d from the xy plane and invK is the inverse calibration matrix of the camera.
+- void [projectPoint](#projectpoint-1-2) (const mat34 &P, vec4 &pt3d, vec3 &pt2d, const bool normalize=true) — Projects a 3d point to 2d using a 3x4 projection matrix.
+- void [projectPoint](#projectpoint-2-2) (const mat34 &P, vec3 &pt3d, vec3 &pt2d, const bool normalize=true) — Projects an inhomogeneous 3d point to 2d using a 3x4 projection matrix.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec2 &gt; [projectPoints](#projectpoints) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; &pts3d, const mat3 &K, const mat3 &R, const vec3 &t, const vec5 &distCoeffs) — Projects a vector of inhomogeneous 3d points to 2d using intrinsics and distortion parameters.
+
+## Function Documentation
+
+### computeProjectionMatrix
+
+```cpp
+void ImFusion::ProjectiveGeometry::computeProjectionMatrix (const vec3 & C, const vec3 & p1, const vec3 & p2, const vec3 & p3, const vec3 & p4, int w, int h, mat3 & K, mat3 & R, vec3 & t)
+```
+
+Compute projection matrix for source-detector geometry p1, p2, p3 and p4 are the detector corner points in the order top-left, top-right, bottom-right and bottom-left as seen from the source.
+
+I.e. the outer border of the image. The points are assumed to lie on a plane. C is the position of the source. w and h is the detector width and height in pixels. K, R and t contain the computed projection matrix components.
+
+### computeProjectionMatrix
+
+```cpp
+bool ImFusion::ProjectiveGeometry::computeProjectionMatrix (const std::vector < vec3 > & X, const std::vector < vec2 > & x, mat34 & P1, mat34 & P2, bool & P2IsAPossibleSolution)
+```
+
+Estimate projection matrix from point correspondences.
+
+**Parameters:**
+
+- `X` — 3D points
+- `x` — 2D points
+- `P1` — projection matrix (a most probable solution)
+- `P2` — projection matrix (another possible solution)
+- `P2IsAPossibleSolution` — flag specifying whether projection matrix P2 could be a correct solution
+
+**Returns:** true if successful
+
+### computeCameraPose
+
+```cpp
+bool ImFusion::ProjectiveGeometry::computeCameraPose (const std::vector < vec3 > & X, const std::vector < vec2 > & x, const mat3 & K, const vec5 & distCoeffs, mat4 & T, double * mre = nullptr, std::vector < vec2 > * reprojectedPoints = nullptr)
+```
+
+Estimate camera pose (i.e.
+
+transformation from world to camera)
+
+**Parameters:**
+
+- `X` — 3D points
+- `x` — 2D points
+- `K` — intrinsic parameters
+- `distCoeffs` — distortion parameters
+- `T` — output camera pose
+- `mre` — optional output root-mean-square reprojection error
+- `reprojectedPoints` — optional output reprojected points
+
+**Returns:** true if successful
+
+### computeCameraPose
+
+```cpp
+std::vector < std::tuple < double, mat4 > > ImFusion::ProjectiveGeometry::computeCameraPose (const std::vector < vec3 > & X, const std::vector < vec2 > & x, const mat3 & K, const vec5 & distCoeffs, std::vector < std::vector < vec2 > > * reprojectedPoints = nullptr)
+```
+
+Computes the camera pose (transformation from world to camera) from 3D-2D point correspondences, camera intrinsics and distortion coefficients.
+
+This overload of the function provides all camera pose candidates found, together with the RMSE reprojection errors associated with each of the poses. The case for using this function is the ambiguity of the camera-to-target pose for nearly planar targets. It is not always possible to select the "true" pose of the camera based on reprojection only. Having all poses at hand, the user can use external information about the visual system they consider to make the choice.
+
+**Parameters:**
+
+- `X` — 3D points in world coordinates.
+- `x` — 2D points in image coordinates.
+- `K` — Intrinsic camera calibration matrix.
+- `distCoeffs` — [Camera](/cpp-sdk/4.5/api/classes/imfusion-camera) distortion coefficients.
+- `reprojectedPoints` — Optional output parameter containing reprojected 2D points for each pose.
+
+**Returns:** A vector of tuples, where each tuple contains a root-mean-square reprojection error and a 4x4 camera pose matrix. The result is sorted in non-descending order by the value of the reprojection error.
+
+### computeProjectionMatrix
+
+```cpp
+bool ImFusion::ProjectiveGeometry::computeProjectionMatrix (const std::vector < vec3 > & X, const std::vector < vec2 > & x, mat34 & P)
+```
+
+Compute projection matrix from point correspondences.
+
+**Parameters:**
+
+- `X` — 3D points
+- `x` — 2D points
+- `P` — projection matrix
+
+**Returns:** true if successful
+
+### normalizePoints
+
+```cpp
+void ImFusion::ProjectiveGeometry::normalizePoints (const std::vector < vec2 > & pts, mat3 & T)
+```
+
+Compute normalizing transformation for 2D points so that they are centered on the origin and the average distance from the origin is sqrt(2).
+
+**Parameters:**
+
+- `pts` — pts
+- `T` — normalizing transformation
+
+### normalizePoints
+
+```cpp
+void ImFusion::ProjectiveGeometry::normalizePoints (const std::vector < vec3 > & pts, mat4 & T)
+```
+
+Compute normalizing transformation for 3D points so that they are centered on the origin and the average distance from the origin is sqrt(2).
+
+**Parameters:**
+
+- `pts` — pts
+- `T` — normalizing transformation
+
+### computeReprojectionError
+
+```cpp
+double ImFusion::ProjectiveGeometry::computeReprojectionError (const mat34 & P, const std::vector < vec3 > & X, const std::vector < vec2 > & x)
+```
+
+Compute reprojection error.
+
+**Parameters:**
+
+- `P` — projection matrix
+- `X` — 3D points
+- `x` — 2D points
+
+**Returns:** mean reprojection error
+
+### computeReprojectionError
+
+```cpp
+double ImFusion::ProjectiveGeometry::computeReprojectionError (const mat3 & K, const std::vector < mat3 > & R, const std::vector < vec3 > & t, const std::vector < vec3 > & X, const std::vector < std::vector < vec2 > > & x, const Eigen::Matrix< unsigned char, Eigen::Dynamic, Eigen::Dynamic > & vis)
+```
+
+Compute reprojection error over a sequence.
+
+**Parameters:**
+
+- `K` — intrinsic parameters
+- `R` — rotation matrices
+- `t` — translations
+- `X` — 3D points
+- `x` — 2D points
+- `vis` — visibility matrix
+
+**Returns:** mean reprojection error
+
+### triangulatePoint
+
+```cpp
+double ImFusion::ProjectiveGeometry::triangulatePoint (const std::vector < vec2 > & x, const std::vector < mat34 > & P, vec3 & X, bool nonLinearRefinement = false)
+```
+
+Triangulate point given image measurements and projection matrices.
+
+**Parameters:**
+
+- `x` — image points
+- `P` — projection matrices
+- `X` — triangulated point
+- `nonLinearRefinement` — if true, triangulated point is refined using non-linear optimization after linear estimation
+
+**Returns:** mean reprojection error of triangulated point, or -1 in case of failure
+
+### convertComputerVisionToOpenGlProjectionMatrix
+
+```cpp
+void ImFusion::ProjectiveGeometry::convertComputerVisionToOpenGlProjectionMatrix (const mat3 & K, const mat3 & R, const vec3 & t, int width, int height, double near, double far, mat4 & PM, mat4 & MV, bool flipImageYAxis = false)
+```
+
+Convert a projection matrix to OpenGL representation from [OpenCV](/cpp-sdk/4.5/api/namespaces/imfusion-opencv) convention In [OpenCV](/cpp-sdk/4.5/api/namespaces/imfusion-opencv) convention the y-axis is flipped compared to OpenGL, and pixel coordinates are used.
+
+**Note:** We use [OpenCV](/cpp-sdk/4.5/api/namespaces/imfusion-opencv) convention for K, R, t. I.e. this function assumes that (0,0) is the *pixel center* of the top-left corner pixel of the image. Consequently the corner of the image is at (-0.5,-0.5).
+
+### convertOpenGlToComputerVisionProjectionMatrix
+
+```cpp
+void ImFusion::ProjectiveGeometry::convertOpenGlToComputerVisionProjectionMatrix (const mat4 & PM, int width, int height, mat34 & P)
+```
+
+Convert an OpenGL projection matrix to computer vision representation.
+
+**Warning:** due to the associated half-pixel shift, the resulting projection matrix has range so that (0,0) is the *pixel center* of the top-left corner of the image.
+
+### decomposeProjectionMatrix
+
+```cpp
+void ImFusion::ProjectiveGeometry::decomposeProjectionMatrix (const mat34 & P, mat3 & K, mat3 & R, vec3 & t, bool checkOpenCVConvention = true)
+```
+
+Decompose projection matrix into K, R and t.
+
+**Parameters:**
+
+- `P` — Matrix to be decomposed so that P = K \* [R | t]
+- `K` — K matrix of P
+- `R` — R matrix of P
+- `t` — t vector from P
+- `checkOpenCVConvention` — If set to true the function will check if the determinant of R is positive. This should be the case e.g. when P is given in openCV coordinate convention.
+
+### reproject
+
+```cpp
+vec3 ImFusion::ProjectiveGeometry::reproject (const mat4 & projMat, const vec2 & imgPoint2D, double physicalWidth, vec3 & sourceOut3D, vec3 & imgOut3D, vec3 & zDirOut, double & fac)
+```
+
+Reprojects a point on the image plane using an OpenGL projection matrix.
+
+**Parameters:**
+
+- `projMat` — projection matrix in OpenGL notation
+- `imgPoint2D` — point on the image plane in normalized 0..1 coordinates, i.e 0 and 1 denoting the image borders.
+- `physicalWidth` — physical width of the image in mm
+- `sourceOut3D` — 3D position of the source/focal point
+- `imgOut3D` — 3D position of the point on the image plane
+- `zDirOut` — 3D ray direction of the principle point
+- `fac` — scaling factor such that factorOut \* returnvalue points to the same plane as zDirOut
+
+**Returns:** normalized direction vector from source/focal to image point
+
+### reproject
+
+```cpp
+vec3 ImFusion::ProjectiveGeometry::reproject (const mat4 & projMat, const vec2 & imgPoint2D, double physicalWidth, vec3 & sourceOut3D, vec3 & imgOut3D)
+```
+
+Reprojects a point on the image plane using an OpenGL projection matrix.
+
+**Parameters:**
+
+- `projMat` — projection matrix in OpenGL notation
+- `imgPoint2D` — point on the image plane in normalized 0..1 coordinates
+- `physicalWidth` — physical width of the image in mm
+- `sourceOut3D` — 3D position of the source/focal point
+- `imgOut3D` — 3D position of the point on the image plane
+
+**Returns:** normalized direction vector from source/focal to image point
+
+### unproject
+
+```cpp
+void ImFusion::ProjectiveGeometry::unproject (const mat3 & invK, double dist, const vec2 & pt2d, vec3 & pt3d)
+```
+
+Unprojects a point on the image plane, where dist corresponds to the distance of pt3d from the xy plane and invK is the inverse calibration matrix of the camera.
+
+**Parameters:**
+
+- `invK` — inverse camera calibration matrix
+- `dist` — distance of the unprojected point 3D point to the xy-plane
+- `pt2d` — point on the image plane in pixel coordinates
+- `pt3d` — point in the world space that gets mapped into the image plane
+
+### projectPoint
+
+```cpp
+void ImFusion::ProjectiveGeometry::projectPoint (const mat34 & P, vec4 & pt3d, vec3 & pt2d, const bool normalize = true)
+```
+
+*inline*
+
+Projects a 3d point to 2d using a 3x4 projection matrix.
+
+**Parameters:**
+
+- `P` — 3x4 projection matrix
+- `pt3d` — Homogeneous 3d point
+- `pt2d` — Projected Homogeneous 2d point
+- `normalize` — Normalize 2d point
+
+### projectPoint
+
+```cpp
+void ImFusion::ProjectiveGeometry::projectPoint (const mat34 & P, vec3 & pt3d, vec3 & pt2d, const bool normalize = true)
+```
+
+*inline*
+
+Projects an inhomogeneous 3d point to 2d using a 3x4 projection matrix.
+
+**Parameters:**
+
+- `P` — 3x4 projection matrix
+- `pt3d` — Inhomogeneous 3d point
+- `pt2d` — Projected Homogeneous 2d point
+- `normalize` — Normalize 2d point
+
+### projectPoints
+
+```cpp
+std::vector < vec2 > ImFusion::ProjectiveGeometry::projectPoints (const std::vector < vec3 > & pts3d, const mat3 & K, const mat3 & R, const vec3 & t, const vec5 & distCoeffs)
+```
+
+Projects a vector of inhomogeneous 3d points to 2d using intrinsics and distortion parameters.
+
+**Parameters:**
+
+- `pts3d` — A vector of inhomogeneous 3d points.
+- `K` — intrinsic parameters
+- `R` — rotation matrix of P
+- `t` — translation vector from P
+- `distCoeffs` — distortion parameters of the camera distortion model (k1 k2 p1 p2 k3)
+
+**Returns:** A vector of projected inhomogeneous 2d points.

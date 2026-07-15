@@ -1,0 +1,221 @@
+---
+title: "ImFusion::ConnectedComponentsAction"
+sidebarTitle: "ConnectedComponentsAction"
+---
+
+## Classes
+
+- struct [MappingResult](/cpp-sdk/4.5/api/structs/imfusion-connectedcomponentsaction-mappingresult)
+
+## Public Member Functions
+
+- bool [isProjectCompatible](#isprojectcompatible-1-2) () const override
+- bool [isProjectCompatible](#isprojectcompatible-2-2) (const Project::ProjectTypes &, bool) const override
+- bool [areActiveLayersCompatible](#areactivelayerscompatible) () const override
+- bool [isDataSetCompatible](#isdatasetcompatible) (const [DataSet](/cpp-sdk/4.5/api/classes/imfusion-dataset) &) const override
+- void [dataSetChanged](#datasetchanged) () override
+- QIcon [icon](#icon) () const override
+- QString [text](#text) () const override
+- QString [description](#description) () const override
+- QString [docPath](#docpath) () const override
+- bool [isReadOnly](#isreadonly) () const override
+- QWidget \* [ui](#ui) (QWidget \*parent=nullptr) override
+- void [activate](#activate) () override
+- void [deactivate](#deactivate) () override
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+- bool [inputEvent](#inputevent) (QEvent \*event) override
+
+## Static Public Member Functions
+
+- static [MappingResult](/cpp-sdk/4.5/api/structs/imfusion-connectedcomponentsaction-mappingresult) [mapAndCompactComponents](#mapandcompactcomponents) ([TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; unsigned char &gt; &componentsImage, const [std::unordered_map](http://en.cppreference.com/w/cpp/container/unordered_map.html)&lt; unsigned char, unsigned char &gt; &mapping=&#123;&#125;, [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [std::array](http://en.cppreference.com/w/cpp/container/array.html)&lt; bool, 256 &gt; &gt; usedComponents=std::nullopt) — Maps components to different values and afterwards compacts them so that only consecutive components are used.
+- static unsigned int [splitComponentsAlongSlice](#splitcomponentsalongslice) ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &componentsImage, const [Slice](/cpp-sdk/4.5/api/classes/imfusion-slice) &slice, const [std::set](http://en.cppreference.com/w/cpp/container/set.html)&lt; unsigned char &gt; &lockedComponents, [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &warning) — Split the components along the given plane (represented by the [Slice](/cpp-sdk/4.5/api/classes/imfusion-slice)).
+- static [std::unordered_map](http://en.cppreference.com/w/cpp/container/unordered_map.html)&lt; unsigned char, unsigned char &gt; [reassignLockedLabels](#reassignlockedlabels) (const [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; unsigned char &gt; &labelmap, [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; unsigned char &gt; &componentsImage, int &numberOfComponents, [std::array](http://en.cppreference.com/w/cpp/container/array.html)&lt; bool, 256 &gt; lockedLabels, [std::unordered_map](http://en.cppreference.com/w/cpp/container/unordered_map.html)&lt; unsigned char, size_t &gt; mapLabelToTypeIndex) — Re-assign the components for all locked labels.
+
+## Member Function Documentation
+
+### isProjectCompatible
+
+```cpp
+bool ImFusion::ConnectedComponentsAction::isProjectCompatible () const
+```
+
+*override, virtual*
+
+### isProjectCompatible
+
+```cpp
+bool ImFusion::ConnectedComponentsAction::isProjectCompatible (const Project::ProjectTypes &, bool) const
+```
+
+*override, virtual*
+
+### areActiveLayersCompatible
+
+```cpp
+bool ImFusion::ConnectedComponentsAction::areActiveLayersCompatible () const
+```
+
+*override, virtual*
+
+### isDataSetCompatible
+
+```cpp
+bool ImFusion::ConnectedComponentsAction::isDataSetCompatible (const DataSet &) const
+```
+
+*override, virtual*
+
+### dataSetChanged
+
+```cpp
+void ImFusion::ConnectedComponentsAction::dataSetChanged ()
+```
+
+*override, virtual*
+
+### icon
+
+```cpp
+QIcon ImFusion::ConnectedComponentsAction::icon () const
+```
+
+*inline, override, virtual*
+
+### text
+
+```cpp
+QString ImFusion::ConnectedComponentsAction::text () const
+```
+
+*inline, override, virtual*
+
+### description
+
+```cpp
+QString ImFusion::ConnectedComponentsAction::description () const
+```
+
+*inline, override, virtual*
+
+### docPath
+
+```cpp
+QString ImFusion::ConnectedComponentsAction::docPath () const
+```
+
+*inline, override, virtual*
+
+### isReadOnly
+
+```cpp
+bool ImFusion::ConnectedComponentsAction::isReadOnly () const
+```
+
+*inline, override, virtual*
+
+### ui
+
+```cpp
+QWidget * ImFusion::ConnectedComponentsAction::ui (QWidget * parent = nullptr)
+```
+
+*override, virtual*
+
+### activate
+
+```cpp
+void ImFusion::ConnectedComponentsAction::activate ()
+```
+
+*override, virtual*
+
+### deactivate
+
+```cpp
+void ImFusion::ConnectedComponentsAction::deactivate ()
+```
+
+*override, virtual*
+
+### configure
+
+```cpp
+void ImFusion::ConnectedComponentsAction::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### configuration
+
+```cpp
+void ImFusion::ConnectedComponentsAction::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality
+
+### inputEvent
+
+```cpp
+bool ImFusion::ConnectedComponentsAction::inputEvent (QEvent * event)
+```
+
+*override, virtual*
+
+### mapAndCompactComponents
+
+```cpp
+MappingResult ImFusion::ConnectedComponentsAction::mapAndCompactComponents (TypedImage < unsigned char > & componentsImage, const std::unordered_map < unsigned char, unsigned char > & mapping = {}, std::optional < std::array < bool, 256 > > usedComponents = std::nullopt)
+```
+
+*static*
+
+Maps components to different values and afterwards compacts them so that only consecutive components are used.
+
+The mapping is optional and values not contained in the mapping will be left unchanged. The optional usedComponents should contain which of the components are currently used. If its not passed, it is computed from the components image. If the usedComponents do not reflect the components, the behaviour is undefined. Returns the used components after the mapping and the how components got mapped.
+
+### splitComponentsAlongSlice
+
+```cpp
+unsigned int ImFusion::ConnectedComponentsAction::splitComponentsAlongSlice (SharedImageSet & componentsImage, const Slice & slice, const std::set < unsigned char > & lockedComponents, std::string & warning)
+```
+
+*static*
+
+Split the components along the given plane (represented by the [Slice](/cpp-sdk/4.5/api/classes/imfusion-slice)).
+
+Components that are intersected by the plane will be split into two components. The component for a pixel is decided according to which side of the plane the pixel center is. Components that are not intersected by the plane will be left unchanged.
+
+When a component gets split, one part will remain the old component value while the other part is assigned a new (so far unused) value.
+
+The lockedComponents contain the pixel values of the componentsImage that are considered locked and will therefore be left unchanged even if intersected by the plane.
+
+In case the final number of components exceeds the maximum number of components (i.e. 255), a user warning is generated and some components will not be split even when intersecting the plane.
+
+The new total number of components is returned.
+
+### reassignLockedLabels
+
+```cpp
+std::unordered_map < unsigned char, unsigned char > ImFusion::ConnectedComponentsAction::reassignLockedLabels (const TypedImage < unsigned char > & labelmap, TypedImage < unsigned char > & componentsImage, int & numberOfComponents, std::array < bool, 256 > lockedLabels, std::unordered_map < unsigned char, size_t > mapLabelToTypeIndex)
+```
+
+*static*
+
+Re-assign the components for all locked labels.
+
+All pixel values in the componentsImage that correspond to a locked label will be re-assigned to a new component. This new component will be pre-assigned to the locked label value. Those pre-assignments are returned.
+
+**Warning:** The final number of components increases by the number of locked labels. If this final number of components would exceed this maximum number of labels (i.e. 255), the highest components are removed to make space for the locked labels.

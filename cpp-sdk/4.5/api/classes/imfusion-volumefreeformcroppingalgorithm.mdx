@@ -1,0 +1,60 @@
+---
+title: "ImFusion::VolumeFreeformCroppingAlgorithm"
+sidebarTitle: "VolumeFreeformCroppingAlgorithm"
+description: "Algorithm to crop a volume using a freeform selection."
+---
+
+`#include <ImFusion/Base/VolumeFreeformCroppingAlgorithm.h>`
+
+## Overview
+
+[Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) to crop a volume using a freeform selection.
+
+[Selection](/cpp-sdk/4.5/api/classes/imfusion-selection) is done from a point of view.
+
+## Public Types
+
+- enum class **Selection** &#123; **Add** , **Remove** , **Intersect** &#125; — [Status](/cpp-sdk/4.5/api/classes/imfusion-algorithm) codes.
+
+## Public Member Functions
+
+- **VolumeFreeformCroppingAlgorithm** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*volume)
+- void **addSelectionMask** (const [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*mask, const [GL::ViewState](/cpp-sdk/4.5/api/classes/imfusion-gl-viewstate) &state, Selection mode=Selection::Add)
+- void **addSelectionMask** (const [Spline](/cpp-sdk/4.5/api/classes/imfusion-spline) &spline, const [GL::ViewState](/cpp-sdk/4.5/api/classes/imfusion-gl-viewstate) &state, Selection mode=Selection::Add)
+- void **clearSelectionMask** ()
+- void **invertSelectionMask** ()
+- void **setCreateNewImage** (bool newImage)
+- void **setFitVolumeToCrop** (bool fit)
+- void [compute](#compute) () override — Applies the crop volume on the input volume.
+- void **storeMask** () — Stores the selection masks as a mask in the volume.
+- [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) [takeOutput](#takeoutput) () override — Return any new [Data](/cpp-sdk/4.5/api/classes/imfusion-data) that was created by the [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) during the last call to [compute()](#compute).
+
+## Static Public Member Functions
+
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=0)
+
+## Member Function Documentation
+
+### compute
+
+```cpp
+void ImFusion::VolumeFreeformCroppingAlgorithm::compute ()
+```
+
+*override, virtual*
+
+Applies the crop volume on the input volume.
+
+### takeOutput
+
+```cpp
+OwningDataList ImFusion::VolumeFreeformCroppingAlgorithm::takeOutput ()
+```
+
+*override, virtual*
+
+Return any new [Data](/cpp-sdk/4.5/api/classes/imfusion-data) that was created by the [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) during the last call to [compute()](#compute).
+
+The default implementation will return an empty list.
+
+**Note:** Since ownership of the data is transferred, you can call this method only once between calls to [compute()](#compute).

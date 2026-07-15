@@ -1,0 +1,94 @@
+---
+title: "ImFusion::SectionWidget"
+sidebarTitle: "SectionWidget"
+description: "The SectionWidget provides a way to group widgets in vertical sections."
+---
+
+`#include <ImFusion/GUI/SectionWidget.h>`
+
+## Overview
+
+The [SectionWidget](/cpp-sdk/4.5/api/classes/imfusion-sectionwidget) provides a way to group widgets in vertical sections.
+
+Each section has a title and is separated from the previous section Every second section has a lighter background color for improved contrast.
+
+Since this is a custom widget, it is not available in QtDesigner UI files. Instead you can create one QWidget container for each section in the UI file and create the [SectionWidget](/cpp-sdk/4.5/api/classes/imfusion-sectionwidget) in the C++ code. The container widgets can then be moved to the [SectionWidget](/cpp-sdk/4.5/api/classes/imfusion-sectionwidget) with [addSection()](#addsection):
+
+```cpp
+auto sectionWidget = new SectionWidget;
+sectionWidget->addSection(tr("Section 1"), m_ui->section1);
+sectionWidget->addSection(tr("Section 2"), m_ui->section2);
+sectionWidget->addSection(tr("Section 3"), m_ui->section3);
+m_ui->mainLayout->insertWidget(0, sectionWidget);
+```
+ fragment
+Replacing the layout of a [SectionWidget](/cpp-sdk/4.5/api/classes/imfusion-sectionwidget) with QWidget::setLayout is not supported!
+
+## Public Slots
+
+- void [setWorkflowMode](#setworkflowmode) (bool workflowMode) — Enables/Disables the workflow mode.
+
+## Signals
+
+- void **workflowModeChanged** (bool workflowMode) — Emitted when the workflow mode was changed.
+- void **sectionToggled** (int index, bool checked) — Emitted when the section with the given index was toggled.
+
+## Public Member Functions
+
+- **SectionWidget** (QWidget \*parent=nullptr)
+- int [addSection](#addsection) (const QString &title, QWidget \*widget, bool checkable=false) — Appends a new section with the given 'title' that contains the given 'widget'.
+- int **count** () const — Returns the number of sections.
+- QWidget \* **section** (int index) const — Returns the section widget at the given index or 0 if no such index exists.
+- void [setSectionChecked](#setsectionchecked) (int index, bool checked) — Sets the checked state of the section with the given index.
+- void **setSectionVisible** (int index, bool visible) — Hide/Show specified section.
+- bool [sectionChecked](#sectionchecked) (int index) const — Returns true if the section with the given index is checked.
+- void **setSectionVisibility** (int index, bool visible) — Set the visibility of the section with the given index.
+- bool **workflowMode** () const — Returns if the [SectionWidget](/cpp-sdk/4.5/api/classes/imfusion-sectionwidget) is in workflow mode.
+
+## Properties
+
+- bool **workflowMode**
+
+## Member Function Documentation
+
+### addSection
+
+```cpp
+int ImFusion::SectionWidget::addSection (const QString & title, QWidget * widget, bool checkable = false)
+```
+
+Appends a new section with the given 'title' that contains the given 'widget'.
+
+When calling with a QWidget that is already part of a layout, the widget will be automatically removed from the previous layout. The section can be optionally 'checkable', in which case a checkbox is added next to the title that hides or shows the widget if unchecked/checked. Only sections with a non-empty title can be checkable. Returns the index of the section.
+
+### setSectionChecked
+
+```cpp
+void ImFusion::SectionWidget::setSectionChecked (int index, bool checked)
+```
+
+Sets the checked state of the section with the given index.
+
+Does nothing if the section is not checkable (see addSection)
+
+### sectionChecked
+
+```cpp
+bool ImFusion::SectionWidget::sectionChecked (int index) const
+```
+
+Returns true if the section with the given index is checked.
+
+Returns false otherwise or if the section is not checkable.
+
+### setWorkflowMode
+
+```cpp
+void ImFusion::SectionWidget::setWorkflowMode (bool workflowMode)
+```
+
+*slot*
+
+Enables/Disables the workflow mode.
+
+In workflow mode, the separators between sections indicate a workflow from top to bottom.

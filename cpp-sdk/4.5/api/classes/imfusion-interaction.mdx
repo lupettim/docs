@@ -1,0 +1,83 @@
+---
+title: "ImFusion::Interaction"
+sidebarTitle: "Interaction"
+description: "Base interface class for view and overlay interactions."
+---
+
+`#include <ImFusion/GUI/Interaction.h>`
+
+## Overview
+
+[Base](/cpp-sdk/4.5/api/structs/imfusion-dicom-base) interface class for view and overlay interactions.
+
+## Public Member Functions
+
+- virtual bool [sceneEvent](#sceneevent) (QEvent \*event)=0 — Handles the event and returns true if the event was handles and should not passed to other interactions.
+- virtual void [contextMenuCreate](#contextmenucreate) (QMenu &) — Create context menu entries.
+- virtual void **openContextMenu** (QPoint pos, QPoint globalPos, Qt::KeyboardModifiers modifiers)
+- virtual void [reset](#reset) ()
+- void **setUseContextMenu** (bool use) — Set if the context menu must be created or not.
+- bool **useContextMenu** () const — Specifies if the view creates context menu entries or not. Default value is false.
+
+## Protected Slots
+
+- virtual void [contextMenuEvaluate](#contextmenuevaluate) (QAction \*) — Evaluate action chosen in context menu or by shortcut.
+
+## Protected Member Functions
+
+- virtual void [createActions](#createactions) () — Create actions shown in context menu.
+
+## Protected Attributes
+
+- QMap&lt; QString, QAction \* &gt; **m_actions** — Actions used in the context menu.
+- bool **m_useContextMenu** = false — Default value is false.
+
+## Member Function Documentation
+
+### sceneEvent
+
+```cpp
+virtual bool ImFusion::Interaction::sceneEvent (QEvent * event)
+```
+
+*pure virtual*
+
+Handles the event and returns true if the event was handles and should not passed to other interactions.
+
+### contextMenuCreate
+
+```cpp
+virtual void ImFusion::Interaction::contextMenuCreate (QMenu &)
+```
+
+*inline, virtual*
+
+Create context menu entries.
+
+### reset
+
+```cpp
+virtual void ImFusion::Interaction::reset ()
+```
+
+*inline, virtual*
+
+### createActions
+
+```cpp
+virtual void ImFusion::Interaction::createActions ()
+```
+
+*inline, protected, virtual*
+
+Create actions shown in context menu.
+
+### contextMenuEvaluate
+
+```cpp
+virtual void ImFusion::Interaction::contextMenuEvaluate (QAction *)
+```
+
+*inline, protected, virtual, slot*
+
+Evaluate action chosen in context menu or by shortcut.

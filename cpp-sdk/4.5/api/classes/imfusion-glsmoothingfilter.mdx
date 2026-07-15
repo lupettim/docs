@@ -1,0 +1,76 @@
+---
+title: "ImFusion::GlSmoothingFilter"
+sidebarTitle: "GlSmoothingFilter"
+description: "Gaussian smoothing filter."
+---
+
+`#include <ImFusion/GL/GlSmoothingFilter.h>`
+
+## Overview
+
+Gaussian smoothing filter.
+
+## Public Member Functions
+
+- **GlSmoothingFilter** ([GL::Framebuffer](/cpp-sdk/4.5/api/classes/imfusion-gl-framebuffer) \*fbo=0)
+- bool [setKernelSize](#setkernelsize-1-4) (int size, double k=-1.0) override — Set kernel size in pixels, which needs to be an odd number and at least 3.
+- bool [setKernelSize](#setkernelsize-2-4) (vec3i sizes) — Set kernel size in pixels for each spatial dimension, each kernel size needs to be an odd number and at least 3.
+- bool [setKernelSize](#setkernelsize-3-4) (double size, vec3 spacing, double k=-1.0) override — Roughly set kernel size in mm, which must be larger than each of the components in spacing.
+- bool [setKernelSize](#setkernelsize-4-4) (vec3 size, vec3 spacing) — Roughly set kernel size in mm for each spatial dimension, each kernel dimension must be larger than each of the components in spacing.
+- bool [supportsMetricMode](#supportsmetricmode) () const override — Returns whether the member function [setKernelSize(double,vec3,double)](#setkernelsize-3-4) is implemented.
+
+## Member Function Documentation
+
+### setKernelSize
+
+```cpp
+bool ImFusion::GlSmoothingFilter::setKernelSize (int size, double k = -1.0)
+```
+
+*override, virtual*
+
+Set kernel size in pixels, which needs to be an odd number and at least 3.
+
+k parameter is unused. Returns whether the kernel was set successfully.
+
+### setKernelSize
+
+```cpp
+bool ImFusion::GlSmoothingFilter::setKernelSize (vec3i sizes)
+```
+
+Set kernel size in pixels for each spatial dimension, each kernel size needs to be an odd number and at least 3.
+
+k parameter is unused. Returns whether the kernel was set successfully.
+
+### setKernelSize
+
+```cpp
+bool ImFusion::GlSmoothingFilter::setKernelSize (double size, vec3 spacing, double k = -1.0)
+```
+
+*override, virtual*
+
+Roughly set kernel size in mm, which must be larger than each of the components in spacing.
+
+Spacing is the pixel spacing of the image that should be filtered, in mm. The actual size of the resulting kernel in pixels will be the smallest odd integer that is at least size divided by spacing. k parameter is unused. Returns whether the kernel was set successfully.
+
+### setKernelSize
+
+```cpp
+bool ImFusion::GlSmoothingFilter::setKernelSize (vec3 size, vec3 spacing)
+```
+
+Roughly set kernel size in mm for each spatial dimension, each kernel dimension must be larger than each of the components in spacing.
+
+Spacing is the pixel spacing of the image that should be filtered, in mm. The actual size of the resulting kernel in pixels will be the smallest odd integer that is at least size divided by spacing. k parameter is unused. Returns whether the kernel was set successfully.
+
+### supportsMetricMode
+
+```cpp
+bool ImFusion::GlSmoothingFilter::supportsMetricMode () const
+```
+
+*inline, override, virtual*
+
+Returns whether the member function [setKernelSize(double,vec3,double)](#setkernelsize-3-4) is implemented.

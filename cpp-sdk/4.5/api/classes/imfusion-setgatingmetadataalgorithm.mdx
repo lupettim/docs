@@ -1,0 +1,49 @@
+---
+title: "ImFusion::SetGatingMetadataAlgorithm"
+sidebarTitle: "SetGatingMetadataAlgorithm"
+description: "Algorithm to compute gating information to an image set."
+---
+
+`#include <ImFusion/Base/SetGatingMetadataAlgorithm.h>`
+
+## Overview
+
+[Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) to compute gating information to an image set.
+
+Two separate modes are supported: 1) If a [VitalsDataComponent](/cpp-sdk/4.5/api/classes/imfusion-vitalsdatacomponent) is available, a peak detection in either the ECG (preferred) or pulseoximetry signal is attempted. If at least two peaks are found, gating information is extrapolated to the entire clip. 2) Otherwise, at least two frames exhibiting the same point in time in the cycle (typically end-diastolic frames) need to be defined in p_endDiastolicFrames. A gating signal is extrapolated from these peaks to the entire clip.
+
+The parameter p_phaseOffset is just written directly into the gating data component to help with manual and semiautomatic image registration.
+
+## Public Member Functions
+
+- **SetGatingMetadataAlgorithm** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*imageSet)
+- void [compute](#compute) () override — Execute the algorithm.
+- [Algorithm::Status](/cpp-sdk/4.5/api/classes/imfusion-algorithm) **addCurrentFocusAsEndDiastolicFrame** ()
+- [Algorithm::Status](/cpp-sdk/4.5/api/classes/imfusion-algorithm) **clearEndDiastolicFrames** ()
+- [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* **image** () const
+
+## Static Public Member Functions
+
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a)
+
+## Public Attributes
+
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; int &gt; &gt; **p_endDiastolicFrames** = &#123;"endDiastolicFrames", [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt;int&gt;(&#123;&#125;), this&#125;
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; double &gt; **p_phaseOffset** = &#123;"phaseOffset", 0., this&#125;
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; double &gt; **p_vitalsPeakDetectionThreshold** = &#123;"vitalsPeakDetectionThreshold", 0.1, this&#125;
+
+## Protected Member Functions
+
+- bool **runVitalsPeakDetection** ()
+
+## Member Function Documentation
+
+### compute
+
+```cpp
+void ImFusion::SetGatingMetadataAlgorithm::compute ()
+```
+
+*override, virtual*
+
+Execute the algorithm.

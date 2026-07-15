@@ -1,0 +1,61 @@
+---
+title: "ImFusion::FilterController"
+sidebarTitle: "FilterController"
+description: "GUI controller for 2D filtering with preview."
+---
+
+`#include <ImFusion/GUI/FilterController.h>`
+
+## Overview
+
+[GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui) controller for 2D filtering with preview.
+
+## Public Slots
+
+- void **onSetPreview** (bool flag) — Enable or disable filter preview.
+- void **onSetMode** (const QString modeText) — Change filter mode.
+- void **onSetMode** (const int mode)
+- void **onParsChanged** () — Change of filter parameters.
+- void **onApply** () — Apply the filter and close controller.
+
+## Public Member Functions
+
+- **FilterController** ([GlFilterSet](/cpp-sdk/4.5/api/classes/imfusion-glfilterset) \*filter)
+- void [init](#init) () override — Two-step initialization function to be implemented by subclasses.
+- void **selectionChanged** () — Update preview image if focus has changed.
+- void **setEmbedded** (bool on) — If embedded==false, addToAlgorithmDock() is not called in [init()](#init) (enables embedding into different widgets).
+- bool **isEmbedded** () const
+
+## Static Public Attributes
+
+- static const [std::pair](http://en.cppreference.com/w/cpp/utility/pair.html)&lt; QString, [GlFilterSet::FilterMode](/cpp-sdk/4.5/api/classes/imfusion-glfilterset) &gt; **ModeNameMap** [] — First element of pair is used to populate mode combobox, second element is used to evoke corresponding filter.
+
+## Protected Member Functions
+
+- void [adjustLayout](#adjustlayout) (const int mode=GlFilterSet::SHARPEN) — Adjust the (slider) widgets according to the current filter parameters.
+
+## Member Function Documentation
+
+### init
+
+```cpp
+void ImFusion::FilterController::init ()
+```
+
+*override, virtual*
+
+Two-step initialization function to be implemented by subclasses.
+
+This function is called by [setMainWindowBase()](/cpp-sdk/4.5/api/classes/imfusion-controller) after the [m_disp](/cpp-sdk/4.5/api/classes/imfusion-controller) and [m_main](/cpp-sdk/4.5/api/classes/imfusion-controller) attributes have been set and hence a complete initialization of the controller is possible at this point.
+
+### adjustLayout
+
+```cpp
+void ImFusion::FilterController::adjustLayout (const int mode = GlFilterSet::SHARPEN)
+```
+
+*protected*
+
+Adjust the (slider) widgets according to the current filter parameters.
+
+**Note:** Works on base of the grid layout given in the ui file

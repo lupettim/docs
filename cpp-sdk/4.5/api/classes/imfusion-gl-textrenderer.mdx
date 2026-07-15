@@ -1,0 +1,202 @@
+---
+title: "ImFusion::GL::TextRenderer"
+sidebarTitle: "TextRenderer"
+description: "Utility class to perform text rendering with OpenGL."
+---
+
+`#include <ImFusion/Core/GL/TextRenderer.h>`
+
+## Overview
+
+Utility class to perform text rendering with OpenGL.
+
+[TextRenderer](/cpp-sdk/4.5/api/classes/imfusion-gl-textrenderer) supports the selection of different font families/faces and sizes, breaking input text into multiple lines (based on newline characters '\n'), as well as basic text alignment.
+
+The default font family of [TextRenderer::Font](/cpp-sdk/4.5/api/structs/imfusion-gl-textrenderer-font) is automatically registered. In order to have [TextRenderer](/cpp-sdk/4.5/api/classes/imfusion-gl-textrenderer) support a additional font families, you have to register it using the static [registerFontFamily()](#registerfontfamily) function. During rendering, if the requested family or face (bold/italic) is not available, it will fall back to the default family/face. This class respects the global GL::dpiScale() so that you should not apply an additional DPI scaling manually when defining font sizes.
+
+Since the instantiation of a [TextRenderer](/cpp-sdk/4.5/api/classes/imfusion-gl-textrenderer) is rather expensive, this class inherits from [GL::InstanceManager](/cpp-sdk/4.5/api/classes/imfusion-gl-instancemanager) so that you can request a cached instance from any valid OpenGL context. The registration of font families works globally meaning that all [TextRenderer](/cpp-sdk/4.5/api/classes/imfusion-gl-textrenderer) instances share the same list of supported fonts.
+
+```cpp
+// we make use of the InstanceManager-interface since TextRenderer instantiation is expensive
+TextRenderer& renderer = TextRenderer::cachedInstance();
+
+// render text in red color with default alignment (left, baseline) around pixel [200, 100]
+// using a bold font face of size 12pt
+TextRenderer::Font myFont(12, vec3(1, 0, 0), TextRenderer::Bold, TextRenderer::Shadow);
+renderer.renderText(Viewport(0, 0, 800, 600),
+                    vec2(200, 100),
+ "Example text\nwith multiple\nlines",
+                    myFont);
+```
+ fragment
+
+**Note:** All text is expected to be valid UTF-8. Passing invalid UTF-8 sequences will yield undefined behavior.
+
+## Classes
+
+- struct [Font](/cpp-sdk/4.5/api/structs/imfusion-gl-textrenderer-font) — Struct to describe font settings such as font family, size, or decorations.
+
+## Public Types
+
+- enum [AlignmentH](#alignmenth) &#123; Left , Centered , Right &#125; — Enum for horizontal alignment options.
+- enum [AlignmentV](#alignmentv) &#123; Top , Middle , Baseline , Bottom &#125; — Enum for vertical alignment options.
+- enum [Face](#face) &#123; Regular = 0 , Bold = 1 &lt;&lt; 0 , Italic = 1 &lt;&lt; 1 &#125; — Bitfield enumeration to describe a font face.
+- enum [Decoration](#decoration) &#123; Plain = 0 , Shadow = 1 &lt;&lt; 0 , Underline = 1 &lt;&lt; 1 , Strikethrough = 1 &lt;&lt; 2 &#125; — Bitfield enumeration to describe the text decoration.
+
+## Public Member Functions
+
+- [TextRenderer](#textrenderer) () — Creates a new [TextRenderer](/cpp-sdk/4.5/api/classes/imfusion-gl-textrenderer) instance.
+- double **lineHeightPx** (const [Font](/cpp-sdk/4.5/api/structs/imfusion-gl-textrenderer-font) &font=[Font](/cpp-sdk/4.5/api/structs/imfusion-gl-textrenderer-font)()) const — Returns an estimation of the vertical size of a single line in pixels.
+- vec2i [textSize](#textsize) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &text, const [Font](/cpp-sdk/4.5/api/structs/imfusion-gl-textrenderer-font) &font=[Font](/cpp-sdk/4.5/api/structs/imfusion-gl-textrenderer-font)()) — Calculate the required number of pixels to display the given text.
+- void [renderText](#rendertext) (const [Viewport](/cpp-sdk/4.5/api/structs/imfusion-gl-viewport) &viewport, const vec2 &position, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &text, const [Font](/cpp-sdk/4.5/api/structs/imfusion-gl-textrenderer-font) &font=[Font](/cpp-sdk/4.5/api/structs/imfusion-gl-textrenderer-font)(), [AlignmentH](#alignmenth) alignH=Left, [AlignmentV](#alignmentv) alignV=Baseline) — Render text at a given 2D position in pixel space.
+- void [renderTextWorld](#rendertextworld) (const [ViewState](/cpp-sdk/4.5/api/classes/imfusion-gl-viewstate) &state, const vec3 &position, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &text, const [Font](/cpp-sdk/4.5/api/structs/imfusion-gl-textrenderer-font) &font=[Font](/cpp-sdk/4.5/api/structs/imfusion-gl-textrenderer-font)(), [AlignmentH](#alignmenth) alignH=Left, [AlignmentV](#alignmentv) alignV=Baseline, bool depthTest=true) — Render text at a given 3D position in world space.
+
+## Static Public Member Functions
+
+- static void [registerFontFamily](#registerfontfamily) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &fontName, const [ByteBufferView](/cpp-sdk/4.5/api/classes/imfusion-bytebufferview) &regularFace, const [ByteBufferView](/cpp-sdk/4.5/api/classes/imfusion-bytebufferview) &boldFace=&#123;&#125;, const [ByteBufferView](/cpp-sdk/4.5/api/classes/imfusion-bytebufferview) &italicFace=&#123;&#125;, const [ByteBufferView](/cpp-sdk/4.5/api/classes/imfusion-bytebufferview) &boldItalicFace=&#123;&#125;) — Globally registers a new font family.
+
+## Member Enumeration Documentation
+
+### AlignmentH
+
+```cpp
+enum ImFusion::GL::TextRenderer::AlignmentH
+```
+
+Enum for horizontal alignment options.
+
+**Enumerator:**
+
+- `Left` — Text will start at the given location.
+- `Centered` — Text will be horizontally centered at the given location.
+- `Right` — Text will end at the given location.
+
+### AlignmentV
+
+```cpp
+enum ImFusion::GL::TextRenderer::AlignmentV
+```
+
+Enum for vertical alignment options.
+
+**Enumerator:**
+
+- `Top` — The entire text will be below the given location (= topmost pixel of the first line).
+- `Middle` — Text will be vertically centered at the given location.
+- `Baseline` — The font's baseline of the first line of text will be at the given location.
+- `Bottom` — The entire text will be above the given location (= bottommost pixel of the last line).
+
+### Face
+
+```cpp
+enum ImFusion::GL::TextRenderer::Face
+```
+
+Bitfield enumeration to describe a font face.
+
+**Enumerator:**
+
+- `Regular` — regular font face (non-bold, non-italic)
+- `Bold` — bold font face
+- `Italic` — italic font face
+
+### Decoration
+
+```cpp
+enum ImFusion::GL::TextRenderer::Decoration
+```
+
+Bitfield enumeration to describe the text decoration.
+
+**Enumerator:**
+
+- `Plain` — No text decoration.
+- `Shadow` — Render a 1px drop shadow.
+- `Underline` — Render a horizontal line underneath the text.
+- `Strikethrough` — Render a horizontal line on top of the text.
+
+## Constructor & Destructor Documentation
+
+### TextRenderer
+
+```cpp
+ImFusion::GL::TextRenderer::TextRenderer ()
+```
+
+Creates a new [TextRenderer](/cpp-sdk/4.5/api/classes/imfusion-gl-textrenderer) instance.
+
+The default [Font](/cpp-sdk/4.5/api/structs/imfusion-gl-textrenderer-font) family is already baked in and registered automatically.
+
+## Member Function Documentation
+
+### registerFontFamily
+
+```cpp
+void ImFusion::GL::TextRenderer::registerFontFamily (const std::string & fontName, const ByteBufferView & regularFace, const ByteBufferView & boldFace = {}, const ByteBufferView & italicFace = {}, const ByteBufferView & boldItalicFace = {})
+```
+
+*static*
+
+Globally registers a new font family.
+
+The font buffer data must be in a format that is supported by FreeType2 (e.g. TTF, OpenType). For a full list of supported formats see [https://www.freetype.org/freetype2/docs/index.html](https://www.freetype.org/freetype2/docs/index.html).
+
+**Note:** The list of registered font families is global state. Still this function is thread-safe.
+
+**Parameters:**
+
+- `fontName` — Name of the font
+- `regularFace` — Storage buffer containing the font file (e.g. TTF) for the normal face variant.
+- `boldFace` — Storage buffer containing the font file (e.g. TTF) for the bold variant (optional).
+- `italicFace` — Storage buffer containing the font file (e.g. TTF) for the italic variant (optional).
+- `boldItalicFace` — Storage buffer containing the font file (e.g. TTF) for the bold and italic variant (optional).
+
+### textSize
+
+```cpp
+vec2i ImFusion::GL::TextRenderer::textSize (const std::string & text, const Font & font = Font ())
+```
+
+Calculate the required number of pixels to display the given text.
+
+This function computes the tight bounds without any vertical padding.
+
+**Parameters:**
+
+- `text` — Text to render.
+- `font` — [Font](/cpp-sdk/4.5/api/structs/imfusion-gl-textrenderer-font) to use for rendering.
+
+### renderText
+
+```cpp
+void ImFusion::GL::TextRenderer::renderText (const Viewport & viewport, const vec2 & position, const std::string & text, const Font & font = Font (), AlignmentH alignH = Left, AlignmentV alignV = Baseline)
+```
+
+Render text at a given 2D position in pixel space.
+
+**Parameters:**
+
+- `viewport` — [Viewport](/cpp-sdk/4.5/api/structs/imfusion-gl-viewport) struct defining the rectangle into which to render and clip the text to
+- `position` — Pixel location where to start rendering relative to the x/y coordinate of *viewport*
+- `text` — Text to render
+- `font` — [Font](/cpp-sdk/4.5/api/structs/imfusion-gl-textrenderer-font) to use for rendering
+- `alignH` — Horizontal text alignment
+- `alignV` — Vertical text alignment
+
+### renderTextWorld
+
+```cpp
+void ImFusion::GL::TextRenderer::renderTextWorld (const ViewState & state, const vec3 & position, const std::string & text, const Font & font = Font (), AlignmentH alignH = Left, AlignmentV alignV = Baseline, bool depthTest = true)
+```
+
+Render text at a given 3D position in world space.
+
+**Parameters:**
+
+- `state` — OpenGL state describing model-view-projection matrices and viewport to project the 3D position to the screen.
+- `position` — 3D location where to start rendering in world space (wrt. to *state*)
+- `text` — Text to render
+- `font` — [Font](/cpp-sdk/4.5/api/structs/imfusion-gl-textrenderer-font) to use for rendering
+- `alignH` — Horizontal text alignment
+- `alignV` — Vertical text alignment
+- `depthTest` — Flag whether to enable depth test when rendering the text, if disabled will overdraw any pixel content that might be there already.

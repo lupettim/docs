@@ -1,0 +1,50 @@
+---
+title: "ImFusion::GlPointTree"
+sidebarTitle: "GlPointTree"
+description: "Point tree annotation."
+---
+
+`#include <ImFusion/GL/GlPointTree.h>`
+
+## Overview
+
+Point tree annotation.
+
+## Public Member Functions
+
+- **GlPointTree** ([PointTree](/cpp-sdk/4.5/api/classes/imfusion-pointtree) \*[tree](/cpp-sdk/4.5/api/classes/imfusion-gltree))
+- void [draw](#draw) (const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &[view](/cpp-sdk/4.5/api/classes/imfusion-glannotation)) override — Draw the object in 3D space.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [typeName](#typename) () const override — Return unique identifier for this object class used for serialization.
+- void [setTree](#settree) ([Tree](/cpp-sdk/4.5/api/classes/imfusion-tree) \*[tree](/cpp-sdk/4.5/api/classes/imfusion-gltree)) override — Set the underlying tree data which is to be visualized.
+
+## Member Function Documentation
+
+### draw
+
+```cpp
+void ImFusion::GlPointTree::draw (const GlView & view)
+```
+
+*override, virtual*
+
+Draw the object in 3D space.
+
+### typeName
+
+```cpp
+std::string ImFusion::GlPointTree::typeName () const
+```
+
+*override, virtual*
+
+Return unique identifier for this object class used for serialization.
+
+### setTree
+
+```cpp
+void ImFusion::GlPointTree::setTree (Tree * tree)
+```
+
+*override, virtual*
+
+Set the underlying tree data which is to be visualized.

@@ -1,0 +1,194 @@
+---
+title: "Using Properties and Configuration"
+description: "Configuring objects, particularly algorithms, in a generic manner is an important capability for an extensible framework."
+---
+
+Configuring objects, particularly algorithms, in a generic manner is an important capability for an extensible framework. The ImFusion framework achieves this goal by providing the [Configurable](/cpp-sdk/4.5/api/classes/imfusion-configurable) interface, which offers methods for saving and loading an object's state to and from generic [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) objects.
+
+[Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) objects store arbitrary key-value pairs as strings in a hierarchical fashion and allow you to save and load these properties to and from files. This is extensively used within the framework to save the state of the application, the views, and the algorithms in workspace files. When loading a workspace file, the contained objects are automatically re-created and configured to their previous state. Since a string-based property representation is used, developers are completely free to choose the format in which they store state. Common data types such as matrices, integers, and vectors are directly supported by the framework and do not require custom code.
+
+The [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) class provides a serialization interface for different kinds of values. Each [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object consists of a list of parameters and a list of further sub-properties. Each parameter is represented by a unique name and stores a single value. Internally, all parameter values are stored as strings but can be implicitly converted to any supported type. The following types are supported:
+
+- most fundamental types (except void and long double)
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html)
+- [Filesystem::Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path) and [Filesystem::Url](/cpp-sdk/4.5/api/classes/imfusion-filesystem-url)
+- all typedefs in Mat.h
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html) of the previous types
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html) of the previous types
+- [std::set](http://en.cppreference.com/w/cpp/container/set.html) and [std::unordered_set](http://en.cppreference.com/w/cpp/container/unordered_set.html) of fundamental and string types
+
+Use [Properties::setParam](/cpp-sdk/4.5/api/classes/imfusion-properties) and [Properties::param](/cpp-sdk/4.5/api/classes/imfusion-properties) to set and retrieve a parameter value. The name can contain any character except '/'. If a parameter with the same name already exists, its value will be overridden.
+
+Example:
+
+```cpp
+Properties p;
+int spam = 5;
+
+p.setParam("Spam", spam);
+spam = 10;
+std::cout << "spam: " << spam << std::endl;
+
+p.param("Spam", spam);
+std::cout << "spam: " << spam << std::endl;
+
+p.setParam("Spam", -8);
+std::cout << "spam: " << spam << std::endl;
+
+p.param("Spam", spam);
+std::cout << "spam: " << spam << std::endl;
+```
+ fragment
+Prints:
+
+```cpp
+spam: 10
+spam: 5
+spam: 5
+spam: -8
+```
+ fragment
+
+### Parameter Type
+
+Each parameter gets a PropertiesDetail::ParamType assigned automatically according to the template type of the last [Properties::setParam](/cpp-sdk/4.5/api/classes/imfusion-properties) call. Since this type can be overridden, it is merely descriptive: There is no guarantee that [Properties::param](/cpp-sdk/4.5/api/classes/imfusion-properties) can convert to that type. Changing the type of a parameter directly does not change its value in any way.
+
+The types Enum, EnumString, and Path are never assigned automatically, since they are specialized versions of other types: Enum is a specialized version of Integer, EnumString and Path are specialized versions of [String](/cpp-sdk/4.5/api/namespaces/imfusion-string) (see [PropertiesWidget](/cpp-sdk/4.5/api/classes/imfusion-propertieswidget) below for an example).
+
+In general, [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) has some limited support for converting between different types. However, you should not rely on this behavior. An exception to this rule is [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html): since all values are stored as [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) internally, all values can be retrieved as strings. If a parameter cannot be converted to the requested type, [Properties::param](/cpp-sdk/4.5/api/classes/imfusion-properties) returns false. In this case, the value of the provided variable remains unchanged.
+
+```cpp
+Properties p;
+p.setParam("Spam", "foo");
+p.paramType("Spam"); // returns ParamType::String
+
+int spam = 5;
+p.setParamType("Spam", ParamType::Integer);
+if (!p.param("Spam", spam)) // "foo" cannot be converted to an int
+ std::cout << "Conversion failed" << std::endl;
+std::cout << "spam: " << spam << std::endl;
+
+p.setParam("Spam", 8.2);
+p.paramType("Spam"); // returns ParamType::Double
+
+double spamDouble = 0.0;
+if (!p.param("Spam", spamDouble))
+ std::cout << "Conversion failed" << std::endl;
+std::cout << "spamDouble: " << spamDouble << std::endl;
+
+std::string spamString;
+if (!p.param("Spam", spamString))
+ std::cout << "Conversion failed" << std::endl;
+std::cout << "spamString: " << spamString << std::endl;
+
+if (!p.param("Spam", spam)) // truncates double to int
+ std::cout << "Conversion failed" << std::endl;
+std::cout << "spam: " << spam << std::endl;
+```
+ fragment
+Prints:
+
+```cpp
+Conversion failed
+spam: 5
+spamDouble: 8.2
+spamString: 8.2
+spam: 8
+```
+ fragment
+
+### Sub-Properties
+
+In addition to parameters, a [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object can also hold sub-properties (which can themselves have sub-properties, and so on). All sub-properties instances are owned by their parent [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) instance. Contrary to parameters, sub-properties names are not unique: there can be several sub-properties with the same name.
+
+To access parameters in sub-properties directly, the path syntax can be used (see example). However, if multiple sub-properties share the same name, this syntax retrieves parameters only from the first sub-properties.
+
+Example:
+
+```cpp
+Properties p;
+
+// Add a new sub-properties
+auto foo = p.addSubProperties("foo");
+foo->setParam("spam", 1);
+
+// create another sub-properties with the same name
+auto foo2 = p.addSubProperties("foo");
+foo2->setParam("spam", 3);
+
+// Alternatively create one only if it does not exist yet
+auto bar = p.subProperties("bar", true);
+bar->setParam("spam", 2);
+
+auto bar2 = p.subProperties("bar", true);
+assert(bar == bar2);
+
+int spam = 0;
+foo->param("spam", spam);
+std::cout << "spam in foo: " << spam << std::endl;
+bar->param("spam", spam);
+std::cout << "spam in bar: " << spam << std::endl;
+foo2->param("spam", spam);
+std::cout << "spam in foo2: " << spam << std::endl;
+
+// path syntax:
+p.param("foo/spam", spam);
+std::cout << "spam in foo: " << spam << std::endl;
+p.param("bar/spam", spam);
+std::cout << "spam in bar: " << spam << std::endl;
+```
+ fragment
+Prints:
+
+```cpp
+spam in foo: 1
+spam in bar: 2
+spam in foo2: 3
+spam in foo: 1
+spam in bar: 2
+```
+ fragment
+The [PropertiesWidget](/cpp-sdk/4.5/api/classes/imfusion-propertieswidget) provides a convenient way to display and edit a [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) instance in the UI. The "Properties Widget" automatically creates appropriate Qt widgets for each parameter. For example, a parameter with ParamType::Integer will be displayed as a QSpinBox, and a ParamType::String as a QLineEdit. Further customization is possible using the ParamType and the parameter's Attributes, as show in the example below for a widget with a QSpinBox, limited to a range of 1 to 5, and an enum with the values 'One' and 'Two':
+
+```cpp
+Properties p;
+p.setParam("Number", 3);
+p.setParamAttributes("Number", "min: 1, max: 5");
+
+p.setParam("Enum", "One");
+p.setParamType("Enum", Properties::ParamType::EnumString); // certain types have to be specified explicitly
+p.setParamAttributes("Enum", "values: 'One, Two'");
+
+PropertiesWidget w;
+w.configure(&p);
+```
+ fragment
+Some attributes restrict the number of possible values for a parameter (e.g., min/max for Integer). These restrictions are applied only in the [PropertiesWidget](/cpp-sdk/4.5/api/classes/imfusion-propertieswidget) and have no effect on the [Properties::setParam](/cpp-sdk/4.5/api/classes/imfusion-properties) method.
+
+The [PropertiesWidget](/cpp-sdk/4.5/api/classes/imfusion-propertieswidget) never holds a reference to the [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object it was configured with. This means that changes made by the user in the widget are not automatically reflected in the [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object. To retrieve the changed properties, use the [PropertiesWidget::configuration](/cpp-sdk/4.5/api/classes/imfusion-propertieswidget) method. Be aware that this will only contain the parameters and their values, but **not** the ParamType and ParamAttributes of the original [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object. The [PropertiesWidget](/cpp-sdk/4.5/api/classes/imfusion-propertieswidget) is designed with the [Configurable](/cpp-sdk/4.5/api/classes/imfusion-configurable) interface in mind: the [Configurable::configure](/cpp-sdk/4.5/api/classes/imfusion-configurable) method validates the given properties and updates the object's state accordingly; afterwards, [Configurable::configuration](/cpp-sdk/4.5/api/classes/imfusion-configurable) returns the object's actual properties.
+
+For example, to display the properties of an [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm):
+
+```cpp
+SomeAlgorithm a;
+Properties p;
+a.configuration(&p);
+
+PropertiesWidget w(&p);
+/* ... */
+
+// apply the changes from the widget to the algorithm
+w.configuration(&p);
+a.configure(&p);
+
+// apply the validated properties from the algorithm back to the widget
+p.clear();
+a.configuration(&p);
+w.configure(&p);
+```
+ fragment
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) names are case-sensitive (e.g. "Foo" and "foo" are different parameters)
+- [PropertiesWidget::configuration](/cpp-sdk/4.5/api/classes/imfusion-propertieswidget) only returns parameter values, not types and attributes
+- floating point values lose precision when converted to strings (use [Encoding::base64Encode](/cpp-sdk/4.5/api/namespaces/imfusion-encoding) to preserve the binary representation)
+
+**See also:** Object Serialization

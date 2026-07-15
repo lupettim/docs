@@ -1,0 +1,226 @@
+---
+title: "ExampleMeshAlgorithm.cpp"
+---
+
+```cpp
+#include "ExampleMeshAlgorithm.h"
+
+#include <ImFusion/Base/MeshToPointCloudAlgorithm.h>
+#include <ImFusion/Base/SharedImageSet.h>
+#include <ImFusion/IO/MeshIO.h>
+#include <ImFusion/Mesh/Mesh.h>
+#include <ImFusion/Mesh/MeshProcessingAlgorithm.h>
+
+namespace ImFusion
+{
+    ExampleMeshAlgorithm::ExampleMeshAlgorithm(const ImFusion::Mesh* mesh)
+        : m_inputMesh(mesh)
+    {
+        configureDefaults();    // initializes the algorithm with default values in configuration
+    }
+
+    ExampleMeshAlgorithm::ExampleMeshAlgorithm()
+        : m_inputMesh(nullptr)
+    {
+        configureDefaults();    // initializes the algorithm with default values in configuration
+    }
+
+    ExampleMeshAlgorithm::~ExampleMeshAlgorithm() {}
+
+ bool ExampleMeshAlgorithm::createCompatible(const DataList& data, Algorithm** a)
+    {
+ // extract all meshes from the datalist
+ auto meshes = data.getSurfaces();
+
+ // algorithm needs exactly one Mesh to work with
+ if (meshes.size() == 1)
+        {
+ // Note that if mesh annotation has a parent data (for example of type SharedImageSet, Image Stream or other),
+ // this parent data will also end up in the data passed to createCompatible.
+ // In this example we will create an algorithm only if the parent data is of type SharedImageSet
+ if (data.size() == 1 || (data.size() == 2 && dynamic_cast<SharedImageSet*>(data[1])))
+            {
+ // if pointer is provided, create a new instance
+ if (a)
+                    *a = new ExampleMeshAlgorithm(meshes[0]);
+ return true;
+            }
+        }
+ //as a fallback this algorithm tries to load a mesh itself at a later point if given _no_ input
+ if (data.size() == 0)
+        {
+ // if pointer is provided, create a new instance
+ if (a)
+                *a = new ExampleMeshAlgorithm();
+ return true;
+        }
+ return false;
+    }
+
+ void ExampleMeshAlgorithm::compute()
+    {
+ if (m_inputMesh)
+            computeMeshProcessing();
+ else
+            computeMeshImport();
+    }
+
+    OwningDataList ExampleMeshAlgorithm::takeOutput()
+    {
+ if (m_outputPointCloud)
+        {
+            OwningDataList res(std::move(m_outputPointCloud));    // return point cloud as output of the algorithm (ownership is being transferred)
+ if (m_outputMesh)
+                res.add(std::move(m_outputMesh));    // also return mesh as output of the algorithm (ownership is being transferred)
+ return res;
+        }
+ else if (m_outputMesh)
+ return OwningDataList(std::move(m_outputMesh));    // return mesh as output of the algorithm (ownership is being transferred)
+ else
+ return OwningDataList();
+    }
+
+ void ExampleMeshAlgorithm::configure(const Properties* p)
+    {
+ //configure parameters from given Properties
+ if (!p)
+ return;
+
+ if (m_inputMesh)
+        {
+            p->param("decimMaxEdgeLength", m_decimMaxEdgeLength);
+            p->param("smoothIterations", m_smoothIterations);
+        }
+ else
+        {
+            p->param("filePath", m_filePath);
+        }
+    }
+
+ void ExampleMeshAlgorithm::configuration(Properties* p) const
+ {
+ //serialize parameters to Properties
+ if (!p)
+ return;
+
+ if (m_inputMesh)
+        {
+            p->setParam("decimMaxEdgeLength", m_decimMaxEdgeLength, 15.0);
+            p->setParam("smoothIterations", m_smoothIterations, 30);
+        }
+ else
+        {
+            p->setParam("filePath", m_filePath, "");
+            p->setParamType("filePath", Properties::ParamType::Path);
+        }
+    }
+
+ void ExampleMeshAlgorithm::computeMeshImport()
+    {
+        m_status = Status::InvalidInput;
+ // MeshIO::load will check the file path and just return nullptr if it doesn't point to a valid mesh
+        m_outputMesh = std::unique_ptr<Mesh>(MeshIO::load(m_filePath, nullptr, true));
+ if (!m_outputMesh)
+ return;
+
+ // To make sure our mesh is centered we compute its center of mass and transform this center
+ // into the world origin. We also compute its bounding box manually (note that we could also
+ // just use m_outputMesh->bounds() here) and some other properties and log them to the console
+ // to make it easier to find appropriate parameters for the processing example.
+        vec3 bbMin = vec3(std::numeric_limits<double>::max(), std::numeric_limits<double>::max(), std::numeric_limits<double>::max());
+        vec3 bbMax = -bbMin;
+        vec3 com = vec3::Zero();
+ int numValid = 0;
+ for (int i = 0, numVertices = static_cast<int>(m_outputMesh->numberOfVertices()); i < numVertices; ++i)
+        {
+ if (!m_outputMesh->vertexIndexValid(i))
+ continue;
+
+ const vec3 v = m_outputMesh->vertex(i);
+            bbMin = bbMin.cwiseMin(v);
+            bbMax = bbMax.cwiseMax(v);
+            com += v;
+            ++numValid;
+        }
+        com *= (1.0 / static_cast<double>(numValid));
+
+ double meanEdgeLength = 0.0;
+ double minEdgeLength = std::numeric_limits<double>::max();
+ double maxEdgeLength = 0.0;
+        numValid = 0;
+ for (int i = 0, numFaces = static_cast<int>(m_outputMesh->numberOfFaces()); i < numFaces; ++i)
+        {
+ if (!m_outputMesh->faceIndexValid(i))
+ continue;
+
+ const vec3i faceVerts = m_outputMesh->faceVertices(i);
+ // Note that we visit each non-boundary edge twice, once in "forward" and once in
+ // "backward" direction. This should not influence our computed properties too much...
+ for (const auto& j : {faceVerts[0], faceVerts[1], faceVerts[2]})
+            {
+ const vec2i verts = m_outputMesh->halfedgeVertices(j, i);
+ const vec3 from = m_outputMesh->vertex(verts[0]);
+ const vec3 to = m_outputMesh->vertex(verts[1]);
+ const vec3 d = to - from;
+ const double dl = d.norm();
+                meanEdgeLength += dl;
+                maxEdgeLength = std::max(maxEdgeLength, dl);
+                minEdgeLength = std::min(minEdgeLength, dl);
+                ++numValid;
+            }
+        }
+        meanEdgeLength /= static_cast<double>(numValid);
+
+ //move mesh into the origin
+        m_outputMesh->setMatrix(Eigen::Affine3d(Eigen::Translation3d(-com)).matrix() * m_outputMesh->matrix());
+ //log properties
+ const vec3 diameter = bbMax - bbMin;
+ LOG_INFO("Mesh dimensions: " << diameter[0] << " x " << diameter[1] << " x " << diameter[2]);
+ LOG_INFO("Edge lengths: Max = " << maxEdgeLength << "; Min = " << minEdgeLength << "; Average = " << meanEdgeLength);
+        m_status = Status::Success;
+    }
+
+ void ExampleMeshAlgorithm::computeMeshProcessing()
+    {
+        m_status = Status::Error;
+
+ // check the input
+ if (!m_inputMesh)
+        {
+            m_status = Status::IncompleteInput;
+ return;
+        }
+
+ // create copy of the mesh and process it
+        m_outputMesh = std::make_unique<Mesh>(*m_inputMesh);
+
+        MeshProcessingAlgorithm meshProcAlg(m_outputMesh.get());
+        meshProcAlg.setInPlace(true);    // modify the input mesh without creating new one
+
+ // decimate mesh
+ if (m_decimMaxEdgeLength > 0)
+        {
+            meshProcAlg.setMode(MeshProcessingAlgorithm::Mode::DECIMATE);
+            meshProcAlg.setDecimationParam(m_decimMaxEdgeLength, 0.0, true);
+            meshProcAlg.compute();
+        }
+
+ // smooth mesh
+ if (m_smoothIterations > 0)
+        {
+            meshProcAlg.setMode(MeshProcessingAlgorithm::Mode::SMOOTH);
+            meshProcAlg.setSmoothParam(m_smoothIterations);
+            meshProcAlg.compute();
+        }
+
+ // convert mesh to point cloud
+        MeshToPointCloudAlgorithm meshToPointCloudAlg(m_outputMesh.get());
+        meshToPointCloudAlg.compute();
+
+ // retrieve point cloud
+        m_outputPointCloud = meshToPointCloudAlg.takeOutput().extractFirst<PointCloud>();
+        m_status = Status::Success;
+    }
+}
+```
+ fragment

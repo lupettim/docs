@@ -1,0 +1,119 @@
+---
+title: "ImFusion::PhilipsQLabIOD"
+sidebarTitle: "PhilipsQLabIOD"
+description: "Loads ultrasound volume stored by Philips QLab software."
+---
+
+`#include <ImFusion/Dicom/PhilipsQLabIOD.h>`
+
+## Overview
+
+Loads ultrasound volume stored by Philips QLab software.
+
+This does only support certain DICOMs exported by QLab (cartesian?).
+
+## Public Member Functions
+
+- **PhilipsQLabIOD** (DcmDataset &[dataset](/cpp-sdk/4.5/api/classes/imfusion-dicom-iod), const OFString &[sopClassUID](/cpp-sdk/4.5/api/classes/imfusion-dicom-iod))
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Dicom::FrameDescriptor](/cpp-sdk/4.5/api/structs/imfusion-dicom-framedescriptor) &gt; [loadFrames](#loadframes) () override — Loads the descriptors of all individual frames stored in this IOD.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Dicom::FrameDescriptorSet](/cpp-sdk/4.5/api/namespaces/imfusion-dicom) &gt; [sortAndGroupFrames](#sortandgroupframes) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Dicom::FrameDescriptor](/cpp-sdk/4.5/api/structs/imfusion-dicom-framedescriptor) &gt; &frames) const override — Sorts and groups the given frames into sets of associated frames (e.g.
+- void [loadFrameData](#loadframedata) (const [Dicom::FrameDescriptor](/cpp-sdk/4.5/api/structs/imfusion-dicom-framedescriptor) &desc, [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) &image, int slice=-1) override — Loads the actual frame data into the given image.
+- void [loadFrameProperties](#loadframeproperties) (const [Dicom::FrameDescriptor](/cpp-sdk/4.5/api/structs/imfusion-dicom-framedescriptor) &desc, [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &image) override — Loads any additional properties into the given image.
+- void [save](#save) ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &imageSet, int sharedImageIndex, int sliceIndex) override — Stores the general image descriptor and metadata of *imageSet* in the DICOM data set.
+- void [savePixelData](#savepixeldata) ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &imageSet, int sharedImageIndex, int sliceIndex) override — Writes the pixel data of *imageSet* in the DICOM data set.
+
+## Public Attributes
+
+- [Dicom::Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element)&lt; int &gt; **slices**
+- [Dicom::Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element)&lt; int &gt; **numberOfFrames**
+- [Dicom::Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element)&lt; int &gt; **physicalUnitsX**
+- [Dicom::Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element)&lt; int &gt; **physicalUnitsY**
+- [Dicom::Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element)&lt; int &gt; **physicalUnitsZ**
+- [Dicom::Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element)&lt; double &gt; **physicalDeltaX**
+- [Dicom::Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element)&lt; double &gt; **physicalDeltaY**
+- [Dicom::Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element)&lt; double &gt; **physicalDeltaZ**
+- [Dicom::Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element)&lt; double &gt; **frameTime**
+
+## Member Function Documentation
+
+### loadFrames
+
+```cpp
+std::vector < Dicom::FrameDescriptor > ImFusion::PhilipsQLabIOD::loadFrames ()
+```
+
+*override, virtual*
+
+Loads the descriptors of all individual frames stored in this IOD.
+
+Except for Enhanced Multiframe Dicoms, most IODs will return one image. Does not load any pixel data.
+
+### sortAndGroupFrames
+
+```cpp
+std::vector < Dicom::FrameDescriptorSet > ImFusion::PhilipsQLabIOD::sortAndGroupFrames (const std::vector < Dicom::FrameDescriptor > & frames) const
+```
+
+*override, virtual*
+
+Sorts and groups the given frames into sets of associated frames (e.g.
+
+volumes).
+
+All given frames should be somehow part of the returned frame sets. 2D images (i.e. IMAGESET) can be returned as framesets with only a single item. The exact order of the given frames is undefined. For multiframe Dicoms, this method is only called on the first frame. The IOD pointer held by each frame can be used to access special elements that are required for sorting and/or grouping.
+
+**Note:** When overriding this method, it should be treated like a static method, i.e. no members should be accessed.
+
+### loadFrameData
+
+```cpp
+void ImFusion::PhilipsQLabIOD::loadFrameData (const Dicom::FrameDescriptor & desc, MemImage & image, int slice = -1)
+```
+
+*override, virtual*
+
+Loads the actual frame data into the given image.
+
+The frameNumber in the given [FrameDescriptor](/cpp-sdk/4.5/api/structs/imfusion-dicom-framedescriptor) is the index of the corresponding frame as returned by loadFrames. If slice is not -1, the frame should be loaded into the given slice of the image.
+
+### loadFrameProperties
+
+```cpp
+void ImFusion::PhilipsQLabIOD::loadFrameProperties (const Dicom::FrameDescriptor & desc, SharedImageSet & image)
+```
+
+*override, virtual*
+
+Loads any additional properties into the given image.
+
+This method is called after the complete image data has been loaded. *desc* will contain valid sharedImageIndex and sliceIndex parameters indicating where this frame has been stored in the image. Implementations must not reorder, remove or resize the images of the given SharedImageSet!
+
+The order or amount of images must not be changed inside the SharedImageSet! Also, the size of the individual images must not change. Otherwise, this would lead to inconsistent sharedImageIndex and sliceIndex values.
+
+This method might throw an exception if the properties somehow make the image completely invalid. This should only be used as a last restort if there is really no way to use the image in any meaningful way!
+
+**Note:** The default implementation will create an [ImageInfoDataComponent](/cpp-sdk/4.5/api/classes/imfusion-imageinfodatacomponent) instance and attach it to *image*. Thus, when overriding this method make sure to call the base class method.
+
+### save
+
+```cpp
+void ImFusion::PhilipsQLabIOD::save (SharedImageSet & imageSet, int sharedImageIndex, int sliceIndex)
+```
+
+*override, virtual*
+
+Stores the general image descriptor and metadata of *imageSet* in the DICOM data set.
+
+*sharedImageIndex* and *sliceIndex* describe which part of the image set should be stored.
+
+### savePixelData
+
+```cpp
+void ImFusion::PhilipsQLabIOD::savePixelData (SharedImageSet & imageSet, int sharedImageIndex, int sliceIndex)
+```
+
+*override, virtual*
+
+Writes the pixel data of *imageSet* in the DICOM data set.
+
+*sharedImageIndex* and *sliceIndex* describe which part of the image set should be stored.

@@ -1,0 +1,41 @@
+---
+title: "ImFusion::SimilarityMeasureImplPixelWise"
+sidebarTitle: "SimilarityMeasureImplPixelWise"
+---
+
+## Public Member Functions
+
+- **SimilarityMeasureImplPixelWise** ([SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*img1, [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*img2, int mode)
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Set one or multiple properties.
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Retrieve the properties of this object.
+
+## Protected Attributes
+
+- int **m_mode** — 0: SAD, 1: SSD, 2: NCC
+- bool **m_absoluteNCC**
+
+## Member Function Documentation
+
+### configure
+
+```cpp
+void ImFusion::SimilarityMeasureImplPixelWise::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Set one or multiple properties.
+
+For NCC, retrieves the 'absolute' param
+
+### configuration
+
+```cpp
+void ImFusion::SimilarityMeasureImplPixelWise::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Retrieve the properties of this object.
+
+For NCC, sets the 'absolute' param

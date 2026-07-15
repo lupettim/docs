@@ -1,0 +1,94 @@
+---
+title: "ImFusion::SubProgress"
+sidebarTitle: "SubProgress"
+description: "Wrapper class to report partial progress on an existing Task ."
+---
+
+`#include <ImFusion/Base/SubProgress.h>`
+
+## Overview
+
+Wrapper class to report partial progress on an existing [Task](/cpp-sdk/4.5/api/classes/imfusion-progress-task).
+
+This class provides a [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) interface that linearly maps to a given range of an existing [Progress::Task](/cpp-sdk/4.5/api/classes/imfusion-progress-task). It can be used to merge the progress of multiple methods that are not aware of each other into one single progress report and use up its entire range. This is different to a [NestedProgress](/cpp-sdk/4.5/api/classes/imfusion-nestedprogress) as creating tasks on a [SubProgress](/cpp-sdk/4.5/api/classes/imfusion-subprogress) will not create a new task on the parent reporter (usually resulting in an additional progress bar) but reuse an existing task.
+
+```cpp
+Progress::Task task(m_progress, 0, "Computing...");
+
+// algo1 will report its progress using the first half of `task`'s progress bar
+SubProgress subProgress1(&task, 0.0, 0.5);
+algo1->compute(&subProgress1);
+
+// algo1 will report its progress using the second half of `task`'s progress bar
+SubProgress subProgress2(&task, 0.5, 1.0);
+algo2->compute(&subProgress2);
+```
+ fragment
+
+**Note:** Consumers of [SubProgress](/cpp-sdk/4.5/api/classes/imfusion-subprogress) can only add a single [Task](/cpp-sdk/4.5/api/classes/imfusion-progress-task) on it. If they add multiple tasks at the same time all tasks except for the first one are ignored.
+
+## Public Member Functions
+
+- [SubProgress](#subprogress) ([Progress::Task](/cpp-sdk/4.5/api/classes/imfusion-progress-task) \*parentTask, double startRatio, double endRatio, int resolution=100) — Create a new [SubProgress](/cpp-sdk/4.5/api/classes/imfusion-subprogress) instance where update reports are merged into the current step information of the parent task.
+- bool **forwardsDescription** () const — Returns the flag whether to forward the task description from the sub progress to the parent.
+- void **setForwardDescription** (bool value) — Sets the flag whether to forward the task description from the sub progress to the parent.
+- void [onTaskAdded](#ontaskadded) ([Task](/cpp-sdk/4.5/api/classes/imfusion-progress-task) \*task) override — Function is called whenever a new [Task](/cpp-sdk/4.5/api/classes/imfusion-progress-task) has been created.
+- void [onTaskUpdated](#ontaskupdated) (const [Task](/cpp-sdk/4.5/api/classes/imfusion-progress-task) \*task) override — Function is called whenever the state of a [Task](/cpp-sdk/4.5/api/classes/imfusion-progress-task) has changed and the reporter should update its UI.
+- bool [onTaskRequestsThreadSafety](#ontaskrequeststhreadsafety) (const [Task](/cpp-sdk/4.5/api/classes/imfusion-progress-task) \*task) override — Function is called by Task::requestThreadSafety() in order to check whether the parent reporter supports concurrent access.
+- void [onTaskRemoved](#ontaskremoved) (const [Task](/cpp-sdk/4.5/api/classes/imfusion-progress-task) \*task) override — Function is called whenever a [Task](/cpp-sdk/4.5/api/classes/imfusion-progress-task) is about to be destroyed and its pointer will become invalid.
+
+## Constructor & Destructor Documentation
+
+### SubProgress
+
+```cpp
+ImFusion::SubProgress::SubProgress (Progress::Task * parentTask, double startRatio, double endRatio, int resolution = 100)
+```
+
+Create a new [SubProgress](/cpp-sdk/4.5/api/classes/imfusion-subprogress) instance where update reports are merged into the current step information of the parent task.
+
+[Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) reports on this object will be mapped linearly to the range startRatio\*resolution .. endRatio\*resolution.
+
+## Member Function Documentation
+
+### onTaskAdded
+
+```cpp
+void ImFusion::SubProgress::onTaskAdded (Task * task)
+```
+
+*override, virtual*
+
+Function is called whenever a new [Task](/cpp-sdk/4.5/api/classes/imfusion-progress-task) has been created.
+
+### onTaskUpdated
+
+```cpp
+void ImFusion::SubProgress::onTaskUpdated (const Task * task)
+```
+
+*override, virtual*
+
+Function is called whenever the state of a [Task](/cpp-sdk/4.5/api/classes/imfusion-progress-task) has changed and the reporter should update its UI.
+
+### onTaskRequestsThreadSafety
+
+```cpp
+bool ImFusion::SubProgress::onTaskRequestsThreadSafety (const Task * task)
+```
+
+*override, virtual*
+
+Function is called by Task::requestThreadSafety() in order to check whether the parent reporter supports concurrent access.
+
+Implementations are free to ignore this request and return false. Otherwise they must ensure that subsequent concurrent calls to any of the onTask...() callbacks are handled correctly without race conditions. Implementations are free to return to a unsynchronized implementation as soon as all multi-threaded tasks have been removed from the reporter.
+
+### onTaskRemoved
+
+```cpp
+void ImFusion::SubProgress::onTaskRemoved (const Task * task)
+```
+
+*override, virtual*
+
+Function is called whenever a [Task](/cpp-sdk/4.5/api/classes/imfusion-progress-task) is about to be destroyed and its pointer will become invalid.

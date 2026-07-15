@@ -1,0 +1,76 @@
+---
+title: "ImFusion::GL::AtomicCounterBuffer"
+sidebarTitle: "AtomicCounterBuffer"
+description: "Specialization of Buffer for OpenGL Atomic Counter Objects."
+---
+
+`#include <ImFusion/Core/GL/AtomicCounterBuffer.h>`
+
+## Overview
+
+Specialization of [Buffer](/cpp-sdk/4.5/api/classes/imfusion-gl-buffer) for OpenGL Atomic Counter Objects.
+
+**Note:** Requires at least OpenGL 4.2 or the ARB_shader_atomic_counters extension.
+
+**See also:** [https://www.khronos.org/opengl/wiki/Atomic_Counter](https://www.khronos.org/opengl/wiki/Atomic_Counter)
+
+## Public Member Functions
+
+- [AtomicCounterBuffer](#atomiccounterbuffer) (int numCounters, [Usage](/cpp-sdk/4.5/api/classes/imfusion-gl-buffer) [usageHint](/cpp-sdk/4.5/api/classes/imfusion-gl-buffer)=[Usage::DynamicDraw](/cpp-sdk/4.5/api/classes/imfusion-gl-buffer)) — Create an OpenGL buffer for holding the specified number of atomic counters.
+- void **bindBase** (uint32_t index) — Bind the buffer to the storage block with the given index.
+- void **reset** (uint32_t value=0) — Reset all counters in the buffer to the given value.
+- void [setData](#setdata) ([Utils::Span](/cpp-sdk/4.5/api/classes/imfusion-utils-span)&lt; uint32_t &gt; data) — Upload data to the buffer.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; uint32_t &gt; [getData](#getdata) () — Download all data from the buffer attached to the given target.
+
+## Static Public Member Functions
+
+- static void **unbind** () — Unbind any bound atomic counter buffer.
+
+## Constructor & Destructor Documentation
+
+### AtomicCounterBuffer
+
+```cpp
+ImFusion::GL::AtomicCounterBuffer::AtomicCounterBuffer (int numCounters, Usage usageHint = Usage::DynamicDraw)
+```
+
+*explicit*
+
+Create an OpenGL buffer for holding the specified number of atomic counters.
+
+All counters will be initialized with 0.
+
+**Parameters:**
+
+- `numCounters` — Number of counter variables to allocate buffer space for
+- `usageHint` — Expected usage pattern of the buffer
+
+**Exceptions:**
+
+- `std::runtime_error` — if the corresponding OpenGL buffer object could not be created.
+
+## Member Function Documentation
+
+### setData
+
+```cpp
+void ImFusion::GL::AtomicCounterBuffer::setData (Utils::Span < uint32_t > data)
+```
+
+Upload data to the buffer.
+
+**Note:** The buffer needs to be bound before this method is called. Any previous data will be deleted.
+
+**Parameters:**
+
+- `data` — Contiguous data that should be copied to the buffer.
+
+### getData
+
+```cpp
+std::vector < uint32_t > ImFusion::GL::AtomicCounterBuffer::getData ()
+```
+
+Download all data from the buffer attached to the given target.
+
+**Note:** The buffer needs to be bound before this method is called.

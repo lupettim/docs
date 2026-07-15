@@ -1,0 +1,60 @@
+---
+title: "ImFusion::FreeFormMeshAlgorithm"
+sidebarTitle: "FreeFormMeshAlgorithm"
+description: "Algorithm to convert Point Based annotation to mesh."
+---
+
+`#include <ImFusion/Base/FreeFormMeshAlgorithm.h>`
+
+## Overview
+
+[Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) to convert Point Based annotation to mesh.
+
+## Public Member Functions
+
+- **FreeFormMeshAlgorithm** ([GlPointBasedAnnotation](/cpp-sdk/4.5/api/classes/imfusion-glpointbasedannotation) \*annot, [GlLine](/cpp-sdk/4.5/api/classes/imfusion-glline) \*line, [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*parent)
+- void [compute](#compute) () override — Execute the algorithm.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) &gt; **getMesh** ()
+- [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \* **getParent** () const
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+## Member Function Documentation
+
+### compute
+
+```cpp
+void ImFusion::FreeFormMeshAlgorithm::compute ()
+```
+
+*override, virtual*
+
+Execute the algorithm.
+
+### configure
+
+```cpp
+void ImFusion::FreeFormMeshAlgorithm::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### configuration
+
+```cpp
+void ImFusion::FreeFormMeshAlgorithm::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality

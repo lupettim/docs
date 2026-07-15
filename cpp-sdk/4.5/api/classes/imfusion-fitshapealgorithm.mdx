@@ -1,0 +1,38 @@
+---
+title: "ImFusion::FitShapeAlgorithm"
+sidebarTitle: "FitShapeAlgorithm"
+---
+
+## Public Types
+
+- enum **ShapeType** &#123; **Blob** = 0 , **Line2D** , **EllipseSection** &#125; — [Status](/cpp-sdk/4.5/api/classes/imfusion-algorithm) codes.
+
+## Public Member Functions
+
+- **FitShapeAlgorithm** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*labelmap)
+- void [compute](#compute) () override — Execute the algorithm.
+- const [Seg::SegmentedStructure](/cpp-sdk/4.5/api/classes/imfusion-seg-segmentedstructure) \* **structure** () const
+
+## Static Public Member Functions
+
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=nullptr)
+
+## Public Attributes
+
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; unsigned char &gt; **p_label** = &#123;"label", 1, this&#125;
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; ShapeType &gt; **p_shapeType** = &#123;"shapeType", ShapeType::Blob, this&#125;
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; double &gt; **p_margin** = &#123;"margin", 0.0, this&#125;
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [Seg::SegmentedStructure](/cpp-sdk/4.5/api/classes/imfusion-seg-segmentedstructure) &gt; **m_structure**
+- [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* **m_labelmap**
+
+## Member Function Documentation
+
+### compute
+
+```cpp
+void ImFusion::FitShapeAlgorithm::compute ()
+```
+
+*override, virtual*
+
+Execute the algorithm.

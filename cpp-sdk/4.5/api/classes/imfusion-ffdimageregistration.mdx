@@ -1,0 +1,107 @@
+---
+title: "ImFusion::FFDImageRegistration"
+sidebarTitle: "FFDImageRegistration"
+description: "Registers two images with a non-linear deformation based on FFDs."
+---
+
+`#include <ImFusion/Reg/FFDImageRegistration.h>`
+
+## Overview
+
+Registers two images with a non-linear deformation based on FFDs.
+
+The algorithm modifies the [FreeFormDeformation](/cpp-sdk/4.5/api/classes/imfusion-freeformdeformation) object attached to image2. Because FFD deformations are generally not invertible, only one image can have a deformation at a time.
+
+## Public Member Functions
+
+- **FFDImageRegistration** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*image1, [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*image2)
+- void [initializeTransformationModel](#initializetransformationmodel) () override
+- virtual void [setSmoothness](#setsmoothness) (double lambda) — Sets the strength of the regularization term.
+- double **smoothness** () const — Returns the strength of the regularization term.
+- double [evaluate](#evaluate) (int n, const double \*x, double \*dx=0) override — Evaluates the similarity measure with the given parameters.
+- virtual double **evaluateRegularization** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3f &gt; &displacements) — Evaluates a regularization term for the given parameters.
+- [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [FreeFormDeformation](/cpp-sdk/4.5/api/classes/imfusion-freeformdeformation) &gt; [deformation](#deformation) () const — Returns the deformation object that is currently modified.
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+- void **setLambda** (double lambda)
+- double **lambda** ()
+
+## Static Public Member Functions
+
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=0) — Expects two Volumes/Images.
+
+## Member Function Documentation
+
+### initializeTransformationModel
+
+```cpp
+void ImFusion::FFDImageRegistration::initializeTransformationModel ()
+```
+
+*override, virtual*
+
+### setSmoothness
+
+```cpp
+virtual void ImFusion::FFDImageRegistration::setSmoothness (double lambda)
+```
+
+*virtual*
+
+Sets the strength of the regularization term.
+
+Default is 0.01 according to Rueckert et al.
+
+### evaluate
+
+```cpp
+double ImFusion::FFDImageRegistration::evaluate (int n, const double * x, double * dx = 0)
+```
+
+*override, virtual*
+
+Evaluates the similarity measure with the given parameters.
+
+The overall cost function is: similarity - smoothness \* regularization
+
+**Parameters:**
+
+- `displacements` — absolute 3D displacement for all control points of the FFD
+
+### deformation
+
+```cpp
+std::shared_ptr < FreeFormDeformation > ImFusion::FFDImageRegistration::deformation () const
+```
+
+Returns the deformation object that is currently modified.
+
+This is a convenience method that casts moving to a [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset), retrieves its [deformation](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) and cast that to a [FreeFormDeformation](/cpp-sdk/4.5/api/classes/imfusion-freeformdeformation). Returns 0, if any of the casts fail.
+
+### configure
+
+```cpp
+void ImFusion::FFDImageRegistration::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### configuration
+
+```cpp
+void ImFusion::FFDImageRegistration::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality

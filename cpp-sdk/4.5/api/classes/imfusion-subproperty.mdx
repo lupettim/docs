@@ -1,0 +1,133 @@
+---
+title: "ImFusion::SubProperty< T >"
+sidebarTitle: "SubProperty< T >"
+description: "The SubProperty class represents a nested record of a Configurable entity implementing value semantics."
+---
+
+`#include <ImFusion/Core/SubProperty.h>`
+
+## Overview
+
+template&lt;typename T&gt;
+
+class ImFusion::SubProperty&lt; T &gt;
+The [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) class represents a nested record of a [Configurable](/cpp-sdk/4.5/api/classes/imfusion-configurable) entity implementing value semantics.
+
+It is intended to be used as member of [Configurable](/cpp-sdk/4.5/api/classes/imfusion-configurable) classes and enables you to reduce the amount of boilerplate code needed to implement the pair of [configure()](#configure)/configuration() functions for each nested class member that is supposed to be serialized. In order for this to work each [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) must be [registered](/cpp-sdk/4.5/api/classes/imfusion-configurable) with the parent [Configurable](/cpp-sdk/4.5/api/classes/imfusion-configurable) instance. This can be automatized by passing it as additional argument to the corresponding constructor overload. Registration is preserved across copies/moves/assignments, and removed on destruction.
+
+SubProperties wrap a regular type T that must implement the [Configurable](/cpp-sdk/4.5/api/classes/imfusion-configurable) interface or alternatively an [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html) of it and make it serializable to/from the [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) interface. The nested object is stored as a [subproperty](/cpp-sdk/4.5/api/classes/imfusion-properties) inside the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+Depending on T the behavior of [configure()](#configure) is as follows:
+
+- If T is a regular value type it will always configure the payload from the subproperty if present.
+- If T is of type [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt;S&gt; configure will set the payload to the empty Optional if the subproperty is absent, and instantiate a default-constructed S if the subproperty is present. Therefore, S must be default-constructible.
+- If T is of type [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt;S&gt; configure will *not* change the null-state of the payload: This means that if T is originally not null but the subproperty is absent the payload will remain unchanged. Also, if T is originally null but the subproperty is present the payload will remain nullptr. This is an active design decision to allow S to be a polymorphic and/or not default-constructible type.
+
+**Note:** Support for [SubProperty&lt;std::unique_ptr&lt;T&gt;&gt;](/cpp-sdk/4.5/api/classes/imfusion-subproperty) is deprecated and will be removed in a future release. Use [PolymorphicSubProperty](/cpp-sdk/4.5/api/classes/imfusion-polymorphicsubproperty) instead.
+
+The [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) class provides the arrow operator, so that you can easily access members of the nested elements:
+
+```cpp
+struct InnerStruct : public Configurable {
+ Parameter<int> p_count = {"count", 0, this};
+}
+struct OuterStruct : public Configurable {
+    SubProperty<InnerStruct> p_innerStruct = {"InnerStruct", InnerStruct(), this};
+}
+
+OuterStruct o;
+o.p_innerStruct->p_count = 42;
+```
+ fragment
+The signal [signalValueChanged](/cpp-sdk/4.5/api/classes/imfusion-parameterbase) is only emitted whenever the nested object is changed using setValue(), [configure()](#configure), or if its [Configurable::signalParametersChanged](/cpp-sdk/4.5/api/classes/imfusion-configurable) was emitted.
+
+By convention, public SubProperties members use the p_ prefix for the variable name (instead of the common m_ prefix) in order to make their semantics easier to identify in code.
+
+**Note:** Due to the way deserialization is implemented, you can not have multiple [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances with the same name next to each other.
+
+**Template Parameters:** | T | Underlying type of the parameter, must be copyable and implement the [Configurable](/cpp-sdk/4.5/api/classes/imfusion-configurable) interface. If T is nullable (pointer/optional) those requirements apply to its payload. |
+| --- | --- |
+
+**See also:** [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter), [PolymorphicSubProperty](/cpp-sdk/4.5/api/classes/imfusion-polymorphicsubproperty), [SubPropertyList](/cpp-sdk/4.5/api/classes/imfusion-subpropertylist)
+
+## Public Member Functions
+
+- **SubProperty** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &[name](/cpp-sdk/4.5/api/classes/imfusion-parameterbase), U &&value) — Creates a [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) that will be configured under the given name and with the given initial value.
+- [SubProperty](#subproperty) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &[name](/cpp-sdk/4.5/api/classes/imfusion-parameterbase), U &&value, Configurable \*[parent](/cpp-sdk/4.5/api/classes/imfusion-parameterbase)) — Create a [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) that is directly registered to the parent [Configurable](/cpp-sdk/4.5/api/classes/imfusion-configurable) instance.
+- **SubProperty** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &[name](/cpp-sdk/4.5/api/classes/imfusion-parameterbase), U &&value, Configurable &[parent](/cpp-sdk/4.5/api/classes/imfusion-parameterbase))
+- **SubProperty** (const SubProperty&lt; T &gt; &other)
+- **SubProperty** (SubProperty&lt; T &gt; &&other)
+- SubProperty&lt; T &gt; & [operator=](#operator-1-2) (const SubProperty&lt; T &gt; &other) — Assigns the value and attributes from another [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instance of the same type and emits signalValueChanged.
+- SubProperty&lt; T &gt; & [operator=](#operator-2-2) (SubProperty&lt; T &gt; &&other) — Assigns the value and attributes from another [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instance of the same type and emits signalValueChanged.
+- SubProperty&lt; T &gt; & **operator=** (U &&value) — Assign a new value to this [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty), emits signalValueChanged.
+- void **setValue** (U &&value) — Assign a new value to this [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty), emits signalValueChanged.
+- const T & **value** () const — Access the underlying value.
+- T & **value** ()
+- const T \* **operator-&gt;** () const — Access the underlying value.
+- T \* **operator-&gt;** ()
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this parameter/sub property by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current parameter/sub property state into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+## Protected Attributes
+
+- T **m_value**
+
+## Constructor & Destructor Documentation
+
+### SubProperty
+
+```cpp
+template<typename T> template<typename U> ImFusion::SubProperty < T >::SubProperty (const std::string & name, U && value, Configurable * parent)
+```
+
+Create a [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) that is directly registered to the parent [Configurable](/cpp-sdk/4.5/api/classes/imfusion-configurable) instance.
+
+The parent instance is stored and thus must have a lifetime longer than this object.
+
+## Member Function Documentation
+
+### operator
+
+```cpp
+template<typename T> SubProperty < T > & ImFusion::SubProperty < T >::operator= (const SubProperty < T > & other)
+```
+
+Assigns the value and attributes from another [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instance of the same type and emits signalValueChanged.
+
+Expects name and deprecated names to be the same and will not change the parent relationship. Use \*this = other.value() if you want to assign *only* the value from *other*
+
+### operator
+
+```cpp
+template<typename T> SubProperty < T > & ImFusion::SubProperty < T >::operator= (SubProperty < T > && other)
+```
+
+Assigns the value and attributes from another [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instance of the same type and emits signalValueChanged.
+
+Expects name and deprecated names to be the same and will not change the parent relationship. Use \*this = other.value() if you want to assign *only* the value from *other*
+
+### configure
+
+```cpp
+template<typename T> void ImFusion::SubProperty < T >::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this parameter/sub property by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+Depending on T the behavior of [configure(const Properties\* p)](#configure) is as follows:
+
+- If T is a regular value type it will always configure the payload from the subproperty if present in p.
+- If T is of type [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt;S&gt; configure will set the payload to nullopt if the subproperty is absent in p, and instantiate a default-constructed S if the subproperty is present in p. Therefore, S must be default-constructible.
+- If T is of type [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt;S&gt; configure will *not* change the null-state of the payload: This means that if T is originally not null but the subproperty is absent in p the payload will remain unchanged. Also, if T is originally null but the subproperty is present in p the payload will remain nullptr. This is an active design decision to allow S to be a polymorphic and/or not default-constructible type.
+
+### configuration
+
+```cpp
+template<typename T> void ImFusion::SubProperty < T >::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current parameter/sub property state into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.

@@ -1,0 +1,144 @@
+---
+title: "ImFusion::ParametricDeformableRegistration"
+sidebarTitle: "ParametricDeformableRegistration"
+description: "Registers two images with a non-linear deformation based on TPSs."
+---
+
+`#include <ImFusion/Reg/ParametricDeformableRegistration.h>`
+
+## Overview
+
+Registers two images with a non-linear deformation based on TPSs.
+
+The algorithm modifies the [GlTPSDeformation](/cpp-sdk/4.5/api/classes/imfusion-gltpsdeformation) object attached to image2. Because TPS deformations are generally not invertible, only one image can have a deformation at a time.
+
+## Public Member Functions
+
+- **ParametricDeformableRegistration** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*image1, [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*image2)
+- void [compute](#compute) () override — Starts the registration.
+- double [evaluate](#evaluate) (int n, const double \*x, double \*dx=0) override — Assembles the parameters and returns similarity of images.
+- int [numberOfParameters](#numberofparameters) () const final — Returns the number of parameters of the deformation model. Since it is called in the constructor it is defined final.
+- void [reset](#reset) () override — Resets the deformation of moving to its initial deformation.
+- [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [ParametricDeformation](/cpp-sdk/4.5/api/classes/imfusion-parametricdeformation) &gt; [deformation](#deformation) () const — Returns the deformation object that is currently modified.
+- bool [isDeformable](#isdeformable) () const override — Returns if the registration is non-linear or not.
+- void **setUseLinear** (bool flag) — Specify whether linear transformation parameters should be used in addition to the deformable ones.
+- bool **useLinear** () const — Returns whether linear transformation parameters are used.
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configures the registration.
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Gets the configuration of the registration.
+
+## Static Protected Member Functions
+
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a) — Auxiliary factory method to create specialized registration instance Is used by [DemonsImageRegistration](/cpp-sdk/4.5/api/classes/imfusion-demonsimageregistration).
+
+## Protected Attributes
+
+- [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \* **m_resetProperties** — used to reset the deformation grid to its pre-registration state (if there was such a state)
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; **m_initialPars** — inner displacements when the registration was started, only available during registration
+- bool **m_useLinear** — If true, linear transformation parameters are used in addition to the deformable ones.
+
+## Member Function Documentation
+
+### compute
+
+```cpp
+void ImFusion::ParametricDeformableRegistration::compute ()
+```
+
+*override, virtual*
+
+Starts the registration.
+
+A optimizer has to be set before hand. During the registration the deformation of the moving image will be updated with temporary results. Upon return the deformation of the moving image is one that maximises the similarity measure.
+
+### evaluate
+
+```cpp
+double ImFusion::ParametricDeformableRegistration::evaluate (int n, const double * x, double * dx = 0)
+```
+
+*override, virtual*
+
+Assembles the parameters and returns similarity of images.
+
+This method is mainly called during the optimization by the optimizer. n specifies the number of parameters in the arrays x and dx. x[i] contains the relative change to parameter i. Derived classes overriding this method must be able to apply these parameters to their transformation model. Since the parameters are only relative changes to the initial value, it is sometimes required to store the initial transformation in [compute()](#compute) before the optimization is started. The parameters will be optimized to maximize the return value of this method. If dx is not 0, derived classes can output the derivative of parameter i to each dx[i]. However, derived classes are not required to provide such a value.
+
+Example:
+
+```cpp
+double evaluate(int n, const double* x, out double* dx = 0) {
+ if (n != 6)
+ return 0.0;
+ else {
+        mat4 relativeMatrix = Pose::eulerToMat(x);
+ m_image2->setMatrix(m_initialMatrix * relativeMatrix); // move image to new location
+ return return m_sm->compute(m_transformer); // automatically picks up the new transformation of image2
+    }
+}
+```
+ fragment
+
+### numberOfParameters
+
+```cpp
+int ImFusion::ParametricDeformableRegistration::numberOfParameters () const
+```
+
+*final, virtual*
+
+Returns the number of parameters of the deformation model. Since it is called in the constructor it is defined final.
+
+### reset
+
+```cpp
+void ImFusion::ParametricDeformableRegistration::reset ()
+```
+
+*override, virtual*
+
+Resets the deformation of moving to its initial deformation.
+
+If the moving image had a GlFFDeformation upon creation of this algorithm, the deformation will be resetted to this state. Otherwise only the displacements will be set to 0 but the number of subdivisions and the spacing will be kept.
+
+### deformation
+
+```cpp
+std::shared_ptr < ParametricDeformation > ImFusion::ParametricDeformableRegistration::deformation () const
+```
+
+Returns the deformation object that is currently modified.
+
+This is a convenience method that casts moving to a [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) and retrieves its [deformation](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset). Returns 0, if any of the casts fail.
+
+### isDeformable
+
+```cpp
+bool ImFusion::ParametricDeformableRegistration::isDeformable () const
+```
+
+*override, virtual*
+
+Returns if the registration is non-linear or not.
+
+### configure
+
+```cpp
+void ImFusion::ParametricDeformableRegistration::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configures the registration.
+
+A sub-property with the name "Optimizer" can be used to create and initialize an optimizer The sub-property "SimilarityMeasure" can be used to set the configuration for the SimilarityMeasure
+
+### configuration
+
+```cpp
+void ImFusion::ParametricDeformableRegistration::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Gets the configuration of the registration.
+
+If an optimizer is set, the sub-property "Optimizer" contains its configuration. The sub-property "SimilarityMeasure" contains the properties of the SimilarityMeasure

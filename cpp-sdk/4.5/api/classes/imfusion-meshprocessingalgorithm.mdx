@@ -1,0 +1,183 @@
+---
+title: "ImFusion::MeshProcessingAlgorithm"
+sidebarTitle: "MeshProcessingAlgorithm"
+description: "Wraps different mesh processing functionality into a single algorithm."
+---
+
+`#include <ImFusion/Mesh/MeshProcessingAlgorithm.h>`
+
+## Overview
+
+Wraps different mesh processing functionality into a single algorithm.
+
+See the Mesh::Processing namespace for direct access to the different processing options.
+
+## Public Types
+
+- enum [Mode](#mode) &#123; NONE = 0 , SMOOTH , DECIMATE , FILL_HOLES , COLOR , CROP , CLEAN , AUTO_ALIGN , REMOVE_EDGES , INVERT_NORMALS , MERGE_CLOSE_VERTICES &#125; — Computation mode.
+- enum class **SmoothMode** &#123; **Laplacian** = 0 , **Taubin** &#125;
+- enum class [StatusExt](#statusext) &#123; FillHolesNotSupported , ColoringFailed , ComputationFailed &#125; — Enumeration listing possible errors during the computation.
+
+## Public Member Functions
+
+- **MeshProcessingAlgorithm** ([Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) \*mesh) — Constructor.
+- **~MeshProcessingAlgorithm** () override — Destructor.
+- [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) \* **mesh** () const — Get mesh.
+- void [compute](#compute) () override — Execute the algorithm.
+- [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) [takeOutput](#takeoutput) () override — Return any new [Data](/cpp-sdk/4.5/api/classes/imfusion-data) that was created by the [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) during the last call to [compute()](#compute).
+- void **setMode** (const [Mode](#mode) &mode) — Set computation mode.
+- [Mode](#mode) **mode** () const — Get computation mode.
+- void **setInPlace** (bool inPlace)
+- bool **inPlace** () const
+- void **setSmoothMode** (SmoothMode mode) — Set smoothing parameters.
+- SmoothMode **smoothMode** () const — Get smoothing parameters.
+- void [setSmoothParam](#setsmoothparam) (int iter) — Set smoothing parameters.
+- int **smoothParam** () const — Get smoothing parameters.
+- void **setRemoveEdgesParam** (int layers) — Set parameters for removing the edges.
+- int **removeEgdesParam** () const — Get parameters for removing the edges.
+- void **setDecimationParam** (double maxEdgeLength, double maxSurfaceError, bool preserveColors, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; int &gt; &blockedVertices=&#123;&#125;) — Set decimation parameters (values &lt;= 0 disable the criterion).
+- void **decimationParam** (double &maxEdgeLength, double &maxSurfaceError, bool &preserveColors, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; int &gt; \*blockedVertices=nullptr) const — Get decimation parameters.
+- void [setDecimationParam](#setdecimationparam) (double maxEdgeLength, bool preserveColors, bool preserveCurvature, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; int &gt; &blockedVertices=&#123;&#125;) — Set decimation parameters.
+- void [decimationParam](#decimationparam) (double &maxEdgeLength, bool &preserveColors, bool &preserveCurvature, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; int &gt; \*blockedVertices=nullptr) const — Get decimation parameters.
+- void **setColorParam** (float brightness, float contrast, float gamma, bool useHSV, bool applySettingsToTexture) — Set color parameters.
+- void **colorParam** (float &brightness, float &contrast, float &gamma, bool &useHSV, bool &applySettingsToTexture) const — Get color parameters.
+- void **setCropParam** (const vec3 &boxCenter, const vec3 &boxExtent, bool discardPointsInside, const mat4 &T, bool capHole) — Set cropping parameters.
+- void **cropParam** (vec3 &boxCenter, vec3 &boxExtent, bool &discardPointsInside, mat4 &T, bool &capHole) const — Get cropping parameters.
+- void **setCleanParam** (float min, float max) — Set cleaning parameters.
+- void **cleanParam** (float &min, float &max) const — Get cleaning parameters.
+- void **setAutoAlignParam** (double minInlierRatio, double worstCaseConfidence, bool alignAnyway) — Set auto-aligning parameters.
+- void **autoAlignParam** (double &minInlierRatio, double &worstCaseConfidence, bool &alignAnyway) — Get auto-aligning parameters.
+- void **setHoleFillParam** (int depth)
+- void **holeFillParam** (int &depth)
+- void **setVertexMergeParam** (double threshold)
+- void **vertexMergeParam** (double &threshold)
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+## Static Public Member Functions
+
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=0)
+
+## Member Enumeration Documentation
+
+### Mode
+
+```cpp
+enum ImFusion::MeshProcessingAlgorithm::Mode
+```
+
+Computation mode.
+
+**Enumerator:**
+
+- `NONE` — no mode set
+- `SMOOTH` — smooth mesh
+- `DECIMATE` — decimate mesh
+- `FILL_HOLES` — fill holes in a mesh
+- `COLOR` — change color of the mesh
+- `CROP` — crop the mesh
+- `CLEAN` — clean mesh
+- `AUTO_ALIGN` — auto-align mesh
+- `REMOVE_EDGES` — remove boundary layers of the mesh
+- `INVERT_NORMALS` — invert the normals
+- `MERGE_CLOSE_VERTICES` — merge close vertices
+
+### StatusExt
+
+```cpp
+enum class ImFusion::MeshProcessingAlgorithm::StatusExt
+```
+
+*strong*
+
+Enumeration listing possible errors during the computation.
+
+**Enumerator:**
+
+- `FillHolesNotSupported` — Poisson reconstruction is not supported in this version of the software.
+- `ColoringFailed` — Input mesh does not have a property of vertex colors.
+- `ComputationFailed` — Something went wrong during computation.
+
+## Member Function Documentation
+
+### compute
+
+```cpp
+void ImFusion::MeshProcessingAlgorithm::compute ()
+```
+
+*override, virtual*
+
+Execute the algorithm.
+
+### takeOutput
+
+```cpp
+OwningDataList ImFusion::MeshProcessingAlgorithm::takeOutput ()
+```
+
+*override, virtual*
+
+Return any new [Data](/cpp-sdk/4.5/api/classes/imfusion-data) that was created by the [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) during the last call to [compute()](#compute).
+
+The default implementation will return an empty list.
+
+**Note:** Since ownership of the data is transferred, you can call this method only once between calls to [compute()](#compute).
+
+### setSmoothParam
+
+```cpp
+void ImFusion::MeshProcessingAlgorithm::setSmoothParam (int iter)
+```
+
+Set smoothing parameters.
+
+Allowed values are in [1,100]
+
+### setDecimationParam
+
+```cpp
+void ImFusion::MeshProcessingAlgorithm::setDecimationParam (double maxEdgeLength, bool preserveColors, bool preserveCurvature, const std::vector < int > & blockedVertices = {})
+```
+
+Set decimation parameters.
+
+****Deprecated**:** "'preserveCurvature' is deprecated. Please use the variant with 'maxSurfaceError'"
+
+### decimationParam
+
+```cpp
+void ImFusion::MeshProcessingAlgorithm::decimationParam (double & maxEdgeLength, bool & preserveColors, bool & preserveCurvature, std::vector < int > * blockedVertices = nullptr) const
+```
+
+Get decimation parameters.
+
+****Deprecated**:** "'preserveCurvature' is deprecated. Please use the variant with 'maxSurfaceError'"
+
+### configure
+
+```cpp
+void ImFusion::MeshProcessingAlgorithm::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### configuration
+
+```cpp
+void ImFusion::MeshProcessingAlgorithm::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality

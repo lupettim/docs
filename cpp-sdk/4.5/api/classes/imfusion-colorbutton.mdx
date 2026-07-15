@@ -1,0 +1,57 @@
+---
+title: "ImFusion::ColorButton"
+sidebarTitle: "ColorButton"
+description: "Specialization of a QPushButton to show and select a color."
+---
+
+`#include <ImFusion/GUI/CoreWidgets/ColorButton.h>`
+
+## Overview
+
+Specialization of a QPushButton to show and select a color.
+
+The button will show the selected color as pixmap and optionally as hex-string. Clicking on the button will open a color selector widget, either the built-in OS color picker or the [ColorPickerWidget](/cpp-sdk/4.5/api/classes/imfusion-colorpickerwidget).
+
+**See also:** [ColorPickerWidget](/cpp-sdk/4.5/api/classes/imfusion-colorpickerwidget)
+
+## Public Types
+
+- enum class [PickerType](#pickertype) &#123; FullOS , Reduced &#125; — Widget type to use for letting the user choose a color.
+
+## Signals
+
+- void **valueChangedQColor** (const QColor &value)
+- void **valueChangedVec4** (const vec4 &value)
+
+## Public Member Functions
+
+- **ColorButton** ([PickerType](#pickertype) pickerType, QWidget \*parent=nullptr)
+- [PickerType](#pickertype) **pickerType** () const — Returns the color picker type to show when clicking the button.
+- void **setPickerType** ([PickerType](#pickertype) value) — Sets the color picker type to show when clicking the button.
+- bool **showsText** () const — Returns the flag whether to show the current color also as text in hexadecimal format.
+- void **setShowText** (bool value) — Sets the flag whether to show the current color also as text in hexadecimal format.
+- bool **useAlpha** () const — Returns the flag whether to make the alpha value configurable as well.
+- void **setUseAlpha** (bool value) — Sets the flag whether to make the alpha value configurable as well.
+- const QColor & **colorQt** () const — Returns the currently configured color as QColor.
+- void **setColor** (const QColor &value) — Sets the currently configured color as QColor.
+- vec4 **colorVec4** () const — Returns the currently configured color as vec4.
+- void **setColor** (const vec4 &value) — Sets the currently configured color as vec4.
+- vec3 **colorVec3** () const — Returns the currently configured color as vec3 ignoring the alpha component.
+- void **setColor** (const vec3 &value) — Sets the currently configured color as vec3 setting the alpha component to 1.
+
+## Member Enumeration Documentation
+
+### PickerType
+
+```cpp
+enum class ImFusion::ColorButton::PickerType
+```
+
+*strong*
+
+Widget type to use for letting the user choose a color.
+
+**Enumerator:**
+
+- `FullOS` — QColorDialog as provided by the underlying OS.
+- `Reduced` — Simplified [ColorPickerWidget](/cpp-sdk/4.5/api/classes/imfusion-colorpickerwidget) from the ImFusion SDK.

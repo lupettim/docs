@@ -1,0 +1,81 @@
+---
+title: "ImFusion::DeformationFactory"
+sidebarTitle: "DeformationFactory"
+description: "Factory singleton for creating Deformations from string IDs."
+---
+
+`#include <ImFusion/GL/DeformationFactory.h>`
+
+## Overview
+
+Factory singleton for creating Deformations from string IDs.
+
+**See also:** [Deformation](/cpp-sdk/4.5/api/classes/imfusion-deformation)
+
+## Public Types
+
+- using **FactoryMethod** = [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt;[std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt;[Deformation](/cpp-sdk/4.5/api/classes/imfusion-deformation)&gt;([std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt;[SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset)&gt; optionalSupportingImages)&gt; — Alias for a [DeformationFactory](/cpp-sdk/4.5/api/classes/imfusion-deformationfactory) factory method creating a specific [Deformation](/cpp-sdk/4.5/api/classes/imfusion-deformation).
+
+## Public Member Functions
+
+- bool [registerDeformation](#registerdeformation-1-2) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &id) — Registers a [Deformation](/cpp-sdk/4.5/api/classes/imfusion-deformation) with the [DeformationFactory](/cpp-sdk/4.5/api/classes/imfusion-deformationfactory).
+- bool [registerDeformation](#registerdeformation-2-2) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &id, FactoryMethod factoryMethod) — Registers a [Deformation](/cpp-sdk/4.5/api/classes/imfusion-deformation) with the [DeformationFactory](/cpp-sdk/4.5/api/classes/imfusion-deformationfactory).
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [Deformation](/cpp-sdk/4.5/api/classes/imfusion-deformation) &gt; [createDeformation](#createdeformation) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &id, [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &gt; supportImages=nullptr, const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p=nullptr) — Instantiates a [Deformation](/cpp-sdk/4.5/api/classes/imfusion-deformation) specified by the given ID.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **registeredDeformationIds** () const — Returns the Unique IDs of all Deformations registered with this factory.
+
+## Static Public Member Functions
+
+- static DeformationFactory & **get** () — Returns the [DeformationFactory](/cpp-sdk/4.5/api/classes/imfusion-deformationfactory) singleton object.
+
+## Member Function Documentation
+
+### typename
+
+```cpp
+template<class T, typename = std::enable_if_t<std::is_base_of_v<Deformation, T>>> bool ImFusion::DeformationFactory::registerDeformation (const std::string & id)
+```
+
+*inline*
+
+Registers a [Deformation](/cpp-sdk/4.5/api/classes/imfusion-deformation) with the [DeformationFactory](/cpp-sdk/4.5/api/classes/imfusion-deformationfactory).
+
+**Note:** The string IDs of Deformations have to be unique. If you register an ID a second time, the previously registered factory method will be overwritten.
+
+**Parameters:**
+
+- `id` — Unique string ID for the [Deformation](/cpp-sdk/4.5/api/classes/imfusion-deformation) to register.
+
+**Returns:** true if the deformation has been successfully registered
+
+### registerDeformation
+
+```cpp
+bool ImFusion::DeformationFactory::registerDeformation (const std::string & id, FactoryMethod factoryMethod)
+```
+
+Registers a [Deformation](/cpp-sdk/4.5/api/classes/imfusion-deformation) with the [DeformationFactory](/cpp-sdk/4.5/api/classes/imfusion-deformationfactory).
+
+**Note:** The string IDs of Deformations have to be unique. If you register an ID a second time, the previously registered factory method will be overwritten.
+
+**Parameters:**
+
+- `id` — Unique string ID for the [Deformation](/cpp-sdk/4.5/api/classes/imfusion-deformation) to register.
+- `factoryMethod` — Method to use for instantiating the [Deformation](/cpp-sdk/4.5/api/classes/imfusion-deformation) to register.
+
+**Returns:** true if the deformation has been successfully registered
+
+### createDeformation
+
+```cpp
+std::unique_ptr < Deformation > ImFusion::DeformationFactory::createDeformation (const std::string & id, std::unique_ptr < SharedImageSet > supportImages = nullptr, const Properties * p = nullptr)
+```
+
+*nodiscard*
+
+Instantiates a [Deformation](/cpp-sdk/4.5/api/classes/imfusion-deformation) specified by the given ID.
+
+**Parameters:**
+
+- `id` — Unique ID of the [Deformation](/cpp-sdk/4.5/api/classes/imfusion-deformation) to create.
+- `image` — Optional pointer to a [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage), used to construct the [Deformation](/cpp-sdk/4.5/api/classes/imfusion-deformation).
+- `p` — Optional pointer to a [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object. If not null, it will be used to configure the newly created [Deformation](/cpp-sdk/4.5/api/classes/imfusion-deformation).

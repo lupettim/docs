@@ -1,0 +1,20 @@
+---
+title: "ImFusion::Request"
+sidebarTitle: "Request"
+description: "Wrapper around libcurl for simple GET and POST requests WARNING: this is experimental and only available for the LicenseManager for the moment."
+---
+
+`#include <ImFusion/Base/Utils/Request.h>`
+
+## Overview
+
+Wrapper around libcurl for simple GET and POST requests WARNING: this is experimental and only available for the LicenseManager for the moment.
+
+## Public Member Functions
+
+- **Request** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &url)
+- void **setTimeout** ([std::chrono::duration](http://en.cppreference.com/w/cpp/chrono/duration.html)&lt; Rep, Period &gt; timeout) — Set a timeout for the request.
+- void **setProxy** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &host) — Set proxy for the request.
+- [Response](/cpp-sdk/4.5/api/structs/imfusion-response) **get** () — HTTP get request.
+- [Response](/cpp-sdk/4.5/api/structs/imfusion-response) **post** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &data, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &content_type="application/x-www-form-urlencoded") — HTTP post request with the given data.
+- void **setTimeout** ([std::chrono::milliseconds](http://en.cppreference.com/w/cpp/chrono/duration.html) timeout)

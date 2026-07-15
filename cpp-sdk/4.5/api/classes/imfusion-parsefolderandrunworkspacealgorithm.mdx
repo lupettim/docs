@@ -1,0 +1,71 @@
+---
+title: "ImFusion::ParseFolderAndRunWorkspaceAlgorithm"
+sidebarTitle: "ParseFolderAndRunWorkspaceAlgorithm"
+description: "Algorithm to parse through folder structures and run a workspace on individual files."
+---
+
+`#include <ImFusion/Base/ParseFolderAndRunWorkspaceAlgorithm.h>`
+
+## Overview
+
+[Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) to parse through folder structures and run a workspace on individual files.
+
+Note that is algorithm only parses the folder structures and obtains a file list. The loading and execution of a workspace file is in done in the controller, because this requires access to the application controller.
+
+The workspace file to be executed on each found file may have contain the following placeholders: %(OrigFilePath) - full path of the input file %(OrigFileDirectory) - folder that contains the input file %(OrigFileStem) - input file name stem without extension %(OrigFileExt) - input file extension, including the period %(Index) - zero-based index of the current file %(IndexPadded) - zero-based index of the current file, padded with as many leading zeros as necessary
+
+These placeholders allow a workspace file as follows:
+
+```cpp
+<propertyfile version="1.1">
+   <param name="workspaceVersion">10</param>
+   <property name="Algorithms">
+       <property name="Basic Processing">
+           <param name="mode">7</param>
+           <param name="createNew">1</param>
+           <param name="preserveValuesOnBitReduction">0</param>
+           <param name="execute">1</param>
+           <param name="input">-1</param>
+       </property>
+       <property name="ImFusionFile">
+           <param name="location">%(OrigFileDirectory)/%(OrigFileStem)_gray.imf</param>
+           <param name="blockId">-1</param>
+           <param name="execute">1</param>
+           <param name="input">0</param>
+       </property>
+   </property>
+</propertyfile>
+```
+ fragment
+The workspace above assumes the input file to contain one item, which will have index -1 when the workspace is executed. It is greyscale converted and saved into the original folder, with the original name plus the suffix _gray.imf.
+
+**See also:** Workspaces API, [Placeholders in Workspace Files](/cpp-sdk/4.5/api/guides/workspace-placeholders-tutorial)
+
+## Public Member Functions
+
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; & **fileList** () const — Retrieve the list of files for processing.
+- size_t **totalFileSize** () const — Gets the sum of files sizes of the files in fileList() in MB.
+
+## Public Attributes
+
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **p_basePath** = &#123;"basePath", "", this&#125; — Parent path to start looking for files.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **p_filterRegex** = &#123;"filterRegex", "", this&#125; — Regular expression to filter particular files.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; int &gt; **p_maxDepth** = &#123;"maxDepth", -1, this&#125; — Max. number of folders to be search recursively, -1 for no limit.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **p_workspaceFile** = &#123;"workspaceFile", "", this&#125; — [Workspace](/cpp-sdk/4.5/api/classes/imfusion-workspace) file to run after loading each file.
+
+## Methods implementing the algorithm interface
+
+- void [compute](#compute) () override — Parses the folder structures and obtains a file list.
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=0)
+
+## Member Function Documentation
+
+### compute
+
+```cpp
+void ImFusion::ParseFolderAndRunWorkspaceAlgorithm::compute ()
+```
+
+*override, virtual*
+
+Parses the folder structures and obtains a file list.

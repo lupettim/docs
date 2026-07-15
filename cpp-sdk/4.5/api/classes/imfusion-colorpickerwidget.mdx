@@ -1,0 +1,27 @@
+---
+title: "ImFusion::ColorPickerWidget"
+sidebarTitle: "ColorPickerWidget"
+description: "Widget combining a HsvColorPicker2d , an HsvHueSlider , and optionally an OpacitySlider to let the user pick a color."
+---
+
+`#include <ImFusion/GUI/CoreWidgets/ColorPickerWidget.h>`
+
+## Overview
+
+Widget combining a [HsvColorPicker2d](/cpp-sdk/4.5/api/classes/imfusion-hsvcolorpicker2d), an [HsvHueSlider](/cpp-sdk/4.5/api/classes/imfusion-hsvhueslider), and optionally an [OpacitySlider](/cpp-sdk/4.5/api/classes/imfusion-opacityslider) to let the user pick a color.
+
+**See also:** [HsvColorPicker2d](/cpp-sdk/4.5/api/classes/imfusion-hsvcolorpicker2d), [HsvHueSlider](/cpp-sdk/4.5/api/classes/imfusion-hsvhueslider), [OpacitySlider](/cpp-sdk/4.5/api/classes/imfusion-opacityslider)
+
+## Signals
+
+- void **colorChanged** (QColor)
+
+## Public Member Functions
+
+- **ColorPickerWidget** (QWidget \*parent=nullptr)
+- QColor **color** () const — Returns the currently selected color.
+- void **setColor** (const QColor &c) — Sets current color.
+- bool **showsOpacitySlider** () const — Returns the flag whether to show the opacity slider.
+- void **showOpacitySlider** (bool show) — Sets the flag whether to show the opacity slider.
+- void **showLabels** (bool show) — Shows or hides the widgets' labels.
+- void **showNumeric** (bool show) — Sets whether to show numeric values.

@@ -1,0 +1,110 @@
+---
+title: "ImFusion::AnalyzeMotion"
+sidebarTitle: "AnalyzeMotion"
+description: "Analyzes successive 2D images for various motion parameters."
+---
+
+`#include <ImFusion/Reg/AnalyzeMotion.h>`
+
+## Overview
+
+Analyzes successive 2D images for various motion parameters.
+
+## Public Types
+
+- enum [PoseType](#posetype) &#123; Translation = 0 , Rigid = 1 , RigidAndScale = 2 , Affine = 3 &#125; — 2D pose type for linear registration mode
+- enum **Mode** &#123; **Statistics** = 0 , **AutoCorrelation** = 1 , **OpticalFlow** = 2 , **LinearRegistration** = 3 &#125;
+- enum **EstimatorMode** &#123; **Mean** = 0 , **Median** = 1 , **Histogram** = 2 , **All** = 3 &#125; — [Status](/cpp-sdk/4.5/api/classes/imfusion-algorithm) codes.
+
+## Public Member Functions
+
+- **AnalyzeMotion** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &img) — Creates the algorithm instance with an image set.
+- **~AnalyzeMotion** () override — Deletes the owned data.
+- void **setOutput** (bool images) — Specify whether difference and/or flow images should be created.
+- void **setMode** (Mode mode) — Set the mode (0 = statistics, 1 = auto-correlation, 2 = optical flow, 3 = linear registration).
+- void **setPoseType** ([PoseType](#posetype) pt) — Set the pose type for the linear registration mode.
+- void **setEstimatorMode** (EstimatorMode mode) — Set the in-plane motion estimator (0 = mean, 1 = median, 2 = histogram mode, 3 = all).
+- const [Table](/cpp-sdk/4.5/api/classes/imfusion-table) & **results** () const — Access the resulting image pair statistics.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; **matrixMotion** (int par) const — Return motion given by the data's actual matrices.
+
+## Methods implementing the Algorithm interface
+
+- void [compute](#compute) () override — Execute the algorithm.
+- [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) [takeOutput](#takeoutput) () override — Return any new [Data](/cpp-sdk/4.5/api/classes/imfusion-data) that was created by the [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) during the last call to [compute()](#compute).
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=nullptr)
+
+## Methods implementing the Configurable interface
+
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+## Member Enumeration Documentation
+
+### PoseType
+
+```cpp
+enum ImFusion::AnalyzeMotion::PoseType
+```
+
+2D pose type for linear registration mode
+
+**Enumerator:**
+
+- `Translation` — Translation only, 2 DOF.
+- `Rigid` — Translation+Rotation, 3 DOF.
+- `RigidAndScale` — Rigid + X/Y scaling, 5 DOF.
+- `Affine` — Full affine, 6 DOF.
+
+## Member Function Documentation
+
+### compute
+
+```cpp
+void ImFusion::AnalyzeMotion::compute ()
+```
+
+*override, virtual*
+
+Execute the algorithm.
+
+### takeOutput
+
+```cpp
+OwningDataList ImFusion::AnalyzeMotion::takeOutput ()
+```
+
+*override, virtual*
+
+Return any new [Data](/cpp-sdk/4.5/api/classes/imfusion-data) that was created by the [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) during the last call to [compute()](#compute).
+
+The default implementation will return an empty list.
+
+**Note:** Since ownership of the data is transferred, you can call this method only once between calls to [compute()](#compute).
+
+### configure
+
+```cpp
+void ImFusion::AnalyzeMotion::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### configuration
+
+```cpp
+void ImFusion::AnalyzeMotion::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality

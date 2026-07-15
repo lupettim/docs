@@ -1,0 +1,37 @@
+---
+title: "ImFusion::GL::Debug"
+sidebarTitle: "Debug"
+description: "The GL::Debug namespace contains functions and class to help with debugging OpenGL calls."
+---
+
+## Overview
+
+The [GL::Debug](/cpp-sdk/4.5/api/namespaces/imfusion-gl-debug) namespace contains functions and class to help with debugging OpenGL calls.
+
+Most functions except for check() and checkAndThrow() rely on the KHR_debug extension. All functions only annotate the OpenGL command stream but don't effect the rendering in any way. For more information, see: [https://www.opengl.org/wiki/Debug_Output](https://www.opengl.org/wiki/Debug_Output)
+
+## Classes
+
+- class [OpenGlException](/cpp-sdk/4.5/api/classes/imfusion-gl-debug-openglexception) — Specialization of [std::runtime_error](http://en.cppreference.com/w/cpp/error/runtime_error.html) that also stores the original OpenGL error code.
+- class [Group](/cpp-sdk/4.5/api/classes/imfusion-gl-debug-group) — The [Group](/cpp-sdk/4.5/api/classes/imfusion-gl-debug-group) class allows to group a set of OpenGL calls together.
+
+## Typedefs
+
+- using MessageCallback — Typedef for a debug callback emitted OpenGl.
+
+## Enumerations
+
+- enum class MessageSource &#123; MessageSource::API = 0x8246 , MessageSource::WindowSystem = 0x8247 , MessageSource::ShaderCompiler = 0x8248 , MessageSource::ThirdParty = 0x8249 , MessageSource::Application = 0x824A , MessageSource::Other = 0x824B &#125; — Enumeration to describe the source of an OpenGL debug message callback.
+- enum class MessageType &#123; MessageType::Error = 0x824C , MessageType::DeprecatedBehavior = 0x824D , MessageType::UndefinedBehavior = 0x824E , MessageType::Portability = 0x824F , MessageType::Performance = 0x8250 , MessageType::Marker = 0x8268 , MessageType::PushGroup = 0x8269 , MessageType::PopGroup = 0x826A , MessageType::Other = 0x8250 &#125; — Enumeration to describe the type of the OpenGL debug message callback.
+- enum class MessageSeverity &#123; MessageSeverity::High = 0x9146 , MessageSeverity::Medium = 0x9147 , MessageSeverity::Low = 0x9148 , MessageSeverity::Notification = 0x826B &#125; — Enumeration to describe the severity of the OpenGL debug message callback.
+- enum class Error &#123; Error::None = 0 , Error::InvalidEnum = 0x0500 , Error::InvalidValue = 0x0501 , Error::InvalidOperation = 0x0502 , Error::InvalidFramebufferOp = 0x0506 , Error::OutOfMemory = 0x0505 , Error::StackUnderflow = 0x0504 , Error::StackOverflow = 0x0503 &#125; — Enumeration of all error flag types that OpenGL supports.
+- enum class FramebufferStatus &#123; FramebufferStatus::Complete = 0x8CD5 , FramebufferStatus::FramebufferUndefined = 0x8219 , FramebufferStatus::IncompleteAttachment = 0x8CD6 , FramebufferStatus::MissingAttachment = 0x8CD7 , FramebufferStatus::IncompleteDrawBuffer = 0x8CDB , FramebufferStatus::IncompleteReadBuffer = 0x8CDC , FramebufferStatus::Unsupported = 0x8CDD , FramebufferStatus::IncompleteMultisample = 0x8D56 , FramebufferStatus::IncompleteLayerTargets = 0x8DA8 &#125; — Enumeration of all OpenGL [Framebuffer](/cpp-sdk/4.5/api/classes/imfusion-gl-framebuffer) status/error flag types.
+
+## Functions
+
+- void defaultMessageCallback (Debug::MessageSource source, Debug::MessageType type, uint32_t id, Debug::MessageSeverity severity, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &message) — The default OpenGL debug message callback used by ImFusionGL.
+- void setMessageCallback (const MessageCallback &mc, bool synchronous) — Sets the OpenGL debug message callback to use for the current context.
+- Error check (bool log=true, const char \*file=0, int line=-1) — Convenience function wrapping glGetError() to check and return the OpenGL context error flag.
+- void checkAndThrow (bool log=true, const char \*file=0, int line=-1) — Implements the same functionality as check() but throws an [OpenGlException](/cpp-sdk/4.5/api/classes/imfusion-gl-debug-openglexception) in case of an error.
+- FramebufferStatus checkFramebufferStatus (bool log=true) — Convenience function wrapping glCheckFramebufferStatus() to check the completeness of the currently bound framebuffer.
+- void insertMessage (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &message) — Inserts a message into the OpenGL command stream.

@@ -1,0 +1,72 @@
+---
+title: "ImFusion::AnatomyDataComponent"
+sidebarTitle: "AnatomyDataComponent"
+description: "A data component storing information about anatomy contained in medical images or other data."
+---
+
+`#include <ImFusion/Base/AnatomyDataComponent.h>`
+
+## Overview
+
+A data component storing information about anatomy contained in medical images or other data.
+
+**See also:** [Anatomy](/cpp-sdk/4.5/api/classes/imfusion-anatomy) for more details on the SNOMED CT ID values that are used internally.
+
+## Public Member Functions
+
+- bool **operator==** (const AnatomyDataComponent &other) const
+- void **add** ([Anatomy](/cpp-sdk/4.5/api/classes/imfusion-anatomy) a) — Add the given anatomy.
+- void **add** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Anatomy](/cpp-sdk/4.5/api/classes/imfusion-anatomy) &gt; &a) — Add a vector of multiple anatomies.
+- void **remove** ([Anatomy](/cpp-sdk/4.5/api/classes/imfusion-anatomy) a) — Removes the given anatomy.
+- bool **contains** ([Anatomy](/cpp-sdk/4.5/api/classes/imfusion-anatomy) a) const — Check whether the provided anatomy is contained.
+- void **clear** () — Clear all anatomies.
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; int64_t &gt; & **anatomies** () const — Read access to all anatomy codes.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [id](#id) () const override — Returns a unique string identifier for this type of data component.
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+## Protected Attributes
+
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; int64_t &gt; **m_anatomies** — [Vector](/cpp-sdk/4.5/api/classes/imfusion-vector) of anatomies that are present.
+
+## Member Function Documentation
+
+### id
+
+```cpp
+std::string ImFusion::AnatomyDataComponent::id () const
+```
+
+*override, virtual*
+
+Returns a unique string identifier for this type of data component.
+
+**Note:** To avoid conflicts make sure to include potential plugin names into this ID. Due to the modular architecture of the ImFusion library, uniqueness of IDs cannot be checked at compile time. However, [DataComponentFactory](/cpp-sdk/4.5/api/classes/imfusion-datacomponentfactory) will check the uniqueness of the ID during registration.
+
+### configure
+
+```cpp
+void ImFusion::AnatomyDataComponent::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### configuration
+
+```cpp
+void ImFusion::AnatomyDataComponent::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality

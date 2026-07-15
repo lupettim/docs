@@ -1,0 +1,110 @@
+---
+title: "ImFusion::LabelOverlapEncoder"
+sidebarTitle: "LabelOverlapEncoder"
+description: "Helper class to encode overlapping labels into an 8bit label map."
+---
+
+`#include <ImFusion/Base/LabelOverlapEncoder.h>`
+
+## Overview
+
+Helper class to encode overlapping labels into an 8bit label map.
+
+Assigns 8bit pixel (storage) values to one or more label values in the range [1,255]. Will treat 0 as reserved pixel value for the empty background. The caller is responsible for ensuring the number of label combinations does not exceed 255, which can be checked via the return values of addLabel or bitfieldAsPixelValue.
+
+**Warning:** Overlapping label maps are still an experimental feature. This means that many algorithms will not handle such label maps correctly and the API of this extension may change significantly in the future.
+
+**See also:** [Data::Modality::LABEL](/cpp-sdk/4.5/api/classes/imfusion-data)
+
+## Public Member Functions
+
+- [LabelOverlapEncoder](#labeloverlapencoder) (const [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; unsigned char &gt; \*labelMap=nullptr) — If an image is passed, it is assumed to not have overlaps yet and a configuration for its pixel values is created.
+- **LabelOverlapEncoder** (const LabelOverlapEncoder &)=default
+- [LabelOverlapEncoder](#labeloverlapencoder) & **operator=** (const [LabelOverlapEncoder](#labeloverlapencoder) &)=default
+- bool **operator==** (const [LabelOverlapEncoder](#labeloverlapencoder) &other) const
+- bool **operator!=** (const [LabelOverlapEncoder](#labeloverlapencoder) &other) const
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; unsigned char &gt; **labelValues** (unsigned char pixelValue) const — Returns list of labels corresponding to pixel value &gt; 0.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; unsigned char &gt; **labelValues** () const — Returns list of all label values.
+- [std::bitset](http://en.cppreference.com/w/cpp/utility/bitset.html)&lt; 256 &gt; **labelValuesAsBitfield** (unsigned char pixelValue) const — Returns labels corresponding to pixel value as bitfield, for use in performance critical parts.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; unsigned char &gt; **pixelValuesContainingLabel** (unsigned char labelValue) const — Returns a list of pixel values the given label value is included in.
+- unsigned char [bitfieldAsPixelValue](#bitfieldaspixelvalue) (const [std::bitset](http://en.cppreference.com/w/cpp/utility/bitset.html)&lt; 256 &gt; &bitfield) — Returns pixel value corresponding to bitfield encoding a label value combination.
+- unsigned char [addLabel](#addlabel) (unsigned char pixelValue, unsigned char addedLabelValue) — Adds a label to the pixel, returning the new pixel value.
+- void [setPixelValue](#setpixelvalue) (unsigned char pixelValue, const [std::bitset](http://en.cppreference.com/w/cpp/utility/bitset.html)&lt; 256 &gt; &labelValuesAsBitfield) — Manually set a specific pixel value for a given label combination.
+- unsigned char **numberPixelValues** () const — Returns number of non-zero pixel values used, including those for pure label values.
+- unsigned char **numberLabelValues** () const — Returns number of label values used (individual values, not combinations).
+- bool **containsOverlaps** () const — Returns whether any of the currently configured pixel values contain overlaps.
+- bool **isOverlap** (unsigned char pixelValue) const — Returns whether the given pixel value includes multiple label values.
+- virtual void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- virtual void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+## Constructor & Destructor Documentation
+
+### LabelOverlapEncoder
+
+```cpp
+ImFusion::LabelOverlapEncoder::LabelOverlapEncoder (const TypedImage < unsigned char > * labelMap = nullptr)
+```
+
+If an image is passed, it is assumed to not have overlaps yet and a configuration for its pixel values is created.
+
+Otherwise you can use the [Configurable](/cpp-sdk/4.5/api/classes/imfusion-configurable) interface or setPixelValue to set up pixel values.
+
+## Member Function Documentation
+
+### bitfieldAsPixelValue
+
+```cpp
+unsigned char ImFusion::LabelOverlapEncoder::bitfieldAsPixelValue (const std::bitset < 256 > & bitfield)
+```
+
+Returns pixel value corresponding to bitfield encoding a label value combination.
+
+If the passed combination does not have an associated pixel value yet, it attempts to create a new one. When out of possible pixel values the result is 0 and the combination will remain invalid.
+
+### addLabel
+
+```cpp
+unsigned char ImFusion::LabelOverlapEncoder::addLabel (unsigned char pixelValue, unsigned char addedLabelValue)
+```
+
+Adds a label to the pixel, returning the new pixel value.
+
+When out of possible pixel values the result is 0 and the combination will remain invalid.
+
+### setPixelValue
+
+```cpp
+void ImFusion::LabelOverlapEncoder::setPixelValue (unsigned char pixelValue, const std::bitset < 256 > & labelValuesAsBitfield)
+```
+
+Manually set a specific pixel value for a given label combination.
+
+If this combination already had a pixel value or the pixel value was associated with another combination, this information is discarded. Caller is responsible for making sure the final state of this object contains all required combinations.
+
+### configure
+
+```cpp
+virtual void ImFusion::LabelOverlapEncoder::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### configuration
+
+```cpp
+virtual void ImFusion::LabelOverlapEncoder::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality

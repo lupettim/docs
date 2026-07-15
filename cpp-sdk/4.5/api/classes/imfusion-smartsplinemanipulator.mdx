@@ -1,0 +1,55 @@
+---
+title: "ImFusion::SmartSplineManipulator"
+sidebarTitle: "SmartSplineManipulator"
+description: "Manipulator for smart spline annotations."
+---
+
+`#include <ImFusion/GUI/SmartSplineManipulator.h>`
+
+## Overview
+
+[Manipulator](/cpp-sdk/4.5/api/classes/imfusion-manipulator) for smart spline annotations.
+
+## Public Member Functions
+
+- **SmartSplineManipulator** ([GlSmartSpline](/cpp-sdk/4.5/api/classes/imfusion-glsmartspline) &annotation, [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) &img)
+- bool [sceneEvent](#sceneevent) (QEvent \*event, const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &view) override
+
+## Protected Member Functions
+
+- bool [onCreate](#oncreate) (const [MouseEvent](/cpp-sdk/4.5/api/structs/imfusion-pointbasedannotationmanipulator-mouseevent) &event, vec3 &X, bool &update, const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &view) override — Handler for mouse events in the InteractionCreate mode.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; **computePath** (vec3 &Xmm0, vec3 &Xmm1)
+- void **updateEdgeMap** ([SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) &img)
+- void **updateActionMap** (const vec2 &Xp)
+
+## Protected Attributes
+
+- [GlSmartSpline](/cpp-sdk/4.5/api/classes/imfusion-glsmartspline) \* **m_smartSpline**
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; float &gt; &gt; **m_edgeMap**
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; float &gt; &gt; **m_actionMap**
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; bool &gt; **m_showControlPoints0**
+
+## Member Function Documentation
+
+### sceneEvent
+
+```cpp
+bool ImFusion::SmartSplineManipulator::sceneEvent (QEvent * event, const GlView & view)
+```
+
+*override, virtual*
+
+### onCreate
+
+```cpp
+bool ImFusion::SmartSplineManipulator::onCreate (const MouseEvent & event, vec3 & X, bool & update, const GlView & view)
+```
+
+*override, protected, virtual*
+
+Handler for mouse events in the InteractionCreate mode.
+
+**Parameters:**
+
+- `event` — mouse event
+- `update` — true if the point set was changed (output parameter)

@@ -1,0 +1,46 @@
+---
+title: "ImFusion::ImageRegistrationWidget"
+sidebarTitle: "ImageRegistrationWidget"
+---
+
+## Public Member Functions
+
+- **ImageRegistrationWidget** (QWidget \*parent, [DisplayWidgetMultiAdapter](/cpp-sdk/4.5/api/classes/imfusion-displaywidgetmultiadapter) display, [DataSet](/cpp-sdk/4.5/api/classes/imfusion-dataset) \*dataset)
+- virtual void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- virtual void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+- void **updateButtonState** (bool enabled)
+- void **setMoving** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*img, [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*labels)
+- void **setFixed** ([DataSet](/cpp-sdk/4.5/api/classes/imfusion-dataset) \*dataset)
+- void **setRunRegistrationInit** (bool enable)
+- void **setDeformationBoxVisible** (bool visible)
+- void **setAffineRegistrationEnabled** (bool enable)
+
+## Member Function Documentation
+
+### configure
+
+```cpp
+virtual void ImFusion::ImageRegistrationWidget::configure (const Properties * p)
+```
+
+*virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### configuration
+
+```cpp
+virtual void ImFusion::ImageRegistrationWidget::configuration (Properties * p) const
+```
+
+*virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality

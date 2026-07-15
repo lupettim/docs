@@ -1,0 +1,34 @@
+---
+title: "ImFusion::LiveImageBasedGating"
+sidebarTitle: "LiveImageBasedGating"
+description: "Compute cardiac or respiratory gating parameters by detecting periodic structural change in the images To use, feed a consecutive block of frames into initializ"
+---
+
+`#include <ImFusion/Reg/ImageBasedGatingAlgorithm.h>`
+
+## Overview
+
+Compute cardiac or respiratory gating parameters by detecting periodic structural change in the images To use, feed a consecutive block of frames into initialize and get their phase values.
+
+Then feed individual frames into update and get the corresponding phase value of that new frame. Timestamps need to be consistent and framerates match between the initialization and update frames. Initialization block needs to show the target periodic motion as clearly as possible.
+
+## Public Member Functions
+
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; **initialize** (const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &sequence, [GatingMetadata](/cpp-sdk/4.5/api/classes/imfusion-gatingmetadata) \*metaOut=nullptr) — Initialize gating, makes a copy so does not take ownership.
+- double **update** ([std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; const [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) &gt; img, double timestamp) — Feed another image in, get its estimated [0,1[ phase value out.
+- double **currentPeriodEstimate** () const — Returns the current estimate on the period time in frames.
+- double **currentRatePerMinEstimate** () const — Returns the current estimate on the period time in 1/min.
+- void [compute](#compute) () override — Execute the algorithm.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; float &gt; &gt; **simBand** ()
+
+## Member Function Documentation
+
+### compute
+
+```cpp
+void ImFusion::LiveImageBasedGating::compute ()
+```
+
+*inline, override, virtual*
+
+Execute the algorithm.

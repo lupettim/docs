@@ -1,0 +1,85 @@
+---
+title: "ImFusion::RollingGuidanceFilterAlgorithm"
+sidebarTitle: "RollingGuidanceFilterAlgorithm"
+description: "Algorithm for Rolling Guidance Filtering."
+---
+
+`#include <ImFusion/GL/RollingGuidanceFilterAlgorithm.h>`
+
+## Overview
+
+[Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) for Rolling Guidance Filtering.
+
+Scale-aware filter based on multiple iterations of a bilateral or guided filter see ECCV 2014 paper at [http://www.cse.cuhk.edu.hk/~leojia/projects/rollguidance/](http://www.cse.cuhk.edu.hk/~leojia/projects/rollguidance/)
+
+## Public Member Functions
+
+- **RollingGuidanceFilterAlgorithm** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &imgIn)
+- **~RollingGuidanceFilterAlgorithm** () override — Destroy glPrograms and output.
+- void **setParameters** (double sigmaPosition, double sigmaIntensity, bool onCpu, bool inPlace) — Set the parameters for the bilateral filter.
+- void **setInPlace** (bool inplace) — Set whether the result should be computed in place.
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Set one or multiple properties.
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Retrieve the properties of this object.
+- void [compute](#compute) () override — Compute the result.
+- [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) [takeOutput](#takeoutput) () override — If the algorithm creates new image data, it has to be transferred here.
+
+## Static Public Member Functions
+
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a) — If data is compatible with algorithm return true. If a is not zero, create algorithm with input data.
+
+## Protected Member Functions
+
+- void **unscaleResult** ([TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; T &gt; \*im, float \*res)
+
+## Protected Attributes
+
+- [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* **m_img**
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &gt; **m_output**
+- bool **m_inPlace** — Original image is replaced with the filtered image.
+- int **m_nbIterations** — Number of iterations.
+- double **m_sigmaPosition** — Parameters for the anisotropic filter.
+- double **m_sigmaIntensity** — Parameters for the anisotropic filter in [0;1].
+- bool **m_useBilateralFilter** — Use bilateral bilter instead of guided filter.
+- bool **m_onCpu** — For bilteral filter: computations are performed on the CPU.
+
+## Member Function Documentation
+
+### configure
+
+```cpp
+void ImFusion::RollingGuidanceFilterAlgorithm::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Set one or multiple properties.
+
+### configuration
+
+```cpp
+void ImFusion::RollingGuidanceFilterAlgorithm::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Retrieve the properties of this object.
+
+### compute
+
+```cpp
+void ImFusion::RollingGuidanceFilterAlgorithm::compute ()
+```
+
+*override, virtual*
+
+Compute the result.
+
+### takeOutput
+
+```cpp
+OwningDataList ImFusion::RollingGuidanceFilterAlgorithm::takeOutput ()
+```
+
+*override, virtual*
+
+If the algorithm creates new image data, it has to be transferred here.

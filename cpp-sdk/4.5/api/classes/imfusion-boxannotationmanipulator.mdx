@@ -1,0 +1,85 @@
+---
+title: "ImFusion::BoxAnnotationManipulator"
+sidebarTitle: "BoxAnnotationManipulator"
+description: "Manipulator for box annotations."
+---
+
+`#include <ImFusion/GUI/BoxAnnotationManipulator.h>`
+
+## Overview
+
+[Manipulator](/cpp-sdk/4.5/api/classes/imfusion-manipulator) for box annotations.
+
+## Public Types
+
+- enum **InteractionMode** &#123; **InteractionNone** = 0 , **InteractionCreate** = 1 , **InteractionMoveCorner** = 2 , **InteractionMoveEdge** = 4 , **InteractionMoveSide** = 8 , **InteractionMoveCenter** = 16 , **InteractionScale** = 32 , **InteractionRotate** = 64 &#125;
+- enum **CursorMode** &#123; **CursorDefault** = 0 , **CursorHorizontal** = 1 , **CursorVertical** = 2 , **CursorAll** = 4 , **CursorDiagonalIncrease** = 8 , **CursorDiagonalDecrease** = 16 , **CursorCrosshair** = 32 &#125;
+
+## Public Member Functions
+
+- **BoxAnnotationManipulator** ([GlBox](/cpp-sdk/4.5/api/classes/imfusion-glbox) &annotation)
+- bool [sceneEvent](#sceneevent) (QEvent \*event, const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &view) override
+- void **setInteractionMode** (InteractionMode mode, bool=true)
+- InteractionMode **interactionMode** () const
+- void **beginCreate** () — Reset the current box and let's the user redefine it.
+- void [endCreate](#endcreate) () — Cancels the user creation of the box.
+- void [setAdjustToViewAxis](#setadjusttoviewaxis) (bool enable) — Adjust the orientation of the box to the axis of the view.
+- bool **adjustToViewAxis** () const
+- void [setDefaultOrientation](#setdefaultorientation) (mat3 orientation) — Sets the default orientation of box when created by the user.
+- mat3 **defaultOrientation** () const
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; & **points** () const
+- bool [requiresFocus](#requiresfocus) () override — Derived classes that need priority scene events can override this.
+- CursorMode **currentCursor** () const
+- void **setInteractiveAnnotation** ([InteractiveAnnotation](/cpp-sdk/4.5/api/classes/imfusion-interactiveannotation) \*annot)
+
+## Member Function Documentation
+
+### sceneEvent
+
+```cpp
+bool ImFusion::BoxAnnotationManipulator::sceneEvent (QEvent * event, const GlView & view)
+```
+
+*override, virtual*
+
+### endCreate
+
+```cpp
+void ImFusion::BoxAnnotationManipulator::endCreate ()
+```
+
+Cancels the user creation of the box.
+
+If the user didn't define any points yet, the box will have a default size.
+
+### setAdjustToViewAxis
+
+```cpp
+void ImFusion::BoxAnnotationManipulator::setAdjustToViewAxis (bool enable)
+```
+
+Adjust the orientation of the box to the axis of the view.
+
+If set, the box will always be aligned to the current axis of the view it is created in, e.g. the box will be aligned to the screen axes. Otherwise the box uses the defaultOrientation. This only has an effect when the annotation is created. Enabled by default.
+
+### setDefaultOrientation
+
+```cpp
+void ImFusion::BoxAnnotationManipulator::setDefaultOrientation (mat3 orientation)
+```
+
+Sets the default orientation of box when created by the user.
+
+This only has an effect if adjustToViewAxis is disabled. By default, the orientation is mat3::Identity(), i.e. the box will be axis-aligned to the world coordinate system.
+
+### requiresFocus
+
+```cpp
+bool ImFusion::BoxAnnotationManipulator::requiresFocus ()
+```
+
+*inline, override, virtual*
+
+Derived classes that need priority scene events can override this.
+
+By definition only one manipulator can get served first, so use with care.

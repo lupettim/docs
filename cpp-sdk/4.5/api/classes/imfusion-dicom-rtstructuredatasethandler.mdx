@@ -1,0 +1,55 @@
+---
+title: "ImFusion::Dicom::RTStructureDatasetHandler"
+sidebarTitle: "RTStructureDatasetHandler"
+description: "A DatasetHandler for loading DICOM RTStructureSet."
+---
+
+`#include <ImFusion/Dicom/RTStructureDatasetHandler.h>`
+
+## Overview
+
+A [DatasetHandler](/cpp-sdk/4.5/api/classes/imfusion-dicom-datasethandler) for loading DICOM RTStructureSet.
+
+Each ROI is loaded as a [PointCloud](/cpp-sdk/4.5/api/classes/imfusion-pointcloud). All points from all 'Contour [Data](/cpp-sdk/4.5/api/classes/imfusion-data)' inside a 'ROI Contour [Sequence](/cpp-sdk/4.5/api/classes/imfusion-dicom-sequence)' are combined in into one [PointCloud](/cpp-sdk/4.5/api/classes/imfusion-pointcloud). The original structure of contours is stored in a [RTStructureDataComponent](/cpp-sdk/4.5/api/classes/imfusion-dicom-rtstructuredatacomponent).
+
+Instead of using this class directly, [DicomIoAlgorithm](/cpp-sdk/4.5/api/classes/imfusion-dicomioalgorithm) should be used.
+
+## Public Member Functions
+
+- [std::tuple](http://en.cppreference.com/w/cpp/utility/tuple.html)&lt; DcmDatasetList, DcmDatasetList &gt; [selectDatasets](#selectdatasets) (const DcmDatasetList &datasets) const override — Function that selects the datasets this handler will load based on some property of the dataset.
+- [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) [loadFromDataset](#loadfromdataset) (DcmDataset &dataset, [ErrorRecorder](/cpp-sdk/4.5/api/classes/imfusion-dicom-errorrecorder) \*errors, [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) \*progress) const override — Load the given datasets.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [displayName](#displayname) () const override — Display name for the [DatasetHandler](/cpp-sdk/4.5/api/classes/imfusion-dicom-datasethandler), e.g. for subproperty label.
+
+## Member Function Documentation
+
+### selectDatasets
+
+```cpp
+std::tuple < DcmDatasetList, DcmDatasetList > ImFusion::Dicom::RTStructureDatasetHandler::selectDatasets (const DcmDatasetList & datasets) const
+```
+
+*override, virtual*
+
+Function that selects the datasets this handler will load based on some property of the dataset.
+
+**Returns:** list of datasets this handler will not load, and list of datasets this handler will handle
+
+### loadFromDataset
+
+```cpp
+OwningDataList ImFusion::Dicom::RTStructureDatasetHandler::loadFromDataset (DcmDataset & dataset, ErrorRecorder * errors, Progress * progress) const
+```
+
+*override, virtual*
+
+Load the given datasets.
+
+### displayName
+
+```cpp
+std::string ImFusion::Dicom::RTStructureDatasetHandler::displayName () const
+```
+
+*override, virtual*
+
+Display name for the [DatasetHandler](/cpp-sdk/4.5/api/classes/imfusion-dicom-datasethandler), e.g. for subproperty label.

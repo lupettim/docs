@@ -1,0 +1,81 @@
+---
+title: "ImFusion::Network::OAuth2::AuthorizationCodeFlowConfig"
+sidebarTitle: "AuthorizationCodeFlowConfig"
+---
+
+## Public Types
+
+- using [RedirectCallback](#redirectcallback) — A callback that should handle the authorization flow.
+
+## Public Attributes
+
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **authEndpoint** — URL that will be used to start the device flow.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **tokenEndpoint** — URL to retrieve the access token at the end of the flow.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **clientId** — ClientID as configured in the OAuth2 server.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [clientSecret](#clientsecret) — Client secret as configured in the OAuth2 server.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **scope** — Desired scope of the access token.
+- [Filesystem::Url](/cpp-sdk/4.5/api/classes/imfusion-filesystem-url) [redirectUrl](#redirecturl) = "http://localhost:41921" — URL the OAuth server should redirect the user once authenticated.
+- [RedirectCallback](#redirectcallback) [redirectCallback](#redirectcallback) = nullptr — Callback to handle the redirect from the application to the browser and back.
+
+## Member Typedef Documentation
+
+### RedirectCallback
+
+```cpp
+using ImFusion::Network::OAuth2::AuthorizationCodeFlowConfig::RedirectCallback
+```
+
+**Initial value:**
+```cpp
+std::function<Utils::Expected<AccessToken, HttpError>(Filesystem::Url authUrl,
+ std::string state,
+ Filesystem::Url tokenUrl,
+ std::unordered_map<std::string, std::string> tokenParameters,
+ Progress* progress)>
+```
+ fragment
+A callback that should handle the authorization flow.
+
+The callback should redirect the user to the authUrl in a browser window, where the user can log in. authUrl already contains all queries defined in OAuth2.
+
+The callback should then handle the redirect to the redirectUrl e.g. by creating a temporary server.
+
+The code received by the redirect should then be passed with a POST request to the tokenUrl. All parameters required by OAuth2 for this request are already prefilled in tokenParameters, except the "code" field. The parameters should be send as x-www-form-urlencoded. See exchangeCodeForAccessToken.
+
+The [AccessToken](/cpp-sdk/4.5/api/structs/imfusion-network-accesstoken) should be extracted from the resulting response (see [AccessToken::fromOAuth2](/cpp-sdk/4.5/api/structs/imfusion-network-accesstoken))
+
+This method might be called from another thread (i.e. not the main thread). It is *not* called by multiple threads simultaneously.
+
+More details about this flow: [https://developer.okta.com/blog/2018/04/10/oauth-authorization-code-grant-type](https://developer.okta.com/blog/2018/04/10/oauth-authorization-code-grant-type)
+
+## Member Data Documentation
+
+### clientSecret
+
+```cpp
+std::string ImFusion::Network::OAuth2::AuthorizationCodeFlowConfig::clientSecret
+```
+
+Client secret as configured in the OAuth2 server.
+
+Optional depending on the server settings.
+
+### redirectUrl
+
+```cpp
+Filesystem::Url ImFusion::Network::OAuth2::AuthorizationCodeFlowConfig::redirectUrl = "http://localhost:41921"
+```
+
+URL the OAuth server should redirect the user once authenticated.
+
+This url is send with each request, but usually the OAuth server contains a list of allowed URLs and won't redirect to any URL.
+
+### redirectCallback
+
+```cpp
+RedirectCallback ImFusion::Network::OAuth2::AuthorizationCodeFlowConfig::redirectCallback = nullptr
+```
+
+Callback to handle the redirect from the application to the browser and back.
+
+If not set, a default implementation is used that opens a temporary server using the port of the redirectUrl.

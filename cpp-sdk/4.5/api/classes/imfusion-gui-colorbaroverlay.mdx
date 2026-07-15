@@ -1,0 +1,41 @@
+---
+title: "ImFusion::GUI::ColorBarOverlay"
+sidebarTitle: "ColorBarOverlay"
+---
+
+## Public Member Functions
+
+- void **setColormap** ([std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) &gt; colormap) — Sets a colormap.
+- [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) \* **colormap** () const — Returns the current colormap.
+- void **setHistogram** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; int &gt; &histogram)
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; int &gt; **histogram** () const
+- void [setLabels](#setlabels) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; &labels) — Sets labels for the colormap.
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; & **labels** () const — Returns labels for the colormap.
+- void [setLabelHeights](#setlabelheights) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; &labelHeights) — Sets label heights for the colormap The labels will be distributed according to the ratio w.r.t histogram height.
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; & **labelHeights** () const — Returns label heights.
+- void **setTitle** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &value) — Sets the title label displayed underneath the color bar.
+- const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) & **title** () const — Returns the title label displayed underneath the color bar.
+- void **setColormapMaxSize** (int size) — Sets a maximum size for the colormap or -1 (default) if the colormap should use all available space.
+- int **colormapMaxSize** () const — Returns a maximum size for the colormap or -1 (default) if the colormap should use all available space.
+
+## Member Function Documentation
+
+### setLabels
+
+```cpp
+void ImFusion::GUI::ColorBarOverlay::setLabels (const std::vector < std::string > & labels)
+```
+
+Sets labels for the colormap.
+
+The labels will be distributed evenly along the colormap, starting from the bottom.
+
+### setLabelHeights
+
+```cpp
+void ImFusion::GUI::ColorBarOverlay::setLabelHeights (const std::vector < double > & labelHeights)
+```
+
+Sets label heights for the colormap The labels will be distributed according to the ratio w.r.t histogram height.
+
+Each label should have a corresponding height if this is to be used.

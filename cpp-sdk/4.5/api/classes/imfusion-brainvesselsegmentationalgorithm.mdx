@@ -1,0 +1,44 @@
+---
+title: "ImFusion::BrainVesselSegmentationAlgorithm"
+sidebarTitle: "BrainVesselSegmentationAlgorithm"
+---
+
+## Public Member Functions
+
+- **BrainVesselSegmentationAlgorithm** (const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*t1Img, const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*t1CEImg, const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*brainSeg, const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*skullSeg=nullptr)
+- void [compute](#compute) () override — Execute the algorithm.
+- [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) [takeOutput](#takeoutput) () override — Return any new [Data](/cpp-sdk/4.5/api/classes/imfusion-data) that was created by the [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) during the last call to [compute()](#compute).
+
+## Static Public Member Functions
+
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=0)
+
+## Public Attributes
+
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; double &gt; **p_threshold** = &#123;"Threshold", 0.45, this&#125;
+
+## Member Function Documentation
+
+### compute
+
+```cpp
+void ImFusion::BrainVesselSegmentationAlgorithm::compute ()
+```
+
+*override, virtual*
+
+Execute the algorithm.
+
+### takeOutput
+
+```cpp
+OwningDataList ImFusion::BrainVesselSegmentationAlgorithm::takeOutput ()
+```
+
+*override, virtual*
+
+Return any new [Data](/cpp-sdk/4.5/api/classes/imfusion-data) that was created by the [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) during the last call to [compute()](#compute).
+
+The default implementation will return an empty list.
+
+**Note:** Since ownership of the data is transferred, you can call this method only once between calls to [compute()](#compute).

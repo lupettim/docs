@@ -1,0 +1,41 @@
+---
+title: "ImFusion::PoseIO"
+sidebarTitle: "PoseIO"
+description: "Input and output of pose matrices and affine parameters."
+---
+
+## Overview
+
+Input and output of pose matrices and affine parameters.
+
+Poses are serialized as [[a, b, c, d], [e, f, g, h], [i, j, k, l], [0, 0, 0, 1]] This is the expected format when inputting the pose to any poseTo\* method, and is the expected output of any \*ToPose method.
+
+Affine parameters are serialized as tx ty tz rx ry rz scx scy scz shx shy shz This is the expected output in any affineTo\* method, and the expected input to any \*ToAffine method.
+
+## Functions
+
+- void **poseToStream** (const mat4 &pose, [std::ostream](http://en.cppreference.com/w/cpp/io/basic_ostream.html) &outStream) — Store matrix in stream.
+- void **poseToStream** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; mat4 &gt; &poses, [std::ostream](http://en.cppreference.com/w/cpp/io/basic_ostream.html) &outStream) — Store matrices in stream.
+- void **affineToStream** (const vec3 &trans, const vec3 &rot, const vec3 &scale, const vec3 &shear, [std::ostream](http://en.cppreference.com/w/cpp/io/basic_ostream.html) &outStream) — Store affine parameters in stream.
+- bool **streamToPose** ([std::istream](http://en.cppreference.com/w/cpp/io/basic_istream.html) &stream, mat4 &outPose) — Recover matrix from stream, clean format.
+- bool **streamToPose** ([std::istream](http://en.cppreference.com/w/cpp/io/basic_istream.html) &stream, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; mat4 &gt; &outPoses) — Recover matrices from stream, clean format.
+- bool **streamToPosePlain** ([std::istream](http://en.cppreference.com/w/cpp/io/basic_istream.html) &stream, mat4 &outPose) — Recover matrix from stream, format without brackets and commata.
+- bool **streamToAffine** ([std::istream](http://en.cppreference.com/w/cpp/io/basic_istream.html) &stream, vec3 &outTrans, vec3 &outRot, vec3 &outScale, vec3 &outShear) — Recover affine parameters from stream.
+- void **poseToClipboard** (const mat4 &pose) — Store matrix to clipboard.
+- void **poseToClipboard** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; mat4 &gt; &poses) — Store matrices to clipboard.
+- void **affineToClipboard** (const vec3 &trans, const vec3 &rot, const vec3 &scale, const vec3 &shear) — Store affine parameters to clipboard.
+- bool **clipboardToPose** (mat4 &outPose) — Recover matrix from clipboard.
+- bool **clipboardToPose** ([std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; mat4 &gt; &outPoses) — Recover matrices from clipboard.
+- bool **clipboardToAffine** (vec3 &outTrans, vec3 &outRot, vec3 &outScale, vec3 &outShear) — Recover affine parameters from clipboard.
+- bool **poseToFile** (const mat4 &pose, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &file) — Store matrix in file.
+- bool **poseToFile** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; mat4 &gt; &poses, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &file) — Store matrices in file.
+- bool **affineToFile** (const vec3 &trans, const vec3 &rot, const vec3 &scale, const vec3 &shear, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &file) — Store affine parameters to clipboard.
+- bool **fileToPose** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &file, mat4 &outPose) — Recover matrix from file.
+- bool **fileToPose** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &file, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; mat4 &gt; &outPoses) — Recover matrices from file.
+- bool **fileToAffine** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &file, vec3 &outTrans, vec3 &outRot, vec3 &outScale, vec3 &outShear) — Recover affine parameters from file.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **poseToString** (const mat4 &pose) — Store matrix in string.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **poseToString** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; mat4 &gt; &poses) — Store matrices in string.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **affineToString** (const vec3 &trans, const vec3 &rot, const vec3 &scale, const vec3 &shear) — Store affine parameters in string.
+- bool **stringToPose** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &str, mat4 &outPose) — Recover matrix from string.
+- bool **stringToPose** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &str, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; mat4 &gt; &outPoses) — Recover matrices from string.
+- bool **stringToAffine** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &str, vec3 &outTrans, vec3 &outRot, vec3 &outScale, vec3 &outShear) — Recover affine parameters from string.

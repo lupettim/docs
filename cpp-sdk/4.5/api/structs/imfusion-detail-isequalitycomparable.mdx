@@ -1,0 +1,13 @@
+---
+title: "ImFusion::detail::isEqualityComparable< T >"
+sidebarTitle: "isEqualityComparable< T >"
+---
+
+## Static Public Member Functions
+
+- static auto **test** (T_ \*) -&gt; decltype([std::declval](http://en.cppreference.com/w/cpp/utility/declval.html)&lt; T_ &gt;()==[std::declval](http://en.cppreference.com/w/cpp/utility/declval.html)&lt; T_ &gt;())
+- static auto **test** (...) -&gt; [std::false_type](http://en.cppreference.com/w/cpp/types/integral_constant.html)
+
+## Static Public Attributes
+
+- static constexpr bool **value** = [std::is_same](http://en.cppreference.com/w/cpp/types/is_same.html)&lt;bool, decltype(test&lt;T&gt;(nullptr))&gt;::value

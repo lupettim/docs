@@ -1,0 +1,336 @@
+---
+title: "ImFusion::GlPointBasedAnnotation"
+sidebarTitle: "GlPointBasedAnnotation"
+description: "Base class for implementing point-based annotations."
+---
+
+`#include <ImFusion/GL/GlPointBasedAnnotation.h>`
+
+## Overview
+
+[Base](/cpp-sdk/4.5/api/structs/imfusion-dicom-base) class for implementing point-based annotations.
+
+## Public Member Functions
+
+- void [setView](#setview) (const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) \*[view](/cpp-sdk/4.5/api/classes/imfusion-glannotation)) override — Set the view through which this annotation is currently being manipulated.
+- bool [hitTest](#hittest) (int x, int y, const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &[view](/cpp-sdk/4.5/api/classes/imfusion-glannotation)) const override — Perform hit test at screen coordinates (x,y) (OpenGL screen coordinate system) for the specified view.
+- virtual int [hitTestHandles2D](#hittesthandles2d) (int x, int y, const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &[view](/cpp-sdk/4.5/api/classes/imfusion-glannotation)) const — Returns the index of the handle being hit, or -1 when missing.
+- virtual int **hitTestHandles3D** (int x, int y, const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &[view](/cpp-sdk/4.5/api/classes/imfusion-glannotation)) const
+- virtual bool [hitTestLine2D](#hittestline2d) (int x, int y, const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &[view](/cpp-sdk/4.5/api/classes/imfusion-glannotation)) const — Checks whether the line between handles gets hit (if not a straight line, override this in the annotation).
+- virtual bool **hitTestLabel** (int x, int y, const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &[view](/cpp-sdk/4.5/api/classes/imfusion-glannotation)) const
+- virtual bool [addPoint](#addpoint) (const vec3 &p) — Add point to annotation.
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; & **points** () const — Return points making up the annotation.
+- virtual void [setPoints](#setpoints) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; &points) — Sets the annotation points.
+- int **maxPoints** () const — Return maximum number of points allowed for annotation. -1 means no limit.
+- int **minPoints** () const — Return minimum number of points required for annotation. -1 means no limit.
+- void [setEditable](#seteditable) (bool [editable](/cpp-sdk/4.5/api/classes/imfusion-glannotation)) override — Set annotation to be editable, i.e.
+- virtual void [setPointColor](#setpointcolor) (const vec3 &[color](/cpp-sdk/4.5/api/classes/imfusion-glannotation)) — Set point color.
+- vec3 **pointColor** () const — Get point color.
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Set one or multiple properties.
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Retrieve the properties of this object.
+- [Geometry::AlignedBox](/cpp-sdk/4.5/api/classes/imfusion-geometry-alignedbox) [bounds](#bounds) () const override — Get the axis-aligned bounding box of this [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) in world space.
+- virtual void [updatePoints](#updatepoints) () — Update the internal point structure.
+- virtual void [rotate](#rotate) (float angle) — Change the [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) matrix to reflect a rotation around the current m_rotationPoint Since this matrix is ignored by most renderers at the moment, this does not currently rotate anything.
+- virtual void [rotateNoMatrix](#rotatenomatrix) (float angle) — Rotate the annotation by changing the handle positions instead of the matrix.
+- virtual void [setRotationPoint](#setrotationpoint) (vec3 &point) — Set the axis for rotation.
+- virtual void [setPointSize](#setpointsize) (float s) — Set the point size.
+- virtual void **setLabelPixelOffset** (const vec2 &offset) — Set the label's pixel offset.
+- float **pointSize** () const — Retrieve the point size.
+- virtual void [setShowPointsAsCrosses](#setshowpointsascrosses) (bool flag) — Set the rendering of points.
+- virtual void [setSelected](#setselected) (bool v) override — When a [GlAnnotation](/cpp-sdk/4.5/api/classes/imfusion-glannotation) is selected, it may be rendered differently to distinguish it from non-selected annotations.
+- virtual void [setMatrix](#setmatrix) (const mat4 &m) override — Overwritten method to update points in world coordinates if the matrix has changed.
+- virtual void [setMatrixWithoutMoving](#setmatrixwithoutmoving) (const mat4 &m) override — Change the matrix witout moving the annotation, e.g. for linking it with an image transformation.
+- virtual bool [sampleRenderPath](#samplerenderpath) (int samples, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; &out) const — For annotations where the rendered shape differs from the stored points, this method returns true and a set of points on the rendered curve.
+- virtual void [setLineWidth](#setlinewidth) (float value) override — Set annotation line width.
+- void **copyStyle** (const GlPointBasedAnnotation &other)
+- virtual [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; vec3 &gt; **labelPosition** (const [GL::ViewState](/cpp-sdk/4.5/api/classes/imfusion-gl-viewstate) &state) const — Position of the label If there is no valid position for the label, returns an empty optional.
+
+## Public Attributes
+
+- Signal&lt; const GlPointBasedAnnotation \* &gt; **signalPointsChanged**
+
+## Protected Member Functions
+
+- void **renderLabel** (const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &[view](/cpp-sdk/4.5/api/classes/imfusion-glannotation)) const
+- void **renderPoints** (const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &[view](/cpp-sdk/4.5/api/classes/imfusion-glannotation)) const — Render points.
+- void **renderPoint** (const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &[view](/cpp-sdk/4.5/api/classes/imfusion-glannotation), int index) const — Render point with the given index. Use -1 to render all points.
+- bool **viewIsMetric** () const
+- void **renderLabel** (const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &[view](/cpp-sdk/4.5/api/classes/imfusion-glannotation), const vec3 &positionWorld) const — Render the label of the annotation at the given position.
+
+## Static Protected Member Functions
+
+- static int **hitTestHandlesImpl** (int x, int y, const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &[view](/cpp-sdk/4.5/api/classes/imfusion-glannotation), double maxRangePixels, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; &points)
+
+## Protected Attributes
+
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [GL::VertexBuffer](/cpp-sdk/4.5/api/classes/imfusion-gl-vertexbuffer) &gt; **m_vbo** — Vertex buffer that can be used for rendering.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; [m_points](#m-points) — Control points which define the form of the annotation.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; **m_worldPoints** — Points in world coordinates if object matrix differs from identity.
+- bool **m_wpDirty** = false — True if the world point vector has to be updated.
+- bool **m_showPointsAsCrosses** = false
+- int **m_maxPoints** = -1
+- int **m_minPoints** = -1
+- float **m_pointSize** = 5.f
+- vec2 **m_labelPixelOffset** = vec2(6.0, 0.0)
+- vec4 **m_pointColor** = vec4(1, 1, 0, 1)
+- vec3 **m_rotationPoint** = vec3::Zero()
+- double **m_hitTest2DMinSize** = 4.0
+- double **m_hitTest3DMinSize** = 6.0
+
+## Member Function Documentation
+
+### setView
+
+```cpp
+void ImFusion::GlPointBasedAnnotation::setView (const GlView * view)
+```
+
+*override, virtual*
+
+Set the view through which this annotation is currently being manipulated.
+
+### hitTest
+
+```cpp
+bool ImFusion::GlPointBasedAnnotation::hitTest (int x, int y, const GlView & view) const
+```
+
+*override, virtual*
+
+Perform hit test at screen coordinates (x,y) (OpenGL screen coordinate system) for the specified view.
+
+### hitTestHandles2D
+
+```cpp
+virtual int ImFusion::GlPointBasedAnnotation::hitTestHandles2D (int x, int y, const GlView & view) const
+```
+
+*virtual*
+
+Returns the index of the handle being hit, or -1 when missing.
+
+### hitTestLine2D
+
+```cpp
+virtual bool ImFusion::GlPointBasedAnnotation::hitTestLine2D (int x, int y, const GlView & view) const
+```
+
+*virtual*
+
+Checks whether the line between handles gets hit (if not a straight line, override this in the annotation).
+
+### addPoint
+
+```cpp
+virtual bool ImFusion::GlPointBasedAnnotation::addPoint (const vec3 & p)
+```
+
+*virtual*
+
+Add point to annotation.
+
+**Parameters:**
+
+- `p` — point to add
+
+### setPoints
+
+```cpp
+virtual void ImFusion::GlPointBasedAnnotation::setPoints (const std::vector < vec3 > & points)
+```
+
+*virtual*
+
+Sets the annotation points.
+
+Clears previous points.
+
+**Parameters:**
+
+- `points` — points
+
+### setEditable
+
+```cpp
+void ImFusion::GlPointBasedAnnotation::setEditable (bool editable)
+```
+
+*override, virtual*
+
+Set annotation to be editable, i.e.
+
+show control points
+
+**Parameters:**
+
+- `editable` — enable editing
+
+### setPointColor
+
+```cpp
+virtual void ImFusion::GlPointBasedAnnotation::setPointColor (const vec3 & color)
+```
+
+*inline, virtual*
+
+Set point color.
+
+### configure
+
+```cpp
+void ImFusion::GlPointBasedAnnotation::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Set one or multiple properties.
+
+### configuration
+
+```cpp
+void ImFusion::GlPointBasedAnnotation::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Retrieve the properties of this object.
+
+### bounds
+
+```cpp
+Geometry::AlignedBox ImFusion::GlPointBasedAnnotation::bounds () const
+```
+
+*override, virtual*
+
+Get the axis-aligned bounding box of this [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) in world space.
+
+Return an empty (default-constructed) AlignedBox object if the [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) does not reside in world space.
+
+### updatePoints
+
+```cpp
+virtual void ImFusion::GlPointBasedAnnotation::updatePoints ()
+```
+
+*virtual*
+
+Update the internal point structure.
+
+Should be implemented by subtypes which have custom data depending on the point data. Derived implementation needs to call base class implementation.
+
+### rotate
+
+```cpp
+virtual void ImFusion::GlPointBasedAnnotation::rotate (float angle)
+```
+
+*virtual*
+
+Change the [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) matrix to reflect a rotation around the current m_rotationPoint Since this matrix is ignored by most renderers at the moment, this does not currently rotate anything.
+
+### rotateNoMatrix
+
+```cpp
+virtual void ImFusion::GlPointBasedAnnotation::rotateNoMatrix (float angle)
+```
+
+*virtual*
+
+Rotate the annotation by changing the handle positions instead of the matrix.
+
+### setRotationPoint
+
+```cpp
+virtual void ImFusion::GlPointBasedAnnotation::setRotationPoint (vec3 & point)
+```
+
+*inline, virtual*
+
+Set the axis for rotation.
+
+### setPointSize
+
+```cpp
+virtual void ImFusion::GlPointBasedAnnotation::setPointSize (float s)
+```
+
+*inline, virtual*
+
+Set the point size.
+
+### setShowPointsAsCrosses
+
+```cpp
+virtual void ImFusion::GlPointBasedAnnotation::setShowPointsAsCrosses (bool flag)
+```
+
+*inline, virtual*
+
+Set the rendering of points.
+
+### setSelected
+
+```cpp
+virtual void ImFusion::GlPointBasedAnnotation::setSelected (bool m)
+```
+
+*override, virtual*
+
+When a [GlAnnotation](/cpp-sdk/4.5/api/classes/imfusion-glannotation) is selected, it may be rendered differently to distinguish it from non-selected annotations.
+
+### setMatrix
+
+```cpp
+virtual void ImFusion::GlPointBasedAnnotation::setMatrix (const mat4 & m)
+```
+
+*override, virtual*
+
+Overwritten method to update points in world coordinates if the matrix has changed.
+
+### setMatrixWithoutMoving
+
+```cpp
+virtual void ImFusion::GlPointBasedAnnotation::setMatrixWithoutMoving (const mat4 & m)
+```
+
+*override, virtual*
+
+Change the matrix witout moving the annotation, e.g. for linking it with an image transformation.
+
+### sampleRenderPath
+
+```cpp
+virtual bool ImFusion::GlPointBasedAnnotation::sampleRenderPath (int samples, std::vector < vec3 > & out) const
+```
+
+*virtual*
+
+For annotations where the rendered shape differs from the stored points, this method returns true and a set of points on the rendered curve.
+
+Otherwise it returns false and the control points.
+
+### setLineWidth
+
+```cpp
+virtual void ImFusion::GlPointBasedAnnotation::setLineWidth (float lineWidth)
+```
+
+*inline, override, virtual*
+
+Set annotation line width.
+
+## Member Data Documentation
+
+### m_points
+
+```cpp
+std::vector <vec3> ImFusion::GlPointBasedAnnotation::m_points
+```
+
+*protected*
+
+Control points which define the form of the annotation.
+
+For derived classes this is not necessarily identical to the rendered points.

@@ -1,0 +1,58 @@
+---
+title: "ImFusion::Manipulator"
+sidebarTitle: "Manipulator"
+description: "Abstract base class for manipulator objects."
+---
+
+`#include <ImFusion/GUI/Manipulator.h>`
+
+## Overview
+
+Abstract base class for manipulator objects.
+
+## Public Member Functions
+
+- virtual bool [sceneEvent](#sceneevent) (QEvent \*event, const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &view)=0
+- void **addListener** ([ManipulatorListener](/cpp-sdk/4.5/api/classes/imfusion-manipulatorlistener) \*listener)
+- void **removeListener** (const [ManipulatorListener](/cpp-sdk/4.5/api/classes/imfusion-manipulatorlistener) \*listener)
+- virtual bool [requiresFocus](#requiresfocus) () — Derived classes that need priority scene events can override this.
+- virtual void **openContextMenu** (QPoint pos, QPoint globalPos, Qt::KeyboardModifiers modifiers)
+- [GUI::EventResult](/cpp-sdk/4.5/api/structs/imfusion-gui-eventresult) [handleInputEvent](#handleinputevent) (const [GUI::InputEvent](/cpp-sdk/4.5/api/classes/imfusion-gui-inputevent) &event, const [GUI::View](/cpp-sdk/4.5/api/classes/imfusion-gui-view) &view) override — This function is called by sources of input events in order to dispatch them to the handlers.
+
+## Protected Member Functions
+
+- void **notifyListeners** (void \*eventData)
+
+## Member Function Documentation
+
+### sceneEvent
+
+```cpp
+virtual bool ImFusion::Manipulator::sceneEvent (QEvent * event, const GlView & view)
+```
+
+*pure virtual*
+
+### requiresFocus
+
+```cpp
+virtual bool ImFusion::Manipulator::requiresFocus ()
+```
+
+*inline, virtual*
+
+Derived classes that need priority scene events can override this.
+
+By definition only one manipulator can get served first, so use with care.
+
+### handleInputEvent
+
+```cpp
+GUI::EventResult ImFusion::Manipulator::handleInputEvent (const GUI::InputEvent & event, const GUI::View & view)
+```
+
+*override, virtual*
+
+This function is called by sources of input events in order to dispatch them to the handlers.
+
+In case there are more than one InputEventHandlers dispatchers are intended call this function consecutively until the first handler indicates to stop by returning a result where EventResult::stopPropagation() is true.

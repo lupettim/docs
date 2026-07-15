@@ -1,0 +1,26 @@
+---
+title: "ImFusion::Tensor< Order >::Access"
+sidebarTitle: "Access"
+description: "Helper class for read/write access to the data content of a Tensor ."
+---
+
+`#include <ImFusion/Base/Tensor.h>`
+
+## Overview
+
+template&lt;int Order&gt;
+
+class ImFusion::Tensor&lt; Order &gt;::Access
+Helper class for read/write access to the data content of a [Tensor](/cpp-sdk/4.5/api/classes/imfusion-tensor).
+
+This access and is not exclusive and not meant to guarantee thread safety. When this object goes out of scope, the tensor will notify its listeners that the content has changed. If you do not plan to modify the content anyway, usage of [ConstAccess](/cpp-sdk/4.5/api/classes/imfusion-tensor-constaccess) is recommended instead to avoid useless listener updates.
+
+## Public Member Functions
+
+- **Access** (Access &&o) noexcept
+- Access & **operator=** (const Access &&o) noexcept
+- **Access** (const Access &)=delete
+- Access & **operator=** (const Access &)=delete
+- **~Access** () override — Destructor notifies all connected listeners that the content may have changed.
+- double \* **data** () — Direct access to the underlying tensor data. Kindly do not delete this pointer, unless you plan on crashing the application.
+- double & **operator()** (idxT... idx) — [Access](/cpp-sdk/4.5/api/classes/imfusion-tensor-access) of an individual tensor element. The correct number of arguments is checked at compile time.

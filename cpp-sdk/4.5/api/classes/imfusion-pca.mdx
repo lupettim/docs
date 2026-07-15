@@ -1,0 +1,19 @@
+---
+title: "ImFusion::PCA< Scalar, Dim >"
+sidebarTitle: "PCA< Scalar, Dim >"
+---
+
+## Public Member Functions
+
+- **PCA** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; Eigen::Matrix&lt; Scalar, Dim, 1 &gt; &gt; &points, bool scalePoints=true) — Computes [PCA](/cpp-sdk/4.5/api/classes/imfusion-pca) on a vector of points. Optional point scaling for stability.
+- **PCA** (const Eigen::Matrix&lt; Scalar, Eigen::Dynamic, Dim &gt; &points, bool scalePoints=true) — Computes [PCA](/cpp-sdk/4.5/api/classes/imfusion-pca) on a vector of points given by the rows of a matrix. Optional point scaling for stability.
+- bool **isValid** () — Check if the [PCA](/cpp-sdk/4.5/api/classes/imfusion-pca) computation has been successful.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; Eigen::Matrix&lt; Scalar, Dim, 1 &gt; &gt; **eigenvectors** () const — Normalized eigenvectors as a vector of Eigen::Vectors. In decreasing eigenvalue order.
+- Eigen::MatrixXd **eigenvectorsStack** () const — Normalized eigenvectors given by columns of a Eigen::Matrix. In decreasing eigenvalue order.
+- void **eigenvectors** ([std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; Eigen::Matrix&lt; Scalar, Dim, 1 &gt; &gt; &outVectors) const — Normalized eigenvectors as a vector of Eigen::Vectors. In decreasing eigenvalue order.
+- void **eigenvectors** (Eigen::Matrix&lt; Scalar, Dim, Dim &gt; &outVectors) const — Normalized eigenvectors given by columns of a Eigen::Matrix. In decreasing eigenvalue order.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; **eigenvalues** () const — Eigenvalues as a vector of doubles. In decreasing order.
+- Eigen::Matrix&lt; Scalar, Dim, 1 &gt; **eigenvaluesStack** () const — Eigenvalues as a Eigen::Vector of doubles. In decreasing order.
+- void **eigenvalues** ([std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; &outValues) const — Eigenvectors as a vector of doubles. In decreasing eigenvalue order.
+- void **eigenvalues** (Eigen::Matrix&lt; Scalar, Dim, 1 &gt; &outValues) const — Eigenvalues as a Eigen::Vector of doubles. In decreasing order.
+- Eigen::Matrix&lt; Scalar, Dim, 1 &gt; **centroid** () const — Centroid of the input points.

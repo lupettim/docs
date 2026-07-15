@@ -1,0 +1,124 @@
+---
+title: "ImFusion::GUI::PointBasedAnnotationEventHandler"
+sidebarTitle: "PointBasedAnnotationEventHandler"
+description: "Event handler for creating and editing point-based annotations ."
+---
+
+`#include <ImFusion/GUI/PointBasedAnnotationEventHandler.h>`
+
+## Overview
+
+Event handler for creating and editing [point-based annotations](/cpp-sdk/4.5/api/classes/imfusion-glpointbasedannotation).
+
+This event handler can operate in two different modes:
+
+- In "creation mode" the editing of the existing points is not possible and the only actions you can perform are to append additional points at the end, or to finish or abort the creation. Usually, this is the initial mode when starting with an empty annotation without any points.
+- In "regular mode" the full set of editing actions are available.
+
+If you need an interactively editable [GlPointBasedAnnotation](/cpp-sdk/4.5/api/classes/imfusion-glpointbasedannotation) you additionally instantiate the [PointBasedAnnotationEventHandler](/cpp-sdk/4.5/api/classes/imfusion-gui-pointbasedannotationeventhandler) and wrap the two together in a [TypedViewObject](/cpp-sdk/4.5/api/classes/imfusion-gui-typedviewobject).
+
+## Classes
+
+- struct [RegularMode](/cpp-sdk/4.5/api/structs/imfusion-gui-pointbasedannotationeventhandler-regularmode)
+- struct [CreateMode](/cpp-sdk/4.5/api/structs/imfusion-gui-pointbasedannotationeventhandler-createmode)
+- struct [MovePointMode](/cpp-sdk/4.5/api/structs/imfusion-gui-pointbasedannotationeventhandler-movepointmode)
+- struct [MoveAnnotationMode](/cpp-sdk/4.5/api/structs/imfusion-gui-pointbasedannotationeventhandler-moveannotationmode)
+
+## Public Types
+
+- enum class [Action](#action) &#123; CreateAppendPoint = 0 , AbortCreation = 1 , FinishCreation = 2 , MovePoint = 3 , InsertPoint = 4 , RemovePoint = 5 , MoveAnnotation = 6 &#125; — Enumeration of available actions this event handler can perform on the underlying annotation.
+
+## Public Member Functions
+
+- **PointBasedAnnotationEventHandler** ([GlPointBasedAnnotation](/cpp-sdk/4.5/api/classes/imfusion-glpointbasedannotation) &annotation, bool startInCreationMode=true) — Instantiates a new [PointBasedAnnotationEventHandler](/cpp-sdk/4.5/api/classes/imfusion-gui-pointbasedannotationeventhandler) for the given *annotation* additionally specifying the initial state whether the event handler is in "creation mode" or not.
+- bool **isInCreationMode** () const — Returns whether this class is currently in "creation mode" where the only possible action for the user is to append new points at the end, or if it is in "regular mode" where you can edit an existing annotation.
+- bool [enableCreationMode](#enablecreationmode) () — Switches the event handler into "creation mode" where the only possible action for the user is to append new points at the end.
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [InputEvent::KeyboardModifier](/cpp-sdk/4.5/api/classes/imfusion-gui-inputevent) &gt; **snapToAngleModifier** () const — Returns the keyboard modifier that can be used to snap angles to 45° during creation/moving of points.
+- void **setSnapToAngleModifier** ([std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [InputEvent::KeyboardModifier](/cpp-sdk/4.5/api/classes/imfusion-gui-inputevent) &gt; value) — Sets the keyboard modifier that can be used to snap angles to 45° during creation/moving of points.
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [InputEvent::KeyboardModifier](/cpp-sdk/4.5/api/classes/imfusion-gui-inputevent) &gt; **insertPointModifier** () const — Returns the keyboard modifier that can be used to preview the insertion of points when hovering with the mouse.
+- void **setInsertPointModifier** ([std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [InputEvent::KeyboardModifier](/cpp-sdk/4.5/api/classes/imfusion-gui-inputevent) &gt; value) — Sets the keyboard modifier that can be used to preview the insertion of points when hovering with the mouse.
+- [InputEventMapper](/cpp-sdk/4.5/api/classes/imfusion-gui-inputeventmapper)&lt; [Action](#action) &gt; & [actionMapper](#actionmapper) () — Get access to the mapping of input events to [Actions](#action) of this event handler.
+- [EventResult](/cpp-sdk/4.5/api/structs/imfusion-gui-eventresult) [handleInputEvent](#handleinputevent) (const [InputEvent](/cpp-sdk/4.5/api/classes/imfusion-gui-inputevent) &event, const [View](/cpp-sdk/4.5/api/classes/imfusion-gui-view) &parentView) override — This function is called by sources of input events in order to dispatch them to the handlers.
+- void **setAllowCursorChanges** (bool change)
+
+## Public Attributes
+
+- Signal&lt; [Action](#action) &gt; **signalActionHappened** — Signal emitted whenever an action has been performed.
+
+## Protected Member Functions
+
+- int **getInsertionIndex** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; &points, const [GL::ViewState](/cpp-sdk/4.5/api/classes/imfusion-gl-viewstate) &viewState, const vec2 &screenPos) const
+- [GUI::EventResult](/cpp-sdk/4.5/api/structs/imfusion-gui-eventresult) **handleMouseEvent** (const [GUI::MouseEvent](/cpp-sdk/4.5/api/classes/imfusion-gui-mouseevent) &event, const [View](/cpp-sdk/4.5/api/classes/imfusion-gui-view) &parentView)
+- [GUI::EventResult](/cpp-sdk/4.5/api/structs/imfusion-gui-eventresult) **handleKeyEvent** (const [GUI::KeyEvent](/cpp-sdk/4.5/api/classes/imfusion-gui-keyevent) &event, const [View](/cpp-sdk/4.5/api/classes/imfusion-gui-view) &parentView)
+
+## Static Protected Member Functions
+
+- static vec3 **snapToAngle** (const [GL::ViewState](/cpp-sdk/4.5/api/classes/imfusion-gl-viewstate) &viewState, const vec3 &previousPointWorld, const vec3 &currentPointWorld)
+
+## Protected Attributes
+
+- [GlPointBasedAnnotation](/cpp-sdk/4.5/api/classes/imfusion-glpointbasedannotation) & **m_annotation**
+- [InputEventMapper](/cpp-sdk/4.5/api/classes/imfusion-gui-inputeventmapper)&lt; [Action](#action) &gt; **m_eventMapper**
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [InputEvent::KeyboardModifier](/cpp-sdk/4.5/api/classes/imfusion-gui-inputevent) &gt; **m_snapToAngleModifier** = [InputEvent::KeyboardModifier::Shift](/cpp-sdk/4.5/api/classes/imfusion-gui-inputevent)
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [InputEvent::KeyboardModifier](/cpp-sdk/4.5/api/classes/imfusion-gui-inputevent) &gt; **m_insertPointModifier** = [InputEvent::KeyboardModifier::Alt](/cpp-sdk/4.5/api/classes/imfusion-gui-inputevent)
+- [Utils::Variant](/cpp-sdk/4.5/api/structs/imfusion-utils-variant)&lt; [RegularMode](/cpp-sdk/4.5/api/structs/imfusion-gui-pointbasedannotationeventhandler-regularmode), [CreateMode](/cpp-sdk/4.5/api/structs/imfusion-gui-pointbasedannotationeventhandler-createmode), [MovePointMode](/cpp-sdk/4.5/api/structs/imfusion-gui-pointbasedannotationeventhandler-movepointmode), [MoveAnnotationMode](/cpp-sdk/4.5/api/structs/imfusion-gui-pointbasedannotationeventhandler-moveannotationmode) &gt; **m_currentMode** = [RegularMode](/cpp-sdk/4.5/api/structs/imfusion-gui-pointbasedannotationeventhandler-regularmode)()
+- bool **m_stopPropagationOfNextMouseReleaseEvent** = false
+- bool **m_allowCursorChanges** = true
+
+## Member Enumeration Documentation
+
+### Action
+
+```cpp
+enum class ImFusion::GUI::PointBasedAnnotationEventHandler::Action
+```
+
+*strong*
+
+Enumeration of available actions this event handler can perform on the underlying annotation.
+
+**Enumerator:**
+
+- `CreateAppendPoint` — Append a point to the end while in "creation mode".
+- `AbortCreation` — Abort "creation mode", remove all previously created points, and switch to "regular mode".
+- `FinishCreation` — Finish "creation mode" and switch to "regular mode".
+- `MovePoint` — Move an existing point while in "regular mode".
+- `InsertPoint` — Insert a new point to the annotation while in "regular mode".
+- `RemovePoint` — Remove an existing point while in "regular mode".
+- `MoveAnnotation` — Move the entire annotation while in "regular mode".
+
+## Member Function Documentation
+
+### enableCreationMode
+
+```cpp
+bool ImFusion::GUI::PointBasedAnnotationEventHandler::enableCreationMode ()
+```
+
+Switches the event handler into "creation mode" where the only possible action for the user is to append new points at the end.
+
+Returns false if "creation mode" cannot be enabled because the maximum number of points is already reached.
+
+### actionMapper
+
+```cpp
+InputEventMapper < Action > & ImFusion::GUI::PointBasedAnnotationEventHandler::actionMapper ()
+```
+
+*inline*
+
+Get access to the mapping of input events to [Actions](#action) of this event handler.
+
+You can use this to customize the mapping of mouse and keyboard buttons, or disable certain Actions altogether.
+
+### handleInputEvent
+
+```cpp
+EventResult ImFusion::GUI::PointBasedAnnotationEventHandler::handleInputEvent (const InputEvent & event, const View & view)
+```
+
+*override, virtual*
+
+This function is called by sources of input events in order to dispatch them to the handlers.
+
+In case there are more than one InputEventHandlers dispatchers are intended call this function consecutively until the first handler indicates to stop by returning a result where [EventResult::stopPropagation()](/cpp-sdk/4.5/api/structs/imfusion-gui-eventresult) is true.

@@ -1,0 +1,118 @@
+---
+title: "ImFusion::TrackedImageSetImFusionFilePlugin"
+sidebarTitle: "TrackedImageSetImFusionFilePlugin"
+description: "Plugin for loading tracked image sets via ImFusion files."
+---
+
+`#include <ImFusion/Base/TrackedImageSetImFusionFilePlugin.h>`
+
+## Overview
+
+Plugin for loading tracked image sets via ImFusion files.
+
+## Public Member Functions
+
+- [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \* [loadInstance](#loadinstance) (unsigned int type, unsigned int headerSize) override — Create [TrackedSharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-trackedsharedimageset) instance for correct data type or return null otherwise.
+- unsigned int [saveType](#savetype) (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data) override — Return corresponding type for saving an ultrasound sweep.
+- bool [load](#load) (unsigned int headerSize, [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data, [std::istream](http://en.cppreference.com/w/cpp/io/basic_istream.html) &file, [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) \*p=0) override — Load tracking sequences and further information from file.
+- bool [save](#save) ([Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data, [std::ostream](http://en.cppreference.com/w/cpp/io/basic_ostream.html) &file, [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) \*p=0) override — Save tracking sequences and other information to the file.
+- bool [loadCustomProperties](#loadcustomproperties) ([Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data, [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*prop) override — Load custom properties as returned previously by [customPropertiesToSave()](/cpp-sdk/4.5/api/classes/imfusion-imfusionfileplugin).
+- void [applyFlipToEnsureConsistency](#applyfliptoensureconsistency) ([Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data) override — Flips the calibration of the main tracking sequence, so that sweep is correct again.
+
+## Protected Member Functions
+
+- bool [loadTrackingSequencesAndMeta](#loadtrackingsequencesandmeta) ([TrackedSharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-trackedsharedimageset) \*tsis, unsigned int headerSize, [std::istream](http://en.cppreference.com/w/cpp/io/basic_istream.html) &file) — Load tracking sequences and further information from file.
+- bool [saveTrackingSequencesAndMeta](#savetrackingsequencesandmeta) ([TrackedSharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-trackedsharedimageset) \*tsis, [std::ostream](http://en.cppreference.com/w/cpp/io/basic_ostream.html) &file) — Save tracking sequences and further information of *tsis* to file.
+
+## Protected Attributes
+
+- [std::array](http://en.cppreference.com/w/cpp/container/array.html)&lt; int, 10 &gt; **m_iPars** — Integer meta information holding: 0 - number of [TrackingSequence](/cpp-sdk/4.5/api/classes/imfusion-trackingsequence) instances 1 - number of currently used [TrackingSequence](/cpp-sdk/4.5/api/classes/imfusion-trackingsequence) instance 2 - number of time stamps stored as part of the block (either size of image set or 0) 3 - 1 if time stamps are used, otherwise 0 4-9 - for free usage in derived classes.
+- [std::array](http://en.cppreference.com/w/cpp/container/array.html)&lt; double, 10 &gt; **m_dPars** — Double meta information for free usage in derived classes.
+
+## Member Function Documentation
+
+### loadInstance
+
+```cpp
+Data * ImFusion::TrackedImageSetImFusionFilePlugin::loadInstance (unsigned int type, unsigned int headerSize)
+```
+
+*override, virtual*
+
+Create [TrackedSharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-trackedsharedimageset) instance for correct data type or return null otherwise.
+
+### saveType
+
+```cpp
+unsigned int ImFusion::TrackedImageSetImFusionFilePlugin::saveType (const Data * data)
+```
+
+*override, virtual*
+
+Return corresponding type for saving an ultrasound sweep.
+
+### load
+
+```cpp
+bool ImFusion::TrackedImageSetImFusionFilePlugin::load (unsigned int headerSize, Data * data, std::istream & file, Progress * p = 0)
+```
+
+*override, virtual*
+
+Load tracking sequences and further information from file.
+
+### save
+
+```cpp
+bool ImFusion::TrackedImageSetImFusionFilePlugin::save (Data * data, std::ostream & file, Progress * p = 0)
+```
+
+*override, virtual*
+
+Save tracking sequences and other information to the file.
+
+### loadCustomProperties
+
+```cpp
+bool ImFusion::TrackedImageSetImFusionFilePlugin::loadCustomProperties (Data * data, Properties * prop)
+```
+
+*override, virtual*
+
+Load custom properties as returned previously by [customPropertiesToSave()](/cpp-sdk/4.5/api/classes/imfusion-imfusionfileplugin).
+
+**Returns:** true if successful, false otherwise
+
+### applyFlipToEnsureConsistency
+
+```cpp
+void ImFusion::TrackedImageSetImFusionFilePlugin::applyFlipToEnsureConsistency (Data * data)
+```
+
+*override, virtual*
+
+Flips the calibration of the main tracking sequence, so that sweep is correct again.
+
+### loadTrackingSequencesAndMeta
+
+```cpp
+bool ImFusion::TrackedImageSetImFusionFilePlugin::loadTrackingSequencesAndMeta (TrackedSharedImageSet * tsis, unsigned int headerSize, std::istream & file)
+```
+
+*protected*
+
+Load tracking sequences and further information from file.
+
+Stores the loaded streams in *tsis*, and saves the meta information in m_iPars and m_dPars. Returns true if loading was successful.
+
+### saveTrackingSequencesAndMeta
+
+```cpp
+bool ImFusion::TrackedImageSetImFusionFilePlugin::saveTrackingSequencesAndMeta (TrackedSharedImageSet * tsis, std::ostream & file)
+```
+
+*protected*
+
+Save tracking sequences and further information of *tsis* to file.
+
+Uses the last item of m_iPars (the first four are overridden) and all items of m_dPars, so make sure to set them to meaningful value for the desired data type, e.g. ultrasound geometry. Returns true if loading was successful.

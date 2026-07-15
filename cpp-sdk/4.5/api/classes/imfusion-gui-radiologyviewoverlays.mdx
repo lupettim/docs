@@ -1,0 +1,166 @@
+---
+title: "ImFusion::GUI::RadiologyViewOverlays"
+sidebarTitle: "RadiologyViewOverlays"
+description: "Helper class to create and manage ViewOverlays commonly shown in radiology workstations."
+---
+
+`#include <ImFusion/GUI/RadiologyViewOverlays.h>`
+
+## Overview
+
+Helper class to create and manage ViewOverlays commonly shown in radiology workstations.
+
+## Public Types
+
+- enum [OverlayType](#overlaytype) &#123; **NoOverlays** = 0 , FullscreenButton = 1 &lt;&lt; 0 , ViewOrderButton = 1 &lt;&lt; 1 , DataSelectionButton = 1 &lt;&lt; 2 , ViewOptionsButton = 1 &lt;&lt; 3 , DisplayOptionsButton = 1 &lt;&lt; 4 , PatientInfo = 1 &lt;&lt; 5 , HorizontalScale = 1 &lt;&lt; 6 , VerticalScale = 1 &lt;&lt; 7 , OrientationMesh = 1 &lt;&lt; 8 , Histogram = 1 &lt;&lt; 9 , PixelInfo = 1 &lt;&lt; 10 , FpsCounter = 1 &lt;&lt; 11 , OffscreenIndicator = 1 &lt;&lt; 12 , **AllOverlays** = 0xFFFF &#125; — Enumeration to select default overlays to add to a view.
+- enum class [OrientationMeshType](#orientationmeshtype) &#123; Cube , Head , Body , CubeQuadruped &#125; — Enumeration of available meshes to show in the OrientationOverlay.
+- using **PatientInfoFormatter** = [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt;[std::string](http://en.cppreference.com/w/cpp/string/basic_string.html)(const [ImageInfoDataComponent](/cpp-sdk/4.5/api/classes/imfusion-imageinfodatacomponent)&)&gt; — Alias for a formatting function to be used with the PatientInfo overlay.
+
+## Public Member Functions
+
+- [RadiologyViewOverlays](#radiologyviewoverlays) ([DisplayBase](/cpp-sdk/4.5/api/classes/imfusion-gui-displaybase) \*display, [DisplayAutoLayouter](/cpp-sdk/4.5/api/classes/imfusion-gui-displayautolayouter) \*autoLayouter, [DataModel](/cpp-sdk/4.5/api/classes/imfusion-datamodel) \*dataModel) — Creates a new [RadiologyViewOverlays](/cpp-sdk/4.5/api/classes/imfusion-gui-radiologyviewoverlays) instance.
+- void [addOverlays](#addoverlays-1-2) ([View](/cpp-sdk/4.5/api/classes/imfusion-gui-view) &view, [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; [OverlayType](#overlaytype) &gt; overlayTypes) — Create and add the given *overlayTypes* the the given *view*.
+- void [addOverlays](#addoverlays-2-2) ([std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [View](/cpp-sdk/4.5/api/classes/imfusion-gui-view) \* &gt; views, [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; [OverlayType](#overlaytype) &gt; overlayTypes) — Create and add the given *overlayTypes* the the given set of *views*.
+- bool [removeOverlay](#removeoverlay) ([View](/cpp-sdk/4.5/api/classes/imfusion-gui-view) &view, [OverlayType](#overlaytype) type) — Removes a [ViewOverlay](/cpp-sdk/4.5/api/classes/imfusion-gui-viewoverlay) that was previously created through [addOverlays()](#addoverlays-1-2).
+- bool **isOverlayVisible** (const [View](/cpp-sdk/4.5/api/classes/imfusion-gui-view) &view, [OverlayType](#overlaytype) type) const — Returns if the given overlay is visible in the given view.
+- void **setOverlayVisibility** (const [View](/cpp-sdk/4.5/api/classes/imfusion-gui-view) &view, [OverlayType](#overlaytype) type, bool isVisible) — Sets the visibility of the given overlay in the given view.
+- void **setOverlayVisibility** ([OverlayType](#overlaytype) type, bool isVisible) — Sets the visibility of the given overlay in all known views.
+- void **setPatientInfoFormatter** (PatientInfoFormatter formatter) — Defines the content of the PatientInfo overlay based on a formatting function.
+- void [setPatientInfoFormatString](#setpatientinfoformatstring) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &formatString) — Defines the content of the PatientInfo overlay based on a format string.
+- [OrientationMeshType](#orientationmeshtype) **orientationMeshType** () const — Returns the mesh to be used in the OrientationMesh overlay.
+- void **setOrientationMeshType** ([OrientationMeshType](#orientationmeshtype) value) — Sets the mesh to be used in the OrientationMesh overlay.
+- [ViewOverlay](/cpp-sdk/4.5/api/classes/imfusion-gui-viewoverlay) \* **getOverlay** (const [View](/cpp-sdk/4.5/api/classes/imfusion-gui-view) &view, [OverlayType](#overlaytype) type)
+- const [ViewOverlay](/cpp-sdk/4.5/api/classes/imfusion-gui-viewoverlay) \* **getOverlay** (const [View](/cpp-sdk/4.5/api/classes/imfusion-gui-view) &view, [OverlayType](#overlaytype) type) const
+- [ButtonOverlay](/cpp-sdk/4.5/api/classes/imfusion-gui-buttonoverlay) \* **getFullscreenButtonOverlay** (const [View](/cpp-sdk/4.5/api/classes/imfusion-gui-view) &view) — Convenience function to access the [ButtonOverlay](/cpp-sdk/4.5/api/classes/imfusion-gui-buttonoverlay) for toggling fullscreen mode of the given view if present.
+- [ButtonOverlay](/cpp-sdk/4.5/api/classes/imfusion-gui-buttonoverlay) \* **getViewOrderButtonOverlay** (const [View](/cpp-sdk/4.5/api/classes/imfusion-gui-view) &view) — Convenience function to access the [ButtonOverlay](/cpp-sdk/4.5/api/classes/imfusion-gui-buttonoverlay) for rearranging the view order of the given view if present.
+- [ButtonOverlay](/cpp-sdk/4.5/api/classes/imfusion-gui-buttonoverlay) \* **getDataSelectionButtonOverlay** (const [View](/cpp-sdk/4.5/api/classes/imfusion-gui-view) &view) — Convenience function to access the [ButtonOverlay](/cpp-sdk/4.5/api/classes/imfusion-gui-buttonoverlay) for rearranging the view order of the given view if present.
+- [InteractiveViewOptionsOverlay](/cpp-sdk/4.5/api/classes/imfusion-interactiveviewoptionsoverlay) \* **getViewOptionsButtonOverlay** (const [View](/cpp-sdk/4.5/api/classes/imfusion-gui-view) &view) — Convenience function to access the [ButtonOverlay](/cpp-sdk/4.5/api/classes/imfusion-gui-buttonoverlay) for rearranging the view order of the given view if present.
+- [InteractiveViewOptionsOverlay](/cpp-sdk/4.5/api/classes/imfusion-interactiveviewoptionsoverlay) \* **getDisplayOptionsButtonOverlay** (const [View](/cpp-sdk/4.5/api/classes/imfusion-gui-view) &view) — Convenience function to access the [ButtonOverlay](/cpp-sdk/4.5/api/classes/imfusion-gui-buttonoverlay) for rearranging the view order of the given view if present.
+- [OrientationMeshOverlay](/cpp-sdk/4.5/api/classes/imfusion-gui-orientationmeshoverlay) \* **getOrientationMeshOverlay** (const [View](/cpp-sdk/4.5/api/classes/imfusion-gui-view) &view) — Convenience function to access the [OrientationMeshOverlay](/cpp-sdk/4.5/api/classes/imfusion-gui-orientationmeshoverlay) of the given view if present.
+- [ViewOverlay](/cpp-sdk/4.5/api/classes/imfusion-gui-viewoverlay) \* **getPatientInfoOverlay** (const [View](/cpp-sdk/4.5/api/classes/imfusion-gui-view) &view) — Convenience function to access the horizontal [ScaleOverlay](/cpp-sdk/4.5/api/classes/imfusion-gui-scaleoverlay) of the given view if present.
+- [ScaleOverlay](/cpp-sdk/4.5/api/classes/imfusion-gui-scaleoverlay) \* **getHorizontalScaleOverlay** (const [View](/cpp-sdk/4.5/api/classes/imfusion-gui-view) &view) — Convenience function to access the horizontal [ScaleOverlay](/cpp-sdk/4.5/api/classes/imfusion-gui-scaleoverlay) of the given view if present.
+- [ScaleOverlay](/cpp-sdk/4.5/api/classes/imfusion-gui-scaleoverlay) \* **getVerticalScaleOverlay** (const [View](/cpp-sdk/4.5/api/classes/imfusion-gui-view) &view) — Convenience function to access the vertical [ScaleOverlay](/cpp-sdk/4.5/api/classes/imfusion-gui-scaleoverlay) of the given view if present.
+- [OffscreenIndicatorsOverlay](/cpp-sdk/4.5/api/classes/imfusion-gui-offscreenindicatorsoverlay) \* **getOffscreenIndicatorsOverlay** (const [View](/cpp-sdk/4.5/api/classes/imfusion-gui-view) &view) — Convenience function to access the [OffscreenIndicatorsOverlay](/cpp-sdk/4.5/api/classes/imfusion-gui-offscreenindicatorsoverlay) of the given view if present.
+- [HistogramOverlay](/cpp-sdk/4.5/api/classes/imfusion-gui-histogramoverlay) \* **getHistogramOverlay** (const [View](/cpp-sdk/4.5/api/classes/imfusion-gui-view) &view) — Convenience function to access the [HistogramOverlay](/cpp-sdk/4.5/api/classes/imfusion-gui-histogramoverlay) of the given view if present.
+- [PixelInfoOverlay](/cpp-sdk/4.5/api/classes/imfusion-gui-pixelinfooverlay) \* **getPixelInfoOverlay** (const [View](/cpp-sdk/4.5/api/classes/imfusion-gui-view) &view) — Convenience function to access the [PixelInfoOverlay](/cpp-sdk/4.5/api/classes/imfusion-gui-pixelinfooverlay) of the given view if present.
+- [ViewOverlay](/cpp-sdk/4.5/api/classes/imfusion-gui-viewoverlay) \* **getFpsCounterOverlay** (const [View](/cpp-sdk/4.5/api/classes/imfusion-gui-view) &view) — Convenience function to access the [FpsCounter](/cpp-sdk/4.5/api/classes/imfusion-fpscounter) overlay of the given view if present.
+
+## Member Enumeration Documentation
+
+### OverlayType
+
+```cpp
+enum ImFusion::GUI::RadiologyViewOverlays::OverlayType
+```
+
+Enumeration to select default overlays to add to a view.
+
+**Enumerator:**
+
+- `FullscreenButton` — Button to maximize/minimize the view; requires [DisplayAutoLayouter](/cpp-sdk/4.5/api/classes/imfusion-gui-displayautolayouter).
+- `ViewOrderButton` — Button to move the view to a different position in the view layout; requires [DisplayAutoLayouter](/cpp-sdk/4.5/api/classes/imfusion-gui-displayautolayouter).
+- `DataSelectionButton` — Button to select the visible data from the [DataModel](/cpp-sdk/4.5/api/classes/imfusion-datamodel).
+- `ViewOptionsButton` — Button to show a popup for configuring view options.
+- `DisplayOptionsButton` — Button to show a popup for configuring display options.
+- `PatientInfo` — Text overlay showing patient information.
+- `HorizontalScale` — Horizontal ruler overlay showing the image scale; only applicable to SliceViews.
+- `VerticalScale` — Vertical ruler overlay showing the image scale; only applicable to SliceViews.
+- `OrientationMesh` — Overlay showing the orientation of the shown data (e.g. in form of a cube).
+- `Histogram` — Shows the intensity distribution of the shown image as histogram; only applicable to SliceViews.
+- `PixelInfo` — Shows image pixel information underneath the mouse pointer; only applicable to SliceViews.
+- `FpsCounter` — Shows an estimate of the frames per second of the renderer.
+- `OffscreenIndicator` — Dynamic overlay showing data that is outside of the current view area; only applicable to SliceViews.
+
+### OrientationMeshType
+
+```cpp
+enum class ImFusion::GUI::RadiologyViewOverlays::OrientationMeshType
+```
+
+*strong*
+
+Enumeration of available meshes to show in the OrientationOverlay.
+
+**Enumerator:**
+
+- `Cube` — Shows a cube where the faces have the letters A/P/L/R/F/H.
+- `Head` — Shows a depiction of a human head.
+- `Body` — Shows a depiction of a human body.
+- `CubeQuadruped` — Shows a cube where the faces have the letters D/V/LE/RT/RC/CD.
+
+## Constructor & Destructor Documentation
+
+### RadiologyViewOverlays
+
+```cpp
+ImFusion::GUI::RadiologyViewOverlays::RadiologyViewOverlays (DisplayBase * display, DisplayAutoLayouter * autoLayouter, DataModel * dataModel)
+```
+
+Creates a new [RadiologyViewOverlays](/cpp-sdk/4.5/api/classes/imfusion-gui-radiologyviewoverlays) instance.
+
+All parameters are optional for this class in general but required for certain overlay types.
+
+**Parameters:**
+
+- `display` — Pointer to the parent display, required for the ViewOptionsButton and DisplayOptionsButton to be available.
+- `autoLayouter` — Pointer to the [DisplayAutoLayouter](/cpp-sdk/4.5/api/classes/imfusion-gui-displayautolayouter) of the parent display, required for the FullscreenButton and ViewOrderButton to be available.
+- `dataModel` — Pointer to an [DataModel](/cpp-sdk/4.5/api/classes/imfusion-datamodel) used by the parent application, required for the DataSelectionButton to be available.
+
+## Member Function Documentation
+
+### addOverlays
+
+```cpp
+void ImFusion::GUI::RadiologyViewOverlays::addOverlays (View & view, Flags < OverlayType > overlayTypes)
+```
+
+Create and add the given *overlayTypes* the the given *view*.
+
+**Exceptions:**
+
+- `std::runtime_error` — in case:
+*overlayTypes* contains ViewOptionsButton or DisplayOptionsButton and no [DisplayBase](/cpp-sdk/4.5/api/classes/imfusion-gui-displaybase) was provided during construction.
+*overlayTypes* contains FullscreenButton or ViewOrderButton and no [DisplayAutoLayouter](/cpp-sdk/4.5/api/classes/imfusion-gui-displayautolayouter) was provided during construction.
+*overlayTypes* contains DataSelectionButton and no [DataModel](/cpp-sdk/4.5/api/classes/imfusion-datamodel) was provided during construction.
+
+### addOverlays
+
+```cpp
+void ImFusion::GUI::RadiologyViewOverlays::addOverlays (std::vector < View * > views, Flags < OverlayType > overlayTypes)
+```
+
+Create and add the given *overlayTypes* the the given set of *views*.
+
+**Exceptions:**
+
+- `std::runtime_error` — in case:
+*overlayTypes* contains ViewOptionsButton or DisplayOptionsButton and no [DisplayBase](/cpp-sdk/4.5/api/classes/imfusion-gui-displaybase) was provided during construction.
+*overlayTypes* contains FullscreenButton or ViewOrderButton and no [DisplayAutoLayouter](/cpp-sdk/4.5/api/classes/imfusion-gui-displayautolayouter) was provided during construction.
+*overlayTypes* contains DataSelectionButton and no [DataModel](/cpp-sdk/4.5/api/classes/imfusion-datamodel) was provided during construction.
+
+### removeOverlay
+
+```cpp
+bool ImFusion::GUI::RadiologyViewOverlays::removeOverlay (View & view, OverlayType type)
+```
+
+Removes a [ViewOverlay](/cpp-sdk/4.5/api/classes/imfusion-gui-viewoverlay) that was previously created through [addOverlays()](#addoverlays-1-2).
+
+Returns true if successful or false if an overlay of the given *type* was not found for the given *view*.
+
+### setPatientInfoFormatString
+
+```cpp
+void ImFusion::GUI::RadiologyViewOverlays::setPatientInfoFormatString (const std::string & formatString)
+```
+
+Defines the content of the PatientInfo overlay based on a format string.
+
+The format string can contain placeholders using the syntax &#123;placeholder&#125;, where "placeholder" is one of the following: patient_name, birthdate, study_date, study_time, modality, patient_sex.
+
+Example (also the default formatting string after construction):
+
+```cpp
+setPatientInfoFormatString("{modality}: {patient_name} ({patient_sex}) - {study_date} {study_time}")
+```
+ fragment

@@ -1,0 +1,127 @@
+---
+title: "ImFusion::Configurable"
+sidebarTitle: "Configurable"
+description: "Base interface for classes that support object serialization from/to Properties objects."
+---
+
+`#include <ImFusion/Core/Configurable.h>`
+
+## Overview
+
+[Base](/cpp-sdk/4.5/api/structs/imfusion-dicom-base) interface for classes that support object serialization from/to [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) objects.
+
+Implementing this interface enables you to make custom data structure serializable by implementing the pair of [configuration()](#configuration) (store) and [configure()](#configure) (retrieve) methods in a symmetric fashion. For instance:
+
+```cpp
+class MyClass : public Configurable {
+public:
+ void configuration(Properties* p) const override {
+ if (!p)
+ return;
+
+ Configurable::configuration(p);
+        p->setParam("intValue", m_intValue, 42);
+        p->setParam("stringValue", m_stringValue);
+    }
+
+ void configure(const Properties* p) override {
+ if (!p)
+ return;
+
+ Configurable::configure(p);
+        p->param("intValue", m_intValue);
+        p->param("stringValue", m_stringValue);
+    }
+
+private:
+ int m_intValue = 42;
+ std::string m_stringValue;
+};
+```
+ fragment
+Since manually implementing the serialization code can be cumbersome and error-prone you can make use of the [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) interfaces: after registering them with the [Configurable](/cpp-sdk/4.5/api/classes/imfusion-configurable) interface their default implementation of [configuration()](#configuration) and [configure()](#configure) will automatically (de-)serialize their values into/from the [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties). You can even consider making the [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) members public to avoid writing getters/setters for them. By convention, Parameter-members use the p_ prefix instead of the m_ prefix to make their semantics easier to identify in calling code.
+
+```cpp
+class MyClass : public Configurable {
+public:
+ // Passing `this` to the ctor will automatically register the Parameter with the parent Configurable.
+ // Otherwise, you must call registerParameter() manually.
+ Parameter<int> p_intValue = {"intValue", 42, this};
+ Parameter<std::string> p_stringValue = {"stringValue", "", this};
+};
+```
+ fragment
+
+**Note:** Be aware of the implications of the parent-child relationship between a [Configurable](/cpp-sdk/4.5/api/classes/imfusion-configurable) and its nested Parameters/SubProperties when it comes to copying/moving instances: Copying/moving a [Configurable](/cpp-sdk/4.5/api/classes/imfusion-configurable) instance must make sure that its nested Parameters/SubProperties are correctly registered with the new instance in order to ensure that they partake in the serialization process and the signalParametersChanged is emitted correctly. This is ensured by the default implementations of the [Configurable](/cpp-sdk/4.5/api/classes/imfusion-configurable) copy and move constructor. Make sure to also do so when implementing custom copy/move constructors in derived classes.
+
+**See also:** Object Serialization, [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties), [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter), [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty)
+
+**Examples:** [Serialization.cpp](/cpp-sdk/4.5/api/examples/serialization-8cpp).
+
+## Classes
+
+- struct [Param](/cpp-sdk/4.5/api/structs/imfusion-configurable-param)
+
+## Public Member Functions
+
+- virtual void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- virtual void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+- virtual void [configureDefaults](#configuredefaults) () — Retrieve the properties of this object, replaces values with their defaults and sets it again.
+- void **registerParameter** ([ParameterBase](/cpp-sdk/4.5/api/classes/imfusion-parameterbase) \*param) — Register the given [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) or [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty), so that it will be configured during [configure()](#configure)/configuration().
+- void **unregisterParameter** (const [ParameterBase](/cpp-sdk/4.5/api/classes/imfusion-parameterbase) \*param) — Remove the given [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) or [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) from the list of registered parameters.
+- **Configurable** (const Configurable &rhs)
+- **Configurable** (Configurable &&rhs) noexcept
+- Configurable & **operator=** (const Configurable &)
+- Configurable & **operator=** (Configurable &&) noexcept
+
+## Public Attributes
+
+- Signal **signalParametersChanged** — Emitted whenever one of the registered Parameters' or SubPropertys' signalValueChanged signal was emitted.
+
+## Protected Attributes
+
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Param](/cpp-sdk/4.5/api/structs/imfusion-configurable-param) &gt; **m_params** — List of all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+## Member Function Documentation
+
+### configure
+
+```cpp
+virtual void ImFusion::Configurable::configure (const Properties * p)
+```
+
+*virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+**Examples:** [ExampleAlgorithm.cpp](/cpp-sdk/4.5/api/examples/example-algorithm-8cpp), and [Serialization.cpp](/cpp-sdk/4.5/api/examples/serialization-8cpp).
+
+### configuration
+
+```cpp
+virtual void ImFusion::Configurable::configuration (Properties * p) const
+```
+
+*virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality
+
+**Examples:** [ExampleAlgorithm.cpp](/cpp-sdk/4.5/api/examples/example-algorithm-8cpp), and [Serialization.cpp](/cpp-sdk/4.5/api/examples/serialization-8cpp).
+
+### configureDefaults
+
+```cpp
+virtual void ImFusion::Configurable::configureDefaults ()
+```
+
+*virtual*
+
+Retrieve the properties of this object, replaces values with their defaults and sets it again.

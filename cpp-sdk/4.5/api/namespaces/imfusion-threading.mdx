@@ -1,0 +1,61 @@
+---
+title: "ImFusion::Threading"
+sidebarTitle: "Threading"
+description: "Utility classes for multi-threading."
+---
+
+## Overview
+
+Utility classes for multi-threading.
+
+**See also:** Multi-Threading Utilities
+
+## Classes
+
+- class [PlaybackTimer](/cpp-sdk/4.5/api/classes/imfusion-threading-playbacktimer) — Recurring timer class that allows for playback over a range at given timestamps/intervals.
+- class [StoppableThread](/cpp-sdk/4.5/api/classes/imfusion-threading-stoppablethread) — [Extension](/cpp-sdk/4.5/api/classes/imfusion-dicom-extension) of a [std::thread](http://en.cppreference.com/w/cpp/thread/thread.html) to allow for signalling the thread to abort its execution.
+- class [ThreadPool](/cpp-sdk/4.5/api/classes/imfusion-threading-threadpool) — Lightweight implementation of a thread pool for distributing work onto a fixed number of threads.
+- class [Protected](/cpp-sdk/4.5/api/classes/imfusion-threading-protected) — Thread-safe wrapper for a shared resource protected by a mutex.
+
+## Typedefs
+
+- using SharedProtected = [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt;[Protected](/cpp-sdk/4.5/api/classes/imfusion-threading-protected)&lt;T&gt;&gt; — Convenience for storing the same [Protected&lt;T&gt;](/cpp-sdk/4.5/api/classes/imfusion-threading-protected) in multiple objects.
+
+## Enumerations
+
+- enum class [Priority](#priority) &#123; Idle , Lowest , Low , Normal , High , Highest , Critical &#125; — Enumeration of thread priority levels.
+
+## Functions
+
+- void setCurrentThreadName (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &threadName) — Sets the current thread's name to the given string so that a debugger may show it as description.
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [Priority](#priority) &gt; currentThreadPriority () — Queries the current thread's priority from the operating system or std::nullopt if an error occurred.
+- bool setCurrentThreadPriority ([Priority](#priority) priority) — Sets the current thread's priority to the given value.
+- void **runAsyncAndForget** ([std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; void()&gt; func) — Launches the given function in a background thread using [std::thread](http://en.cppreference.com/w/cpp/thread/thread.html) This function will return immediately and there is no built-in way to know when *func* has completed.
+- auto lockAll (ProtectedT &... resources) — Locks multiple [Protected&lt;T&gt;](/cpp-sdk/4.5/api/classes/imfusion-threading-protected)s simultaneously and returns a tuple of Locked handles.
+
+## Enumeration Type Documentation
+
+### Priority
+
+```cpp
+enum class ImFusion::Threading::Priority
+```
+
+*strong*
+
+Enumeration of thread priority levels.
+
+**Note:** Not all operating systems support all priority levels:
+- On Windows systems there is a 1-to-1 mapping, cf. [https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-setthreadpriority](https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-setthreadpriority)
+- On Linux systems the enum values are mapped to a niceness value range of -20 to 19
+- On macOS systems threads can only have "normal status" or "background status". We map Idle and Lowest to background and all other values to normal.
+
+**Enumerator:**
+
+- `Idle` — scheduled as rarely as possible
+- `Lowest` — scheduled less often than Low
+- `Low` — scheduled less often than Normal
+- `Normal` — default priority of the operating system.
+- `High` — scheduled more often than Normal.
+- `Highest` — scheduled more often than High.
+- `Critical` — scheduled as often as possible.

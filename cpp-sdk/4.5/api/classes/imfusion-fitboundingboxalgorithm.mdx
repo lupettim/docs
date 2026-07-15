@@ -1,0 +1,109 @@
+---
+title: "ImFusion::FitBoundingBoxAlgorithm"
+sidebarTitle: "FitBoundingBoxAlgorithm"
+description: "Algorithm to fit an oriented bounding box."
+---
+
+`#include <ImFusion/Reg/FitBoundingBoxAlgorithm.h>`
+
+## Overview
+
+[Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) to fit an oriented bounding box.
+
+## Public Member Functions
+
+- **FitBoundingBoxAlgorithm** ([SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*volume) — Constructor with a volume, the border points will be computed here.
+- **FitBoundingBoxAlgorithm** ([PointCloud](/cpp-sdk/4.5/api/classes/imfusion-pointcloud) \*pc) — Constructor using a point cloud.
+- **FitBoundingBoxAlgorithm** ([Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) \*mesh) — Constructor using a mesh.
+- void **setOutsideMode** (bool flag) — If true, the smallest outer bounding box is computed (default), the largest inner one otherwise.
+- void **setApply** (bool flag) — If true, the resulting bounding box matrix will be applied on the input data (enabled by default).
+- void **setResampling** (double spacing) — If greater zero, a new resampled image will be created with the given isotropic spacing.
+- void **boundingTransform** (mat4 &matOut, vec3 &extOut) const — Return the resulting bounding box transformation and extent.
+- double [evaluate](#evaluate) (int n, const double \*x, double \*dx=0) override — Cost function evaluation for the [Optimizer](/cpp-sdk/4.5/api/classes/imfusion-optimizer).
+- void **computeOuterBoundingBox** (mat4 &matInOut, vec3 &extOut) — Compute the outer bounding box for the given transformation and update it.
+
+## Methods implementing the algorithm interface
+
+- void [compute](#compute) () override — Execute the algorithm.
+- [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) [takeOutput](#takeoutput) () override — Return any new [Data](/cpp-sdk/4.5/api/classes/imfusion-data) that was created by the [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) during the last call to [compute()](#compute).
+- [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [Optimizer](/cpp-sdk/4.5/api/classes/imfusion-optimizer) &gt; [createDefaultOptimizer](#createdefaultoptimizer) () const override — Returns a default optimizer suited for this algorithm.
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=0)
+
+## Methods implementing the Configurable interface
+
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+## Member Function Documentation
+
+### compute
+
+```cpp
+void ImFusion::FitBoundingBoxAlgorithm::compute ()
+```
+
+*override, virtual*
+
+Execute the algorithm.
+
+### takeOutput
+
+```cpp
+OwningDataList ImFusion::FitBoundingBoxAlgorithm::takeOutput ()
+```
+
+*override, virtual*
+
+Return any new [Data](/cpp-sdk/4.5/api/classes/imfusion-data) that was created by the [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) during the last call to [compute()](#compute).
+
+The default implementation will return an empty list.
+
+**Note:** Since ownership of the data is transferred, you can call this method only once between calls to [compute()](#compute).
+
+### createDefaultOptimizer
+
+```cpp
+std::shared_ptr < Optimizer > ImFusion::FitBoundingBoxAlgorithm::createDefaultOptimizer () const
+```
+
+*override, virtual*
+
+Returns a default optimizer suited for this algorithm.
+
+### configure
+
+```cpp
+void ImFusion::FitBoundingBoxAlgorithm::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### configuration
+
+```cpp
+void ImFusion::FitBoundingBoxAlgorithm::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality
+
+### evaluate
+
+```cpp
+double ImFusion::FitBoundingBoxAlgorithm::evaluate (int n, const double * x, double * dx = 0)
+```
+
+*override, virtual*
+
+Cost function evaluation for the [Optimizer](/cpp-sdk/4.5/api/classes/imfusion-optimizer).

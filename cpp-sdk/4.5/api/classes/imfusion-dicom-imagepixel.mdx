@@ -1,0 +1,89 @@
+---
+title: "ImFusion::Dicom::ImagePixel"
+sidebarTitle: "ImagePixel"
+description: "Image Pixel Module (PS 3.3 C.7.6.3)."
+---
+
+`#include <ImFusion/Dicom/DicomModule.h>`
+
+## Overview
+
+[Image](/cpp-sdk/4.5/api/structs/imfusion-dicom-image) Pixel [Module](/cpp-sdk/4.5/api/classes/imfusion-dicom-module) (PS 3.3 C.7.6.3).
+
+Most essential module that contains all relevant information to load the image. Be aware that the pixelData can contain multiple frames but the [Module](/cpp-sdk/4.5/api/classes/imfusion-dicom-module) only contains the properties for a single frame.
+
+**See also:** [http://dicom.nema.org/medical/dicom/current/output/chtml/part03/sect_C.7.6.3.html](http://dicom.nema.org/medical/dicom/current/output/chtml/part03/sect_C.7.6.3.html)
+
+## Public Member Functions
+
+- **ImagePixel** ([ModuleList](/cpp-sdk/4.5/api/classes/imfusion-dicom-modulelist) &parent, [Type](/cpp-sdk/4.5/api/classes/imfusion-dicom-module) type)
+- [ImageDescriptor](/cpp-sdk/4.5/api/structs/imfusion-imagedescriptor) [loadDescriptor](#loaddescriptor) () const — Convenient method to load a descriptor from element data.
+- void **saveDescriptor** (const [ImageDescriptor](/cpp-sdk/4.5/api/structs/imfusion-imagedescriptor) &desc, bool singleBitStorage=false) — Convenient method to store a descriptor.
+- bool **createPixelData** (const [ImageDescriptor](/cpp-sdk/4.5/api/structs/imfusion-imagedescriptor) &desc, int numberOfFrames, bool singleBitStorage=false) const
+- bool [copyAndConvertPixelData](#copyandconvertpixeldata) ([MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) &image, int slice=0, int frame=0) const — Loads the pixel data and converts it to Monochrome2 or RGB.
+- bool [convertAndStorePixelData](#convertandstorepixeldata) (const [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) &image, int slice=0, int frame=0, bool singleBitStorage=false) — Store one slice of the image in the pixel data and convert it to an appropriate format if necessary.
+
+## Public Attributes
+
+- [Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element)&lt; int &gt; **rows**
+- [Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element)&lt; int &gt; **columns**
+- [Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element)&lt; int &gt; **samplesPerPixel**
+- [Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element)&lt; int &gt; **bitsAllocated**
+- [Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element)&lt; int &gt; **bitsStored**
+- [Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element)&lt; int &gt; **highBit**
+- [Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element)&lt; bool &gt; **pixelRepresentation**
+- [Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element)&lt; int &gt; **planarConfiguration**
+- [Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **transferSyntax**
+- [Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element)&lt; PhotometricInterpretation &gt; **photometricInterpretation**
+- [Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element)&lt; [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; int &gt; &gt; **paletteDescriptor**
+- [Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element)&lt; [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; int &gt; &gt; **paletteRed**
+- [Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element)&lt; [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; int &gt; &gt; **paletteGreen**
+- [Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element)&lt; [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; int &gt; &gt; **paletteBlue**
+- [Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element)&lt; [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; &gt; **pixelAspectRatio**
+- [Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element)&lt; DcmPixelData \* &gt; **pixelData**
+
+## Member Function Documentation
+
+### loadDescriptor
+
+```cpp
+ImageDescriptor ImFusion::Dicom::ImagePixel::loadDescriptor () const
+```
+
+Convenient method to load a descriptor from element data.
+
+If the module is incomplete, an empty descriptor is returned.
+
+### copyAndConvertPixelData
+
+```cpp
+bool ImFusion::Dicom::ImagePixel::copyAndConvertPixelData (MemImage & image, int slice = 0, int frame = 0) const
+```
+
+Loads the pixel data and converts it to Monochrome2 or RGB.
+
+The pixel data is copied from the DcmItem to the provided image.
+
+The optional slice parameter specifies into which slice the data should be copied. By default the data is copied to the first slice.
+
+The optional frame parameter will read from the given frame index. It is assumed that all frames have the same size as the image.
+
+This method never changes the underlying PixelType of the image. If a palette would change the PixelType, the palette values are mapped to the image type.
+
+Returns false when the pixel data could not be copied. An error is automatically registered in this case.
+
+### convertAndStorePixelData
+
+```cpp
+bool ImFusion::Dicom::ImagePixel::convertAndStorePixelData (const MemImage & image, int slice = 0, int frame = 0, bool singleBitStorage = false)
+```
+
+Store one slice of the image in the pixel data and convert it to an appropriate format if necessary.
+
+The optional slice parameter specifies which slice the data should be copied from. By default the data is copied to the first slice.
+
+The optional frame parameter will write to the pixel data of the given frame index. It is assumed that all frames have the same size as the image.
+
+When singleBitStorage is true, each pixel will be reduced to a single bit (e.g. for labelmaps).
+
+Returns false when the pixel data could not be stored. An error is automatically registered in this case.

@@ -1,0 +1,156 @@
+---
+title: "ImFusion::IO::FileLoader"
+sidebarTitle: "FileLoader"
+description: "This class provides a very high level of abstraction for loading data from files independent of their type."
+---
+
+`#include <ImFusion/IO/FileLoader.h>`
+
+## Overview
+
+This class provides a very high level of abstraction for loading data from files independent of their type.
+
+Internally, this class will query the registered IoAlgorithms whether any of them supports the input file based on its extension. You can specify a bunch of [Options](#options) in order to customize the behavior and optionally enable/disable extra functionality.
+
+**See also:** [FolderLoader](/cpp-sdk/4.5/api/classes/imfusion-io-folderloader), [FactoryRegistry](/cpp-sdk/4.5/api/classes/imfusion-factoryregistry), [IoAlgorithm](/cpp-sdk/4.5/api/classes/imfusion-ioalgorithm)
+
+## Public Types
+
+- enum class [Options](#options) &#123; None = 0 , LoadList = 1 &lt;&lt; 0 , AllowSpawnGUI = 1 &lt;&lt; 1 , StoreIOAlgorithms = 1 &lt;&lt; 2 , Silent = 1 &lt;&lt; 3 , LoadDirectoryAsDICOM = 1 &lt;&lt; 4 , AbortIfAlgorithmNotUnique = 1 &lt;&lt; 5 &#125; — Bitflag enumeration of options to customize the behavior of [FileLoader](/cpp-sdk/4.5/api/classes/imfusion-io-fileloader).
+- enum class [Status](#status) &#123; Success = 0 , FileNotFound , UnsupportedFileType , FilepathIsDirectory , AdditionalInfoRequired , LoadListNotSet , Canceled , InvalidOptions , AlgorithmBlacklisted , Error , Unknown &#125; — Known codes indicating the status/result of the last call to one of the load\*() functions.
+
+## Public Member Functions
+
+- bool [hasHandler](#hashandler) (const [Filesystem::Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path) &filePath) const — Returns whether any of the registered IoAlgorithms can handle the file at filePath.
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) &gt; [load](#load) (const [Filesystem::Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path) &filePath, [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; [Options](#options) &gt; loadOptions=Options::None) — Attempts to load the file(s) at *filePath*.
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) &gt; [loadInteractive](#loadinteractive) (const [Filesystem::Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path) &filePath, [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; [Options](#options) &gt; loadOptions=Options::None) — Attempts to load the file(s) at *filePath*, but first spawns a [GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui) dialog asking for the file type.
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) &gt; [loadRawImage](#loadrawimage) (const [Filesystem::Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path) &filePath, [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; [Options](#options) &gt; loadOptions=Options::None, const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*rawImageIoConfig=nullptr) — Attempts to load the raw image file(s) at *filePath* using [RawImageIoAlgorithm](/cpp-sdk/4.5/api/classes/imfusion-rawimageioalgorithm).
+- void **setProgress** ([Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) \*progress) — [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) interface is forwarded to the used IoAlgorithms.
+- void [addBlacklistedAlgorithm](#addblacklistedalgorithm) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &factoryName) — Marks the given algorithm that it shall *not* be considered when choosing an appropriate [IoAlgorithm](/cpp-sdk/4.5/api/classes/imfusion-ioalgorithm) during [load()](#load).
+- [FileLoader::Status](#status) **status** () — Get detailed information about the status/result of the most recent call to one of the load\*() functions.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [IoAlgorithm](/cpp-sdk/4.5/api/classes/imfusion-ioalgorithm) &gt; &gt; **usedAlgorithms** () — Retrieve the [IoAlgorithm](/cpp-sdk/4.5/api/classes/imfusion-ioalgorithm) instances used by the load functions in case Options::StoreIoAlgorithms was set.
+
+## Static Public Member Functions
+
+- static [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **findIoAlgorithms** (const [Filesystem::Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path) &filename) — Returns the IDs of all registered IO algorithms supporting filename.
+
+## Member Enumeration Documentation
+
+### Options
+
+```cpp
+enum class ImFusion::IO::FileLoader::Options
+```
+
+*strong*
+
+Bitflag enumeration of options to customize the behavior of [FileLoader](/cpp-sdk/4.5/api/classes/imfusion-io-fileloader).
+
+**Enumerator:**
+
+- `None` — Use Default options.
+- `LoadList` — If the file ends with .list, if this is set then this file is interpreted as a list of files to load, which are then again loaded with the same options.
+WarningThis can cause infinite loops if two .list files point to each other.
+- `AllowSpawnGUI` — If set, allow for the loader to spawn a [GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui).
+- `StoreIOAlgorithms` — If set, stores used IoAlgorithms which can then be accessed with usedAlgorithms().
+- `Silent` — Don't emit any warning/error log messages if possible (only applies to [FileLoader](/cpp-sdk/4.5/api/classes/imfusion-io-fileloader) directly and not to the used IoAlgorithms).
+- `LoadDirectoryAsDICOM` — If the file is a directory, load the file as a DICOM folder.
+**Deprecated**Use [IO::FolderLoader](/cpp-sdk/4.5/api/classes/imfusion-io-folderloader) instead
+- `AbortIfAlgorithmNotUnique` — Abort if there are multiple algorithms for the file extension and we are not allowed to spawn [GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui). Otherwise the first one will be used.
+
+### Status
+
+```cpp
+enum class ImFusion::IO::FileLoader::Status
+```
+
+*strong*
+
+Known codes indicating the status/result of the last call to one of the load\*() functions.
+
+**Enumerator:**
+
+- `Success` — Loading was successful.
+- `FileNotFound` — The specified file does not exist.
+- `UnsupportedFileType` — No algorithm was found that can open the file.
+- `FilepathIsDirectory` — The provided path is a directory, and the LoadDirectoryAsDICOM flag was not set.
+- `AdditionalInfoRequired` — Additional information required to load the file, and asking for this data was not possible because Options::AllowSpawnGUI was not set.
+- `LoadListNotSet` — The file name ends with .list, but LoadList was not set.
+- `Canceled` — If user canceled loading the file e.g. by closing a dialog, or providing invalid input to a dialog.
+- `InvalidOptions` — The file exists, but the [FileLoader::Options](#options) prevent us to proceed with loading the file.
+In some cases, we spawn [GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui) as a last resort. If Options::AllowSpawnGUI is not set, we then return Status::InvalidOptions.
+- `AlgorithmBlacklisted` — The file might be loadable but the corresponding [IoAlgorithm](/cpp-sdk/4.5/api/classes/imfusion-ioalgorithm) was blacklisted.
+- `Error` — Other unspecified error occurred when loading.
+- `Unknown` — [load()](#load) was not called
+
+## Member Function Documentation
+
+### hasHandler
+
+```cpp
+bool ImFusion::IO::FileLoader::hasHandler (const Filesystem::Path & filePath) const
+```
+
+Returns whether any of the registered IoAlgorithms can handle the file at filePath.
+
+If no [IoAlgorithm](/cpp-sdk/4.5/api/classes/imfusion-ioalgorithm) can handle it, trying to load this file will always fail. However, just because a handler exists does not mean that loading will succeed, for example if the file itself does not exist.
+
+### load
+
+```cpp
+std::optional < OwningDataList > ImFusion::IO::FileLoader::load (const Filesystem::Path & filePath, Flags < Options > loadOptions = Options::None)
+```
+
+Attempts to load the file(s) at *filePath*.
+
+Returns an [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) with the loaded data if successful or an empty Optional on failure. After calling this function you can query details information on the result using status().
+
+**Parameters:**
+
+- `filePath` — Path to the file to load on the filesystem.
+- `loadOptions` — Enables you to customize the behavior or configure what file/directory types are accepted.
+
+### loadInteractive
+
+```cpp
+std::optional < OwningDataList > ImFusion::IO::FileLoader::loadInteractive (const Filesystem::Path & filePath, Flags < Options > loadOptions = Options::None)
+```
+
+Attempts to load the file(s) at *filePath*, but first spawns a [GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui) dialog asking for the file type.
+
+Returns an [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) with the loaded data if successful or an empty Optional on failure. After calling this function you can query details information on the result using status().
+
+**Note:** The AllowSpawnGUI option is ignored by this function.
+
+**Parameters:**
+
+- `filePath` — Path to the file to load on the filesystem.
+- `loadOptions` — Enables you to customize the behavior or configure what file/directory types are accepted.
+
+### loadRawImage
+
+```cpp
+std::optional < OwningDataList > ImFusion::IO::FileLoader::loadRawImage (const Filesystem::Path & filePath, Flags < Options > loadOptions = Options::None, const Properties * rawImageIoConfig = nullptr)
+```
+
+Attempts to load the raw image file(s) at *filePath* using [RawImageIoAlgorithm](/cpp-sdk/4.5/api/classes/imfusion-rawimageioalgorithm).
+
+Returns an [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) with the loaded data if successful or an empty Optional on failure. After calling this function you can query details information on the result using status(). If rawImageIoConfig == nullptr, and Options::AllowSpwanGUI is set, a dialog is spawned to request the required information.
+
+**Parameters:**
+
+- `filePath` — Path to the file to load on the filesystem.
+- `loadOptions` — Enables you to customize the behavior or configure what file/directory types are accepted.
+- `rawImageIoConfig` — Can be used to configure the [RawImageIoAlgorithm](/cpp-sdk/4.5/api/classes/imfusion-rawimageioalgorithm) (cf. [RawImageIoAlgorithm::configure](/cpp-sdk/4.5/api/classes/imfusion-rawimageioalgorithm)). You can additionally set the transformation parameter to set a transformation matrix.
+
+### addBlacklistedAlgorithm
+
+```cpp
+void ImFusion::IO::FileLoader::addBlacklistedAlgorithm (const std::string & factoryName)
+```
+
+Marks the given algorithm that it shall *not* be considered when choosing an appropriate [IoAlgorithm](/cpp-sdk/4.5/api/classes/imfusion-ioalgorithm) during [load()](#load).
+
+**Parameters:**
+
+- `factoryName` — [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) name as registered with the parent IoAlgorithmFactory

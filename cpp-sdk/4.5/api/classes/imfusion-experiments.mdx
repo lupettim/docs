@@ -1,0 +1,65 @@
+---
+title: "ImFusion::Experiments"
+sidebarTitle: "Experiments"
+---
+
+## Classes
+
+- struct [Experiment](/cpp-sdk/4.5/api/structs/imfusion-experiments-experiment)
+
+## Public Member Functions
+
+- **Experiments** (const [Project](/cpp-sdk/4.5/api/classes/imfusion-project) &project)
+- **Experiments** (const Experiments &)=delete
+- Experiments & **operator=** (const Experiments &)=delete
+- bool **runExperiment** (QString name, const QString &scriptPath, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [DataDescriptor](/cpp-sdk/4.5/api/classes/imfusion-datadescriptor) \* &gt; &input, size_t layerIndex, bool withLabels, [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) \*progress=nullptr)
+- void **removeExperiment** (const [Experiment](/cpp-sdk/4.5/api/structs/imfusion-experiments-experiment) \*exp)
+- void **setComment** (const [Experiment](/cpp-sdk/4.5/api/structs/imfusion-experiments-experiment) \*exp, QString comment)
+- bool **updateAccuracyScoresOfExperiment** ([Experiment](/cpp-sdk/4.5/api/structs/imfusion-experiments-experiment) \*exp)
+- void **removeDataFromDescriptor** (const [DataDescriptor](/cpp-sdk/4.5/api/classes/imfusion-datadescriptor) \*desc)
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; size_t &gt; **layerIndexOfExperiment** (const [Experiment](/cpp-sdk/4.5/api/structs/imfusion-experiments-experiment) \*exp) const
+- void **removeExperimentsOfDeletedLayers** ()
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [Experiment](/cpp-sdk/4.5/api/structs/imfusion-experiments-experiment) &gt; &gt; & **experiments** () const
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- QString **experimentResultPath** (const [Experiment](/cpp-sdk/4.5/api/structs/imfusion-experiments-experiment) &exp, const [DataDescriptor](/cpp-sdk/4.5/api/classes/imfusion-datadescriptor) &desc) const
+- QString **experimentResultThumbnailPath** (const [Experiment](/cpp-sdk/4.5/api/structs/imfusion-experiments-experiment) &exp, const [DataDescriptor](/cpp-sdk/4.5/api/classes/imfusion-datadescriptor) &desc) const
+- QString **experimentDir** (const [Experiment](/cpp-sdk/4.5/api/structs/imfusion-experiments-experiment) &exp) const
+- QString **experimentThumbnailDir** (const [Experiment](/cpp-sdk/4.5/api/structs/imfusion-experiments-experiment) &exp) const
+
+## Public Attributes
+
+- Signal&lt; const [Experiment](/cpp-sdk/4.5/api/structs/imfusion-experiments-experiment) \* &gt; **experimentAdded**
+- Signal&lt; const [Experiment](/cpp-sdk/4.5/api/structs/imfusion-experiments-experiment) \* &gt; **experimentRemovedPre**
+- Signal&lt; const [Experiment](/cpp-sdk/4.5/api/structs/imfusion-experiments-experiment) \* &gt; **experimentModified**
+- Signal **experimentsListChanged**
+
+## Member Function Documentation
+
+### configuration
+
+```cpp
+void ImFusion::Experiments::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality
+
+### configure
+
+```cpp
+void ImFusion::Experiments::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality

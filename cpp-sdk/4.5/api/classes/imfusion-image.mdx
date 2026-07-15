@@ -1,0 +1,165 @@
+---
+title: "ImFusion::Image"
+sidebarTitle: "Image"
+description: "Base class and interface for images."
+---
+
+`#include <ImFusion/Base/Image.h>`
+
+## Overview
+
+[Base](/cpp-sdk/4.5/api/structs/imfusion-dicom-base) class and interface for images.
+
+This class is merely a wrapper around an [ImageDescriptor](/cpp-sdk/4.5/api/structs/imfusion-imagedescriptor) that offers a couple of convenience functions for the user. It does not store any image data, which is only done by the derived classes.
+
+Older iterations of the SDK did not yet have the dedicated [ImageDescriptor](/cpp-sdk/4.5/api/structs/imfusion-imagedescriptor) class and were therefore using the [Image](/cpp-sdk/4.5/api/classes/imfusion-image) class as descriptor. New code should refrain from this and use [ImageDescriptor](/cpp-sdk/4.5/api/structs/imfusion-imagedescriptor) directly to avoid confusing semantics of function signatures.
+
+**See also:** [Using Image Data](/cpp-sdk/4.5/api/guides/image-data-tutorial)
+
+## Public Types
+
+- enum [Type](#type) &#123; **BYTE** = static_cast&lt;int&gt;(PixelType::Byte) , **UBYTE** = static_cast&lt;int&gt;(PixelType::UByte) , **SHORT** = static_cast&lt;int&gt;(PixelType::Short) , **USHORT** = static_cast&lt;int&gt;(PixelType::UShort) , **INT** = static_cast&lt;int&gt;(PixelType::Int) , **UINT** = static_cast&lt;int&gt;(PixelType::UInt) , **FLOAT** = static_cast&lt;int&gt;(PixelType::Float) , **DOUBLE** = static_cast&lt;int&gt;(PixelType::Double) , **HFLOAT** = static_cast&lt;int&gt;(PixelType::HFloat) &#125; — Pixel/voxel data type, equivalent to OpenGL defines.
+- enum [Location](#location) &#123; NONE = 0 , MEMORY = 1 , OPENGL = 2 , OPENCL = 3 , CUSTOM = 6 &#125; — [Location](#location) where the data resides.
+
+## Public Member Functions
+
+- **Image** (const [ImageDescriptor](/cpp-sdk/4.5/api/structs/imfusion-imagedescriptor) &desc) — Create a new [Image](/cpp-sdk/4.5/api/classes/imfusion-image) with the given descriptor.
+- **Image** (const Image &other)=default
+- Image & **operator=** (const Image &other)=default
+- **Image** (Image &&other) noexcept=default
+- Image & **operator=** (Image &&other) noexcept=default
+- const [ImageDescriptor](/cpp-sdk/4.5/api/structs/imfusion-imagedescriptor) & **descriptor** () const — Return the image descriptor.
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure the image descriptor from properties.
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Store image descriptor into properties.
+- void **setShift** (double val) — Sets the intensity shift value.
+- void **setScale** (double val) — Sets the intensity scale value.
+- void **setSpacing** (double sx, double sy, double sz=1.0) — Specify pixel/voxel spacing with two or three scalar values.
+- void **setSpacing** (double sx, double sy, double sz, bool isMetric) — Convenience function for specifying spacing and metric flag at the same time.
+- void **setSpacing** (const vec3 &s) — Specify pixel/voxel spacing using a 3-vector.
+- void **setSpacing** (const vec3 &s, bool metric) — Convenience function for specifying spacing and metric flag at the same time.
+- void **setMetric** (bool val) — Set data to be metric.
+- double [storageToOriginal](#storagetooriginal) (double value) const — Applies the image's shift and scale in order to convert *value* from storage pixel value domain to original pixel value domain.
+- double [originalToStorage](#originaltostorage) (double value) const — Applies the image's shift and scale in order to convert *value* from original pixel value domain to storage pixel value domain.
+
+## Protected Member Functions
+
+- bool **typeCompatible** () const
+
+## Protected Attributes
+
+- [ImageDescriptor](/cpp-sdk/4.5/api/structs/imfusion-imagedescriptor) **m_descriptor**
+
+## Access to the image information
+
+- PixelType **pixelType** () const — Returns the data type of the image.
+- [Type](#type) **type** () const — Returns the data type of the image.
+- virtual [Location](#location) [location](#location) () const — Returns the location of the image (e.g. none, host memory or a GPU device).
+- int **width** () const — Returns the width of the image.
+- int **height** () const — Returns the height of the image.
+- int **slices** () const — Returns the number of 3D slices of the image.
+- int **channels** () const — Returns the number of channels of the image.
+- double **shift** () const — Returns the intensity shift.
+- double **scale** () const — Returns the intensity scale.
+- vec3 **spacing** () const — Returns pointer to the pixel/voxel spacing values.
+- bool **isMetric** () const — Returns true if data is metric.
+- vec3 **extent** () const — Returns the physical size of the image as a vector.
+- vec3i **dimensions** () const — Returns the dimensions of the image in pixels as a vector.
+- vec3 **pixelToImage** (const vec3 &pixel) const — Convert a 3D pixel/voxel position to image coordinates.
+- vec3 **imageToPixel** (const vec3 &world) const — Convert 3D image coordinates to pixel/voxel position.
+- mat4 **pixelToImageMatrix** () const — Returns a 4x4 matrix to transform from image pixel space to image space.
+- mat4 **imageToPixelMatrix** () const — Returns a 4x4 matrix to transform from image space to image pixel space.
+- size_t **index** (int x, int y, int z=0, int c=0) const — Returns a linear memory index for a pixel or voxel.
+- bool **hasIndex** (int x, int y, int z=0, int c=0) const — Returns true if the pixel at (x,y,z) exists, false otherwise.
+- vec4i **coord** (size_t index) const — Returns the pixel/voxel coordinate (x,y,z,c) for a given index.
+- size_t **size** () const — Returns the size (number of elements) of the image.
+- int **typeSize** () const — Return the nominal size in bytes of standard data types, zero if unknown.
+- bool **isInteger** () const — Returns whether the image is of an integer data type.
+- bool **isSigned** () const — Returns whether the image type supports negative values.
+- size_t **byteSize** () const — Returns the size of the image in bytes.
+- int **alignment** () const — Returns the byte alignment of an image line (up to 8).
+- int **dimension** () const — Returns the spatial dimension of the image.
+- bool **compatible** (const Image &other, bool ignoreType=false, bool ignore3D=false, bool ignoreChannels=false) const — Tells if this image is compatible to another one.
+
+## Member Enumeration Documentation
+
+### Type
+
+```cpp
+enum ImFusion::Image::Type
+```
+
+Pixel/voxel data type, equivalent to OpenGL defines.
+
+**Note:** This enumeration is redundant with PixelType and may become deprecated eventually. Prefer interfaces using PixelType when writing new code.
+
+### Location
+
+```cpp
+enum ImFusion::Image::Location
+```
+
+[Location](#location) where the data resides.
+
+**Enumerator:**
+
+- `NONE` — Actual data is not available.
+- `MEMORY` — CPU main memory.
+- `OPENGL` — OpenGL texture.
+- `OPENCL` — OpenCL image or buffer.
+- `CUSTOM` — Custom image location.
+
+## Member Function Documentation
+
+### configure
+
+```cpp
+void ImFusion::Image::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure the image descriptor from properties.
+
+### configuration
+
+```cpp
+void ImFusion::Image::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Store image descriptor into properties.
+
+### location
+
+```cpp
+virtual Location ImFusion::Image::location () const
+```
+
+*inline, virtual*
+
+Returns the location of the image (e.g. none, host memory or a GPU device).
+
+### storageToOriginal
+
+```cpp
+double ImFusion::Image::storageToOriginal (double value) const
+```
+
+*inline*
+
+Applies the image's shift and scale in order to convert *value* from storage pixel value domain to original pixel value domain.
+
+**See also:** [Pixel Value Domains](/cpp-sdk/4.5/api/guides/pixel-value-domains)
+
+### originalToStorage
+
+```cpp
+double ImFusion::Image::originalToStorage (double value) const
+```
+
+*inline*
+
+Applies the image's shift and scale in order to convert *value* from original pixel value domain to storage pixel value domain.
+
+**See also:** [Pixel Value Domains](/cpp-sdk/4.5/api/guides/pixel-value-domains)

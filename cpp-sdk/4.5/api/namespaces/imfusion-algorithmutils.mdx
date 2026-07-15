@@ -1,0 +1,129 @@
+---
+title: "ImFusion::AlgorithmUtils"
+sidebarTitle: "AlgorithmUtils"
+description: "Collection of convenience functions to work with ImFusion Algorithms."
+---
+
+## Overview
+
+Collection of convenience functions to work with ImFusion Algorithms.
+
+## Functions
+
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) &gt; [execute](#execute-1-4) (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &input, const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) &properties=[Properties](/cpp-sdk/4.5/api/classes/imfusion-properties)(), [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) \*progress=nullptr) — Convenience function to instantiate, configure and execute an [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm).
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) &gt; [execute](#execute-2-4) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \* &gt; &input, const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) &properties=[Properties](/cpp-sdk/4.5/api/classes/imfusion-properties)(), [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) \*progress=nullptr) — Convenience function to instantiate, configure and execute an [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm).
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) &gt; [execute](#execute-3-4) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Image](/cpp-sdk/4.5/api/classes/imfusion-image) \* &gt; &input, const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) &properties=[Properties](/cpp-sdk/4.5/api/classes/imfusion-properties)(), [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) \*progress=nullptr) — Convenience function to instantiate, configure and execute an [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm).
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) &gt; [execute](#execute-4-4) ([Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) &algorithm, [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) \*progress=nullptr) — Convenience function to execute a pre-configured algorithm.
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) &gt; [executeBatchedChannels](#executebatchedchannels) ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &input, [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) &gt;([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*)&gt; func) — Helper function to run a function that uses OpenGL on images that have potentially more than 4 channels.
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) &gt; **executeBatchedChannels** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &input, const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) &properties=[Properties](/cpp-sdk/4.5/api/classes/imfusion-properties)(), [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) \*progress=nullptr) — Helper function to run an algorithm of type T that uses OpenGL on images that have potentially more than 4 channels.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [parseAlgorithmName](#parsealgorithmname) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; \*categoriesOut=0) — Splits a fully qualified algorithm name into category vector and actual algorithm name.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [AlgorithmFactory::Descriptor](/cpp-sdk/4.5/api/structs/imfusion-algorithmfactory-descriptor) &gt; [sortAndAddSeparators](#sortandaddseparators) ([std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [AlgorithmFactory::Descriptor](/cpp-sdk/4.5/api/structs/imfusion-algorithmfactory-descriptor) &gt; descriptions) — Sort the given algorithm descriptions such that:
+
+## Function Documentation
+
+### execute
+
+```cpp
+template<typename T> std::optional < OwningDataList > ImFusion::AlgorithmUtils::execute (const DataList & input, const Properties & properties = Properties (), Progress * progress = nullptr)
+```
+
+Convenience function to instantiate, configure and execute an [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm).
+
+**Note:** Due to the other [execute()](#execute-1-4) overloads, initializer lists with multiple arguments will yield a compiler error due to ambiguity. In order to resolve this explicitly put the type name in front, i.e. [execute](#execute-1-4)([DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist)&#123;data1, data2, data3&#125;).
+
+**Parameters:**
+
+- `input` — Input data to instantiate the algorithm with.
+- `properties` — Configuration to assign to the algorithm prior to execution.
+- `progress` — Optional pointer to [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) instance to report computation progress.
+
+**Template Parameters:** | T | Class name of the algorithm to execute, must implement T::createCompatible(). |
+| --- | --- |
+
+### execute
+
+```cpp
+template<typename T> std::optional < OwningDataList > ImFusion::AlgorithmUtils::execute (const std::vector < SharedImage * > & input, const Properties & properties = Properties (), Progress * progress = nullptr)
+```
+
+Convenience function to instantiate, configure and execute an [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm).
+
+**Note:** Due to the other [execute()](#execute-1-4) overloads, initializer lists with multiple arguments will yield a compiler error due to ambiguity. In order to resolve this explicitly put the type name in front, i.e. [execute](#execute-1-4)([std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt;SharedImage\*&gt;&#123;si1, si2, si3&#125;).
+
+**Parameters:**
+
+- `input` — Input images to instantiate the algorithm with.
+- `properties` — Configuration to assign to the algorithm prior to execution.
+- `progress` — Optional pointer to [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) instance to report computation progress.
+
+**Template Parameters:** | T | Class name of the algorithm to execute, must implement T::createCompatible(). |
+| --- | --- |
+
+### execute
+
+```cpp
+template<typename T> std::optional < OwningDataList > ImFusion::AlgorithmUtils::execute (const std::vector < Image * > & input, const Properties & properties = Properties (), Progress * progress = nullptr)
+```
+
+Convenience function to instantiate, configure and execute an [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm).
+
+**Note:** Due to the other [execute()](#execute-1-4) overloads, initializer lists with multiple arguments will yield a compiler error due to ambiguity. In order to resolve this explicitly put the type name in front, i.e. [execute](#execute-1-4)([std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt;Image\*&gt;&#123;img1, img2, img3&#125;).
+
+**Parameters:**
+
+- `input` — Input data to instantiate the algorithm with.
+- `properties` — Configuration to assign to the algorithm prior to execution.
+- `progress` — Optional pointer to [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) instance to report computation progress.
+
+**Template Parameters:** | T | Class name of the algorithm to execute, must implement T::createCompatible(). |
+| --- | --- |
+
+### execute
+
+```cpp
+std::optional < OwningDataList > ImFusion::AlgorithmUtils::execute (Algorithm & algorithm, Progress * progress = nullptr)
+```
+
+Convenience function to execute a pre-configured algorithm.
+
+**Parameters:**
+
+- `algorithm` — [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) to execute.
+- `progress` — Optional pointer to [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) instance to report computation progress.
+
+### executeBatchedChannels
+
+```cpp
+std::optional < OwningDataList > ImFusion::AlgorithmUtils::executeBatchedChannels (SharedImageSet & input, std::function < std::optional < OwningDataList >(SharedImageSet *)> func)
+```
+
+Helper function to run a function that uses OpenGL on images that have potentially more than 4 channels.
+
+The function is assumed to return a new image with the same number of channels as the input, or to work in-place. The input image is split in 4-channels sub-images, on which the algorithm is ran, and the final result is then reassembled.
+
+### parseAlgorithmName
+
+```cpp
+std::string ImFusion::AlgorithmUtils::parseAlgorithmName (const std::string & name, std::vector < std::string > * categoriesOut = 0)
+```
+
+Splits a fully qualified algorithm name into category vector and actual algorithm name.
+
+**Parameters:**
+
+- `name` — Fully qualified algorithm name
+- `categories` — Optional output vector containing the names of the categories in hierarchical order
+
+**Returns:** unqualified algorithm name
+
+### sortAndAddSeparators
+
+```cpp
+std::vector < AlgorithmFactory::Descriptor > ImFusion::AlgorithmUtils::sortAndAddSeparators (std::vector < AlgorithmFactory::Descriptor > descriptions)
+```
+
+Sort the given algorithm descriptions such that:
+
+- Algorithms with the priority flag come first within their own categories.
+- Algorithms with the experimental flag come last within their own categories.
+- Categories are sorted alphabetically and algorithms without categories come before others. Adds an empty algorithm with the name "-" indicating a separator after priority algorithms in each category.

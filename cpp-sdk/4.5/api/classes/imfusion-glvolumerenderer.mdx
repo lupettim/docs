@@ -1,0 +1,190 @@
+---
+title: "ImFusion::GlVolumeRenderer"
+sidebarTitle: "GlVolumeRenderer"
+description: "Interface for a class that can render volumetric data into a GlVolumeView ."
+---
+
+`#include <ImFusion/GL/GlVolumeRenderer.h>`
+
+## Overview
+
+Interface for a class that can render volumetric data into a [GlVolumeView](/cpp-sdk/4.5/api/classes/imfusion-glvolumeview).
+
+Implement the [Configurable](/cpp-sdk/4.5/api/classes/imfusion-configurable) interface in order to provide an automatically generated [GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui) for configuration when using the [InteractiveViewOptionsOverlay](/cpp-sdk/4.5/api/classes/imfusion-interactiveviewoptionsoverlay).
+
+**See also:** [ImageView3D](/cpp-sdk/4.5/api/classes/imfusion-imageview3d), [GlVolumeView](/cpp-sdk/4.5/api/classes/imfusion-glvolumeview), [InteractiveViewOptionsOverlay](/cpp-sdk/4.5/api/classes/imfusion-interactiveviewoptionsoverlay), [EntryExitPointRenderer](/cpp-sdk/4.5/api/classes/imfusion-entryexitpointrenderer)
+
+## Classes
+
+- struct [RenderTextures](/cpp-sdk/4.5/api/structs/imfusion-glvolumerenderer-rendertextures) — Helper struct to encapsulate all input/output textures needed/used during direct volume rendering.
+
+## Public Member Functions
+
+- virtual [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [name](#name) () const =0 — Returns the name for identification/GUI usage of this volume renderer.
+- virtual void **setData** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::pair](http://en.cppreference.com/w/cpp/utility/pair.html)&lt; const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*, const [DisplayOptions3d](/cpp-sdk/4.5/api/classes/imfusion-displayoptions3d) \* &gt; &gt; &data) — Sets the data to render paired with the display options to use.
+- virtual void [render](#render) (const [GL::ViewState](/cpp-sdk/4.5/api/classes/imfusion-gl-viewstate) &viewState, const [RenderTextures](/cpp-sdk/4.5/api/structs/imfusion-glvolumerenderer-rendertextures) &renderTextures)=0 — Renders the data in the given configuration.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::pair](http://en.cppreference.com/w/cpp/utility/pair.html)&lt; const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*, const [DisplayOptions3d](/cpp-sdk/4.5/api/classes/imfusion-displayoptions3d) \* &gt; &gt; **data** () const — Return the list of shown data paired with the DisplayOptions to use.
+- virtual [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* [imageData](#imagedata) () const =0 — Returns the first [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) that is rendered by this [GlVolumeRenderer](/cpp-sdk/4.5/api/classes/imfusion-glvolumerenderer).
+- virtual vec3 [center](#center) () const =0 — Returns the center in world coordinates of the first shown data.
+- virtual bool **dirty** () const — Returns whether the scene is dirty (i.e. re-rendering is required).
+- virtual bool [supportsOITIntegration](#supportsoitintegration) () const — Returns whether this renderer supports the order-independent integration of semi-transparent scene geometry.
+- virtual bool [supportsDeformations](#supportsdeformations) () const — Returns whether this renderer supports showing [Deformations](/cpp-sdk/4.5/api/classes/imfusion-deformation) attached to images.
+- bool **showsDeformations** () const — Returns the flag whether to evaluate deformation fields of volumes during rendering if supported.
+- void **setShowDeformations** (bool value) — Sets the flag whether to evaluate deformation fields of volumes during rendering if supported.
+- bool **lod** () const — Returns the flag whether low LOD mode is enabled (half output render size, half sampling rate).
+- virtual void [setLod](#setlod) (bool value) — Sets the flag whether low LOD mode is enabled (half output render size, half sampling rate).
+- float **samplesPerVoxel** () const — Returns the number of ray casting samples to use per smallest voxel length.
+- void **setSamplesPerVoxel** (float value) — Sets the number of ray casting samples to use per smallest voxel length.
+- void **setClipPlane** ([std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [Geometry::Plane](/cpp-sdk/4.5/api/classes/imfusion-geometry-plane) &gt; clipPlane) — Sets an optional clip plane so that parts on the back (opposite the direction of the normal vector) are clipped.
+- void **setMaxVolumesToDisplay** (int value) — Sets the maximum number of volumes to display.
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+## Protected Member Functions
+
+- virtual void [clearImages](#clearimages) () — Called when the set of images to render is going to be reset.
+- virtual void **markDirty** () — Set the dirty flag so that the scene is re-rendered from scratch next time.
+- virtual void **onTransformationChanged** (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*sis) — Called when the transformation of one of the rendered images has changed.
+- void **onDeformationEvent** (const [DeformationEvent](/cpp-sdk/4.5/api/classes/imfusion-deformationevent) &event) — Called when a [Deformation](/cpp-sdk/4.5/api/classes/imfusion-deformation) object attached to the [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) has changed its state.
+- virtual void **registerImage** (const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*sis, int index, const [DisplayOptions3d](/cpp-sdk/4.5/api/classes/imfusion-displayoptions3d) \*displayOptions)=0 — Called for each image that shall be rendered.
+
+## Protected Attributes
+
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::pair](http://en.cppreference.com/w/cpp/utility/pair.html)&lt; const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*, const [DisplayOptions3d](/cpp-sdk/4.5/api/classes/imfusion-displayoptions3d) \* &gt; &gt; **m_currentData**
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; SignalConnection &gt; &gt; **m_temporarySlots** — signal connections created for the set of currently shown images
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [GL::Framebuffer](/cpp-sdk/4.5/api/classes/imfusion-gl-framebuffer) &gt; **m_fbo** — FBO used during rendering.
+- bool **m_dirty** = true
+- bool **m_showDeformations** = false — Flag whether to evaluate deformation fields of volumes if supported.
+- bool **m_lod** = false — Flag whether low LOD mode is enabled (half output render size, half sampling rate).
+- float **m_samplesPerVoxel** = 1.f — Ray casting samples per smallest voxel length.
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [Geometry::Plane](/cpp-sdk/4.5/api/classes/imfusion-geometry-plane) &gt; **m_clipPlane** — Optional clipping plane to use during rendering.
+- int **m_maxVolumesToDisplay** = 4 — Maximum number of volumes to display.
+
+## Member Function Documentation
+
+### name
+
+```cpp
+virtual std::string ImFusion::GlVolumeRenderer::name () const
+```
+
+*pure virtual*
+
+Returns the name for identification/GUI usage of this volume renderer.
+
+### render
+
+```cpp
+virtual void ImFusion::GlVolumeRenderer::render (const GL::ViewState & viewState, const RenderTextures & renderTextures)
+```
+
+*pure virtual*
+
+Renders the data in the given configuration.
+
+**Parameters:**
+
+- `viewState` — OpenGL state describing projection and model-view matrix to use for rendering
+- `renderTextures` — Struct holding all the render textures to use
+
+**Note:** The dimensions of all provided textures must be equivalent.
+
+### imageData
+
+```cpp
+virtual SharedImageSet * ImFusion::GlVolumeRenderer::imageData () const
+```
+
+*pure virtual*
+
+Returns the first [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) that is rendered by this [GlVolumeRenderer](/cpp-sdk/4.5/api/classes/imfusion-glvolumerenderer).
+
+**Note:** This is merely a low-level convenience function. Please use GlVolumeRenderer::data() or [ImageView3D::visibleData()](/cpp-sdk/4.5/api/classes/imfusion-gui-view) on the parent view in order to get all shown data.
+
+### center
+
+```cpp
+virtual vec3 ImFusion::GlVolumeRenderer::center () const
+```
+
+*pure virtual*
+
+Returns the center in world coordinates of the first shown data.
+
+### supportsOITIntegration
+
+```cpp
+virtual bool ImFusion::GlVolumeRenderer::supportsOITIntegration () const
+```
+
+*virtual*
+
+Returns whether this renderer supports the order-independent integration of semi-transparent scene geometry.
+
+This flag is queried by [GlVolumeView](/cpp-sdk/4.5/api/classes/imfusion-glvolumeview) to determine whether blending OIT fragments is performed by the volume renderer (return true) or whether it should be done by the [GlVolumeView](/cpp-sdk/4.5/api/classes/imfusion-glvolumeview) prior to letting the [GlVolumeRenderer](/cpp-sdk/4.5/api/classes/imfusion-glvolumerenderer) render (return false). The default implementation returns false.
+
+**See also:** GlOrderIndependentTransparency
+
+### supportsDeformations
+
+```cpp
+virtual bool ImFusion::GlVolumeRenderer::supportsDeformations () const
+```
+
+*virtual*
+
+Returns whether this renderer supports showing [Deformations](/cpp-sdk/4.5/api/classes/imfusion-deformation) attached to images.
+
+The default implementation returns false.
+
+**See also:** setShowDeformations()
+
+### setLod
+
+```cpp
+virtual void ImFusion::GlVolumeRenderer::setLod (bool value)
+```
+
+*virtual*
+
+Sets the flag whether low LOD mode is enabled (half output render size, half sampling rate).
+
+### configuration
+
+```cpp
+void ImFusion::GlVolumeRenderer::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality
+
+### configure
+
+```cpp
+void ImFusion::GlVolumeRenderer::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### clearImages
+
+```cpp
+virtual void ImFusion::GlVolumeRenderer::clearImages ()
+```
+
+*protected, virtual*
+
+Called when the set of images to render is going to be reset.
+
+Default implementation will disconnect all connections in m_temporarySlots and clear the vector.

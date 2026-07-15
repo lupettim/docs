@@ -1,0 +1,99 @@
+---
+title: "ImFusion::GlRotationTransformer"
+sidebarTitle: "GlRotationTransformer"
+---
+
+## Public Member Functions
+
+- **GlRotationTransformer** (int axis=0, double axialOffset=0, double smallRadius=20, double bigRadius=30, const isom3 &offset=isom3::Identity(), bool contour=true)
+- void [draw](#draw) (const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &view) override — Draw the object in 3D space.
+- [Geometry::AlignedBox](/cpp-sdk/4.5/api/classes/imfusion-geometry-alignedbox) [bounds](#bounds) () const override — Get the axis-aligned bounding box of this [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) in world space.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [typeName](#typename) () const override — Return unique identifier for this object class used for serialization.
+- bool [isInside](#isinside) (const vec2 &pos, const [GL::ViewState](/cpp-sdk/4.5/api/classes/imfusion-gl-viewstate) &state) override
+- void [activate](#activate) (const vec2 &start, const [GL::ViewState](/cpp-sdk/4.5/api/classes/imfusion-gl-viewstate) &state) override
+- void [moveTo](#moveto) (const vec2 &pos, const vec2 &start, const [GL::ViewState](/cpp-sdk/4.5/api/classes/imfusion-gl-viewstate) &state) override
+- double [distanceTo](#distanceto) (const vec2 &pos, const [GL::ViewState](/cpp-sdk/4.5/api/classes/imfusion-gl-viewstate) &state) override
+
+## Public Attributes
+
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; double &gt; **p_smallRadius** = &#123;"smallRadius", 20.f, this&#125;
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; double &gt; **p_bigRadius** = &#123;"bigRadius", 30.f, this&#125;
+
+## Protected Member Functions
+
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; vec3 &gt; [project](#project) (const vec2 &pos, const [GL::ViewState](/cpp-sdk/4.5/api/classes/imfusion-gl-viewstate) &state) const override
+- vec3 **project** (const vec3 &pos)
+
+## Member Function Documentation
+
+### draw
+
+```cpp
+void ImFusion::GlRotationTransformer::draw (const GlView & view)
+```
+
+*override, virtual*
+
+Draw the object in 3D space.
+
+### bounds
+
+```cpp
+Geometry::AlignedBox ImFusion::GlRotationTransformer::bounds () const
+```
+
+*override, virtual*
+
+Get the axis-aligned bounding box of this [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) in world space.
+
+Return an empty (default-constructed) AlignedBox object if the [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) does not reside in world space.
+
+### typeName
+
+```cpp
+std::string ImFusion::GlRotationTransformer::typeName () const
+```
+
+*override, virtual*
+
+Return unique identifier for this object class used for serialization.
+
+### isInside
+
+```cpp
+bool ImFusion::GlRotationTransformer::isInside (const vec2 & pos, const GL::ViewState & state)
+```
+
+*override, virtual*
+
+### activate
+
+```cpp
+void ImFusion::GlRotationTransformer::activate (const vec2 & start, const GL::ViewState & state)
+```
+
+*override, virtual*
+
+### moveTo
+
+```cpp
+void ImFusion::GlRotationTransformer::moveTo (const vec2 & pos, const vec2 & start, const GL::ViewState & state)
+```
+
+*override, virtual*
+
+### distanceTo
+
+```cpp
+double ImFusion::GlRotationTransformer::distanceTo (const vec2 & pos, const GL::ViewState & state)
+```
+
+*override, virtual*
+
+### project
+
+```cpp
+std::optional < vec3 > ImFusion::GlRotationTransformer::project (const vec2 & pos, const GL::ViewState & state) const
+```
+
+*override, protected, virtual*

@@ -1,0 +1,56 @@
+---
+title: "ImFusion::TagValues"
+sidebarTitle: "TagValues"
+---
+
+## Public Member Functions
+
+- **TagValues** (const [TagSystem](/cpp-sdk/4.5/api/classes/imfusion-tagsystem) &tagSystem)
+- [TagType](/cpp-sdk/4.5/api/structs/imfusion-tagtype) **type** (size_t index) const — Return the type of the [TagValue](/cpp-sdk/4.5/api/unions/imfusion-tagvalue) as defined in the [TagSystem](/cpp-sdk/4.5/api/classes/imfusion-tagsystem).
+- bool **setTag** (size_t index, [TagValue](/cpp-sdk/4.5/api/unions/imfusion-tagvalue) value)
+- bool **setBool** (size_t index, bool boolValue)
+- bool **setEnum** (size_t index, size_t enumValue)
+- bool **setFloat** (size_t index, float floatValue)
+- [TagValue](/cpp-sdk/4.5/api/unions/imfusion-tagvalue) **getTag** (size_t index, bool \*ok) const
+- bool **getBool** (size_t index, bool \*ok) const
+- size_t **getEnum** (size_t index, bool \*ok) const
+- QString **getEnumName** (size_t index, bool \*ok) const
+- float **getFloat** (size_t index, bool \*ok) const
+- bool **areValuesDefault** () const
+- bool **setValues** ([std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [TagValue](/cpp-sdk/4.5/api/unions/imfusion-tagvalue) &gt; values)
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [TagValue](/cpp-sdk/4.5/api/unions/imfusion-tagvalue) &gt; & **values** () const
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void **configureFromRemote** (const QJsonArray &)
+- bool **operator==** (const TagValues &) const
+- bool **operator!=** (const TagValues &) const
+
+## Member Function Documentation
+
+### configuration
+
+```cpp
+void ImFusion::TagValues::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality
+
+### configure
+
+```cpp
+void ImFusion::TagValues::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality

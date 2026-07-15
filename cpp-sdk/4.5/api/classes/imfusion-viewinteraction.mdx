@@ -1,0 +1,156 @@
+---
+title: "ImFusion::ViewInteraction"
+sidebarTitle: "ViewInteraction"
+description: "Base class for all view interactions."
+---
+
+`#include <ImFusion/GUI/ViewInteraction.h>`
+
+## Overview
+
+[Base](/cpp-sdk/4.5/api/structs/imfusion-dicom-base) class for all view interactions.
+
+## Classes
+
+- struct [ActionSpeed](/cpp-sdk/4.5/api/structs/imfusion-viewinteraction-actionspeed)
+
+## Public Member Functions
+
+- [ViewInteraction](#viewinteraction) ([InteractiveView](/cpp-sdk/4.5/api/classes/imfusion-interactiveview) &view) — Instantiate a new [ViewInteraction](/cpp-sdk/4.5/api/classes/imfusion-viewinteraction) that contains already basic actions for the view.
+- void [contextMenuCreate](#contextmenucreate) (QMenu &m) override — Create context menu entries.
+- virtual void **setViewActionMap** (ViewActionMap \*m) — Sets the action mapping of this view. If nullptr, will default to the global one.
+- virtual ViewActionMap \* **viewActionMap** () — Returns the local view action map for this view interaction, if any has been set.
+- void [setMouseActionSpeed](#setmouseactionspeed) (ViewActionType action, double speed) — Setters for the speed of a mouse (touch) action.
+- void **setTouchActionSpeed** (ViewActionType action, double speed)
+- double **mouseActionSpeed** (ViewActionType action) const — Getters for the speed of a mouse (touch) action, return the default value if the action is not found in the map.
+- double **touchActionSpeed** (ViewActionType action) const
+
+## Static Public Attributes
+
+- static const [std::unordered_map](http://en.cppreference.com/w/cpp/container/unordered_map.html)&lt; ViewActionType, QString &gt; **viewActionsName**
+- static const [std::unordered_map](http://en.cppreference.com/w/cpp/container/unordered_map.html)&lt; Qt::MouseButton, QString &gt; **mouseButtonsName**
+
+## Protected Slots
+
+- void **contextMenuEvaluate** (QAction \*action) override — Evaluate action chosen in context menu or by shortcut.
+
+## Protected Member Functions
+
+- virtual void **keyPressEvent** (QKeyEvent \*event) — Triggers actions if the pressed key sequence matches their shortcut.
+- void [createActions](#createactions) () override — Creates actions shown in context menu.
+
+## Protected Attributes
+
+- [InteractiveView](/cpp-sdk/4.5/api/classes/imfusion-interactiveview) & **m_view**
+- ViewActionMap \* [m_viewActionMap](#m-viewactionmap) — Custom mapping for this specific view. This will override the global mapping if is not nullptr.
+
+## Static Protected Attributes
+
+- static ViewActionMap **viewActionMapGlobal** — Global mapping between view actions and user mouse events (only mouse and keyboard modifiers now, touch and gestures must be supported too).
+
+## Interface for defining and accessing view action mapper
+
+- bool **matchMappedActions** (ViewActionType viewAction, Qt::MouseButton button, Qt::KeyboardModifiers modifiers) const — Returns true if the MouseAction defined by `button` and `modifiers` is registered for the `viewAction`.
+- virtual void [createCustomViewActionMap](#createcustomviewactionmap) () — Must be used to override the global view action mapper This method can be overridden in order to define a custom default mapping between view actions and user mouse events Example code for the overridden method:
+- static bool [addMappedViewAction](#addmappedviewaction) (ViewActionType viewAction, Qt::MouseButton button, Qt::KeyboardModifiers modifiers)
+- static bool **removeMappedViewAction** (ViewActionType viewAction, Qt::MouseButton button, Qt::KeyboardModifiers modifiers) — Removes mapping from `viewAction` to *MouseAction* defined by `button` and `modifiers` Returns true if removing succeeds, or false if this mapping does not exists.
+- static void **resetActionMapping** () — Loads the default view interaction mapping.
+- static const ViewActionMap & **globalViewActionMap** () — Const access to the global view action mapper.
+- static void **setGlobalViewActionMap** (const ViewActionMap &map) — Sets the global view action map.
+- static bool **hasConflicts** (const ViewActionMap &actionMap, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::pair](http://en.cppreference.com/w/cpp/utility/pair.html)&lt; ViewActionType, ViewActionType &gt; &gt; &conflictingActions) — Checks if the mapping defined in `actionMap` has any conflicts.
+
+## Constructor & Destructor Documentation
+
+### ViewInteraction
+
+```cpp
+ImFusion::ViewInteraction::ViewInteraction (InteractiveView & view)
+```
+
+Instantiate a new [ViewInteraction](/cpp-sdk/4.5/api/classes/imfusion-viewinteraction) that contains already basic actions for the view.
+
+Basic actions are &#123;"Reset", "Hide", "Fullscreen", "Link Zoom"&#125;.
+
+**Note:** [ViewInteraction](/cpp-sdk/4.5/api/classes/imfusion-viewinteraction) does *not* self-register with *view*. You must call InteractiveView::setInteraction().
+
+## Member Function Documentation
+
+### contextMenuCreate
+
+```cpp
+void ImFusion::ViewInteraction::contextMenuCreate (QMenu & m)
+```
+
+*override, virtual*
+
+Create context menu entries.
+
+### addMappedViewAction
+
+```cpp
+bool ImFusion::ViewInteraction::addMappedViewAction (ViewActionType viewAction, Qt::MouseButton button, Qt::KeyboardModifiers modifiers)
+```
+
+*static*
+
+Adds a mapping from `viewAction` to a *MouseAction* defined by `button` and `modifiers` Returns true if adding succeeds, or false if this mapping is already exists.
+
+### createCustomViewActionMap
+
+```cpp
+virtual void ImFusion::ViewInteraction::createCustomViewActionMap ()
+```
+
+*inline, virtual*
+
+Must be used to override the global view action mapper This method can be overridden in order to define a custom default mapping between view actions and user mouse events Example code for the overridden method:
+
+```cpp
+void CustomInteraction::createViewActionMap()
+{
+   clearActionMapping();
+   ...
+ addMappedViewAction(ViewActionType::WINDOW, Qt::MouseButton::LeftButton, Qt::KeyboardModifier::ShiftModifier);
+ addMappedViewAction(ViewActionType::BLEND, Qt::MouseButton::LeftButton, Qt::KeyboardModifier::AltModifier);
+  ...
+}
+```
+ fragment
+
+### setMouseActionSpeed
+
+```cpp
+void ImFusion::ViewInteraction::setMouseActionSpeed (ViewActionType action, double speed)
+```
+
+Setters for the speed of a mouse (touch) action.
+
+Note, The speed is a multiplicative value in front of the actual physical displacement of the mouse/touch action. If you are using a track-pad and want to change the scrolling speed of a 3D Slice-View or a 2D Frame-View, set the speed of SWEEPSLICE3D/SWEEPSLICE2D to the desired value
+
+### createActions
+
+```cpp
+void ImFusion::ViewInteraction::createActions ()
+```
+
+*override, protected, virtual*
+
+Creates actions shown in context menu.
+
+## Member Data Documentation
+
+### m_viewActionMap
+
+```cpp
+ViewActionMap* ImFusion::ViewInteraction::m_viewActionMap
+```
+
+*protected*
+
+**Initial value:**
+```cpp
+                  =
+nullptr
+```
+ fragment
+Custom mapping for this specific view. This will override the global mapping if is not nullptr.

@@ -1,0 +1,59 @@
+---
+title: "ImFusion::DataComponentFactory"
+sidebarTitle: "DataComponentFactory"
+description: "Factory singleton for creating DataComponents from string IDs."
+---
+
+`#include <ImFusion/Base/DataComponentFactory.h>`
+
+## Overview
+
+Factory singleton for creating DataComponents from string IDs.
+
+Every [DataComponent](/cpp-sdk/4.5/api/classes/imfusion-datacomponent) implements the id() method returning a unique string identifier for that specific type of [DataComponent](/cpp-sdk/4.5/api/classes/imfusion-datacomponent). DataComponents have to be registered with [DataComponentFactory](/cpp-sdk/4.5/api/classes/imfusion-datacomponentfactory) using this string ID and a factory method for instantiating a [DataComponent](/cpp-sdk/4.5/api/classes/imfusion-datacomponent) of such type. During registration [DataComponentFactory](/cpp-sdk/4.5/api/classes/imfusion-datacomponentfactory) ensures the uniqueness of the registered DataComponents and otherwise raises an assertion/logs a warning.
+
+**See also:** [DataComponentBase](/cpp-sdk/4.5/api/classes/imfusion-datacomponentbase) ,
+
+## Public Types
+
+- using **FactoryMethod** = [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt;[std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt;[DataComponentBase](/cpp-sdk/4.5/api/classes/imfusion-datacomponentbase)&gt;()&gt; — Alias for a [DataComponentFactory](/cpp-sdk/4.5/api/classes/imfusion-datacomponentfactory) factory method creating a specific [DataComponent](/cpp-sdk/4.5/api/classes/imfusion-datacomponent).
+
+## Public Member Functions
+
+- void [registerComponent](#registercomponent) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &id, FactoryMethod factoryMethod) — Registers a [DataComponent](/cpp-sdk/4.5/api/classes/imfusion-datacomponent) with the [DataComponentFactory](/cpp-sdk/4.5/api/classes/imfusion-datacomponentfactory).
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [DataComponentBase](/cpp-sdk/4.5/api/classes/imfusion-datacomponentbase) &gt; [createComponent](#createcomponent) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &id, const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p=nullptr) — Instantiates a [DataComponent](/cpp-sdk/4.5/api/classes/imfusion-datacomponent) specified by the given ID.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **registeredComponentIds** () const — Returns the Unique IDs of all DataComponents registered with this factory.
+
+## Static Public Member Functions
+
+- static DataComponentFactory & **get** () — Returns the [DataComponentFactory](/cpp-sdk/4.5/api/classes/imfusion-datacomponentfactory) singleton object.
+
+## Member Function Documentation
+
+### registerComponent
+
+```cpp
+void ImFusion::DataComponentFactory::registerComponent (const std::string & id, FactoryMethod factoryMethod)
+```
+
+Registers a [DataComponent](/cpp-sdk/4.5/api/classes/imfusion-datacomponent) with the [DataComponentFactory](/cpp-sdk/4.5/api/classes/imfusion-datacomponentfactory).
+
+**Note:** The string IDs of DataComponents have to be unique. If you register an ID a second time, the previously registered factory method will be overwritten. [Debug](/cpp-sdk/4.5/api/namespaces/imfusion-gl-debug) builds will also raise an assertion.
+
+**Parameters:**
+
+- `id` — Unique string ID for the [DataComponent](/cpp-sdk/4.5/api/classes/imfusion-datacomponent) to register.
+- `factoryMethod` — Method to use for instantiating the [DataComponent](/cpp-sdk/4.5/api/classes/imfusion-datacomponent) to register.
+
+### createComponent
+
+```cpp
+std::unique_ptr < DataComponentBase > ImFusion::DataComponentFactory::createComponent (const std::string & id, const Properties * p = nullptr)
+```
+
+Instantiates a [DataComponent](/cpp-sdk/4.5/api/classes/imfusion-datacomponent) specified by the given ID.
+
+**Parameters:**
+
+- `id` — Unique ID of the [DataComponent](/cpp-sdk/4.5/api/classes/imfusion-datacomponent) to create.
+- `p` — Optional pointer to a [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object. If not 0, it will used to configure the newly created [DataComponent](/cpp-sdk/4.5/api/classes/imfusion-datacomponent).

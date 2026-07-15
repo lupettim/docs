@@ -1,0 +1,113 @@
+---
+title: "ImFusion::GUI::InfoOverlay"
+sidebarTitle: "InfoOverlay"
+description: "Interface for a ViewOverlay to show textual information depending on the mouse cursor position (for instance: pixel information of an image, face/vertex info of"
+---
+
+`#include <ImFusion/GUI/InfoOverlay.h>`
+
+## Overview
+
+Interface for a [ViewOverlay](/cpp-sdk/4.5/api/classes/imfusion-gui-viewoverlay) to show textual information depending on the mouse cursor position (for instance: pixel information of an image, face/vertex info of a mesh).
+
+The text can either be shown using a regular [GlTextOverlay](/cpp-sdk/4.5/api/classes/imfusion-gltextoverlay) at the selected [Anchor](/cpp-sdk/4.5/api/classes/imfusion-gui-viewoverlay) or as a tooltip hovering next to the mouse pointer.
+
+## Public Types
+
+- enum class [Style](#style) &#123; Overlay = 0 , Tooltip &#125; — Enumeration specifying how the text information shall be presented.
+
+## Public Member Functions
+
+- const vec4 & **textColor** () — Returns the used text color in Style::Overlay mode.
+- void **setTextColor** (const vec4 &color) — Set the used text color in Style::Overlay mode.
+- void **setStyle** ([Style](#style) s)
+- [Style](#style) **style** () const
+- [GlTextOverlay](/cpp-sdk/4.5/api/classes/imfusion-gltextoverlay) \* **glOverlay** () — Get a pointer to the underlying [GlTextOverlay](/cpp-sdk/4.5/api/classes/imfusion-gltextoverlay) to allow for more customization than setTextColor().
+- void [render](#render) () override — Calls [GlOverlay::render()](/cpp-sdk/4.5/api/classes/imfusion-gloverlay) on the underlying glOverlay() using the current [viewport()](/cpp-sdk/4.5/api/classes/imfusion-gui-viewoverlay) shrunk by [margin()](/cpp-sdk/4.5/api/classes/imfusion-gui-viewoverlay).
+- [EventResult](/cpp-sdk/4.5/api/structs/imfusion-gui-eventresult) [handleInputEvent](#handleinputevent) (const [InputEvent](/cpp-sdk/4.5/api/classes/imfusion-gui-inputevent) &event) override — Handle a user event received from the parent [View](/cpp-sdk/4.5/api/classes/imfusion-gui-view).
+
+## Protected Member Functions
+
+- void [updateSizeHint](#updatesizehint) () — Updates the size hint of the overlay so that the view overlay layouting can be updated.
+- virtual [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [createText](#createtext) (vec2i mousePositionPx)=0 — Implement this function to specify what text to display for the given mouse position.
+- virtual [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [createSizeHintText](#createsizehinttext) ()=0 — Implement this function to return a largest sample text that would give a hint about the necessary overlay size.
+
+## Protected Attributes
+
+- [GlTextOverlay](/cpp-sdk/4.5/api/classes/imfusion-gltextoverlay) \* **m_textOverlay** = nullptr
+- [Style](#style) **m_style** = Style::Overlay
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; vec2i &gt; **m_pixelPos** = std::nullopt
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **m_text**
+
+## Member Enumeration Documentation
+
+### Style
+
+```cpp
+enum class ImFusion::GUI::InfoOverlay::Style
+```
+
+*strong*
+
+Enumeration specifying how the text information shall be presented.
+
+**Enumerator:**
+
+- `Overlay` — Information is displayed as a regular text overlay at the selected [Anchor](/cpp-sdk/4.5/api/classes/imfusion-gui-viewoverlay).
+- `Tooltip` — Information is displayed as a tooltip hovering next to the mouse pointer.
+
+## Member Function Documentation
+
+### render
+
+```cpp
+void ImFusion::GUI::InfoOverlay::render ()
+```
+
+*override, virtual*
+
+Calls [GlOverlay::render()](/cpp-sdk/4.5/api/classes/imfusion-gloverlay) on the underlying glOverlay() using the current [viewport()](/cpp-sdk/4.5/api/classes/imfusion-gui-viewoverlay) shrunk by [margin()](/cpp-sdk/4.5/api/classes/imfusion-gui-viewoverlay).
+
+### handleInputEvent
+
+```cpp
+EventResult ImFusion::GUI::InfoOverlay::handleInputEvent (const InputEvent & event)
+```
+
+*override, virtual*
+
+Handle a user event received from the parent [View](/cpp-sdk/4.5/api/classes/imfusion-gui-view).
+
+The default implementation is empty.
+
+### updateSizeHint
+
+```cpp
+void ImFusion::GUI::InfoOverlay::updateSizeHint ()
+```
+
+*protected*
+
+Updates the size hint of the overlay so that the view overlay layouting can be updated.
+
+Derived classes should call this whenever the maximum size of the possible text changes considerably.
+
+### createText
+
+```cpp
+virtual std::string ImFusion::GUI::InfoOverlay::createText (vec2i mousePositionPx)
+```
+
+*protected, pure virtual*
+
+Implement this function to specify what text to display for the given mouse position.
+
+### createSizeHintText
+
+```cpp
+virtual std::string ImFusion::GUI::InfoOverlay::createSizeHintText ()
+```
+
+*protected, pure virtual*
+
+Implement this function to return a largest sample text that would give a hint about the necessary overlay size.

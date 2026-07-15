@@ -1,0 +1,47 @@
+---
+title: "ImFusion::AnnotationOnlyView"
+sidebarTitle: "AnnotationOnlyView"
+---
+
+## Public Member Functions
+
+- **AnnotationOnlyView** ([Project](/cpp-sdk/4.5/api/classes/imfusion-project) &p)
+- void **dragEnterEvent** (QDragEnterEvent \*event) override
+- void **dropEvent** (QDropEvent \*event) override
+- void [loadFromPath](#loadfrompath) (QString dataPath, QString labelmapPath="") — Loads an image from the given path and shows it in the views.
+- void [setSaveUrl](#setsaveurl) (const [Filesystem::Url](/cpp-sdk/4.5/api/classes/imfusion-filesystem-url) &url) — Hardcodes a URL that will be used when clicking the save button.
+- bool [saveToFile](#savetofile) ([Filesystem::Url](/cpp-sdk/4.5/api/classes/imfusion-filesystem-url) url, const [IO::OutputFormat](/cpp-sdk/4.5/api/structs/imfusion-io-outputformat) &outputFormat, [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) \*progress) — Save the current or all pixelwise layers (depending on the outputFormat) to the given url.
+- bool **saveToFile** (const [Filesystem::Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path) &path, const [IO::OutputFormat](/cpp-sdk/4.5/api/structs/imfusion-io-outputformat) &outputFormat, [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) \*progress)
+- void **setLoadButtonVisible** (bool visible) — Hides the Load button in the top bar.
+
+## Member Function Documentation
+
+### loadFromPath
+
+```cpp
+void ImFusion::AnnotationOnlyView::loadFromPath (QString dataPath, QString labelmapPath = "")
+```
+
+Loads an image from the given path and shows it in the views.
+
+If a non-empty labelmapPath is given, a pixelwise labelmap is loaded as well.
+
+### setSaveUrl
+
+```cpp
+void ImFusion::AnnotationOnlyView::setSaveUrl (const Filesystem::Url & url)
+```
+
+Hardcodes a URL that will be used when clicking the save button.
+
+If empty (default) the save button will show a file selection dialog.
+
+### saveToFile
+
+```cpp
+bool ImFusion::AnnotationOnlyView::saveToFile (Filesystem::Url url, const IO::OutputFormat & outputFormat, Progress * progress)
+```
+
+Save the current or all pixelwise layers (depending on the outputFormat) to the given url.
+
+Both file: and http(s): URLs are supported. In case of http(s), a POST request is performed that contains the resulting segmentation as an ImFusionFile under the key 'segmentation'. Returns false and shows a QMessageBox on failure.

@@ -1,0 +1,56 @@
+---
+title: "ImFusion::DeformationEditorController"
+sidebarTitle: "DeformationEditorController"
+description: "Controller for the DeformationEditor algorithm."
+---
+
+`#include <ImFusion/GUI/DeformationEditorController.h>`
+
+## Overview
+
+[Controller](/cpp-sdk/4.5/api/classes/imfusion-controller) for the [DeformationEditor](/cpp-sdk/4.5/api/classes/imfusion-deformationeditor) algorithm.
+
+The [DeformationEditorController](/cpp-sdk/4.5/api/classes/imfusion-deformationeditorcontroller) provides means to configure and visualize different deformation models of a [DeformationEditor](/cpp-sdk/4.5/api/classes/imfusion-deformationeditor) algorithm.
+
+**See also:** ImFusion::GlControlPoints
+
+## Public Slots
+
+- void **addDeformation** () — Sets the deformation model to the one currently selected in the combobox.
+- void **linkDeformation** (const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &other) — Links the deformation to the deformation of another image.
+- void **removeDeformation** () — Removes the deformation object by setting the deformation model to None.
+- void **saveCurrentDeformation** () — Saves the current deformation.
+- void **removeSavedDeformation** (int which) — Removes the given index from the list of saved deformations.
+- void **restoreDeformation** (int which) — Restores the deformation of the given index.
+- void [showDisplacementGrid](#showdisplacementgrid) (bool show) — Shows the deformation on a grid (.
+
+## Public Member Functions
+
+- **DeformationEditorController** ([DeformationEditor](/cpp-sdk/4.5/api/classes/imfusion-deformationeditor) \*[algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithmcontroller), QWidget \*parent=nullptr)
+- void [init](#init) () override — Two-step initialization function to be implemented by subclasses.
+
+## Member Function Documentation
+
+### init
+
+```cpp
+void ImFusion::DeformationEditorController::init ()
+```
+
+*override, virtual*
+
+Two-step initialization function to be implemented by subclasses.
+
+This function is called by [setMainWindowBase()](/cpp-sdk/4.5/api/classes/imfusion-controller) after the [m_disp](/cpp-sdk/4.5/api/classes/imfusion-controller) and [m_main](/cpp-sdk/4.5/api/classes/imfusion-controller) attributes have been set and hence a complete initialization of the controller is possible at this point.
+
+### showDisplacementGrid
+
+```cpp
+void ImFusion::DeformationEditorController::showDisplacementGrid (bool show)
+```
+
+*slot*
+
+Shows the deformation on a grid (.
+
+**See also:** DeformationVisualizer).

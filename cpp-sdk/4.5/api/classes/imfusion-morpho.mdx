@@ -1,0 +1,34 @@
+---
+title: "ImFusion::Morpho< T >"
+sidebarTitle: "Morpho< T >"
+description: "Morphological operations (erosion/dilation) in 2D and 3D."
+---
+
+`#include <ImFusion/Base/MorphologicalOperations.h>`
+
+## Overview
+
+template&lt;typename T&gt;
+
+class ImFusion::Morpho&lt; T &gt;
+Morphological operations (erosion/dilation) in 2D and 3D.
+
+## Classes
+
+- struct [ErodeByBlock2D](/cpp-sdk/4.5/api/structs/imfusion-morpho-erodebyblock2d)
+- struct [DilateByBlock2D](/cpp-sdk/4.5/api/structs/imfusion-morpho-dilatebyblock2d)
+- struct [ErodeByBlock3D](/cpp-sdk/4.5/api/structs/imfusion-morpho-erodebyblock3d)
+- struct [DilateByBlock3D](/cpp-sdk/4.5/api/structs/imfusion-morpho-dilatebyblock3d)
+
+## Static Public Member Functions
+
+- static void **apply** (const T \*in, T \*out, int width, int height, int radius, bool useL1Distance)
+- static void **erosion** (const T \*in, T \*out, int width, int height, int radius, bool useL1Distance=true)
+- static void **dilatation** (const T \*in, T \*out, int width, int height, int radius, bool useL1Distance=true)
+- static void **close** (const T \*in, T \*out, int width, int height, int radius, bool useL1Distance=true)
+- static void **open** (const T \*in, T \*out, int width, int height, int radius, bool useL1Distance=true)
+- static void **apply** (const T \*in, T \*out, int width, int height, int slices, int radius, bool useL1Distance)
+- static void **erosion** (const T \*in, T \*out, int width, int height, int slices, int radius, bool useL1Distance=true)
+- static void **dilatation** (const T \*in, T \*out, int width, int height, int slices, int radius, bool useL1Distance=true)
+- static void **close** (const T \*in, T \*out, int width, int height, int slices, int radius, bool useL1Distance=true)
+- static void **open** (const T \*in, T \*out, int width, int height, int slices, int radius, bool useL1Distance=true)

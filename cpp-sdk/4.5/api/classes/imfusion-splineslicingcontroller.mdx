@@ -1,0 +1,34 @@
+---
+title: "ImFusion::SplineSlicingController"
+sidebarTitle: "SplineSlicingController"
+description: "Minimal controller for spline slicing algorithm."
+---
+
+`#include <ImFusion/GUI/SplineSlicingController.h>`
+
+## Overview
+
+Minimal controller for spline slicing algorithm. Required to get spline.
+
+## Public Slots
+
+- void **run** ()
+
+## Public Member Functions
+
+- **SplineSlicingController** ([Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*alg)
+- void [init](#init) () override — Two-step initialization function to be implemented by subclasses.
+
+## Member Function Documentation
+
+### init
+
+```cpp
+void ImFusion::SplineSlicingController::init ()
+```
+
+*override, virtual*
+
+Two-step initialization function to be implemented by subclasses.
+
+This function is called by [setMainWindowBase()](/cpp-sdk/4.5/api/classes/imfusion-controller) after the [m_disp](/cpp-sdk/4.5/api/classes/imfusion-controller) and [m_main](/cpp-sdk/4.5/api/classes/imfusion-controller) attributes have been set and hence a complete initialization of the controller is possible at this point.

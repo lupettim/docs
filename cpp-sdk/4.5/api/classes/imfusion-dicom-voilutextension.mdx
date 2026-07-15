@@ -1,0 +1,69 @@
+---
+title: "ImFusion::Dicom::VOILUTExtension"
+sidebarTitle: "VOILUTExtension"
+description: "VOI LUT Module (PS 3.3 C.11.2) Loads and saves windowing related values to and from DisplayOptions2d ."
+---
+
+`#include <ImFusion/Dicom/VOILUTExtension.h>`
+
+## Overview
+
+VOI LUT [Module](/cpp-sdk/4.5/api/classes/imfusion-dicom-module) (PS 3.3 C.11.2) Loads and saves windowing related values to and from [DisplayOptions2d](/cpp-sdk/4.5/api/classes/imfusion-displayoptions2d).
+
+**See also:** [http://dicom.nema.org/medical/dicom/current/output/chtml/part03/sect_C.11.2.html](http://dicom.nema.org/medical/dicom/current/output/chtml/part03/sect_C.11.2.html)[DisplayOptions2d](/cpp-sdk/4.5/api/classes/imfusion-displayoptions2d)
+
+## Public Member Functions
+
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [Extension](/cpp-sdk/4.5/api/classes/imfusion-dicom-extension) &gt; [clone](#clone) () const override — Return a clone this object Usually the implementation will look like this:
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [name](#name) () const override — Return a unique display string for this extension.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [Data](/cpp-sdk/4.5/api/classes/imfusion-data) &gt; &gt; [load](#load) (const [FrameDescriptor](/cpp-sdk/4.5/api/structs/imfusion-dicom-framedescriptor) &frame, [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &sis) const override — Loads windowing parameters and stores them in the [DisplayOptions2d](/cpp-sdk/4.5/api/classes/imfusion-displayoptions2d) for the given image.
+- void [save](#save) (const [FrameDescriptor](/cpp-sdk/4.5/api/structs/imfusion-dicom-framedescriptor) &frame, const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &sis) const override — Saves windowing information taken from the 2D display options of the given image.
+
+## Member Function Documentation
+
+### clone
+
+```cpp
+std::unique_ptr < Extension > ImFusion::Dicom::VOILUTExtension::clone () const
+```
+
+*inline, override, virtual*
+
+Return a clone this object Usually the implementation will look like this:
+
+```cpp
+return std::make_unique<YOUR_CLASSNAME_HERE>(*this);
+```
+ fragment
+
+### name
+
+```cpp
+std::string ImFusion::Dicom::VOILUTExtension::name () const
+```
+
+*override, virtual*
+
+Return a unique display string for this extension.
+
+### load
+
+```cpp
+std::vector < std::unique_ptr < Data > > ImFusion::Dicom::VOILUTExtension::load (const FrameDescriptor & frame, SharedImageSet & sis) const
+```
+
+*override, virtual*
+
+Loads windowing parameters and stores them in the [DisplayOptions2d](/cpp-sdk/4.5/api/classes/imfusion-displayoptions2d) for the given image.
+
+Per-frame windowing is not supported and only the windowing of the center frame of a volume will be used.
+
+### save
+
+```cpp
+void ImFusion::Dicom::VOILUTExtension::save (const FrameDescriptor & frame, const SharedImageSet & sis) const
+```
+
+*override, virtual*
+
+Saves windowing information taken from the 2D display options of the given image.

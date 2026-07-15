@@ -1,0 +1,86 @@
+---
+title: "ImFusion::LinkWindowing"
+sidebarTitle: "LinkWindowing"
+description: "Synchronizes DisplayOptions2d and DisplayOptions3d of multiple images."
+---
+
+`#include <ImFusion/Base/LinkWindowing.h>`
+
+## Overview
+
+Synchronizes [DisplayOptions2d](/cpp-sdk/4.5/api/classes/imfusion-displayoptions2d) and [DisplayOptions3d](/cpp-sdk/4.5/api/classes/imfusion-displayoptions3d) of multiple images.
+
+[LinkWindowing](/cpp-sdk/4.5/api/classes/imfusion-linkwindowing) only accepts [Data](/cpp-sdk/4.5/api/classes/imfusion-data) of type [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset).
+
+## Public Member Functions
+
+- **LinkWindowing** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* &gt; &images) — Create a new [LinkWindowing](/cpp-sdk/4.5/api/classes/imfusion-linkwindowing) instance for the given images.
+- **LinkWindowing** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \* &gt; &[data](#data)) — Convenience overload, performing the dynamic_cast to SharedImageSet\* internally.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \* &gt; [data](#data) () const override — Return list of all linked [Data](/cpp-sdk/4.5/api/classes/imfusion-data) instances.
+- bool [accepts](#accepts) (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) &[data](#data)) const override — Checks whether the given [Data](/cpp-sdk/4.5/api/classes/imfusion-data) instance is supported.
+- void [add](#add) ([Data](/cpp-sdk/4.5/api/classes/imfusion-data) &[data](#data)) override — Add the given [Data](/cpp-sdk/4.5/api/classes/imfusion-data) instance to the link.
+- void [remove](#remove) ([Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*[data](#data)) override — Remove the given [Data](/cpp-sdk/4.5/api/classes/imfusion-data) instance from the link.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [uiTitle](#uititle) () const override — Return a title of the link type for displaying in the UI.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [uiIconPath](#uiiconpath) () const override — Return a path to an icon representing the link type to display in the UI.
+
+## Member Function Documentation
+
+### data
+
+```cpp
+std::vector < Data * > ImFusion::LinkWindowing::data () const
+```
+
+*override, virtual*
+
+Return list of all linked [Data](/cpp-sdk/4.5/api/classes/imfusion-data) instances.
+
+### accepts
+
+```cpp
+bool ImFusion::LinkWindowing::accepts (const Data & data) const
+```
+
+*override, virtual*
+
+Checks whether the given [Data](/cpp-sdk/4.5/api/classes/imfusion-data) instance is supported.
+
+### add
+
+```cpp
+void ImFusion::LinkWindowing::add (Data & data)
+```
+
+*override, virtual*
+
+Add the given [Data](/cpp-sdk/4.5/api/classes/imfusion-data) instance to the link.
+
+### remove
+
+```cpp
+void ImFusion::LinkWindowing::remove (Data * data)
+```
+
+*override, virtual*
+
+Remove the given [Data](/cpp-sdk/4.5/api/classes/imfusion-data) instance from the link.
+
+### uiTitle
+
+```cpp
+std::string ImFusion::LinkWindowing::uiTitle () const
+```
+
+*override, virtual*
+
+Return a title of the link type for displaying in the UI.
+
+### uiIconPath
+
+```cpp
+std::string ImFusion::LinkWindowing::uiIconPath () const
+```
+
+*override, virtual*
+
+Return a path to an icon representing the link type to display in the UI.

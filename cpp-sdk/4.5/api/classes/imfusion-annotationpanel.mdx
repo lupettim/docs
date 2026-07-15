@@ -1,0 +1,53 @@
+---
+title: "ImFusion::AnnotationPanel"
+sidebarTitle: "AnnotationPanel"
+---
+
+## Classes
+
+- struct [Action](/cpp-sdk/4.5/api/structs/imfusion-annotationpanel-action)
+
+## Public Member Functions
+
+- **AnnotationPanel** ([Project](/cpp-sdk/4.5/api/classes/imfusion-project) &p, [DisplayWidgetMultiAdapter](/cpp-sdk/4.5/api/classes/imfusion-displaywidgetmultiadapter) disp, [ThumbnailLoader](/cpp-sdk/4.5/api/classes/imfusion-thumbnailloader) &thumbnailLoader, bool specialSuiteMode=true, bool reducedFeatureSet=false, QWidget \*parent=nullptr)
+- void **dataLoaded** ([DataSet](/cpp-sdk/4.5/api/classes/imfusion-dataset) &d)
+- void **dataUnloaded** ()
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void **refreshActionsAvailable** ()
+- void **activateCurrentAction** ()
+- void **deactivateCurrentAction** ()
+- bool **inputEvent** (QEvent \*event)
+- void **resizeEvent** (QResizeEvent \*event) override
+- void **setPixelwiseOpacityVisibility** (float labelOpacity2D, float labelOpacity3D, bool labelsVisible2D, bool labelsVisible3D)
+- [AnnotationActionSharedState](/cpp-sdk/4.5/api/structs/imfusion-annotationactionsharedstate) & **actionsSharedState** ()
+
+## Member Function Documentation
+
+### configuration
+
+```cpp
+void ImFusion::AnnotationPanel::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality
+
+### configure
+
+```cpp
+void ImFusion::AnnotationPanel::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality

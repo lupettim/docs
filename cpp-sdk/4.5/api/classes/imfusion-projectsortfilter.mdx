@@ -1,0 +1,21 @@
+---
+title: "ImFusion::ProjectSortFilter"
+sidebarTitle: "ProjectSortFilter"
+---
+
+## Public Member Functions
+
+- **ProjectSortFilter** (const [Project](/cpp-sdk/4.5/api/classes/imfusion-project) &project)
+- void **setSortFilter** ([std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; bool(const [DataDescriptor](/cpp-sdk/4.5/api/classes/imfusion-datadescriptor) \*, const [DataDescriptor](/cpp-sdk/4.5/api/classes/imfusion-datadescriptor) \*)&gt; sort, [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; bool(const [DataDescriptor](/cpp-sdk/4.5/api/classes/imfusion-datadescriptor) \*)&gt; filter)
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [DataDescriptor](/cpp-sdk/4.5/api/classes/imfusion-datadescriptor) \* &gt; & **sortedFiltered** () const
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [DataDescriptor](/cpp-sdk/4.5/api/classes/imfusion-datadescriptor) \* &gt; & **selection** () const
+- const [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; bool(const [DataDescriptor](/cpp-sdk/4.5/api/classes/imfusion-datadescriptor) \*)&gt; & **filter** () const
+- const [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; bool(const [DataDescriptor](/cpp-sdk/4.5/api/classes/imfusion-datadescriptor) \*, const [DataDescriptor](/cpp-sdk/4.5/api/classes/imfusion-datadescriptor) \*)&gt; & **sort** () const
+- [DataDescriptor](/cpp-sdk/4.5/api/classes/imfusion-datadescriptor) \* **current** () const
+- void **setSelection** ([std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [DataDescriptor](/cpp-sdk/4.5/api/classes/imfusion-datadescriptor) \* &gt; selection)
+
+## Public Attributes
+
+- Signal **sortedFilteredChanged**
+- Signal **selectionChanged**
+- Signal **currentChanged**

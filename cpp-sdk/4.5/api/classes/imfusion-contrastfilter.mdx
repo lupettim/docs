@@ -1,0 +1,66 @@
+---
+title: "ImFusion::ContrastFilter"
+sidebarTitle: "ContrastFilter"
+description: "Contrast-enhancing filter."
+---
+
+`#include <ImFusion/Base/ContrastFilter.h>`
+
+## Overview
+
+Contrast-enhancing filter.
+
+## Public Member Functions
+
+- **ContrastFilter** (const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*images, const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*guideImages=nullptr) — Constructor.
+- **~ContrastFilter** () override — Destructor.
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Set one or multiple properties.
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Retrieve the properties of this object.
+- void [compute](#compute) () override — Compute the result.
+- [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) [takeOutput](#takeoutput) () override — If the algorithm creates new image data, it has to be transferred here.
+
+## Static Public Member Functions
+
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a) — If data is compatible with algorithm return true. If a is not zero, create algorithm with input data.
+
+## Member Function Documentation
+
+### configure
+
+```cpp
+void ImFusion::ContrastFilter::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Set one or multiple properties.
+
+### configuration
+
+```cpp
+void ImFusion::ContrastFilter::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Retrieve the properties of this object.
+
+### compute
+
+```cpp
+void ImFusion::ContrastFilter::compute ()
+```
+
+*override, virtual*
+
+Compute the result.
+
+### takeOutput
+
+```cpp
+OwningDataList ImFusion::ContrastFilter::takeOutput ()
+```
+
+*override, virtual*
+
+If the algorithm creates new image data, it has to be transferred here.

@@ -1,0 +1,48 @@
+---
+title: "ImFusion::Seg::SegmentedStructureWithReference"
+sidebarTitle: "SegmentedStructureWithReference"
+---
+
+## Public Member Functions
+
+- [std::pair](http://en.cppreference.com/w/cpp/utility/pair.html)&lt; vec3, vec3 &gt; [markers](#markers) (int id, double position) const override — Compute a pair of measuring markers at the specified position.
+- bool [isOk](#isok) () const override
+
+## Protected Member Functions
+
+- **SegmentedStructureWithReference** ([ReferenceShape](/cpp-sdk/4.5/api/classes/imfusion-seg-referenceshape) \*reference)
+- void **computeTopAndBottomPoints** (const [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*segmentation, unsigned char label)
+- void **computeTopAndBottomPoints** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; &contour)
+
+## Protected Attributes
+
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; **m_topPoints**
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; **m_bottomPoints**
+- [ReferenceShape](/cpp-sdk/4.5/api/classes/imfusion-seg-referenceshape) \* **m_referenceShape**
+
+## Member Function Documentation
+
+### markers
+
+```cpp
+std::pair < vec3, vec3 > ImFusion::Seg::SegmentedStructureWithReference::markers (int id, double position) const
+```
+
+*override, virtual*
+
+Compute a pair of measuring markers at the specified position.
+
+**Parameters:**
+
+- `id` — integer in [0, numMarkers()) that identifies a marker
+- `position` — value in [-1, 1] that gives the position of the marker on the axis of the reference shape
+
+**Returns:** pair of points that lie on the contour of the segmentation
+
+### isOk
+
+```cpp
+bool ImFusion::Seg::SegmentedStructureWithReference::isOk () const
+```
+
+*override, virtual*

@@ -1,0 +1,121 @@
+---
+title: "ImFusion::Progress::Task"
+sidebarTitle: "Task"
+description: "Represents the progress/status report of an individual task hosted by a Progress ."
+---
+
+`#include <ImFusion/Base/Progress.h>`
+
+## Overview
+
+Represents the progress/status report of an individual task hosted by a [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress).
+
+Changes to a [Task](/cpp-sdk/4.5/api/classes/imfusion-progress-task) object are forwarded to the parent [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) handler. In case no parent [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) is provided, progress reports will not have any effect and effectively result in a no-op. This allows for more concise code in case a [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) is not guaranteed to be present:
+
+```cpp
+// The pointer to the Progress instance may be null
+Progress* progressHandler = ...;
+Progress::Task progress(progressHandler, 17, "Computing...");
+
+[...]
+
+// will effect in a no-op in case progressHandler was null
+progress.setCurrentStep(2);
+```
+ fragment
+Removes itself automatically from the parent on destruction.
+
+By default tasks are not thread-safe and must only be accessed from the same thread they were created on. You can request a limited support for concurrent access, see [requestThreadSafety()](#requestthreadsafety).
+
+## Public Member Functions
+
+- [Task](#task) (Progress \*parent, int numSteps, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &description) — Create a new progress report for an operation with the given number of steps.
+- **Task** (Task &&rhs)
+- [Task](#task) & **operator=** ([Task](#task) &&)
+- int **numSteps** () const — Returns the number of total progress steps, will show a busy indicator if set to 0.
+- void **setNumSteps** (int value) — Sets the number of total progress steps, will show a busy indicator if set to 0.
+- int **currentStep** () const — Returns the current progress value wrt. the total number of progress steps.
+- void [setCurrentStep](#setcurrentstep) (int value) — Sets the current progress value wrt.
+- void [incrementStep](#incrementstep) (int amount=1) — Increments the current progress value by the given amount (defaults to 1).
+- void **setSteps** (int currentStep, int numSteps) — Set both the current step and the total number of steps at once.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **description** () const — Returns the description text to be shown next to the progress indicator.
+- void **setDescription** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &value) — Sets the description text to be shown next to the progress indicator.
+- bool **updatesDisplay** () const — Returns the flag whether the views/display should be refreshed during progress updates.
+- void **setUpdatesDisplay** (bool value) — Sets the flag whether the views/display should be refreshed during progress updates.
+- bool **isVisible** () const — Returns the flag whether the task should be shown in the UI of the [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress).
+- void [setVisible](#setvisible) (bool value) — Sets the flag whether the task should be shown in the UI of the [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress).
+- bool **wasCanceled** () const — Returns the flag whether the user requested cancellation of the current operation.
+- void **setWasCanceled** (bool value) — Sets the flag whether the user requested cancellation of the current operation.
+- void [update](#update) () — Requests an update of the parent reporter, useful for busy indicators.
+- bool [requestThreadSafety](#requestthreadsafety) () — Tells the task and its parent reporter that this task instance is going to be updated concurrently from multiple threads and they therefore need to install synchronization primitives.
+- bool **isMultiThreaded** () const — Flag whether this task has successfully requested thread-safety.
+
+## Constructor & Destructor Documentation
+
+### Task
+
+```cpp
+ImFusion::Progress::Task::Task (Progress * parent, int numSteps, const std::string & description)
+```
+
+Create a new progress report for an operation with the given number of steps.
+
+**Parameters:**
+
+- `parent` — Parent progress handler to use for reporting, nullptr is allowed
+- `numSteps` — Total number of steps, should be &gt;= 0, will show a busy indicator if set to 0.
+- `description` — Description text to be shown next to the progress indicator.
+
+## Member Function Documentation
+
+### setCurrentStep
+
+```cpp
+void ImFusion::Progress::Task::setCurrentStep (int value)
+```
+
+Sets the current progress value wrt.
+
+the total number of progress steps. The current progress value will be clamped to the range [0, numSteps()].
+
+### incrementStep
+
+```cpp
+void ImFusion::Progress::Task::incrementStep (int amount = 1)
+```
+
+Increments the current progress value by the given amount (defaults to 1).
+
+The current progress value will be clamped to the range [0, numSteps()].
+
+### setVisible
+
+```cpp
+void ImFusion::Progress::Task::setVisible (bool value)
+```
+
+Sets the flag whether the task should be shown in the UI of the [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress).
+
+Invisible tasks can still be useful as they can act as back-channel for the cancellation state.
+
+### update
+
+```cpp
+void ImFusion::Progress::Task::update ()
+```
+
+Requests an update of the parent reporter, useful for busy indicators.
+
+**Note:** This function is implicitly called by [setCurrentStep()](#setcurrentstep) and [incrementStep()](#incrementstep).
+
+### requestThreadSafety
+
+```cpp
+bool ImFusion::Progress::Task::requestThreadSafety ()
+```
+
+Tells the task and its parent reporter that this task instance is going to be updated concurrently from multiple threads and they therefore need to install synchronization primitives.
+
+A [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) is free to reject this request (cf. [Progress::onTaskRequestsThreadSafety()](/cpp-sdk/4.5/api/classes/imfusion-progress)). In this case the function returns false and disconnects from the reporter so that all subsequent task updates result in a no-op.
+
+**Note:** This function must still be called from the original thread. After calling it you can update the tasks state from any other thread. However, this does not apply to the [Task](/cpp-sdk/4.5/api/classes/imfusion-progress-task) destructor.

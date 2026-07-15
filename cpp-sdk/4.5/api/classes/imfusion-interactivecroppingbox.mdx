@@ -1,0 +1,43 @@
+---
+title: "ImFusion::InteractiveCroppingBox"
+sidebarTitle: "InteractiveCroppingBox"
+---
+
+## Classes
+
+- struct [CropOffsets](/cpp-sdk/4.5/api/structs/imfusion-interactivecroppingbox-cropoffsets) — Helper struct for storing the offsets of the lower and upper corner points of the box.
+- struct [CropBox](/cpp-sdk/4.5/api/structs/imfusion-interactivecroppingbox-cropbox) — Helper struct for storing the size and center of the box in pixel coordinates.
+
+## Public Member Functions
+
+- **InteractiveCroppingBox** (const [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) &image, const vec3i &lower, const vec3i &upper) — Initialize the Cropping for the given image with the given lower and upper crop offsets.
+- void **reset** () — Clear the existing size parameters and prepare the manipulator for drawing a new box.
+- void **update** (const [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) &image) — Update the [InteractiveCroppingBox](/cpp-sdk/4.5/api/classes/imfusion-interactivecroppingbox) based on the orientation of the image and the current cropping box.
+- void **update** (const [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) &image, const vec3i &lower, const vec3i &upper) — Update the [InteractiveCroppingBox](/cpp-sdk/4.5/api/classes/imfusion-interactivecroppingbox) based on the given cropping offsets and state of the image, including its orientation.
+- [CropOffsets](/cpp-sdk/4.5/api/structs/imfusion-interactivecroppingbox-cropoffsets) **cropOffsets** (const [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) &img) const — Calculate the corner points for given image given the current box's center and size.
+- double **outlineWidth** () const — Returns the width of the outline rendered in MPR views in px.
+- void **setOutlineWidth** (double value) — Sets the width of the outline rendered in MPR views in px.
+
+## Static Public Member Functions
+
+- static bool [imageCanBeCropped](#imagecanbecropped) (const [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) &image) — Whether or not cropping will work for the given image.
+- static [CropBox](/cpp-sdk/4.5/api/structs/imfusion-interactivecroppingbox-cropbox) **cropBox** (const [CropOffsets](/cpp-sdk/4.5/api/structs/imfusion-interactivecroppingbox-cropoffsets) &offsets, const vec3i &dim) — Calculate size and center of the box from its upper and lower border sizes and the image size.
+- static [CropOffsets](/cpp-sdk/4.5/api/structs/imfusion-interactivecroppingbox-cropoffsets) **cropOffsets** (const [CropBox](/cpp-sdk/4.5/api/structs/imfusion-interactivecroppingbox-cropbox) &box, const vec3i &dim) — Calculate upper and lower border sizes of the box from its size and center and the image size.
+
+## Public Attributes
+
+- Signal **boxChanged** — Emitted every time the center or size changes.
+
+## Member Function Documentation
+
+### imageCanBeCropped
+
+```cpp
+bool ImFusion::InteractiveCroppingBox::imageCanBeCropped (const SharedImage & image)
+```
+
+*static*
+
+Whether or not cropping will work for the given image.
+
+Cropping is currently not supported for images with non-rigid transformations, including shearing and scaling.

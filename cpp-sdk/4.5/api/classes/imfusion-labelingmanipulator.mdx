@@ -1,0 +1,76 @@
+---
+title: "ImFusion::LabelingManipulator"
+sidebarTitle: "LabelingManipulator"
+description: "Manipulator for circle-based annotations."
+---
+
+`#include <ImFusion/Seg/LabelingManipulator.h>`
+
+## Overview
+
+[Manipulator](/cpp-sdk/4.5/api/classes/imfusion-manipulator) for circle-based annotations.
+
+## Public Types
+
+- enum class **Mode** &#123; **Draw** , **FloodFill** &#125;
+- using **MouseWheelCallback** = [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt;[GUI::EventResult](/cpp-sdk/4.5/api/structs/imfusion-gui-eventresult)(bool, [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt;[GUI::InputEvent::KeyboardModifier](/cpp-sdk/4.5/api/classes/imfusion-gui-inputevent)&gt;)&gt;
+
+## Public Member Functions
+
+- **LabelingManipulator** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &inputImage, [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &labelMap, [GlCircle](/cpp-sdk/4.5/api/classes/imfusion-glcircle) \*circle, Mode mode=Mode::Draw)
+- void **setLabel** (int label)
+- void **clear** ()
+- bool **active** () const — returns whether the manipulator is currently active (i.e. a mouse button is pressed)
+- [GUI::EventResult](/cpp-sdk/4.5/api/structs/imfusion-gui-eventresult) [handleInputEvent](#handleinputevent) (const [GUI::InputEvent](/cpp-sdk/4.5/api/classes/imfusion-gui-inputevent) &event, const [GUI::View](/cpp-sdk/4.5/api/classes/imfusion-gui-view) &view) override — This function is called by sources of input events in order to dispatch them to the handlers.
+- void **setMouseWheelCallback** (MouseWheelCallback m)
+- void **setModified** (bool b)
+- bool **isModified** () const
+- bool **undo** ()
+- bool **hasUndo** () const
+- void **recordUndo** ()
+- bool **clearUndo** ()
+- void **performFloodFill** (vec3 world)
+- [Seg::LabelPainter](/cpp-sdk/4.5/api/classes/imfusion-seg-labelpainter) & **painter** ()
+
+## Public Attributes
+
+- Signal&lt; bool &gt; **undoStateChanged**
+- Signal **labelModified**
+- Signal&lt; int &gt; **pressed**
+- Signal&lt; int &gt; **released**
+
+## Protected Member Functions
+
+- bool **sceneEventDraw** (const vec3 &world, int label)
+- bool **sceneEventFloodFill** (const vec3 &world)
+- void **updateIndicator** (const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &view)
+
+## Protected Attributes
+
+- [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) & **m_inputImage**
+- [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) & **m_labelMap**
+- int **m_label** = 1
+- [Seg::LabelPainter](/cpp-sdk/4.5/api/classes/imfusion-seg-labelpainter) **m_painter**
+- bool **m_modified** = false
+- int **m_indexOfPreviousLabel** = 0
+- bool **m_previousLabelValid** = false — index within the [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) that the undo label applies to
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) &gt; **m_previousLabelData**
+- bool **m_active** = false
+- [GlCircle](/cpp-sdk/4.5/api/classes/imfusion-glcircle) \* **m_circle** = nullptr
+- Mode **m_mode** = Mode::Draw
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; vec3 &gt; **m_storedPoint**
+- MouseWheelCallback **m_wheelCallback** — to avoid gaps when painting and moving the cursor across a long distance
+
+## Member Function Documentation
+
+### handleInputEvent
+
+```cpp
+GUI::EventResult ImFusion::LabelingManipulator::handleInputEvent (const GUI::InputEvent & event, const GUI::View & view)
+```
+
+*override, virtual*
+
+This function is called by sources of input events in order to dispatch them to the handlers.
+
+In case there are more than one InputEventHandlers dispatchers are intended call this function consecutively until the first handler indicates to stop by returning a result where EventResult::stopPropagation() is true.

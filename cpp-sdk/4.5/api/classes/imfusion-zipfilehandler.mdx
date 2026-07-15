@@ -1,0 +1,30 @@
+---
+title: "ImFusion::ZipFileHandler"
+sidebarTitle: "ZipFileHandler"
+description: "Automatically extracts a ZIP archive to a temporary folder for loading."
+---
+
+`#include <ImFusion/GUI/ZipFileHandler.h>`
+
+## Overview
+
+Automatically extracts a ZIP archive to a temporary folder for loading.
+
+## Static Public Member Functions
+
+- static QString [extractFile](#extractfile) (QString path) — Decompresses the given ZIP file into a temporary folder, which is returned.
+- static QString **extractedPath** (QString path) — Returns the temp path corresponding to the given zip path or an empty string if the archive was not extracted yet.
+
+## Member Function Documentation
+
+### extractFile
+
+```cpp
+QString ImFusion::ZipFileHandler::extractFile (QString path)
+```
+
+*static*
+
+Decompresses the given ZIP file into a temporary folder, which is returned.
+
+If decompression was not successful, an empty string is returned.

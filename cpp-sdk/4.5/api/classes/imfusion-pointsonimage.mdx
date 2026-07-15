@@ -1,0 +1,138 @@
+---
+title: "ImFusion::PointsOnImage"
+sidebarTitle: "PointsOnImage"
+description: "Class that hold a list of points on a volume or image."
+---
+
+`#include <ImFusion/Base/PointsOnImage.h>`
+
+## Overview
+
+Class that hold a list of points on a volume or image.
+
+Points are automatically updated when the matrix or deformation changes. The class emits events when a point is added, removed or changed.
+
+## Public Member Functions
+
+- **PointsOnImage** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &image)
+- void [addWorldPoint](#addworldpoint) (const vec3 &[point](/cpp-sdk/4.5/api/classes/imfusion-pointsondata), bool findClosestFrame=true) — Add a new point in World coordinates.
+- void [setWorldPoint](#setworldpoint) (const vec3 &[point](/cpp-sdk/4.5/api/classes/imfusion-pointsondata), int which, bool findClosestFrame=true) — Moves an existing point to a position in World coordinates.
+- void [setImagesPixelPoints](#setimagespixelpoints) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec2 &gt; &gt; &pixelPoints) — Set all points in [Image](/cpp-sdk/4.5/api/classes/imfusion-image) pixel coordinates (eg: [275.36, 178.6]) for all images.
+- void [addImagePixelPoint](#addimagepixelpoint) (const vec2 &pixelPoint, int frame) — Add a new point in [Image](/cpp-sdk/4.5/api/classes/imfusion-image) pixel coordinates (eg: [275.36, 178.6]).
+- void **addImagePoint** (const vec3 &[point](/cpp-sdk/4.5/api/classes/imfusion-pointsondata), int frame) — Add a new point in [Image](/cpp-sdk/4.5/api/classes/imfusion-image) coordinates. Emits the [signalPointsAdded](/cpp-sdk/4.5/api/classes/imfusion-pointsondata) signal.
+- void **setImagePoint** (const vec3 &[point](/cpp-sdk/4.5/api/classes/imfusion-pointsondata), int frame, int which) — Moves an existing point to a position in [Image](/cpp-sdk/4.5/api/classes/imfusion-image) coordinates. Emits the [signalPointsChanged](/cpp-sdk/4.5/api/classes/imfusion-pointsondata) signal.
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; & [allPoints](#allpoints) () const override — Return the points in world coordinates.
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::pair](http://en.cppreference.com/w/cpp/utility/pair.html)&lt; vec3, int &gt; &gt; & **imagePoints** () const — Return the points in [Image](/cpp-sdk/4.5/api/classes/imfusion-image) coordinates, paired with its associated frame.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::pair](http://en.cppreference.com/w/cpp/utility/pair.html)&lt; vec3, int &gt; &gt; **selectedImagePoints** () const — Return only the selected points in [Image](/cpp-sdk/4.5/api/classes/imfusion-image) coordinates, paired with its associated frame.
+- [std::pair](http://en.cppreference.com/w/cpp/utility/pair.html)&lt; vec3, int &gt; **imagePoint** (int which) const — Return the point in [Image](/cpp-sdk/4.5/api/classes/imfusion-image) coordinates, paired with its associated frame.
+- void [remove](#remove) (int first, int last) override — Removes the points in range [first,last).
+- [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* **image** () — Returns the input [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset).
+- const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \* [data](#data) () const override — Returns the input image as [Data](/cpp-sdk/4.5/api/classes/imfusion-data) base class.
+- void [configurePoint](#configurepoint) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Add the point described by the properties.
+- void [pointConfiguration](#pointconfiguration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p, int which) const override — Extract the configuration of the point at index.
+- void **remove** (int index) — Gets remove(int which) from [PointsOnData](/cpp-sdk/4.5/api/classes/imfusion-pointsondata).
+
+## Protected Member Functions
+
+- [std::pair](http://en.cppreference.com/w/cpp/utility/pair.html)&lt; vec3, int &gt; **worldToImage** (const vec3 &p, bool findClosestFrame) const
+- vec3 **imageToWorld** (const vec3 &p, int frame) const
+- void **updateWorldPoints** ()
+
+## Protected Attributes
+
+- [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* **m_image** = nullptr
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; **m_points**
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::pair](http://en.cppreference.com/w/cpp/utility/pair.html)&lt; vec3, int &gt; &gt; **m_pointsImage** — (Point in image coordinates, frame) used to recompute m_points when the matrix/deformation changes
+- bool **m_is2DTracked** = false
+
+## Member Function Documentation
+
+### addWorldPoint
+
+```cpp
+void ImFusion::PointsOnImage::addWorldPoint (const vec3 & point, bool findClosestFrame = true)
+```
+
+Add a new point in World coordinates.
+
+If findClosestFrame the point in image coordinates is assigned to the closest frame, otherwise it is assigned to the focus frame. Emits the [signalPointsAdded](/cpp-sdk/4.5/api/classes/imfusion-pointsondata) signal
+
+### setWorldPoint
+
+```cpp
+void ImFusion::PointsOnImage::setWorldPoint (const vec3 & point, int which, bool findClosestFrame = true)
+```
+
+Moves an existing point to a position in World coordinates.
+
+If findClosestFrame the point in image coordinates is assigned to the closest frame, otherwise it is assigned to the focus frame. Emits the [signalPointsAdded](/cpp-sdk/4.5/api/classes/imfusion-pointsondata) signal
+
+### setImagesPixelPoints
+
+```cpp
+void ImFusion::PointsOnImage::setImagesPixelPoints (const std::vector < std::vector < vec2 > > & pixelPoints)
+```
+
+Set all points in [Image](/cpp-sdk/4.5/api/classes/imfusion-image) pixel coordinates (eg: [275.36, 178.6]) for all images.
+
+pixelPoints size must be equal to number of images Emits the [signalPointsAdded](/cpp-sdk/4.5/api/classes/imfusion-pointsondata) and [signalPointsRemoved](/cpp-sdk/4.5/api/classes/imfusion-pointsondata) signals. Internally uses [ImageDescriptor::pixelToImage](/cpp-sdk/4.5/api/structs/imfusion-imagedescriptor)
+
+### addImagePixelPoint
+
+```cpp
+void ImFusion::PointsOnImage::addImagePixelPoint (const vec2 & pixelPoint, int frame)
+```
+
+Add a new point in [Image](/cpp-sdk/4.5/api/classes/imfusion-image) pixel coordinates (eg: [275.36, 178.6]).
+
+Emits the [signalPointsAdded](/cpp-sdk/4.5/api/classes/imfusion-pointsondata) signal. Internally uses [ImageDescriptor::pixelToImage](/cpp-sdk/4.5/api/structs/imfusion-imagedescriptor)
+
+### allPoints
+
+```cpp
+const std::vector < vec3 > & ImFusion::PointsOnImage::allPoints () const
+```
+
+*inline, override, virtual*
+
+Return the points in world coordinates.
+
+### remove
+
+```cpp
+void ImFusion::PointsOnImage::remove (int first, int last)
+```
+
+*override, virtual*
+
+Removes the points in range [first,last).
+
+### data
+
+```cpp
+const Data * ImFusion::PointsOnImage::data () const
+```
+
+*override, virtual*
+
+Returns the input image as [Data](/cpp-sdk/4.5/api/classes/imfusion-data) base class.
+
+### configurePoint
+
+```cpp
+void ImFusion::PointsOnImage::configurePoint (const Properties * p)
+```
+
+*override, virtual*
+
+Add the point described by the properties.
+
+### pointConfiguration
+
+```cpp
+void ImFusion::PointsOnImage::pointConfiguration (Properties * p, int which) const
+```
+
+*override, virtual*
+
+Extract the configuration of the point at index.

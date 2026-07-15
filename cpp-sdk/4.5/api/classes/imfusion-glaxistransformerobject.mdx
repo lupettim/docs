@@ -1,0 +1,52 @@
+---
+title: "ImFusion::GlAxisTransformerObject"
+sidebarTitle: "GlAxisTransformerObject"
+---
+
+## Public Member Functions
+
+- **GlAxisTransformerObject** (int axis=0, double axialOffset=0, const isom3 &offset=isom3::Identity(), bool contour=true, bool path=true)
+- void **setDirection** (const [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; mat3 &gt; &direction)
+
+## Public Attributes
+
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; int &gt; **p_axis** = &#123;"axis", 0, this&#125;
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; double &gt; **p_axialOffset** = &#123;"axialOffset", 0, this&#125;
+
+## Protected Member Functions
+
+- virtual vec3 [axisVector](#axisvector) () const
+- void [setCenter](#setcenter) (const vec3 &center) override
+- virtual [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; vec3 &gt; **projectToPlane** (const vec2 &pos, const [GL::ViewState](/cpp-sdk/4.5/api/classes/imfusion-gl-viewstate) &state) const
+- virtual [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; vec3 &gt; **projectToAxis** (const vec2 &pos, const [GL::ViewState](/cpp-sdk/4.5/api/classes/imfusion-gl-viewstate) &state) const
+- void [updatePoses](#updateposes) (const [GL::ViewState](/cpp-sdk/4.5/api/classes/imfusion-gl-viewstate) &state) override
+
+## Protected Attributes
+
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; mat3 &gt; **m_direction**
+
+## Member Function Documentation
+
+### axisVector
+
+```cpp
+virtual vec3 ImFusion::GlAxisTransformerObject::axisVector () const
+```
+
+*protected, virtual*
+
+### setCenter
+
+```cpp
+void ImFusion::GlAxisTransformerObject::setCenter (const vec3 & center)
+```
+
+*override, protected, virtual*
+
+### updatePoses
+
+```cpp
+void ImFusion::GlAxisTransformerObject::updatePoses (const GL::ViewState & state)
+```
+
+*override, protected, virtual*

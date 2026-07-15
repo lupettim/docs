@@ -1,0 +1,93 @@
+---
+title: "ImFusion::GlObjectFactory"
+sidebarTitle: "GlObjectFactory"
+description: "Factory singleton for creating GlObject from string IDs."
+---
+
+`#include <ImFusion/GL/GlObjectFactory.h>`
+
+## Overview
+
+Factory singleton for creating [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) from string IDs.
+
+Every [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) implements the typeName() method returning a unique string identifier for that specific type of [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject). GlObjects have to be registered with [GlObjectFactory](/cpp-sdk/4.5/api/classes/imfusion-globjectfactory) using this string ID and a factory method for instantiating a [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) of such type. During registration [GlObjectFactory](/cpp-sdk/4.5/api/classes/imfusion-globjectfactory) ensures the uniqueness of the registered GlObjects and otherwise raises an assertion/logs a warning.
+
+## Public Types
+
+- using **CompatibilityFunction** = [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt;bool(const [Data](/cpp-sdk/4.5/api/classes/imfusion-data)\* data, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt;[GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject)\*&gt;& objects)&gt; — Alias for a function which checks if the corresponding FactoryFunction is compatible with the given input.
+- using **FactoryFunctionSimple** = [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt;[std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt;[GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject)&gt;()&gt; — Alias for a [GlObjectFactory](/cpp-sdk/4.5/api/classes/imfusion-globjectfactory) factory function creating a specific [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject).
+- using **FactoryFunction** = [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt;[std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt;[GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject)&gt;(const [Data](/cpp-sdk/4.5/api/classes/imfusion-data)\* data, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt;[GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject)\*&gt;& objects)&gt; — Alias for a [GlObjectFactory](/cpp-sdk/4.5/api/classes/imfusion-globjectfactory) factory function creating a specific [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) which can depend on [Data](/cpp-sdk/4.5/api/classes/imfusion-data) and can wrap other GlObjects.
+
+## Public Member Functions
+
+- void [registerObject](#registerobject-1-2) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &id, FactoryFunction factoryFunction, CompatibilityFunction factoryCompatibilityFunction) — Registers a [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) with the [GlObjectFactory](/cpp-sdk/4.5/api/classes/imfusion-globjectfactory).
+- void [registerObject](#registerobject-2-2) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &id, FactoryFunctionSimple factoryFunction) — Registers a [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) with the [GlObjectFactory](/cpp-sdk/4.5/api/classes/imfusion-globjectfactory) which does not require [Data](/cpp-sdk/4.5/api/classes/imfusion-data) of GlObjects.
+- bool [canCreateObject](#cancreateobject) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &id, const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data=nullptr, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) \* &gt; &objects=&#123;&#125;) — Test if a [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) can be constructed with the given ID and the provided arguments.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) &gt; [createObject](#createobject) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &id, const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p=nullptr, const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data=nullptr, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) \* &gt; &objects=&#123;&#125;) — Instantiates a [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) specified by the given ID.
+
+## Static Public Member Functions
+
+- static GlObjectFactory & **get** () — Returns the [GlObjectFactory](/cpp-sdk/4.5/api/classes/imfusion-globjectfactory) singleton object.
+
+## Member Function Documentation
+
+### registerObject
+
+```cpp
+void ImFusion::GlObjectFactory::registerObject (const std::string & id, FactoryFunction factoryFunction, CompatibilityFunction factoryCompatibilityFunction)
+```
+
+Registers a [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) with the [GlObjectFactory](/cpp-sdk/4.5/api/classes/imfusion-globjectfactory).
+
+**Note:** The string IDs of GlObjects have to be unique. If you register an ID a second time, the previously registered factory method will be overwritten. [Debug](/cpp-sdk/4.5/api/namespaces/imfusion-gl-debug) builds will also raise an assertion.
+
+**Parameters:**
+
+- `id` — Unique string ID for the [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) to register.
+- `factoryFunction` — Method to use for instantiating the [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) to register which takes reference data and potential objects to wrap.
+- `factoryCompatibilityFunction` — Method to use for checking if the [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) can be created with given data and potential objects to wrap.
+
+### registerObject
+
+```cpp
+void ImFusion::GlObjectFactory::registerObject (const std::string & id, FactoryFunctionSimple factoryFunction)
+```
+
+Registers a [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) with the [GlObjectFactory](/cpp-sdk/4.5/api/classes/imfusion-globjectfactory) which does not require [Data](/cpp-sdk/4.5/api/classes/imfusion-data) of GlObjects.
+
+**Note:** The string IDs of GlObjects have to be unique. If you register an ID a second time, the previously registered factory method will be overwritten. [Debug](/cpp-sdk/4.5/api/namespaces/imfusion-gl-debug) builds will also raise an assertion.
+
+**Parameters:**
+
+- `id` — Unique string ID for the [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) to register.
+- `factoryFunction` — Method to use for instantiating the [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) to register.
+
+### canCreateObject
+
+```cpp
+bool ImFusion::GlObjectFactory::canCreateObject (const std::string & id, const Data * data = nullptr, const std::vector < GlObject * > & objects = {})
+```
+
+Test if a [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) can be constructed with the given ID and the provided arguments.
+
+**Parameters:**
+
+- `id` — Unique ID of the [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) to create.
+- `p` — Optional pointer to a [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object. If not 0, it will used to configure the newly created [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject).
+- `data` — [Data](/cpp-sdk/4.5/api/classes/imfusion-data) on which the [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) relies (optional).
+- `objects` — GlObjects on which the [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) relies (optional).
+
+### createObject
+
+```cpp
+std::unique_ptr < GlObject > ImFusion::GlObjectFactory::createObject (const std::string & id, const Properties * p = nullptr, const Data * data = nullptr, const std::vector < GlObject * > & objects = {})
+```
+
+Instantiates a [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) specified by the given ID.
+
+**Parameters:**
+
+- `id` — Unique ID of the [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) to create.
+- `p` — Optional pointer to a [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object. If not 0, it will used to configure the newly created [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject).
+- `data` — [Data](/cpp-sdk/4.5/api/classes/imfusion-data) on which the [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) relies (optional).
+- `objects` — GlObjects on which the [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) relies (optional).

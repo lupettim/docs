@@ -1,0 +1,51 @@
+---
+title: "ImFusion::Seg::Brush"
+sidebarTitle: "Brush"
+description: "Convenience class to facilitate drawing in the views using the LabelPainter ."
+---
+
+`#include <ImFusion/Seg/Brush.h>`
+
+## Overview
+
+Convenience class to facilitate drawing in the views using the [LabelPainter](/cpp-sdk/4.5/api/classes/imfusion-seg-labelpainter).
+
+Note that the class does not modify any of the parameters of the [LabelPainter](/cpp-sdk/4.5/api/classes/imfusion-seg-labelpainter) and only calls the paint() function
+
+## Public Member Functions
+
+- **Brush** ([LabelPainter](/cpp-sdk/4.5/api/classes/imfusion-seg-labelpainter) &painter, [DisplayWidgetMultiAdapter](/cpp-sdk/4.5/api/classes/imfusion-displaywidgetmultiadapter) disp)
+- **Brush** ([LabelPainter](/cpp-sdk/4.5/api/classes/imfusion-seg-labelpainter) &painter, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [GUI::View](/cpp-sdk/4.5/api/classes/imfusion-gui-view) \* &gt; &views) — Variant constructor for when there is no display, but simply a list of views.
+- **~Brush** () — On destruction, disable() is called automatically if necessary.
+- void **enable** () — Activates the class, by adding the necessary objects to the view.
+- void **disable** () — Deactivates the class, by removing the objects from the views.
+- bool **isEnabled** () const — Returns whether the [Brush](/cpp-sdk/4.5/api/classes/imfusion-seg-brush) is currently active.
+- void **setShowIsolinePreview** (bool b) — Controls the visibility of the isoline, which is an accurate preview of the area drawn by the [LabelPainter](/cpp-sdk/4.5/api/classes/imfusion-seg-labelpainter) True by default.
+- void **setShowCirclePreview** (bool b) — Controls the visibility of the circle, which is a rough estimation of the area drawn by the [LabelPainter](/cpp-sdk/4.5/api/classes/imfusion-seg-labelpainter) False by default.
+- void **setLinkViews** (bool b) — When 'linkViews' is enabled, the MPRs that are not in focus are automatically moved such that they show the location of the brush True by default.
+- void [setPaintIn2D](#setpaintin2d) (bool b) — When 'paintIn2D' is enabled, the brush will only paint labels in the target slice instead of affecting the neighboring slices as well.
+- void **setPreviewColor** (const vec4 &color) — Set the color of the circle and the isoline Note that this color does not automatically mirror the active label in the [LabelPainter](/cpp-sdk/4.5/api/classes/imfusion-seg-labelpainter), and must be set explicitly.
+- void **updateIsolinePreview** () — Updates the isoline preview with regards to the brush location.
+- bool **isPainting** () const — Returns whether the [Brush](/cpp-sdk/4.5/api/classes/imfusion-seg-brush) is currently painting.
+- void **setLabel** (int label) — Set the label value to paint.
+- void **setRadiusMM** (float radius) — Set the radius in mm of the brush.
+- void **setAdaptiveness** (float adaptiveness) — Set the adaptiveness of the brush.
+- void **setFilter** (bool filter) — Set whether the brush should filter the labels.
+
+## Public Attributes
+
+- Signal **signalPaintingStarted** — called when the mouse buttons are pressed, and painting begins
+- Signal&lt; bool &gt; **signalPainted** — called whenever the [LabelPainter::paint()](/cpp-sdk/4.5/api/classes/imfusion-seg-labelpainter) function is called the parameter is true when painting, and false when erasing (left/right click)
+- Signal **signalPaintingStopped** — called when the mouse buttons are released
+
+## Member Function Documentation
+
+### setPaintIn2D
+
+```cpp
+void ImFusion::Seg::Brush::setPaintIn2D (bool b)
+```
+
+When 'paintIn2D' is enabled, the brush will only paint labels in the target slice instead of affecting the neighboring slices as well.
+
+False by default

@@ -1,0 +1,294 @@
+---
+title: "ImFusion::DisplayWidget"
+sidebarTitle: "DisplayWidget"
+description: "Render surface that hosts InteractiveViews and will call their render method on repaints."
+---
+
+`#include <ImFusion/GUI/DisplayWidget.h>`
+
+## Overview
+
+Render surface that hosts InteractiveViews and will call their render method on repaints.
+
+Additionally it distributes user events to the affected views. Until the release event, mouse move events are always sent to the view that received the press event, even if the mouse moves out of the view. The view layout has to be set manually every time a new view is added or the view won't be visible. The [DisplayWidget](/cpp-sdk/4.5/api/classes/imfusion-displaywidget) has no dependency on the actual implementation of the [InteractiveView](/cpp-sdk/4.5/api/classes/imfusion-interactiveview) and treats all views the same.
+
+**Note:** A [DisplayWidget](/cpp-sdk/4.5/api/classes/imfusion-displaywidget) does not hold its own OpenGL context for rendering but rather uses the GlContextManager's main context. Since [DisplayWidget](/cpp-sdk/4.5/api/classes/imfusion-displaywidget) is Qt-based, this main context must be originate from Qt as well. This can be ensured by providing a GlQtContext on [ApplicationController](/cpp-sdk/4.5/api/classes/imfusion-applicationcontroller) construction/Framework::init(). If you're using a [MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase) as [ApplicationController](/cpp-sdk/4.5/api/classes/imfusion-applicationcontroller), this is done automatically.
+
+## Public Slots
+
+- void [setRecording](#setrecording) (bool enable, bool reset=true, bool continuous=false) — If enabled and the recording path is not empty, all paintEvent results will be written to disk.
+- void [setRecordingOutputDir](#setrecordingoutputdir) (const QString &path) — Sets the path to the output file used in the recording.
+- bool **saveScreenshot** (const QString &path) — Saves the current screen content under the given path.
+- void [layoutViews](#layoutviews) (bool noAnimation=false) — Layout the views.
+- void **resetLayout** ()
+- void **fatalError** (QString errorMessage)
+- void **update** ()
+- void **setFpsLimit** (int fps) — Limits the maximum frequency of display updates.
+- void **removeFpsLimit** () — Remove the limit on the frequency of display updates.
+- double **currentFps** () — Returns the current frame rate (independent of any FPS limit).
+- void [setContainerWidget](#setcontainerwidget) (QWidget \*widget) — Sets the widget this QWindow is wrapped in (if any).
+- QWidget \* **containerWidget** () const
+- bool [event](#event) (QEvent \*event) override — Handles any display event and hands it to corresponding views.
+- void **resizeEvent** (QResizeEvent \*[event](#event)) override
+- QPoint **mapFromOpenGL** (const QPoint &point) const — Converts the point from top-left to bottom-left coordinates.
+- QPointF **mapFromOpenGL** (const QPointF &point) const
+- QPoint **mapToOpenGL** (const QPoint &point) const — Converts the point from bottom-left to top-left coordinates.
+- QPointF **mapToOpenGL** (const QPointF &point) const
+
+## Signals
+
+- void **viewAdded** ([InteractiveView](/cpp-sdk/4.5/api/classes/imfusion-interactiveview) \*v) — Emitted after a view has been added.
+- void **viewRemoved** ([InteractiveView](/cpp-sdk/4.5/api/classes/imfusion-interactiveview) \*v) — Emitted after a view has been removed. This signal is not emitted when the DisplayLayout gets deleted and deletes all remaining views.
+- void [viewDeleted](#viewdeleted) ([InteractiveView](/cpp-sdk/4.5/api/classes/imfusion-interactiveview) \*v) — Emitted after a view has been deleted without being removed.
+- void **viewLayoutChanged** () — Emitted when the layout of the views has changed.
+
+## Public Member Functions
+
+- [DisplayWidget](#displaywidget) (bool initialize=true, QWindow \*parent=nullptr) — Creates a new empty [DisplayWidget](/cpp-sdk/4.5/api/classes/imfusion-displaywidget).
+- **~DisplayWidget** () override — Deletes all views.
+- void **init** () — Initialize the OpenGL context of this [DisplayWidget](/cpp-sdk/4.5/api/classes/imfusion-displaywidget).
+- void [deinit](#deinit) () — Mark the display as deinitialized so that it will no longer perform any rendering.
+- void **setBackgroundColor** (const QColor &color)
+- QColor **backgroundColor** () const
+- virtual bool [addView](#addview) ([InteractiveView](/cpp-sdk/4.5/api/classes/imfusion-interactiveview) \*view) — Add view and pass ownership. If the view is not removed before this object is deleted it will be deleted too.
+- virtual bool [removeView](#removeview) ([InteractiveView](/cpp-sdk/4.5/api/classes/imfusion-interactiveview) \*view) — Remove view. The user is responsible for deleting the view.
+- int **numViews** () const — Returns the number of views.
+- int [numVisibleViews](#numvisibleviews) () const — Returns the number of visible views if no view is on fullscreen.
+- [InteractiveView](/cpp-sdk/4.5/api/classes/imfusion-interactiveview) \* **viewAt** (int i) — Returns the view with the index i or NULL if the view doesn't exist.
+- const [InteractiveView](/cpp-sdk/4.5/api/classes/imfusion-interactiveview) \* **viewAt** (int i) const
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [InteractiveView](/cpp-sdk/4.5/api/classes/imfusion-interactiveview) \* &gt; **views** () const
+- [InteractiveView](/cpp-sdk/4.5/api/classes/imfusion-interactiveview) \* **view** (int which=0) — Access an interactive view, returns nullptr if which is out of bounds.
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Set one or multiple properties.
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Retrieve the properties of this object.
+- bool **makeCurrent** () — Makes the underlying OpenGL context current against the QSurface of the display in the current thread.
+- void **doneCurrent** () — Deactivates any current OpenGL context in the current thread.
+- [GUI::DisplayLayout](/cpp-sdk/4.5/api/classes/imfusion-gui-displaylayout) \* **layout** ()
+- virtual void [render](#render) (bool swapBuffers=true) — Clears the display and renders all views using the current OpenGL context.
+- QRect [viewport](#viewport) () const — Returns the rendering viewport.
+- void [setCustomViewport](#setcustomviewport) (QRect [viewport](#viewport)) — Sets a custom rendering viewport.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; unsigned char &gt; &gt; [captureScreenshot](#capturescreenshot) (int width=0, int height=0, bool withAlpha=true) — Capture the current content of the display into an image.
+- [GUI::DisplayBase](/cpp-sdk/4.5/api/classes/imfusion-gui-displaybase) & **displayBaseAdapter** () — Return a helper struct implementing the [GUI::DisplayBase](/cpp-sdk/4.5/api/classes/imfusion-gui-displaybase) interface for this [DisplayWidget](/cpp-sdk/4.5/api/classes/imfusion-displaywidget) instance.
+
+## Protected Slots
+
+- virtual void **animationFinished** ()
+- virtual void **recordFrame** ()
+- virtual void **onViewVisiblityChanged** ()
+- virtual void **onViewVisiblityChangeRequested** (bool visible)
+
+## Protected Attributes
+
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [InteractiveView](/cpp-sdk/4.5/api/classes/imfusion-interactiveview) \* &gt; **m_views**
+- [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; DataDisplayDispatcher &gt; **m_dataDisplayDispatcher**
+
+## Constructor & Destructor Documentation
+
+### DisplayWidget
+
+```cpp
+ImFusion::DisplayWidget::DisplayWidget (bool initialize = true, QWindow * parent = nullptr)
+```
+
+*explicit*
+
+Creates a new empty [DisplayWidget](/cpp-sdk/4.5/api/classes/imfusion-displaywidget).
+
+**Parameters:**
+
+- `initialize` — Flag whether to fully initialize the [DisplayWidget](/cpp-sdk/4.5/api/classes/imfusion-displaywidget) on construction. If you are embedding the [DisplayWidget](/cpp-sdk/4.5/api/classes/imfusion-displaywidget) in a Qt window container, you need to postpone initialization to after calling QWidget::createWindowContainer. In this case, set it to false and call DisplayWidget::init() manually.
+- `parent` — Parent Qt window.
+
+**Exceptions:**
+
+- `std::runtime_error` — if the [GL::ContextManager](/cpp-sdk/4.5/api/classes/imfusion-gl-contextmanager) main context is not a [GlContextQt](/cpp-sdk/4.5/api/classes/imfusion-glcontextqt) (see class description).
+
+## Member Function Documentation
+
+### deinit
+
+```cpp
+void ImFusion::DisplayWidget::deinit ()
+```
+
+Mark the display as deinitialized so that it will no longer perform any rendering.
+
+Can be used if the underlying OpenGL context has been destroyed already und there are still pending updates in the event queue.
+
+### addView
+
+```cpp
+virtual bool ImFusion::DisplayWidget::addView (InteractiveView * view)
+```
+
+*virtual*
+
+Add view and pass ownership. If the view is not removed before this object is deleted it will be deleted too.
+
+### removeView
+
+```cpp
+virtual bool ImFusion::DisplayWidget::removeView (InteractiveView * view)
+```
+
+*virtual*
+
+Remove view. The user is responsible for deleting the view.
+
+### numVisibleViews
+
+```cpp
+int ImFusion::DisplayWidget::numVisibleViews () const
+```
+
+Returns the number of visible views if no view is on fullscreen.
+
+If fullscreen is enabled, this returns the number of views as if fullscreen would be disabled.
+
+### configure
+
+```cpp
+void ImFusion::DisplayWidget::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Set one or multiple properties.
+
+### configuration
+
+```cpp
+void ImFusion::DisplayWidget::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Retrieve the properties of this object.
+
+### render
+
+```cpp
+virtual void ImFusion::DisplayWidget::render (bool swapBuffers = true)
+```
+
+*virtual*
+
+Clears the display and renders all views using the current OpenGL context.
+
+The related OpenGL context must be current before calling this method. Calls QOpenGLContext::swapBuffers if swapBuffers is set. If the context is shared it can also be current on another surface. For example to render the display into another QWindow (assuming it has a shared OpenGL backend):
+
+```cpp
+QWindow* other = ...
+DisplayWidget* display = ...;
+display->openglContext()->makeCurrent(other);
+display->openglContext()->render();
+```
+ fragment
+
+### viewport
+
+```cpp
+QRect ImFusion::DisplayWidget::viewport () const
+```
+
+Returns the rendering viewport.
+
+The viewport is relative to the window, e.g. (0, 0) is the upper left corner of the window.
+
+### setCustomViewport
+
+```cpp
+void ImFusion::DisplayWidget::setCustomViewport (QRect viewport)
+```
+
+Sets a custom rendering viewport.
+
+By default the [DisplayWidget](/cpp-sdk/4.5/api/classes/imfusion-displaywidget) uses its complete geometry as viewport which is automatically resized with the window. If a non-empty custom viewport is set, this viewport is used instead and will NOT be changed on resize events. Passing an empty QRect restores the default behavior.
+
+### captureScreenshot
+
+```cpp
+std::unique_ptr < TypedImage < unsigned char > > ImFusion::DisplayWidget::captureScreenshot (int width = 0, int height = 0, bool withAlpha = true)
+```
+
+Capture the current content of the display into an image.
+
+**Parameters:**
+
+- `width` — Target width of the screenshot, will use the size of the [DisplayWidget](/cpp-sdk/4.5/api/classes/imfusion-displaywidget) if set to 0
+- `height` — Target height of the screenshot, will use the size of the [DisplayWidget](/cpp-sdk/4.5/api/classes/imfusion-displaywidget) if set to 0
+- `withAlpha` — Flag whether to capture the alpha channel as well.
+
+### viewDeleted
+
+```cpp
+void ImFusion::DisplayWidget::viewDeleted (InteractiveView * v)
+```
+
+*signal*
+
+Emitted after a view has been deleted without being removed.
+
+Do not connect to this signal if you don't know what you are doing! You have been warned...
+
+### setRecording
+
+```cpp
+void ImFusion::DisplayWidget::setRecording (bool enable, bool reset = true, bool continuous = false)
+```
+
+*slot*
+
+If enabled and the recording path is not empty, all paintEvent results will be written to disk.
+
+**Parameters:**
+
+- `reset` — resets the internal counter to 0
+- `continuous` — record a frame every 20ms versus on every OpenGL paint
+
+### setRecordingOutputDir
+
+```cpp
+void ImFusion::DisplayWidget::setRecordingOutputDir (const QString & path)
+```
+
+*slot*
+
+Sets the path to the output file used in the recording.
+
+Can contain a QString placeholder (e.g. "test%1") that will be replaced successive number. If no placeholder is given each recording will override the last one. Contains "img_%1.png" by default.
+
+### layoutViews
+
+```cpp
+void ImFusion::DisplayWidget::layoutViews (bool noAnimation = false)
+```
+
+*slot*
+
+Layout the views.
+
+This function has to be called whenever a change in the position and/or size of the views was made or when the stretch factors were changed.
+
+### setContainerWidget
+
+```cpp
+void ImFusion::DisplayWidget::setContainerWidget (QWidget * widget)
+```
+
+*slot*
+
+Sets the widget this QWindow is wrapped in (if any).
+
+If this [DisplayWidget](/cpp-sdk/4.5/api/classes/imfusion-displaywidget) is wrapped in a QWidget with QWidget::createWindowContainer, the resulting QWidget can be stored here for convenience. Since the geometry of the QWindow cannot be changed when inside a QWidget, this property is useful to change the geometry through the QWidget (e.g. resize or setGeometry). If you don't use QWidget::createWindowContainer, you can safely ignore this method.
+
+### event
+
+```cpp
+bool ImFusion::DisplayWidget::event (QEvent * event)
+```
+
+*override, slot*
+
+Handles any display event and hands it to corresponding views.
+
+QMouseEvents, QWheelEvents and QTouchEvents are only passed to the view that contains the event position (in the case of QTouchEvent, all positions). If a view accepted a MouseButtonPress or TouchBegin, it will receive all following events independent of the position until a corresponding MouseButtonRelease or TouchEnd/TouchCancel event (i.e. the view gets an lock on all events). This ensures that dragging events are only handled by one view and don't change target when leaving a view. Views also receive Enter and Leave events when the mouse enters and leaves the view area (but only if no view has the afore mentioned event lock). QMouseEvents and QWheelEvent position are automatically converted from Qt window coordinates (top-left origin) to OpenGL coordinates (bottom-left origin). Because of limitations in Qt, this is not the case for QTouchEvents, which will always be in Qt window coordinates and must be converted when used (see mapToOpenGL).

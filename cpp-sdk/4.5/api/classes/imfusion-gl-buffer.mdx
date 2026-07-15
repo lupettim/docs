@@ -1,0 +1,145 @@
+---
+title: "ImFusion::GL::Buffer"
+sidebarTitle: "Buffer"
+description: "Wrapper class for OpenGL Buffer Objects."
+---
+
+`#include <ImFusion/Core/GL/Buffer.h>`
+
+## Overview
+
+Wrapper class for OpenGL [Buffer](/cpp-sdk/4.5/api/classes/imfusion-gl-buffer) Objects.
+
+OpenGL buffers serve many different purposes of which this base class implements the common interface. However, this class is not meant to be used directly. Instead you should use one of the specializations such as [VertexBuffer](/cpp-sdk/4.5/api/classes/imfusion-gl-vertexbuffer), [ShaderStorageBuffer](/cpp-sdk/4.5/api/classes/imfusion-gl-shaderstoragebuffer), etc. instead for improved type safety. Furthermore, each specialization provides an extended API that is tailored to its buffer type.
+
+**Note:** As with most OpenGL objects, this class is bind-sensitive: You need to call bind() to bind a [Buffer](/cpp-sdk/4.5/api/classes/imfusion-gl-buffer) to the current OpenGL context before calling any modifying member functions.
+
+**See also:** [https://www.khronos.org/opengl/wiki/Buffer_Object](https://www.khronos.org/opengl/wiki/Buffer_Object)
+
+## Public Types
+
+- enum class [Target](#target) &#123; **Array** = 0x8892 , **AtomicCounter** = 0x92C0 , **CopyRead** = 0x8F36 , **CopyWrite** = 0x8F37 , **DrawIndirect** = 0x8F3F , **ElementArray** = 0x8893 , **PixelPack** = 0x88EB , **PixelUnpack** = 0x88EC , **ShaderStorage** = 0x90D2 , **Texture** = 0x8C2A , **TransformFeedback** = 0x8C8E , **Uniform** = 0x8A11 &#125; — Enumeration of the different OpenGL buffer types.
+- enum class [Usage](#usage) &#123; StreamDraw = 0x88E0 , StreamRead = 0x88E1 , StreamCopy = 0x88E2 , StaticDraw = 0x88E4 , StaticRead = 0x88E5 , StaticCopy = 0x88E6 , DynamicDraw = 0x88E8 , DynamicRead = 0x88E9 , DynamicCopy = 0x88EA &#125; — Enumeration for usage pattern hints to provide to the GPU when allocating data.
+
+## Public Member Functions
+
+- [Buffer](#buffer) ([Target](#target) target, [Usage](#usage) usage) — Creates a new [Buffer](/cpp-sdk/4.5/api/classes/imfusion-gl-buffer).
+- void **bind** () const — Binds the buffer to the target given during construction.
+- [Usage](#usage) **usageHint** () const — Returns the buffer usage hint passed to OpenGL during allocation.
+- void **setUsageHint** ([Usage](#usage) value) — Sets the buffer usage hint passed to OpenGL during allocation.
+- uint32_t [id](#id) () const — Return a handle to the internal OpenGL buffer object.
+
+## Static Public Member Functions
+
+- static void **unbind** ([Target](#target) target) — Binds 0 to the specified target.
+
+## Protected Member Functions
+
+- void [allocateBuffer](#allocatebuffer) (int64_t numBytes) — Allocates storage on the GPU for this buffer object.
+- void [setSubData](#setsubdata) (size_t offset, [Utils::Span](/cpp-sdk/4.5/api/classes/imfusion-utils-span)&lt; Ts &gt;... data) — Upload data into the buffer starting at the given offset.
+- size_t **getBufferSize** ([Utils::Span](/cpp-sdk/4.5/api/classes/imfusion-utils-span)&lt; Ts &gt;... data) const — Compute the total number of bytes used by all provided *data* together.
+
+## Static Protected Member Functions
+
+- static void **glBufferSubDataImpl** ([Target](#target) target, int64_t offset, int64_t size, const void \*data) — forwards to OpenGL's glBufferSubData().
+- static void **glGetBufferSubDataImpl** ([Target](#target) target, int64_t offset, int64_t size, void \*data) — forwards to OpenGL's glGetBufferSubData().
+
+## Protected Attributes
+
+- const [Target](#target) **m_target** — [Target](#target) binding point for the buffer, will never change for a [Buffer](/cpp-sdk/4.5/api/classes/imfusion-gl-buffer) instance.
+- [Usage](#usage) **m_usageHint** — [Buffer](/cpp-sdk/4.5/api/classes/imfusion-gl-buffer) usage hint passed to OpenGL unless explicitly specified otherwise.
+- uint32_t **m_id** = 0 — Internal OpenGL handle to buffer object.
+- int64_t **m_bufferSize** = 0 — Number of bytes allocated on the GPU.
+
+## Member Enumeration Documentation
+
+### Target
+
+```cpp
+enum class ImFusion::GL::Buffer::Target
+```
+
+*strong*
+
+Enumeration of the different OpenGL buffer types.
+
+If you use the specializations of [Buffer](/cpp-sdk/4.5/api/classes/imfusion-gl-buffer), you will not need to use these.
+
+### Usage
+
+```cpp
+enum class ImFusion::GL::Buffer::Usage
+```
+
+*strong*
+
+Enumeration for usage pattern hints to provide to the GPU when allocating data.
+
+**Enumerator:**
+
+- `StreamDraw` — The data is modified once and used at most a few times; it is modified by the application, and used as the source for [GL](/cpp-sdk/4.5/api/namespaces/imfusion-gl) drawing and image specification commands.
+- `StreamRead` — The data is modified once and used at most a few times; it is modified by reading data from the [GL](/cpp-sdk/4.5/api/namespaces/imfusion-gl) device, and used to return that data when queried by the application.
+- `StreamCopy` — The data is modified once and used at most a few times; it is modified by reading data from the [GL](/cpp-sdk/4.5/api/namespaces/imfusion-gl) device, and used as the source for [GL](/cpp-sdk/4.5/api/namespaces/imfusion-gl) drawing and image specification commands.
+- `StaticDraw` — The data is modified once and used many times; the data is modified by the application, and used as the source for [GL](/cpp-sdk/4.5/api/namespaces/imfusion-gl) drawing and image specification commands.
+- `StaticRead` — The data is modified once and used many times; it is modified by reading data from the [GL](/cpp-sdk/4.5/api/namespaces/imfusion-gl) device, and used to return that data when queried by the application.
+- `StaticCopy` — The data is modified once and used many times; it is modified by reading data from the [GL](/cpp-sdk/4.5/api/namespaces/imfusion-gl) device, and used as the source for [GL](/cpp-sdk/4.5/api/namespaces/imfusion-gl) drawing and image specification commands.
+- `DynamicDraw` — The data is modified repeatedly and used many times; it is modified by the application, and used as the source for [GL](/cpp-sdk/4.5/api/namespaces/imfusion-gl) drawing and image specification commands.
+- `DynamicRead` — The data is modified repeatedly and used many times; it is modified by reading data from the [GL](/cpp-sdk/4.5/api/namespaces/imfusion-gl) device, and used to return that data when queried by the application.
+- `DynamicCopy` — The data is modified repeatedly and used many times; it is modified by reading data from the [GL](/cpp-sdk/4.5/api/namespaces/imfusion-gl) device, and used as the source for [GL](/cpp-sdk/4.5/api/namespaces/imfusion-gl) drawing and image specification commands.
+
+## Constructor & Destructor Documentation
+
+### Buffer
+
+```cpp
+ImFusion::GL::Buffer::Buffer (Target target, Usage usage)
+```
+
+Creates a new [Buffer](/cpp-sdk/4.5/api/classes/imfusion-gl-buffer).
+
+Needs a valid OpenGL context.
+
+**Exceptions:**
+
+- `std::runtime_error` — if the corresponding OpenGL buffer object could not be created.
+
+## Member Function Documentation
+
+### id
+
+```cpp
+uint32_t ImFusion::GL::Buffer::id () const
+```
+
+Return a handle to the internal OpenGL buffer object.
+
+**Note:** Use with care! Any changes made to the buffer with this handle may not be reflected by this object.
+
+### allocateBuffer
+
+```cpp
+void ImFusion::GL::Buffer::allocateBuffer (int64_t numBytes)
+```
+
+*protected*
+
+Allocates storage on the GPU for this buffer object.
+
+**Parameters:**
+
+- `numBytes` — Number of bytes to allocate.
+
+### setSubData
+
+```cpp
+template<typename... Ts> void ImFusion::GL::Buffer::setSubData (size_t offset, Utils::Span < Ts >... data)
+```
+
+*protected*
+
+Upload data into the buffer starting at the given offset.
+
+**Parameters:**
+
+- `offset` — Offset in bytes into the buffer object's data store where start writing data.
+- `data` — Pack of data arrays that should be copied to the buffer. If you provide multiple spans they will be concatenated and end up next to each other in the buffer without any padding.

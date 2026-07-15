@@ -1,0 +1,42 @@
+---
+title: "ImFusion::GlPoint"
+sidebarTitle: "GlPoint"
+description: "Point annotation."
+---
+
+`#include <ImFusion/GL/GlPoint.h>`
+
+## Overview
+
+Point annotation.
+
+## Public Member Functions
+
+- void **setPoint** (const vec3 &p)
+- void **setShowAsCrossHair** (bool flag)
+- void **setDotSize** (float size)
+- float **dotSize** () const
+- void [draw](#draw) (const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &[view](/cpp-sdk/4.5/api/classes/imfusion-glannotation)) override — Draw the object in 3D space.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [typeName](#typename) () const override — Return unique identifier for this object class used for serialization.
+
+## Member Function Documentation
+
+### draw
+
+```cpp
+void ImFusion::GlPoint::draw (const GlView & view)
+```
+
+*override, virtual*
+
+Draw the object in 3D space.
+
+### typeName
+
+```cpp
+std::string ImFusion::GlPoint::typeName () const
+```
+
+*inline, override, virtual*
+
+Return unique identifier for this object class used for serialization.

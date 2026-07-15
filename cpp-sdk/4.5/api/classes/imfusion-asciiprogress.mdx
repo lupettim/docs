@@ -1,0 +1,33 @@
+---
+title: "ImFusion::AsciiProgress"
+sidebarTitle: "AsciiProgress"
+description: "Displays a basic progress bar with ASCII characters on the console window."
+---
+
+`#include <ImFusion/Base/AsciiProgress.h>`
+
+## Overview
+
+Displays a basic progress bar with ASCII characters on the console window.
+
+The progress will be displayed in the following format:
+
+```cpp
+[====      ] 42% Computing...
+```
+ fragment
+The text (in this case "Computing...") is always displayed on the right. Busy indicators will displayed as such
+
+```cpp
+[   =      ] Computing...
+```
+ fragment
+where each update (independent of the value) wanders the indicator from left to right and back.
+
+[AsciiProgress](/cpp-sdk/4.5/api/classes/imfusion-asciiprogress) will always display a maximum of one progress bar even if multiple tasks were added. In this case the indicator will be the one of the first added task, however the text on the right will show an additional "(N tasks total)" to make this limitation clearer.
+
+Instead of a new line, the updateProgress always ends with a \r so that the next progress update overwrites the previous one. If the application prints other text it also overwrites the last progress.
+
+## Public Member Functions
+
+- void **cancelAllTasks** ()

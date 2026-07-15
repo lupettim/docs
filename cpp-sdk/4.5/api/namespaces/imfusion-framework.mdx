@@ -1,0 +1,225 @@
+---
+title: "ImFusion::Framework"
+sidebarTitle: "Framework"
+description: "Namespace containing general framework initialization methods."
+---
+
+## Overview
+
+Namespace containing general framework initialization methods.
+
+**See also:** [What is the correct way to initialize the ImFusionLib and its plugins?](/cpp-sdk/4.5/api/guides/f-a-q)License System
+
+## Classes
+
+- struct [InitConfig](/cpp-sdk/4.5/api/structs/imfusion-framework-initconfig) — Record to configure the initialization of the ImFusion SDK.
+- struct [PluginInfo](/cpp-sdk/4.5/api/structs/imfusion-framework-plugininfo)
+
+## Functions
+
+- [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; void()&gt; [defaultLicenseInitFunction](#defaultlicenseinitfunction) () — Returns the license initialization function which is set in the [InitConfig](/cpp-sdk/4.5/api/structs/imfusion-framework-initconfig) by default.
+- void [init](#init) ([InitConfig](/cpp-sdk/4.5/api/structs/imfusion-framework-initconfig) &&initializationSettings=&#123;&#125;) — Performs general initialization of the framework.
+- void [deinit](#deinit) () — De-intializes the framework.
+- bool **isInitialized** () — Returns whether the framework was successfully initialized.
+- void [installSignalHandlers](#installsignalhandlers) () — Installs signal handlers for SIGINT and SIGTERM that call [deinit()](#deinit) and exit gracefully.
+- void [loadPlugins](#loadplugins) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; &pluginFolders=[std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt;()) — Load and register/initializes all ImFusion plugins from the specified folders.
+- bool [loadPlugin](#loadplugin) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &pluginFilename) — Load and register/initialize a single ImFusion plugin, returns true on success.
+- bool [loadRequiredPlugins](#loadrequiredplugins) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; &pluginLibraryNames, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; &pluginFolders=[std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt;()) — Load and register/initialize all requested plugins, returns true on success.
+- void [addBlacklistedPluginLibraryName](#addblacklistedpluginlibraryname) ([std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) libraryName) — Blacklist a *libraryName* in the plugin folder and prevent it from being loaded.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [PluginInfo](/cpp-sdk/4.5/api/structs/imfusion-framework-plugininfo) &gt; [loadedPlugins](#loadedplugins) () — Returns a list of all currently loaded plugins.
+- T \* [queryLoadedPlugin](#queryloadedplugin-1-2) () — Returns the ImFusionLibPlugin of the given type if it has been loaded.
+- [ImFusionLibPlugin](/cpp-sdk/4.5/api/classes/imfusion-imfusionlibplugin) \* [queryLoadedPlugin](#queryloadedplugin-2-2) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &pluginName) — Returns the ImFusionLibPlugin with the given name if it has been loaded.
+- [Utils::Version](/cpp-sdk/4.5/api/structs/imfusion-utils-version) **version** () — Returns the version of the ImFusion SDK.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [versionInfoString](#versioninfostring) () — Returns a string containing information about the version of the ImFusionLib.
+- void **init** (const [InitConfig](/cpp-sdk/4.5/api/structs/imfusion-framework-initconfig) &initializationSettings)=delete
+
+## Function Documentation
+
+### void
+
+```cpp
+std::function < void()> ImFusion::Framework::defaultLicenseInitFunction ()
+```
+
+Returns the license initialization function which is set in the [InitConfig](/cpp-sdk/4.5/api/structs/imfusion-framework-initconfig) by default.
+
+The returned function tries to activate a license if no license is active by using the environment variable IMFUSION_LICENSE_KEY if set or by migrating a legacy license if present on the system. If license activation fails it throws a [MissingLicenseException](/cpp-sdk/4.5/api/classes/imfusion-missinglicenseexception).
+
+### init
+
+```cpp
+void ImFusion::Framework::init (InitConfig && initializationSettings = {})
+```
+
+Performs general initialization of the framework.
+
+Default initialization settings are defined by the default values of the [InitConfig](/cpp-sdk/4.5/api/structs/imfusion-framework-initconfig) struct. You can customize the initialization process by providing a custom instance. Be advised that due to the [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html) in this struct, you can only move it into the [init()](#init) function.
+
+By default, (with default [Framework::InitConfig](/cpp-sdk/4.5/api/structs/imfusion-framework-initconfig)) this function does *not* load any plugins yet. If you are using an [ApplicationController](/cpp-sdk/4.5/api/classes/imfusion-applicationcontroller), it can take care of SDK initialization as well, so that you don't have to call this function directly. If the framework has already been initialized, this function does nothing.
+
+A license must be activated inside [Framework::InitConfig::licenseInitFunction](/cpp-sdk/4.5/api/structs/imfusion-framework-initconfig). If nothing is specified, the default implementation is used, which reads the license key from the environment variable IMFUSION_LICENSE_KEY. Alternatively, you can set your own function (see below and [ImFusion::LicenseManagerSDK](/cpp-sdk/4.5/api/namespaces/imfusion-licensemanagersdk))
+
+Example of a complete initialization:
+
+```cpp
+Framework::InitConfig initConfig;
+initConfig.licenseInitFunction = []() {
+ if (!LicenseManagerSDK::isActivated())
+ LicenseManagerSDK::activateKeyOnline("XXXX-XXXX-XXXX-XXXX");
+};
+initConfig.loadPlugins = true;
+Framework::init(std::move(initConfig));
+```
+ fragment
+
+**Exceptions:**
+
+- `MissingLicenseException` — if the license is invalid
+- `GL::OpenGLNotFoundException` — if the OpenGL context could not be initialized
+
+### deinit
+
+```cpp
+void ImFusion::Framework::deinit ()
+```
+
+De-intializes the framework.
+
+Deinitialize the logging framework.
+
+Deletes the main OpenGL context and unloads all plugins. This should only be called at the end of the application and if [init()](#init) was called before. Does nothing if the framework was not initialized yet.
+
+### installSignalHandlers
+
+```cpp
+void ImFusion::Framework::installSignalHandlers ()
+```
+
+Installs signal handlers for SIGINT and SIGTERM that call [deinit()](#deinit) and exit gracefully.
+
+This only has an effect on UNIX-like systems.
+
+### loadPlugins
+
+```cpp
+void ImFusion::Framework::loadPlugins (const std::vector < std::string > & pluginFolders = std::vector < std::string >())
+```
+
+Load and register/initializes all ImFusion plugins from the specified folders.
+
+If *pluginFolders* is empty, the following default search paths are used:
+
+Windows platforms:
+
+- IMFUSION_PLUGIN_PATH environment variable
+- &lt;executable-path&gt;/plugins
+- &lt;ImFusionLib.dll-path&gt;/plugins
+
+Unix platforms:
+
+- IMFUSION_PLUGIN_PATH environment variable
+- &lt;ImFusionLib.so-path&gt;/../lib/ImFusionLib/plugins
+
+Plugin names defined in the environment variable IMFUSION_PLUGIN_BLACKLIST as a semi-colon-separated list (e.g. "Foo.dll;Bar.dll") will not be loaded by this function. This mechanism can also be used to explicitly ignore libraries that might conflict with or crash the application.
+
+****Deprecated**:** "Use PluginManager::registerPlugins() and PluginManager::initAllRegisteredPlugins() instead"
+
+### loadPlugin
+
+```cpp
+bool ImFusion::Framework::loadPlugin (const std::string & pluginFilename)
+```
+
+Load and register/initialize a single ImFusion plugin, returns true on success.
+
+This is useful to load a single plugin from a non-standard path without setting the IMFUSION_PLUGIN_PATH environment variable. If the plugin name is blacklisted, loading of such library will be skipped, see [addBlacklistedPluginLibraryName](#addblacklistedpluginlibraryname)
+
+**Parameters:**
+
+- `pluginFilename` — Full path to the .dll/.so/.dylib plugin file to load.
+
+****Deprecated**:** "Use PluginManager::registerPlugin() and PluginManager::initPlugin() instead"
+
+### loadRequiredPlugins
+
+```cpp
+bool ImFusion::Framework::loadRequiredPlugins (const std::vector < std::string > & pluginLibraryNames, const std::vector < std::string > & pluginFolders = std::vector < std::string >())
+```
+
+Load and register/initialize all requested plugins, returns true on success.
+
+This is useful, in particular for regulatory purposes, to ensure that the application has these plugins and no additional ones. One can provide a folder location for the plugins. If that is empty, the following default search paths are used:
+
+Windows platforms:
+
+- IMFUSION_PLUGIN_PATH environment variable
+- &lt;executable-path&gt;/plugins
+- &lt;ImFusionLib.dll-path&gt;/plugins
+
+Unix platforms:
+
+- IMFUSION_PLUGIN_PATH environment variable
+- &lt;ImFusionLib.so-path&gt;/../lib/ImFusionLib/plugins
+
+**Parameters:**
+
+- `pluginLibraryNames` — The names of the desired plugins e.g. &#123; "ImFusionSeg", "ImFusionReg", "TorchPlugin" &#125;
+- `pluginFolders` — The folder(s) where the plugins are located. If empty, default paths will be searched.
+
+****Deprecated**:** "Use PluginManager::registerPlugins() and PluginManager::initAllRegisteredPlugins() instead"
+
+### addBlacklistedPluginLibraryName
+
+```cpp
+void ImFusion::Framework::addBlacklistedPluginLibraryName (std::string libraryName)
+```
+
+Blacklist a *libraryName* in the plugin folder and prevent it from being loaded.
+
+Adds the name of a library to the list of blacklisted .dll/.so/.dylib which shall not be loaded by [Framework::loadPlugins()](#loadplugins). This can useful to skip loading of libraries which are not ImFusion plugins but might be required to sit next to an ImFusion plugin. Call this function in your main.cpp, before calling [Framework::loadPlugins()](#loadplugins)
+
+****Deprecated**:** "Use PluginManager::addLibraryNameToBlacklist() instead"
+
+### loadedPlugins
+
+```cpp
+std::vector < PluginInfo > ImFusion::Framework::loadedPlugins ()
+```
+
+Returns a list of all currently loaded plugins.
+
+****Deprecated**:** "Use PluginManager::plugins() instead"
+
+### queryLoadedPlugin
+
+```cpp
+template<typename T> T * ImFusion::Framework::queryLoadedPlugin ()
+```
+
+Returns the ImFusionLibPlugin of the given type if it has been loaded.
+
+Returns nullptr, if no such plugin has been loaded.
+
+****Deprecated**:** "Use PluginManager::pluginInstance() instead"
+
+### queryLoadedPlugin
+
+```cpp
+ImFusionLibPlugin * ImFusion::Framework::queryLoadedPlugin (const std::string & pluginName)
+```
+
+Returns the ImFusionLibPlugin with the given name if it has been loaded.
+
+Returns nullptr, if no such plugin has been loaded.
+
+****Deprecated**:** "Use PluginManager::pluginInstance() instead"
+
+### versionInfoString
+
+```cpp
+std::string ImFusion::Framework::versionInfoString ()
+```
+
+Returns a string containing information about the version of the ImFusionLib.
+
+Format: "ImFusionLib Version &lt;Version&gt; built on &lt;Year&gt;-&lt;Month&gt;-&lt;Day&gt;.";

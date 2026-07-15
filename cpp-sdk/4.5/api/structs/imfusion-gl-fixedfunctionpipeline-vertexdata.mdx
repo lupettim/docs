@@ -1,0 +1,80 @@
+---
+title: "ImFusion::GL::FixedFunctionPipeline::VertexData< PosT, TexCoordT, ColorT >"
+sidebarTitle: "VertexData< PosT, TexCoordT, ColorT >"
+description: "Utility struct to build a VertexBuffer to be used with FixedFunctionPipeline in a type-safe fashion."
+---
+
+`#include <ImFusion/Core/GL/FixedFunctionPipeline.h>`
+
+## Overview
+
+template&lt;typename PosT, typename TexCoordT = detail::NullAtribT, typename ColorT = detail::NullAtribT&gt;
+
+struct ImFusion::GL::FixedFunctionPipeline::VertexData&lt; PosT, TexCoordT, ColorT &gt;
+Utility struct to build a [VertexBuffer](/cpp-sdk/4.5/api/classes/imfusion-gl-vertexbuffer) to be used with [FixedFunctionPipeline](/cpp-sdk/4.5/api/classes/imfusion-gl-fixedfunctionpipeline) in a type-safe fashion.
+
+You can either fill a [VertexBuffer](/cpp-sdk/4.5/api/classes/imfusion-gl-vertexbuffer) with the data using [assign()](#assign) or create a new one using [createBuffer()](#createbuffer). This interface also provides an implicit conversion to [std::unique_ptr&lt;VertexBuffer&gt;](http://en.cppreference.com/w/cpp/memory/unique_ptr.html) to minimize code overhead.
+
+**Note:** Do instantiate this class manually but use the [FixedFunctionPipeline::makeVertexData()](/cpp-sdk/4.5/api/classes/imfusion-gl-fixedfunctionpipeline) factory function:
+```cpp
+std::vector<vec2> vertices = ...;
+std::vector<vec2> texCoords = ...;
+std::unique_ptr<VertexBuffer> vbo = FixedFunctionPipeline::makeVertexData(vertices).useTexCoords(texCoords);
+```
+ fragment
+
+## Public Member Functions
+
+- [VertexData](/cpp-sdk/4.5/api/structs/imfusion-gl-fixedfunctionpipeline-vertexdata)&lt; PosT, TexCoordT, T &gt; [useColors](#usecolors) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; T &gt; &colors) const — Add per-vertex colors to the vertex data.
+- [VertexData](/cpp-sdk/4.5/api/structs/imfusion-gl-fixedfunctionpipeline-vertexdata)&lt; PosT, T, ColorT &gt; [useTexCoords](#usetexcoords) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; T &gt; &texCoords) const — Add per-vertex texture coordinates to the vertex data.
+- void [assign](#assign) ([VertexBuffer](/cpp-sdk/4.5/api/classes/imfusion-gl-vertexbuffer) &buffer) const — Assign the previously specified vertex data to the given buffer.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [VertexBuffer](/cpp-sdk/4.5/api/classes/imfusion-gl-vertexbuffer) &gt; [createBuffer](#createbuffer) () const — Create a new GlVertexBuffer and fill it with the previously provided vertex data.
+- **operator std::unique_ptr&lt; VertexBuffer &gt;** () const — Implicit conversion to a [std::unique_ptr&lt;GL::VertexBuffer&gt;](http://en.cppreference.com/w/cpp/memory/unique_ptr.html).
+
+## Public Attributes
+
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; PosT &gt; \* **m_vertices** — Pointer to vertex position data, must not be 0.
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; TexCoordT &gt; \* **m_texCoords** — Pointer to vertex texture coordinate data, points to detail::emptyBuffer if not specified.
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; ColorT &gt; \* **m_colors** — Pointer to vertex color data, points to detail::emptyBuffer if not specified.
+
+## Member Function Documentation
+
+### TexCoordT
+
+```cpp
+template<typename PosT, typename TexCoordT = detail::NullAtribT, typename ColorT = detail::NullAtribT> template<typename T> VertexData < PosT, TexCoordT, T > ImFusion::GL::FixedFunctionPipeline::VertexData < PosT, TexCoordT, ColorT >::useColors (const std::vector < T > & colors) const
+```
+
+Add per-vertex colors to the vertex data.
+
+The number of colors must match the number of vertex positions.
+
+### TexCoordT
+
+```cpp
+template<typename PosT, typename TexCoordT = detail::NullAtribT, typename ColorT = detail::NullAtribT> template<typename T> VertexData < PosT, T, ColorT > ImFusion::GL::FixedFunctionPipeline::VertexData < PosT, TexCoordT, ColorT >::useTexCoords (const std::vector < T > & texCoords) const
+```
+
+Add per-vertex texture coordinates to the vertex data.
+
+The number of colors must match the number of vertex positions.
+
+### TexCoordT
+
+```cpp
+template<typename PosT, typename TexCoordT = detail::NullAtribT, typename ColorT = detail::NullAtribT> void ImFusion::GL::FixedFunctionPipeline::VertexData < PosT, TexCoordT, ColorT >::assign (VertexBuffer & buffer) const
+```
+
+Assign the previously specified vertex data to the given buffer.
+
+**Note:** The buffer will remain bound to the current OpenGL state.
+
+### TexCoordT
+
+```cpp
+template<typename PosT, typename TexCoordT = detail::NullAtribT, typename ColorT = detail::NullAtribT> std::unique_ptr < VertexBuffer > ImFusion::GL::FixedFunctionPipeline::VertexData < PosT, TexCoordT, ColorT >::createBuffer () const
+```
+
+Create a new GlVertexBuffer and fill it with the previously provided vertex data.
+
+**Note:** The buffer will remain bound to the current OpenGL state.

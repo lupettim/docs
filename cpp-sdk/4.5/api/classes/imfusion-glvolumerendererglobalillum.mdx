@@ -1,0 +1,183 @@
+---
+title: "ImFusion::GlVolumeRendererGlobalIllum"
+sidebarTitle: "GlVolumeRendererGlobalIllum"
+description: "GlVolumeRenderer that supports global illumination in terms of shadows and local ambient occlusion."
+---
+
+`#include <ImFusion/GL/GlVolumeRendererGlobalIllum.h>`
+
+## Overview
+
+[GlVolumeRenderer](/cpp-sdk/4.5/api/classes/imfusion-glvolumerenderer) that supports global illumination in terms of shadows and local ambient occlusion.
+
+Using this renderer will provide an improved visual appearance by showing shadows in regions that are occluded by its surroundings. This improves depth perception and yields a generally more realistic rendering outcome. Furthermore, this renderer supports a [ChromaDepthMode](#chromadepthmode) gradient-free "chroma-depth" shading mode that tints voxels depending on the local distance to the camera, which is useful for rendering noisy image data such as ultrasound volumes.
+
+The current implementation supports rendering multiple volumes at the same time, as well as masks and deformations.
+
+This renderer requires OpenGL 3.3 hardware.
+
+**See also:** [ImageView3D](/cpp-sdk/4.5/api/classes/imfusion-imageview3d), [GlVolumeView](/cpp-sdk/4.5/api/classes/imfusion-glvolumeview) Hernell et al.: "Local ambient occlusion in direct volume rendering.", IEEE TVCG 16.4 (2010) Sunden et al.: "Efficient volume illumination with multiple light sources through selective light updates." IEEE PacificVis 2015
+
+## Classes
+
+- struct [ShadingParameters](/cpp-sdk/4.5/api/structs/imfusion-glvolumerendererglobalillum-shadingparameters) — Structure encapsulating a Phong shading configuration.
+
+## Public Types
+
+- enum class [ChromaDepthMode](#chromadepthmode) &#123; Off , UltrasoundOnly , On &#125; — Options when to apply gradient-free chroma-depth shading, which tints voxels depending on the local distance to the camera.
+
+## Public Member Functions
+
+- **GlVolumeRendererGlobalIllum** () — Create the renderer, may throw if the local hardware does not support OpenGL 4.3.
+- [ShadingParameters](/cpp-sdk/4.5/api/structs/imfusion-glvolumerendererglobalillum-shadingparameters) **shadingParameters** () const — Returns the Phong shading parameters.
+- void **setShadingParameters** ([ShadingParameters](/cpp-sdk/4.5/api/structs/imfusion-glvolumerendererglobalillum-shadingparameters) value) — Sets the Phong shading parameters.
+- bool **isShadowingEnabled** () const — Returns the flag whether to enable shadowing.
+- void **setShadowingEnabled** (bool value) — Sets the flag whether to enable shadowing.
+- [ChromaDepthMode](#chromadepthmode) **chromaDepthMode** () const — Returns when to apply gradient-free chroma-depth shading.
+- void **setChromaDepthMode** ([ChromaDepthMode](#chromadepthmode) value) — Sets when to apply gradient-free chroma-depth shading.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [name](#name) () const override — Returns the name for identification/GUI usage of this volume renderer.
+- void [render](#render) (const [GL::ViewState](/cpp-sdk/4.5/api/classes/imfusion-gl-viewstate) &viewState, const [RenderTextures](/cpp-sdk/4.5/api/structs/imfusion-glvolumerenderer-rendertextures) &renderTextures) override — Renders the data in the given configuration.
+- [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* [imageData](#imagedata) () const override — Returns the first [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) that is rendered by this [GlVolumeRenderer](/cpp-sdk/4.5/api/classes/imfusion-glvolumerenderer).
+- bool [supportsOITIntegration](#supportsoitintegration) () const override — Returns whether this renderer supports the order-independent integration of semi-transparent scene geometry.
+- bool [supportsDeformations](#supportsdeformations) () const override — Returns whether this renderer supports showing [Deformations](/cpp-sdk/4.5/api/classes/imfusion-deformation) attached to images.
+- vec3 [center](#center) () const override — Returns the center in world coordinates of the first shown data.
+- void [setLod](#setlod) (bool value) override — Sets the flag whether low LOD mode is enabled (half output render size, half sampling rate).
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+## Member Enumeration Documentation
+
+### ChromaDepthMode
+
+```cpp
+enum class ImFusion::GlVolumeRendererGlobalIllum::ChromaDepthMode
+```
+
+*strong*
+
+Options when to apply gradient-free chroma-depth shading, which tints voxels depending on the local distance to the camera.
+
+This mode is mainly intended for image data with low signal-to-noise ratio such as Ultrasound since it does not rely on local gradients.
+
+**Enumerator:**
+
+- `Off` — Do not use chroma-depth rendering mode for any image.
+- `UltrasoundOnly` — Use chroma-depth rendering mode for images with Modality::ULTRASOUND only.
+- `On` — Use chroma-depth rendering mode for all images.
+
+## Member Function Documentation
+
+### name
+
+```cpp
+std::string ImFusion::GlVolumeRendererGlobalIllum::name () const
+```
+
+*override, virtual*
+
+Returns the name for identification/GUI usage of this volume renderer.
+
+### render
+
+```cpp
+void ImFusion::GlVolumeRendererGlobalIllum::render (const GL::ViewState & viewState, const RenderTextures & renderTextures)
+```
+
+*override, virtual*
+
+Renders the data in the given configuration.
+
+**Parameters:**
+
+- `viewState` — OpenGL state describing projection and model-view matrix to use for rendering
+- `renderTextures` — Struct holding all the render textures to use
+
+**Note:** The dimensions of all provided textures must be equivalent.
+
+### imageData
+
+```cpp
+SharedImageSet * ImFusion::GlVolumeRendererGlobalIllum::imageData () const
+```
+
+*override, virtual*
+
+Returns the first [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) that is rendered by this [GlVolumeRenderer](/cpp-sdk/4.5/api/classes/imfusion-glvolumerenderer).
+
+**Note:** This is merely a low-level convenience function. Please use [GlVolumeRenderer::data()](/cpp-sdk/4.5/api/classes/imfusion-glvolumerenderer) or [ImageView3D::visibleData()](/cpp-sdk/4.5/api/classes/imfusion-gui-view) on the parent view in order to get all shown data.
+
+### supportsOITIntegration
+
+```cpp
+bool ImFusion::GlVolumeRendererGlobalIllum::supportsOITIntegration () const
+```
+
+*override, virtual*
+
+Returns whether this renderer supports the order-independent integration of semi-transparent scene geometry.
+
+This flag is queried by [GlVolumeView](/cpp-sdk/4.5/api/classes/imfusion-glvolumeview) to determine whether blending OIT fragments is performed by the volume renderer (return true) or whether it should be done by the [GlVolumeView](/cpp-sdk/4.5/api/classes/imfusion-glvolumeview) prior to letting the [GlVolumeRenderer](/cpp-sdk/4.5/api/classes/imfusion-glvolumerenderer) render (return false). The default implementation returns false.
+
+**See also:** GlOrderIndependentTransparency
+
+### supportsDeformations
+
+```cpp
+bool ImFusion::GlVolumeRendererGlobalIllum::supportsDeformations () const
+```
+
+*override, virtual*
+
+Returns whether this renderer supports showing [Deformations](/cpp-sdk/4.5/api/classes/imfusion-deformation) attached to images.
+
+The default implementation returns false.
+
+**See also:** [setShowDeformations()](/cpp-sdk/4.5/api/classes/imfusion-glvolumerenderer)
+
+### center
+
+```cpp
+vec3 ImFusion::GlVolumeRendererGlobalIllum::center () const
+```
+
+*override, virtual*
+
+Returns the center in world coordinates of the first shown data.
+
+### setLod
+
+```cpp
+void ImFusion::GlVolumeRendererGlobalIllum::setLod (bool value)
+```
+
+*override, virtual*
+
+Sets the flag whether low LOD mode is enabled (half output render size, half sampling rate).
+
+### configuration
+
+```cpp
+void ImFusion::GlVolumeRendererGlobalIllum::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality
+
+### configure
+
+```cpp
+void ImFusion::GlVolumeRendererGlobalIllum::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality

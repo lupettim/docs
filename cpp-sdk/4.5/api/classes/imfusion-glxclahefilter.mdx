@@ -1,0 +1,48 @@
+---
+title: "ImFusion::GlXClaheFilter"
+sidebarTitle: "GlXClaheFilter"
+description: "XClahe filter."
+---
+
+`#include <ImFusion/GL/GlXClaheFilter.h>`
+
+## Overview
+
+XClahe filter.
+
+## Public Member Functions
+
+- void **setCellWidth** (int value)
+- int **cellWidth** () const
+- void **setKernelWidth** (int value)
+- int **kernelWidth** () const
+- void **setLow** (double value)
+- double **low** () const
+- void **setHigh** (double value)
+- double **high** () const
+- void **setMaxSlope** (double value)
+- double **maxSlope** ()
+- void [compute](#compute) (const [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) &imgIn, [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) &imgOut) override — Execute the filter on the image.
+- bool [good](#good) () const override — Return whether the filter can be used.
+
+## Member Function Documentation
+
+### compute
+
+```cpp
+void ImFusion::GlXClaheFilter::compute (const GlImage & imgIn, GlImage & imgOut)
+```
+
+*override, virtual*
+
+Execute the filter on the image.
+
+### good
+
+```cpp
+bool ImFusion::GlXClaheFilter::good () const
+```
+
+*inline, override, virtual*
+
+Return whether the filter can be used.

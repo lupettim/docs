@@ -1,0 +1,139 @@
+---
+title: "ImFusion::RegistrationResults::Result"
+sidebarTitle: "Result"
+description: "Represents a complete registration result, composed by multiple DataResult objects."
+---
+
+`#include <ImFusion/Reg/RegistrationResults.h>`
+
+## Overview
+
+Represents a complete registration result, composed by multiple [DataResult](/cpp-sdk/4.5/api/structs/imfusion-registrationresults-dataresult) objects.
+
+## Public Member Functions
+
+- [Result](#result) (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &datalist, [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) name, const [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; uint64_t(const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) &)&gt; &computeHash, [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) regAlgProps=&#123;&#125;) — Constructs a [Result](/cpp-sdk/4.5/api/structs/imfusion-registrationresults-result) object from a list of data.
+- [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) [apply](#apply) () const — Applies the registration result to all associated data.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **pointSetNames** () const — Returns names of non-empty point sets stored in this result.
+- bool [restorePointSet](#restorepointset) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &pointSetName) const — Restores one stored point set into loaded data entries of this result.
+- bool [dataDeleted](#datadeleted) ([Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data) — Accommodate removal of data.
+- bool **hasAllData** () const — Checks whether all data required by this result is available.
+- const [DataResult](/cpp-sdk/4.5/api/structs/imfusion-registrationresults-dataresult) \* [getDataResult](#getdataresult) (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data) const — Retrieves the [DataResult](/cpp-sdk/4.5/api/structs/imfusion-registrationresults-dataresult) corresponding to a specific data object.
+- [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) [getData](#getdata) () const — Retrieves all data included in this result.
+- bool [isTheSame](#isthesame) (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data) const — Checks whether the provided data matches the order, pose, and deformation of this result.
+- bool [operator==](#operator) (const Result &other) const — Compares two [Result](/cpp-sdk/4.5/api/structs/imfusion-registrationresults-result) objects for equality.
+
+## Public Attributes
+
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **name** — Name of the registration result.
+- bool **isGroundTruth** = false — Flag indicating whether this result is ground truth.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [DataResult](/cpp-sdk/4.5/api/structs/imfusion-registrationresults-dataresult) &gt; **dataResults** — List of [DataResult](/cpp-sdk/4.5/api/structs/imfusion-registrationresults-dataresult) objects included in this result.
+- [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) **regAlgConfig** — Configuration of the registration algorithm used to produce this result.
+- [Filesystem::Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path) **originFile** = "" — Path to the file from which this result was loaded, if applicable.
+
+## Constructor & Destructor Documentation
+
+### Result
+
+```cpp
+ImFusion::RegistrationResults::Result::Result (const DataList & datalist, std::string name, const std::function < uint64_t(const Data &)> & computeHash, Properties regAlgProps = {})
+```
+
+Constructs a [Result](/cpp-sdk/4.5/api/structs/imfusion-registrationresults-result) object from a list of data.
+
+**Parameters:**
+
+- `datalist` — List of data to include in the result.
+- `name` — Name of the result.
+- `computeHash` — Function to compute the hash of each data object.
+- `regAlgProps` — [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) of the registration algorithm.
+
+## Member Function Documentation
+
+### apply
+
+```cpp
+DataList ImFusion::RegistrationResults::Result::apply () const
+```
+
+Applies the registration result to all associated data.
+
+**Returns:** A list of data objects affected by the application.
+
+### restorePointSet
+
+```cpp
+bool ImFusion::RegistrationResults::Result::restorePointSet (const std::string & pointSetName) const
+```
+
+Restores one stored point set into loaded data entries of this result.
+
+Existing sets with the same name are overwritten by configuration.
+
+**Parameters:**
+
+- `pointSetName` — The name of the point set to restore.
+
+**Returns:** true if restoration succeeded for at least one data entry.
+
+### dataDeleted
+
+```cpp
+bool ImFusion::RegistrationResults::Result::dataDeleted (Data * data)
+```
+
+Accommodate removal of data.
+
+Returns true if this result was affected
+
+**Parameters:**
+
+- `data` — Pointer to the data being removed.
+
+**Returns:** True if the result was affected by the removal.
+
+### getDataResult
+
+```cpp
+const DataResult * ImFusion::RegistrationResults::Result::getDataResult (const Data * data) const
+```
+
+Retrieves the [DataResult](/cpp-sdk/4.5/api/structs/imfusion-registrationresults-dataresult) corresponding to a specific data object.
+
+**Parameters:**
+
+- `data` — Pointer to the data.
+
+**Returns:** Pointer to the corresponding [DataResult](/cpp-sdk/4.5/api/structs/imfusion-registrationresults-dataresult), or nullptr if not found.
+
+### getData
+
+```cpp
+DataList ImFusion::RegistrationResults::Result::getData () const
+```
+
+Retrieves all data included in this result.
+
+**Returns:** A [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) containing all associated data.
+
+### isTheSame
+
+```cpp
+bool ImFusion::RegistrationResults::Result::isTheSame (const DataList & data) const
+```
+
+Checks whether the provided data matches the order, pose, and deformation of this result.
+
+**Parameters:**
+
+- `data` — List of data which will be inspected.
+
+### operator
+
+```cpp
+bool ImFusion::RegistrationResults::Result::operator== (const Result & other) const
+```
+
+Compares two [Result](/cpp-sdk/4.5/api/structs/imfusion-registrationresults-result) objects for equality.
+
+dataResults are compared in order, so the order of data in the list matters. regAlgConfig is ignored in the comparison.

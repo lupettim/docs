@@ -1,0 +1,83 @@
+---
+title: "ImFusion::AlgorithmControllerFactory"
+sidebarTitle: "AlgorithmControllerFactory"
+description: "Interface for algorithm controller factories."
+---
+
+`#include <ImFusion/Base/AlgorithmControllerFactory.h>`
+
+## Overview
+
+Interface for algorithm controller factories.
+
+## Public Member Functions
+
+- [AlgorithmControllerFactory](#algorithmcontrollerfactory-1-2) ()
+- **AlgorithmControllerFactory** ([std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) module)
+- [AlgorithmControllerFactory](#algorithmcontrollerfactory-2-2) ([std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) module, bool checkLicense)
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **moduleName** () const — Returns the module name of the factory.
+- virtual [AlgorithmController](/cpp-sdk/4.5/api/classes/imfusion-algorithmcontroller) \* [create](#create) ([Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*a) const =0 — Create controller for a given algorithm instance if possible.
+- [DataController](/cpp-sdk/4.5/api/classes/imfusion-datacontroller) \* [createDataController](#createdatacontroller) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &id, const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data) const — Create data controller.
+- virtual [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **compatibleDataControllers** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data) const — Return list of data controllers compatible with input data. The list contains the data controller id.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **dataControllerNames** () const — Return all registered algorithm names.
+- void **registerDataController** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name) — Register data controller. Categories are specified by separating them from the name with ; as separator (e.g. [Filters](/cpp-sdk/4.5/api/namespaces/imfusion-filters);Gaussian).
+- void **unregisterAllDataControllers** () — Unregister all data controller of this factory.
+
+## Protected Types
+
+- typedef [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html)(const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &id, [DataController](/cpp-sdk/4.5/api/classes/imfusion-datacontroller) \*\*a)&gt; **createCompatibleFunc**
+
+## Protected Attributes
+
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **m_moduleName**
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; createCompatibleFunc &gt; **m_dataControllers**
+- [std::unordered_map](http://en.cppreference.com/w/cpp/container/unordered_map.html)&lt; [std::type_index](http://en.cppreference.com/w/cpp/types/type_index.html), [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **m_dataControllerNames**
+
+## Constructor & Destructor Documentation
+
+### AlgorithmControllerFactory
+
+```cpp
+ImFusion::AlgorithmControllerFactory::AlgorithmControllerFactory ()
+```
+
+****Deprecated**:** "Use controller factory with a module name."
+
+### AlgorithmControllerFactory
+
+```cpp
+ImFusion::AlgorithmControllerFactory::AlgorithmControllerFactory (std::string module, bool checkLicense)
+```
+
+*explicit*
+
+****Deprecated**:** The checkLicense parameter is no longer used.
+
+****Deprecated**:** "checkLicense parameter is deprecated and ignored. Use single-parameter constructor."
+
+## Member Function Documentation
+
+### create
+
+```cpp
+virtual AlgorithmController * ImFusion::AlgorithmControllerFactory::create (Algorithm * a) const
+```
+
+*pure virtual*
+
+Create controller for a given algorithm instance if possible.
+
+### createDataController
+
+```cpp
+DataController * ImFusion::AlgorithmControllerFactory::createDataController (const std::string & id, const DataList & data) const
+```
+
+Create data controller.
+
+**Parameters:**
+
+- `id` — algorithm identifier
+- `data` — input data
+
+**Returns:** pointer to generated algorithm if successful, zero otherwise

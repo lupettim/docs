@@ -1,0 +1,37 @@
+---
+title: "ImFusion::SliceIndexOverlay"
+sidebarTitle: "SliceIndexOverlay"
+description: "Renders the current slice number and total slices of the first data in the assigned view eg."
+---
+
+`#include <ImFusion/GUI/SliceIndexOverlay.h>`
+
+## Overview
+
+Renders the current slice number and total slices of the first data in the assigned view eg.
+
+120/250
+
+The overlay is hidden when the text is empty:
+
+- View is not aligned with the image slices direction
+- View is outside of the image volume
+
+## Public Member Functions
+
+- **SliceIndexOverlay** (const [ImageView2D](/cpp-sdk/4.5/api/classes/imfusion-imageview2d) &view, [AnchorPoint](/cpp-sdk/4.5/api/classes/imfusion-interactiveoverlay) anchor) — Listens to the given view for data changes. Anchors at the given anchor location in the view.
+- void **setTextColor** (const vec4 &color) — Sets the color of the text to be rendered.
+- void **setFontSize** (int size) — Sets the font size in pt of the text to be rendered.
+- void [setVisible](#setvisible) (bool visible) override — Make overlay hidden/visible.
+
+## Member Function Documentation
+
+### setVisible
+
+```cpp
+void ImFusion::SliceIndexOverlay::setVisible (bool visible)
+```
+
+*override, virtual*
+
+Make overlay hidden/visible.

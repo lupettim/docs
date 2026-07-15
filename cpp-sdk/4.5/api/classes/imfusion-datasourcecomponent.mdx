@@ -1,0 +1,88 @@
+---
+title: "ImFusion::DataSourceComponent"
+sidebarTitle: "DataSourceComponent"
+description: "Data component for keeping track of the data's origin."
+---
+
+`#include <ImFusion/Base/DataSourceComponent.h>`
+
+## Overview
+
+[Data](/cpp-sdk/4.5/api/classes/imfusion-data) component for keeping track of the data's origin.
+
+This data component introduces the [DataSourceInfo](/cpp-sdk/4.5/api/structs/imfusion-datasourcecomponent-datasourceinfo) struct, which provides members for keeping track of the original filename and IoAlgorithm+configuration that was used to load it. The component itself keeps a vector of [DataSourceInfo](/cpp-sdk/4.5/api/structs/imfusion-datasourcecomponent-datasourceinfo) elements, one for each file (since data from different files may be combined into a single SIS).
+
+If data from multiple files is combined into a single SIS, their DataSourceComponents can be combined by summation (operator+ or operator+=) and added to the new SIS.
+
+## Classes
+
+- struct [DataSourceInfo](/cpp-sdk/4.5/api/structs/imfusion-datasourcecomponent-datasourceinfo) — Simple struct for storing the original filename of a data, how it has been loaded and the history of its sources.
+
+## Public Member Functions
+
+- **DataSourceComponent** ([std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [DataSourceInfo](/cpp-sdk/4.5/api/structs/imfusion-datasourcecomponent-datasourceinfo) &gt; sourceInfo)
+- **DataSourceComponent** (const DataSourceComponent &other)=default
+- DataSourceComponent & **operator=** (const DataSourceComponent &other)=default
+- bool **operator==** (const DataSourceComponent &other) const
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [id](#id) () const override — Returns a unique string identifier for this type of data component.
+- DataSourceComponent **operator+** (const DataSourceComponent &other) const — Combines [DataSourceInfo](/cpp-sdk/4.5/api/structs/imfusion-datasourcecomponent-datasourceinfo) elements from this and other into a new [DataSourceComponent](/cpp-sdk/4.5/api/classes/imfusion-datasourcecomponent).
+- DataSourceComponent & **operator+=** (const DataSourceComponent &other) — Appends a data source info to the data component.
+- DataSourceComponent & **operator+=** (const [DataSourceInfo](/cpp-sdk/4.5/api/structs/imfusion-datasourcecomponent-datasourceinfo) &other) — Appends a data source info to the data component.
+- void [updateSources](#updatesources) (const [DataSourceInfo](/cpp-sdk/4.5/api/structs/imfusion-datasourcecomponent-datasourceinfo) &other, const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) &refData) — Helper function to move all current infos to their history and add a new source info.
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [DataSourceInfo](/cpp-sdk/4.5/api/structs/imfusion-datasourcecomponent-datasourceinfo) &gt; & **sources** () — Returns the current [DataSourceInfo](/cpp-sdk/4.5/api/structs/imfusion-datasourcecomponent-datasourceinfo) vector.
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [DataSourceInfo](/cpp-sdk/4.5/api/structs/imfusion-datasourcecomponent-datasourceinfo) &gt; & **sources** () const — Returns the current [DataSourceInfo](/cpp-sdk/4.5/api/structs/imfusion-datasourcecomponent-datasourceinfo) vector.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **filenames** () const — Returns only the filename member of the current [DataSourceInfo](/cpp-sdk/4.5/api/structs/imfusion-datasourcecomponent-datasourceinfo) elements.
+
+## Member Function Documentation
+
+### id
+
+```cpp
+std::string ImFusion::DataSourceComponent::id () const
+```
+
+*inline, override, virtual*
+
+Returns a unique string identifier for this type of data component.
+
+**Note:** To avoid conflicts make sure to include potential plugin names into this ID. Due to the modular architecture of the ImFusion library, uniqueness of IDs cannot be checked at compile time. However, [DataComponentFactory](/cpp-sdk/4.5/api/classes/imfusion-datacomponentfactory) will check the uniqueness of the ID during registration.
+
+### updateSources
+
+```cpp
+void ImFusion::DataSourceComponent::updateSources (const DataSourceInfo & other, const Data & refData)
+```
+
+Helper function to move all current infos to their history and add a new source info.
+
+If there is no current info, the vector will be filled with the apprioriate number of instances, depending on the reference data. For instance, if the reference data is a [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) with 5 frames, a vector of size 5 will be created.
+
+### configure
+
+```cpp
+void ImFusion::DataSourceComponent::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### configuration
+
+```cpp
+void ImFusion::DataSourceComponent::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality

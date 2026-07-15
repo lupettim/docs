@@ -1,0 +1,75 @@
+---
+title: "ImFusion::Seg::Contour"
+sidebarTitle: "Contour"
+description: "Data Structure containing a vector of 3D points as well as metadata such as:"
+---
+
+`#include <ImFusion/Seg/ContoursStorageComponent.h>`
+
+## Overview
+
+[Data](/cpp-sdk/4.5/api/classes/imfusion-data)[Structure](/cpp-sdk/4.5/api/classes/imfusion-seg-structure) containing a vector of 3D points as well as metadata such as:
+
+- how the contour was created
+- the type of the line defining the contour
+- the frame where the contour was drawn
+- the label value
+- the name of the contour
+
+## Public Types
+
+- enum class **CreationMode** &#123; **Unknown** = 1 , **AutomaticImageBasedTracking** = 1 &lt;&lt; 1 , **AutomaticInterpolationImageBasedTracking** = 1 &lt;&lt; 2 , **AutomaticModel** = 1 &lt;&lt; 3 , **AutomaticInterpolation** = 1 &lt;&lt; 4 , **AutomaticFromLabelMap** = 1 &lt;&lt; 5 , **Automatic** = 0x3e , **Manual** = 1 &lt;&lt; 6 , **All** = 0xff &#125;
+- enum class **Type** &#123; **Polyline** , **Spline** , **Loop** , **SmartSpline** , **OpenSpline** , **OpenPolyline** &#125;
+
+## Public Member Functions
+
+- void [configure](#configure) (const [ImFusion::Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void [configuration](#configuration) ([ImFusion::Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; unsigned char &gt; &gt; **labelMapFromContour** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &curData) const
+
+## Static Public Member Functions
+
+- static [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **typeToString** (const Seg::Contour::Type &type)
+- static Seg::Contour::Type **stringToType** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &type)
+
+## Public Attributes
+
+- CreationMode **creationMode** = CreationMode::Unknown
+- Type **type**
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; **points**
+- int **labelValue** = 1
+- int **frame** = 0
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **name** = ""
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; int &gt; **marginOrRadius**
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; int &gt; **adaptiveness**
+- [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) **displayProperties**
+
+## Member Function Documentation
+
+### configure
+
+```cpp
+void ImFusion::Seg::Contour::configure (const ImFusion::Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### configuration
+
+```cpp
+void ImFusion::Seg::Contour::configuration (ImFusion::Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality

@@ -1,0 +1,64 @@
+---
+title: "ImFusion::Geometry::Triangle"
+sidebarTitle: "Triangle"
+description: "Class representing a triangle in 3D space."
+---
+
+`#include <ImFusion/Core/Geometry/Triangle.h>`
+
+## Overview
+
+Class representing a triangle in 3D space.
+
+Unless stated otherwise, all operations that involve comparisons use the same tolerance epsilon as vec3::isApprox (which is 1e-12).
+
+**See also:** Intersections between geometry primitives can be computed using the sets of free functions Geometry::intersection() and Geometry::intersects().
+
+## Public Member Functions
+
+- **Triangle** (const vec3 &a, const vec3 &b, const vec3 &c) — Construct triangle from 3 points. If any points are not finite, the triangle will be invalidated (does not intersect, all distances are NAN).
+- **Triangle** (const vec3 \*) — Construct triangle from buffer containing 3 consecutive vec3s (or 9 doubles using the same memory layout).
+- bool **isApprox** (const Triangle &) const — Comparison using the same epsilon as Eigen::isApprox.
+- bool [isEquivalent](#isequivalent) (const Triangle &) const — Returns if both [Triangle](/cpp-sdk/4.5/api/classes/imfusion-geometry-triangle) objects desribe the same geometrical objects.
+- const [std::array](http://en.cppreference.com/w/cpp/container/array.html)&lt; vec3, 3 &gt; & **points** () const — Access to the vertices.
+- vec3 **normal** () const — Returns the normal of the triangle, positive for clock-wise winding order.
+- bool **includesPoint** (const vec3 &point) const — Returns if the point is inside the triangle or on the boundary.
+- vec3 **closestPoint** (const vec3 &p) const — Returns the closest point that isInside the triangle.
+- double **distanceToPoint** (const vec3 &p) const — Returns the distance between p and closestPoint(p).
+- vec3 **toBarycentric** (const vec3 &p) const — See [https://en.wikipedia.org/wiki/Barycentric_coordinate_system#Barycentric_coordinates_on_triangles](https://en.wikipedia.org/wiki/Barycentric_coordinate_system#Barycentric_coordinates_on_triangles).
+- vec3 **fromBarycentric** (const vec3 &a) const — Returns p=a[0]\*v[0]+a[1]\*v[1]+a[2]\*v[2], where v are the corners of this triangle Note that toBarycentric(fromBarycentric(a))=a only holds if sum(a[i])=1.
+- [std::tuple](http://en.cppreference.com/w/cpp/utility/tuple.html)&lt; const vec3 &, const vec3 & &gt; [otherPoints](#otherpoints) (int idx) const — Convenience function for fetching the 2 points not at idx.
+- bool [operator==](#operator) (const Triangle &) const — Exact comparisons of [Plane](/cpp-sdk/4.5/api/classes/imfusion-geometry-plane) instances.
+- bool **operator!=** (const Triangle &) const
+
+## Member Function Documentation
+
+### operator
+
+```cpp
+bool ImFusion::Geometry::Triangle::operator== (const Triangle &) const
+```
+
+Exact comparisons of [Plane](/cpp-sdk/4.5/api/classes/imfusion-geometry-plane) instances.
+
+If you instead want to check if the represented geometric structures are the same, use isEquivalent.
+
+### isEquivalent
+
+```cpp
+bool ImFusion::Geometry::Triangle::isEquivalent (const Triangle &) const
+```
+
+Returns if both [Triangle](/cpp-sdk/4.5/api/classes/imfusion-geometry-triangle) objects desribe the same geometrical objects.
+
+Note that unlike all other comparisons provided here this ignores the order of points and therefore the normal direction.
+
+### otherPoints
+
+```cpp
+std::tuple < const vec3 &, const vec3 & > ImFusion::Geometry::Triangle::otherPoints (int idx) const
+```
+
+Convenience function for fetching the 2 points not at idx.
+
+Example #1: auto [p1,p2] = otherPoints(0) Example #2: auto oppositeEdge = std::make_from_tuple&lt;LineSegment&gt;(otherPoints(0))

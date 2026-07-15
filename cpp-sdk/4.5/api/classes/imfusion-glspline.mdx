@@ -1,0 +1,227 @@
+---
+title: "ImFusion::GlSpline"
+sidebarTitle: "GlSpline"
+description: "Spline annotation."
+---
+
+`#include <ImFusion/GL/GlSpline.h>`
+
+## Overview
+
+[Spline](/cpp-sdk/4.5/api/classes/imfusion-spline) annotation.
+
+Renders a spline. Splines are parameterized in the range [0,1].
+
+## Public Types
+
+- enum class **RenderMode2d** &#123; **Line** , **Tube** , **TubeHollow** , **Xray** &#125;
+- enum class **RenderMode3d** &#123; **Line** , **Tube** , **TubeHollow** , **Xray** &#125; — Enumeration to determine rendering order of GlObjects in [GlSliceView](/cpp-sdk/4.5/api/classes/imfusion-glsliceview) and [GlVolumeView](/cpp-sdk/4.5/api/classes/imfusion-glvolumeview).
+
+## Public Member Functions
+
+- **GlSpline** () — Creates the spline.
+- **GlSpline** ([Spline](/cpp-sdk/4.5/api/classes/imfusion-spline) \*spline, bool takeOwnership=false) — Create the [GL](/cpp-sdk/4.5/api/namespaces/imfusion-gl) spline fron an existing [Spline](/cpp-sdk/4.5/api/classes/imfusion-spline) (may take ownership).
+- **~GlSpline** () override — Destroy the spline.
+- const [Spline](/cpp-sdk/4.5/api/classes/imfusion-spline) \* **spline** () const — Returns encapsulated [Spline](/cpp-sdk/4.5/api/classes/imfusion-spline) instance.
+- void [draw](#draw) (const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &[view](/cpp-sdk/4.5/api/classes/imfusion-glannotation)) override — Render annotation.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [typeName](#typename) () const override — Return unique identifier for this object class used for serialization.
+- void **setLengthAsLabel** (bool val)
+- bool **lengthAsLabel** () const
+- void **setShowControlPoints** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; bool &gt; &vec)
+- void **convertToLabelMap** (unsigned char \*&buffer, int width, int height, const vec3 &spacing, unsigned char inValue=1, unsigned char outValue=0)
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Set one or multiple properties.
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Retrieve the properties of this object.
+- bool [hitTestLine2D](#hittestline2d) (int x, int y, const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &[view](/cpp-sdk/4.5/api/classes/imfusion-glannotation)) const override — Checks whether the line between handles gets hit (if not a straight line, override this in the annotation).
+- int [hitTestHandles2D](#hittesthandles2d) (int x, int y, const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &[view](/cpp-sdk/4.5/api/classes/imfusion-glannotation)) const override — Returns the index of the handle being hit, or -1 when missing.
+- void **setClosed** (bool v)
+- bool **closed** () const
+- RenderMode2d **renderMode2d** () const
+- RenderMode3d **renderMode3d** () const
+- void **setRenderMode** (RenderMode2d mode2d)
+- void **setRenderMode** (RenderMode3d mode3d)
+- double **tubeThickness** () const
+- void **setTubeThickness** (double value)
+- double **tubeEndT** () const
+- void **setTubeEndT** (double value)
+- bool **drawStartCap** () const
+- void **setDrawStartCap** (bool value)
+- bool **drawEndCap** () const
+- void **setDrawEndCap** (bool value)
+- bool **renderMPRIntersections** () const
+- void **setRenderMPRIntersections** (bool b)
+- void **setInterpolationRate** (unsigned int v)
+- unsigned int **interpolationRate** () const
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; & **interpolatedPoints** () const
+- size_t **findClosestControlPoint** (const vec3 &pos) const — Returns index of the control point closest to a given position.
+- virtual double [enclosedArea](#enclosedarea) () — For closed loops, this returns the enclosed area in physical units used by the dataset.
+- vec3 **normal** () const
+- void **updateNormal** ()
+- void **setNormal** (const vec3 &newNormal, const vec3 \*rotationCenter=nullptr) — This will rotate the whole spline.
+- void [setPoints](#setpoints) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; &[points](/cpp-sdk/4.5/api/classes/imfusion-glpointbasedannotation)) override — Sets the annotation points.
+- void **applyMatrix** (const mat4 &[matrix](/cpp-sdk/4.5/api/classes/imfusion-globject))
+- void **addPoint** (const vec3 &x, int index)
+- void **removePoint** (int index)
+- bool [sampleRenderPath](#samplerenderpath) (int samples, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; &out) const override — For annotations where the rendered shape differs from the stored points, this method returns true and a set of points on the rendered curve.
+- void **setXrayTubeInnerRadius** (double val)
+- double **xrayTubeInnerRadius** () const
+- virtual bool [addPoint](#addpoint) (const vec3 &p) — Add point to annotation.
+
+## Protected Member Functions
+
+- void [updatePoints](#updatepoints) () override — Update the internal point structure.
+- void **updateTubeBuffers** ()
+- void **drawTube** (const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &[view](/cpp-sdk/4.5/api/classes/imfusion-glannotation), const [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [Geometry::Plane](/cpp-sdk/4.5/api/classes/imfusion-geometry-plane) &gt; &plane)
+
+## Protected Attributes
+
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [Spline](/cpp-sdk/4.5/api/classes/imfusion-spline) &gt; **m_spline**
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [GL::Program](/cpp-sdk/4.5/api/classes/imfusion-gl-program) &gt; **m_tubeShader2D**
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [GL::Program](/cpp-sdk/4.5/api/classes/imfusion-gl-program) &gt; **m_tubeShader3D**
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [GL::VertexBuffer](/cpp-sdk/4.5/api/classes/imfusion-gl-vertexbuffer) &gt; **m_tubeVbo**
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [GL::VertexBuffer](/cpp-sdk/4.5/api/classes/imfusion-gl-vertexbuffer) &gt; **m_splineVbo**
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; **m_interpolatedPoints**
+- vec3 **m_planeNormal**
+- double **m_length**
+- bool **m_lengthAsLabel**
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; bool &gt; **m_showControlPoints**
+- unsigned int **m_interpolationRate**
+- RenderMode2d **m_renderMode2d** = RenderMode2d::Line
+- RenderMode3d **m_renderMode3d** = RenderMode3d::Line
+- double **m_tubeThickness** = 1.0
+- double **m_tubeEndT** = 1.0
+- bool **m_drawEndCap** = false
+- bool **m_drawStartCap** = false
+- bool **m_tubeBuffersDirty** = false
+- bool **m_tubeShader2dDirty** = false
+- bool **m_tubeShader3dDirty** = false
+- double **m_xrayTubeInnerRadius** = 0.7
+- bool **m_renderMPRIntersections** = false
+- bool **m_ownSpline** = true
+
+## Member Function Documentation
+
+### draw
+
+```cpp
+void ImFusion::GlSpline::draw (const GlView & view)
+```
+
+*override, virtual*
+
+Render annotation.
+
+### typeName
+
+```cpp
+std::string ImFusion::GlSpline::typeName () const
+```
+
+*inline, override, virtual*
+
+Return unique identifier for this object class used for serialization.
+
+### configure
+
+```cpp
+void ImFusion::GlSpline::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Set one or multiple properties.
+
+### configuration
+
+```cpp
+void ImFusion::GlSpline::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Retrieve the properties of this object.
+
+### hitTestLine2D
+
+```cpp
+bool ImFusion::GlSpline::hitTestLine2D (int x, int y, const GlView & view) const
+```
+
+*override, virtual*
+
+Checks whether the line between handles gets hit (if not a straight line, override this in the annotation).
+
+### hitTestHandles2D
+
+```cpp
+int ImFusion::GlSpline::hitTestHandles2D (int x, int y, const GlView & view) const
+```
+
+*override, virtual*
+
+Returns the index of the handle being hit, or -1 when missing.
+
+### enclosedArea
+
+```cpp
+virtual double ImFusion::GlSpline::enclosedArea ()
+```
+
+*virtual*
+
+For closed loops, this returns the enclosed area in physical units used by the dataset.
+
+Ignores curvature (assumes planar spline), requires ordered vertices.
+
+### setPoints
+
+```cpp
+void ImFusion::GlSpline::setPoints (const std::vector < vec3 > & points)
+```
+
+*override, virtual*
+
+Sets the annotation points.
+
+Clears previous points.
+
+**Parameters:**
+
+- `points` — points
+
+### sampleRenderPath
+
+```cpp
+bool ImFusion::GlSpline::sampleRenderPath (int samples, std::vector < vec3 > & out) const
+```
+
+*override, virtual*
+
+For annotations where the rendered shape differs from the stored points, this method returns true and a set of points on the rendered curve.
+
+Otherwise it returns false and the control points.
+
+### updatePoints
+
+```cpp
+void ImFusion::GlSpline::updatePoints ()
+```
+
+*override, protected, virtual*
+
+Update the internal point structure.
+
+Should be implemented by subtypes which have custom data depending on the point data. Derived implementation needs to call base class implementation.
+
+### addPoint
+
+```cpp
+virtual bool ImFusion::GlPointBasedAnnotation::addPoint (const vec3 & p)
+```
+
+*virtual*
+
+Add point to annotation.
+
+**Parameters:**
+
+- `p` — point to add

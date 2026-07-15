@@ -1,0 +1,104 @@
+---
+title: "ImFusion::OptimizerXNES"
+sidebarTitle: "OptimizerXNES"
+description: "XNES optimizer."
+---
+
+`#include <ImFusion/Base/OptimizerXNES.h>`
+
+## Overview
+
+XNES optimizer.
+
+## Public Member Functions
+
+- **OptimizerXNES** (int n, [CostFunction](/cpp-sdk/4.5/api/classes/imfusion-costfunction) \*cf=nullptr, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; &paramNames=&#123;&#125;) — Constructor with dimension.
+- **~OptimizerXNES** () override — Destructor.
+- void [abort](#abort) () override — [Request](/cpp-sdk/4.5/api/classes/imfusion-request) to abort the optimization.
+- void **setUpdateSpeed** (double speed=0.2) — Set update speed, range [0 - 1.0]. Default value 0.2. Higher value increases changes in parameters but can result in premature convergence.
+- double **updateSpeed** () — Get current update speed.
+- void **setPopulation** (int pop=50) — Set population size, default value 50. Higher values create more robust results, but sacrifices speed approx. linearly (100-500 are good values).
+- void [setInitVariances](#setinitvariances) ([std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; initVar) — Set initial standard deviations for the parameters by supplying a vector&lt;double&gt; of values.
+- void **setInitVariance** (double var) — Set the initial variance to be used in all dimensions. Use setInitVariances to set the values individually per dimension.
+- void [setSparseMode](#setsparsemode) (bool sparse=true) — Set the mode of the optimizer to SPARSE.
+- void [addSparseConnection](#addsparseconnection) (int k, int l) — Add a sparse correlation when using the algorithm in SPARSE mode.
+- void **resetSparse** () — Remove all sparse correlations, except for the diagonal.
+- void **setSeed** (int seed) — Set the seed to the stochastic part of the algorithm.
+- int **population** () — Get the current population size.
+
+## Implements the Configurable interface
+
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+## Member Function Documentation
+
+### abort
+
+```cpp
+void ImFusion::OptimizerXNES::abort ()
+```
+
+*override, virtual*
+
+[Request](/cpp-sdk/4.5/api/classes/imfusion-request) to abort the optimization.
+
+### configure
+
+```cpp
+void ImFusion::OptimizerXNES::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### configuration
+
+```cpp
+void ImFusion::OptimizerXNES::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality
+
+### setInitVariances
+
+```cpp
+void ImFusion::OptimizerXNES::setInitVariances (std::vector < double > initVar)
+```
+
+*inline*
+
+Set initial standard deviations for the parameters by supplying a vector&lt;double&gt; of values.
+
+As a rule of thumb, set it to the distance you expect the optimum to difer from the initial value. Alternatively, you can use setInitVariance(double var) to set a single value for all dimensions. If the vector is shorter than the number of dimensions, the default variance is used for the dimensions that are not covered by the vector.
+
+### setSparseMode
+
+```cpp
+void ImFusion::OptimizerXNES::setSparseMode (bool sparse = true)
+```
+
+Set the mode of the optimizer to SPARSE.
+
+Supply false as argument to turn SPARSE off. In sparse mode, by default the covariance matrix only updates the diagonal. Additional correlations have to be add explicitly using addSparseCorrelation(int k, int l) The SPARSE mode can be used to optimize large dimensional problems
+
+### addSparseConnection
+
+```cpp
+void ImFusion::OptimizerXNES::addSparseConnection (int k, int l)
+```
+
+Add a sparse correlation when using the algorithm in SPARSE mode.
+
+In SPARSE mode, the correlation matrix is only updated for the diagonal and the connections explicitly added using this function.

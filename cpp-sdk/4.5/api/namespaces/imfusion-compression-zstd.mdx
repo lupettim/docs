@@ -1,0 +1,87 @@
+---
+title: "ImFusion::Compression::zstd"
+sidebarTitle: "zstd"
+description: "Compression using Zstandard, a high speed compression algorithm still providing good compression ratios."
+---
+
+## Overview
+
+Compression using Zstandard, a high speed compression algorithm still providing good compression ratios.
+
+**See also:** [https://facebook.github.io/zstd/](https://facebook.github.io/zstd/)
+
+## Classes
+
+- class [Context](/cpp-sdk/4.5/api/classes/imfusion-compression-zstd-context) — When (de)compressing many times it is recommended to allocate the context only once and reuse it for each successive operations.
+
+## Enumerations
+
+- enum class [CompressionLevel](#compressionlevel) &#123; **Fastest** = 1 , **Fast** = 5 , **Average** = 10 , **High** = 15 , **Highest** = 20 &#125; — Selection of available Zstandard compression levels.
+
+## Functions
+
+- [ByteBuffer](/cpp-sdk/4.5/api/classes/imfusion-bytebuffer) [compress](#compress) (const [ByteBufferView](/cpp-sdk/4.5/api/classes/imfusion-bytebufferview) &data, [CompressionLevel](#compressionlevel) compressionLevel=CompressionLevel::Average) — Convenience function to quickly compress the given data with Zstandard as a one-time action.
+- [ByteBuffer](/cpp-sdk/4.5/api/classes/imfusion-bytebuffer) [decompress](#decompress) (const [ByteBufferView](/cpp-sdk/4.5/api/classes/imfusion-bytebufferview) &data) — Convenience function to quickly decompress the given data with Zstandard as a one-time action.
+- size_t **getMaxCompressedSize** (size_t inputSize) — Returns the maximum possible (worst-case) size of a compressed buffer, given an input of size inputSize.
+- size_t [getDecompressedSize](#getdecompressedsize) (const [ByteBufferView](/cpp-sdk/4.5/api/classes/imfusion-bytebufferview) &compressedData) — Returns the size of the data encoded in a compressed buffer.
+- size_t [findActualCompressedSize](#findactualcompressedsize) (const [ByteBufferView](/cpp-sdk/4.5/api/classes/imfusion-bytebufferview) &compressedData) — Returns the exact size of a compressed buffer.
+
+## Enumeration Type Documentation
+
+### CompressionLevel
+
+```cpp
+enum class ImFusion::Compression::zstd::CompressionLevel
+```
+
+*strong*
+
+Selection of available Zstandard compression levels.
+
+Technically, you can pass any number supported by Zstandard (see [http://facebook.github.io/zstd/zstd_manual.html](http://facebook.github.io/zstd/zstd_manual.html)), however exact behavior of compression level is somewhat under-documented so we remain on the conservative side here.
+
+## Function Documentation
+
+### compress
+
+```cpp
+ByteBuffer ImFusion::Compression::zstd::compress (const ByteBufferView & data, CompressionLevel compressionLevel = CompressionLevel::Average)
+```
+
+Convenience function to quickly compress the given data with Zstandard as a one-time action.
+
+Use a [Context](/cpp-sdk/4.5/api/classes/imfusion-compression-zstd-context) if you have multiple successive operations on different pieces of data.
+
+### decompress
+
+```cpp
+ByteBuffer ImFusion::Compression::zstd::decompress (const ByteBufferView & data)
+```
+
+Convenience function to quickly decompress the given data with Zstandard as a one-time action.
+
+Use a [Context](/cpp-sdk/4.5/api/classes/imfusion-compression-zstd-context) if you have multiple successive operations on different pieces of data.
+
+### getDecompressedSize
+
+```cpp
+size_t ImFusion::Compression::zstd::getDecompressedSize (const ByteBufferView & compressedData)
+```
+
+Returns the size of the data encoded in a compressed buffer.
+
+Returns 0 if compressedData is not a valid compressed buffer.
+
+### findActualCompressedSize
+
+```cpp
+size_t ImFusion::Compression::zstd::findActualCompressedSize (const ByteBufferView & compressedData)
+```
+
+Returns the exact size of a compressed buffer.
+
+Returns 0 if compressedData does not contain valid compressed data. The return value (if valid) can be used to pass the correct buffer size to [decompress()](#decompress) This is useful if you do not know the exact size of a compressed buffer, for example if multiple buffers are concatenated into one.
+
+**Parameters:**
+
+- `compressedData` — a buffer that starts with (but may be longer than) compressed data

@@ -1,0 +1,140 @@
+---
+title: "ImFusion::GlCircle"
+sidebarTitle: "GlCircle"
+description: "Circle annotation."
+---
+
+`#include <ImFusion/GL/GlCircle.h>`
+
+## Overview
+
+Circle annotation.
+
+## Public Types
+
+- enum class **UpdateMode** &#123; **Radius** , **Diameter** , **Move** &#125; — Enumeration to determine rendering order of GlObjects in [GlSliceView](/cpp-sdk/4.5/api/classes/imfusion-glsliceview) and [GlVolumeView](/cpp-sdk/4.5/api/classes/imfusion-glvolumeview).
+
+## Public Member Functions
+
+- void [setAxes](#setaxes) (const vec3 &xAxis, const vec3 &yAxis) — Sets the axes that define the plane the circle annotation lives in.
+- void **setCenter** (const vec3 &center) — Sets the center of the circle annotation. If there are no control points, the resulting circle will have a radius of 1.
+- vec3 **center** () const
+- void **setRadius** (double radius) — Sets the radius of the circle annotation. If there are no control points, the resulting circle will have its center at (0,0,0).
+- double **radius** () const
+- void [draw](#draw) (const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &[view](/cpp-sdk/4.5/api/classes/imfusion-glannotation)) override — Draw the object in 3D space.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [typeName](#typename) () const override — Return unique identifier for this object class used for serialization.
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Set one or multiple properties.
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Retrieve the properties of this object.
+- bool [hitTestLine2D](#hittestline2d) (int x, int y, const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &[view](/cpp-sdk/4.5/api/classes/imfusion-glannotation)) const override — Checks whether the line between handles gets hit (if not a straight line, override this in the annotation).
+- bool [sampleRenderPath](#samplerenderpath) (int samples, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; &out) const override — For annotations where the rendered shape differs from the stored points, this method returns true and a set of points on the rendered curve.
+- [Geometry::AlignedBox](/cpp-sdk/4.5/api/classes/imfusion-geometry-alignedbox) [bounds](#bounds) () const override — Get the axis-aligned bounding box of this [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) in world space.
+- void **setUpdateMode** (UpdateMode m) — Set the update mode specifying how the points defining the circle should be updated.
+- UpdateMode **updateMode** ()
+
+## Protected Member Functions
+
+- void [updatePoints](#updatepoints) () override — Update the internal point structure.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **generateLabel** ()
+
+## Protected Attributes
+
+- UpdateMode **m_updateMode** = UpdateMode::Radius
+- bool **m_init** = false
+
+## Member Function Documentation
+
+### setAxes
+
+```cpp
+void ImFusion::GlCircle::setAxes (const vec3 & xAxis, const vec3 & yAxis)
+```
+
+Sets the axes that define the plane the circle annotation lives in.
+
+If there are no control points, we initialize the circle with its center at (0,0,0) and a radius of 1
+
+### draw
+
+```cpp
+void ImFusion::GlCircle::draw (const GlView & view)
+```
+
+*override, virtual*
+
+Draw the object in 3D space.
+
+### typeName
+
+```cpp
+std::string ImFusion::GlCircle::typeName () const
+```
+
+*inline, override, virtual*
+
+Return unique identifier for this object class used for serialization.
+
+### configure
+
+```cpp
+void ImFusion::GlCircle::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Set one or multiple properties.
+
+### configuration
+
+```cpp
+void ImFusion::GlCircle::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Retrieve the properties of this object.
+
+### hitTestLine2D
+
+```cpp
+bool ImFusion::GlCircle::hitTestLine2D (int x, int y, const GlView & view) const
+```
+
+*override, virtual*
+
+Checks whether the line between handles gets hit (if not a straight line, override this in the annotation).
+
+### sampleRenderPath
+
+```cpp
+bool ImFusion::GlCircle::sampleRenderPath (int samples, std::vector < vec3 > & out) const
+```
+
+*override, virtual*
+
+For annotations where the rendered shape differs from the stored points, this method returns true and a set of points on the rendered curve.
+
+Otherwise it returns false and the control points.
+
+### bounds
+
+```cpp
+Geometry::AlignedBox ImFusion::GlCircle::bounds () const
+```
+
+*override, virtual*
+
+Get the axis-aligned bounding box of this [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) in world space.
+
+Return an empty (default-constructed) AlignedBox object if the [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) does not reside in world space.
+
+### updatePoints
+
+```cpp
+void ImFusion::GlCircle::updatePoints ()
+```
+
+*override, protected, virtual*
+
+Update the internal point structure.
+
+Should be implemented by subtypes which have custom data depending on the point data. Derived implementation needs to call base class implementation.

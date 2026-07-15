@@ -1,0 +1,52 @@
+---
+title: "ImFusion::DatasetLicenseFilter"
+sidebarTitle: "DatasetLicenseFilter"
+---
+
+## Signals
+
+- void **filterChanged** ()
+
+## Public Member Functions
+
+- **DatasetLicenseFilter** (const [DatasetLicenseSystem](/cpp-sdk/4.5/api/classes/imfusion-datasetlicensesystem) &dls, QWidget \*parent=nullptr)
+- bool **isEmpty** () const
+- bool **hasFilter** () const
+- const [std::set](http://en.cppreference.com/w/cpp/container/set.html)&lt; QString &gt; & **selectedLicenses** () const
+- void **setSelectedLicenses** ([std::set](http://en.cppreference.com/w/cpp/container/set.html)&lt; QString &gt; licenses)
+- void **clearFilter** ()
+- void **setLicenseIncluded** (QString id, bool included)
+- void **setState** (const [DatasetLicenseFilterState](/cpp-sdk/4.5/api/structs/imfusion-datasetlicensefilterstate) &state)
+- const [DatasetLicenseFilterState](/cpp-sdk/4.5/api/structs/imfusion-datasetlicensefilterstate) & **state** () const
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+## Member Function Documentation
+
+### configuration
+
+```cpp
+void ImFusion::DatasetLicenseFilter::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality
+
+### configure
+
+```cpp
+void ImFusion::DatasetLicenseFilter::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality

@@ -1,0 +1,40 @@
+---
+title: "ImFusion::Seg::FreeformSelector"
+sidebarTitle: "FreeformSelector"
+description: "Simple class to make it easy to select by hand a portion of a volume."
+---
+
+`#include <ImFusion/Seg/FreeformSelector.h>`
+
+## Overview
+
+Simple class to make it easy to select by hand a portion of a volume.
+
+## Public Member Functions
+
+- [FreeformSelector](#freeformselector) ([DisplayWidgetMultiAdapter](/cpp-sdk/4.5/api/classes/imfusion-displaywidgetmultiadapter) disp)
+- **~FreeformSelector** () — On destruction, disable() is called automatically if necessary.
+- void **setImageToBeSelected** (const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*sis) — This determines the size of the [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) that is passed in the callback.
+- const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* **selectedVolume** () const — Get the selection volume Values of 0 are considered to be selected, values of 255 are not selected May be nullptr if nothing has been selected so far.
+- void **clearSelectedVolume** () — Clear the selection volume, if it exists.
+- bool **isCutting** () const — Returns whether an interaction is currently in progress.
+- void **enable** () — Activates the class, by adding the necessary objects to the view.
+- void **disable** () — Deactivates the class, by removing the objects from the views.
+- bool **isEnabled** () const — Returns whether the selector is currently enabled.
+
+## Public Attributes
+
+- Signal **selectingStarted** — Called when the interaction with the view is started.
+- Signal **selectingFinished** — Called when the interaction with the view is finished.
+
+## Constructor & Destructor Documentation
+
+### FreeformSelector
+
+```cpp
+ImFusion::Seg::FreeformSelector::FreeformSelector (DisplayWidgetMultiAdapter disp)
+```
+
+**Parameters:**
+
+- `disp` — the [DisplayWidgetMulti](/cpp-sdk/4.5/api/classes/imfusion-displaywidgetmulti) to which the objects will be added The class is disabled by default, and must be enabled explicitly with enable()

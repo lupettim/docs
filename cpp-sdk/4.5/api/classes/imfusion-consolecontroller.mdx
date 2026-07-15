@@ -1,0 +1,58 @@
+---
+title: "ImFusion::ConsoleController"
+sidebarTitle: "ConsoleController"
+description: "Specialization of ApplicationController for a console application which loads data and runs algorithms."
+---
+
+`#include <ImFusion/GUI/ConsoleController.h>`
+
+## Overview
+
+Specialization of [ApplicationController](/cpp-sdk/4.5/api/classes/imfusion-applicationcontroller) for a console application which loads data and runs algorithms.
+
+Depending on the constructor arguments, instantiating this class can also take care of proper initialization (e.g. factories, OpenGL contexts, etc.) of the ImFusion SDK. In this case you do not need to call [Framework::init()](/cpp-sdk/4.5/api/namespaces/imfusion-framework) explicitly.
+
+## Public Member Functions
+
+- [ConsoleController](#consolecontroller) ([std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [Framework::InitConfig](/cpp-sdk/4.5/api/structs/imfusion-framework-initconfig) &gt; sdkInitConfig, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &organizationName, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &applicationName) — Instantiate and initialize the [ConsoleController](/cpp-sdk/4.5/api/classes/imfusion-consolecontroller).
+- **~ConsoleController** () override — Destructor.
+- [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) \* [progress](#progress) () override — Returns the optional [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) instance that can be used to report progress updates.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::map](http://en.cppreference.com/w/cpp/container/map.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html), [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; &gt; [askWorkspacePlaceholders](#askworkspaceplaceholders) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; &placeholderKeys) override — Asks the user the value of some placeholders and returns the input of the user.
+
+## Constructor & Destructor Documentation
+
+### ConsoleController
+
+```cpp
+ImFusion::ConsoleController::ConsoleController (std::optional < Framework::InitConfig > sdkInitConfig, const std::string & organizationName, const std::string & applicationName)
+```
+
+Instantiate and initialize the [ConsoleController](/cpp-sdk/4.5/api/classes/imfusion-consolecontroller).
+
+**Parameters:**
+
+- `sdkInitConfig` — Flag and parameters whether to call [Framework::init()](/cpp-sdk/4.5/api/namespaces/imfusion-framework) during construction. Leave the Optional empty in case you have initialized the SDK already manually.
+- `organizationName` — Forwarded to QCoreApplication::setOrganizationName(), determines the path for the global settings (see [Settings](/cpp-sdk/4.5/api/classes/imfusion-settings)).
+- `applicationName` — Forwarded to QCoreApplication::setApplicationName(), determines the path for the global settings (see [Settings](/cpp-sdk/4.5/api/classes/imfusion-settings)).
+
+## Member Function Documentation
+
+### progress
+
+```cpp
+Progress * ImFusion::ConsoleController::progress ()
+```
+
+*override, virtual*
+
+Returns the optional [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) instance that can be used to report progress updates.
+
+### askWorkspacePlaceholders
+
+```cpp
+std::vector < std::map < std::string, std::string > > ImFusion::ConsoleController::askWorkspacePlaceholders (const std::vector < std::string > & placeholderKeys)
+```
+
+*override, virtual*
+
+Asks the user the value of some placeholders and returns the input of the user.

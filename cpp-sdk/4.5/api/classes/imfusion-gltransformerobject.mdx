@@ -1,0 +1,95 @@
+---
+title: "ImFusion::GlTransformerObject"
+sidebarTitle: "GlTransformerObject"
+---
+
+## Public Member Functions
+
+- **GlTransformerObject** (const isom3 &offset=isom3::Identity(), bool drawContour=true)
+- isom3 **offset** () const
+- void **setOffset** (const isom3 &offset)
+- bool **isHovering** () const
+- void **setHovering** (bool hover)
+- const vec3 & **center** () const
+- virtual bool **isInside** (const vec2 &pos, const [GL::ViewState](/cpp-sdk/4.5/api/classes/imfusion-gl-viewstate) &state)=0
+- virtual void **moveTo** (const vec2 &pos, const vec2 &start, const [GL::ViewState](/cpp-sdk/4.5/api/classes/imfusion-gl-viewstate) &state)=0
+- virtual void **activate** (const vec2 &start, const [GL::ViewState](/cpp-sdk/4.5/api/classes/imfusion-gl-viewstate) &state)
+- bool **isActive** () const
+- virtual void **deactivate** ()
+- virtual double **distanceTo** (const vec3 &val) const
+- virtual double **distanceTo** (const vec2 &pos, const [GL::ViewState](/cpp-sdk/4.5/api/classes/imfusion-gl-viewstate) &state)
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+## Public Attributes
+
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; vec3 &gt; **p_color** = &#123;"color", vec3::Ones(), this&#125;
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; vec3 &gt; **p_contourColor** = &#123;"contourColor", vec3::Zero(), this&#125;
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; vec3 &gt; **p_hoverColor** = &#123;"hoverColor", vec3::Constant(0.5), this&#125;
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; bool &gt; **p_drawContour** = &#123;"drawContour", true, this&#125;
+
+## Protected Member Functions
+
+- virtual void **setCenter** (const vec3 &center)
+- virtual [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; vec3 &gt; **project** (const vec2 &pos, const [GL::ViewState](/cpp-sdk/4.5/api/classes/imfusion-gl-viewstate) &state) const =0
+- virtual [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; vec3 &gt; **projectToPlane** (const vec2 &pos, const [Geometry::Plane](/cpp-sdk/4.5/api/classes/imfusion-geometry-plane) &plane, const [GL::ViewState](/cpp-sdk/4.5/api/classes/imfusion-gl-viewstate) &state) const
+- virtual vec3 **getColor** () const
+- virtual vec3 **getColorContour** () const
+- virtual void **updatePoses** (const [GL::ViewState](/cpp-sdk/4.5/api/classes/imfusion-gl-viewstate) &state)
+- void **drawLines** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; &vertices, const vec3 &color, float lineWidth=1.0)
+- void **drawLineStrip** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; &vertices, const vec3 &color, float lineWidth=1.0)
+- void **drawLineLoop** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; &vertices, const vec3 &color, float lineWidth=1.0)
+- void **drawTriangles** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; &vertices, const vec3 &color)
+- void **drawTriangleStrip** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; &vertices, const vec3 &color)
+- void **drawPoints** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; &points, const vec3 &color, double pointSize=5.0)
+- void **drawSphere** (const vec3 &center, double radius, const vec3 &color)
+- void **drawCircle** (const vec3 &center, const vec3 &normal, double radius, const vec3 &color, bool contour)
+
+## Static Protected Member Functions
+
+- static vec3 **perpendicular** (const vec3 &vector)
+- static double **safe_acos** (double value)
+
+## Protected Attributes
+
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [GL::VertexBuffer](/cpp-sdk/4.5/api/classes/imfusion-gl-vertexbuffer) &gt; **m_vbo**
+- const [GL::ViewState](/cpp-sdk/4.5/api/classes/imfusion-gl-viewstate) \* **m_viewState** = nullptr
+- bool **m_active** = false
+- bool **m_hover** = false
+- isom3 **m_offset** = isom3::Identity()
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; isom3 &gt; **m_pos**
+- vec3 **m_center** = vec3::Zero()
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; vec3 &gt; **m_camera**
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; vec3 &gt; **m_init**
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; vec3 &gt; **m_start**
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; vec3 &gt; **m_startOffset**
+
+## Member Function Documentation
+
+### configure
+
+```cpp
+void ImFusion::GlTransformerObject::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### configuration
+
+```cpp
+void ImFusion::GlTransformerObject::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality

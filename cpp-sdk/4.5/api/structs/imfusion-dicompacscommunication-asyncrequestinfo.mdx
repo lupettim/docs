@@ -1,0 +1,38 @@
+---
+title: "ImFusion::DicomPacsCommunication::AsyncRequestInfo"
+sidebarTitle: "AsyncRequestInfo"
+description: "Structure wrapping the return value of an asynchronous PACS request."
+---
+
+`#include <ImFusion/Dicom/DicomPacsCommunication.h>`
+
+## Overview
+
+Structure wrapping the return value of an asynchronous PACS request.
+
+## Public Attributes
+
+- [std::shared_future](http://en.cppreference.com/w/cpp/thread/shared_future.html)&lt; void &gt; [future](#future) — Future of the [std::async](http://en.cppreference.com/w/cpp/thread/async.html) call used to issue the request.
+- [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [std::atomic](http://en.cppreference.com/w/cpp/atomic/atomic.html)&lt; bool &gt; &gt; [abortFlag](#abortflag) — Atomic boolean flag to signal that the request should be aborted at the next possible moment.
+
+## Member Data Documentation
+
+### future
+
+```cpp
+std::shared_future <void> ImFusion::DicomPacsCommunication::AsyncRequestInfo::future
+```
+
+Future of the [std::async](http://en.cppreference.com/w/cpp/thread/async.html) call used to issue the request.
+
+You can use it to wait for the request to finish.
+
+### abortFlag
+
+```cpp
+std::shared_ptr < std::atomic <bool> > ImFusion::DicomPacsCommunication::AsyncRequestInfo::abortFlag
+```
+
+Atomic boolean flag to signal that the request should be aborted at the next possible moment.
+
+Be aware, that the cancellation might not be instant, in some cases (e.g. network timeout) some significant time may pass until the asynchronous call has finished.

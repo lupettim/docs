@@ -1,0 +1,50 @@
+---
+title: "ImFusion::MergeChannelsAlgorithm"
+sidebarTitle: "MergeChannelsAlgorithm"
+description: "Merge an image set to another one as additional channel."
+---
+
+`#include <ImFusion/Base/MergeChannelsAlgorithm.h>`
+
+## Overview
+
+Merge an image set to another one as additional channel.
+
+## Public Member Functions
+
+- **MergeChannelsAlgorithm** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* &gt; &images) — [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) constructor.
+- **MergeChannelsAlgorithm** (const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &image1, const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &image2) — Old constructor for backward compatibility.
+- **~MergeChannelsAlgorithm** () override — Destructor.
+- void [compute](#compute) () override — Compute the result.
+- [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) [takeOutput](#takeoutput) () override — If the algorithm creates new image data, it has to be transferred here.
+
+## Static Public Member Functions
+
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a) — If data is compatible with algorithm return true. If a is not zero, create algorithm with input data.
+
+## Protected Attributes
+
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* &gt; **m_images**
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &gt; **m_output** — Output images.
+
+## Member Function Documentation
+
+### compute
+
+```cpp
+void ImFusion::MergeChannelsAlgorithm::compute ()
+```
+
+*override, virtual*
+
+Compute the result.
+
+### takeOutput
+
+```cpp
+OwningDataList ImFusion::MergeChannelsAlgorithm::takeOutput ()
+```
+
+*override, virtual*
+
+If the algorithm creates new image data, it has to be transferred here.

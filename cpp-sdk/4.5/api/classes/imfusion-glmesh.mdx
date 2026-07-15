@@ -1,0 +1,511 @@
+---
+title: "ImFusion::GlMesh"
+sidebarTitle: "GlMesh"
+description: "The GlMesh class renders Mesh instances in 2D and 3D."
+---
+
+`#include <ImFusion/GL/GlMesh.h>`
+
+## Overview
+
+The [GlMesh](/cpp-sdk/4.5/api/classes/imfusion-glmesh) class renders [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) instances in 2D and 3D.
+
+You can specify different render modes for 2D and 3D views. By default, in 2D the cross-section between the mesh and the 2D slice is computed in a geometry shader and displayed as a line. The default 3D rendering mode uses a single material for all surfaces. If the mesh includes a color attribute for each vertex this can be used instead. If the mesh includes texture coordinates for all vertices and a texture is provided, the texture is used as a material. Additionally, different materials can be assigned to front- and back facing surfaces. This class also supports a wireframe mode that also supports different material modes.
+
+Should a mode be incompatible with the mesh (e.g. lighting with no normals or color material mode with vertex colors), OpenGL will assume default values for them (which are usually 0).
+
+This class uses only OpenGL 3.3 core functions.
+
+## Public Types
+
+- enum [RenderMode2d](#rendermode2d) &#123; IntersectionOnly , FullProjective , ProjectiveColorGradient , ProjectiveWireframe , Render3D &#125;
+- enum [RenderMode3d](#rendermode3d) &#123; Surface , SurfaceAndWireframe , Wireframe , Intersection &#125;
+- enum [MaterialMode](#materialmode) &#123; Uniform = 0 , Color = 1 , Texture = 2 , Shader = 3 , FaceLabel = 4 , VertexLabel = 5 &#125;
+- enum **Facing** &#123; **Both** = 0 , **Front** = 1 , **Back** = 2 &#125;
+- enum class **PickingMode** &#123; **None** = 0 , **Face** = 1 , **Vertex** = 2 &#125;
+- enum class [ClipMode](#clipmode) &#123; Discard = 0 , Wireframe = 1 , SolidButWireframeColor = 2 &#125; — Enumeration to determine rendering order of GlObjects in [GlSliceView](/cpp-sdk/4.5/api/classes/imfusion-glsliceview) and [GlVolumeView](/cpp-sdk/4.5/api/classes/imfusion-glvolumeview).
+
+## Public Member Functions
+
+- **GlMesh** () — Creates an empty object and initializes the shader program.
+- **GlMesh** ([Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) \*mesh) — Initializes the shader program and creates and uploads the required GPU buffers for the mesh.
+- void [setMatrix](#setmatrix) (const mat4 &m) override — Set the modelview matrix of this object.
+- const mat4 & [matrix](#matrix) () const override — Return the modelview matrix.
+- virtual void [setMesh](#setmesh) ([Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) \*mesh) — Attaches a [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) to be rendered.
+- virtual const [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) \* **getMesh** ()
+- void [draw](#draw) (const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &[view](/cpp-sdk/4.5/api/classes/imfusion-glannotation)) override — Calls draw3D for SPACE3D views and draw2D for SLICE2D views.
+- void **draw3D** (const [GL::ViewState](/cpp-sdk/4.5/api/classes/imfusion-gl-viewstate) &viewState, const [Slice](/cpp-sdk/4.5/api/classes/imfusion-slice) \*slice=nullptr, const [GL::OrderIndependentTransparency](/cpp-sdk/4.5/api/classes/imfusion-gl-orderindependenttransparency) \*oit=nullptr, const [GL::ObjectPicking](/cpp-sdk/4.5/api/classes/imfusion-gl-objectpicking) \*objectPicking=nullptr) — Draws the mesh in 3D with Phong-Shading.
+- virtual void [draw2D](#draw2d) (const [GL::ViewState](/cpp-sdk/4.5/api/classes/imfusion-gl-viewstate) &viewState, [Slice](/cpp-sdk/4.5/api/classes/imfusion-slice) slice) — Computes the cross-section with the slice and displays it with lines.
+- void **applyMeshDisplayOptions** (const [MeshDisplayOptions](/cpp-sdk/4.5/api/classes/imfusion-meshdisplayoptions) &mdo, bool applyRenderModes=false) — Assign the applicable rendering settings in *mdo* to this [GlMesh](/cpp-sdk/4.5/api/classes/imfusion-glmesh) instance.
+- virtual void **setRenderMode2d** ([RenderMode2d](#rendermode2d) mode) — Sets the 2D render mode.
+- virtual [RenderMode2d](#rendermode2d) **renderMode2d** () const — Returns the current 2D render mode.
+- virtual void **setRenderMode3d** ([RenderMode3d](#rendermode3d) mode) — Sets the 3D render mode.
+- virtual [RenderMode3d](#rendermode3d) **renderMode3d** () const — Returns the current 3D render mode.
+- void [setRenderingDepthOffset](#setrenderingdepthoffset) (bool useOffset, float offsetFactor=2.f, float offsetUnits=2.f) — Sets the depth offset (see OpenGL glPolygonOffset for more details).
+- bool **renderingDepthOffset** (float &offsetFactor, float &offsetUnits)
+- void [setColor](#setcolor) (const vec3 &[color](/cpp-sdk/4.5/api/classes/imfusion-glannotation)) override — Sets the color of the front and back material (ambient, diffuse and specular).
+- void **setColor** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3f &gt; &colors) — Sets individual color per vertex.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3f &gt; **colors** () const — Get individual colors of vertices.
+- void [setAlpha](#setalpha) (double [alpha](/cpp-sdk/4.5/api/classes/imfusion-glannotation)) override — Set alpha channel.
+- virtual void **enableLighting** (bool enable, Facing side=Both) — Enables/Disables lighting effects.
+- virtual void **enableLighting** (const vec2i &enable)
+- virtual bool **lighting** (vec2i &out) const
+- virtual void **setShininess** (float shininess) — Sets the strength of specular reflections on the front and back faces (0.0 to disable specular reflections).
+- virtual void **setFrontShininess** (float shininess) — Sets the strength of specular reflections on the front faces (0.0 to disable specular reflections).
+- virtual void **setBackShininess** (float shininess) — Sets the strength of specular reflections on the back faces (0.0 to disable specular reflections).
+- virtual void **setMaterialMode** ([MaterialMode](#materialmode) mode) — Sets the material mode for the front and back facing triangles during 3D rendering.
+- virtual void [setFrontMaterialMode](#setfrontmaterialmode) ([MaterialMode](#materialmode) mode) — Sets the material mode for the front facing triangles during 3D rendering.
+- virtual void [setBackMaterialMode](#setbackmaterialmode) ([MaterialMode](#materialmode) mode) — Sets the material mode for the back facing triangles during 3D rendering.
+- virtual [MaterialMode](#materialmode) **frontMaterialMode** () const — Returns the material mode for the front facing triangles during 3D rendering.
+- virtual [MaterialMode](#materialmode) **backMaterialMode** () const — Returns the material mode for the back facing triangles during 3D rendering.
+- virtual [MaterialMode](#materialmode) **wireframeMaterialMode** () const
+- virtual void [setMaterial](#setmaterial) (vec3f ambient, vec3f diffuse, vec3f specular, float shininess) — Sets the material used for the front and back facing triangles during 3D rendering.
+- virtual void [setFrontMaterial](#setfrontmaterial) (vec3f ambient, vec3f diffuse, vec3f specular, float shininess) — Sets the material used for the front facing triangles during 3D rendering.
+- virtual void **frontMaterial** (vec3f &ambient, vec3f &diffuse, vec3f &specular, float &shininess) const — Returns the material used for the front facing triangles during 3D rendering.
+- virtual void [setBackMaterial](#setbackmaterial) (vec3f ambient, vec3f diffuse, vec3f specular, float shininess) — Sets the material used for the back facing triangles during 3D rendering.
+- virtual void **backMaterial** (vec3f &ambient, vec3f &diffuse, vec3f &specular, float &shininess) const — Returns the material used for the back facing triangles during 3D rendering.
+- virtual void **setWireframeWidth** (float width) — Sets the line width in 2D rendering.
+- virtual vec4f **wireframeColor** () const — Returns the line color in 2D rendering.
+- virtual void **setWireframeColor** (vec4f [color](/cpp-sdk/4.5/api/classes/imfusion-glannotation)) — Sets the line color in 2D rendering.
+- virtual void **setWireframeMaterialMode** ([MaterialMode](#materialmode) mode) — Sets the material mode for the wireframe during 3D rendering.
+- virtual void **setLineColor** (vec4f [color](/cpp-sdk/4.5/api/classes/imfusion-glannotation)) — Sets the line color in 2D rendering.
+- virtual vec4f **lineColor** () const — Returns the line color in 2D rendering.
+- float [lineWidth](#linewidth) () const override — Return annotation line width.
+- void [setLineWidth](#setlinewidth) (float [lineWidth](#linewidth)) override — Set annotation line width.
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [Geometry::Plane](/cpp-sdk/4.5/api/classes/imfusion-geometry-plane) &gt; [clipPlane](#clipplane) () const override — Returns the optional clip plane used during 3D rendering.
+- bool [setClipPlane](#setclipplane) ([std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [Geometry::Plane](/cpp-sdk/4.5/api/classes/imfusion-geometry-plane) &gt; plane) override — Sets an optional clip plane so that parts on the back (opposite the direction of the normal vector) are clipped during 3D rendering.
+- vec4f **projectiveFrontColor** () const — Returns the color used for RenderMode2d::ProjectiveDepthEncoding rendering mode in MPR views if mesh is in front of the MPR plane.
+- void **setProjectiveFrontColor** (vec4f value) — Sets the color used for RenderMode2d::ProjectiveDepthEncoding rendering mode in MPR views if mesh is in front of the MPR plane.
+- vec4f **projectiveBackColor** () const — Returns the color used for RenderMode2d::ProjectiveDepthEncoding rendering mode in MPR views if mesh is behind the MPR plane.
+- void **setProjectiveBackColor** (vec4f value) — Sets the color used for RenderMode2d::ProjectiveDepthEncoding rendering mode in MPR views if mesh is behind the MPR plane.
+- double **projectiveIntersectionTolerance** () const — Returns the tolerance (mm) during the computation whether a mesh intersects the MPR plane in projective rendering.
+- void **setProjectiveIntersectionTolerance** (double value) — Sets the tolerance (mm) during the computation whether a mesh intersects the MPR plane in projective rendering.
+- double **projectiveFadeoutRange** () const — Returns the range (mm) during which the mesh is smoothly faded out in projective rendering if not intersecting.
+- void **setProjectiveFadeoutRange** (double value) — Sets the range (mm) during which the mesh is smoothly faded out in projective rendering if not intersecting.
+- void [setLineStipplePattern](#setlinestipplepattern) (uint16_t pattern) — Sets the stipple pattern of the rendered mesh plane intersection lines.
+- void [setLineStippleFactor](#setlinestipplefactor) (double factor) — Sets the factor determining the length of the stipple pattern of the mesh plane intersection lines.
+- virtual void [setCustomShader](#setcustomshader) ([GL::Program](/cpp-sdk/4.5/api/classes/imfusion-gl-program) \*program) — Sets a custom shader to be used as a replacement for the default shader in 3D.
+- [Geometry::AlignedBox](/cpp-sdk/4.5/api/classes/imfusion-geometry-alignedbox) [bounds](#bounds) () const override — Get the axis-aligned bounding box of this [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) in world space.
+- [Geometry::AlignedBox](/cpp-sdk/4.5/api/classes/imfusion-geometry-alignedbox) [boundsSpherical](#boundsspherical) () const override — Computes a cheap approximation of the mesh bounds in world space The mesh bounds in local space are translated to the current mesh position in world space.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [typeName](#typename) () const override — Return unique identifier for this object class used for serialization.
+- [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) \* **mesh** ()
+- const [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) \* **mesh** () const
+- const [MeshGl](/cpp-sdk/4.5/api/classes/imfusion-meshgl) \* **meshGl** () const
+- vec3 [center](#center) () const override — Return the center of the object in local coordinates without considering any matrix.
+- vec3 [extent](#extent) () const override — Return the extent of the object in local coordinates without considering any matrix.
+- vec3 **centerOfMass** () const
+- void **setDrawIn2D** (bool [draw](#draw))
+- bool **drawIn2D** () const
+- void **setDrawCrossSection** (bool [draw](#draw)) — Specify whether to draw a filled cross-section of the mesh in the slice views Note that this will only work with closed meshes.
+- bool **drawCrossSection** () const
+- void **setCrossSectionColor** (vec4f [color](/cpp-sdk/4.5/api/classes/imfusion-glannotation)) — Specify the color of the cross section.
+- vec4f **crossSectionColor** () const
+- void **setDrawNormals** (bool flag) — Specify whether the normals should be drawn as lines (if available).
+- bool **drawNormals** () const
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Set one or multiple properties.
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Retrieve the properties of this object.
+- virtual bool **hasCustomShader** () const
+- void **setFaceNormalsEnabled** (bool v)
+- bool **faceNormalsEnabled** () const
+- void **setPickingMode** (PickingMode v) — Specify the type of index picking.
+- PickingMode **pickingMode** () const
+
+## Protected Member Functions
+
+- void **dataDeleted** (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*d)
+- bool **needsSurfaceRenderer** (const [GlView::Type](/cpp-sdk/4.5/api/classes/imfusion-glview) &viewType) const
+- bool **needsCustomSurfaceRenderer** (const [GlView::Type](/cpp-sdk/4.5/api/classes/imfusion-glview) &viewType) const
+- bool **needsSliceRenderer** (const [GlView::Type](/cpp-sdk/4.5/api/classes/imfusion-glview) &viewType) const
+- bool **needsNormalRenderer** (const [GlView::Type](/cpp-sdk/4.5/api/classes/imfusion-glview) &viewType) const
+
+## Protected Attributes
+
+- [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) \* **m_mesh** = nullptr
+- [RenderMode2d](#rendermode2d) **m_renderMode2d** = IntersectionOnly
+- [RenderMode3d](#rendermode3d) **m_renderMode3d** = Surface
+- double **m_projectiveIntersectionTolerance** = 0.0
+- double **m_projectiveFadeoutRange** = 10.0
+- bool **m_drawIn2D** = false
+- bool **m_drawNormals** = false
+- bool **m_useDepthOffset** = false
+- float **m_depthOffsetFactor** = 2.f
+- float **m_depthOffsetUnits** = 2.f
+
+## Member Enumeration Documentation
+
+### RenderMode2d
+
+```cpp
+enum ImFusion::GlMesh::RenderMode2d
+```
+
+**Enumerator:**
+
+- `IntersectionOnly` — Render intersection with MPR plane only.
+- `FullProjective` — Render full mesh orthographically projected onto MPR plane using the normal mesh color.
+Will always be shown whether or not intersecting the plane.
+- `ProjectiveColorGradient` — Render full mesh orthographically projected onto MPR plane.
+Depth wrt. MPR plane will be color coded as gradient between projectiveFrontColor() and projectiveBackColor(). Will only be shown when intersecting the plane.
+- `ProjectiveWireframe` — Render full mesh orthographically projected onto MPR plane.
+Parts in front of the MPR plane are rendered solid, parts behind the MPR plane are rendered in wireframe mode. Will only be shown when intersecting the plane.
+- `Render3D` — Render the object in 3D without any special treatments and the original projection matrix.
+
+### RenderMode3d
+
+```cpp
+enum ImFusion::GlMesh::RenderMode3d
+```
+
+**Enumerator:**
+
+- `Surface` — Render filled polygon surfaces.
+- `SurfaceAndWireframe` — Render both filled polygon and wireframe surfaces.
+- `Wireframe` — Render wireframe polygons only.
+- `Intersection` — Render only the intersection with the clip plane.
+
+### MaterialMode
+
+```cpp
+enum ImFusion::GlMesh::MaterialMode
+```
+
+**Enumerator:**
+
+- `Uniform` — uses the colors from setMaterial or [setColor(const vec3&)](#setcolor)
+- `Color` — uses the colors from setColor(const std::vector&) or mesh vertex colors for ambient, diffuse and specular
+- `Texture` — uses the mesh vertex texture for ambient, diffuse and specular
+- `Shader` — uses the provided custom shader
+- `FaceLabel` — uses the labels of faces
+- `VertexLabel` — uses the labels of vertices
+
+### ClipMode
+
+```cpp
+enum class ImFusion::GlMesh::ClipMode
+```
+
+*strong*
+
+**Enumerator:**
+
+- `Discard` — Pixels behind clip plane are not rendered at all.
+- `Wireframe` — Use wireframe rendering mode behind clip plane.
+- `SolidButWireframeColor` — Use regular rendering mode but with the wireframeColor behind the clip plane.
+
+## Member Function Documentation
+
+### setMatrix
+
+```cpp
+void ImFusion::GlMesh::setMatrix (const mat4 & m)
+```
+
+*override, virtual*
+
+Set the modelview matrix of this object.
+
+### matrix
+
+```cpp
+const mat4 & ImFusion::GlMesh::matrix () const
+```
+
+*override, virtual*
+
+Return the modelview matrix.
+
+### setMesh
+
+```cpp
+virtual void ImFusion::GlMesh::setMesh (Mesh * mesh)
+```
+
+*virtual*
+
+Attaches a [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) to be rendered.
+
+Calls updateBuffers() to synchronize mesh data and OpenGL buffers.
+
+### draw
+
+```cpp
+void ImFusion::GlMesh::draw (const GlView & view)
+```
+
+*override, virtual*
+
+Calls draw3D for SPACE3D views and draw2D for SLICE2D views.
+
+### draw2D
+
+```cpp
+virtual void ImFusion::GlMesh::draw2D (const GL::ViewState & viewState, Slice slice)
+```
+
+*virtual*
+
+Computes the cross-section with the slice and displays it with lines.
+
+### setRenderingDepthOffset
+
+```cpp
+void ImFusion::GlMesh::setRenderingDepthOffset (bool useOffset, float offsetFactor = 2.f, float offsetUnits = 2.f)
+```
+
+Sets the depth offset (see OpenGL glPolygonOffset for more details).
+
+**Parameters:**
+
+- `useOffset` — flag specifying whether the offset should be used
+- `offsetFactor` — a scale factor that is used to create a variable depth offset for each polygon
+- `offsetUnits` — is multiplied by an implementation-specific value to create a constant depth offset
+
+### setColor
+
+```cpp
+void ImFusion::GlMesh::setColor (const vec3 & color)
+```
+
+*override, virtual*
+
+Sets the color of the front and back material (ambient, diffuse and specular).
+
+### setAlpha
+
+```cpp
+void ImFusion::GlMesh::setAlpha (double v)
+```
+
+*override, virtual*
+
+Set alpha channel.
+
+### setFrontMaterialMode
+
+```cpp
+virtual void ImFusion::GlMesh::setFrontMaterialMode (MaterialMode mode)
+```
+
+*virtual*
+
+Sets the material mode for the front facing triangles during 3D rendering.
+
+In case the material mode is being set to VertexLabel or FaceLabel, [GlMesh](/cpp-sdk/4.5/api/classes/imfusion-glmesh) will be marked as dirty
+
+### setBackMaterialMode
+
+```cpp
+virtual void ImFusion::GlMesh::setBackMaterialMode (MaterialMode mode)
+```
+
+*virtual*
+
+Sets the material mode for the back facing triangles during 3D rendering.
+
+In case the material mode is being set to VertexLabel or FaceLabel, [GlMesh](/cpp-sdk/4.5/api/classes/imfusion-glmesh) will be marked as dirty
+
+### setMaterial
+
+```cpp
+virtual void ImFusion::GlMesh::setMaterial (vec3f ambient, vec3f diffuse, vec3f specular, float shininess)
+```
+
+*virtual*
+
+Sets the material used for the front and back facing triangles during 3D rendering.
+
+This only has an effect if front material mode is set to Uniform.
+
+### setFrontMaterial
+
+```cpp
+virtual void ImFusion::GlMesh::setFrontMaterial (vec3f ambient, vec3f diffuse, vec3f specular, float shininess)
+```
+
+*virtual*
+
+Sets the material used for the front facing triangles during 3D rendering.
+
+This only has an effect if front material mode is set to Uniform.
+
+### setBackMaterial
+
+```cpp
+virtual void ImFusion::GlMesh::setBackMaterial (vec3f ambient, vec3f diffuse, vec3f specular, float shininess)
+```
+
+*virtual*
+
+Sets the material used for the back facing triangles during 3D rendering.
+
+This only has an effect if back material mode is set to Uniform.
+
+### lineWidth
+
+```cpp
+float ImFusion::GlMesh::lineWidth () const
+```
+
+*override, virtual*
+
+Return annotation line width.
+
+### setLineWidth
+
+```cpp
+void ImFusion::GlMesh::setLineWidth (float lineWidth)
+```
+
+*override, virtual*
+
+Set annotation line width.
+
+### clipPlane
+
+```cpp
+std::optional < Geometry::Plane > ImFusion::GlMesh::clipPlane () const
+```
+
+*override, virtual*
+
+Returns the optional clip plane used during 3D rendering.
+
+### setClipPlane
+
+```cpp
+bool ImFusion::GlMesh::setClipPlane (std::optional < Geometry::Plane > plane)
+```
+
+*override, virtual*
+
+Sets an optional clip plane so that parts on the back (opposite the direction of the normal vector) are clipped during 3D rendering.
+
+### setLineStipplePattern
+
+```cpp
+void ImFusion::GlMesh::setLineStipplePattern (uint16_t pattern)
+```
+
+Sets the stipple pattern of the rendered mesh plane intersection lines.
+
+The stippling pattern is not continuous because the stippled lines are generated as sections around the circle and not as a continuous line. This is an experimental feature and may yield mixed results depending on the triangle count and zoom factor
+
+**Parameters:**
+
+- `pattern` — The given uint16_t will be interpreted as bit field defining which pixels to render.
+
+### setLineStippleFactor
+
+```cpp
+void ImFusion::GlMesh::setLineStippleFactor (double factor)
+```
+
+Sets the factor determining the length of the stipple pattern of the mesh plane intersection lines.
+
+The stippling pattern is not continuous because the stippled lines are generated as sections around the circle and not as a continuous line. This is an experimental feature and may yield mixed results depending on the triangle count and zoom factor
+
+**Parameters:**
+
+- `stippleFactor` — Length of each individual pattern, a factor of 1 will result in the stipple pattern to be repeated every 16
+
+### setCustomShader
+
+```cpp
+virtual void ImFusion::GlMesh::setCustomShader (GL::Program * program)
+```
+
+*virtual*
+
+Sets a custom shader to be used as a replacement for the default shader in 3D.
+
+The shader will be used if either front or back face material mode is set to Shader. Therefore, it is the shader's task to implement the correct behaviour if front and back face material mode differ, if this functionality is desired.
+
+The vertex shader will receive the following inputs:
+
+```cpp
+layout (location = 0) in vec3 in_Position;
+layout (location = 1) in vec3 in_Normal;
+layout (location = 2) in vec3 in_Color;
+```
+ fragment
+And the fragment shader has one output:
+
+```cpp
+out vec4 out_Color;
+```
+ fragment
+Additionally there are several uniforms (see Mesh3D.vert and Mesh3D.frag).
+
+### bounds
+
+```cpp
+Geometry::AlignedBox ImFusion::GlMesh::bounds () const
+```
+
+*override, virtual*
+
+Get the axis-aligned bounding box of this [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) in world space.
+
+Return an empty (default-constructed) AlignedBox object if the [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) does not reside in world space.
+
+### boundsSpherical
+
+```cpp
+Geometry::AlignedBox ImFusion::GlMesh::boundsSpherical () const
+```
+
+*override, virtual*
+
+Computes a cheap approximation of the mesh bounds in world space The mesh bounds in local space are translated to the current mesh position in world space.
+
+A sphere is fitted to the translated bounds, and its bounds are returned. This function runs in constant time, after the tight mesh bounds have been computed at least once. So it can be used if approximated bounds for a fast moving mesh are needed.
+
+### typeName
+
+```cpp
+std::string ImFusion::GlMesh::typeName () const
+```
+
+*override, virtual*
+
+Return unique identifier for this object class used for serialization.
+
+### center
+
+```cpp
+vec3 ImFusion::GlMesh::center () const
+```
+
+*override, virtual*
+
+Return the center of the object in local coordinates without considering any matrix.
+
+### extent
+
+```cpp
+vec3 ImFusion::GlMesh::extent () const
+```
+
+*override, virtual*
+
+Return the extent of the object in local coordinates without considering any matrix.
+
+### configure
+
+```cpp
+void ImFusion::GlMesh::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Set one or multiple properties.
+
+### configuration
+
+```cpp
+void ImFusion::GlMesh::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Retrieve the properties of this object.

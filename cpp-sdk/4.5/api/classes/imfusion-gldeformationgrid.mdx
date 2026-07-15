@@ -1,0 +1,90 @@
+---
+title: "ImFusion::GlDeformationGrid"
+sidebarTitle: "GlDeformationGrid"
+description: "The GlDeformationGrid visualizes the deformation of an image through the deformation of a grid rendered on top of the image."
+---
+
+`#include <ImFusion/Reg/GlDeformationGrid.h>`
+
+## Overview
+
+The [GlDeformationGrid](/cpp-sdk/4.5/api/classes/imfusion-gldeformationgrid) visualizes the deformation of an image through the deformation of a grid rendered on top of the image.
+
+Since the deformation of the input image must be inverted internally (see [InvertDeformationAlgorithm](/cpp-sdk/4.5/api/classes/imfusion-invertdeformationalgorithm)), this visualization is rather expensive.
+
+## Public Member Functions
+
+- **GlDeformationGrid** (const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*image)
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [typeName](#typename) () const override — Return unique identifier for this object class used for serialization.
+- [Geometry::AlignedBox](/cpp-sdk/4.5/api/classes/imfusion-geometry-alignedbox) [bounds](#bounds) () const override — Get the axis-aligned bounding box of this [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) in world space.
+- void [draw](#draw) (const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &view) override — Draw the object in 3D space.
+- int [numGridPoints](#numgridpoints) () const — Number of grid intersection points per axis.
+- void **setNumGridPoints** (int n)
+- int [downsamplingFactor](#downsamplingfactor) () const — Downsampling factor of the internal inverted [GlDenseDeformation](/cpp-sdk/4.5/api/classes/imfusion-gldensedeformation).
+- void **setDownsamplingFactor** (int d)
+- [std::chrono::milliseconds](http://en.cppreference.com/w/cpp/chrono/duration.html) [updateInterval](#updateinterval) () const — Duration between two updates of the internal [GlDenseDeformation](/cpp-sdk/4.5/api/classes/imfusion-gldensedeformation).
+- void **setUpdateInterval** (const [std::chrono::milliseconds](http://en.cppreference.com/w/cpp/chrono/duration.html) &interval)
+
+## Member Function Documentation
+
+### typeName
+
+```cpp
+std::string ImFusion::GlDeformationGrid::typeName () const
+```
+
+*override, virtual*
+
+Return unique identifier for this object class used for serialization.
+
+### bounds
+
+```cpp
+Geometry::AlignedBox ImFusion::GlDeformationGrid::bounds () const
+```
+
+*override, virtual*
+
+Get the axis-aligned bounding box of this [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) in world space.
+
+Return an empty (default-constructed) AlignedBox object if the [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) does not reside in world space.
+
+### draw
+
+```cpp
+void ImFusion::GlDeformationGrid::draw (const GlView & view)
+```
+
+*override, virtual*
+
+Draw the object in 3D space.
+
+### numGridPoints
+
+```cpp
+int ImFusion::GlDeformationGrid::numGridPoints () const
+```
+
+Number of grid intersection points per axis.
+
+Default is 8.
+
+### downsamplingFactor
+
+```cpp
+int ImFusion::GlDeformationGrid::downsamplingFactor () const
+```
+
+Downsampling factor of the internal inverted [GlDenseDeformation](/cpp-sdk/4.5/api/classes/imfusion-gldensedeformation).
+
+Higher downsampling results in faster computation but in a less accurate visualization. The initial value depends on the size of the input image.
+
+### updateInterval
+
+```cpp
+std::chrono::milliseconds ImFusion::GlDeformationGrid::updateInterval () const
+```
+
+Duration between two updates of the internal [GlDenseDeformation](/cpp-sdk/4.5/api/classes/imfusion-gldensedeformation).
+
+A value of 0 updates on every rendering and blocks during the computation of the inverse deformation. A value greater 0 computes the inverse async. The initial value depends on the size of the input image.

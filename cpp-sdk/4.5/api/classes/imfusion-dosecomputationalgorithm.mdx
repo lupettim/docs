@@ -1,0 +1,73 @@
+---
+title: "ImFusion::DoseComputationAlgorithm"
+sidebarTitle: "DoseComputationAlgorithm"
+description: "Computes the dose distribution from PET/SPECT images."
+---
+
+`#include <ImFusion/Seg/DoseComputationAlgorithm.h>`
+
+## Overview
+
+Computes the dose distribution from PET/SPECT images.
+
+## Public Member Functions
+
+- **DoseComputationAlgorithm** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*ctData, [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*nmData) — Creates the algorithm instance.
+- void [compute](#compute) () override — Applies the processing.
+- void **setKernelsDirectory** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &val) — get/set the directory in which the kernels can be found the kernel files must start with the names in m_convolutions and be in .mhd format for example Air_Y90d.mhd is a valid kernel for the "air" convolution
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **kernelsDirectory** () const
+- void **setScale** (double val) — scaling factor by which the resulting volume intensities gets multiplied 1.0f by default
+- double **scale** () const
+- [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) [takeOutput](#takeoutput) () override — Make the resulting data available here.
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Methods implementing the [Configurable](/cpp-sdk/4.5/api/classes/imfusion-configurable) interface.
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+## Static Public Member Functions
+
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=nullptr)
+
+## Member Function Documentation
+
+### compute
+
+```cpp
+void ImFusion::DoseComputationAlgorithm::compute ()
+```
+
+*override, virtual*
+
+Applies the processing.
+
+### takeOutput
+
+```cpp
+OwningDataList ImFusion::DoseComputationAlgorithm::takeOutput ()
+```
+
+*override, virtual*
+
+Make the resulting data available here.
+
+### configure
+
+```cpp
+void ImFusion::DoseComputationAlgorithm::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Methods implementing the [Configurable](/cpp-sdk/4.5/api/classes/imfusion-configurable) interface.
+
+### configuration
+
+```cpp
+void ImFusion::DoseComputationAlgorithm::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality

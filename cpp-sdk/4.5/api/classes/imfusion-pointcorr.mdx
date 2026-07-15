@@ -1,0 +1,109 @@
+---
+title: "ImFusion::PointCorr"
+sidebarTitle: "PointCorr"
+description: "Container for point correspondences."
+---
+
+`#include <ImFusion/Base/PointCorr.h>`
+
+## Overview
+
+[Container](/cpp-sdk/4.5/api/namespaces/imfusion-container) for point correspondences.
+
+## Public Member Functions
+
+- **PointCorr** () — Constructor.
+- virtual **~PointCorr** ()=default — Virtual destructor.
+- virtual void **setMatrix** (const mat4 &mat) — Set the transformation matrix from tracking to world coords.
+- void **apply** () — Transforms all tracking points to world coords and resets matrix to identity.
+- virtual double **evaluate** () const — Evaluate the average distance error.
+- void [evaluateError](#evaluateerror) ([std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; &out) override — Evaluate all available errors, implementing the [ErrorFunction](/cpp-sdk/4.5/api/classes/imfusion-errorfunction) interface.
+- virtual mat4 **fitRigid** (bool findCorrespondences=false) const — Return rigid transformation of point correspondence fitting.
+- mat4 **fitAffine** () const — Return affine transformation of point correspondence fitting.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; mat4 &gt; [fitCombinations](#fitcombinations) (int maxNumRemoved, bool affine) const — Return registrations resulting from removing up to maxNumRemoved point from each set.
+- int **size** () const — Return the number of point correspondences.
+- virtual const mat4 & **matrix** () const — Return the transformation matrix.
+- vec3 **world** (int which) const — Return a particular world point.
+- virtual vec3 **trackedInWorld** (int which) const — Return a particular tracked point in world coordinates.
+- virtual void **clear** () — Remove all points and reset transformation.
+- virtual void **remove** (int idx) — Remove point correspondence at a given index.
+- virtual void **removeLast** () — Remove the last point correspondence.
+- bool **load** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &filenameWorld, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &filenameTracked, bool replicateLastPoint=false) — Load point correspondences from two text files, returns true if successful The last flag is only used when the number of points is different.
+- bool **save** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &filenameWorld, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &filenameTracked) const — Save (transformed) point correspondences to two text files.
+- bool **saveTagFile** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &filename, bool world, bool tracked) const — Save one or both sets of points to a file with the MNI tag format.
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec4 &gt; & **worldPoints** () const
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec4 &gt; & **trackPoints** () const
+
+## Static Public Member Functions
+
+- static void **loadPoints** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &filename, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; &pointsOut) — Auxiliary method to load points from a text file.
+- static double [errorToMultPenalty](/cpp-sdk/4.5/api/classes/imfusion-errorfunction) (double value, double range) — There is a margin of half the range within which the returned penalty value fades from 1 to 0 with a polynomial function, and extents below zero after 1.5x range, and is continuous in the derivative.
+- static double [errorsToMultPenalty](/cpp-sdk/4.5/api/classes/imfusion-errorfunction) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; &error, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; &range) — Return a number of error values to a combined penalty function, while properly housekeeping values &lt; 0.
+
+## Protected Attributes
+
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec4 &gt; **m_worldPoints** — Points in world coordinate system.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec4 &gt; **m_trackPoints** — Points in tracked coordinate system.
+- mat4 **m_matrix** — Transformation matrix.
+
+## Methods to add a point correspondence
+
+- void [add](#add) (const vec3 &world, const vec3 &tracked, bool inWorld=false) — If the inWorld parameter is true, the tracked point is assumed to be in world coordinates and hence transformed with the inverse matrix.
+- void **add** (const vec4 &world, const vec4 &tracked) — Same as above, for homogeneous 4-vectors, except that tracked must always be in tracking space.
+- void [insert](#insert) (int idx, const vec3 &world, const vec3 &tracked, bool inWorld=false) — Insert at a given index point correspondence with 3D vectors in world and tracking space.
+- void **insert** (int idx, const vec4 &world, const vec4 &tracked) — Same as above, for homogeneous 4-vectors.
+
+## Methods to set a point correspondence at a given index
+
+- void [set](#set) (int idx, const vec3 &world, const vec3 &tracked)
+- void **set** (int idx, const vec4 &world, const vec4 &tracked) — Same as above, for homogeneous 4-vectors.
+
+## Member Function Documentation
+
+### add
+
+```cpp
+void ImFusion::PointCorr::add (const vec3 & world, const vec3 & tracked, bool inWorld = false)
+```
+
+If the inWorld parameter is true, the tracked point is assumed to be in world coordinates and hence transformed with the inverse matrix.
+
+Add correspondence with 3D vectors in world and tracking space
+
+### insert
+
+```cpp
+void ImFusion::PointCorr::insert (int idx, const vec3 & world, const vec3 & tracked, bool inWorld = false)
+```
+
+Insert at a given index point correspondence with 3D vectors in world and tracking space.
+
+If the inWorld parameter is true, the tracked point is assumed to be in world coordinates and hence transformed with the inverse matrix.
+
+### set
+
+```cpp
+void ImFusion::PointCorr::set (int idx, const vec3 & world, const vec3 & tracked)
+```
+
+Set point correspondence at a given index with 3D vectors in world and tracking space
+
+### evaluateError
+
+```cpp
+void ImFusion::PointCorr::evaluateError (std::vector < double > & out)
+```
+
+*override, virtual*
+
+Evaluate all available errors, implementing the [ErrorFunction](/cpp-sdk/4.5/api/classes/imfusion-errorfunction) interface.
+
+### fitCombinations
+
+```cpp
+std::vector < mat4 > ImFusion::PointCorr::fitCombinations (int maxNumRemoved, bool affine) const
+```
+
+Return registrations resulting from removing up to maxNumRemoved point from each set.
+
+Beware of the computation size since all combinations are computed. For a point set of size 10, maxNumRemoved = 5 or 6 should be the maximum used here.

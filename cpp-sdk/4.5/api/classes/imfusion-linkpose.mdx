@@ -1,0 +1,132 @@
+---
+title: "ImFusion::LinkPose"
+sidebarTitle: "LinkPose"
+description: "Synchronizes the pose matrix across multiple Data instances."
+---
+
+`#include <ImFusion/Base/LinkPose.h>`
+
+## Overview
+
+Synchronizes the pose matrix across multiple [Data](/cpp-sdk/4.5/api/classes/imfusion-data) instances.
+
+Their relative pose to each other on link time is maintained.
+
+## Classes
+
+- struct [LinkHandler](/cpp-sdk/4.5/api/structs/imfusion-linkpose-linkhandler)
+- struct [LinkItem](/cpp-sdk/4.5/api/structs/imfusion-linkpose-linkitem)
+
+## Public Types
+
+- typedef void(LinkPose::\* **TransformationChangedFn**) (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*[data](#data)) — [Status](/cpp-sdk/4.5/api/classes/imfusion-algorithm) codes.
+
+## Public Member Functions
+
+- **LinkPose** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &[data](#data)) — Constructor with data list, pose linking starts right away.
+- **~LinkPose** () override — Destructor, stops the linking of the transformation.
+- void [compute](#compute) () override — Unused compute method of the [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) interface.
+- bool **paused** () const — Returns the flag for temporarily pause linking to improve performance.
+- void **setPaused** (bool value) — Sets the flag for temporarily pause linking to improve performance.
+- bool [accepts](#accepts) (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) &[data](#data)) const override — Checks whether the given [Data](/cpp-sdk/4.5/api/classes/imfusion-data) instance is supported.
+- void [add](#add) ([Data](/cpp-sdk/4.5/api/classes/imfusion-data) &[data](#data)) override — Add the given [Data](/cpp-sdk/4.5/api/classes/imfusion-data) instance to the link.
+- void [remove](#remove) ([Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*[data](#data)) override — Remove the given [Data](/cpp-sdk/4.5/api/classes/imfusion-data) instance from the link.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \* &gt; [data](#data) () const override — Return list of all linked [Data](/cpp-sdk/4.5/api/classes/imfusion-data) instances.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [uiTitle](#uititle) () const override — Return a title of the link type for displaying in the UI.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [uiIconPath](#uiiconpath) () const override — Return a path to an icon representing the link type to display in the UI.
+
+## Static Public Member Functions
+
+- static void **registerHandler** ([LinkHandler](/cpp-sdk/4.5/api/structs/imfusion-linkpose-linkhandler) handler) — Registers a new handler for linking a specific data type. Will be added at the end of the list, i.e. will take precedence over previously registered handlers.
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &[data](#data), [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=0) — [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) factory method.
+
+## Protected Member Functions
+
+- void **transformationChanged** (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*[data](#data)) — Called when any of the data transformations have changed.
+
+## Static Protected Member Functions
+
+- static bool **registerDefaultHandlers** () — Registers the default link handlers.
+
+## Protected Attributes
+
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [LinkItem](/cpp-sdk/4.5/api/structs/imfusion-linkpose-linkitem) &gt; **m_links** — list of [Data](/cpp-sdk/4.5/api/classes/imfusion-data) links
+- bool **m_block** — Prevents redundant listener calls during update.
+- bool **m_paused** — temporarily pause linking to improve performance
+
+## Static Protected Attributes
+
+- static [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [LinkHandler](/cpp-sdk/4.5/api/structs/imfusion-linkpose-linkhandler) &gt; **m_handlers** — List of link handlers. Handlers are search back to front and the first one that is compatible is used.
+- static bool **m_defaultsAreRegistered** — Whether registerDefaults was already called.
+
+## Member Function Documentation
+
+### compute
+
+```cpp
+void ImFusion::LinkPose::compute ()
+```
+
+*override, virtual*
+
+Unused compute method of the [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) interface.
+
+### accepts
+
+```cpp
+bool ImFusion::LinkPose::accepts (const Data & data) const
+```
+
+*override, virtual*
+
+Checks whether the given [Data](/cpp-sdk/4.5/api/classes/imfusion-data) instance is supported.
+
+### add
+
+```cpp
+void ImFusion::LinkPose::add (Data & data)
+```
+
+*override, virtual*
+
+Add the given [Data](/cpp-sdk/4.5/api/classes/imfusion-data) instance to the link.
+
+### remove
+
+```cpp
+void ImFusion::LinkPose::remove (Data * data)
+```
+
+*override, virtual*
+
+Remove the given [Data](/cpp-sdk/4.5/api/classes/imfusion-data) instance from the link.
+
+### data
+
+```cpp
+std::vector < Data * > ImFusion::LinkPose::data () const
+```
+
+*override, virtual*
+
+Return list of all linked [Data](/cpp-sdk/4.5/api/classes/imfusion-data) instances.
+
+### uiTitle
+
+```cpp
+std::string ImFusion::LinkPose::uiTitle () const
+```
+
+*override, virtual*
+
+Return a title of the link type for displaying in the UI.
+
+### uiIconPath
+
+```cpp
+std::string ImFusion::LinkPose::uiIconPath () const
+```
+
+*override, virtual*
+
+Return a path to an icon representing the link type to display in the UI.

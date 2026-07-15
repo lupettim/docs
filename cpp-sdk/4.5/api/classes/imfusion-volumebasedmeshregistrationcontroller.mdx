@@ -1,0 +1,46 @@
+---
+title: "ImFusion::VolumeBasedMeshRegistrationController"
+sidebarTitle: "VolumeBasedMeshRegistrationController"
+---
+
+## Public Slots
+
+- void **onCompute** () override
+
+## Public Member Functions
+
+- **VolumeBasedMeshRegistrationController** ([VolumeBasedMeshRegistrationAlgorithm](/cpp-sdk/4.5/api/classes/imfusion-volumebasedmeshregistrationalgorithm) \*alg)
+- virtual void [init](#init) () override — Two-step initialization function to be implemented by subclasses.
+- virtual void [updatePropertiesWidget](#updatepropertieswidget) () override
+
+## Protected Member Functions
+
+- void **loadLandmarks** ([std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) path)
+
+## Protected Attributes
+
+- [VolumeBasedMeshRegistrationAlgorithm](/cpp-sdk/4.5/api/classes/imfusion-volumebasedmeshregistrationalgorithm) \* **m_alg**
+- bool **m_displayRegistrationController** = false
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [PointCloud](/cpp-sdk/4.5/api/classes/imfusion-pointcloud) &gt; **m_pc**
+
+## Member Function Documentation
+
+### init
+
+```cpp
+virtual void ImFusion::VolumeBasedMeshRegistrationController::init ()
+```
+
+*override, virtual*
+
+Two-step initialization function to be implemented by subclasses.
+
+This function is called by [setMainWindowBase()](/cpp-sdk/4.5/api/classes/imfusion-controller) after the [m_disp](/cpp-sdk/4.5/api/classes/imfusion-controller) and [m_main](/cpp-sdk/4.5/api/classes/imfusion-controller) attributes have been set and hence a complete initialization of the controller is possible at this point.
+
+### updatePropertiesWidget
+
+```cpp
+virtual void ImFusion::VolumeBasedMeshRegistrationController::updatePropertiesWidget ()
+```
+
+*override, virtual*

@@ -1,0 +1,105 @@
+---
+title: "ImFusion::ParametricDeformation"
+sidebarTitle: "ParametricDeformation"
+description: "Base interface for a parametric deformation in 2D or 3D."
+---
+
+`#include <ImFusion/GL/ParametricDeformation.h>`
+
+## Overview
+
+[Base](/cpp-sdk/4.5/api/structs/imfusion-dicom-base) interface for a parametric deformation in 2D or 3D.
+
+Derived classes will implement actual parametric deformation models. Additionally to the displacement method, the shader include is expected to have the following two methods:
+
+```cpp
+// Returns the control point with the index i
+vec3 controlPointLocation(int i);
+// Returns the displacement of the control point with index i
+vec3 controlPointDisplacement(int i);
+```
+ fragment
+
+## Public Member Functions
+
+- **ParametricDeformation** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &shaderPath) — Initializes the parametric deformation with path to the GlInclude file.
+- **~ParametricDeformation** () override — Destructor.
+- virtual void [setParameters](#setparameters) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; &pars) — Set the parameters of the deformation.
+- virtual void [parameters](#parameters) ([std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; &parsOut) const — Retrieve the current parameters of the deformation.
+- virtual void [setDisplacement](#setdisplacement) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3f &gt; &d) — Set displacement in mm for all control points if applicable For 2D images the z-coordinate of the displacement is ignored.
+- virtual [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3f &gt; [displacements](#displacements) () const — Get displacement in mm of all control points if applicable.
+- virtual [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; [controlPoints](#controlpoints) () const — Returns a list of all control points in world coordinates (might be empty for certain models).
+- virtual int [numberOfControlPoints](#numberofcontrolpoints) () const — Returns the number of control points (may be zero for certain deformations).
+- virtual int [numberOfParameters](#numberofparameters) () const — Returns the number of parameters e.g. for optimization.
+
+## Member Function Documentation
+
+### setParameters
+
+```cpp
+virtual void ImFusion::ParametricDeformation::setParameters (const std::vector < double > & pars)
+```
+
+*virtual*
+
+Set the parameters of the deformation.
+
+### parameters
+
+```cpp
+virtual void ImFusion::ParametricDeformation::parameters (std::vector < double > & parsOut) const
+```
+
+*virtual*
+
+Retrieve the current parameters of the deformation.
+
+### setDisplacement
+
+```cpp
+virtual void ImFusion::ParametricDeformation::setDisplacement (const std::vector < vec3f > & d)
+```
+
+*virtual*
+
+Set displacement in mm for all control points if applicable For 2D images the z-coordinate of the displacement is ignored.
+
+### displacements
+
+```cpp
+virtual std::vector < vec3f > ImFusion::ParametricDeformation::displacements () const
+```
+
+*virtual*
+
+Get displacement in mm of all control points if applicable.
+
+### controlPoints
+
+```cpp
+virtual std::vector < vec3 > ImFusion::ParametricDeformation::controlPoints () const
+```
+
+*virtual*
+
+Returns a list of all control points in world coordinates (might be empty for certain models).
+
+### numberOfControlPoints
+
+```cpp
+virtual int ImFusion::ParametricDeformation::numberOfControlPoints () const
+```
+
+*inline, virtual*
+
+Returns the number of control points (may be zero for certain deformations).
+
+### numberOfParameters
+
+```cpp
+virtual int ImFusion::ParametricDeformation::numberOfParameters () const
+```
+
+*inline, virtual*
+
+Returns the number of parameters e.g. for optimization.

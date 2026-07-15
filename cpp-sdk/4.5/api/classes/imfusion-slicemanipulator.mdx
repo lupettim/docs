@@ -1,0 +1,45 @@
+---
+title: "ImFusion::SliceManipulator"
+sidebarTitle: "SliceManipulator"
+description: "Interaction for slices."
+---
+
+`#include <ImFusion/GUI/SliceManipulator.h>`
+
+## Overview
+
+[Interaction](/cpp-sdk/4.5/api/classes/imfusion-interaction) for slices.
+
+## Public Member Functions
+
+- **SliceManipulator** ([GlSlice](/cpp-sdk/4.5/api/classes/imfusion-glslice) \*slice, [InteractiveView](/cpp-sdk/4.5/api/classes/imfusion-interactiveview) \*view)
+- [InteractiveView](/cpp-sdk/4.5/api/classes/imfusion-interactiveview) \* **view** () const — Access the view of the manipulator.
+- void [setOtherSlices](#setotherslices) ([GlSlice](/cpp-sdk/4.5/api/classes/imfusion-glslice) \*s1, [GlSlice](/cpp-sdk/4.5/api/classes/imfusion-glslice) \*s2) — Optional slice to use for defining the center of rotation.
+- void **setRotateAll** (bool flag)
+- void **reset** ()
+- bool [sceneEvent](#sceneevent) (QEvent \*event, const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &view) override — Modify the slice based on the mouse events.
+- bool **rotating** () const — Return whether active mode is rotation.
+
+## Member Function Documentation
+
+### setOtherSlices
+
+```cpp
+void ImFusion::SliceManipulator::setOtherSlices (GlSlice * s1, GlSlice * s2)
+```
+
+*inline*
+
+Optional slice to use for defining the center of rotation.
+
+Set whether rotation should be applied to other slices after interaction finishes
+
+### sceneEvent
+
+```cpp
+bool ImFusion::SliceManipulator::sceneEvent (QEvent * event, const GlView & view)
+```
+
+*override, virtual*
+
+Modify the slice based on the mouse events.

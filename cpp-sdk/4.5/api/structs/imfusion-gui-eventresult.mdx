@@ -1,0 +1,89 @@
+---
+title: "ImFusion::GUI::EventResult"
+sidebarTitle: "EventResult"
+description: "Simple record intended to be used as return value of the a handleInputEvent() function to indicate how to proceed."
+---
+
+`#include <ImFusion/GUI/EventResult.h>`
+
+## Overview
+
+Simple record intended to be used as return value of the a handleInputEvent() function to indicate how to proceed.
+
+Its main property is a flag whether to continue or stop the event propagation (other event systems often call this "accepted"). Furthermore, it stores additional optional members describing visual cues or elements that the [GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui) should show to the user as reaction to the event (e.g. mouse cursor shape, tooltip, context menu).
+
+Since InputEvents are often propagated to a series of handlers until propagation shall stop, the [EventResult](/cpp-sdk/4.5/api/structs/imfusion-gui-eventresult) offers a [combine()](#combine) function to conveniently combine its additional payload (mouse cursor shape, etc.). A typical usage looks like this
+
+```cpp
+EventResult result;
+for (InputEventHandler* handler : handlers) {
+    result.combine(handler->handleInputEvent(event));
+ if (result.stopPropagation)
+ return result;
+}
+return result;
+```
+ fragment
+
+## Public Types
+
+- enum Propagation &#123; **ContinuePropagation** = 0 , **StopPropagation** = 1 &#125; — Named enumeration used for the readable constructor.
+
+## Public Member Functions
+
+- **EventResult** ()=default — Creates an empty result indicating to continue event propagation.
+- [EventResult](#eventresult) (Propagation propagation, [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; MouseCursorShape &gt; cursorShape=std::nullopt, [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; tooltip=std::nullopt, [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [Menu](/cpp-sdk/4.5/api/classes/imfusion-gui-menu) &gt; contextMenu=std::nullopt) — Creates an [EventResult](/cpp-sdk/4.5/api/structs/imfusion-gui-eventresult) indicating whether to continue event propagation an optionally a mouse cursor to use.
+- **EventResult** (Propagation propagation, [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [Menu](/cpp-sdk/4.5/api/classes/imfusion-gui-menu) &gt; contextMenu) — Convenience constructor overload so that you can write [EventResult](/cpp-sdk/4.5/api/structs/imfusion-gui-eventresult)(&lt;Propagation&gt;, &lt;[Menu](/cpp-sdk/4.5/api/classes/imfusion-gui-menu)&gt;) without specifying the nullopt cursor shape and tooltip.
+- const EventResult & [combine](#combine) (EventResult other) — Combines two results from different event handling functions.
+- EventResult [combined](#combined) (const EventResult &other) const — Combines two results from different event handling functions.
+
+## Public Attributes
+
+- bool **stopPropagation** = false — Flag whether the event was accepted and event processing should stop.
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; MouseCursorShape &gt; **cursorShape** — Optional field to request showing a particular mouse cursor.
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **tooltip** — Optional text to show hovering next to the mouse cursor.
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [Menu](/cpp-sdk/4.5/api/classes/imfusion-gui-menu) &gt; **contextMenu** — An optional menu to show to the user as reaction to the event (usually populated as reaction to a [ContextMenuEvent](/cpp-sdk/4.5/api/classes/imfusion-gui-contextmenuevent)).
+
+## Constructor & Destructor Documentation
+
+### EventResult
+
+```cpp
+ImFusion::GUI::EventResult::EventResult (Propagation propagation, std::optional < MouseCursorShape > cursorShape = std::nullopt, std::optional < std::string > tooltip = std::nullopt, std::optional < Menu > contextMenu = std::nullopt)
+```
+
+Creates an [EventResult](/cpp-sdk/4.5/api/structs/imfusion-gui-eventresult) indicating whether to continue event propagation an optionally a mouse cursor to use.
+
+Is implicit by design so that you can write return EventResult::StopPropagation
+
+## Member Function Documentation
+
+### combine
+
+```cpp
+const EventResult & ImFusion::GUI::EventResult::combine (EventResult other)
+```
+
+Combines two results from different event handling functions.
+
+The combination logic is as follows to implement the regular use case of passing input events through a hierarchy of event handlers:
+
+- stopPropagation: will be determined by logical or of the two input states.
+- cursorShape: If one of the two inputs has an empty cursor it will use the value of the other input. If both results have a value the one with stopPropagation = true will take precedence. If both results have a non-empty cursor and stop the propagation, the value of *this* has precedence.
+- tooltip: will append the tooltip of *other* to the ones of *this* and put a newline break in between if necessary.
+- contextMenu: will append the menu items of *other* to the ones of *this* and put a separator in between if necessary.
+
+### combined
+
+```cpp
+EventResult ImFusion::GUI::EventResult::combined (const EventResult & other) const
+```
+
+Combines two results from different event handling functions.
+
+The combination logic is as follows to implement the regular use case of passing input events through a hierarchy of event handlers:
+
+- stopPropagation: will be determined by logical or of the two input states.
+- cursorShape: If one of the two inputs has an empty cursor it will use the value of the other input. If both results have a value the one with stopPropagation = true will take precedence. If both results have a non-empty cursor and stop the propagation, the value of *this* has precedence.
+- tooltip: will append the tooltip of *other* to the ones of *this* and put a newline break in between if necessary.
+- contextMenu: will append the menu items of *other* to the ones of *this* and put a separator in between if necessary.

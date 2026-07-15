@@ -1,0 +1,61 @@
+---
+title: "ImFusion::TrackingInstrumentRawData< T >"
+sidebarTitle: "TrackingInstrumentRawData< T >"
+description: "Device-dependent additional data."
+---
+
+`#include <ImFusion/Base/TrackingInstrumentRawData.h>`
+
+## Overview
+
+template&lt;typename T&gt;
+
+class ImFusion::TrackingInstrumentRawData&lt; T &gt;
+Device-dependent additional data.
+
+## Public Member Functions
+
+- bool **operator==** (const TrackingInstrumentRawData &other) const
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [id](#id) () const override — Returns a unique string identifier for this type of data component.
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Uses the [BinarySerializable](/cpp-sdk/4.5/api/classes/imfusion-binaryserializable) interface for Base64 decoding of the raw data.
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Uses the [BinarySerializable](/cpp-sdk/4.5/api/classes/imfusion-binaryserializable) interface for Base64 encoding of the raw data.
+- const T & **rawData** () const — Access to the raw data element.
+- T & **rawData** () — Access to the raw data element.
+
+## Protected Attributes
+
+- T **m_rawData** — Raw data.
+
+## Member Function Documentation
+
+### id
+
+```cpp
+template<typename T> std::string ImFusion::TrackingInstrumentRawData < T >::id () const
+```
+
+*inline, override, virtual*
+
+Returns a unique string identifier for this type of data component.
+
+**Note:** To avoid conflicts make sure to include potential plugin names into this ID. Due to the modular architecture of the ImFusion library, uniqueness of IDs cannot be checked at compile time. However, [DataComponentFactory](/cpp-sdk/4.5/api/classes/imfusion-datacomponentfactory) will check the uniqueness of the ID during registration.
+
+### configure
+
+```cpp
+template<typename T> void ImFusion::TrackingInstrumentRawData < T >::configure (const Properties * p)
+```
+
+*inline, override, virtual*
+
+Uses the [BinarySerializable](/cpp-sdk/4.5/api/classes/imfusion-binaryserializable) interface for Base64 decoding of the raw data.
+
+### configuration
+
+```cpp
+template<typename T> void ImFusion::TrackingInstrumentRawData < T >::configuration (Properties * p) const
+```
+
+*inline, override, virtual*
+
+Uses the [BinarySerializable](/cpp-sdk/4.5/api/classes/imfusion-binaryserializable) interface for Base64 encoding of the raw data.

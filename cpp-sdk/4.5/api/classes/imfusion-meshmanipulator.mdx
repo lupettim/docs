@@ -1,0 +1,113 @@
+---
+title: "ImFusion::MeshManipulator"
+sidebarTitle: "MeshManipulator"
+description: "Mesh manipulator with 3d controls."
+---
+
+`#include <ImFusion/GUI/MeshManipulator.h>`
+
+## Overview
+
+[Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) manipulator with 3d controls.
+
+The [MeshManipulator](/cpp-sdk/4.5/api/classes/imfusion-meshmanipulator) can modify the translation, rotation and scaling of a mesh. For each transformation mode it offers controls that are displayed around the mesh center.
+
+For proper use the [MeshManipulator](/cpp-sdk/4.5/api/classes/imfusion-meshmanipulator) object must be wrapped inside an [InteractiveObject](/cpp-sdk/4.5/api/classes/imfusion-interactiveobject) before being added to the corresponding view, e.g.
+
+```cpp
+InteractiveView* view = ...;
+Mesh* mesh = ...
+auto manip = std::make_unique<MeshManipulator>(mesh);
+auto interactiveObject = std::make_unique<InteractiveObject>(&mesh, manip.get(), false);
+view->addObject(interactiveObject.get());
+```
+ fragment
+The manipulator must be removed again before deleting!
+
+**See also:** [InteractiveObject](/cpp-sdk/4.5/api/classes/imfusion-interactiveobject)
+
+## Public Types
+
+- enum **Mode** &#123; **None** = 0 , **Translation** = 1 , **Rotation** = 2 , **Scaling** = 3 &#125;
+- enum **Interaction** &#123; **InteractionNone** , **InteractionTranslationX** , **InteractionTranslationY** , **InteractionTranslationZ** , **InteractionRotationX** , **InteractionRotationY** , **InteractionRotationZ** , **InteractionScaleX** , **InteractionScaleY** , **InteractionScaleZ** , **InteractionScaleAll** &#125; — Enumeration to determine rendering order of GlObjects in [GlSliceView](/cpp-sdk/4.5/api/classes/imfusion-glsliceview) and [GlVolumeView](/cpp-sdk/4.5/api/classes/imfusion-glvolumeview).
+
+## Public Member Functions
+
+- **MeshManipulator** ([Gl3DObject](/cpp-sdk/4.5/api/classes/imfusion-gl3dobject) &mesh) — Creates a [MeshManipulator](/cpp-sdk/4.5/api/classes/imfusion-meshmanipulator) object that will manipulate the matrix of the given mesh.
+- bool [sceneEvent](#sceneevent) (QEvent \*event, const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &view) override
+- void [draw](#draw) (const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &view) override — Draw the object in 3D space.
+- [Geometry::AlignedBox](/cpp-sdk/4.5/api/classes/imfusion-geometry-alignedbox) [bounds](#bounds) () const override — Get the axis-aligned bounding box of this [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) in world space.
+- void [setMode](#setmode) (Mode m) — Sets the current mode.
+- Mode **mode** () const
+- void [setVisible](#setvisible) (bool [visible](/cpp-sdk/4.5/api/classes/imfusion-globject)) override — Set object visibility.
+- const mat4 & **transformation** () const — Returns current transformation of the mesh.
+- void **setTransformation** (const mat4 &m) — Set transformation.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [typeName](#typename) () const override — Return unique identifier for this object class used for serialization.
+- void **setUseMeshCoordinates** (bool v)
+- bool **useMeshCoordinates** () const
+- void **resetMesh** () — Sets the Gl matrix of the mesh to identity, removing all previous transformations.
+- Interaction **currentInteraction** () const
+
+## Member Function Documentation
+
+### sceneEvent
+
+```cpp
+bool ImFusion::MeshManipulator::sceneEvent (QEvent * event, const GlView & view)
+```
+
+*override, virtual*
+
+### draw
+
+```cpp
+void ImFusion::MeshManipulator::draw (const GlView & view)
+```
+
+*override, virtual*
+
+Draw the object in 3D space.
+
+### bounds
+
+```cpp
+Geometry::AlignedBox ImFusion::MeshManipulator::bounds () const
+```
+
+*override, virtual*
+
+Get the axis-aligned bounding box of this [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) in world space.
+
+Return an empty (default-constructed) AlignedBox object if the [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) does not reside in world space.
+
+### setMode
+
+```cpp
+void ImFusion::MeshManipulator::setMode (Mode m)
+```
+
+*inline*
+
+Sets the current mode.
+
+Use None to disable interaction
+
+### setVisible
+
+```cpp
+void ImFusion::MeshManipulator::setVisible (bool visible)
+```
+
+*override, virtual*
+
+Set object visibility.
+
+### typeName
+
+```cpp
+std::string ImFusion::MeshManipulator::typeName () const
+```
+
+*inline, override, virtual*
+
+Return unique identifier for this object class used for serialization.

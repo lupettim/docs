@@ -1,0 +1,45 @@
+---
+title: "ImFusion::GL::OffscreenRenderHelper::RenderBuffer"
+sidebarTitle: "RenderBuffer"
+description: "Helper structure to encapsulate OpenGL objects representing the temporary rendering buffer."
+---
+
+`#include <ImFusion/Core/GL/OffscreenRenderHelper.h>`
+
+## Overview
+
+Helper structure to encapsulate OpenGL objects representing the temporary rendering buffer.
+
+You can only instantiate this type using [OffscreenRenderHelper::create()](/cpp-sdk/4.5/api/classes/imfusion-gl-offscreenrenderhelper) which will take care of initializing state guard, FBO, and textures. With the exception of stateGuard you should consider all members read-only and not change them since doing so may have unwanted side-effects.
+
+[RenderBuffer](/cpp-sdk/4.5/api/structs/imfusion-gl-offscreenrenderhelper-renderbuffer) is a move-only object. The destructor will return the underlying resources to [OffscreenRenderHelper](/cpp-sdk/4.5/api/classes/imfusion-gl-offscreenrenderhelper) so that they can be reused in the future (caching mechanism).
+
+## Public Member Functions
+
+- **RenderBuffer** (RenderBuffer &&other)
+- RenderBuffer & **operator=** (RenderBuffer &&other)
+- void [blendToParent](#blendtoparent) ([ColorPostProcessing](/cpp-sdk/4.5/api/classes/imfusion-gl-offscreenrenderhelper) colorProcessing, const [OrderIndependentTransparency](/cpp-sdk/4.5/api/classes/imfusion-gl-orderindependenttransparency) \*oit=nullptr) — Restores the original framebuffer and viewport state and executes a shader copying the contents of the temporary color and depth texture.
+
+## Public Attributes
+
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [GL::StateGuard](/cpp-sdk/4.5/api/classes/imfusion-gl-stateguard) &gt; **stateGuard** — Used to restore original [Viewport](/cpp-sdk/4.5/api/structs/imfusion-gl-viewport) and FBO state.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; const [GL::Framebuffer](/cpp-sdk/4.5/api/classes/imfusion-gl-framebuffer) &gt; **fbo** — FBO used for off-screen rendering.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; const [GL::Texture](/cpp-sdk/4.5/api/classes/imfusion-gl-texture) &gt; **colorTexture** — Offscreen color texture.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; const [GL::Texture](/cpp-sdk/4.5/api/classes/imfusion-gl-texture) &gt; **depthTexture** — Offscreen depth texture.
+
+## Member Function Documentation
+
+### blendToParent
+
+```cpp
+void ImFusion::GL::OffscreenRenderHelper::RenderBuffer::blendToParent (ColorPostProcessing colorProcessing, const OrderIndependentTransparency * oit = nullptr)
+```
+
+Restores the original framebuffer and viewport state and executes a shader copying the contents of the temporary color and depth texture.
+
+Make sure to setup the global OpenGL depth test and blending state in the correct way you need.
+
+**Parameters:**
+
+- `colorProcessing` — [Selection](/cpp-sdk/4.5/api/classes/imfusion-selection) how the copy shader should process the color fragments before writing them to the parent framebuffer.
+- `oit` — You can provide an optional [OrderIndependentTransparency](/cpp-sdk/4.5/api/classes/imfusion-gl-orderindependenttransparency) manager instance to be bound to the copy shader. If *oit* is not null semi-transparent pixels will be added to the OIT buffer instead of being written to the framebuffer.

@@ -1,0 +1,99 @@
+---
+title: "ImFusion::GL::SyncObject"
+sidebarTitle: "SyncObject"
+description: "Helper class to synchronize between multiple OpenGL contexts or a context and the application."
+---
+
+`#include <ImFusion/Core/GL/SyncObject.h>`
+
+## Overview
+
+Helper class to synchronize between multiple OpenGL contexts or a context and the application.
+
+OpenGL Sync objects provide more fine-grained control over GPU/client synchronization that GL::flush() and GL::finish(). You can insert them into the GPU command stream at any time to create a "marker" in the command stream. Then, at any time later you can check if that marker has already been reached (i.e. all commands before have been completed) and/or wait for this condition. The waiting for completion can be done either on the GPU side or on the client (CPU) side.
+
+The main use case of is to synchronize write/read access to objects shared between multiple OpenGL contexts/threads. The OpenGL specification defines a set of rules that need to be followed to ensure that changes to a share object T are visible across contexts (paraphrased/simplified, see section 5.3 "Propagating Changes to Objects" of the OpenGL 4.6 spec for the full definition):
+
+- The changes to T on context A must have completed before they can be seen on context B.
+- You must rebind T to context B after the changes have completed on context A.
+
+This can be achieved for instance like this:
+
+```cpp
+// use C++ synchronization primitives to ensure that context2() is called after context1()
+// and access to `tex` and `sync` is thread-safe if necessary!
+std::optional<GL::SyncObject> sync;
+GL::Texture tex = ...;
+
+void context1() {
+    writeToTexture(tex);
+    sync = GL::SyncObject();
+}
+
+void context2() {
+ if (sync)
+        sync->wait();
+    tex.bind();
+    readFromTex(tex);
+}
+```
+ fragment
+
+**Note:** Do not use sync objects to synchronize memory access between shader invocations on the same context. Use GL::memoryBarrier() instead, which is the much more lightweight and granular, and easier to use.
+
+**See also:** [https://www.khronos.org/opengl/wiki/Sync_Object](https://www.khronos.org/opengl/wiki/Sync_Object)
+
+## Public Types
+
+- enum [WaitResult](#waitresult) &#123; AlreadySignaled = 0x911A , TimeoutExpired = 0x911B , ConditionSatisfied = 0x911C , WaitFailed = 0x911D &#125; — Enumeration of possible return values of [waitClient()](#waitclient).
+
+## Public Member Functions
+
+- **SyncObject** () — Default constructor inserts a marker into the OpenGL command stream of the current context.
+- **SyncObject** (SyncObject &&) noexcept
+- SyncObject & **operator=** (SyncObject &&) noexcept
+- void [wait](#wait) () const — Wait on the GPU side until the underlying sync object has been signaled.
+- [WaitResult](#waitresult) [waitClient](#waitclient) ([std::chrono::nanoseconds](http://en.cppreference.com/w/cpp/chrono/duration.html) timeout) const — Wait on the client side until the underlying sync object has been signaled.
+
+## Member Enumeration Documentation
+
+### WaitResult
+
+```cpp
+enum ImFusion::GL::SyncObject::WaitResult
+```
+
+Enumeration of possible return values of [waitClient()](#waitclient).
+
+**Enumerator:**
+
+- `AlreadySignaled` — The fence was already signaled when [waitClient()](#waitclient) was called.
+- `TimeoutExpired` — The fence was not signaled until the timeout was reached.
+- `ConditionSatisfied` — The fence was signaled.
+- `WaitFailed` — An OpenGL error occurred, you can use GL::Debug::check() to query details.
+
+## Member Function Documentation
+
+### wait
+
+```cpp
+void ImFusion::GL::SyncObject::wait () const
+```
+
+Wait on the GPU side until the underlying sync object has been signaled.
+
+This function will return immediately, however current OpenGL context processing will wait until either the sync object becomes signaled or a driver-specific timeout occurred.
+
+**Warning:** This function might deadlock if called on the *same* context as the sync object was created and the corresponding command was not yet committed to the GPU. Make sure to GL::flush() the pipeline first in such situations.
+
+### waitClient
+
+```cpp
+WaitResult ImFusion::GL::SyncObject::waitClient (std::chrono::nanoseconds timeout) const
+```
+
+Wait on the client side until the underlying sync object has been signaled.
+
+This function will block until either the sync object becomes signaled or a the given *timeout* occurred.
+
+**Note:** Will use the GL_SYNC_FLUSH_COMMANDS_BIT flag internally to avoid deadlocks if called on the same context as the sync object was created.

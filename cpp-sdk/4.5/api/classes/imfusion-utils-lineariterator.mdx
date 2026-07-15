@@ -1,0 +1,67 @@
+---
+title: "ImFusion::Utils::LinearIterator< T >"
+sidebarTitle: "LinearIterator< T >"
+description: "Typed convenience iterator for quick integration into custom containers, especially if traversal requires on-the-fly evaluations."
+---
+
+`#include <ImFusion/Base/Utils/Iterators.h>`
+
+## Overview
+
+template&lt;typename T&gt;
+
+class ImFusion::Utils::LinearIterator&lt; T &gt;
+Typed convenience iterator for quick integration into custom containers, especially if traversal requires on-the-fly evaluations.
+
+Note that operator\* only returns T and not T&. For the same reason, there is no operator-&gt;. This supports pure rvalue expressions on regular dereferencing if you choose non-reference types for T.
+
+For instance, TrackingSequence::matrix(int index) computes the matrix product registration\*m_matrix[i]\*calibration, so there is no container for direct traversal. Hence, a naive implementation of TrackingSequence::begin() and TrackingSequence::end() could look like this:
+
+```cpp
+Utils::LinearIterator<mat4> TrackingSequence::begin() const
+{
+ return Utils::LinearIterator<mat4>(0, [this](int i){ return matrix(i); });
+}
+```
+ fragment
+This allows:
+
+```cpp
+TrackingSequence ts;
+for(mat4 m : ts)
+ LOG_INFO("Matrix " << m);
+```
+ fragment
+
+## Public Types
+
+- using **iterator_category** = [std::random_access_iterator_tag](http://en.cppreference.com/w/cpp/iterator/iterator_tags.html)
+- using **value_type** = T
+- using **difference_type** = ptrdiff_t
+- using **pointer** = T\*
+- using **reference** = T&
+- using **LinIt** = LinearIterator&lt;T&gt;
+
+## Public Member Functions
+
+- **LinearIterator** (int pos, [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; T(int)&gt; func)
+- **LinearIterator** (const LinIt &)=default
+- int **index** () const
+- LinIt & **operator=** (const LinIt &)=default
+- T **operator\*** () const
+- LinIt & **operator++** ()
+- LinIt **operator++** (int)
+- LinIt & **operator--** ()
+- LinIt **operator--** (int)
+- LinIt & **operator+=** (int rhs)
+- LinIt & **operator-=** (int rhs)
+- LinIt **operator+** (const LinIt &rhs)
+- LinIt **operator+** (int rhs)
+- [std::ptrdiff_t](http://en.cppreference.com/w/cpp/types/ptrdiff_t.html) **operator-** (const LinIt &rhs)
+- bool **operator==** (const LinIt &rhs)
+- bool **operator!=** (const LinIt &rhs)
+
+## Protected Attributes
+
+- int **m_pos**
+- [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; T(int)&gt; **m_func**

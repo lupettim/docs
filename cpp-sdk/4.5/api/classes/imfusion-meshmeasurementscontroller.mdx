@@ -1,0 +1,70 @@
+---
+title: "ImFusion::MeshMeasurementsController"
+sidebarTitle: "MeshMeasurementsController"
+---
+
+## Classes
+
+- struct [MeasurementPlane](/cpp-sdk/4.5/api/structs/imfusion-meshmeasurementscontroller-measurementplane)
+
+## Public Slots
+
+- void **onSave** ()
+- void **onLoad** ()
+- void **onExportToAnnotationModel** ()
+- void **onGenerateMeasurements** ()
+- void **onAddMeasurement** ()
+- void **onTranslate** ()
+- void **onRotate** ()
+- void **onUpdatePlane** ()
+- void **onTableSelectionChanged** ()
+- void **onShowPlane** ()
+- void **updateAnnotationVisibility** ()
+- void **onMatrixChanged** (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*)
+- void **onCopyPlane** ()
+- void **onPastePlane** ()
+
+## Public Member Functions
+
+- **MeshMeasurementsController** ([MeshMeasurementsAlgorithm](/cpp-sdk/4.5/api/classes/imfusion-meshmeasurementsalgorithm) \*alg)
+- void [init](#init) () override — Two-step initialization function to be implemented by subclasses.
+- void **reset** ()
+- void [onManipulatorEvent](#onmanipulatorevent) ([Manipulator](/cpp-sdk/4.5/api/classes/imfusion-manipulator) \*src, void \*eventData) override — Called when an event occurs.
+- void **onSelectedFaceIndices** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; int &gt; &indices, const [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; vec3 &gt; &)
+
+## Protected Member Functions
+
+- void **saveToXML** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &filename)
+- void **loadFromXML** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &filename)
+- void **addMeasurement** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; &contours, bool closed, [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) \*name=nullptr)
+- void **deleteMeasurement** (int id)
+- [GlPolyLine](/cpp-sdk/4.5/api/classes/imfusion-glpolyline) \* **createPolyline** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; &contours, const vec3 &color, bool closed, const mat4 &matrix, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name="")
+
+## Member Function Documentation
+
+### init
+
+```cpp
+void ImFusion::MeshMeasurementsController::init ()
+```
+
+*override, virtual*
+
+Two-step initialization function to be implemented by subclasses.
+
+This function is called by [setMainWindowBase()](/cpp-sdk/4.5/api/classes/imfusion-controller) after the [m_disp](/cpp-sdk/4.5/api/classes/imfusion-controller) and [m_main](/cpp-sdk/4.5/api/classes/imfusion-controller) attributes have been set and hence a complete initialization of the controller is possible at this point.
+
+### onManipulatorEvent
+
+```cpp
+void ImFusion::MeshMeasurementsController::onManipulatorEvent (Manipulator * src, void * eventData)
+```
+
+*override, virtual*
+
+Called when an event occurs.
+
+**Parameters:**
+
+- `src` — source of the event
+- `eventData` — pointer to event data. Zero if no event data is provided.

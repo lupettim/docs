@@ -1,0 +1,85 @@
+---
+title: "ImFusion::LabelingController"
+sidebarTitle: "LabelingController"
+description: "Controller for labeling algorithm."
+---
+
+`#include <ImFusion/Seg/LabelingController.h>`
+
+## Overview
+
+[Controller](/cpp-sdk/4.5/api/classes/imfusion-controller) for labeling algorithm.
+
+## Public Slots
+
+- void **onStartLabeling** ()
+- void **onStopLabeling** ()
+- void **onClear** ()
+- void **onUndo** ()
+- void **onCopy** ()
+- void **onShowRefineOptions** ()
+- void **onRefine** ()
+- void **onFill** ()
+- void **onFloodFill** ()
+- void **onStatistics** ()
+- void **onSetLabel** (int label)
+- void **onSetSize** (int size)
+- void **onSetTransparency** (int val)
+- void **onSetAdaptiveness** (int val)
+- void **onToggleAvoidOtherLabels** (bool flag)
+
+## Public Member Functions
+
+- **LabelingController** ([LabelingAlgorithm](/cpp-sdk/4.5/api/classes/imfusion-labelingalgorithm) \*[Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm))
+- void [init](#init) () override — Two-step initialization function to be implemented by subclasses.
+- void [onAlgorithmParametersChanged](#onalgorithmparameterschanged) () override — Callback called when the [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm)'s signalParametersChanged signal was emitted.
+- void [onAlgorithmOutputChanged](#onalgorithmoutputchanged) () override — Callback called when the [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm)'s signalOutputChanged signal was emitted.
+- void **selectionChanged** ()
+- void [onSelectedDataChanged](#onselecteddatachanged) (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data) override — Called by [MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase) in the case that the selection in the data model has changed.
+- [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \* **labelImage** () — Updates and returns the labeled data.
+- void **dataDeleted** (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data)
+- void **setLabelIndex** (int index) — Sets a specific label index in the corresponding spin box.
+
+## Member Function Documentation
+
+### init
+
+```cpp
+void ImFusion::LabelingController::init ()
+```
+
+*override, virtual*
+
+Two-step initialization function to be implemented by subclasses.
+
+This function is called by [setMainWindowBase()](/cpp-sdk/4.5/api/classes/imfusion-controller) after the [m_disp](/cpp-sdk/4.5/api/classes/imfusion-controller) and [m_main](/cpp-sdk/4.5/api/classes/imfusion-controller) attributes have been set and hence a complete initialization of the controller is possible at this point.
+
+### onAlgorithmParametersChanged
+
+```cpp
+void ImFusion::LabelingController::onAlgorithmParametersChanged ()
+```
+
+*override, virtual*
+
+Callback called when the [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm)'s signalParametersChanged signal was emitted.
+
+### onAlgorithmOutputChanged
+
+```cpp
+void ImFusion::LabelingController::onAlgorithmOutputChanged ()
+```
+
+*override, virtual*
+
+Callback called when the [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm)'s signalOutputChanged signal was emitted.
+
+### onSelectedDataChanged
+
+```cpp
+void ImFusion::LabelingController::onSelectedDataChanged (const DataList &)
+```
+
+*override, virtual*
+
+Called by [MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase) in the case that the selection in the data model has changed.

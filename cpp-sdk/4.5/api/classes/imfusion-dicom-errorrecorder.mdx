@@ -1,0 +1,73 @@
+---
+title: "ImFusion::Dicom::ErrorRecorder"
+sidebarTitle: "ErrorRecorder"
+description: "Error handling interface for the Dicom module."
+---
+
+`#include <ImFusion/Dicom/DicomError.h>`
+
+## Overview
+
+[Error](/cpp-sdk/4.5/api/structs/imfusion-dicom-error) handling interface for the [Dicom](/cpp-sdk/4.5/api/namespaces/imfusion-dicom) module.
+
+Inherit from this class if you need to handle error occurring during loading/saving DICOM data. Allows to register multiple handler callback function that will be called when an error is generated. If an error is generated while no handler callback is registered, it is stored and forwarded to the first handler that gets registered.
+
+## Public Types
+
+- using **ErrorCallback** = [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt;void(const [Error](/cpp-sdk/4.5/api/structs/imfusion-dicom-error)&)&gt; — Alias for a function to call for each error recorded.
+
+## Public Member Functions
+
+- virtual void \* [registerErrorHandler](#registererrorhandler) (ErrorCallback handler) — Registers a new handler callback function.
+- virtual void [unregisterErrorHandler](#unregistererrorhandler) (void \*handler) — Removes a previously registered handler again.
+- void \* [forwardErrors](#forwarderrors) (const [ErrorRecorder](/cpp-sdk/4.5/api/classes/imfusion-dicom-errorrecorder) \*otherRecorder) — Convenient function to forward all errors registered to this recorder to another recorder.
+- virtual void [registerError](#registererror) (const [Error](/cpp-sdk/4.5/api/structs/imfusion-dicom-error) &error) const — Sends the given error to all error handler callbacks.
+- void **registerError** ([Error::Code](/cpp-sdk/4.5/api/structs/imfusion-dicom-error) code, [Error::Type](/cpp-sdk/4.5/api/structs/imfusion-dicom-error) type, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &details, [TagProxy](/cpp-sdk/4.5/api/structs/imfusion-dicom-tagproxy) tag=[TagProxy](/cpp-sdk/4.5/api/structs/imfusion-dicom-tagproxy)()) const
+
+## Member Function Documentation
+
+### registerErrorHandler
+
+```cpp
+virtual void * ImFusion::Dicom::ErrorRecorder::registerErrorHandler (ErrorCallback handler)
+```
+
+*virtual*
+
+Registers a new handler callback function.
+
+Handlers registered first will also receive errors first. Returns a handle that can be used to unregister the callback again. All errors that occured before a handler was registered are passed to the first handler that gets registered. This means if multiple handlers are registered, the very first one might receive more errors than the following ones!
+
+### unregisterErrorHandler
+
+```cpp
+virtual void ImFusion::Dicom::ErrorRecorder::unregisterErrorHandler (void * handler)
+```
+
+*virtual*
+
+Removes a previously registered handler again.
+
+Passing a nullptr does nothing.
+
+### forwardErrors
+
+```cpp
+void * ImFusion::Dicom::ErrorRecorder::forwardErrors (const ErrorRecorder * otherRecorder)
+```
+
+Convenient function to forward all errors registered to this recorder to another recorder.
+
+The given pointer must stay valid for the life-time of this recorder!
+
+### registerError
+
+```cpp
+virtual void ImFusion::Dicom::ErrorRecorder::registerError (const Error & error) const
+```
+
+*virtual*
+
+Sends the given error to all error handler callbacks.
+
+If there is no handler registered yet, the error will be stored until the first registration of one.

@@ -1,0 +1,76 @@
+---
+title: "ImFusion::Dicom::GeneralEquipmentExtension"
+sidebarTitle: "GeneralEquipmentExtension"
+description: "General Equipment Module (PS 3.3 C.7.5) Only considers tags that are part of the GeneralEquipmentModuleDataComponent ."
+---
+
+`#include <ImFusion/Dicom/GeneralEquipmentExtension.h>`
+
+## Overview
+
+General Equipment [Module](/cpp-sdk/4.5/api/classes/imfusion-dicom-module) (PS 3.3 C.7.5) Only considers tags that are part of the [GeneralEquipmentModuleDataComponent](/cpp-sdk/4.5/api/classes/imfusion-dicom-generalequipmentmoduledatacomponent).
+
+**See also:** - [http://dicom.nema.org/medical/dicom/current/output/chtml/part03/sect_C.7.5.html](http://dicom.nema.org/medical/dicom/current/output/chtml/part03/sect_C.7.5.html)
+- [GeneralEquipmentModuleDataComponent](/cpp-sdk/4.5/api/classes/imfusion-dicom-generalequipmentmoduledatacomponent)
+
+## Classes
+
+- class [GeneralEquipment](/cpp-sdk/4.5/api/classes/imfusion-dicom-generalequipmentextension-generalequipment)
+
+## Public Member Functions
+
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [Extension](/cpp-sdk/4.5/api/classes/imfusion-dicom-extension) &gt; [clone](#clone) () const override — Return a clone this object Usually the implementation will look like this:
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [name](#name) () const override — Return a unique display string for this extension.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [Data](/cpp-sdk/4.5/api/classes/imfusion-data) &gt; &gt; [load](#load) (const [FrameDescriptor](/cpp-sdk/4.5/api/structs/imfusion-dicom-framedescriptor) &frame, [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &sis) const override — Loads the relevant tags into a [GeneralEquipmentModuleDataComponent](/cpp-sdk/4.5/api/classes/imfusion-dicom-generalequipmentmoduledatacomponent).
+- void [save](#save) (const [FrameDescriptor](/cpp-sdk/4.5/api/structs/imfusion-dicom-framedescriptor) &frame, const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &sis) const override — Save data from the given [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) to DICOM.
+
+## Member Function Documentation
+
+### clone
+
+```cpp
+std::unique_ptr < Extension > ImFusion::Dicom::GeneralEquipmentExtension::clone () const
+```
+
+*inline, override, virtual*
+
+Return a clone this object Usually the implementation will look like this:
+
+```cpp
+return std::make_unique<YOUR_CLASSNAME_HERE>(*this);
+```
+ fragment
+
+### name
+
+```cpp
+std::string ImFusion::Dicom::GeneralEquipmentExtension::name () const
+```
+
+*override, virtual*
+
+Return a unique display string for this extension.
+
+### load
+
+```cpp
+std::vector < std::unique_ptr < Data > > ImFusion::Dicom::GeneralEquipmentExtension::load (const FrameDescriptor & frame, SharedImageSet & sis) const
+```
+
+*override, virtual*
+
+Loads the relevant tags into a [GeneralEquipmentModuleDataComponent](/cpp-sdk/4.5/api/classes/imfusion-dicom-generalequipmentmoduledatacomponent).
+
+Tags are only taken from the very first frame (frame.sharedImageIndex and .sliceIndex are 0). Empty string or 0 is used for any field in the [DataComponent](/cpp-sdk/4.5/api/classes/imfusion-datacomponent) when the corresponding tag is missing in the dataset.
+
+### save
+
+```cpp
+void ImFusion::Dicom::GeneralEquipmentExtension::save (const FrameDescriptor & frame, const SharedImageSet & sis) const
+```
+
+*override, virtual*
+
+Save data from the given [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) to DICOM.
+
+This method will be called once for each frame of the [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset). Use [FrameDescriptor::iod](/cpp-sdk/4.5/api/structs/imfusion-dicom-framedescriptor) to access the DICOM tags and [FrameDescriptor::sharedImageIndex](/cpp-sdk/4.5/api/structs/imfusion-dicom-framedescriptor)/sliceIndex to figure out which frame data should be saved. The matrix parameters of frame should be ignored. Use the matrix of the [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) instead.

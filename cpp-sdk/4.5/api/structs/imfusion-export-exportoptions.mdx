@@ -1,0 +1,76 @@
+---
+title: "ImFusion::Export::ExportOptions"
+sidebarTitle: "ExportOptions"
+---
+
+## Classes
+
+- struct [FilteringOptions](/cpp-sdk/4.5/api/structs/imfusion-export-exportoptions-filteringoptions)
+- struct [LabelEncodingOptions](/cpp-sdk/4.5/api/structs/imfusion-export-exportoptions-labelencodingoptions)
+- struct [SplittingOptions](/cpp-sdk/4.5/api/structs/imfusion-export-exportoptions-splittingoptions)
+- struct [ResamplingOptions](/cpp-sdk/4.5/api/structs/imfusion-export-exportoptions-resamplingoptions)
+- struct [TransformationOptions](/cpp-sdk/4.5/api/structs/imfusion-export-exportoptions-transformationoptions)
+
+## Public Member Functions
+
+- bool **isValid** () const
+- bool **isImageFormatCompatible** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [DataDescriptor](/cpp-sdk/4.5/api/classes/imfusion-datadescriptor) \* &gt; &selectedDatas) const
+- bool **areTagFiltersValid** (const [Project](/cpp-sdk/4.5/api/classes/imfusion-project) &p) const
+- bool **areLayersValid** (const [Project](/cpp-sdk/4.5/api/classes/imfusion-project) &p) const
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+## Public Attributes
+
+- QString **outputFolder**
+- struct [ImFusion::Export::ExportOptions::FilteringOptions](/cpp-sdk/4.5/api/structs/imfusion-export-exportoptions-filteringoptions) **filteringOptions**
+- bool **exportOnlyROI** = false
+- bool **exportSingleFile** = false
+- bool **exportLabelmapOnly** = false
+- bool **splitMultiImages** = false
+- bool **applyShiftScale** = false
+- bool **preservePatientInformation** = false
+- bool **useDatasetNameAsFilename** = false
+- bool **keepOrientationY** = true
+- bool **exportLeftHandedNifti** = false
+- bool **exportOriginalPixelValueNifti** = false
+- const [IO::OutputFormat](/cpp-sdk/4.5/api/structs/imfusion-io-outputformat) \* **imageFormat** = nullptr
+- struct [ImFusion::Export::ExportOptions::LabelEncodingOptions](/cpp-sdk/4.5/api/structs/imfusion-export-exportoptions-labelencodingoptions) **labelEncoding**
+- bool **splitData** = false
+- struct [ImFusion::Export::ExportOptions::SplittingOptions](/cpp-sdk/4.5/api/structs/imfusion-export-exportoptions-splittingoptions) **splittingOptions**
+- bool **preProcessScript** = false
+- QString **preProcessingScriptPath**
+- bool **resample** = false
+- struct [ImFusion::Export::ExportOptions::ResamplingOptions](/cpp-sdk/4.5/api/structs/imfusion-export-exportoptions-resamplingoptions) **resamplingOptions**
+- bool **applyTransformation** = false
+- struct [ImFusion::Export::ExportOptions::TransformationOptions](/cpp-sdk/4.5/api/structs/imfusion-export-exportoptions-transformationoptions) **transformationOptions**
+
+## Member Function Documentation
+
+### configure
+
+```cpp
+void ImFusion::Export::ExportOptions::configure (const Properties * p)
+```
+
+*virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### configuration
+
+```cpp
+void ImFusion::Export::ExportOptions::configuration (Properties * p) const
+```
+
+*virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality

@@ -1,0 +1,54 @@
+---
+title: "ImFusion::NiftiIO"
+sidebarTitle: "NiftiIO"
+description: "Class for reading and writing Nifti images."
+---
+
+`#include <ImFusion/IO/NiftiIO.h>`
+
+## Overview
+
+Class for reading and writing Nifti images.
+
+Nifti image files have one of two extensions, .nii or .nii.gz. The file is designed to hold a time series of 3D images. For this reason this class loads the image data into a [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset), even though in many cases there is only one 3D image stored in the file.
+
+**Note:** The Nifti file format specifies image pixel coordinates in the Left-Posterior-Superior (LPS) coordinate frame while the ImFusion Suite displays images in the Right-Anterior-Superior (RAS) coordinate frame. The `NiftiIO` class reads and writes the image data as it is stored on disc, i.e. in LPS coordinates, so no tranformation is applied to to the matrix of the [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset). The `NiftiIoAlgorithm` on the other hand does transform the matrix so that the Nifti files loaded in the ImFusion Suite appear properly. For more details on coordinate systems and the Nifti file format see the following links: `https://www.slicer.org/wiki/Coordinate_systems``https://brainder.org/2012/09/23/the-nifti-file-format/`
+
+## Static Public Member Functions
+
+- static [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &gt; [readImage](#readimage) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &filename, [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) \*progress=nullptr, bool keepRasCoordinates=false) — Reads a Nifti file into a [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset).
+- static bool [writeImage](#writeimage) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &filename, const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &sis, bool convertToRasCoordinates=true) — Writes a [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) as a Nifti file.
+
+## Member Function Documentation
+
+### readImage
+
+```cpp
+std::unique_ptr < SharedImageSet > ImFusion::NiftiIO::readImage (const std::string & filename, Progress * progress = nullptr, bool keepRasCoordinates = false)
+```
+
+*static*
+
+Reads a Nifti file into a [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset).
+
+If the sform affine transformation, that is used, otherwise the qform rigid transform is used. cf. [https://brainder.org/2012/09/23/the-nifti-file-format/](https://brainder.org/2012/09/23/the-nifti-file-format/) (section on 'Orientation information') for more details
+
+**Parameters:**
+
+- `keepRasCoordinates` — Flag whether to keep the image in the Nifti RAS coordinate system or transform to LPS used by ImFusion
+
+### writeImage
+
+```cpp
+bool ImFusion::NiftiIO::writeImage (const std::string & filename, const SharedImageSet & sis, bool convertToRasCoordinates = true)
+```
+
+*static*
+
+Writes a [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) as a Nifti file.
+
+The given filename must have extension .nii or .nii.gz. The [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset)'s matrix is set as the sform affine transformation, and the rotation and translation are extracted and set asthe qform rigid transform. cf. [https://brainder.org/2012/09/23/the-nifti-file-format/](https://brainder.org/2012/09/23/the-nifti-file-format/) (section on 'Orientation information') for more details
+
+**Parameters:**
+
+- `convertToRasCoordinates` — Flag whether to keep the image in the ImFusion LPS coordinate system or transform to RAS

@@ -1,0 +1,31 @@
+---
+title: "ImFusion::GL::ProgramDecorator"
+sidebarTitle: "ProgramDecorator"
+description: "Interface to apply custom arguments to a shader program."
+---
+
+`#include <ImFusion/Core/GL/ProgramDecorator.h>`
+
+## Overview
+
+Interface to apply custom arguments to a shader program.
+
+The [GL::Program](/cpp-sdk/4.5/api/classes/imfusion-gl-program) class ensures that all added decorators are applied when the shader program is enabled.
+
+## Public Member Functions
+
+- virtual void [applyToProgram](#applytoprogram) ([Program](/cpp-sdk/4.5/api/classes/imfusion-gl-program) \*p)=0 — Interface method to apply customizations to a shader program.
+
+## Member Function Documentation
+
+### applyToProgram
+
+```cpp
+virtual void ImFusion::GL::ProgramDecorator::applyToProgram (Program * p)
+```
+
+*pure virtual*
+
+Interface method to apply customizations to a shader program.
+
+This function will be called during [Program::enable()](/cpp-sdk/4.5/api/classes/imfusion-gl-program).

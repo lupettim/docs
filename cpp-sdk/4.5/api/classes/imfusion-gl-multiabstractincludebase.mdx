@@ -1,0 +1,68 @@
+---
+title: "ImFusion::GL::MultiAbstractIncludeBase"
+sidebarTitle: "MultiAbstractIncludeBase"
+description: "Non-templated base class of MultiIncludable to implement polymorphic interface."
+---
+
+`#include <ImFusion/Core/GL/MultiAbstractInclude.h>`
+
+## Overview
+
+Non-templated base class of [MultiIncludable](/cpp-sdk/4.5/api/classes/imfusion-gl-multiincludable) to implement polymorphic interface.
+
+## Public Member Functions
+
+- [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html)(const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &)&gt; [includeCodeSubstitution](#includecodesubstitution) () const override — Optionally the abstract include can provide a function to change the shader code.
+- bool **isValid** () const
+- [Fingerprint](/cpp-sdk/4.5/api/structs/imfusion-gl-abstractinclude-fingerprint) [fingerprint](#fingerprint) () const override — Provides a finger print of the include.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [AbstractInclude](/cpp-sdk/4.5/api/classes/imfusion-gl-abstractinclude) \* &gt; [dependentIncludes](#dependentincludes) () const override — Returns a list of dependent abstract includes that need to be included as well.
+
+## Protected Member Functions
+
+- **MultiAbstractIncludeBase** ([AbstractInclude](/cpp-sdk/4.5/api/classes/imfusion-gl-abstractinclude) \*baseInclude, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &baseToken, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &replacementToken, [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; ShaderTextReplacement &gt; replacementScheme)
+- void **markInvalid** ()
+
+## Protected Attributes
+
+- [AbstractInclude](/cpp-sdk/4.5/api/classes/imfusion-gl-abstractinclude) \* **m_baseInclude**
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **m_baseToken**
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **m_replacementToken**
+- [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; ShaderTextReplacement &gt; **m_replacementScheme**
+
+## Member Function Documentation
+
+### string
+
+```cpp
+std::function < std::string (const std::string &)> ImFusion::GL::MultiAbstractIncludeBase::includeCodeSubstitution () const
+```
+
+*override, virtual*
+
+Optionally the abstract include can provide a function to change the shader code.
+
+This function will be called after the shader include has been loaded from [includePath()](/cpp-sdk/4.5/api/classes/imfusion-gl-abstractinclude) and receives the include code as argument. The function can then modify the code and is supposed to return the modified GLSL code. This can be used to include two instances of the same include by for example prefixing every uniform and function. The default implementation returns NULL and therefore does not change the code.
+
+### fingerprint
+
+```cpp
+Fingerprint ImFusion::GL::MultiAbstractIncludeBase::fingerprint () const
+```
+
+*override, virtual*
+
+Provides a finger print of the include.
+
+If two finger prints are equal this means that the two includes provide the very same code substitution. It does NOT mean that the two includes are equal. In particular the result of setArguments can be different.
+
+### dependentIncludes
+
+```cpp
+std::vector < AbstractInclude * > ImFusion::GL::MultiAbstractIncludeBase::dependentIncludes () const
+```
+
+*inline, override, virtual*
+
+Returns a list of dependent abstract includes that need to be included as well.
+
+The default implementation returns an empty vector, you may override this method to your needs. The returned vector must be empty or contain valid pointers.

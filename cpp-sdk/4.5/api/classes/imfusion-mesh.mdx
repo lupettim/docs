@@ -1,0 +1,448 @@
+---
+title: "ImFusion::Mesh"
+sidebarTitle: "Mesh"
+description: "Represents a triangle mesh."
+---
+
+`#include <ImFusion/Mesh/Mesh.h>`
+
+## Overview
+
+Represents a triangle mesh.
+
+[Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) consists of vertices and triangular faces.
+
+The other most important properties are: normals, colors and texture coordinates with correspoding texture image. These properties can be assigned to vertices or/and to halfedges (see definition of the halfedges here [https://www.graphics.rwth-aachen.de/media/openmesh_static/Documentations/OpenMesh-5.2-Documentation/a00016.html](https://www.graphics.rwth-aachen.de/media/openmesh_static/Documentations/OpenMesh-5.2-Documentation/a00016.html)). In short, if a property should be face-dependent, the halfedge properties should be used, if a property is face-independent, the vertex properties should be used.
+
+**Examples:** [ExampleMeshAlgorithm.cpp](/cpp-sdk/4.5/api/examples/example-mesh-algorithm-8cpp), and [ExampleMeshAlgorithm.h](/cpp-sdk/4.5/api/examples/example-mesh-algorithm-8h).
+
+## Classes
+
+- struct [TopologyErrors](/cpp-sdk/4.5/api/structs/imfusion-mesh-topologyerrors) — Adds a new face, consisting of the 3 existing(!) vertices specified by their indices.
+
+## Public Types
+
+- enum class [VertexNormalWeighting](#vertexnormalweighting) &#123; Uniform , Angle , Area , NelsonMax &#125; — Weighting schemes for averaging normals of faces around a vertex to obtain vertex normals.
+- using **index_type** = unsigned int — [Kind](/cpp-sdk/4.5/api/classes/imfusion-data) of data.
+
+## Public Member Functions
+
+- **Mesh** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &[name](/cpp-sdk/4.5/api/classes/imfusion-data)="") — Constructs an empty mesh.
+- **Mesh** (const Mesh &other) — Copy constructor with another mesh instance.
+- Mesh & **operator=** (const Mesh &other) — Copy assignment operator.
+- bool **vertexIndexValid** (int index) const — Checks whether index is within the vertex range.
+- bool **faceIndexValid** (int index) const — Checks whether index is within the face range.
+- size_t **numberOfVertices** () const — Number of vertices currently stored. May still include recently deleted vertices if no garbage collection has been performed.
+- size_t **numberOfFaces** () const — Number of faces currently stored. May still include recently deleted faces if no garbage collection has been performed.
+- vec3 **vertex** (int index) const
+- void **setVertex** (int index, const vec3 &pos)
+- bool **isVertexManifold** (int index) const — Check if vertex is manifold, i.e. there is maximum one outgoing boundary halfedge and there are no known duplicates.
+- vec3 **vertexNormal** (int vertexIndex) const
+- vec3 **halfedgeNormal** (int vertexIndex, int faceIndex) const
+- void **setVertexNormal** (int vertexIndex, const vec3 &normal)
+- void **setHalfedgeNormal** (int vertexIndex, int faceIndex, const vec3 &normal)
+- vec4f **vertexColor** (int vertexIndex) const
+- vec4f **halfedgeColor** (int vertexIndex, int faceIndex) const
+- void **setVertexColor** (int index, const vec4f &color)
+- void **setHalfedgeColor** (int vertexIndex, int faceIndex, const vec4f &color)
+- void **setVertexColor** (int index, const vec3f &color, double alpha=1.0)
+- void **setHalfedgeColor** (int vertexIndex, int faceIndex, const vec3f &color, double alpha=1.0)
+- vec2f **vertexTexCoord** (int vertexIndex) const
+- vec2f **halfedgeTexCoord** (int vertexIndex, int faceIndex) const
+- void **setVertexTexCoord** (int vertexIndex, const vec2f &coord)
+- void **setHalfedgeTexCoord** (int vertexIndex, int faceIndex, const vec2f &coord)
+- vec2i **halfedgeVertices** (int vertexIndex, int faceIndex) const — Get the indices of halfedge vertices, first being "from" vertex, second being "to" vertex.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; int &gt; **knownDuplicates** (int v) const — Get known duplicates of the vertex (usually there should be none, duplicate vertices are explicitely created when the loaded/created mesh has invalid topology, for example if one edge is shared by more than 2 faces).
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; int &gt; **vertexFaces** (int v, bool considerDuplicates=true) const — Get all the faces which contain an input vertex and optionally vertex duplicates.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; int &gt; **vertexNeighboringVertices** (int v, bool considerDuplicates=true) const — Get all the neighboring vertices (and optionally their duplicates) of an input vertex (and optionally its duplicates).
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; int &gt; **faceNeighboringFaces** (int v, bool considerDuplicates=true) const — Get all the neighboring faces of an input face (those that share an edge). If face vertices have duplicates, optionally the faces which contain those duplicates will also be added.
+- bool **hasVertexNormals** () const
+- void **removeVertexNormals** ()
+- bool **hasVertexColors** () const
+- void **removeVertexColors** ()
+- bool **hasVertexTexCoords** () const
+- void **removeVertexTexCoords** ()
+- bool **hasHalfedgeNormals** () const
+- void **removeHalfedgeNormals** ()
+- bool **hasHalfedgeColors** () const
+- void **removeHalfedgeColors** ()
+- bool **hasHalfedgeTexCoords** () const
+- void **removeHalfedgeTexCoords** ()
+- void [unifyHalfedgeProperties](#unifyhalfedgeproperties) (bool unifyHalfedgeNormals=true, bool unifyHalfedgeColors=true, bool unifyHalfedgeTexCoords=true, bool forceUnification=false) — Converts halfedge to vertex properties if this can be done without losing information Compares the normals, colors and texture coordinates between all halfedges belonging to each vertex.
+- vec3i **faceVertices** (int index) const — Returns a list of all vertices associated with the given face.
+- vec3 [faceNormal](#facenormal) (int faceIndex) const — Returns the normal of the given face.
+- void [setFaceLabel](#setfacelabel) (int face, unsigned int label, bool createTexture=true) — Set label of the face.
+- void [setFaceLabels](#setfacelabels) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; unsigned int &gt; &labels) — Set label of all faces.
+- unsigned int [faceLabel](#facelabel) (int face) const — Get label of the face.
+- bool **hasFaceLabels** () const — Returns true if mesh contains face labels.
+- void **requestFaceLabels** () — If faces have no labels, add them and set labels of all faces to 0.
+- void [setVertexLabel](#setvertexlabel) (int vertex, unsigned int label) — Set label of the vertex.
+- unsigned int [vertexLabel](#vertexlabel) (int vertex) const — Get label of the vertex.
+- bool **hasVertexLabels** () const — Returns true if mesh contains vertex labels.
+- void **requestVertexLabels** () — If vertices have no labels, set labels of all vertices to 0.
+- int **addVertex** (const vec3 &position) — Adds a new vertex at the given position. Returns index of newly added vertex.
+- int **addFace** (const vec3i &vertexIndices, bool force=true, [TopologyErrors](/cpp-sdk/4.5/api/structs/imfusion-mesh-topologyerrors) \*errorsOut=nullptr, [std::map](http://en.cppreference.com/w/cpp/container/map.html)&lt; int, int &gt; \*inputToAddedVertexIndices=nullptr)
+- bool [removeFace](#removeface) (int index, bool removeIsolatedVertices=false) — Removes a single face from the mesh, reducing the number of faces by 1 (calls garbage collection).
+- void [removeFaces](#removefaces) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; int &gt; &faces, bool removeIsolatedVertices=false) — Remove faces from face list.
+- void **removeVertices** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; int &gt; &vertices, bool removeIsolatedVertices=false) — Remove vertices from vertex list.
+- const vec3 \* **verticesPointer** () const
+- const vec3 \* **vertexNormalsPointer** () const
+- const vec4f \* **vertexColorsPointer** () const
+- const vec2f \* **vertexTexCoordsPointer** () const
+- [TriMesh](/cpp-sdk/4.5/api/classes/imfusion-trimesh) & **triMesh** () — When changing underlying [TriMesh](/cpp-sdk/4.5/api/classes/imfusion-trimesh), the user is responsible for emitting signalMeshChanged signal.
+- const [TriMesh](/cpp-sdk/4.5/api/classes/imfusion-trimesh) & **triMesh** () const
+- [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) \* **texture** () const — Returns the mesh texture image.
+- [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) \* **vertexLabelTexture** () const — Returns the texture image used for colors of mesh vertex labels.
+- [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) \* **faceLabelTexture** () const — Returns the texture image used for colors of mesh face labels.
+- void **setTexture** ([std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) &gt; tex) — Set mesh texture. The image ownership is transferred to the mesh class.
+- void **setVertexLabelTexture** ([std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) &gt; tex) — Set texture for mesh vertex labels. Should have width equal to the number of labels, and height equal to 1. The image ownership is transferred to the mesh class.
+- void **setFaceLabelTexture** ([std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) &gt; tex) — Set texture for mesh face labels. Should have width equal to the number of labels, and height equal to 1. The image ownership is transferred to the mesh class.
+- void **setFilename** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &[name](/cpp-sdk/4.5/api/classes/imfusion-data)) — Sets a filename from where this mesh can be loaded.
+- const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) & **filename** () const — Returns the filename from where this mesh can be loaded or an empty string if it's not on disk.
+- const mat4 & **matrixRef** () const
+- void [requestRenderingBuffers](#requestrenderingbuffers) (bool useFaceNormals, [Utils::OutputEigenVectorWrapper](/cpp-sdk/4.5/api/structs/imfusion-utils-outputeigenvectorwrapper)&lt; double, 3 &gt; positions, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3i &gt; &triangleIndices, [Utils::OptionalOutputEigenVectorWrapper](/cpp-sdk/4.5/api/structs/imfusion-utils-optionaloutputeigenvectorwrapper)&lt; double, 3 &gt; normals=&#123;&#125;, [Utils::OptionalOutputEigenVectorWrapper](/cpp-sdk/4.5/api/structs/imfusion-utils-optionaloutputeigenvectorwrapper)&lt; float, 4 &gt; colors=&#123;&#125;, [Utils::OptionalOutputEigenVectorWrapper](/cpp-sdk/4.5/api/structs/imfusion-utils-optionaloutputeigenvectorwrapper)&lt; float, 2 &gt; texCoords=&#123;&#125;, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; uint32_t &gt; \*indices=nullptr, bool faceIndices=true, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; uint32_t &gt; \*labels=nullptr, bool faceLabels=true) const — Copies the mesh data to arrays suitable for OpenGl vertex buffers.
+- void [requestRenderingBuffers2](#requestrenderingbuffers2) (bool useFaceNormals, [Utils::OptionalOutputEigenVectorWrapper](/cpp-sdk/4.5/api/structs/imfusion-utils-optionaloutputeigenvectorwrapper)&lt; double, 3 &gt; positions, [Utils::OptionalOutputEigenVectorWrapper](/cpp-sdk/4.5/api/structs/imfusion-utils-optionaloutputeigenvectorwrapper)&lt; int, 3 &gt; triangleIndices, [Utils::OptionalOutputEigenVectorWrapper](/cpp-sdk/4.5/api/structs/imfusion-utils-optionaloutputeigenvectorwrapper)&lt; double, 3 &gt; normals=&#123;&#125;, [Utils::OptionalOutputEigenVectorWrapper](/cpp-sdk/4.5/api/structs/imfusion-utils-optionaloutputeigenvectorwrapper)&lt; float, 4 &gt; colors=&#123;&#125;, [Utils::OptionalOutputEigenVectorWrapper](/cpp-sdk/4.5/api/structs/imfusion-utils-optionaloutputeigenvectorwrapper)&lt; float, 2 &gt; texCoords=&#123;&#125;, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; uint32_t &gt; \*faceIndices=nullptr, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; uint32_t &gt; \*faceLabels=nullptr, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; uint32_t &gt; \*vertexIndices=nullptr, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; uint32_t &gt; \*vertexLabels=nullptr) const — More flexible version of [requestRenderingBuffers()](#requestrenderingbuffers).
+- void [requestIndexedBuffers](#requestindexedbuffers) ([std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; &positions, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3i &gt; &triangleIndices, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; \*normals=nullptr, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec4f &gt; \*colors=nullptr, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec2f &gt; \*texCoords=nullptr, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3i &gt; \*triangleNormals=nullptr, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3i &gt; \*triangleColors=nullptr, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3i &gt; \*triangleTexCoords=nullptr) const — Copies the mesh data to arrays without performing type conversions.
+- void [beginUpdate](#beginupdate) () — After this call no signals will be emitted if the mesh data is changed.
+- void **endUpdate** () — End update and send mesh changed signal.
+- bool [signalsBlocked](#signalsblocked) () const — Returns true if the signals are blocked.
+- void **emitMeshChangedSignal** ()
+- void **garbageCollection** ()
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [CustomPropertyBase](/cpp-sdk/4.5/api/classes/imfusion-custompropertybase) &gt; &gt; & **customVertexProperties** () const
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [CustomPropertyBase](/cpp-sdk/4.5/api/classes/imfusion-custompropertybase) &gt; &gt; & **customFaceProperties** () const
+- [CustomVertexProperty](/cpp-sdk/4.5/api/classes/imfusion-customvertexproperty)&lt; T &gt; \* **addVertexProperty** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &[name](/cpp-sdk/4.5/api/classes/imfusion-data)) — Wraps an existing property on the underlying [TriMesh](/cpp-sdk/4.5/api/classes/imfusion-trimesh) or creates a new one.
+- [CustomVertexProperty](/cpp-sdk/4.5/api/classes/imfusion-customvertexproperty)&lt; T &gt; \* **getVertexProperty** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &[name](/cpp-sdk/4.5/api/classes/imfusion-data)) — Retrieves a custom property with a given name.
+- [CustomFaceProperty](/cpp-sdk/4.5/api/classes/imfusion-customfaceproperty)&lt; T &gt; \* **addFaceProperty** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &[name](/cpp-sdk/4.5/api/classes/imfusion-data)) — Wraps an existing property on the underlying [TriMesh](/cpp-sdk/4.5/api/classes/imfusion-trimesh) or creates a new one.
+- [CustomFaceProperty](/cpp-sdk/4.5/api/classes/imfusion-customfaceproperty)&lt; T &gt; \* **getFaceProperty** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &[name](/cpp-sdk/4.5/api/classes/imfusion-data)) — Retrieves a custom property with a given name.
+- bool **removeVertexProperty** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &[name](/cpp-sdk/4.5/api/classes/imfusion-data))
+- bool **removeFaceProperty** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &[name](/cpp-sdk/4.5/api/classes/imfusion-data))
+- void [createDefaultLabelTexture](#createdefaultlabeltexture) (bool faceLabels, unsigned int numLabels=100u) — Create a default texture for vertex or face labels (depending on the input flag 'faceLabels').
+
+## Static Public Member Functions
+
+- static [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; Mesh &gt; [createFromArrays](#createfromarrays) (const [Utils::EigenVectorWrapper](/cpp-sdk/4.5/api/structs/imfusion-utils-eigenvectorwrapper)&lt; double, 3 &gt; &vertices, const [Utils::OptionalEigenVectorWrapper](/cpp-sdk/4.5/api/structs/imfusion-utils-optionaleigenvectorwrapper)&lt; double, 3 &gt; &normals, const [Utils::OptionalEigenVectorWrapper](/cpp-sdk/4.5/api/structs/imfusion-utils-optionaleigenvectorwrapper)&lt; float, 3 &gt; &colors, const [Utils::OptionalEigenVectorWrapper](/cpp-sdk/4.5/api/structs/imfusion-utils-optionaleigenvectorwrapper)&lt; float, 2 &gt; &texCoords, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3i &gt; &triangleVertices, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3i &gt; &triangleNormals, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3i &gt; &triangleColors, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3i &gt; &triangleTexCoords) — Clears the current mesh, then constructs a new one from the given data vectors.
+
+## Public Attributes
+
+- Signal **signalMeshChanged** — Signal emitted when the mesh data has changed.
+
+## Methods implementing the Data interface
+
+- [Kind](/cpp-sdk/4.5/api/classes/imfusion-data) [kind](#kind) () const override — Return the kind of this data.
+- [Geometry::AlignedBox](/cpp-sdk/4.5/api/classes/imfusion-geometry-alignedbox) [bounds](#bounds) () const override — Returns the axis-aligned bounding box of this data in world space.
+- [Pose::TransformationConvention](/cpp-sdk/4.5/api/namespaces/imfusion-pose) [matrixConvention](#matrixconvention) () const override — Matrices of meshes map to world coordinate system.
+- void [setMatrix](#setmatrix) (const mat4 &m) override — Sets tha matrix of this data and sets the bounding box dirty.
+- bool [isAnnotationType](#isannotationtype) () const override — Returns true since the object has a dedicated [GlMesh](/cpp-sdk/4.5/api/classes/imfusion-glmesh) annotation.
+
+## Iterators
+
+- VertexIterator [v_begin](#v-begin) ()
+- VertexIterator **v_end** ()
+- FaceIterator **f_begin** () — Iterator over all faces.
+- FaceIterator **f_end** ()
+- VertexVertexIterator **vv_begin** (unsigned int id) — Iterator over neighboring vertices of a vertex.
+- VertexVertexIterator **vv_end** (unsigned int id)
+- VertexFaceIterator **vf_begin** (unsigned int id) — Iterator over faces which contain a provided vertex.
+- VertexFaceIterator **vf_end** (unsigned int id)
+- FaceVertexIterator **fv_begin** (unsigned int id) — Iterator over vertex which are part of a provided face.
+- FaceVertexIterator **fv_end** (unsigned int id)
+- FaceFaceIterator **ff_begin** (unsigned int id) — Iterator over neighboring (sharing an edge) faces of a face.
+- FaceFaceIterator **ff_end** (unsigned int id)
+
+## Processing
+
+- void **computeVertexNormals** ([VertexNormalWeighting](#vertexnormalweighting) weighting=VertexNormalWeighting::NelsonMax) — Compute vertex normals as weighted average of normals of faces around a vertex. Replaces previous normals.
+- void **computeFaceNormals** () — Compute face normals. Replaces previous normals.
+
+## Information about the mesh
+
+- [Geometry::AlignedBox](/cpp-sdk/4.5/api/classes/imfusion-geometry-alignedbox) **boundsLocal** () const — Returns the axis-aligned bounding box of this data in local space.
+- bool [isManifold](#ismanifold) () const — Checks whether mesh is manifold, i.e.
+- bool **isClosed** () const — Checks whether mesh is closed, i.e. there are no boundary edges and no isolated vertices.
+- bool **isSelfIntersecting** () const — Checks whether mesh is self intersecting, i.e. there are triangles that intersect each other.
+- bool [isWatertight](#iswatertight) (bool checkSelfIntersection) const — Checks whether mesh is watertight, i.e.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::list](http://en.cppreference.com/w/cpp/container/list.html)&lt; [std::pair](http://en.cppreference.com/w/cpp/utility/pair.html)&lt; int, int &gt; &gt; &gt; [listHoles](#listholes) () const — Returns holes in the mesh The returned vector contains for every hole a list of its boundary edges in sequential order.
+
+## Member Enumeration Documentation
+
+### VertexNormalWeighting
+
+```cpp
+enum class ImFusion::Mesh::VertexNormalWeighting
+```
+
+*strong*
+
+Weighting schemes for averaging normals of faces around a vertex to obtain vertex normals.
+
+**Enumerator:**
+
+- `Uniform` — Face normals are weighted uniformly (no actual weighting is applied).
+- `Angle` — Face normals are weighted by the triangle's interior angle at the vertex.
+- `Area` — Face normals are weighted by the triangle's area.
+- `NelsonMax` — Face normals are weighted as proposed by Nelson Max in "Weights for Computing Vertex Normals from Facet Normals", Journal of Graphics Tools, 4(2) (1999) by the sine of the angle between the two edges sharing the vertex divided by the product of the lengths of the two edges.
+
+## Member Function Documentation
+
+### createFromArrays
+
+```cpp
+std::unique_ptr < Mesh > ImFusion::Mesh::createFromArrays (const Utils::EigenVectorWrapper < double, 3 > & vertices, const Utils::OptionalEigenVectorWrapper < double, 3 > & normals, const Utils::OptionalEigenVectorWrapper < float, 3 > & colors, const Utils::OptionalEigenVectorWrapper < float, 2 > & texCoords, const std::vector < vec3i > & triangleVertices, const std::vector < vec3i > & triangleNormals, const std::vector < vec3i > & triangleColors, const std::vector < vec3i > & triangleTexCoords)
+```
+
+*static*
+
+Clears the current mesh, then constructs a new one from the given data vectors.
+
+Will avoid duplicate vertices and store properties in half-edges if appropriate. Half-edge properties are used whenever the size of the property vector is not equal to the number of vertices.
+
+**Parameters:**
+
+- `vertices` — Vertices
+- `normals` — Vertex normals (or halfedge normals if the size of *normals* is not equal to the size of *vertices*)
+- `colors` — Vertex colors (or halfedge colors if the size of *colors* is not equal to the size of *vertices*)
+- `texCoords` — Vertex texture coordinates (or halfedge texture coordinate if the size of *texCoords* is not equal to the size of *vertices*)
+- `triangleVertices` — Vertex indices from *vertices* that build up the triangles
+- `triangleNormals` — Indices from *normals* that specify the normal for each vertex that the triangle is built from (note that this has nothing to do with triangle normal). Size must be equal to *triangleVertices*
+- `triangleColors` — Indices from *colors* that specify the color for each vertex that the triangle is built from (note that this has nothing to do with triangle color). Size must be equal to *triangleVertices*
+- `triangleTexCoords` — Indices from *texCoords* that specify the texture coordinates for each vertex that the triangle is built from (note that this has nothing to do with triangle texture coordinate). Size must be equal to *triangleVertices*
+
+### kind
+
+```cpp
+Kind ImFusion::Mesh::kind () const
+```
+
+*override, virtual*
+
+Return the kind of this data.
+
+### bounds
+
+```cpp
+Geometry::AlignedBox ImFusion::Mesh::bounds () const
+```
+
+*override, virtual*
+
+Returns the axis-aligned bounding box of this data in world space.
+
+### matrixConvention
+
+```cpp
+Pose::TransformationConvention ImFusion::Mesh::matrixConvention () const
+```
+
+*inline, override, virtual*
+
+Matrices of meshes map to world coordinate system.
+
+### setMatrix
+
+```cpp
+void ImFusion::Mesh::setMatrix (const mat4 & m)
+```
+
+*override, virtual*
+
+Sets tha matrix of this data and sets the bounding box dirty.
+
+### isAnnotationType
+
+```cpp
+bool ImFusion::Mesh::isAnnotationType () const
+```
+
+*inline, override, virtual*
+
+Returns true since the object has a dedicated [GlMesh](/cpp-sdk/4.5/api/classes/imfusion-glmesh) annotation.
+
+### v_begin
+
+```cpp
+VertexIterator ImFusion::Mesh::v_begin ()
+```
+
+Iterator over all vertices
+
+### isManifold
+
+```cpp
+bool ImFusion::Mesh::isManifold () const
+```
+
+Checks whether mesh is manifold, i.e.
+
+all vertices are manifold (the faces incident to a vertex form a closed or an open fan) and there are no known vertex duplicates
+
+### isWatertight
+
+```cpp
+bool ImFusion::Mesh::isWatertight (bool checkSelfIntersection) const
+```
+
+Checks whether mesh is watertight, i.e.
+
+it is manifold and closed and not self-intersecting if checkSelfIntersection is set to false, it will be assumed that the mesh is not self-intersecting (this significantly speeds up the execution)
+
+### listHoles
+
+```cpp
+std::vector < std::list < std::pair < int, int > > > ImFusion::Mesh::listHoles () const
+```
+
+Returns holes in the mesh The returned vector contains for every hole a list of its boundary edges in sequential order.
+
+An edge is represented by the indices of the vertices it connects.
+
+### unifyHalfedgeProperties
+
+```cpp
+void ImFusion::Mesh::unifyHalfedgeProperties (bool unifyHalfedgeNormals = true, bool unifyHalfedgeColors = true, bool unifyHalfedgeTexCoords = true, bool forceUnification = false)
+```
+
+Converts halfedge to vertex properties if this can be done without losing information Compares the normals, colors and texture coordinates between all halfedges belonging to each vertex.
+
+If a property does not have a single case where different halfedges on the same vertex have different values, it is moved to per-vertex storage. Already existing per-vertex data is removed if this happens. If forceUnification is true, the properties will be unified even if their values are different for different halfedges of the same vertex: colors and normals are averaged, while tex coordinate gets the value of one of the halfedges
+
+### faceNormal
+
+```cpp
+vec3 ImFusion::Mesh::faceNormal (int faceIndex) const
+```
+
+Returns the normal of the given face.
+
+If the mesh does not have stored face normals, the value is computed from vertex positions (but still not stored afterwards). If in need of normals for all faces, consider using TriMesh::update_face_normals instead of looping over this method.
+
+### setFaceLabel
+
+```cpp
+void ImFusion::Mesh::setFaceLabel (int face, unsigned int label, bool createTexture = true)
+```
+
+Set label of the face.
+
+If there is no texture for face label colors, a default one will be created. If the existing texture for face label colors does not have an entry for a new label, the texture will be reset with a default one of appropriate size.
+
+### setFaceLabels
+
+```cpp
+void ImFusion::Mesh::setFaceLabels (const std::vector < unsigned int > & labels)
+```
+
+Set label of all faces.
+
+If there is no texture for face label colors, a default one will be created. If the existing texture for face label colors does not have an entry for a new label, the texture will be reset with a default one of appropriate size.
+
+### faceLabel
+
+```cpp
+unsigned int ImFusion::Mesh::faceLabel (int face) const
+```
+
+Get label of the face.
+
+Returns 0 if face index is invalid or if face does not contain label property. Use hasFaceLabels() to query the existence of face labels
+
+### setVertexLabel
+
+```cpp
+void ImFusion::Mesh::setVertexLabel (int vertex, unsigned int label)
+```
+
+Set label of the vertex.
+
+If there is no texture for vertex label colors, a default one will be created. If the existing texture for vertex label colors does not have an entry for a new label, the texture will be reset with a default one of appropriate size. Label must not be negative
+
+### vertexLabel
+
+```cpp
+unsigned int ImFusion::Mesh::vertexLabel (int vertex) const
+```
+
+Get label of the vertex.
+
+Returns 0 if vertex index is invalid or if vertex does not contain label property. Use hasVertexLabels() to query the existence of vertex labels
+
+### removeFace
+
+```cpp
+bool ImFusion::Mesh::removeFace (int index, bool removeIsolatedVertices = false)
+```
+
+Removes a single face from the mesh, reducing the number of faces by 1 (calls garbage collection).
+
+Equivalent to deleting a triangleVertices entry in the old [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) class.
+
+### removeFaces
+
+```cpp
+void ImFusion::Mesh::removeFaces (const std::vector < int > & faces, bool removeIsolatedVertices = false)
+```
+
+Remove faces from face list.
+
+Does not remove any vertices by default. When removing multiple faces this method is much more efficient than calling removeFace for every single face
+
+### requestRenderingBuffers
+
+```cpp
+void ImFusion::Mesh::requestRenderingBuffers (bool useFaceNormals, Utils::OutputEigenVectorWrapper < double, 3 > positions, std::vector < vec3i > & triangleIndices, Utils::OptionalOutputEigenVectorWrapper < double, 3 > normals = {}, Utils::OptionalOutputEigenVectorWrapper < float, 4 > colors = {}, Utils::OptionalOutputEigenVectorWrapper < float, 2 > texCoords = {}, std::vector < uint32_t > * indices = nullptr, bool faceIndices = true, std::vector < uint32_t > * labels = nullptr, bool faceLabels = true) const
+```
+
+Copies the mesh data to arrays suitable for OpenGl vertex buffers.
+
+If per-halfedge storage is used, the output data will contain appropriate duplicate vertices. If the mesh does not have colors or texture coordinates, the corresponding vectors will be empty. If input colors are valid (i.e has the size of mesh vertices), it will be re-arranged depending on whether the vertices are duplicated or not. If input colors are invalid (wrong size), they will be replaced by the colors of the underlying mesh (if present) One entry of indices corresponds to the index of the face containing respective vertex, or index of the vertex (depending on faceIndices flag). Needed for index picking operation. One entry of labels corresponds to the label of the face containing respective vertex, or label of the vertex (depending on faceLabels flag)
+
+### requestRenderingBuffers2
+
+```cpp
+void ImFusion::Mesh::requestRenderingBuffers2 (bool useFaceNormals, Utils::OptionalOutputEigenVectorWrapper < double, 3 > positions, Utils::OptionalOutputEigenVectorWrapper < int, 3 > triangleIndices, Utils::OptionalOutputEigenVectorWrapper < double, 3 > normals = {}, Utils::OptionalOutputEigenVectorWrapper < float, 4 > colors = {}, Utils::OptionalOutputEigenVectorWrapper < float, 2 > texCoords = {}, std::vector < uint32_t > * faceIndices = nullptr, std::vector < uint32_t > * faceLabels = nullptr, std::vector < uint32_t > * vertexIndices = nullptr, std::vector < uint32_t > * vertexLabels = nullptr) const
+```
+
+More flexible version of [requestRenderingBuffers()](#requestrenderingbuffers).
+
+Copies the mesh data into the provided buffers for upload to OpenGL.
+
+### requestIndexedBuffers
+
+```cpp
+void ImFusion::Mesh::requestIndexedBuffers (std::vector < vec3 > & positions, std::vector < vec3i > & triangleIndices, std::vector < vec3 > * normals = nullptr, std::vector < vec4f > * colors = nullptr, std::vector < vec2f > * texCoords = nullptr, std::vector < vec3i > * triangleNormals = nullptr, std::vector < vec3i > * triangleColors = nullptr, std::vector < vec3i > * triangleTexCoords = nullptr) const
+```
+
+Copies the mesh data to arrays without performing type conversions.
+
+The output will use appropriate index buffers to state what goes where. If the mesh does not have colors or texture coordinates, the corresponding vectors will be empty.
+
+### beginUpdate
+
+```cpp
+void ImFusion::Mesh::beginUpdate ()
+```
+
+After this call no signals will be emitted if the mesh data is changed.
+
+This is useful if many update operations must be performed but it is not desired that the signal is emitted for every update. When done with the update operations call endUpdate to emit a single update signal
+
+### signalsBlocked
+
+```cpp
+bool ImFusion::Mesh::signalsBlocked () const
+```
+
+*inline*
+
+Returns true if the signals are blocked.
+
+Useful to know whether the signals were blocked before calling beginUpdate - endUpdate. User might want not to call endUpdate, so that the signals remain blocked
+
+### createDefaultLabelTexture
+
+```cpp
+void ImFusion::Mesh::createDefaultLabelTexture (bool faceLabels, unsigned int numLabels = 100u)
+```
+
+Create a default texture for vertex or face labels (depending on the input flag 'faceLabels').
+
+Size of the texture is defined by input parameter 'numLabels'

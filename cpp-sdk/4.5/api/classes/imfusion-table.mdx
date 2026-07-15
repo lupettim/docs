@@ -1,0 +1,57 @@
+---
+title: "ImFusion::Table"
+sidebarTitle: "Table"
+description: "A 2D table with named columns, containing strings and numbers."
+---
+
+`#include <ImFusion/Base/Table.h>`
+
+## Overview
+
+A 2D table with named columns, containing strings and numbers.
+
+The main purpose of this class is to support seamless creation of arbitrary statistics, and then export the results as a text or CSV file. The data is added row-by-row; if add is called with the same name, a new row is started. Strings and numerical data can be mixed in a named column, all numerical values per column can be separately queried, and will also be converted to strings upon insertion with a call to add.
+
+## Public Types
+
+- using **ValueType** = [std::variant](http://en.cppreference.com/w/cpp/utility/variant.html)&lt;[std::string](http://en.cppreference.com/w/cpp/string/basic_string.html), double&gt;
+
+## Public Member Functions
+
+- [Table](#table) (bool useComma=false, bool fillRows=true) — Constructor with optional flag to use comma as decimal separator.
+- **Table** (const Table &)
+- [Table](#table) & **operator=** (const [Table](#table) &)
+- void **add** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &value) — Add a string value to a column.
+- void **add** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name, double value) — Add a number to a column.
+- bool [write](#write) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &filename, bool append=false, char delimiter=';') const — Export as CSV, optionally appending values to an existing file.
+- bool **read** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &filename, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; &columns=&#123;&#125;) — Imports from CSV.
+- int **rows** () const — Return the number of data rows in the table (excluding the header).
+- int **cols** () const — Return the number of columns in the table.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **colName** (int which) const — Return the name of a column.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; **numData** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name) const — Return numerical data for a column if available.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **strData** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name) const — Return string data for a column if available.
+- [std::unordered_map](http://en.cppreference.com/w/cpp/container/unordered_map.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html), ValueType &gt; **row** (int which) const — Return data for a row of the [Table](/cpp-sdk/4.5/api/classes/imfusion-table).
+
+## Constructor & Destructor Documentation
+
+### Table
+
+```cpp
+ImFusion::Table::Table (bool useComma = false, bool fillRows = true)
+```
+
+Constructor with optional flag to use comma as decimal separator.
+
+If the useComma flag is set true, German locale is imbued, otherwise the internally used stringstream instances are not modified. The fillRows flag allows to omit certain columns, results are always added in the last available row (useful for logging applications).
+
+## Member Function Documentation
+
+### write
+
+```cpp
+bool ImFusion::Table::write (const std::string & filename, bool append = false, char delimiter = ';') const
+```
+
+Export as CSV, optionally appending values to an existing file.
+
+The append flag will check whether the file exists, and in that case only write the data rows, not the header. It is not checked whether the header columns are matching. A different column delimiter character may be provided to this method (semicolon is default). True is returned upon successful writing.

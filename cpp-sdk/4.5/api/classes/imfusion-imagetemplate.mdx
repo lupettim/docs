@@ -1,0 +1,82 @@
+---
+title: "ImFusion::ImageTemplate"
+sidebarTitle: "ImageTemplate"
+description: "Class representing a template for extracting image content based on named reference regions."
+---
+
+`#include <ImFusion/Base/ImageTemplate.h>`
+
+## Overview
+
+Class representing a template for extracting image content based on named reference regions.
+
+## Classes
+
+- struct [Region](/cpp-sdk/4.5/api/structs/imfusion-imagetemplate-region)
+
+## Public Types
+
+- enum class [Metric](#metric) &#123; **L1** , Welsch , Cauchy &#125; — Define the metric used to measure pixel distance. [Image](/cpp-sdk/4.5/api/classes/imfusion-image) values (x and y) are scaled in range [0, 1] and s is the scale.
+
+## Public Member Functions
+
+- **ImageTemplate** (const ImageTemplate &other)
+- **ImageTemplate** ([Metric](#metric) metric=Metric::L1, double scale=1.0) — Creates an empty template.
+- **ImageTemplate** ([std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) &gt; image, [Metric](#metric) metric=Metric::L1, double scale=1.0) — Creates a new template from *image*.
+- bool **operator==** (const ImageTemplate &other) const — Compares name, regions, and the pointer value for image (does not do actual image comparison).
+- void **load** ([std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &gt; sis) — Loads the template from a [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) (with name and regions).
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &gt; **save** () const — Saves the template to a [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) (with name and regions).
+- double [match](#match) (const [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) &targetImage) const — Matches the image template onto the target image.
+- double [matchRegion](#matchregion) (const [Region](/cpp-sdk/4.5/api/structs/imfusion-imagetemplate-region) &region, const [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) &targetImage) const — Matches the image template onto the target image.
+- void **addRegion** ([Region](/cpp-sdk/4.5/api/structs/imfusion-imagetemplate-region) region)
+- void **setMetric** ([Metric](#metric) metric)
+- void **setMetricScale** (double scale)
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; ImageTemplate &gt; **clone** () const
+
+## Public Attributes
+
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **m_name**
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) &gt; **m_image**
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Region](/cpp-sdk/4.5/api/structs/imfusion-imagetemplate-region) &gt; **m_regions**
+- [Metric](#metric) **m_metric**
+- double **m_scale**
+
+## Member Enumeration Documentation
+
+### Metric
+
+```cpp
+enum class ImFusion::ImageTemplate::Metric
+```
+
+*strong*
+
+Define the metric used to measure pixel distance. [Image](/cpp-sdk/4.5/api/classes/imfusion-image) values (x and y) are scaled in range [0, 1] and s is the scale.
+
+**Enumerator:**
+
+- `Welsch` — d(x, y) = |x - y|
+- `Cauchy` — d(x, y) = 1 - exp(-1/2 \* ((x-y)/s)^2)
+d(x, y) = log(1/2 \* ((x-y)/s)^2 + 1)
+
+## Member Function Documentation
+
+### match
+
+```cpp
+double ImFusion::ImageTemplate::match (const MemImage & targetImage) const
+```
+
+Matches the image template onto the target image.
+
+Returns the similarity between each region in the template and the same region in the target. Both images must have the same size (otherwise, 0 is returned).
+
+### matchRegion
+
+```cpp
+double ImFusion::ImageTemplate::matchRegion (const Region & region, const MemImage & targetImage) const
+```
+
+Matches the image template onto the target image.
+
+Returns the similarity between the two only in the region passed as argument. Both images must have the same size (otherwise, 0 is returned).

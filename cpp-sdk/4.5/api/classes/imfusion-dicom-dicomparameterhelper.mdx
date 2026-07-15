@@ -1,0 +1,18 @@
+---
+title: "ImFusion::Dicom::DicomParameterHelper"
+sidebarTitle: "DicomParameterHelper"
+description: "Helper functions to load and save all DicomParameters of a Configurable ."
+---
+
+`#include <ImFusion/Dicom/DicomParameter.h>`
+
+## Overview
+
+Helper functions to load and save all DicomParameters of a [Configurable](/cpp-sdk/4.5/api/classes/imfusion-configurable).
+
+This only derives from [Configurable](/cpp-sdk/4.5/api/classes/imfusion-configurable) to access the protected [Param](/cpp-sdk/4.5/api/structs/imfusion-configurable-param) struct. Can only be used from a class that derives from [Configurable](/cpp-sdk/4.5/api/classes/imfusion-configurable).
+
+## Static Public Member Functions
+
+- static void **loadFromDicom** (DcmItem &dataset, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Configurable::Param](/cpp-sdk/4.5/api/structs/imfusion-configurable-param) &gt; &parameters)
+- static void **saveToDicom** (DcmItem &dataset, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Configurable::Param](/cpp-sdk/4.5/api/structs/imfusion-configurable-param) &gt; &parameters)

@@ -1,0 +1,45 @@
+---
+title: "ImFusion::Seg::LinearReferenceShape"
+sidebarTitle: "LinearReferenceShape"
+description: "Class defining a reference shape for which the conversion between local and world coordinates is a linear map (matrix multiplication + vector)."
+---
+
+`#include <ImFusion/Seg/ReferenceShape.h>`
+
+## Overview
+
+Class defining a reference shape for which the conversion between local and world coordinates is a linear map (matrix multiplication + vector).
+
+## Public Member Functions
+
+- vec3 [worldToLocal](#worldtolocal) (vec3 p) const override
+- vec3 [localToWorld](#localtoworld) (vec3 p) const override
+
+## Protected Member Functions
+
+- void **setWorldToLocalMatrix** (const mat4 &mat)
+- void **setLocalToWorldMatrix** (const mat4 &mat)
+
+## Protected Attributes
+
+- vec3 **m_origin** = &#123;0, 0, 0&#125;
+- mat4 **m_worldToLocalMatrix** = mat4::Identity()
+- mat4 **m_localToWorldMatrix** = mat4::Identity()
+
+## Member Function Documentation
+
+### worldToLocal
+
+```cpp
+vec3 ImFusion::Seg::LinearReferenceShape::worldToLocal (vec3 p) const
+```
+
+*override, virtual*
+
+### localToWorld
+
+```cpp
+vec3 ImFusion::Seg::LinearReferenceShape::localToWorld (vec3 p) const
+```
+
+*override, virtual*

@@ -1,0 +1,84 @@
+---
+title: "ImFusion::Container::SmallVector< T, N >"
+sidebarTitle: "SmallVector< T, N >"
+description: "A small-buffer-optimized variant of std::vector that stores up to N elements without heap allocation."
+---
+
+`#include <ImFusion/Core/SmallVector.h>`
+
+## Overview
+
+template&lt;typename T, [std::size_t](http://en.cppreference.com/w/cpp/types/size_t.html) N = 8&gt;
+
+class ImFusion::Container::SmallVector&lt; T, N &gt;
+A small-buffer-optimized variant of [std::vector](http://en.cppreference.com/w/cpp/container/vector.html) that stores up to N elements without heap allocation.
+
+When the number of elements grows beyond N a heap allocation is used so that [SmallVector](/cpp-sdk/4.5/api/classes/imfusion-container-smallvector) behaves like a regular [std::vector](http://en.cppreference.com/w/cpp/container/vector.html). Use this container when the number of elements is usually small and short-lived, but can occasionally grow dynamically. Typical examples are temporary working sets, per-frame buffers, or collections built in tight loops where avoiding frequent heap allocations improves performance.
+
+Prefer [SmallVector](/cpp-sdk/4.5/api/classes/imfusion-container-smallvector) over [std::vector](http://en.cppreference.com/w/cpp/container/vector.html) if:
+
+- Most instances contain only a few elements (often &lt;= N), and
+- You want to reduce allocator traffic and improve locality.
+
+Prefer [std::vector](http://en.cppreference.com/w/cpp/container/vector.html) if:
+
+- Sizes are typically large or highly variable, or
+- You need full STL API compatibility beyond the subset provided here.
+
+Example:
+
+```cpp
+// The majority of use cases have a maximum of 4 channels, in this case no heap allocation is performed.
+Container::SmallVector<double, 4> channelData;
+for (int c = 0; c < img.channels(); ++c)
+    channelData.push_back(img.value(x, y, z, c));
+
+processChannels(channelData);
+```
+ fragment
+
+**Template Parameters:** | T | [Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element) type |
+| --- | --- |
+| N | Maximum number of elements stored inline without heap allocation |
+
+## Public Types
+
+- using **value_type** = T
+- using **size_type** = [std::size_t](http://en.cppreference.com/w/cpp/types/size_t.html)
+- using **iterator** = T\*
+- using **const_iterator** = const T\*
+
+## Public Member Functions
+
+- **SmallVector** (const SmallVector &other)
+- **SmallVector** (SmallVector &&other) noexcept([std::is_nothrow_move_constructible](http://en.cppreference.com/w/cpp/types/is_move_constructible.html)&lt; T &gt;::value)
+- SmallVector & **operator=** (const SmallVector &other)
+- SmallVector & **operator=** (SmallVector &&other) noexcept([std::is_nothrow_move_constructible](http://en.cppreference.com/w/cpp/types/is_move_constructible.html)&lt; T &gt;::value)
+- T & **operator[]** (size_type i)
+- const T & **operator[]** (size_type i) const
+- T \* **data** () noexcept
+- const T \* **data** () const noexcept
+- T & **front** ()
+- const T & **front** () const
+- T & **back** ()
+- const T & **back** () const
+- size_type **size** () const noexcept
+- size_type **capacity** () const noexcept
+- bool **isEmpty** () const noexcept
+- void **push_back** (const T &value)
+- void **push_back** (T &&value)
+- T & **emplace_back** (Args &&... args)
+- iterator **insert** (const_iterator pos, const T &value)
+- iterator **insert** (const_iterator pos, T &&value)
+- void **pop_back** ()
+- iterator **erase** (const_iterator pos)
+- void **clear** () noexcept
+- void **reserve** (size_type newCap)
+- void **resize** (size_type newSize)
+- void **shrink_to_fit** ()
+- iterator **begin** () noexcept
+- iterator **end** () noexcept
+- const_iterator **begin** () const noexcept
+- const_iterator **end** () const noexcept
+- const_iterator **cbegin** () const noexcept
+- const_iterator **cend** () const noexcept

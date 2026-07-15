@@ -1,0 +1,43 @@
+---
+title: "ImFusion::FiducialExtraction"
+sidebarTitle: "FiducialExtraction"
+description: "Detect circles in the image patch using gradient-based ( RANSAC ) method."
+---
+
+`#include <ImFusion/Base/FiducialExtraction.h>`
+
+## Overview
+
+Detect circles in the image patch using gradient-based ([RANSAC](/cpp-sdk/4.5/api/classes/imfusion-ransac)) method.
+
+## Public Types
+
+- enum [GradientFilter](#gradientfilter) &#123; None , Outward , Inward &#125;
+
+## Public Member Functions
+
+- **FiducialExtraction** ([SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*image) — Constructor which takes an image where the circles need to be found.
+- **~FiducialExtraction** () — Destructor.
+- bool **findCircle** (const vec2i &patchCenter, const vec2 &patchBboxSize, vec2 &centerOut, double &radiusOut) — Find a circle in the patch of m_image, specified by bounding box size and its center.
+- void **setGradientThreshold** (float gradientThreshold) — Set the gradient threshold.
+- float **gradientThreshold** () const
+- void **setInlierThreshold** (double threshold) — Set inlier threshold in pixels.
+- double **inlierThreshold** () const
+- void **setNormalizePatch** (bool normalize) — Set whether to normalize patch before fiducial extraction. If set to no the patch will be taken from the entire normalized image.
+- bool **normalizePatch** () const
+- void **setGradientFilter** ([GradientFilter](#gradientfilter) filter)
+- [GradientFilter](#gradientfilter) **gradientFilter** () const
+
+## Member Enumeration Documentation
+
+### GradientFilter
+
+```cpp
+enum ImFusion::FiducialExtraction::GradientFilter
+```
+
+**Enumerator:**
+
+- `None` — Use all gradients.
+- `Outward` — Only use gradients pointing away from the patch center.
+- `Inward` — Only use gradients pointing towards the patch center.

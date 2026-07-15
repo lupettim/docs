@@ -1,0 +1,37 @@
+---
+title: "ImFusion::GlMeshRendererContours::DisplayOptions"
+sidebarTitle: "DisplayOptions"
+description: "Complete record of rendering options for MeshRendererOutline."
+---
+
+`#include <ImFusion/Mesh/Rendering/GlMeshRendererContours.h>`
+
+## Overview
+
+Complete record of rendering options for MeshRendererOutline.
+
+## Public Types
+
+- enum class [ColorMode](#colormode) &#123; **MeshVertexColorMeshVertexAlpha** = 0 , MeshVertexColorContourAlpha = 1 , ContourColorMeshVertexAlpha = 2 , ContourColorContourAlpha = 3 &#125;
+
+## Public Attributes
+
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; vec4 &gt; **p_lineColor** = &#123;"lineColor", vec4(1.0, 1.0, 1.0, 1.0), \*this&#125;
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; double &gt; **p_lineWidth** = &#123;"lineWidth", 2.0, \*this&#125;
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; [ColorMode](#colormode) &gt; **p_colorMode** = &#123;"colorMode", ColorMode::ContourColorContourAlpha, this&#125;
+
+## Member Enumeration Documentation
+
+### ColorMode
+
+```cpp
+enum class ImFusion::GlMeshRendererContours::DisplayOptions::ColorMode
+```
+
+*strong*
+
+**Enumerator:**
+
+- `MeshVertexColorContourAlpha` — Use the vertex color and alpha of the mesh.
+- `ContourColorMeshVertexAlpha` — Use the vertex color of the mesh and the alpha of the contour.
+- `ContourColorContourAlpha` — Use the color of the contour and the vertex alpha of the [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh).

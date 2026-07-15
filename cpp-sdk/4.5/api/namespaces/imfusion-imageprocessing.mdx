@@ -1,0 +1,844 @@
+---
+title: "ImFusion::ImageProcessing"
+sidebarTitle: "ImageProcessing"
+description: "Low-level algorithms for image processing."
+---
+
+## Overview
+
+Low-level algorithms for image processing.
+
+Depending on the kind of processing algorithm, different overload sets are offered:
+
+- Algorithms that do not change the [ImageDescriptor](/cpp-sdk/4.5/api/structs/imfusion-imagedescriptor) and can be implemented in-place offer only a single computeXYZ() variant, e.g. [computeFlipped()](#computeflipped).
+- Algorithms that change the [ImageDescriptor](/cpp-sdk/4.5/api/structs/imfusion-imagedescriptor) will never work in-place and offer two variants:
+  - The createXYZ() variant will allocate a new image to store the result of the image processing algorithm.
+  - The computeXYZ() variant will accept an additional output image that must already be allocated by the caller. This allows to minimize the number of needed allocations when the output image can be reused such as in streaming use cases for instance.
+
+Algorithms that create output images of the same type than the input images offer two overloads: A strong [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt;T&gt; overload as well as an overload taking the [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) base class.
+
+## Enumerations
+
+- enum class [Axis](#axis) &#123; X = 0 , Y = 1 , Z = 2 &#125; — Enumeration of image axes for processing options.
+- enum class [ColorWeighting](#colorweighting) &#123; Average = 0 , LumaBT601 = 1 , LumaBT709 = 2 &#125; — Enumeration for the methods used for converting color (3 channels) to grayscale image.
+- enum class BayerPattern &#123; **BGGR** = 0 , **GBRG** = 1 , **GRGB** = 2 , **RGGB** = 3 &#125; — Enumeration of bayer patterns [https://docs.opencv.org/3.4/de/d25/imgproc_color_conversions.html](https://docs.opencv.org/3.4/de/d25/imgproc_color_conversions.html).
+- enum [ThresholdingOptions](#thresholdingoptions) &#123; AcceptAboveOrEqual = 1 &lt;&lt; 0 , AcceptBelow = 1 &lt;&lt; 1 , AcceptInside = 1 &lt;&lt; 2 , AcceptOutside = 1 &lt;&lt; 3 , UseStorageValues = 1 &lt;&lt; 4 , UseOriginalValues = 1 &lt;&lt; 5 , MergeChannels = 1 &lt;&lt; 6 &#125; — Bitmask of options that can be passed to [createThresholded()](#createthresholded-1-2) and [computeThresholded()](#computethresholded-1-2).
+- enum class [Normalization](#normalization) &#123; None = 0 , TypeRange = 1 , ValueRange = 2 , ApplyShiftAndScale = 3 &#125; — List of available normalization options for [createFloat()](#createfloat-1-2).
+- enum class [ValueDomain](#valuedomain) &#123; StorageValues , OriginalValues &#125; — Enumeration of available pixel value domains, cf. [Pixel Value Domains](/cpp-sdk/4.5/api/guides/pixel-value-domains).
+
+## Functions
+
+- bool [copyPixelData](#copypixeldata-1-2) (const [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) &src, const vec3i &srcOffset, [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) &dst, const vec3i &dstOffset, const vec3i &size) — Perform a copy of continuous raw image data between two images using all channels.
+- bool [copyPixelData](#copypixeldata-2-2) (const [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) &src, const vec3i &srcPixelOffset, int srcChannelOffset, [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) &dst, const vec3i &dstPixelOffset, int dstChannelOffset, const vec3i &size, int numChannels) — Perform a copy of continuous raw image data between two images that can have different numbers of channels.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; unsigned char &gt; &gt; [createRGBFromBayerPattern](#creatergbfrombayerpattern) ([MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) &image, BayerPattern bayerPattern) — convert Bayer Pattern [Image](/cpp-sdk/4.5/api/classes/imfusion-image) to a color image
+- void [computeFlipped](#computeflipped) ([MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) &image, [Axis](#axis) flipAxis) — Flip the given image in-place.
+- void [computeInverted](#computeinverted) ([MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) &image, bool useImageRange) — Invert the pixel intensities of the given image in-place.
+- void [computeClamped](#computeclamped) ([MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) &image, const vec2 &range, [ValueDomain](#valuedomain) valueDomain) — Clamp the image intensity of all pixels to the given range (in-place).
+- void **swapEndianness** ([MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) &image) — Reverses the order of bytes for all pixels in the image pixel buffer.
+
+## Rotate images around their main axes
+
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; T &gt; &gt; [createRotated](#createrotated-1-4) (const [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; T &gt; &input, [Axis](#axis) rotationAxis, int angle, [Axis](#axis) flipAxis=[Axis](#axis)(-1)) — Create a rotated version of the input image.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) &gt; [createRotated](#createrotated-2-4) (const [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) &input, [Axis](#axis) rotationAxis, int angle, [Axis](#axis) flipAxis=[Axis](#axis)(-1)) — Create a rotated version of the input image.
+- bool [computeRotated](#computerotated-1-2) (const [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) &input, [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) &output, [Axis](#axis) rotationAxis, int angle, [Axis](#axis) flipAxis=[Axis](#axis)(-1)) — Create a rotated version of the input image.
+- bool [isOrthogonalRotationMatrix](#isorthogonalrotationmatrix) (const mat3 &rotationMatrix, double tolerance=0.0) — Test whether the given matrix forms an orthogonal rotation matrix that can be passed to the corresponding overloads of [createRotated()](#createrotated-1-4) and [computeRotated()](#computerotated-1-2).
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; T &gt; &gt; [createRotated](#createrotated-3-4) (const [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; T &gt; &input, const mat3 &rotationMatrix, double tolerance=0.0) — Create a rotated version of the input image.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) &gt; [createRotated](#createrotated-4-4) (const [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) &input, const mat3 &rotationMatrix, double tolerance=0.0) — Create a rotated version of the input image.
+- bool [computeRotated](#computerotated-2-2) (const [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) &input, [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) &output, const mat3 &rotationMatrix, double tolerance=0.0) — Create a rotated version of the input image.
+
+## Crop/pad images
+
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; T &gt; &gt; [createCropped](#createcropped-1-2) (const [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; T &gt; &input, vec3i newSize, vec3i offset=vec3i(-1, -1, -1)) — Create a cropped version of the input image.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) &gt; [createCropped](#createcropped-2-2) (const [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) &input, const vec3i &newSize, const vec3i &offset) — Create a cropped version of the input image.
+- bool [computeCropped](#computecropped) (const [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) &input, [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) &output, const vec3i &offset=vec3i(-1, -1, -1)) — Create a cropped version of the input image.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; T &gt; &gt; [createPadded](#createpadded-1-2) (const [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; T &gt; &input, [PaddingMode](/cpp-sdk/4.5/api/namespaces/imfusion) paddingMode, const vec3i &paddingLLF, const vec3i &paddingURB, bool legacyMirrorPadding=true) — Create a padded version of the input image where the additional border pixels have a specified value.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) &gt; [createPadded](#createpadded-2-2) (const [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) &input, [PaddingMode](/cpp-sdk/4.5/api/namespaces/imfusion) paddingMode, const vec3i &paddingLLF, const vec3i &paddingURB, bool legacyMirrorPadding=true) — Create a padded version of the input image where the additional border pixels have a specified value.
+- bool [computePadded](#computepadded) (const [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) &input, [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) &output, [PaddingMode](/cpp-sdk/4.5/api/namespaces/imfusion) paddingMode, const vec3i &paddingLLF, const vec3i &paddingURB, bool legacyMirrorPadding=true) — Create a padded version of the input image where the additional border pixels have a specified value.
+
+## Resample images
+
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; T &gt; &gt; [createDownsampled](#createdownsampled-1-2) (const [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; T &gt; &input, int dx, int dy, int dz=1, bool zeroMask=false, [ReductionMode](/cpp-sdk/4.5/api/namespaces/imfusion) reductionMode=[ReductionMode::Average](/cpp-sdk/4.5/api/namespaces/imfusion)) — Create a downsampled version of the input image, where the new image size is specified by an integer factor.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) &gt; [createDownsampled](#createdownsampled-2-2) (const [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) &input, int dx, int dy, int dz=1, bool zeroMask=false, [ReductionMode](/cpp-sdk/4.5/api/namespaces/imfusion) reductionMode=[ReductionMode::Average](/cpp-sdk/4.5/api/namespaces/imfusion)) — Create a downsampled version of the input image, where the new image size is specified by an integer factor.
+- bool [computeDownsampled](#computedownsampled) (const [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) &input, [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) &output, int dx, int dy, int dz=1, bool zeroMask=false, [ReductionMode](/cpp-sdk/4.5/api/namespaces/imfusion) reductionMode=[ReductionMode::Average](/cpp-sdk/4.5/api/namespaces/imfusion)) — Create a downsampled version of the input image, where the new image size is specified by an integer factor.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; T &gt; &gt; [createResampledToSpacing](#createresampledtospacing-1-2) (const [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; T &gt; &input, [SpacingMode](/cpp-sdk/4.5/api/namespaces/imfusion) spacingAdjustment, const vec3 &spacing, bool zeroMask=false, [ReductionMode](/cpp-sdk/4.5/api/namespaces/imfusion) reductionMode=[ReductionMode::Average](/cpp-sdk/4.5/api/namespaces/imfusion), [InterpolationMode](/cpp-sdk/4.5/api/namespaces/imfusion) interpolationMode=[InterpolationMode::Linear](/cpp-sdk/4.5/api/namespaces/imfusion), bool allowDimensionChange=false) — Create a resampled version of the input image with a dedicated target spacing.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) &gt; [createResampledToSpacing](#createresampledtospacing-2-2) (const [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) &input, [SpacingMode](/cpp-sdk/4.5/api/namespaces/imfusion) spacingAdjustment, const vec3 &spacing, bool zeroMask=false, [ReductionMode](/cpp-sdk/4.5/api/namespaces/imfusion) reductionMode=[ReductionMode::Average](/cpp-sdk/4.5/api/namespaces/imfusion), [InterpolationMode](/cpp-sdk/4.5/api/namespaces/imfusion) interpolationMode=[InterpolationMode::Linear](/cpp-sdk/4.5/api/namespaces/imfusion), bool allowDimensionChange=false) — Create a resampled version of the input image with a dedicated target spacing.
+- bool [computeResampledToSpacing](#computeresampledtospacing) (const [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) &input, [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) &output, [SpacingMode](/cpp-sdk/4.5/api/namespaces/imfusion) spacingAdjustment, const vec3 &spacing, bool zeroMask=false, [ReductionMode](/cpp-sdk/4.5/api/namespaces/imfusion) reductionMode=[ReductionMode::Average](/cpp-sdk/4.5/api/namespaces/imfusion), [InterpolationMode](/cpp-sdk/4.5/api/namespaces/imfusion) interpolationMode=[InterpolationMode::Linear](/cpp-sdk/4.5/api/namespaces/imfusion), bool allowDimensionChange=false) — Create a resampled version of the input image with a dedicated target spacing.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; T &gt; &gt; [createResampledToDimensions](#createresampledtodimensions-1-2) (const [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; T &gt; &input, const vec3i &dimensions, bool zeroMask=false, [ReductionMode](/cpp-sdk/4.5/api/namespaces/imfusion) reductionMode=[ReductionMode::Average](/cpp-sdk/4.5/api/namespaces/imfusion), [InterpolationMode](/cpp-sdk/4.5/api/namespaces/imfusion) interpolationMode=[InterpolationMode::Linear](/cpp-sdk/4.5/api/namespaces/imfusion)) — Create a resampled version of the input image with a dedicated target resolution.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) &gt; [createResampledToDimensions](#createresampledtodimensions-2-2) (const [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) &input, const vec3i &dimensions, bool zeroMask=false, [ReductionMode](/cpp-sdk/4.5/api/namespaces/imfusion) reductionMode=[ReductionMode::Average](/cpp-sdk/4.5/api/namespaces/imfusion), [InterpolationMode](/cpp-sdk/4.5/api/namespaces/imfusion) interpolationMode=[InterpolationMode::Linear](/cpp-sdk/4.5/api/namespaces/imfusion)) — Create a resampled version of the input image with a dedicated target resolution.
+- bool [computeResampledToDimensions](#computeresampledtodimensions) (const [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) &input, [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) &output, const vec3i &dimensions, bool zeroMask=false, [ReductionMode](/cpp-sdk/4.5/api/namespaces/imfusion) reductionMode=[ReductionMode::Average](/cpp-sdk/4.5/api/namespaces/imfusion), [InterpolationMode](/cpp-sdk/4.5/api/namespaces/imfusion) interpolationMode=[InterpolationMode::Linear](/cpp-sdk/4.5/api/namespaces/imfusion)) — Create a resampled version of the input image with a dedicated target resolution.
+
+## Binary thresholding based on pixel values
+
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; unsigned char &gt; &gt; [createThresholded](#createthresholded-1-2) (const [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) &input, double value, [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; [ThresholdingOptions](#thresholdingoptions) &gt; options) — Create a binary mask image based on the input image's pixel values.
+- bool [computeThresholded](#computethresholded-1-2) (const [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) &input, [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; unsigned char &gt; &output, double value, [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; [ThresholdingOptions](#thresholdingoptions) &gt; options) — Create a binary mask image based on the input image's pixel values.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; unsigned char &gt; &gt; [createThresholded](#createthresholded-2-2) (const [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) &input, vec2 interval, [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; [ThresholdingOptions](#thresholdingoptions) &gt; options) — Create a binary mask image based on the input image's pixel values.
+- bool [computeThresholded](#computethresholded-2-2) (const [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) &input, [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; unsigned char &gt; &output, vec2 interval, [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; [ThresholdingOptions](#thresholdingoptions) &gt; options) — Create a binary mask image based on the input image's pixel values.
+
+## Change the pixel representation/format
+
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; OutputT &gt; &gt; [createConverted](#createconverted-1-2) (const [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; InputT &gt; &input, [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [std::pair](http://en.cppreference.com/w/cpp/utility/pair.html)&lt; InputT, InputT &gt; &gt; inputRange=std::nullopt, [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [std::pair](http://en.cppreference.com/w/cpp/utility/pair.html)&lt; OutputT, OutputT &gt; &gt; outputRange=std::nullopt) — Performs a type conversion from a [TypedImage&lt;InputT&gt;](/cpp-sdk/4.5/api/classes/imfusion-typedimage) to a newly created [TypedImage&lt;OutputT&gt;](/cpp-sdk/4.5/api/classes/imfusion-typedimage).
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; OutputT &gt; &gt; [createConverted](#createconverted-2-2) (const [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) &input, [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [std::pair](http://en.cppreference.com/w/cpp/utility/pair.html)&lt; double, double &gt; &gt; inputRange=std::nullopt, [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [std::pair](http://en.cppreference.com/w/cpp/utility/pair.html)&lt; OutputT, OutputT &gt; &gt; outputRange=std::nullopt) — Performs a type conversion from any [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) to a newly created [TypedImage&lt;OutputT&gt;](/cpp-sdk/4.5/api/classes/imfusion-typedimage).
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; float &gt; &gt; [createFloat](#createfloat-1-2) (const [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) &input, [Normalization](#normalization) valueMapping) — Create a floating point version of the input image.
+- bool [createFloat](#createfloat-2-2) (const [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) &input, [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; float &gt; &output, [Normalization](#normalization) valueMapping) — Create a floating point version of the input image.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; T &gt; &gt; [createGrayscale](#creategrayscale-1-2) (const [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; T &gt; &input, int numChannels=-1, [ColorWeighting](#colorweighting) method=ColorWeighting::Average) — Create a single-channel version of the input image by averaging pixel values over the first N (or all if -1) channels.
+- bool [computeGrayscale](#computegrayscale) (const [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) &input, [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) &output, int numChannels=-1, [ColorWeighting](#colorweighting) method=ColorWeighting::Average) — Create a single-channel version of the input image by averaging pixel values over first N (or all if -1) channels.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) &gt; [createGrayscale](#creategrayscale-2-2) (const [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) &input, int numChannels=-1, [ColorWeighting](#colorweighting) method=ColorWeighting::Average) — Create a single-channel version of the input image by averaging pixel values over first N (or all if -1) channels.
+
+## Compute gradients
+
+- void [computeGradientMagnitude](#computegradientmagnitude) (const [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; T &gt; \*img, [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; float &gt; \*gradient, bool normalizeResult=true, [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; float &gt; \*orientation=0) — Compute normalized gradient magnitude using 3x3 Sobel filter.
+- void **computeGradient** (const [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; T &gt; \*img, [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; float &gt; \*gx, [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; float &gt; \*gy, [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; float &gt; \*gNorm=0)
+- void **computeGradient2D** (const [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; T &gt; \*img, [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; float &gt; \*gx, [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; float &gt; \*gy)
+- void **computeGradient3D** (const [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; T &gt; \*img, [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; float &gt; \*gx, [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; float &gt; \*gy, [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; float &gt; \*gz)
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; T &gt; &gt; **addOrRemoveAlphaChannel** (const [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; T &gt; &img)
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) &gt; **addOrRemoveAlphaChannel** (const [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) &input)
+- void **computeSubpixelEdgeLocationAndOrientation2D** (const [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; float &gt; \*g, const [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; float &gt; \*gx, const [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; float &gt; \*gy, float threshold, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::pair](http://en.cppreference.com/w/cpp/utility/pair.html)&lt; vec2, vec2 &gt; &gt; &location)
+- void **computeSubpixelEdgeLocationAndOrientation3D** (const [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; float &gt; \*g, const [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; float &gt; \*gx, const [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; float &gt; \*gy, const [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; float &gt; \*gz, float threshold, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::pair](http://en.cppreference.com/w/cpp/utility/pair.html)&lt; vec3, vec3 &gt; &gt; &location)
+
+## Enumeration Type Documentation
+
+### Axis
+
+```cpp
+enum class ImFusion::ImageProcessing::Axis
+```
+
+*strong*
+
+Enumeration of image axes for processing options.
+
+**Enumerator:**
+
+- `X` — X axis.
+- `Y` — Y axis.
+- `Z` — Z axis.
+
+### ColorWeighting
+
+```cpp
+enum class ImFusion::ImageProcessing::ColorWeighting
+```
+
+*strong*
+
+Enumeration for the methods used for converting color (3 channels) to grayscale image.
+
+if the number of channels considered during the conversion is different to 3, then the Average is used independent of the user choice
+
+**Note:** the problems of color averaging method can be found in: [https://www.tutorialspoint.com/dip/grayscale_to_rgb_conversion.htm](https://www.tutorialspoint.com/dip/grayscale_to_rgb_conversion.htm)
+
+**Note:** opencv uses LumaBT601: [https://docs.opencv.org/3.4/de/d25/imgproc_color_conversions.html](https://docs.opencv.org/3.4/de/d25/imgproc_color_conversions.html)
+
+**Note:** for more info about the difference between BT601 and BT709: [https://en.wikipedia.org/wiki/Luma_(video)](https://en.wikipedia.org/wiki/Luma_(video))
+
+**Enumerator:**
+
+- `Average` — Grayscale = R / 3 + G / 3 + B / 3.
+- `LumaBT601` — Grayscale = 0.299R + 0.587G + 0.114B (used in opencv and most digital standard definition formats).
+- `LumaBT709` — Grayscale = 0.2126R + 0.7152G + 0.0722B.
+
+### ThresholdingOptions
+
+```cpp
+enum ImFusion::ImageProcessing::ThresholdingOptions
+```
+
+Bitmask of options that can be passed to [createThresholded()](#createthresholded-1-2) and [computeThresholded()](#computethresholded-1-2).
+
+**Note:** Not all combinations of options are valid.
+
+**Enumerator:**
+
+- `AcceptAboveOrEqual` — All pixels above or equal to the threshold will be marked 1; only valid for the float overload.
+- `AcceptBelow` — All pixels below the threshold will be marked 1; only valid for the float overload.
+- `AcceptInside` — All pixels inside the closed interval will be marked 1; only valid for the vec2 overload.
+- `AcceptOutside` — All pixels outside the closed interval will be marked 1; only valid for the vec2 overload.
+- `UseStorageValues` — The value/interval parameter describes storage values.
+- `UseOriginalValues` — The value/interval parameter describes original values.
+- `MergeChannels` — Compute threshold value based on average intensity of all channels and return a single channel threshold image.
+
+### Normalization
+
+```cpp
+enum class ImFusion::ImageProcessing::Normalization
+```
+
+*strong*
+
+List of available normalization options for [createFloat()](#createfloat-1-2).
+
+**Enumerator:**
+
+- `None` — Do not perform any normalization, simply cast the pixel value to float.
+- `TypeRange` — Use entire type range to normalize values to [0..1] range.
+- `ValueRange` — Use minimum/maximum pixel intensity as normalization range;.
+- `ApplyShiftAndScale` — Do not perform normalization but apply shift and scale to convert to original values.
+
+### ValueDomain
+
+```cpp
+enum class ImFusion::ImageProcessing::ValueDomain
+```
+
+*strong*
+
+Enumeration of available pixel value domains, cf. [Pixel Value Domains](/cpp-sdk/4.5/api/guides/pixel-value-domains).
+
+**Enumerator:**
+
+- `StorageValues` — Values as stored in memory.
+- `OriginalValues` — Values as recorded in the original source if available (e.g. Hounsfield Units for CT images).
+
+## Function Documentation
+
+### copyPixelData
+
+```cpp
+bool ImFusion::ImageProcessing::copyPixelData (const MemImage & src, const vec3i & srcOffset, MemImage & dst, const vec3i & dstOffset, const vec3i & size)
+```
+
+Perform a copy of continuous raw image data between two images using all channels.
+
+The image sizes do not need to match, you can specify any subregion in both the source and destination image. If the specified region exceeds any of the input/output images' dimensions it will be clamped to fit. Both the image type and the number of channels of *src* and *dst* must match.
+
+**Parameters:**
+
+- `src` — Source image to copy data from
+- `srcOffset` — Pixel offset in source subvolume to copy pixel data from
+- `dst` — Destination image to copy data to
+- `dstOffset` — Pixel offset in destination subvolume to copy pixel data to
+- `size` — Size of subvolume to copy
+
+### copyPixelData
+
+```cpp
+bool ImFusion::ImageProcessing::copyPixelData (const MemImage & src, const vec3i & srcPixelOffset, int srcChannelOffset, MemImage & dst, const vec3i & dstPixelOffset, int dstChannelOffset, const vec3i & size, int numChannels)
+```
+
+Perform a copy of continuous raw image data between two images that can have different numbers of channels.
+
+Neither the image sizes nor the number of channels do need to match, you can specify any subregion in both the source and destination image. If the specified regions exceed any of the input/output images' dimensions/number of channels they will be clamped to fit. The image type of *src* and *dst* must match.
+
+**Parameters:**
+
+- `src` — Source image to copy data from
+- `srcPixelOffset` — Pixel offset in source subvolume to copy pixel data from
+- `srcChannelOffset` — First channel in source subvolume to copy channel data from for each pixel, must be &gt;= 0
+- `dst` — Destination image to copy data to
+- `dstPixelOffset` — Pixel offset in destination subvolume to copy pixel data to
+- `dstChannelOffset` — First channel in destination subvolume to copy channel data to for each pixel, must be &gt;= 0
+- `size` — Size of subvolume to copy
+- `numChannels` — Number of channels to copy for each pixel
+
+### createRotated
+
+```cpp
+template<typename T> std::unique_ptr < TypedImage < T > > ImFusion::ImageProcessing::createRotated (const TypedImage < T > & input, Axis rotationAxis, int angle, Axis flipAxis = Axis (-1))
+```
+
+Create a rotated version of the input image.
+
+This function does only support orthogonal rotations.
+
+**Parameters:**
+
+- `input` — Input image, will not be modified
+- `rotationAxis` — Rotation axis to rotate around
+- `angle` — Rotation angle in degrees, must be a multiple of 90. A positive angle refers to a counter-clockwise rotation around the rotation axis. For more information about the coordinate system conventions see [Coordinate Systems](/cpp-sdk/4.5/api/guides/coordinate-systems).
+- `flipAxis` — Optional axis to perform an additional flip of the pixel data in.
+
+### createRotated
+
+```cpp
+std::unique_ptr < MemImage > ImFusion::ImageProcessing::createRotated (const MemImage & input, Axis rotationAxis, int angle, Axis flipAxis = Axis (-1))
+```
+
+Create a rotated version of the input image.
+
+This function only supports orthogonal rotations.
+
+**Parameters:**
+
+- `input` — Input image, will not be modified
+- `rotationAxis` — Rotation axis to rotate around
+- `angle` — Rotation angle in degrees, must be a multiple of 90 within the interval [-270, 270]. A positive angle refers to a counter-clockwise rotation around the rotation axis. For more information about the coordinate system conventions see [Coordinate Systems](/cpp-sdk/4.5/api/guides/coordinate-systems).
+- `flipAxis` — Optional axis to perform an additional flip of the pixel data.
+
+### computeRotated
+
+```cpp
+bool ImFusion::ImageProcessing::computeRotated (const MemImage & input, MemImage & output, Axis rotationAxis, int angle, Axis flipAxis = Axis (-1))
+```
+
+Create a rotated version of the input image.
+
+This function only supports orthogonal rotations.
+
+**Parameters:**
+
+- `input` — Input image, will not be modified
+- `output` — User provided output image, its descriptor must be compatible with the processing applied to the input image. In case it's not the function returns false.
+- `rotationAxis` — Rotation axis to rotate around
+- `angle` — Rotation angle in degrees, must be a multiple of 90 within the interval [-270, 270]. A positive angle refers to a counter-clockwise rotation around the rotation axis. For more information about the coordinate system conventions see [Coordinate Systems](/cpp-sdk/4.5/api/guides/coordinate-systems).
+- `flipAxis` — Optional axis to perform an additional flip of the pixel data.
+
+### isOrthogonalRotationMatrix
+
+```cpp
+bool ImFusion::ImageProcessing::isOrthogonalRotationMatrix (const mat3 & rotationMatrix, double tolerance = 0.0)
+```
+
+Test whether the given matrix forms an orthogonal rotation matrix that can be passed to the corresponding overloads of [createRotated()](#createrotated-1-4) and [computeRotated()](#computerotated-1-2).
+
+**Parameters:**
+
+- `rotationMatrix` — Rotation matrix to decompose, will fail if not orthogonal.
+- `tolerance` — Maximum allowable deviation of the euler angles from an orthogonal configuration in degrees.
+
+### createRotated
+
+```cpp
+template<typename T> std::unique_ptr < TypedImage < T > > ImFusion::ImageProcessing::createRotated (const TypedImage < T > & input, const mat3 & rotationMatrix, double tolerance = 0.0)
+```
+
+Create a rotated version of the input image.
+
+This function does only support 3D volumes and orthogonal rotations.
+
+**Parameters:**
+
+- `input` — Input image, will not be modified
+- `rotationMatrix` — Rotation matrix to apply, must be orthogonal.
+- `tolerance` — Maximum allowable deviation of the euler angles from an orthogonal configuration in degrees.
+
+### createRotated
+
+```cpp
+std::unique_ptr < MemImage > ImFusion::ImageProcessing::createRotated (const MemImage & input, const mat3 & rotationMatrix, double tolerance = 0.0)
+```
+
+Create a rotated version of the input image.
+
+This function does only support 3D volumes and orthogonal rotations.
+
+**Parameters:**
+
+- `input` — Input image, will not be modified
+- `rotationMatrix` — Rotation matrix to apply, must be orthogonal.
+- `tolerance` — Maximum allowable deviation of the euler angles from an orthogonal configuration in degrees.
+
+### computeRotated
+
+```cpp
+bool ImFusion::ImageProcessing::computeRotated (const MemImage & input, MemImage & output, const mat3 & rotationMatrix, double tolerance = 0.0)
+```
+
+Create a rotated version of the input image.
+
+This function does only support 3D volumes and orthogonal rotations.
+
+**Parameters:**
+
+- `input` — Input image, will not be modified
+- `output` — User provided output image, its descriptor must be compatible with the processing applied to the input image. In case it's not the function returns false.
+- `rotationMatrix` — Rotation matrix to apply, must be orthogonal.
+- `tolerance` — Maximum allowable deviation of the euler angles from an orthogonal configuration in degrees.
+
+### createCropped
+
+```cpp
+template<typename T> std::unique_ptr < TypedImage < T > > ImFusion::ImageProcessing::createCropped (const TypedImage < T > & input, vec3i newSize, vec3i offset = vec3i(-1, -1, -1))
+```
+
+Create a cropped version of the input image.
+
+**Parameters:**
+
+- `input` — Input image, will not be modified
+- `newSize` — Size of the cropped image
+- `offset` — Pixel offset of cropping region in input image. An offset of -1 will keep put the cropping region in the center of the corresponding axis.
+
+### createCropped
+
+```cpp
+std::unique_ptr < MemImage > ImFusion::ImageProcessing::createCropped (const MemImage & input, const vec3i & newSize, const vec3i & offset)
+```
+
+Create a cropped version of the input image.
+
+**Parameters:**
+
+- `input` — Input image, will not be modified
+- `newSize` — Size of the cropped image
+- `offset` — Pixel offset of cropping region in input image. An offset of -1 will keep put the cropping region in the center of the corresponding axis.
+
+### computeCropped
+
+```cpp
+bool ImFusion::ImageProcessing::computeCropped (const MemImage & input, MemImage & output, const vec3i & offset = vec3i(-1, -1, -1))
+```
+
+Create a cropped version of the input image.
+
+**Parameters:**
+
+- `input` — Input image, will not be modified
+- `output` — User provided output image, its descriptor is used for the cropping dimensions.
+- `offset` — Pixel offset of cropping region in input image. An offset of -1 will keep put the cropping region in the center of the corresponding axis.
+
+### createPadded
+
+```cpp
+template<typename T> std::unique_ptr < TypedImage < T > > ImFusion::ImageProcessing::createPadded (const TypedImage < T > & input, PaddingMode paddingMode, const vec3i & paddingLLF, const vec3i & paddingURB, bool legacyMirrorPadding = true)
+```
+
+Create a padded version of the input image where the additional border pixels have a specified value.
+
+**Parameters:**
+
+- `input` — Input image, will not be modified
+- `paddingMode` — Padding mode specifying what pixel values to assign to the additional border pixels
+- `paddingLLF` — Number of padding pixels in X, Y, and Z direction at the lower left front corner.
+- `paddingURB` — Number of padding pixels in X, Y, and Z direction at the upper right back corner.
+- `legacyMirrorPadding` — Before SUITE-3748, mirror padding was not computed correctly on URB side. This flag allows to continue use the wrong definition of mirror padding to avoid regressions. Note: this is a temporary parameter and will be deprecated/removed soon.
+
+### createPadded
+
+```cpp
+std::unique_ptr < MemImage > ImFusion::ImageProcessing::createPadded (const MemImage & input, PaddingMode paddingMode, const vec3i & paddingLLF, const vec3i & paddingURB, bool legacyMirrorPadding = true)
+```
+
+Create a padded version of the input image where the additional border pixels have a specified value.
+
+**Parameters:**
+
+- `input` — Input image, will not be modified
+- `paddingMode` — Padding mode specifying what pixel values to assign to the additional border pixels
+- `paddingLLF` — Number of padding pixels in X, Y, and Z direction at the lower left front corner.
+- `paddingURB` — Number of padding pixels in X, Y, and Z direction at the upper right back corner.
+- `legacyMirrorPadding` — Before SUITE-3748, mirror padding was not computed correctly on URB side. This flag allows to continue use the wrong definition of mirror padding to avoid regressions. Note: this is a temporary parameter and will be deprecated/removed soon.
+
+### computePadded
+
+```cpp
+bool ImFusion::ImageProcessing::computePadded (const MemImage & input, MemImage & output, PaddingMode paddingMode, const vec3i & paddingLLF, const vec3i & paddingURB, bool legacyMirrorPadding = true)
+```
+
+Create a padded version of the input image where the additional border pixels have a specified value.
+
+**Parameters:**
+
+- `input` — Input image, will not be modified
+- `output` — User provided output image, its descriptor must be compatible with the processing applied to the input image. In case it's not the function returns false.
+- `paddingMode` — Padding mode specifying what pixel values to assign to the additional border pixels
+- `paddingLLF` — Number of padding pixels in X, Y, and Z direction at the lower left front corner.
+- `paddingURB` — Number of padding pixels in X, Y, and Z direction at the upper right back corner.
+- `legacyMirrorPadding` — Before SUITE-3748, mirror padding was not computed correctly on URB side. This flag allows to continue use the wrong definition of mirror padding to avoid regressions. Note: this is a temporary parameter and will be deprecated/removed soon.
+
+### createDownsampled
+
+```cpp
+template<typename T> std::unique_ptr < TypedImage < T > > ImFusion::ImageProcessing::createDownsampled (const TypedImage < T > & input, int dx, int dy, int dz = 1, bool zeroMask = false, ReductionMode reductionMode = ReductionMode::Average)
+```
+
+Create a downsampled version of the input image, where the new image size is specified by an integer factor.
+
+**Parameters:**
+
+- `input` — Input image, will not be modified
+- `dx` — Downsampling factor in X direction
+- `dy` — Downsampling factor in Y direction
+- `dz` — Downsampling factor in Z direction
+- `zeroMask` — If enabled zeros are propagated to avoid masking artifacts
+- `reductionMode` — Filter mode defining how contributing input pixels are combined into the downsampled pixel value
+
+### createDownsampled
+
+```cpp
+std::unique_ptr < MemImage > ImFusion::ImageProcessing::createDownsampled (const MemImage & input, int dx, int dy, int dz = 1, bool zeroMask = false, ReductionMode reductionMode = ReductionMode::Average)
+```
+
+Create a downsampled version of the input image, where the new image size is specified by an integer factor.
+
+**Parameters:**
+
+- `input` — Input image, will not be modified
+- `dx` — Downsampling factor in X direction
+- `dy` — Downsampling factor in Y direction
+- `dz` — Downsampling factor in Z direction
+- `zeroMask` — If enabled, zeros are always propagated (independent of reduction mode) to avoid masking artifacts
+- `reductionMode` — Filter mode defining how contributing input pixels are combined into the downsampled pixel value
+
+### computeDownsampled
+
+```cpp
+bool ImFusion::ImageProcessing::computeDownsampled (const MemImage & input, MemImage & output, int dx, int dy, int dz = 1, bool zeroMask = false, ReductionMode reductionMode = ReductionMode::Average)
+```
+
+Create a downsampled version of the input image, where the new image size is specified by an integer factor.
+
+**Parameters:**
+
+- `input` — Input image, will not be modified
+- `output` — User provided output image, its descriptor must be compatible with the processing applied to the input image. In case it's not the function returns false.
+- `dx` — Downsampling factor in X direction
+- `dy` — Downsampling factor in Y direction
+- `dz` — Downsampling factor in Z direction
+- `zeroMask` — If enabled, zeros are always propagated (independent of reduction mode) to avoid masking artifacts
+- `reductionMode` — Filter mode defining how contributing input pixels are combined into the downsampled pixel value
+
+### createResampledToSpacing
+
+```cpp
+template<typename T> std::unique_ptr < TypedImage < T > > ImFusion::ImageProcessing::createResampledToSpacing (const TypedImage < T > & input, SpacingMode spacingAdjustment, const vec3 & spacing, bool zeroMask = false, ReductionMode reductionMode = ReductionMode::Average, InterpolationMode interpolationMode = InterpolationMode::Linear, bool allowDimensionChange = false)
+```
+
+Create a resampled version of the input image with a dedicated target spacing.
+
+**Parameters:**
+
+- `input` — Input image, will not be modified
+- `spacingAdjustment` — If set to ADJUST, resampling is performed to roughly the desired spacing so that the image extent is kept constant. Otherwise, the exact spacing defined will be used, leading to a potentially different extent.
+- `spacing` — Target spacing of the resampled image
+- `zeroMask` — If enabled, zeros are always propagated (independent of reduction mode) to avoid masking artifacts
+- `reductionMode` — Filter mode defining how contributing input pixels are combined into the downsampled pixel value
+- `interpolationMode` — Interpolation mode for pixel lookup in input image
+- `allowDimensionChange` — If true, 3D images may become 2D images, etc.
+
+### createResampledToSpacing
+
+```cpp
+std::unique_ptr < MemImage > ImFusion::ImageProcessing::createResampledToSpacing (const MemImage & input, SpacingMode spacingAdjustment, const vec3 & spacing, bool zeroMask = false, ReductionMode reductionMode = ReductionMode::Average, InterpolationMode interpolationMode = InterpolationMode::Linear, bool allowDimensionChange = false)
+```
+
+Create a resampled version of the input image with a dedicated target spacing.
+
+**Parameters:**
+
+- `input` — Input image, will not be modified
+- `spacingAdjustment` — If set to ADJUST, resampling is performed to roughly the desired spacing so that the image extent is kept constant. Otherwise, the exact spacing defined will be used, leading to a potentially different extent.
+- `spacing` — Target spacing of the resampled image
+- `zeroMask` — If enabled, zeros are always propagated (independent of reduction mode) to avoid masking artifacts
+- `reductionMode` — Filter mode defining how contributing input pixels are combined into the downsampled pixel value
+- `interpolationMode` — Interpolation mode for pixel lookup in input image
+- `allowDimensionChange` — If true, 3D images may become 2D images, etc.
+
+### computeResampledToSpacing
+
+```cpp
+bool ImFusion::ImageProcessing::computeResampledToSpacing (const MemImage & input, MemImage & output, SpacingMode spacingAdjustment, const vec3 & spacing, bool zeroMask = false, ReductionMode reductionMode = ReductionMode::Average, InterpolationMode interpolationMode = InterpolationMode::Linear, bool allowDimensionChange = false)
+```
+
+Create a resampled version of the input image with a dedicated target spacing.
+
+**Parameters:**
+
+- `input` — Input image, will not be modified
+- `output` — User provided output image, its descriptor must be compatible with the processing applied to the input image. In case it's not the function returns false.
+- `spacingAdjustment` — If set to ADJUST, resampling is performed to roughly the desired spacing so that the image extent is kept constant. Otherwise, the exact spacing defined will be used, leading to a potentially different extent.
+- `spacing` — Target spacing of the resampled image
+- `zeroMask` — If enabled, zeros are always propagated (independent of reduction mode) to avoid masking artifacts
+- `reductionMode` — Filter mode defining how contributing input pixels are combined into the downsampled pixel value
+- `interpolationMode` — Interpolation mode for pixel lookup in input image
+- `allowDimensionChange` — If true, 3D images may become 2D images, etc.
+
+### createResampledToDimensions
+
+```cpp
+template<typename T> std::unique_ptr < TypedImage < T > > ImFusion::ImageProcessing::createResampledToDimensions (const TypedImage < T > & input, const vec3i & dimensions, bool zeroMask = false, ReductionMode reductionMode = ReductionMode::Average, InterpolationMode interpolationMode = InterpolationMode::Linear)
+```
+
+Create a resampled version of the input image with a dedicated target resolution.
+
+**Parameters:**
+
+- `input` — Input image, will not be modified
+- `dimensions` — Target pixel dimensions of resampled image
+- `zeroMask` — If enabled, zeros are always propagated (independent of reduction mode) to avoid masking artifacts
+- `reductionMode` — Filter mode defining how contributing input pixels are combined into the downsampled pixel value
+- `interpolationMode` — Interpolation mode for pixel lookup in input image
+
+### createResampledToDimensions
+
+```cpp
+std::unique_ptr < MemImage > ImFusion::ImageProcessing::createResampledToDimensions (const MemImage & input, const vec3i & dimensions, bool zeroMask = false, ReductionMode reductionMode = ReductionMode::Average, InterpolationMode interpolationMode = InterpolationMode::Linear)
+```
+
+Create a resampled version of the input image with a dedicated target resolution.
+
+**Parameters:**
+
+- `input` — Input image, will not be modified
+- `dimensions` — Target pixel dimensions of resampled image
+- `zeroMask` — If enabled, zeros are always propagated (independent of reduction mode) to avoid masking artifacts
+- `reductionMode` — Filter mode defining how contributing input pixels are combined into the downsampled pixel value
+- `interpolationMode` — Interpolation mode for pixel lookup in input image
+
+### computeResampledToDimensions
+
+```cpp
+bool ImFusion::ImageProcessing::computeResampledToDimensions (const MemImage & input, MemImage & output, const vec3i & dimensions, bool zeroMask = false, ReductionMode reductionMode = ReductionMode::Average, InterpolationMode interpolationMode = InterpolationMode::Linear)
+```
+
+Create a resampled version of the input image with a dedicated target resolution.
+
+**Parameters:**
+
+- `input` — Input image, will not be modified
+- `output` — User provided output image, its descriptor must be compatible with the processing applied to the input image. In case it's not the function returns false.
+- `dimensions` — Target pixel dimensions of resampled image
+- `zeroMask` — If enabled, zeros are always propagated (independent of reduction mode) to avoid masking artifacts
+- `reductionMode` — Filter mode defining how contributing input pixels are combined into the downsampled pixel value
+- `interpolationMode` — Interpolation mode for pixel lookup in input image
+
+### createThresholded
+
+```cpp
+std::unique_ptr < TypedImage < unsigned char > > ImFusion::ImageProcessing::createThresholded (const MemImage & input, double value, Flags < ThresholdingOptions > options)
+```
+
+Create a binary mask image based on the input image's pixel values.
+
+**Parameters:**
+
+- `input` — Input image, will not be modified
+- `value` — Cutoff value for thresholding, either in storage or in original value domain depending on *options*.
+- `options` — Set of thresholding options, must meet the following conditions
+Contains either AcceptAboveOrEqual or AcceptBelow
+Contains either UseStorageValues or UseOriginalValues
+Does not contain AcceptInside or AcceptOutside
+Can contain any combination of the other options
+
+### computeThresholded
+
+```cpp
+bool ImFusion::ImageProcessing::computeThresholded (const MemImage & input, TypedImage < unsigned char > & output, double value, Flags < ThresholdingOptions > options)
+```
+
+Create a binary mask image based on the input image's pixel values.
+
+**Parameters:**
+
+- `input` — Input image, will not be modified
+- `output` — User provided output image, its descriptor must be compatible with that of the input image. In case it's not the function returns false.
+- `value` — Cutoff value for thresholding, either in storage or in original value domain depending on *options*.
+- `options` — Set of thresholding options, must meet the following conditions
+Contains either AcceptAboveOrEqual or AcceptBelow
+Contains either UseStorageValues or UseOriginalValues
+Does not contain AcceptInside or AcceptOutside
+Can contain any combination of the other options
+
+### createThresholded
+
+```cpp
+std::unique_ptr < TypedImage < unsigned char > > ImFusion::ImageProcessing::createThresholded (const MemImage & input, vec2 interval, Flags < ThresholdingOptions > options)
+```
+
+Create a binary mask image based on the input image's pixel values.
+
+**Parameters:**
+
+- `input` — Input image, will not be modified
+- `interval` — Closed interval describing the value range for thresholding, either in storage or in original value domain depending on *options*.
+- `options` — Set of thresholding options, must meet the following conditions
+Contains either AcceptInside or AcceptOutside
+Contains either UseStorageValues or UseOriginalValues
+Does not contain AcceptAboveOrEqual or AcceptBelow
+Can contain any combination of the other options
+
+### computeThresholded
+
+```cpp
+bool ImFusion::ImageProcessing::computeThresholded (const MemImage & input, TypedImage < unsigned char > & output, vec2 interval, Flags < ThresholdingOptions > options)
+```
+
+Create a binary mask image based on the input image's pixel values.
+
+**Parameters:**
+
+- `input` — Input image, will not be modified
+- `output` — User provided output image, its descriptor must be compatible with that of the input image. In case it's not the function returns false.
+- `interval` — Closed interval describing the value range for thresholding, either in storage or in original value domain depending on *options*.
+- `options` — Set of thresholding options, must meet the following conditions
+Contains either AcceptInside or AcceptOutside
+Contains either UseStorageValues or UseOriginalValues
+Does not containAcceptAboveOrEqual or AcceptBelow
+Can contain any combination of the other options
+
+### createRGBFromBayerPattern
+
+```cpp
+std::unique_ptr < TypedImage < unsigned char > > ImFusion::ImageProcessing::createRGBFromBayerPattern (MemImage & image, BayerPattern bayerPattern)
+```
+
+convert Bayer Pattern [Image](/cpp-sdk/4.5/api/classes/imfusion-image) to a color image
+
+**Parameters:**
+
+- `image` — Bayer pattern [Image](/cpp-sdk/4.5/api/classes/imfusion-image) to be converted to RGB, should be a grayscale unsigned 8 bit image
+- `BayerPattern` — the Bayer pattern of the input image
+
+**Returns:** return a pointer to the result image (8 bit RGB image), nullptr in case of failure
+
+### computeFlipped
+
+```cpp
+void ImFusion::ImageProcessing::computeFlipped (MemImage & image, Axis flipAxis)
+```
+
+Flip the given image in-place.
+
+**Parameters:**
+
+- `image` — [Image](/cpp-sdk/4.5/api/classes/imfusion-image) to flip
+- `flipAxis` — Flip axis
+
+### computeInverted
+
+```cpp
+void ImFusion::ImageProcessing::computeInverted (MemImage & image, bool useImageRange)
+```
+
+Invert the pixel intensities of the given image in-place.
+
+**Parameters:**
+
+- `image` — [Image](/cpp-sdk/4.5/api/classes/imfusion-image) to invert
+- `useImageRange` — If true, the output values will be such that the new image minimum will be equal to the old image maximum (and vice versa). Otherwise the full range of the image type will be used to invert the values.
+
+### computeClamped
+
+```cpp
+void ImFusion::ImageProcessing::computeClamped (MemImage & image, const vec2 & range, ValueDomain valueDomain)
+```
+
+Clamp the image intensity of all pixels to the given range (in-place).
+
+**Parameters:**
+
+- `image` — Input image, will be changed
+- `range` — Value range to which to clamp the image pixels.
+- `valueDomain` — Pixel value domain in which *range* is specified, cf. [Pixel Value Domains](/cpp-sdk/4.5/api/guides/pixel-value-domains).
+
+### createConverted
+
+```cpp
+template<typename InputT, typename OutputT> std::unique_ptr < TypedImage < OutputT > > ImFusion::ImageProcessing::createConverted (const TypedImage < InputT > & input, std::optional < std::pair < InputT, InputT > > inputRange = std::nullopt, std::optional < std::pair < OutputT, OutputT > > outputRange = std::nullopt)
+```
+
+Performs a type conversion from a [TypedImage&lt;InputT&gt;](/cpp-sdk/4.5/api/classes/imfusion-typedimage) to a newly created [TypedImage&lt;OutputT&gt;](/cpp-sdk/4.5/api/classes/imfusion-typedimage).
+
+The pixel values are adjusted linearly so that inputRange.first is mapped to outputRange.first and inputRange.second is mapped to outputRange.second. Shift and scale of the resulting [ImageDescriptor](/cpp-sdk/4.5/api/structs/imfusion-imagedescriptor) are adjusted accordingly so that the original/real-world values remain the same.
+
+**Note:** If both InputT and OutputT are integral types and the *outputRange* is larger than the *inputRange* this function will truncate any floating-point scaling factor between the two to an integer one in order to avoid a re-quantization of the input values. In this case inputRange.second is mapped to the largest value less or equal than outputRange.second so that outputRange/inputRange is an integer division.
+
+**Parameters:**
+
+- `input` — Input image to convert to a different type.
+- `inputRange` — Storage pixel value range of *input* that should be mapped to *outputRange* If unset, will use &#123;MIN_T, MAX_T&#125; for integral types and &#123;0.0, 1.0&#125; for floating point types.
+- `outputRange` — Storage pixel value range of the return value to which pixels from *inputRange* are mapped to. If unset, will use &#123;MIN_T, MAX_T&#125; for integral types and &#123;0.0, 1.0&#125; for floating point types.
+
+### createConverted
+
+```cpp
+template<typename OutputT> std::unique_ptr < TypedImage < OutputT > > ImFusion::ImageProcessing::createConverted (const MemImage & input, std::optional < std::pair < double, double > > inputRange = std::nullopt, std::optional < std::pair < OutputT, OutputT > > outputRange = std::nullopt)
+```
+
+Performs a type conversion from any [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) to a newly created [TypedImage&lt;OutputT&gt;](/cpp-sdk/4.5/api/classes/imfusion-typedimage).
+
+The pixel values are adjusted linearly so that inputRange.first is mapped to outputRange.first and inputRange.second is mapped to outputRange.second. Shift and scale of the resulting [ImageDescriptor](/cpp-sdk/4.5/api/structs/imfusion-imagedescriptor) are adjusted accordingly so that the original/real-world values remain the same.
+
+**Note:** If both InputT and OutputT are integral types and the *outputRange* is larger than the *inputRange* this function will truncate any floating-point scaling factor between the two to an integer one in order to avoid a re-quantization of the input values. In this case inputRange.second is mapped to the largest value less or equal than outputRange.second so that outputRange/inputRange it is an integer division.
+
+**Parameters:**
+
+- `input` — Input image to convert to a different type.
+- `inputRange` — Storage pixel value range of *input* that should be mapped to *outputRange* If unset, will use &#123;MIN_T, MAX_T&#125; for integral types and &#123;0.0, 1.0&#125; for floating point types.
+- `outputRange` — Storage pixel value range of the return value to which pixels from *inputRange* are mapped to. If unset, will use &#123;MIN_T, MAX_T&#125; for integral types and &#123;0.0, 1.0&#125; for floating point types.
+
+### createFloat
+
+```cpp
+std::unique_ptr < TypedImage < float > > ImFusion::ImageProcessing::createFloat (const MemImage & input, Normalization valueMapping)
+```
+
+Create a floating point version of the input image.
+
+**Parameters:**
+
+- `input` — Input image, will not be modified
+- `valueMapping` — Defines how input pixel intensities are mapped to float
+
+### createFloat
+
+```cpp
+bool ImFusion::ImageProcessing::createFloat (const MemImage & input, TypedImage < float > & output, Normalization valueMapping)
+```
+
+Create a floating point version of the input image.
+
+**Parameters:**
+
+- `input` — Input image, will not be modified
+- `output` — User provided output image, its descriptor must be compatible with that of the input image. In case it's not the function returns false.
+- `valueMapping` — Defines how input pixel intensities are mapped to float
+
+### createGrayscale
+
+```cpp
+template<typename T> std::unique_ptr < TypedImage < T > > ImFusion::ImageProcessing::createGrayscale (const TypedImage < T > & input, int numChannels = -1, ColorWeighting method = ColorWeighting::Average)
+```
+
+Create a single-channel version of the input image by averaging pixel values over the first N (or all if -1) channels.
+
+**Parameters:**
+
+- `input` — Input image, will not be modified
+- `numChannels` — Number of channels to be considered
+- `method` — The method used for computing the grayscale values, fall back to Averaging if the number of channels is != 3
+
+### computeGrayscale
+
+```cpp
+bool ImFusion::ImageProcessing::computeGrayscale (const MemImage & input, MemImage & output, int numChannels = -1, ColorWeighting method = ColorWeighting::Average)
+```
+
+Create a single-channel version of the input image by averaging pixel values over first N (or all if -1) channels.
+
+**Parameters:**
+
+- `input` — Input image, will not be modified
+- `output` — User provided output image, its descriptor must be compatible with the processing applied to the input image. In case it's not the function returns false.
+- `numChannels` — Number of channels to be considered
+- `method` — The method used for computing the grayscale values, fall back to Averaging if the number of channels is != 3
+
+### createGrayscale
+
+```cpp
+std::unique_ptr < MemImage > ImFusion::ImageProcessing::createGrayscale (const MemImage & input, int numChannels = -1, ColorWeighting method = ColorWeighting::Average)
+```
+
+Create a single-channel version of the input image by averaging pixel values over first N (or all if -1) channels.
+
+**Parameters:**
+
+- `input` — Input image, will not be modified
+- `numChannels` — Number of channels to be considered
+- `method` — The method used for computing the grayscale values, fall back to Averaging if the number of channels is != 3
+
+### computeGradientMagnitude
+
+```cpp
+template<typename T> void ImFusion::ImageProcessing::computeGradientMagnitude (const TypedImage < T > * img, TypedImage < float > * gradient, bool normalizeResult = true, TypedImage < float > * orientation = 0)
+```
+
+Compute normalized gradient magnitude using 3x3 Sobel filter.
+
+The border of the image is set to zero.
+
+**Parameters:**
+
+- `img` — Input image
+- `gradient` — Gradient image. Has to be float type.
+- `normalizeResult` — Normalize result to range [0;1]
+- `orientation` — Optional pointer to orientation image receiving gradient orientation

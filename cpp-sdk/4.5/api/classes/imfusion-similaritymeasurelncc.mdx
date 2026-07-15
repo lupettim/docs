@@ -1,0 +1,48 @@
+---
+title: "ImFusion::SimilarityMeasureLNCC"
+sidebarTitle: "SimilarityMeasureLNCC"
+---
+
+## Public Member Functions
+
+- **SimilarityMeasureLNCC** ([SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*img1, [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*img2)
+- virtual void **setPatchSize** (int patchSize, int weighting=1, int absCorr=1)
+- virtual int **patchSize** () const
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Set one or multiple properties.
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Retrieve the properties of this object.
+
+## Static Public Member Functions
+
+- static void **defaultConfiguration** ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p)
+
+## Protected Attributes
+
+- int **m_patchSize** — Half patch size of the LNCC kernel.
+- int **m_weighting** — Variance weighting mode (0 = off, 1 = img1, 2 = img2).
+- int **m_absCorr** — 1 = absolute value of local correlation, 2 = negative values are clamped to zero
+
+## Member Function Documentation
+
+### configure
+
+```cpp
+void ImFusion::SimilarityMeasureLNCC::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Set one or multiple properties.
+
+The default implementation retrieves the mask mode (param names "maskModeImg1" and "maskModeImg2")
+
+### configuration
+
+```cpp
+void ImFusion::SimilarityMeasureLNCC::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Retrieve the properties of this object.
+
+The default implementation stores the mask mode (param names "maskModeImg1" and "maskModeImg2")

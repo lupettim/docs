@@ -1,0 +1,34 @@
+---
+title: "ImFusion::ReduceToSelection"
+sidebarTitle: "ReduceToSelection"
+description: "Algorithm reducing a SharedImageSet or TrackingSequence to its selected frames/samples."
+---
+
+`#include <ImFusion/Base/ReduceToSelection.h>`
+
+## Overview
+
+[Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) reducing a [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) or [TrackingSequence](/cpp-sdk/4.5/api/classes/imfusion-trackingsequence) to its selected frames/samples.
+
+## Public Member Functions
+
+- **ReduceToSelection** ([TrackingSequence](/cpp-sdk/4.5/api/classes/imfusion-trackingsequence) &ts) — Creates the algorithm instance with a [TrackingSequence](/cpp-sdk/4.5/api/classes/imfusion-trackingsequence).
+- **ReduceToSelection** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &img) — Creates the algorithm instance with an image.
+- int **newFrame** (int oldFrame) const — Return a new frame number after reduction, or -1 if it has been deleted.
+
+## Methods implementing the algorithm interface
+
+- void [compute](#compute) () override — Execute the algorithm.
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=nullptr)
+
+## Member Function Documentation
+
+### compute
+
+```cpp
+void ImFusion::ReduceToSelection::compute ()
+```
+
+*override, virtual*
+
+Execute the algorithm.

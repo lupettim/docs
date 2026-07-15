@@ -1,0 +1,55 @@
+---
+title: "ImFusion::OptimizingAlgorithm"
+sidebarTitle: "OptimizingAlgorithm"
+description: "Algorithm class supporting an optimizer."
+---
+
+`#include <ImFusion/Base/OptimizingAlgorithm.h>`
+
+## Overview
+
+[Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) class supporting an optimizer.
+
+## Public Member Functions
+
+- void **setOptimizer** ([std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [Optimizer](/cpp-sdk/4.5/api/classes/imfusion-optimizer) &gt; opt) — Set an optimizer from outside.
+- [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [Optimizer](/cpp-sdk/4.5/api/classes/imfusion-optimizer) &gt; **optimizer** () — Returns the current optimizer.
+- virtual [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [Optimizer](/cpp-sdk/4.5/api/classes/imfusion-optimizer) &gt; [createDefaultOptimizer](#createdefaultoptimizer) () const =0 — Returns a default optimizer suited for this algorithm.
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configures the optimizer from a sub-property if available.
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Stores the optimizer configuration into a sub-property.
+
+## Protected Attributes
+
+- [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [Optimizer](/cpp-sdk/4.5/api/classes/imfusion-optimizer) &gt; **m_opt** — The optimizer instance.
+
+## Member Function Documentation
+
+### createDefaultOptimizer
+
+```cpp
+virtual std::shared_ptr < Optimizer > ImFusion::OptimizingAlgorithm::createDefaultOptimizer () const
+```
+
+*pure virtual*
+
+Returns a default optimizer suited for this algorithm.
+
+### configure
+
+```cpp
+void ImFusion::OptimizingAlgorithm::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configures the optimizer from a sub-property if available.
+
+### configuration
+
+```cpp
+void ImFusion::OptimizingAlgorithm::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Stores the optimizer configuration into a sub-property.

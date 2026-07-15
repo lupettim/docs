@@ -1,0 +1,78 @@
+---
+title: "ImFusion::MeshProcessing::Geometry::DominantPlaneOptimizerSettings"
+sidebarTitle: "DominantPlaneOptimizerSettings"
+description: "Structure representing the settings for the optimizor used to compute dominant plane of the mesh."
+---
+
+`#include <ImFusion/Mesh/Processing/Geometry.h>`
+
+## Overview
+
+Structure representing the settings for the optimizor used to compute dominant plane of the mesh.
+
+## Public Attributes
+
+- double **maxDisplacement** = 2.0
+- double [maxNormalDifference](#maxnormaldifference) — max distance between a plane and a triangle (required accuracy for passing in-plane check)
+- unsigned int **maxIterations** = 1000 — max angle (in degrees) difference between the normals of a plane and a triangle (required accuracy for passing normals alignment check)
+- double [requiredMatchingAreaRatio](#requiredmatchingarearatio) — max number of iterations performed by the optimizer
+- unsigned int [minNumberOfFaceSamples](#minnumberoffacesamples) — criteria for stopping further optimization, that is if requiredMatchingAreaRatio\*(totalAreaOfMesh) matches the estimated plane, the optimizations stops
+- unsigned int [numberOfValidationSamples](#numberofvalidationsamples) — minimum number of triangles used to estimate a plane. Plane's normal and position are computed as area weighted average over sample faces
+
+## Member Data Documentation
+
+### maxNormalDifference
+
+```cpp
+double ImFusion::MeshProcessing::Geometry::DominantPlaneOptimizerSettings::maxNormalDifference
+```
+
+**Initial value:**
+```cpp
+       =
+1.0
+```
+ fragment
+max distance between a plane and a triangle (required accuracy for passing in-plane check)
+
+### requiredMatchingAreaRatio
+
+```cpp
+double ImFusion::MeshProcessing::Geometry::DominantPlaneOptimizerSettings::requiredMatchingAreaRatio
+```
+
+**Initial value:**
+```cpp
+             =
+0.5
+```
+ fragment
+max number of iterations performed by the optimizer
+
+### minNumberOfFaceSamples
+
+```cpp
+unsigned int ImFusion::MeshProcessing::Geometry::DominantPlaneOptimizerSettings::minNumberOfFaceSamples
+```
+
+**Initial value:**
+```cpp
+                =
+3
+```
+ fragment
+criteria for stopping further optimization, that is if requiredMatchingAreaRatio\*(totalAreaOfMesh) matches the estimated plane, the optimizations stops
+
+### numberOfValidationSamples
+
+```cpp
+unsigned int ImFusion::MeshProcessing::Geometry::DominantPlaneOptimizerSettings::numberOfValidationSamples
+```
+
+**Initial value:**
+```cpp
+                   =
+0
+```
+ fragment
+minimum number of triangles used to estimate a plane. Plane's normal and position are computed as area weighted average over sample faces

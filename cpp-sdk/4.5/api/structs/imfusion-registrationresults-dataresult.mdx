@@ -1,0 +1,77 @@
+---
+title: "ImFusion::RegistrationResults::DataResult"
+sidebarTitle: "DataResult"
+description: "Represents the registration result for a single data object."
+---
+
+`#include <ImFusion/Reg/RegistrationResults.h>`
+
+## Overview
+
+Represents the registration result for a single data object.
+
+## Public Member Functions
+
+- bool [apply](#apply) () const — Applies the registration result to its associated data.
+- void [applyOnData](#applyondata) ([Data](/cpp-sdk/4.5/api/classes/imfusion-data) &pDdata) const — Applies the registration result to another data object.
+- bool [operator==](#operator) (const [DataResult](/cpp-sdk/4.5/api/structs/imfusion-registrationresults-dataresult) &other) const — Compares two [DataResult](/cpp-sdk/4.5/api/structs/imfusion-registrationresults-dataresult) objects for equality.
+- bool **operator!=** (const [DataResult](/cpp-sdk/4.5/api/structs/imfusion-registrationresults-dataresult) &other) const — Compares two [DataResult](/cpp-sdk/4.5/api/structs/imfusion-registrationresults-dataresult) objects for inequality.
+- [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [PointsOnImage](/cpp-sdk/4.5/api/classes/imfusion-pointsonimage) &gt; [points](#points) ([std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) name="") const — Retrieves a point set associated with the data.
+
+## Public Attributes
+
+- [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \* **data** = nullptr — Pointer to the data. Set to nullptr if the data is not available or gets deleted.
+- uint64_t **hash** = 0 — Hash value of data. Used to identify data.
+- mat4 **matrix** = mat4::Identity() — Registration matrix.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **name** — Name of data. Used to identify data, when hash is not there.
+- [Data::Modality](/cpp-sdk/4.5/api/classes/imfusion-data) **modality** = [Data::Modality::NA](/cpp-sdk/4.5/api/classes/imfusion-data) — Modality of the data.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **defID** — [Deformation](/cpp-sdk/4.5/api/classes/imfusion-deformation) ID, used to restore the deformation from [DeformationFactory](/cpp-sdk/4.5/api/classes/imfusion-deformationfactory).
+- [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) **defProps** — [Deformation](/cpp-sdk/4.5/api/classes/imfusion-deformation) properties.
+- [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &gt; **defSuppImgs** — Supporting images for the deformation.
+- [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) **pointProps** — Configuration of [PointsStorageComponent](/cpp-sdk/4.5/api/classes/imfusion-pointsstoragecomponent). Used to persist point annotations.
+
+## Member Function Documentation
+
+### apply
+
+```cpp
+bool ImFusion::RegistrationResults::DataResult::apply () const
+```
+
+Applies the registration result to its associated data.
+
+**Returns:** False if the data is unavailable or the application fails.
+
+### applyOnData
+
+```cpp
+void ImFusion::RegistrationResults::DataResult::applyOnData (Data & pDdata) const
+```
+
+Applies the registration result to another data object.
+
+**Parameters:**
+
+- `pData` — Reference to the target data.
+
+### operator
+
+```cpp
+bool ImFusion::RegistrationResults::DataResult::operator== (const DataResult & other) const
+```
+
+Compares two [DataResult](/cpp-sdk/4.5/api/structs/imfusion-registrationresults-dataresult) objects for equality.
+
+[Data](/cpp-sdk/4.5/api/classes/imfusion-data) is compared by hash. Meaning that &#123;hash=42, data=0x1234&#125; is equal to &#123;hash=42, data=nullptr&#125;.
+
+### points
+
+```cpp
+std::shared_ptr < PointsOnImage > ImFusion::RegistrationResults::DataResult::points (std::string name = "") const
+```
+
+Retrieves a point set associated with the data.
+
+**Parameters:**
+
+- `pointsName` — Name of the points to be restored. If empty, the first available will be used

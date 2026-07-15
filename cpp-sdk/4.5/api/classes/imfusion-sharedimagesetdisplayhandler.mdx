@@ -1,0 +1,83 @@
+---
+title: "ImFusion::SharedImageSetDisplayHandler"
+sidebarTitle: "SharedImageSetDisplayHandler"
+description: "Shows regular SharedImageSet instances (no derivatives) in ImageView2D and ImageView3D ."
+---
+
+`#include <ImFusion/GUI/SharedImageSetDisplayHandler.h>`
+
+## Overview
+
+Shows regular [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) instances (no derivatives) in [ImageView2D](/cpp-sdk/4.5/api/classes/imfusion-imageview2d) and [ImageView3D](/cpp-sdk/4.5/api/classes/imfusion-imageview3d).
+
+## Public Member Functions
+
+- bool [handlesType](#handlestype) (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data) const override — Check whether this specialization handles the given [Data](/cpp-sdk/4.5/api/classes/imfusion-data) type.
+- bool [canBeShownInView](#canbeshowninview) (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data, const [GUI::View](/cpp-sdk/4.5/api/classes/imfusion-gui-view) &view) const override — Check whether a particular [Data](/cpp-sdk/4.5/api/classes/imfusion-data) can be shown in the given view.
+- void [show](#show) ([Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data, [GUI::View](/cpp-sdk/4.5/api/classes/imfusion-gui-view) &view) override — Visualize the given data in the given view.
+- void [hide](#hide) ([Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data, [GUI::View](/cpp-sdk/4.5/api/classes/imfusion-gui-view) &view) override — Remove the given data from the given view.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; QWidget &gt; [createDisplayOptionsWidget](#createdisplayoptionswidget) ([Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data, [GUI::DisplayBase](/cpp-sdk/4.5/api/classes/imfusion-gui-displaybase) &display, [GUI::View](/cpp-sdk/4.5/api/classes/imfusion-gui-view) &view) const override — Provides an optional QtWidgets-based [GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui) to configure display options for the given data shown in *view*.
+
+## Member Function Documentation
+
+### handlesType
+
+```cpp
+bool ImFusion::SharedImageSetDisplayHandler::handlesType (const Data * data) const
+```
+
+*override, virtual*
+
+Check whether this specialization handles the given [Data](/cpp-sdk/4.5/api/classes/imfusion-data) type.
+
+Checks should be as narrow as possible to avoid potential overlap with other handlers.
+
+### canBeShownInView
+
+```cpp
+bool ImFusion::SharedImageSetDisplayHandler::canBeShownInView (const Data * data, const GUI::View & view) const
+```
+
+*override, virtual*
+
+Check whether a particular [Data](/cpp-sdk/4.5/api/classes/imfusion-data) can be shown in the given view.
+
+Used by [DataDisplayHandler](/cpp-sdk/4.5/api/classes/imfusion-datadisplayhandler) during view dispatch when calling [show()](#show). Should only be called if handlesType(data) == true.
+
+### show
+
+```cpp
+void ImFusion::SharedImageSetDisplayHandler::show (Data * data, GUI::View & view)
+```
+
+*override, virtual*
+
+Visualize the given data in the given view.
+
+Should only be called if (handlesType(data) == true) && (canBeShownInView(data, view) == true).
+
+### hide
+
+```cpp
+void ImFusion::SharedImageSetDisplayHandler::hide (Data * data, GUI::View & view)
+```
+
+*override, virtual*
+
+Remove the given data from the given view.
+
+**Warning:** Implementations must *not* access data beyond pointer comparison because the instance may already in the process of deletion when calling this function.
+
+### createDisplayOptionsWidget
+
+```cpp
+std::unique_ptr < QWidget > ImFusion::SharedImageSetDisplayHandler::createDisplayOptionsWidget (Data * data, GUI::DisplayBase & display, GUI::View & view) const
+```
+
+*override, virtual*
+
+Provides an optional QtWidgets-based [GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui) to configure display options for the given data shown in *view*.
+
+This function is used to enable [InteractiveViewOptionsOverlay](/cpp-sdk/4.5/api/classes/imfusion-interactiveviewoptionsoverlay) showing a suitable [GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui) for all data shown in its corresponding view. The default implementation returns nullptr.
+
+**Note:** This function is still considered experimental and may be moved/changed in the future.

@@ -1,0 +1,32 @@
+---
+title: "ImFusion::TrackingSequence::TrackingSequenceIterator"
+sidebarTitle: "TrackingSequenceIterator"
+description: "Iterator class for iteration over tracking sequence data, for instance in for-each loops."
+---
+
+`#include <ImFusion/Base/TrackingSequence.h>`
+
+## Overview
+
+Iterator class for iteration over tracking sequence data, for instance in for-each loops.
+
+Returns a tuple on dereferencing, which is implicitly convertible in a mat4, which allows doing something like this:
+
+```cpp
+TrackingSequence ts;
+for (mat4 m : ts)
+ LOG_INFO("Matrix " << m);
+```
+ fragment
+Otherwise, you have full access to the tuple:
+
+```cpp
+TrackingSequence ts;
+for (auto tup : ts)
+ LOG_INFO("Matrix " << tup.index() << ", " << tup.quality());
+```
+ fragment
+
+## Public Member Functions
+
+- **TrackingSequenceIterator** (const TrackingSequence \*ts, int pos) — Constructor.

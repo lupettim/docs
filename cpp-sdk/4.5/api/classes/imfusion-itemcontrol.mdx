@@ -1,0 +1,20 @@
+---
+title: "ImFusion::ItemControl"
+sidebarTitle: "ItemControl"
+description: "ItemControl abstract interaface."
+---
+
+`#include <ImFusion/GUI/CoreWidgets/ItemViewWidget.h>`
+
+## Overview
+
+[ItemControl](/cpp-sdk/4.5/api/classes/imfusion-itemcontrol) abstract interaface.
+
+Must be implemented by user of [ItemViewWidget](/cpp-sdk/4.5/api/classes/imfusion-itemviewwidget) to specify the action when an option button is pressed Mainly the addRow method has to be implenented, returning a QList&lt;QStandardItem\*&gt; containing the QStandardItems that represent each column when addRow is pressed. Eg. if the view only represents a list of elements, it should return a QList with a single QStandardItem, for example created using a QString: new QStandardItem("Element")
+
+## Public Member Functions
+
+- virtual QList&lt; QStandardItem \* &gt; **addRow** ()=0
+- virtual int **sortColumn** ()
+- virtual Qt::SortOrder **sortOrder** ()
+- virtual void **edit** (QStandardItem \*)

@@ -1,0 +1,19 @@
+---
+title: "ImFusion::Dicom::TagProxy"
+sidebarTitle: "TagProxy"
+---
+
+## Public Member Functions
+
+- **TagProxy** ()=default — Creates an empty [TagProxy](/cpp-sdk/4.5/api/structs/imfusion-dicom-tagproxy) with group and element both being 0.
+- **TagProxy** (uint16_t group, uint16_t element) — Create a new [TagProxy](/cpp-sdk/4.5/api/structs/imfusion-dicom-tagproxy) from a given group and element.
+- **TagProxy** (const DcmTagKey &tag) — Create a new [TagProxy](/cpp-sdk/4.5/api/structs/imfusion-dicom-tagproxy) from a given DCMTK DcmTagKey.
+- bool **operator==** (const TagProxy &rhs) const — Checks for equality of group and element.
+- bool **operator&lt;** (const TagProxy &rhs) const — Checks the concatenation of group and element for &lt;.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **toString** () const — Convert group and element ID to string representation.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **tagName** () const — Return the name if the tag (as provided by DCMTK).
+
+## Public Attributes
+
+- uint16_t **group** = 0 — The tag's group ID.
+- uint16_t **element** = 0 — The tag's element ID.

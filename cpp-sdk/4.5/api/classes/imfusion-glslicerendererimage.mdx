@@ -1,0 +1,193 @@
+---
+title: "ImFusion::GlSliceRendererImage"
+sidebarTitle: "GlSliceRendererImage"
+description: "Enables GlSlice to render normal images/volumes ( SharedImageSet )."
+---
+
+`#include <ImFusion/GL/GlSliceRendererImage.h>`
+
+## Overview
+
+Enables [GlSlice](/cpp-sdk/4.5/api/classes/imfusion-glslice) to render normal images/volumes ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset)).
+
+In [GlSlice](/cpp-sdk/4.5/api/classes/imfusion-glslice), this renderer is also referred to as the default renderer. This renderer accepts either 2D or 3D images exclusively depending on the flag given during construction.
+
+**See also:** [GlSlice](/cpp-sdk/4.5/api/classes/imfusion-glslice), [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset)
+
+## Public Types
+
+- enum [InterpolationMode](#interpolationmode) : int &#123; NearestNeighbor = 0 , LinearInterpolation = 1 , CubicInterpolation = 2 &#125; — Interpolation mode during rendering.
+- enum class [ReductionMode](#reductionmode) &#123; Averaging = 0 , Maximum = 1 &#125; — Reduction mode when rendering thick MPRs.
+
+## Public Member Functions
+
+- [GlSliceRendererImage](#glslicerendererimage) (bool is3d) — Cretaes a new [GlSliceRendererImage](/cpp-sdk/4.5/api/classes/imfusion-glslicerendererimage).
+- double **thickness** () const — Returns the thickness of the MPR slice in mm.
+- void **setThickness** (double value) — Sets the thickness of the MPR slice in mm.
+- [ReductionMode](#reductionmode) **reductionMode** () const — Returns the reduction mode when rendering thick MPRs.
+- void **setReductionMode** ([ReductionMode](#reductionmode) value) — Sets the reduction mode when rendering thick MPRs.
+- [InterpolationMode](#interpolationmode) **interpolationMode** () const — Returns the interpolation mode.
+- void **setInterpolationMode** ([InterpolationMode](#interpolationmode) value) — Sets the interpolation mode.
+- bool **usesBilateralFilter** () const
+- void **setUseBilateralFilter** (bool value)
+- void **setBilateralFilterRadius** (int radius)
+- int **bilateralFilterRadius** () const
+- void **setBilateralFilterIntensitySigma** (float sigmaColor)
+- float **bilateralFilterIntensitySigma** () const
+- void **setBilateralFilterSpatialSigma** (float sigmaSpace)
+- float **bilateralFilterSpatialSigma** () const
+- bool **ignoreMatrix** () const — Returns the flag whether to ignore the image matrix during rendering.
+- void **setIgnoreMatrix** (bool value) — Sets the flag whether to ignore the image matrix during rendering.
+- bool **rendersFocusImageOnly** () const — Returns the flag whether to all selected images of the [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) also for 2D image sets.
+- void **setRenderFocusImageOnly** (bool value) — Sets the flag whether to all selected images of the [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) also for 2D image sets.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [name](#name) () const override — Returns the name for identification/GUI usage of this slice renderer.
+- bool [accepts](#accepts) (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data) const override — Returns whether this slice renderer is capable of displaying the given data.
+- void [render](#render) (const [GL::ViewState](/cpp-sdk/4.5/api/classes/imfusion-gl-viewstate) &viewState, const [Slice](/cpp-sdk/4.5/api/classes/imfusion-slice) &slice, const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) &data, const [DisplayOptions2d](/cpp-sdk/4.5/api/classes/imfusion-displayoptions2d) &displayOptions, bool encodeDistance) override — Renders the data in the given configuration.
+- mat4 [defaultPose](#defaultpose) (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) &data, [Slice::AnatomicalPlane](/cpp-sdk/4.5/api/classes/imfusion-slice) originalPlane) const override — Returns the default view matrix to use for showing the given dataset in a slice view of the given anatomical plane.
+- vec2 [extent](#extent) (const [Slice](/cpp-sdk/4.5/api/classes/imfusion-slice) &slice, const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) &data) override — Returns the 2D extent of the *data* when rendering it onto *slice* in pixels.
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+## Member Enumeration Documentation
+
+### int
+
+```cpp
+enum ImFusion::GlSliceRendererImage::InterpolationMode : int
+```
+
+Interpolation mode during rendering.
+
+**Enumerator:**
+
+- `NearestNeighbor` — Nearest neighbor interpolation.
+- `LinearInterpolation` — Linear interpolation.
+- `CubicInterpolation` — Cubic interpolation.
+
+### ReductionMode
+
+```cpp
+enum class ImFusion::GlSliceRendererImage::ReductionMode
+```
+
+*strong*
+
+Reduction mode when rendering thick MPRs.
+
+**Enumerator:**
+
+- `Averaging` — Average intensities of all pixels.
+- `Maximum` — Use maximum intensity.
+
+## Constructor & Destructor Documentation
+
+### GlSliceRendererImage
+
+```cpp
+ImFusion::GlSliceRendererImage::GlSliceRendererImage (bool is3d)
+```
+
+*explicit*
+
+Cretaes a new [GlSliceRendererImage](/cpp-sdk/4.5/api/classes/imfusion-glslicerendererimage).
+
+**Parameters:**
+
+- `maskDecorator` — Decorator to use for mask rendering. Usually, this is the parent [GlSlice](/cpp-sdk/4.5/api/classes/imfusion-glslice).
+- `is3d` — Flag whether this renderer is supposed to display 3D data (instead of 2D data).
+
+## Member Function Documentation
+
+### name
+
+```cpp
+std::string ImFusion::GlSliceRendererImage::name () const
+```
+
+*override, virtual*
+
+Returns the name for identification/GUI usage of this slice renderer.
+
+### accepts
+
+```cpp
+bool ImFusion::GlSliceRendererImage::accepts (const Data * data) const
+```
+
+*override, virtual*
+
+Returns whether this slice renderer is capable of displaying the given data.
+
+### render
+
+```cpp
+void ImFusion::GlSliceRendererImage::render (const GL::ViewState & viewState, const Slice & slice, const Data & data, const DisplayOptions2d & displayOptions, bool encodeDistance)
+```
+
+*override, virtual*
+
+Renders the data in the given configuration.
+
+**Parameters:**
+
+- `viewState` — GlState object defining view and projection matrices.
+- `slice` — [Slice](/cpp-sdk/4.5/api/classes/imfusion-slice) on which to render the data.
+- `data` — The data to render
+- `displayOptions` — The display options to use for rendering.
+- `encodeDistance` — Flag whether to encode the distance to the border in the secondary color buffer.
+
+**Note:** Call this method only with data that is accepted by this renderer.
+
+### defaultPose
+
+```cpp
+mat4 ImFusion::GlSliceRendererImage::defaultPose (const Data & data, Slice::AnatomicalPlane originalPlane) const
+```
+
+*override, virtual*
+
+Returns the default view matrix to use for showing the given dataset in a slice view of the given anatomical plane.
+
+This function is for instance use by the reset function of ImageView2D/GlSliceView.
+
+**Note:** Call this method only with data that is accepted by this renderer.
+
+### extent
+
+```cpp
+vec2 ImFusion::GlSliceRendererImage::extent (const Slice & slice, const Data & data)
+```
+
+*override, virtual*
+
+Returns the 2D extent of the *data* when rendering it onto *slice* in pixels.
+
+**Note:** Call this method only with data that is accepted by this renderer.
+
+### configure
+
+```cpp
+void ImFusion::GlSliceRendererImage::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### configuration
+
+```cpp
+void ImFusion::GlSliceRendererImage::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality

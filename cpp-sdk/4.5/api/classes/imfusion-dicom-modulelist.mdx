@@ -1,0 +1,37 @@
+---
+title: "ImFusion::Dicom::ModuleList"
+sidebarTitle: "ModuleList"
+description: "Interface for classes that consist of modules."
+---
+
+`#include <ImFusion/Dicom/DicomModule.h>`
+
+## Overview
+
+Interface for classes that consist of modules.
+
+## Public Member Functions
+
+- virtual DcmItem & [dataset](#dataset) ()=0 — Dataset (or sub-item of a dataset) that will be used by the Modules.
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; const Module \* &gt; & **modules** () const — List of all modules.
+
+## Protected Member Functions
+
+- virtual void **addModule** (const Module &m) — Adds a the module to the list. Should only be called by the [Module](/cpp-sdk/4.5/api/classes/imfusion-dicom-module) constructor.
+- virtual void **removeModule** (const Module &m)
+
+## Protected Attributes
+
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; const Module \* &gt; **m_modules** — List of all modules.
+
+## Member Function Documentation
+
+### dataset
+
+```cpp
+virtual DcmItem & ImFusion::Dicom::ModuleList::dataset ()
+```
+
+*pure virtual*
+
+Dataset (or sub-item of a dataset) that will be used by the Modules.

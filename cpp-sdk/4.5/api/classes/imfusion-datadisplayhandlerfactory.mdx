@@ -1,0 +1,35 @@
+---
+title: "ImFusion::DataDisplayHandlerFactory"
+sidebarTitle: "DataDisplayHandlerFactory"
+description: "Factory class to maintain the list of registered DataDisplayHandlers ,."
+---
+
+`#include <ImFusion/GUI/DataDisplayHandler.h>`
+
+## Overview
+
+Factory class to maintain the list of registered DataDisplayHandlers ,.
+
+## Public Types
+
+- using **HandlerCreationFunc** = [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt;[std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt;[DataDisplayHandler](/cpp-sdk/4.5/api/classes/imfusion-datadisplayhandler)&gt;()&gt;
+
+## Static Public Member Functions
+
+- static void **registerHandler** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &id, HandlerCreationFunc creator) — Register a [DataDisplayHandler](/cpp-sdk/4.5/api/classes/imfusion-datadisplayhandler) type. The ID is used for duplicate detection and for unregistering.
+- static void **unregisterHandler** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &id) — Unregister a [DataDisplayHandler](/cpp-sdk/4.5/api/classes/imfusion-datadisplayhandler) type that was previously registered with the given ID.
+- static [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [DataDisplayHandler](/cpp-sdk/4.5/api/classes/imfusion-datadisplayhandler) &gt; &gt; [createAllHandlers](#createallhandlers) () — Creates one instance of all registered [DataDisplayHandler](/cpp-sdk/4.5/api/classes/imfusion-datadisplayhandler) types.
+
+## Member Function Documentation
+
+### createAllHandlers
+
+```cpp
+std::vector < std::unique_ptr < DataDisplayHandler > > ImFusion::DataDisplayHandlerFactory::createAllHandlers ()
+```
+
+*static*
+
+Creates one instance of all registered [DataDisplayHandler](/cpp-sdk/4.5/api/classes/imfusion-datadisplayhandler) types.
+
+The order of handlers is reversed wrt. their registration order so that handlers that were registered at a later time have precedence over handlers that were registered earlier.

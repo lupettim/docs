@@ -1,0 +1,75 @@
+---
+title: "ImFusion::Dicom::DicomGeSignaExciteIOD"
+sidebarTitle: "DicomGeSignaExciteIOD"
+description: "Extra IOD specialization for basic support of loading 4D MRI sequences created by GE Signa Excite devices."
+---
+
+`#include <ImFusion/Dicom/DicomIOD_GE.h>`
+
+## Overview
+
+Extra [IOD](/cpp-sdk/4.5/api/classes/imfusion-dicom-iod) specialization for basic support of loading 4D MRI sequences created by GE Signa Excite devices.
+
+**See also:** [http://www3.gehealthcare.com/~/media/documents/us-global/products/interoperability/dicom/magnetic-resonance/gehc-dicom-conformance_signaexcite1-5t_doc0394474_rev1.pdf](http://www3.gehealthcare.com/~/media/documents/us-global/products/interoperability/dicom/magnetic-resonance/gehc-dicom-conformance_signaexcite1-5t_doc0394474_rev1.pdf)
+
+## Public Member Functions
+
+- **DicomGeSignaExciteIOD** (DcmDataset &[dataset](#dataset), const OFString &[sopClassUID](/cpp-sdk/4.5/api/classes/imfusion-dicom-iod))
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [FrameDescriptorSet](/cpp-sdk/4.5/api/namespaces/imfusion-dicom) &gt; [sortAndGroupFrames](#sortandgroupframes) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [FrameDescriptor](/cpp-sdk/4.5/api/structs/imfusion-dicom-framedescriptor) &gt; &frames) const override — Sorts and groups the given frames into sets of associated frames (e.g.
+- void [loadFrameProperties](#loadframeproperties) (const [FrameDescriptor](/cpp-sdk/4.5/api/structs/imfusion-dicom-framedescriptor) &desc, [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &image) override — Loads any additional properties into the given image.
+- DcmDataset & [dataset](#dataset) () override — Dataset (or sub-item of a dataset) that will be used by the Modules.
+
+## Static Public Member Functions
+
+- static [Dicom::IOD](/cpp-sdk/4.5/api/classes/imfusion-dicom-iod) \* **canLoad** (DcmDataset &[dataset](#dataset), const OFString &[sopClassUID](/cpp-sdk/4.5/api/classes/imfusion-dicom-iod))
+
+## Public Attributes
+
+- [Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element)&lt; int &gt; **cardiacPhaseNumber**
+- [Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element)&lt; double &gt; **triggerTime**
+
+## Member Function Documentation
+
+### sortAndGroupFrames
+
+```cpp
+std::vector < FrameDescriptorSet > ImFusion::Dicom::DicomGeSignaExciteIOD::sortAndGroupFrames (const std::vector < FrameDescriptor > & frames) const
+```
+
+*override, virtual*
+
+Sorts and groups the given frames into sets of associated frames (e.g.
+
+volumes).
+
+All given frames should be somehow part of the returned frame sets. 2D images (i.e. IMAGESET) can be returned as framesets with only a single item. The exact order of the given frames is undefined. For multiframe Dicoms, this method is only called on the first frame. The [IOD](/cpp-sdk/4.5/api/classes/imfusion-dicom-iod) pointer held by each frame can be used to access special elements that are required for sorting and/or grouping.
+
+**Note:** When overriding this method, it should be treated like a static method, i.e. no members should be accessed.
+
+### loadFrameProperties
+
+```cpp
+void ImFusion::Dicom::DicomGeSignaExciteIOD::loadFrameProperties (const FrameDescriptor & desc, SharedImageSet & image)
+```
+
+*override, virtual*
+
+Loads any additional properties into the given image.
+
+This method is called after the complete image data has been loaded. *desc* will contain valid sharedImageIndex and sliceIndex parameters indicating where this frame has been stored in the image. Implementations must not reorder, remove or resize the images of the given SharedImageSet!
+
+The order or amount of images must not be changed inside the SharedImageSet! Also, the size of the individual images must not change. Otherwise, this would lead to inconsistent sharedImageIndex and sliceIndex values.
+
+This method might throw an exception if the properties somehow make the image completely invalid. This should only be used as a last restort if there is really no way to use the image in any meaningful way!
+
+**Note:** The default implementation will create an [ImageInfoDataComponent](/cpp-sdk/4.5/api/classes/imfusion-imageinfodatacomponent) instance and attach it to *image*. Thus, when overriding this method make sure to call the base class method.
+
+### dataset
+
+```cpp
+DcmDataset & ImFusion::Dicom::DicomGeSignaExciteIOD::dataset ()
+```
+
+*override, virtual*
+
+Dataset (or sub-item of a dataset) that will be used by the Modules.

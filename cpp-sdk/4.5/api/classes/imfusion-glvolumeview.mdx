@@ -1,0 +1,266 @@
+---
+title: "ImFusion::GlVolumeView"
+sidebarTitle: "GlVolumeView"
+description: "OpenGL view for 3D rendering and correct compositing of direct volume rendering and classic geometry-based GlObjects."
+---
+
+`#include <ImFusion/GL/GlVolumeView.h>`
+
+## Overview
+
+OpenGL view for 3D rendering and correct compositing of direct volume rendering and classic geometry-based GlObjects.
+
+[GlVolumeView](/cpp-sdk/4.5/api/classes/imfusion-glvolumeview) employs a [GlVolumeRenderer](/cpp-sdk/4.5/api/classes/imfusion-glvolumerenderer) instance for performing direct volume rendering (DVR) of 3D image data and integrating the regular render scene based on registered GlObjects. Use the [Camera](/cpp-sdk/4.5/api/classes/imfusion-camera) class to configure view matrix and projection settings in a comfortable fashion. Furthermore, the renderer offers the following extra functionality:
+
+- You can enable a LOD mode to reduce the DVR render resolution by a factor of 2 in each dimension to trade render quality for speed. Usually, one does this temporarily during user interaction to provide a smoother user experience.
+- [GlVolumeView](/cpp-sdk/4.5/api/classes/imfusion-glvolumeview) offers support for order-independent transparency (OIT) and will take care of setting up the OIT manager instance and blending the fragments. OIT is enabled by default if supported by the host system, see [GL::OrderIndependentTransparency](/cpp-sdk/4.5/api/classes/imfusion-gl-orderindependenttransparency) for more details.
+- You can enable Screen Space Ambient Occlusion (SSAO), a post-processing filter for approximating global illumination/shadowing effects.
+- You can use one of the [firstHitpointLocation()](#firsthitpointlocation-1-2) functions to query to backproject a pixel/viewport coordinate to world coordinates.
+- You can request [GlVolumeView](/cpp-sdk/4.5/api/classes/imfusion-glvolumeview) to provide a [GL::ObjectPicking](/cpp-sdk/4.5/api/classes/imfusion-gl-objectpicking) manager instance to provide object picking functionality of rendered GlObjects that support this feature.
+
+**Note:** Internally, [GlVolumeView](/cpp-sdk/4.5/api/classes/imfusion-glvolumeview) uses caching of the rendering result to avoid performing the expensive DVR ray marching step unless it's necessary, for instance when the view matrix or image data has changed. If you change scene parameters from the outside and encounter rendering artifacts due to the described caching behavior, call setDirty() to force a full re-render during the next frame.
+
+## Classes
+
+- class [RenderBufferWrapper](/cpp-sdk/4.5/api/classes/imfusion-glvolumeview-renderbufferwrapper) — Helper class to allow the injection of custom render buffers surrounding the entire render pipeline.
+- class [PickingToken](/cpp-sdk/4.5/api/classes/imfusion-glvolumeview-pickingtoken) — [GlVolumeView](/cpp-sdk/4.5/api/classes/imfusion-glvolumeview) uses tokens to handle access to object picking. The token enables picking and keeps it active until the last associated token gets destroyed.
+
+## Public Types
+
+- enum [LodMode](#lodmode) &#123; LOD_OFF , LOD_ON , LOD_AUTO_VOLUME_SIZE &#125; — Possible settings for Level of detail (LOD) rendering.
+- enum class [SSAOMode](#ssaomode) &#123; Disabled , GeometryOnly , Full &#125; — Enumeration of Screen Space Ambient Occlusion (SSAO) working modes.
+
+## Public Member Functions
+
+- **GlVolumeView** ([std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [GlVolumeRenderer](/cpp-sdk/4.5/api/classes/imfusion-glvolumerenderer) &gt; volumeRenderer=nullptr)
+- [Type](/cpp-sdk/4.5/api/classes/imfusion-glview) [type](#type) () const override — Return the type of this view.
+- bool [render](#render) () override — Render the view and if required the volume rendering.
+- bool **render** (const [GL::ViewState](/cpp-sdk/4.5/api/classes/imfusion-gl-viewstate) &[state](/cpp-sdk/4.5/api/classes/imfusion-glview)) — Render the view using the given state, overriding internal camera.
+- void **setCamera** (const [Camera](/cpp-sdk/4.5/api/classes/imfusion-camera) &camera)
+- const [Camera](/cpp-sdk/4.5/api/classes/imfusion-camera) & **camera** () const
+- void [setMatrix](#setmatrix) (const mat4 &m) override — Set view matrix from OpenGL camera to world coordinate system.
+- const mat4 & [matrix](#matrix) () const override — Returns the current view matrix (view coordinates to world coordinates).
+- [LodMode](#lodmode) **lodMode** () const — Returns the current setting of the Level of Detail rendering.
+- void **setLodMode** ([LodMode](#lodmode) value) — Sets the current setting of the Level of Detail rendering.
+- void **setDirty** () — Set the dirty flag to issue re-rendering.
+- [GlVolumeRenderer](/cpp-sdk/4.5/api/classes/imfusion-glvolumerenderer) \* **vr** () — Return volume renderer instance.
+- void **setVr** ([std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [GlVolumeRenderer](/cpp-sdk/4.5/api/classes/imfusion-glvolumerenderer) &gt; vr) — Sets the volume renderer instance, *vr* must not be null.
+- void **setMode** (int mode) — Set the volume rendering mode.
+- int **mode** () const — Return the volume rendering mode.
+- void **setClipOrientation** (bool flag) — Set the orientation of the chosen clip plane.
+- void [setClipPlane](#setclipplane) (int clipping) — Set which clip plane shall be used.
+- void **setCustomClipPlane** ([GlSlice](/cpp-sdk/4.5/api/classes/imfusion-glslice) \*plane) — Specify a custom clip plane for the volume rendering.
+- int **clipPlane** () const — Return which is the current clip plane.
+- bool **clipOrientation** () const — Return the clip plane orientation.
+- mat4 [computeDefaultMatrix](#computedefaultmatrix) ([std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [Geometry::AlignedBox](/cpp-sdk/4.5/api/classes/imfusion-geometry-alignedbox) &gt; sceneBounds=std::nullopt) const — Set the default view matrix for the given scene.
+- void **setDefaultMatrix** () — Set the default view position and orientation.
+- void **setDefaultMatrix** (const vec3 &center, const vec3 &extent)
+- vec3 **sceneCenter** () const — Return center of shown volume if available, or further objects such as meshes otherwise.
+- [Geometry::AlignedBox](/cpp-sdk/4.5/api/classes/imfusion-geometry-alignedbox) **sceneBounds** () const — Return axis-aligned bounding box of all shown images and annotations.
+- void **setRenderBufferWrapper** ([RenderBufferWrapper](/cpp-sdk/4.5/api/classes/imfusion-glvolumeview-renderbufferwrapper) \*w) — Sets a custom render buffer wrapper around the entire render pipeline.
+- [RenderBufferWrapper](/cpp-sdk/4.5/api/classes/imfusion-glvolumeview-renderbufferwrapper) \* **renderBufferWrapper** () const — Returns the custom render buffer wrapper if defined.
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; vec3 &gt; [firstHitpointLocation](#firsthitpointlocation-1-2) (vec2i pixel) const — Return the world coordinate of the front-most object rendered in the view.
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; vec3 &gt; [firstHitpointLocation](#firsthitpointlocation-2-2) (vec2i pixel, int filterKernelSize) const — Return the filtered world coordinate of the front-most object rendered in the view.
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [std::pair](http://en.cppreference.com/w/cpp/utility/pair.html)&lt; vec3, vec3 &gt; &gt; [firstHitpointLocationAndNormal](#firsthitpointlocationandnormal) (vec2i pixel, int filterKernelSize) const — Return the filtered world coordinate of the front-most object rendered in the view and the normal at that location.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [PickingToken](/cpp-sdk/4.5/api/classes/imfusion-glvolumeview-pickingtoken) &gt; **createPickingToken** () — Returns a picking token, enabling the picking if necessary. Picking is guaranteed to stay on while at least one of the tokens lives.
+- const [GL::ObjectPicking](/cpp-sdk/4.5/api/classes/imfusion-gl-objectpicking) \* **objectPicking** () const — Returns access to a pre-existing object picking. Consider using createPickingToken instead, unless you only want to check if picking is active right now.
+- bool **isOrderIndependentTransparencyEnabled** () const — Returns true if order-independent transparency support is enabled.
+- void **setOrderIndependentTransparencyEnabled** (bool value) — Specify whether order-independent transparency support should be enabled.
+- const [GL::OrderIndependentTransparency](/cpp-sdk/4.5/api/classes/imfusion-gl-orderindependenttransparency) \* [orderIndependentTransparency](#orderindependenttransparency) () const override — Returns the order-independent transparency handling object used by this view if supported and enabled.
+- [SSAOMode](#ssaomode) **ssaoMode** () const — Returns whether and when to apply SSAO post-processing.
+- void **setSsaoMode** ([SSAOMode](#ssaomode) value) — Sets whether and when to apply SSAO post-processing.
+- [GlScreenSpaceAmbientOcclusion](/cpp-sdk/4.5/api/classes/imfusion-glscreenspaceambientocclusion) \* **ssao** () — Returns the SSAO instance in case SSAO is enabled.
+- void [applyTransformation](#applytransformation) (const vec3 &translation, const vec3 &rotation, const vec3 \*center=0) — Applies the given transformation to the view's matrix.
+- bool **usesAutoClipDistance** () const — Returns the flag whether to compute OpenGL near/far clip distance automatically based on scene contents.
+- void **setUseAutoClipDistance** (bool value) — Sets the flag whether to compute OpenGL near/far clip distance automatically based on scene contents.
+- double **nearClipDistance** () const — Return the OpenGL near clip distance.
+- void **setNearClipDistance** (double val) — Set the OpenGL near clip distance, will have no effect if setUseAutoClipDistance() is enabled.
+- double **farClipDistance** () const — Return the OpenGL far clip distance.
+- void **setFarClipDistance** (double val) — Set the OpenGL far clip distance, will have no effect if setUseAutoClipDistance() is enabled.
+- void [setShowWorldCoordinateSystem](#setshowworldcoordinatesystem) (bool v) — Visualizes the world coordinate system.
+- bool **showsWorldCoordinateSystem** () const
+- void [setApplyClipPlaneToGlObjects](#setapplyclipplanetoglobjects) (bool v) — Defines if the clipping plane defined by m_clipping or m_customClipPlane (or the absence of that) should automatically be applied to [GL](/cpp-sdk/4.5/api/namespaces/imfusion-gl) objects rendered in this view as well, e.g.
+- bool **appliesClipPlaneToGlObjects** () const
+- bool **flipsY** () const — Returns the flag whether to flip the rendered image vertically.
+- void **setFlipY** (bool value) — Sets the flag whether to flip the rendered image vertically.
+- void **renderObjectsOnly** () — Renders only the GlObjects attached to the view.
+
+## Public Attributes
+
+- Signal&lt; GlVolumeView \* &gt; **matrixChanged**
+
+## Member Enumeration Documentation
+
+### LodMode
+
+```cpp
+enum ImFusion::GlVolumeView::LodMode
+```
+
+Possible settings for Level of detail (LOD) rendering.
+
+**Enumerator:**
+
+- `LOD_OFF` — Do not use LOD rendering.
+- `LOD_ON` — Always use LOD rendering.
+- `LOD_AUTO_VOLUME_SIZE` — Automatically adjust LOD rendering based on volume size (currently not supported).
+
+### SSAOMode
+
+```cpp
+enum class ImFusion::GlVolumeView::SSAOMode
+```
+
+*strong*
+
+Enumeration of Screen Space Ambient Occlusion (SSAO) working modes.
+
+**See also:** [GlScreenSpaceAmbientOcclusion](/cpp-sdk/4.5/api/classes/imfusion-glscreenspaceambientocclusion)
+
+**Enumerator:**
+
+- `Disabled` — SSAO is disabled.
+- `GeometryOnly` — SSAO is applied after the geometry rendering pass (before DVR pass).
+- `Full` — SSAO to the final scene (after DVR pass).
+
+## Member Function Documentation
+
+### type
+
+```cpp
+Type ImFusion::GlVolumeView::type () const
+```
+
+*inline, override, virtual*
+
+Return the type of this view.
+
+### render
+
+```cpp
+bool ImFusion::GlVolumeView::render ()
+```
+
+*override, virtual*
+
+Render the view and if required the volume rendering.
+
+### setMatrix
+
+```cpp
+void ImFusion::GlVolumeView::setMatrix (const mat4 & m)
+```
+
+*override, virtual*
+
+Set view matrix from OpenGL camera to world coordinate system.
+
+### matrix
+
+```cpp
+const mat4 & ImFusion::GlVolumeView::matrix () const
+```
+
+*override, virtual*
+
+Returns the current view matrix (view coordinates to world coordinates).
+
+### setClipPlane
+
+```cpp
+void ImFusion::GlVolumeView::setClipPlane (int clipping)
+```
+
+Set which clip plane shall be used.
+
+Here, a value of 0-2 means that the corresponding standard MPR slice is used as clip plane, 3 disables the clip plane, and 4 means that a custom clip plane is used if available.
+
+### computeDefaultMatrix
+
+```cpp
+mat4 ImFusion::GlVolumeView::computeDefaultMatrix (std::optional < Geometry::AlignedBox > sceneBounds = std::nullopt) const
+```
+
+Set the default view matrix for the given scene.
+
+If *sceneBounds* is null it will use sceneBounds().
+
+### firstHitpointLocation
+
+```cpp
+std::optional < vec3 > ImFusion::GlVolumeView::firstHitpointLocation (vec2i pixel) const
+```
+
+Return the world coordinate of the front-most object rendered in the view.
+
+**Parameters:**
+
+- `pixel` — Lookup location in the view's pixel space (0, 0)..(width, height).
+
+### firstHitpointLocation
+
+```cpp
+std::optional < vec3 > ImFusion::GlVolumeView::firstHitpointLocation (vec2i pixel, int filterKernelSize) const
+```
+
+Return the filtered world coordinate of the front-most object rendered in the view.
+
+**Parameters:**
+
+- `pixel` — Lookup location in the view's pixel space (0, 0)..(width, height).
+- `filterKernelSize` — Filter kernel size in terms of number of pixels in each direction.
+
+### firstHitpointLocationAndNormal
+
+```cpp
+std::optional < std::pair < vec3, vec3 > > ImFusion::GlVolumeView::firstHitpointLocationAndNormal (vec2i pixel, int filterKernelSize) const
+```
+
+Return the filtered world coordinate of the front-most object rendered in the view and the normal at that location.
+
+**Parameters:**
+
+- `pixel` — Lookup location in the view's pixel space (0, 0)..(width, height).
+- `filterKernelSize` — Filter kernel size in terms of number of pixels in each direction. \ret Location of the intersection and normal to the surface
+
+### orderIndependentTransparency
+
+```cpp
+const GL::OrderIndependentTransparency * ImFusion::GlVolumeView::orderIndependentTransparency () const
+```
+
+*override, virtual*
+
+Returns the order-independent transparency handling object used by this view if supported and enabled.
+
+GlObjects can use this instance to support correct blending of their semi-transparent surfaces with the ones from the other GlObjects.
+
+### applyTransformation
+
+```cpp
+void ImFusion::GlVolumeView::applyTransformation (const vec3 & translation, const vec3 & rotation, const vec3 * center = 0)
+```
+
+Applies the given transformation to the view's matrix.
+
+First `rotation` is performed around `center`, then `translation` is added. Scene center will be used if `center` is zero.
+
+### setShowWorldCoordinateSystem
+
+```cpp
+void ImFusion::GlVolumeView::setShowWorldCoordinateSystem (bool v)
+```
+
+Visualizes the world coordinate system.
+
+For the case of meshes and point clouds, the lengths of the axes are adjusted according to the data.
+
+### setApplyClipPlaneToGlObjects
+
+```cpp
+void ImFusion::GlVolumeView::setApplyClipPlaneToGlObjects (bool v)
+```
+
+Defines if the clipping plane defined by m_clipping or m_customClipPlane (or the absence of that) should automatically be applied to [GL](/cpp-sdk/4.5/api/namespaces/imfusion-gl) objects rendered in this view as well, e.g.
+
+meshes.

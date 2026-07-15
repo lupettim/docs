@@ -1,0 +1,59 @@
+---
+title: "ImFusion::InteractiveHistogramOverlay"
+sidebarTitle: "InteractiveHistogramOverlay"
+description: "Wraps a GlHistogramOverlay object (that contains a GlHistogram ) in an InteractiveOverlay ."
+---
+
+`#include <ImFusion/GUI/InteractiveHistogramOverlay.h>`
+
+## Overview
+
+Wraps a GlHistogramOverlay object (that contains a [GlHistogram](/cpp-sdk/4.5/api/classes/imfusion-glhistogram)) in an [InteractiveOverlay](/cpp-sdk/4.5/api/classes/imfusion-interactiveoverlay).
+
+## Public Slots
+
+- void **onViewDataChanged** () — Update the connection to the View's DisplayOptions.
+- void **setWindow** (double window) — Set the window.
+- void **setLevel** (double level) — Set the level.
+- void **update** () — Update the overlay (including the histogram).
+- void **updateHistogram** () — Update the histogram.
+
+## Public Member Functions
+
+- **InteractiveHistogramOverlay** ([AnchorPoint](/cpp-sdk/4.5/api/classes/imfusion-interactiveoverlay) anchor)
+- void **setView** ([ImageView2D](/cpp-sdk/4.5/api/classes/imfusion-imageview2d) \*view2d) — Set the corresponding 2D view for the histogram overlay.
+- void **setView** ([ImageView3D](/cpp-sdk/4.5/api/classes/imfusion-imageview3d) \*view3d) — Set the corresponding 3D view for the histogram overlay.
+- [ImageView2D](/cpp-sdk/4.5/api/classes/imfusion-imageview2d) \* **view2D** ()
+- [ImageView3D](/cpp-sdk/4.5/api/classes/imfusion-imageview3d) \* **view3D** ()
+- double **window** () const — Returns the window.
+- double **level** () const — Returns the level.
+- const GlHistogramOverlay \* **overlay** () const — Get a pointer to the underlying overlay.
+- GlHistogramOverlay \* **overlay** ()
+- void [render](#render) () override — Calls [GlOverlay::render()](/cpp-sdk/4.5/api/classes/imfusion-gloverlay) on the underlying [glOverlay()](/cpp-sdk/4.5/api/classes/imfusion-gui-viewoverlay) using the current [viewport()](/cpp-sdk/4.5/api/classes/imfusion-gui-viewoverlay) shrunk by [margin()](/cpp-sdk/4.5/api/classes/imfusion-gui-viewoverlay).
+
+## Protected Attributes
+
+- [ImageView2D](/cpp-sdk/4.5/api/classes/imfusion-imageview2d) \* **m_view2D** = nullptr
+- [ImageView3D](/cpp-sdk/4.5/api/classes/imfusion-imageview3d) \* **m_view3D** = nullptr
+- [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* **lastSis** = nullptr
+- int **lastFocus** = -1
+- QMap&lt; QString, QAction \* &gt; **m_actions**
+- GlHistogramOverlay \* **m_typedOverlay** = nullptr
+- [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [SignalConnection](/cpp-sdk/4.5/api/classes/imfusion-signalconnection) &gt; **m_viewDataChangedConnection**
+
+## Properties
+
+- float **level**
+- float **window**
+
+## Member Function Documentation
+
+### render
+
+```cpp
+void ImFusion::InteractiveHistogramOverlay::render ()
+```
+
+*override, virtual*
+
+Calls [GlOverlay::render()](/cpp-sdk/4.5/api/classes/imfusion-gloverlay) on the underlying [glOverlay()](/cpp-sdk/4.5/api/classes/imfusion-gui-viewoverlay) using the current [viewport()](/cpp-sdk/4.5/api/classes/imfusion-gui-viewoverlay) shrunk by [margin()](/cpp-sdk/4.5/api/classes/imfusion-gui-viewoverlay).

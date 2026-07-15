@@ -1,0 +1,86 @@
+---
+title: "ImFusion::GlBoundingBox"
+sidebarTitle: "GlBoundingBox"
+description: "Draws a bounding box."
+---
+
+`#include <ImFusion/GL/GlBoundingBox.h>`
+
+## Overview
+
+Draws a bounding box.
+
+## Public Member Functions
+
+- **GlBoundingBox** (const vec3 &[extent](#extent)=vec3::Ones(), const vec3 &[center](#center)=vec3::Zero())
+- void **setExtent** (const vec3 &[extent](#extent))
+- vec3 [extent](#extent) () const override — Return the extent of the object in local coordinates without considering any matrix.
+- void **setCenter** (const vec3 &[center](#center))
+- vec3 [center](#center) () const override — Return the center of the object in local coordinates without considering any matrix.
+- void [draw](#draw) (const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &[view](/cpp-sdk/4.5/api/classes/imfusion-glannotation)) override — Draw the object in 3D space.
+- [Geometry::AlignedBox](/cpp-sdk/4.5/api/classes/imfusion-geometry-alignedbox) [bounds](#bounds) () const override — Get the axis-aligned bounding box of this [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) in world space.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [typeName](#typename) () const override — Return unique identifier for this object class used for serialization.
+- void **setFilled** (bool v) — When "filled", surface of the bounding box is painted transparently.
+- bool **filled** () const
+
+## Protected Attributes
+
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [GL::VertexBuffer](/cpp-sdk/4.5/api/classes/imfusion-gl-vertexbuffer) &gt; **m_vbo**
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [GL::IndexBuffer](/cpp-sdk/4.5/api/classes/imfusion-gl-indexbuffer) &gt; **m_ibo**
+- vec3 **m_center**
+- vec3 **m_extent**
+- bool **m_filled** = false
+
+## Member Function Documentation
+
+### extent
+
+```cpp
+vec3 ImFusion::GlBoundingBox::extent () const
+```
+
+*inline, override, virtual*
+
+Return the extent of the object in local coordinates without considering any matrix.
+
+### center
+
+```cpp
+vec3 ImFusion::GlBoundingBox::center () const
+```
+
+*inline, override, virtual*
+
+Return the center of the object in local coordinates without considering any matrix.
+
+### draw
+
+```cpp
+void ImFusion::GlBoundingBox::draw (const GlView & view)
+```
+
+*override, virtual*
+
+Draw the object in 3D space.
+
+### bounds
+
+```cpp
+Geometry::AlignedBox ImFusion::GlBoundingBox::bounds () const
+```
+
+*override, virtual*
+
+Get the axis-aligned bounding box of this [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) in world space.
+
+Return an empty (default-constructed) AlignedBox object if the [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) does not reside in world space.
+
+### typeName
+
+```cpp
+std::string ImFusion::GlBoundingBox::typeName () const
+```
+
+*inline, override, virtual*
+
+Return unique identifier for this object class used for serialization.

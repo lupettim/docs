@@ -1,0 +1,85 @@
+---
+title: "ImFusion::Dicom::RealWorldValueMappingExtension"
+sidebarTitle: "RealWorldValueMappingExtension"
+description: "Real World Value Mapping Macro (PS 3.3 C.7.6.16.2.11)."
+---
+
+`#include <ImFusion/Dicom/RealWorldValueMappingExtension.h>`
+
+## Overview
+
+Real World Value Mapping Macro (PS 3.3 C.7.6.16.2.11).
+
+**See also:** - [http://dicom.nema.org/dicom/2013/output/chtml/part03/sect_C.7.html#sect_C.7.6.16.2.11](http://dicom.nema.org/dicom/2013/output/chtml/part03/sect_C.7.html#sect_C.7.6.16.2.11)
+- [RealWorldMappingDataComponent](/cpp-sdk/4.5/api/classes/imfusion-realworldmappingdatacomponent)
+
+## Public Member Functions
+
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [Extension](/cpp-sdk/4.5/api/classes/imfusion-dicom-extension) &gt; [clone](#clone) () const override — Return a clone this object Usually the implementation will look like this:
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [name](#name) () const override — Return a unique display string for this extension.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [Data](/cpp-sdk/4.5/api/classes/imfusion-data) &gt; &gt; [load](#load) (const [FrameDescriptor](/cpp-sdk/4.5/api/structs/imfusion-dicom-framedescriptor) &frame, [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &sis) const override — Loads the Real-World-Value-Mapping and creates a [RealWorldMappingDataComponent](/cpp-sdk/4.5/api/classes/imfusion-realworldmappingdatacomponent) accordingly.
+- void [save](#save) (const [FrameDescriptor](/cpp-sdk/4.5/api/structs/imfusion-dicom-framedescriptor) &frame, const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &sis) const override — Save data from the given [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) to DICOM.
+- bool [showInWriterUI](#showinwriterui) () const override — Whether this extension will show up in the UI and can be enabled/disabled by the user.
+
+## Member Function Documentation
+
+### clone
+
+```cpp
+std::unique_ptr < Extension > ImFusion::Dicom::RealWorldValueMappingExtension::clone () const
+```
+
+*inline, override, virtual*
+
+Return a clone this object Usually the implementation will look like this:
+
+```cpp
+return std::make_unique<YOUR_CLASSNAME_HERE>(*this);
+```
+ fragment
+
+### name
+
+```cpp
+std::string ImFusion::Dicom::RealWorldValueMappingExtension::name () const
+```
+
+*override, virtual*
+
+Return a unique display string for this extension.
+
+### load
+
+```cpp
+std::vector < std::unique_ptr < Data > > ImFusion::Dicom::RealWorldValueMappingExtension::load (const FrameDescriptor & frame, SharedImageSet & sis) const
+```
+
+*override, virtual*
+
+Loads the Real-World-Value-Mapping and creates a [RealWorldMappingDataComponent](/cpp-sdk/4.5/api/classes/imfusion-realworldmappingdatacomponent) accordingly.
+
+Since DICOM defines this mapping on the unmodified storage values, make sure that this method is not called after the storage values have been changed (e.g. through [MemImage::prepare](/cpp-sdk/4.5/api/classes/imfusion-memimage)). For this reason, Real-World-Value-Mapping is not supported with non-linear modality LUTs.
+
+### save
+
+```cpp
+void ImFusion::Dicom::RealWorldValueMappingExtension::save (const FrameDescriptor & frame, const SharedImageSet & sis) const
+```
+
+*inline, override, virtual*
+
+Save data from the given [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) to DICOM.
+
+This method will be called once for each frame of the [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset). Use [FrameDescriptor::iod](/cpp-sdk/4.5/api/structs/imfusion-dicom-framedescriptor) to access the DICOM tags and [FrameDescriptor::sharedImageIndex](/cpp-sdk/4.5/api/structs/imfusion-dicom-framedescriptor)/sliceIndex to figure out which frame data should be saved. The matrix parameters of frame should be ignored. Use the matrix of the [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) instead.
+
+### showInWriterUI
+
+```cpp
+bool ImFusion::Dicom::RealWorldValueMappingExtension::showInWriterUI () const
+```
+
+*inline, override, virtual*
+
+Whether this extension will show up in the UI and can be enabled/disabled by the user.
+
+The save method will be called independently of this value. This is useful if the extension only implements load.

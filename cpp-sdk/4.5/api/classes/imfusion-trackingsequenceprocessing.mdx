@@ -1,0 +1,122 @@
+---
+title: "ImFusion::TrackingSequenceProcessing"
+sidebarTitle: "TrackingSequenceProcessing"
+description: "Basic tracking sequence filtering algorithm."
+---
+
+`#include <ImFusion/Base/TrackingSequenceProcessing.h>`
+
+## Overview
+
+Basic tracking sequence filtering algorithm.
+
+## Public Types
+
+- enum [TrackingSequenceProcessingMode](#trackingsequenceprocessingmode) &#123; ClearBadQuality = 1 , ClearOutliers = 2 , ResampleToReference = 4 , TemporalCalibration = 8 , ConvertToPointCloud = 16 , Invert = 32 &#125; — Mode for stream processing.
+
+## Public Member Functions
+
+- **TrackingSequenceProcessing** ([TrackingSequence](/cpp-sdk/4.5/api/classes/imfusion-trackingsequence) \*tsForProcessing, [TrackingSequence](/cpp-sdk/4.5/api/classes/imfusion-trackingsequence) \*tsReference=nullptr) — Creates the algorithm instance with a tracking sequence.
+- **~TrackingSequenceProcessing** () override — Destructor.
+
+## Protected Attributes
+
+- [TrackingSequence](/cpp-sdk/4.5/api/classes/imfusion-trackingsequence) \* **m_trackingInput** — [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) input for processing.
+- const [TrackingSequence](/cpp-sdk/4.5/api/classes/imfusion-trackingsequence) \* **m_trackingReference** — Reference input, used for resampling.
+- bool **m_createNew** — If true, input will be cloned and not modified.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [TrackingSequence](/cpp-sdk/4.5/api/classes/imfusion-trackingsequence) &gt; **m_trackingOutput** — Tracking output if m_createNew is set to true.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [PointCloud](/cpp-sdk/4.5/api/classes/imfusion-pointcloud) &gt; **m_pointCloudOutput** — Point cloud output.
+- [TrackingSequenceProcessingMode](#trackingsequenceprocessingmode) **m_mode** — Mode for stream processing.
+- int **m_outlierDetectionWindowSize**
+- double **m_outlierDetectionTransRatioThreshold**
+- double **m_outlierDetectionRotRatioThreshold**
+
+## Methods implementing the algorithm interface
+
+- void [compute](#compute) () override — Applies the processing.
+- [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) [takeOutput](#takeoutput) () override — If new data was created, make it available here.
+- static bool [createCompatible](#createcompatible) (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=0)
+
+## Methods implementing the Configurable interface
+
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+## Member Enumeration Documentation
+
+### TrackingSequenceProcessingMode
+
+```cpp
+enum ImFusion::TrackingSequenceProcessing::TrackingSequenceProcessingMode
+```
+
+Mode for stream processing.
+
+**Enumerator:**
+
+- `ClearBadQuality` — Removal of bad quality samples (NaN or &lt;0.1), can be combined with ClearOutliers.
+- `ClearOutliers` — Removal of outliers, can be combined with ClearBadQuality.
+- `ResampleToReference` — Resample first input to match timing of second one.
+- `TemporalCalibration` — Perform temporal calibration with respect to second input.
+- `ConvertToPointCloud` — Perform conversion to point cloud.
+- `Invert` — Invert matrices.
+
+## Member Function Documentation
+
+### createCompatible
+
+```cpp
+bool ImFusion::TrackingSequenceProcessing::createCompatible (const DataList & data, Algorithm ** a = 0)
+```
+
+*static*
+
+Factory method to check for applicability or to create the algorithm
+
+### compute
+
+```cpp
+void ImFusion::TrackingSequenceProcessing::compute ()
+```
+
+*override, virtual*
+
+Applies the processing.
+
+### takeOutput
+
+```cpp
+OwningDataList ImFusion::TrackingSequenceProcessing::takeOutput ()
+```
+
+*override, virtual*
+
+If new data was created, make it available here.
+
+### configure
+
+```cpp
+void ImFusion::TrackingSequenceProcessing::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### configuration
+
+```cpp
+void ImFusion::TrackingSequenceProcessing::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality

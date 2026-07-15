@@ -1,0 +1,34 @@
+---
+title: "SqrtAlgorithm.h"
+---
+
+```cpp
+#pragma once
+
+#include <ImFusion/Base/Algorithm.h>
+#include <ImFusion/Base/SharedImageSet.h>
+#include <ImFusion/Base/TypedImage.h>
+
+#include <vector>
+
+using namespace ImFusion;
+
+class SqrtAlgorithm : public Algorithm
+{
+public:
+    SqrtAlgorithm(SharedImageSet* image);
+    ~SqrtAlgorithm();
+
+ static bool createCompatible(const DataList& data, Algorithm** a = 0);
+
+ void compute();
+
+ void configure(const Properties* p);
+ void configuration(Properties* p) const;
+
+private:
+ SharedImageSet* m_image;
+ double m_multiplier;
+};
+```
+ fragment

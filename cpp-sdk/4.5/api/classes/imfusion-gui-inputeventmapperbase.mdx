@@ -1,0 +1,201 @@
+---
+title: "ImFusion::GUI::InputEventMapperBase"
+sidebarTitle: "InputEventMapperBase"
+description: "Helper class to maintain a map of mouse/keyboard combinations to an enumeration of actions."
+---
+
+`#include <ImFusion/GUI/InputEventMapper.h>`
+
+## Overview
+
+Helper class to maintain a map of mouse/keyboard combinations to an enumeration of actions.
+
+This interface is supposed to be used by input event handlers. They often define a set of interaction metaphors and/or shortcuts that enable the user to conduct particular actions (e.g. move the camera). [InputEventMapper](/cpp-sdk/4.5/api/classes/imfusion-gui-inputeventmapper) allows for specifying mappings in the form of keyboard modifiers together with either a mouse or keyboard button press, and tie them to an action represented by an enumeration value. During event handling the match member functions can be called to conveniently check if an incoming [InputEvent](/cpp-sdk/4.5/api/classes/imfusion-gui-inputevent) matches one of the defined actions.
+
+```cpp
+enum class Action {
+    Zoom,
+    Pan,
+    Reset,
+    ...
+};
+InputEventMapper<Action> iem;
+
+// during setup:
+iem.addMapping(Action::Zoom, MouseEvent::Button::Left, InputEvent::KeyboardModifier::None);
+iem.addMapping(Action::Pan, MouseEvent::Button::Right, InputEvent::KeyboardModifier::None);
+iem.addMapping(Action::Reset, KeyEvent::Key::R, InputEvent::KeyboardModifier::Alt);
+
+// during eventHandling:
+EventResult handleInputEvent(const InputEvent& event) {
+    ...
+ // example usage of matchAny()
+ if (std::optional<Action> a = iem.matchAny(event)) {
+ switch (*a) {
+ case Action::Zoom:
+                ...
+ break;
+ case Action::Pan:
+                ...
+ break;
+ case Action::Reset:
+                ...
+ break;
+        }
+    }
+
+ // example usage of matches()
+ if (iem.matches(event, Action::Reset) {
+        ...
+    }
+}
+```
+ fragment
+By default, [InputEventMapper](/cpp-sdk/4.5/api/classes/imfusion-gui-inputeventmapper) will not allow for duplicate mappings (i.e. that the same input event combination maps to two different actions). You can optionally enable support for this if your use case requires it and you can resolve the potential ambiguity on the caller site. Be advised that in this case you should use [matchAny()](#matchany-1-3) with caution because it is unspecified which action it returns in case of duplicates.
+
+This class implements the [Configurable](/cpp-sdk/4.5/api/classes/imfusion-configurable) interface so that you can easily serialize and restore an existing mapping.
+
+**Note:** This base class uses a plain int32_t as type for the action enumeration. Use the derived class [InputEventMapper](/cpp-sdk/4.5/api/classes/imfusion-gui-inputeventmapper)&lt;T&gt; for a type-safe version accepting only the specified enum type.
+
+## Classes
+
+- struct [MouseMapping](/cpp-sdk/4.5/api/structs/imfusion-gui-inputeventmapperbase-mousemapping)
+- struct [KeyboardMapping](/cpp-sdk/4.5/api/structs/imfusion-gui-inputeventmapperbase-keyboardmapping)
+
+## Public Member Functions
+
+- bool **allowsDuplicateMappings** () const — Returns whether it should allow a single mouse/keyboard combination map to multiple different actions.
+- void **setAllowDuplicateMappings** (bool value) — Sets whether it should allow a single mouse/keyboard combination map to multiple different actions.
+- bool [addMapping](#addmapping-1-2) (int32_t action, [MouseEvent::Button](/cpp-sdk/4.5/api/classes/imfusion-gui-mouseevent) button, [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; [InputEvent::KeyboardModifier](/cpp-sdk/4.5/api/classes/imfusion-gui-inputevent) &gt; modifiers) — Adds a new mouse interaction metaphor and map it to the given *action*.
+- bool [addMapping](#addmapping-2-2) (int32_t action, [KeyEvent::Key](/cpp-sdk/4.5/api/classes/imfusion-gui-keyevent) key, [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; [InputEvent::KeyboardModifier](/cpp-sdk/4.5/api/classes/imfusion-gui-inputevent) &gt; modifiers) — Adds a new keyboard interaction metaphor and map it to the given *action*.
+- int **removeMapping** (int32_t action) — Removes all existing mappings for the given *action* and returns the number of mappings removed.
+- bool **removeMapping** (int32_t action, [MouseEvent::Button](/cpp-sdk/4.5/api/classes/imfusion-gui-mouseevent) button, [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; [InputEvent::KeyboardModifier](/cpp-sdk/4.5/api/classes/imfusion-gui-inputevent) &gt; modifiers) — Removes the given mouse interaction mapping.
+- bool **removeMapping** (int32_t action, [KeyEvent::Key](/cpp-sdk/4.5/api/classes/imfusion-gui-keyevent) key, [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; [InputEvent::KeyboardModifier](/cpp-sdk/4.5/api/classes/imfusion-gui-inputevent) &gt; modifiers) — Removes the given keyboard interaction mapping.
+- void **clear** () — Removes all existing mappings.
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; int32_t &gt; [matchAny](#matchany-1-3) (const [InputEvent](/cpp-sdk/4.5/api/classes/imfusion-gui-inputevent) &event) const — Matches the given *event* against the defined mappings and returns the first corresponding action value.
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; int32_t &gt; [matchAny](#matchany-2-3) ([MouseEvent::Button](/cpp-sdk/4.5/api/classes/imfusion-gui-mouseevent) button, [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; [InputEvent::KeyboardModifier](/cpp-sdk/4.5/api/classes/imfusion-gui-inputevent) &gt; modifiers) const — Matches the given mouse interaction against the defined mappings and returns the first corresponding action value.
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; int32_t &gt; [matchAny](#matchany-3-3) ([KeyEvent::Key](/cpp-sdk/4.5/api/classes/imfusion-gui-keyevent) key, [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; [InputEvent::KeyboardModifier](/cpp-sdk/4.5/api/classes/imfusion-gui-inputevent) &gt; modifiers) const — Matches the given keyboard interaction against the defined mappings and returns the first corresponding action value.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; int32_t &gt; [matchAll](#matchall-1-3) (const [InputEvent](/cpp-sdk/4.5/api/classes/imfusion-gui-inputevent) &event) const — Matches the given *event* against the defined mappings and returns all corresponding action values.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; int32_t &gt; [matchAll](#matchall-2-3) ([MouseEvent::Button](/cpp-sdk/4.5/api/classes/imfusion-gui-mouseevent) button, [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; [InputEvent::KeyboardModifier](/cpp-sdk/4.5/api/classes/imfusion-gui-inputevent) &gt; modifiers) const — Matches the given mouse interaction against the defined mappings and returns all corresponding action values.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; int32_t &gt; [matchAll](#matchall-3-3) ([KeyEvent::Key](/cpp-sdk/4.5/api/classes/imfusion-gui-keyevent) key, [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; [InputEvent::KeyboardModifier](/cpp-sdk/4.5/api/classes/imfusion-gui-inputevent) &gt; modifiers) const — Matches the given keyboard interaction against the defined mappings and returns all corresponding action values.
+- bool **matches** (const [InputEvent](/cpp-sdk/4.5/api/classes/imfusion-gui-inputevent) &event, int32_t action) const — Returns true if the given *event* matches the given *action*.
+- bool **matches** ([MouseEvent::Button](/cpp-sdk/4.5/api/classes/imfusion-gui-mouseevent) button, [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; [InputEvent::KeyboardModifier](/cpp-sdk/4.5/api/classes/imfusion-gui-inputevent) &gt; modifiers, int32_t action) const — Returns true if the given mouse interaction matches the given *action*.
+- bool **matches** ([KeyEvent::Key](/cpp-sdk/4.5/api/classes/imfusion-gui-keyevent) key, [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; [InputEvent::KeyboardModifier](/cpp-sdk/4.5/api/classes/imfusion-gui-inputevent) &gt; modifiers, int32_t action) const — Returns true if the given keyboard interaction matches the given *action*.
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+## Protected Attributes
+
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [MouseMapping](/cpp-sdk/4.5/api/structs/imfusion-gui-inputeventmapperbase-mousemapping) &gt; **m_mouseMappings**
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [KeyboardMapping](/cpp-sdk/4.5/api/structs/imfusion-gui-inputeventmapperbase-keyboardmapping) &gt; **m_keyboardMappings**
+- bool **m_allowDuplicateMappings** = false
+
+## Member Function Documentation
+
+### addMapping
+
+```cpp
+bool ImFusion::GUI::InputEventMapperBase::addMapping (int32_t action, MouseEvent::Button button, Flags < InputEvent::KeyboardModifier > modifiers)
+```
+
+Adds a new mouse interaction metaphor and map it to the given *action*.
+
+Returns false if the given action was not added due to a conflict (same button+modifiers but different action and allowsDuplicateMappings() is off). You can use [matchAny()](#matchany-1-3) to query in advance if a particular mapping will conflict, e.g. matchAny(button, modifiers) != action.
+
+### addMapping
+
+```cpp
+bool ImFusion::GUI::InputEventMapperBase::addMapping (int32_t action, KeyEvent::Key key, Flags < InputEvent::KeyboardModifier > modifiers)
+```
+
+Adds a new keyboard interaction metaphor and map it to the given *action*.
+
+Returns false if the given action was not added due to a conflict (same button+modifiers but different action and allowsDuplicateMappings() is off). You can use [matchAny()](#matchany-1-3) to query in advance if a particular mapping will conflict, e.g. matchAny(button, modifiers) != action.
+
+### matchAny
+
+```cpp
+std::optional < int32_t > ImFusion::GUI::InputEventMapperBase::matchAny (const InputEvent & event) const
+```
+
+Matches the given *event* against the defined mappings and returns the first corresponding action value.
+
+If duplicate mappings are allowed and multiple actions match it is unspecified which one is returned. Returns a std::nullopt in case the input event does not match any defined mapping.
+
+### matchAny
+
+```cpp
+std::optional < int32_t > ImFusion::GUI::InputEventMapperBase::matchAny (MouseEvent::Button button, Flags < InputEvent::KeyboardModifier > modifiers) const
+```
+
+Matches the given mouse interaction against the defined mappings and returns the first corresponding action value.
+
+If duplicate mappings are allowed and multiple actions match it is unspecified which one is returned. Returns a std::nullopt in case the input event does not match any defined mapping.
+
+### matchAny
+
+```cpp
+std::optional < int32_t > ImFusion::GUI::InputEventMapperBase::matchAny (KeyEvent::Key key, Flags < InputEvent::KeyboardModifier > modifiers) const
+```
+
+Matches the given keyboard interaction against the defined mappings and returns the first corresponding action value.
+
+If duplicate mappings are allowed and multiple actions match it is unspecified which one is returned. Returns a std::nullopt in case the input event does not match any defined mapping.
+
+### matchAll
+
+```cpp
+std::vector < int32_t > ImFusion::GUI::InputEventMapperBase::matchAll (const InputEvent & event) const
+```
+
+Matches the given *event* against the defined mappings and returns all corresponding action values.
+
+Returns an empty collection in case the input event does not match any defined mapping.
+
+### matchAll
+
+```cpp
+std::vector < int32_t > ImFusion::GUI::InputEventMapperBase::matchAll (MouseEvent::Button button, Flags < InputEvent::KeyboardModifier > modifiers) const
+```
+
+Matches the given mouse interaction against the defined mappings and returns all corresponding action values.
+
+Returns an empty collection in case the input event does not match any defined mapping.
+
+### matchAll
+
+```cpp
+std::vector < int32_t > ImFusion::GUI::InputEventMapperBase::matchAll (KeyEvent::Key key, Flags < InputEvent::KeyboardModifier > modifiers) const
+```
+
+Matches the given keyboard interaction against the defined mappings and returns all corresponding action values.
+
+Returns an empty collection in case the input event does not match any defined mapping.
+
+### configure
+
+```cpp
+void ImFusion::GUI::InputEventMapperBase::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### configuration
+
+```cpp
+void ImFusion::GUI::InputEventMapperBase::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality

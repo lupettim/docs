@@ -1,0 +1,216 @@
+---
+title: "ImFusion::GlTPSDeformation"
+sidebarTitle: "GlTPSDeformation"
+description: "The GlTPSDeformation class provides deformations using a thin-plate splines (TPS)."
+---
+
+`#include <ImFusion/GL/GlTPSDeformation.h>`
+
+## Overview
+
+The [GlTPSDeformation](/cpp-sdk/4.5/api/classes/imfusion-gltpsdeformation) class provides deformations using a thin-plate splines (TPS).
+
+## Public Member Functions
+
+- **GlTPSDeformation** (int [dimension](#dimension))
+- **GlTPSDeformation** ([SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*img)
+- **GlTPSDeformation** (const GlTPSDeformation &other)
+- [Deformation](/cpp-sdk/4.5/api/classes/imfusion-deformation) \* [clone](#clone) () const override — Returns a copy of the deformation.
+- int [dimension](#dimension) () const override — Dimension of the deformation.
+- void **setUseLocalModel** (bool useLocal)
+- bool **useLocalModel** () const
+- void [setPointCorrespondences](#setpointcorrespondences) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; &pts1, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; &pts2) — Set point correspondences.
+- void [setDefaultControlPoints](#setdefaultcontrolpoints) ([SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*img, bool fit=false) — Set the four (in 2D) or eight (in 3D) default control points in the image corners, optionally fitting it to the content.
+- void **setControlPoints** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; &pts) — Set the control points given in world coordinate system.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; [controlPoints](#controlpoints) () const override — Get current control points.
+- void **addControlPoint** (const vec3 &points) — Add control point.
+- void **removeControlPoint** (int index) — Remove control point at index.
+- vec3 [displacement](#displacement) (const vec3 &pos) const override — Get displacement at given point.
+- int [setIncludeArguments](#setincludearguments) ([GL::Program](/cpp-sdk/4.5/api/classes/imfusion-gl-program) &p, const [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*img=nullptr, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &prefix="deform") const override — Initializes the FFDeformation shader header to deform the given image.
+- void **setRegularizerWeight** (double value)
+- double **regularizerWeight** () const
+- void [setDisplacement](#setdisplacement) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3f &gt; &d) override — Set displacement in world coordinate units for every control points.
+- void **setDisplacement** (int idx, const vec3f &d) — Sets the displacement in world coordinate units at the given control point.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3f &gt; [displacements](#displacements) () const override — Get displacement in world coordinate units of all control points.
+- const [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) \* **displacementTexture** () const
+- const [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) \* **controlPointTexture** () const
+- int [numberOfControlPoints](#numberofcontrolpoints) () const override — Returns the number of control points.
+- bool [isIdentity](#isidentity) () const override — Returns if the current state of the deformation transformations the image or not.
+- void [setIdentity](#setidentity) () override — Sets the displacement of all control points to zero.
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Set one or multiple properties.
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Retrieve the properties of this object.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [id](#id) () const override — Returns a unique string identifier for this type of deformation.
+
+## Protected Attributes
+
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; **m_pts** — Control points.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3f &gt; **m_disp** — Displacement of control points in mm.
+- [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) \* **m_texDisp** — Displacement texture (same content as m_disp).
+- Eigen::MatrixXd **m_W**
+- [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) \* **m_texParameters**
+- [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) \* **m_texControlPoints**
+- int **m_dimension**
+- double **m_lambda**
+- bool **m_useLocal**
+
+## Member Function Documentation
+
+### clone
+
+```cpp
+Deformation * ImFusion::GlTPSDeformation::clone () const
+```
+
+*override, virtual*
+
+Returns a copy of the deformation.
+
+### dimension
+
+```cpp
+int ImFusion::GlTPSDeformation::dimension () const
+```
+
+*override, virtual*
+
+Dimension of the deformation.
+
+### setPointCorrespondences
+
+```cpp
+void ImFusion::GlTPSDeformation::setPointCorrespondences (const std::vector < vec3 > & pts1, const std::vector < vec3 > & pts2)
+```
+
+Set point correspondences.
+
+This is equivalent to setting the control points to the first correspondence and setting the displacement to the vector to the second correspondence
+
+### setDefaultControlPoints
+
+```cpp
+void ImFusion::GlTPSDeformation::setDefaultControlPoints (SharedImage * img, bool fit = false)
+```
+
+Set the four (in 2D) or eight (in 3D) default control points in the image corners, optionally fitting it to the content.
+
+If the fit parameter is true, the minimum bounding box of the non-zero image content will be used to place the control points.
+
+### controlPoints
+
+```cpp
+std::vector < vec3 > ImFusion::GlTPSDeformation::controlPoints () const
+```
+
+*override, virtual*
+
+Get current control points.
+
+### displacement
+
+```cpp
+vec3 ImFusion::GlTPSDeformation::displacement (const vec3 & pos) const
+```
+
+*override, virtual*
+
+Get displacement at given point.
+
+### setIncludeArguments
+
+```cpp
+int ImFusion::GlTPSDeformation::setIncludeArguments (GL::Program & p, const SharedImage * img = nullptr, const std::string & prefix = "deform") const
+```
+
+*override, virtual*
+
+Initializes the FFDeformation shader header to deform the given image.
+
+The displacements are computed from the texture coordinates of the image and are returned in image coordinates, therefore this method should be called again when the displacement should be computed on an image with different extent.
+
+### setDisplacement
+
+```cpp
+void ImFusion::GlTPSDeformation::setDisplacement (const std::vector < vec3f > & d)
+```
+
+*override, virtual*
+
+Set displacement in world coordinate units for every control points.
+
+For 2D images the z-coordinate of the displacement is ignored.
+
+### displacements
+
+```cpp
+std::vector < vec3f > ImFusion::GlTPSDeformation::displacements () const
+```
+
+*override, virtual*
+
+Get displacement in world coordinate units of all control points.
+
+### numberOfControlPoints
+
+```cpp
+int ImFusion::GlTPSDeformation::numberOfControlPoints () const
+```
+
+*override, virtual*
+
+Returns the number of control points.
+
+### isIdentity
+
+```cpp
+bool ImFusion::GlTPSDeformation::isIdentity () const
+```
+
+*override, virtual*
+
+Returns if the current state of the deformation transformations the image or not.
+
+### setIdentity
+
+```cpp
+void ImFusion::GlTPSDeformation::setIdentity ()
+```
+
+*override, virtual*
+
+Sets the displacement of all control points to zero.
+
+### configure
+
+```cpp
+void ImFusion::GlTPSDeformation::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Set one or multiple properties.
+
+### configuration
+
+```cpp
+void ImFusion::GlTPSDeformation::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Retrieve the properties of this object.
+
+### id
+
+```cpp
+std::string ImFusion::GlTPSDeformation::id () const
+```
+
+*inline, override, virtual*
+
+Returns a unique string identifier for this type of deformation.
+
+Usually the name of the class.
+
+**Note:** To avoid conflicts make sure to include potential plugin names into this ID. Due to the modular architecture of the ImFusion library, uniqueness of IDs cannot be checked at compile time. However, [DeformationFactory](/cpp-sdk/4.5/api/classes/imfusion-deformationfactory) will check the uniqueness of the ID during registration.
+
+**See also:** [DeformationFactory](/cpp-sdk/4.5/api/classes/imfusion-deformationfactory)

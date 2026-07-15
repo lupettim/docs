@@ -1,0 +1,154 @@
+---
+title: "ImFusion::BackgroundExporter"
+sidebarTitle: "BackgroundExporter"
+description: "Writing data files into disk in a background thread."
+---
+
+`#include <ImFusion/IO/BackgroundExporter.h>`
+
+## Overview
+
+Writing data files into disk in a background thread.
+
+This class exports data lists into disk as ImFusionFile, DICOM, and other supported file formats using a background thread.
+
+## Public Types
+
+- enum [ExportFileType](#exportfiletype) &#123; IMF = 0 , DICOM = 1 &#125; — File type used for export.
+
+## Public Member Functions
+
+- **BackgroundExporter** () — Constructor.
+- **~BackgroundExporter** () override — Destructor.
+- bool [saveBlocking](#saveblocking) ([DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) data, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &filepath) — Save `data` directly in a blocking fashion on the calling thread to the defined `filepath`.
+- [std::future](http://en.cppreference.com/w/cpp/thread/future.html)&lt; void &gt; [saveAsync](#saveasync-1-4) ([Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &filepath) — Creates a saving task for `data`, which will not be deleted, to the defined `filepath`.
+- [std::future](http://en.cppreference.com/w/cpp/thread/future.html)&lt; void &gt; [saveAsync](#saveasync-2-4) ([Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &filepath, const [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; void(const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &)&gt; &savingCompleteFunc) — Creates a saving task for `data`, which will not be deleted, to the defined `filepath`.
+- [std::future](http://en.cppreference.com/w/cpp/thread/future.html)&lt; void &gt; [saveAsync](#saveasync-3-4) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \* &gt; &data, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; &filenames, bool deleteAfterwards=false) — Creates a saving task for elements in `data`, to the defined paths in `filenames`.
+- [std::future](http://en.cppreference.com/w/cpp/thread/future.html)&lt; void &gt; [saveAsync](#saveasync-4-4) ([DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) data, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &filepath, const [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; void(const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &)&gt; &savingCompleteFunc) — Creates a saving task for `data`, which will not be deleted, to the defined `filepath`.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; [preparePatientFilenames](#preparepatientfilenames) ([std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) directory, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &patientName, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &suffix, bool createRawSubFolder) — Produces a non-existing but writable file name in the given `directory`, of the form `patientname` - XX - `suffix`, where XX starts with 01 and counts up.
+- bool **isBeingSaved** (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data) — Allows to inquire whether there exists a not completed saving task for the given `data`. Thread-safe.
+- void **setFileType** ([ExportFileType](#exportfiletype) type) — Sets the preferred file type.
+- void **setCompression** (bool b) — Sets whether compression is used for saving.
+- [Filesystem::Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path) **lastRecordedFile** () const — Returns the path to the last recorded file.
+
+## Methods implementing the Configurable interface
+
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+## Member Enumeration Documentation
+
+### ExportFileType
+
+```cpp
+enum ImFusion::BackgroundExporter::ExportFileType
+```
+
+File type used for export.
+
+**Enumerator:**
+
+- `IMF` — ImFusion file format.
+- `DICOM` — DICOM format.
+
+## Member Function Documentation
+
+### saveBlocking
+
+```cpp
+bool ImFusion::BackgroundExporter::saveBlocking (DataList data, const std::string & filepath)
+```
+
+Save `data` directly in a blocking fashion on the calling thread to the defined `filepath`.
+
+Thread-safe.
+
+### saveAsync
+
+```cpp
+std::future < void > ImFusion::BackgroundExporter::saveAsync (Data * data, const std::string & filepath)
+```
+
+Creates a saving task for `data`, which will not be deleted, to the defined `filepath`.
+
+The task will run on next occasion in an asynchronous thread. `data` must not otherwise be deleted before the task is completed, see isBeingSaved(). Thread-safe. Returns a future, call future::wait before deleting the `data`
+
+### saveAsync
+
+```cpp
+std::future < void > ImFusion::BackgroundExporter::saveAsync (Data * data, const std::string & filepath, const std::function < void(const DataList &)> & savingCompleteFunc)
+```
+
+Creates a saving task for `data`, which will not be deleted, to the defined `filepath`.
+
+The task will run on next occasion in an asynchronous thread. The function `savingCompleteFunc` will be called with `data` being the only element of the provided [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist), so that custom tasks can be run after successful saving, for instance removal blocks in the UI to delete the data.
+
+**Parameters:**
+
+- `data` — must not otherwise be deleted before the task is completed, see isBeingSaved().
+- `savingCompleteFunc` — is called before isBeingSaved() will return false again. Thread-safe. Returns a future, call future::wait before deleting the `data`
+
+### saveAsync
+
+```cpp
+std::future < void > ImFusion::BackgroundExporter::saveAsync (const std::vector < Data * > & data, const std::vector < std::string > & filenames, bool deleteAfterwards = false)
+```
+
+Creates a saving task for elements in `data`, to the defined paths in `filenames`.
+
+The task will run on next occasion in an asynchronous thread. Each item in `data` will be saved individually. [Data](/cpp-sdk/4.5/api/classes/imfusion-data) in `data` must not be deleted before the task is completed, see isBeingSaved(). [Data](/cpp-sdk/4.5/api/classes/imfusion-data) will be automatically deleted after saving if `deleteAfterwards` is true. Thread-safe. Returns a future, call future::wait before deleting the `data`
+
+### saveAsync
+
+```cpp
+std::future < void > ImFusion::BackgroundExporter::saveAsync (DataList data, const std::string & filepath, const std::function < void(const DataList &)> & savingCompleteFunc)
+```
+
+Creates a saving task for `data`, which will not be deleted, to the defined `filepath`.
+
+The task will run on next occasion in an asynchronous thread. All items in `data` are saved to the same file. The function `savingCompleteFunc` will be called with `data`, so that custom tasks can be run after successful saving, for instance removal blocks in the UI to delete the data.
+
+**Parameters:**
+
+- `data` — must not otherwise be deleted before the task is completed, see isBeingSaved().
+- `savingCompleteFunc` — is called before isBeingSaved() will return false again. Thread-safe. Returns a future, call future::wait before deleting the `data`
+
+### preparePatientFilenames
+
+```cpp
+std::vector < std::string > ImFusion::BackgroundExporter::preparePatientFilenames (std::string directory, const std::string & patientName, const std::string & suffix, bool createRawSubFolder)
+```
+
+Produces a non-existing but writable file name in the given `directory`, of the form `patientname` - XX - `suffix`, where XX starts with 01 and counts up.
+
+Only the part without suffix is checked for determining XX, so that there are no two files with different suffix but identical XX.
+
+**Returns:** a vector with 0)the file path as described above, and 1) the same file name but additionally in `directory`, subdirectory RawData for substreams.
+
+### configure
+
+```cpp
+void ImFusion::BackgroundExporter::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### configuration
+
+```cpp
+void ImFusion::BackgroundExporter::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality

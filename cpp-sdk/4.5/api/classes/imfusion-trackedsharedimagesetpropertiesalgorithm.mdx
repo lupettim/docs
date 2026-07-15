@@ -1,0 +1,98 @@
+---
+title: "ImFusion::TrackedSharedImageSetPropertiesAlgorithm"
+sidebarTitle: "TrackedSharedImageSetPropertiesAlgorithm"
+description: "Algorithm to change properties of one or multiple tracked SharedImageSets, or a single TrackingSequence ."
+---
+
+`#include <ImFusion/Base/TrackedSharedImageSetPropertiesAlgorithm.h>`
+
+## Overview
+
+[Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) to change properties of one or multiple tracked SharedImageSets, or a single [TrackingSequence](/cpp-sdk/4.5/api/classes/imfusion-trackingsequence).
+
+Note that this algorithm directly modifies/returns the [TrackingSequence](/cpp-sdk/4.5/api/classes/imfusion-trackingsequence) properties in configure/configuration. This algorithm serves two purposes: 1) To allow configuring a [TrackingSequence](/cpp-sdk/4.5/api/classes/imfusion-trackingsequence) from a workspace, and 2) as a dummy algorithm to launch the corresponding controller with the properties dialog. SDK users should directly modify the [TrackingSequence](/cpp-sdk/4.5/api/classes/imfusion-trackingsequence).
+
+## Public Types
+
+- enum class SampleTimeoutCriteria &#123; **NoCriteria** = 0 , **Average** , **Median** , **UserDefined** &#125; — Set sample timeout criteria (0=None, 1=Average, 2=Median, 3=UserDefined) The timeout criteria is used define the operation that should be performed to the TrackedImageSharedSet timestamps in order to calculate the corresponding timeout between samples.
+
+## Public Member Functions
+
+- **TrackedSharedImageSetPropertiesAlgorithm** ([TrackedSharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-trackedsharedimageset) \*tsis1, [TrackedSharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-trackedsharedimageset) \*tsis2=0) — Constructor with pointer to image set and a second optional one.
+- **TrackedSharedImageSetPropertiesAlgorithm** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [TrackedSharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-trackedsharedimageset) \* &gt; &tsis) — Constructor with an arbitrary number of image sets.
+- **TrackedSharedImageSetPropertiesAlgorithm** ([TrackingSequence](/cpp-sdk/4.5/api/classes/imfusion-trackingsequence) \*ts) — Constructor with single [TrackingSequence](/cpp-sdk/4.5/api/classes/imfusion-trackingsequence), will be wrapped in temporary [TrackedSharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-trackedsharedimageset).
+- **~TrackedSharedImageSetPropertiesAlgorithm** () override — Destructor, cleans up temporary [TrackedSharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-trackedsharedimageset) if used with [TrackingSequence](/cpp-sdk/4.5/api/classes/imfusion-trackingsequence).
+- void **clearMetadata** () — Clear all meta data.
+- bool **hasTrackingGaps** ([TrackedSharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-trackedsharedimageset) \*tsis=nullptr) const — Checks whether at least one tracking sequence has gaps based on its timestamps.
+- void **resampleTracking** () — Resample tracking with equi-distant timestamps.
+- bool **hasBothTimestamps** () const — Checks if both images and tracking have a time series data component.
+- void **setSampleTimeoutCriteria** (int val)
+- SampleTimeoutCriteria **sampleTiomeoutCriteria** () const
+- void **setUseMaxTimestepBetweenSamples** (bool allSequences, [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; double &gt; val=std::nullopt) const — Denote the criteria that should be used to set the max timestep between samples (average or median), and set the max timestep between samples for the current (or all) tracking sequence(s).
+- bool **usesArrivalTimestamps** () const — Checks if arrival timestamps are used (only applicable when hasBothTimestamps()).
+- void **applyTimestampsFromSeries** (bool arrival) — Applies device or arrival timestamps from data component.
+- [TrackedSharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-trackedsharedimageset) \* **image** () const — Return the first [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset).
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [TrackedSharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-trackedsharedimageset) \* &gt; & **images** () const — Return vector of all SharedImageSets.
+
+## Static Public Member Functions
+
+- static double **avgTimestepBetweenImageFrames** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; &timestamps) — Calculate average timestep between frames.
+- static double **medianTimestepBetweenImageFrames** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; &timestamps) — Calculate median timestep between frames.
+
+## Protected Attributes
+
+- [TrackedSharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-trackedsharedimageset) \*const **m_tsis** — Pointer to the first image set.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [TrackedSharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-trackedsharedimageset) \* &gt; **m_tsisAll** — [Vector](/cpp-sdk/4.5/api/classes/imfusion-vector) of all image sets.
+- bool **m_resampleTracking** — Initiates tracking timestamp resampling.
+- bool **m_clearMetadata** — Clears meta data (data components).
+- SampleTimeoutCriteria **m_sampleTimeoutCriteria** — Timeout criteria to calculate the maxTimestepBetweenSamples.
+
+## Methods implementing the Algorithm interface
+
+- void [compute](#compute) () override — Performs the tracking resampling, if enabled.
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=0)
+
+## Methods implementing the Configurable interface
+
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+## Member Function Documentation
+
+### compute
+
+```cpp
+void ImFusion::TrackedSharedImageSetPropertiesAlgorithm::compute ()
+```
+
+*override, virtual*
+
+Performs the tracking resampling, if enabled.
+
+### configure
+
+```cpp
+void ImFusion::TrackedSharedImageSetPropertiesAlgorithm::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### configuration
+
+```cpp
+void ImFusion::TrackedSharedImageSetPropertiesAlgorithm::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality

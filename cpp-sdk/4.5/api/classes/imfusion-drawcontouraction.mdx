@@ -1,0 +1,289 @@
+---
+title: "ImFusion::DrawContourAction"
+sidebarTitle: "DrawContourAction"
+description: "An action that allow to draw contours."
+---
+
+`#include <ImFusionLabels/lib/include/ImFusion/Labels/Annotation/DrawContourAction.h>`
+
+## Overview
+
+An action that allow to draw contours.
+
+A contour is a data structure representing a pointwise annotation, generally a spline. It is defined by the type of pointwise annotation e.g. closed spline, closed polyline, open spline, etc, a sequence of points, a label value, a given name, a creation type (automatic or manual) and some additional secondary properties,
+
+**See also:** [Seg::Contour](/cpp-sdk/4.5/api/structs/imfusion-seg-contour). The contours are saved in a data component.
+
+On 2D images, all types of Contours are used to create a label map. On 3D data, only open annotations are used.
+
+A label map generated from a closed contour can be refined with the "auto-refine" option: this option uses image information to automatically adjust the label map to the boundaries of the enclosed area. The "refimement margin" parameter controls the sensitivity of the refinement. The applied label map for open contours is controlled by the parameters "radius" and "adaptiveness". The former is used to define how much area around the annotation is taken into account, while the latter is the parameter controlling the sensitivity to the image information.
+
+The contours are displayed in a view table with their name, frame number (if applicable) and creation type.
+
+The action has multiple "operations" in itself which are essentially sub-actions. These are Draw, Clear, Generate, Import-Export and Propagate. The Draw operation allows to change the settings for the contour being actively drawn. The Clear operation gives batch-wise opportunities to delete contours on frame data. The Generate operation enables the user to create contours from label maps. The Import-Export operation is for exporting/importing json/xml files with contour data. The Propagate operation enables the generation of new contours via interpolation between contours on different frames if such exist.
+
+## Public Member Functions
+
+- bool [isProjectCompatible](#isprojectcompatible-1-2) () const override
+- bool [isProjectCompatible](#isprojectcompatible-2-2) (const Project::ProjectTypes &, bool) const override
+- bool [areActiveLayersCompatible](#areactivelayerscompatible) () const override
+- bool [isDataSetCompatible](#isdatasetcompatible) (const [DataSet](/cpp-sdk/4.5/api/classes/imfusion-dataset) &) const override
+- QIcon [icon](#icon) () const override
+- QString [text](#text) () const override
+- QString [description](#description) () const override
+- QString [docPath](#docpath) () const override
+- bool [isReadOnly](#isreadonly) () const override
+- QWidget \* [ui](#ui) (QWidget \*parent=nullptr) override
+- void [activate](#activate) () override
+- void [deactivate](#deactivate) () override
+- void [dataSetChanged](#datasetchanged) () override
+- bool [inputEvent](#inputevent) (QEvent \*event) override
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void [onManipulatorEvent](#onmanipulatorevent) ([Manipulator](/cpp-sdk/4.5/api/classes/imfusion-manipulator) \*src, void \*eventData) override — Called when an event occurs.
+- void **setSkipFactor** (int skip)
+- void **setPropagationDirection** (DataSetPropagationAlgorithm::PropagationDirection dir)
+
+## Protected Member Functions
+
+- void **startDrawContour** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; &points=&#123;&#125;)
+- void **finalizeDrawContour** (bool accept)
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **generateContourName** (const [Seg::Contour](/cpp-sdk/4.5/api/structs/imfusion-seg-contour) &contour) const — Generates a name as "TypeName" + "IndexOfType".
+- void [removeContourSegmentation](#removecontoursegmentation) ([std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; const [Seg::Contour](/cpp-sdk/4.5/api/structs/imfusion-seg-contour) \* &gt; contours=&#123;&#125;, int frame=-1) — Remove the segmentation from the contour(s) from the label map.
+- bool [updateContour](#updatecontour) ([Seg::Contour](/cpp-sdk/4.5/api/structs/imfusion-seg-contour) &contour) — Update the contour member variables according to the [GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui) state.
+- void **removeContour** ()
+- void **writeContoursToFrame** (int frameIdx)
+- [std::pair](http://en.cppreference.com/w/cpp/utility/pair.html)&lt; int, int &gt; **getBoundariesForPropagation** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name, const int labelValue) const
+- void [removeAllContours](#removeallcontours) (bool activeLabelOnly) — This is used when a collection of contours are supposed to be removed.
+- void **retrieveContour** (int whichContour)
+- void **syncContour2GUIState** () — Sync the active contour to the [GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui).
+- void **generateContours** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; unsigned char &gt; &labelValues, const [std::pair](http://en.cppreference.com/w/cpp/utility/pair.html)&lt; int, int &gt; &range) — Create and apply contours for the given label values and the given range of frames.
+- void **generateContours** () — Create and apply contours for this frame and for all labels values.
+- void **propagateContours** ()
+- void **importContours** (const [Filesystem::Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path) &fileName) — Import/Export functions for contours.
+- void **exportContours** (const [Filesystem::Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path) &fileName)
+- void **addDrawingManip** ()
+- void **removeDrawingManip** ()
+- void **addHoverManipulator** ()
+- void **removeHoverManipulator** ()
+- void **createAnnotation** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; &points=&#123;&#125;, [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) type="")
+- void **addAnnotation** ([GlPointBasedAnnotation](/cpp-sdk/4.5/api/classes/imfusion-glpointbasedannotation) \*annotation=nullptr)
+- void **removeAnnotation** ([GlPointBasedAnnotation](/cpp-sdk/4.5/api/classes/imfusion-glpointbasedannotation) \*annotation=nullptr)
+- void **showPreview** ()
+- void **hidePreview** ()
+- void **updateWidgetsState** ()
+- void **updateContourTable** ()
+- void **showTableContextMenu** (const QPoint &pos)
+- void **updatePreview** ()
+- void **updatePreviewColor** ()
+- bool **isContourClosed** (const QString &) const
+- void **waitForInstanceImage** ()
+
+## Protected Attributes
+
+- bool **m_showError** = true
+- bool **m_updateFocusFrame** = true
+
+## Member Function Documentation
+
+### isProjectCompatible
+
+```cpp
+bool ImFusion::DrawContourAction::isProjectCompatible () const
+```
+
+*override, virtual*
+
+### isProjectCompatible
+
+```cpp
+bool ImFusion::DrawContourAction::isProjectCompatible (const Project::ProjectTypes &, bool) const
+```
+
+*override, virtual*
+
+### areActiveLayersCompatible
+
+```cpp
+bool ImFusion::DrawContourAction::areActiveLayersCompatible () const
+```
+
+*override, virtual*
+
+### isDataSetCompatible
+
+```cpp
+bool ImFusion::DrawContourAction::isDataSetCompatible (const DataSet &) const
+```
+
+*override, virtual*
+
+### icon
+
+```cpp
+QIcon ImFusion::DrawContourAction::icon () const
+```
+
+*inline, override, virtual*
+
+### text
+
+```cpp
+QString ImFusion::DrawContourAction::text () const
+```
+
+*inline, override, virtual*
+
+### description
+
+```cpp
+QString ImFusion::DrawContourAction::description () const
+```
+
+*inline, override, virtual*
+
+### docPath
+
+```cpp
+QString ImFusion::DrawContourAction::docPath () const
+```
+
+*inline, override, virtual*
+
+### isReadOnly
+
+```cpp
+bool ImFusion::DrawContourAction::isReadOnly () const
+```
+
+*inline, override, virtual*
+
+### ui
+
+```cpp
+QWidget * ImFusion::DrawContourAction::ui (QWidget * parent = nullptr)
+```
+
+*override, virtual*
+
+### activate
+
+```cpp
+void ImFusion::DrawContourAction::activate ()
+```
+
+*override, virtual*
+
+### deactivate
+
+```cpp
+void ImFusion::DrawContourAction::deactivate ()
+```
+
+*override, virtual*
+
+### dataSetChanged
+
+```cpp
+void ImFusion::DrawContourAction::dataSetChanged ()
+```
+
+*override, virtual*
+
+### inputEvent
+
+```cpp
+bool ImFusion::DrawContourAction::inputEvent (QEvent * event)
+```
+
+*override, virtual*
+
+### configuration
+
+```cpp
+void ImFusion::DrawContourAction::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality
+
+### configure
+
+```cpp
+void ImFusion::DrawContourAction::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### onManipulatorEvent
+
+```cpp
+void ImFusion::DrawContourAction::onManipulatorEvent (Manipulator * src, void * eventData)
+```
+
+*override, virtual*
+
+Called when an event occurs.
+
+**Parameters:**
+
+- `src` — source of the event
+- `eventData` — pointer to event data. Zero if no event data is provided.
+
+### removeContourSegmentation
+
+```cpp
+void ImFusion::DrawContourAction::removeContourSegmentation (std::vector < const Seg::Contour * > contours = {}, int frame = -1)
+```
+
+*protected*
+
+Remove the segmentation from the contour(s) from the label map.
+
+**Parameters:**
+
+- `contours` — The contours whose segmentation needs to be removed. If none are given, the active one is taken.
+- `frame` — The frame of dataset. If it is not specified the focused frame is taken.
+
+### updateContour
+
+```cpp
+bool ImFusion::DrawContourAction::updateContour (Seg::Contour & contour)
+```
+
+*protected*
+
+Update the contour member variables according to the [GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui) state.
+
+**Parameters:**
+
+- `contour` — The contour to be updated.
+
+**Returns:** A boolean indicator whether the update is successful. It can fail if an active label is not chosen.
+
+### removeAllContours
+
+```cpp
+void ImFusion::DrawContourAction::removeAllContours (bool activeLabelOnly)
+```
+
+*protected*
+
+This is used when a collection of contours are supposed to be removed.
+
+The sub-action is called Clear, the frames are selected through a frame selector.
+
+**Parameters:**
+
+- `activeLabelOnly` — A boolean signifying whether the clearance should be only on the active label

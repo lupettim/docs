@@ -1,0 +1,27 @@
+---
+title: "ImFusion::Seg::LambdaEventHandler"
+sidebarTitle: "LambdaEventHandler"
+---
+
+## Public Member Functions
+
+- void **reset** ()
+- [GUI::EventResult](/cpp-sdk/4.5/api/structs/imfusion-gui-eventresult) [handleInputEvent](#handleinputevent) (const [GUI::InputEvent](/cpp-sdk/4.5/api/classes/imfusion-gui-inputevent) &event, const [GUI::View](/cpp-sdk/4.5/api/classes/imfusion-gui-view) &view) override — This function is called by sources of input events in order to dispatch them to the handlers.
+
+## Public Attributes
+
+- [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; [GUI::EventResult](/cpp-sdk/4.5/api/structs/imfusion-gui-eventresult)(bool left, bool right, vec3 world, const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &view)&gt; **m_mouseEventHandler**
+
+## Member Function Documentation
+
+### handleInputEvent
+
+```cpp
+GUI::EventResult ImFusion::Seg::LambdaEventHandler::handleInputEvent (const GUI::InputEvent & event, const GUI::View & view)
+```
+
+*override, virtual*
+
+This function is called by sources of input events in order to dispatch them to the handlers.
+
+In case there are more than one InputEventHandlers dispatchers are intended call this function consecutively until the first handler indicates to stop by returning a result where EventResult::stopPropagation() is true.

@@ -1,0 +1,99 @@
+---
+title: "ImFusion::LinkSelection"
+sidebarTitle: "LinkSelection"
+description: "Synchronizes the selection of multiple Selectables."
+---
+
+`#include <ImFusion/Base/LinkSelection.h>`
+
+## Overview
+
+Synchronizes the selection of multiple Selectables.
+
+## Public Member Functions
+
+- [LinkSelection](#linkselection) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \* &gt; &[data](#data)) — Create a link containing a list of data.
+- bool [accepts](#accepts) (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) &[data](#data)) const override — Checks whether the given [Data](/cpp-sdk/4.5/api/classes/imfusion-data) instance is supported.
+- void [add](#add) ([Data](/cpp-sdk/4.5/api/classes/imfusion-data) &[data](#data)) override — Add a *[Selectable](/cpp-sdk/4.5/api/classes/imfusion-selectable)* [Data](/cpp-sdk/4.5/api/classes/imfusion-data) to link.
+- void [remove](#remove) ([Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*[data](#data)) override — Remove the given [Data](/cpp-sdk/4.5/api/classes/imfusion-data) instance from the link.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \* &gt; [data](#data) () const override — Return list of all linked [Data](/cpp-sdk/4.5/api/classes/imfusion-data) instances.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [uiTitle](#uititle) () const override — Return a title of the link type for displaying in the UI.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [uiIconPath](#uiiconpath) () const override — Return a path to an icon representing the link type to display in the UI.
+
+## Constructor & Destructor Documentation
+
+### LinkSelection
+
+```cpp
+ImFusion::LinkSelection::LinkSelection (const std::vector < Data * > & data)
+```
+
+*explicit*
+
+Create a link containing a list of data.
+
+If any of the data are not *[Selectable](/cpp-sdk/4.5/api/classes/imfusion-selectable)*, or have different values returned from [Selectable::size()](/cpp-sdk/4.5/api/classes/imfusion-selectable), the link will be empty.
+
+## Member Function Documentation
+
+### accepts
+
+```cpp
+bool ImFusion::LinkSelection::accepts (const Data & data) const
+```
+
+*override, virtual*
+
+Checks whether the given [Data](/cpp-sdk/4.5/api/classes/imfusion-data) instance is supported.
+
+### add
+
+```cpp
+void ImFusion::LinkSelection::add (Data & data)
+```
+
+*override, virtual*
+
+Add a *[Selectable](/cpp-sdk/4.5/api/classes/imfusion-selectable)*[Data](/cpp-sdk/4.5/api/classes/imfusion-data) to link.
+
+If *data* is not *[Selectable](/cpp-sdk/4.5/api/classes/imfusion-selectable)*, or has a different [Selectable::size()](/cpp-sdk/4.5/api/classes/imfusion-selectable) to any other data already in the link, this function will do nothing.
+
+### remove
+
+```cpp
+void ImFusion::LinkSelection::remove (Data * data)
+```
+
+*override, virtual*
+
+Remove the given [Data](/cpp-sdk/4.5/api/classes/imfusion-data) instance from the link.
+
+### data
+
+```cpp
+std::vector < Data * > ImFusion::LinkSelection::data () const
+```
+
+*override, virtual*
+
+Return list of all linked [Data](/cpp-sdk/4.5/api/classes/imfusion-data) instances.
+
+### uiTitle
+
+```cpp
+std::string ImFusion::LinkSelection::uiTitle () const
+```
+
+*override, virtual*
+
+Return a title of the link type for displaying in the UI.
+
+### uiIconPath
+
+```cpp
+std::string ImFusion::LinkSelection::uiIconPath () const
+```
+
+*override, virtual*
+
+Return a path to an icon representing the link type to display in the UI.

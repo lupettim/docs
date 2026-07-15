@@ -1,0 +1,78 @@
+---
+title: "ImFusion::MeshOctreeNode"
+sidebarTitle: "MeshOctreeNode"
+description: "Class representing a mesh octree node."
+---
+
+`#include <ImFusion/Mesh/MeshOctree.h>`
+
+## Overview
+
+Class representing a mesh octree node.
+
+Contains faces within the node's bounds
+
+## Public Member Functions
+
+- **MeshOctreeNode** (const [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) \*mesh)
+- void **setFaces** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; int &gt; &faces, const [Geometry::AlignedBox](/cpp-sdk/4.5/api/classes/imfusion-geometry-alignedbox) \*b=nullptr)
+- [Geometry::AlignedBox](/cpp-sdk/4.5/api/classes/imfusion-geometry-alignedbox) [bounds](#bounds) (const mat4 &m) const override
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [typeName](#typename) () const override
+- [Node](/cpp-sdk/4.5/api/classes/imfusion-node) \* [clone](#clone) () const override
+- virtual void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- virtual void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; int &gt; & **faces** () const
+
+## Member Function Documentation
+
+### bounds
+
+```cpp
+Geometry::AlignedBox ImFusion::MeshOctreeNode::bounds (const mat4 & m) const
+```
+
+*override, virtual*
+
+### typeName
+
+```cpp
+std::string ImFusion::MeshOctreeNode::typeName () const
+```
+
+*override, virtual*
+
+### clone
+
+```cpp
+Node * ImFusion::MeshOctreeNode::clone () const
+```
+
+*override, virtual*
+
+### configure
+
+```cpp
+virtual void ImFusion::MeshOctreeNode::configure (const Properties * p)
+```
+
+*inline, override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### configuration
+
+```cpp
+virtual void ImFusion::MeshOctreeNode::configuration (Properties * p) const
+```
+
+*inline, override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality

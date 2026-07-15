@@ -1,0 +1,43 @@
+---
+title: "ImFusion::ViewGroupAdapter"
+sidebarTitle: "ViewGroupAdapter"
+description: "Helper class providing the API of ViewGroup while wrapping around either a ViewGroup or a GUI::RadiologyViewGroup ."
+---
+
+`#include <ImFusion/GUI/DisplayWidgetMultiAdapter.h>`
+
+## Overview
+
+Helper class providing the API of [ViewGroup](/cpp-sdk/4.5/api/classes/imfusion-viewgroup) while wrapping around either a [ViewGroup](/cpp-sdk/4.5/api/classes/imfusion-viewgroup) or a [GUI::RadiologyViewGroup](/cpp-sdk/4.5/api/classes/imfusion-gui-radiologyviewgroup).
+
+**Warning:** To mimic existing use cases this adapter class has nullable/pointer semantics and can be 'null'. If it is null conversion to bool will yield false and comparison to nullptr will be true, and you must not call any of its other member functions.
+
+## Public Member Functions
+
+- **ViewGroupAdapter** ([ViewGroup](/cpp-sdk/4.5/api/classes/imfusion-viewgroup) \*vg)
+- **ViewGroupAdapter** ([GUI::RadiologyViewGroup](/cpp-sdk/4.5/api/classes/imfusion-gui-radiologyviewgroup) \*vg)
+- ViewGroupAdapter \* **operator-&gt;** ()
+- const ViewGroupAdapter \* **operator-&gt;** () const
+- **operator bool** () const
+- bool **operator==** ([std::nullptr_t](http://en.cppreference.com/w/cpp/types/nullptr_t.html)) const
+- bool **operator!=** ([std::nullptr_t](http://en.cppreference.com/w/cpp/types/nullptr_t.html)) const
+- bool **acceptsData** (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data) const
+- void **setVisibleData** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data)
+- [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) **visibleData** () const
+- bool **showData** ([Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data)
+- void **hideData** ([Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data)
+- void **addObject** ([InteractiveObject](/cpp-sdk/4.5/api/classes/imfusion-interactiveobject) \*object)
+- void **removeObject** ([InteractiveObject](/cpp-sdk/4.5/api/classes/imfusion-interactiveobject) \*object)
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [InteractiveViewAdapter](/cpp-sdk/4.5/api/classes/imfusion-interactiveviewadapter) &gt; **views** () const
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [ImageView2DAdapter](/cpp-sdk/4.5/api/classes/imfusion-imageview2dadapter) &gt; **mprViews** () const
+- void **reset** ()
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; vec3 &gt; **intersectionCenter** () const
+- void **centerIntersection** ()
+- void **centerSlices** (const vec3 &point)
+- void **centerOnData** (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data)
+- void **setMprViewMatrices** (const mat4 &matrix)
+- void **alignMprViewsToVoxelGrid** ()
+
+## Protected Attributes
+
+- [Utils::Variant](/cpp-sdk/4.5/api/structs/imfusion-utils-variant)&lt; [std::monostate](http://en.cppreference.com/w/cpp/utility/variant/monostate.html), [ViewGroup](/cpp-sdk/4.5/api/classes/imfusion-viewgroup) \*, [GUI::RadiologyViewGroup](/cpp-sdk/4.5/api/classes/imfusion-gui-radiologyviewgroup) \* &gt; **m_viewGroup**

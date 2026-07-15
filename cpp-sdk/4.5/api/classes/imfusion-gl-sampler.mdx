@@ -1,0 +1,162 @@
+---
+title: "ImFusion::GL::Sampler"
+sidebarTitle: "Sampler"
+description: "Sets texture sampling parameters for a specific texture unit."
+---
+
+`#include <ImFusion/Core/GL/Sampler.h>`
+
+## Overview
+
+Sets texture sampling parameters for a specific texture unit.
+
+Instances of this class are usually supposed to be used together with a [GL::Texture](/cpp-sdk/4.5/api/classes/imfusion-gl-texture) when calling [GL::Program::setArgument()](/cpp-sdk/4.5/api/classes/imfusion-gl-program). You can use the same sampler for multiple textures at the same time.
+
+```cpp
+// will have default sampling parameters (such as linear filtering)
+GL::Texture texture = ...;
+
+// configure a dedicated Sampler with nearest filtering:
+GL::Sampler sampler;
+sampler.setFiltering(GL::Sampler::MinFilter::Nearest, GL::Sampler::MagFilter::Nearest);
+
+GL::Program prog = ...;
+prog.enable();
+
+// pass both `texture` and `sampler` to use nearest filtering mode as configured for the sampler.
+prog.setArgument("u_texture", texture, sampler);
+```
+ fragment
+
+**See also:** [https://www.khronos.org/opengl/wiki/Sampler_Object](https://www.khronos.org/opengl/wiki/Sampler_Object)
+
+## Public Types
+
+- enum class [Wrap](#wrap) &#123; ClampToEdge = 0x812F , Repeat = 0x2901 , MirroredRepeat = 0x8370 , ClampToBorder = 0x812D &#125; — Describes the wrapping mode applied by an OpenGL texture sampler.
+- enum class [MinFilter](#minfilter) &#123; Nearest = 0x2600 , Linear = 0x2601 , NearestMipMapNearest = 0x2700 , LinearMipMapNearest = 0x2701 , NearestMipMapLinear = 0x2702 , LinearMipMapLinear = 0x2703 &#125; — Describes the minification filter applied by an OpenGL texture sampler.
+- enum class [MagFilter](#magfilter) &#123; Nearest = 0x2600 , Linear = 0x2601 &#125; — Describes the magnification filter applied by an OpenGL texture sampler.
+- enum class [CompareMode](#comparemode) &#123; **None** = 0 , **CompareToRefTexture** = 0x884E &#125;
+- enum class [CompareFunc](#comparefunc) &#123; **Never** = 0x0200 , **Less** = 0x0201 , **Equal** = 0x0202 , **LesserEqual** = 0x0203 , **Greater** = 0x0204 , **NotEqual** = 0x0205 , **GreaterEqual** = 0x0206 , **Always** = 0x0207 &#125;
+
+## Public Member Functions
+
+- [Sampler](#sampler) () — Creates a sampler object using linear filtering and clamp-to-edge wrapping as default parameters.
+- void [setFiltering](#setfiltering) ([MinFilter](#minfilter) min, [MagFilter](#magfilter) mag) — Sets the minification and magnification filters.
+- void **setWrapping** ([Wrap](#wrap) s, [Wrap](#wrap) t, [Wrap](#wrap) r) — Sets the wrapping parameters for each dimension.
+- void **setWrapping** ([Wrap](#wrap) all) — Sets all wrapping parameters for all dimensions to the same value.
+- void **setCompareMode** ([CompareMode](#comparemode) mode, [CompareFunc](#comparefunc) func) — Sets compare mode for depth component textures.
+- void **setLOD** (float minLOD, float maxLOD, float bias=0.0f) — Sets level-of-detail parameters used in mipmap selection.
+- void **setBorderColor** (const vec4f &color) — Sets the border color that is used for Wrap::ClampToBorder.
+- void **bind** (uint32_t textureUnit) const — Binds the sampler to the specified texture unit.
+- uint32_t **id** () const — Return the OpenGL object ID of this sampler.
+
+## Static Public Member Functions
+
+- static void **unbind** (uint32_t textureUnit) — Unbinds any potentially bound sampler from the specified texture unit (binds 0).
+
+## Member Enumeration Documentation
+
+### Wrap
+
+```cpp
+enum class ImFusion::GL::Sampler::Wrap
+```
+
+*strong*
+
+Describes the wrapping mode applied by an OpenGL texture sampler.
+
+**See also:** [https://www.khronos.org/opengl/wiki/Sampler_Object#Edge_value_sampling](https://www.khronos.org/opengl/wiki/Sampler_Object#Edge_value_sampling)
+
+**Enumerator:**
+
+- `ClampToEdge` — Tex coordinates are clamped to [0, 1] range.
+- `Repeat` — Tex coordinates wrap around the texture.
+- `MirroredRepeat` — Tex coordinates wrap around the texture in a mirrored fashion.
+- `ClampToBorder` — Tex coordinates are clamped to [0, 1], edge pixels use constant border color.
+
+### MinFilter
+
+```cpp
+enum class ImFusion::GL::Sampler::MinFilter
+```
+
+*strong*
+
+Describes the minification filter applied by an OpenGL texture sampler.
+
+**Note:** All MipMap options require mipmaps to be present in the texture, cf. [GL::Texture::generateMipmaps()](/cpp-sdk/4.5/api/classes/imfusion-gl-texture)
+
+**See also:** [https://www.khronos.org/opengl/wiki/Sampler_Object#Filtering](https://www.khronos.org/opengl/wiki/Sampler_Object#Filtering)
+
+**Enumerator:**
+
+- `Nearest` — Select nearest texel without any filtering.
+- `Linear` — Use linear filtering without any mipmapping.
+- `NearestMipMapNearest` — Use nearest texel on nearest mipmap.
+- `LinearMipMapNearest` — Perform linear filtering on nearest mipmap.
+- `NearestMipMapLinear` — Use nearest texel but linearly interpolate between mipmaps.
+- `LinearMipMapLinear` — Perform linear filtering and linearly interpolate between mipmaps.
+
+### MagFilter
+
+```cpp
+enum class ImFusion::GL::Sampler::MagFilter
+```
+
+*strong*
+
+Describes the magnification filter applied by an OpenGL texture sampler.
+
+**See also:** [https://www.khronos.org/opengl/wiki/Sampler_Object#Filtering](https://www.khronos.org/opengl/wiki/Sampler_Object#Filtering)
+
+**Enumerator:**
+
+- `Nearest` — Select nearest texel without any filtering.
+- `Linear` — Use linear filtering without any mipmapping.
+
+### CompareMode
+
+```cpp
+enum class ImFusion::GL::Sampler::CompareMode
+```
+
+*strong*
+
+**See also:** [https://www.khronos.org/opengl/wiki/Sampler_Object#Comparison_mode](https://www.khronos.org/opengl/wiki/Sampler_Object#Comparison_mode)
+
+### CompareFunc
+
+```cpp
+enum class ImFusion::GL::Sampler::CompareFunc
+```
+
+*strong*
+
+**See also:** [https://www.khronos.org/opengl/wiki/Sampler_Object#Comparison_mode](https://www.khronos.org/opengl/wiki/Sampler_Object#Comparison_mode)
+
+## Constructor & Destructor Documentation
+
+### Sampler
+
+```cpp
+ImFusion::GL::Sampler::Sampler ()
+```
+
+Creates a sampler object using linear filtering and clamp-to-edge wrapping as default parameters.
+
+**Exceptions:**
+
+- `std::runtime_error` — if the corresponding OpenGL sampler object could not be created.
+
+## Member Function Documentation
+
+### setFiltering
+
+```cpp
+void ImFusion::GL::Sampler::setFiltering (MinFilter min, MagFilter mag)
+```
+
+Sets the minification and magnification filters.
+
+Mipmap types will only work when the texture bound to the same texture unit has mipmap levels.

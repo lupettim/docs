@@ -1,0 +1,142 @@
+---
+title: "ImFusion::TensorBase"
+sidebarTitle: "TensorBase"
+description: "Abstract base class for Tensors."
+---
+
+`#include <ImFusion/Base/Tensor.h>`
+
+## Overview
+
+Abstract base class for Tensors.
+
+Does not implement any functionality, just provides an interface. Both dimension and data type are arbitrary at this point.
+
+## Classes
+
+- struct [bool_pack](/cpp-sdk/4.5/api/structs/imfusion-tensorbase-bool-pack)
+
+## Public Types
+
+- using **all_true** = [std::is_same](http://en.cppreference.com/w/cpp/types/is_same.html)&lt;[bool_pack](/cpp-sdk/4.5/api/structs/imfusion-tensorbase-bool-pack)&lt;bs..., true&gt;, [bool_pack](/cpp-sdk/4.5/api/structs/imfusion-tensorbase-bool-pack)&lt;true, bs...&gt;&gt;
+- using **are_all_convertible** = all_true&lt;[std::is_convertible](http://en.cppreference.com/w/cpp/types/is_convertible.html)&lt;Ts, R&gt;::value...&gt; — [Kind](/cpp-sdk/4.5/api/classes/imfusion-data) of data.
+
+## Public Member Functions
+
+- virtual int [order](#order) () const =0 — Rank of the tensor.
+- virtual size_t [bufferLength](#bufferlength) () const =0 — Returns the number of elements in this tensor's storage buffer.
+- virtual size_t [bufferSize](#buffersize) () const =0 — Returns the number of bytes in this tensor's storage buffer.
+- virtual [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; size_t &gt; [size](#size) () const =0 — Returns the size of the tensor.
+- [Kind](/cpp-sdk/4.5/api/classes/imfusion-data) [kind](#kind) () const override — Return the kind of this data.
+- [Pose::TransformationConvention](/cpp-sdk/4.5/api/namespaces/imfusion-pose) [matrixConvention](#matrixconvention) () const override — Defines whether the internally stored matrices in derived classes map from or to the world coordinate system.
+- [Geometry::AlignedBox](/cpp-sdk/4.5/api/classes/imfusion-geometry-alignedbox) [bounds](#bounds) () const override — Returns the axis-aligned bounding box of this data in world space.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **filename** () const
+- void **setFilename** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &[name](/cpp-sdk/4.5/api/classes/imfusion-data))
+- virtual bool [serialize](#serialize) ([std::ostream](http://en.cppreference.com/w/cpp/io/basic_ostream.html) &out) const =0 — Writes the tensor content into the given stream. Includes the tensor size, but not rank or data type.
+- virtual bool [deserialize](#deserialize) ([std::istream](http://en.cppreference.com/w/cpp/io/basic_istream.html) &in)=0 — Clears the tensor and reads new content from the given stream. This can change the size of the tensor, but not its rank or type.
+- void **requestPostProcessing** (bool val) — Controls whether adding this object to the data model should trigger an automatic plot. Has no effect afterwards.
+- bool **needsPostProcessing** () const
+
+## Public Attributes
+
+- Signal&lt; const Data \* &gt; **signalContentChanged**
+
+## Protected Member Functions
+
+- TensorBase & **operator=** (const TensorBase &other)
+
+## Member Function Documentation
+
+### order
+
+```cpp
+virtual int ImFusion::TensorBase::order () const
+```
+
+*pure virtual*
+
+Rank of the tensor.
+
+### bufferLength
+
+```cpp
+virtual size_t ImFusion::TensorBase::bufferLength () const
+```
+
+*pure virtual*
+
+Returns the number of elements in this tensor's storage buffer.
+
+### bufferSize
+
+```cpp
+virtual size_t ImFusion::TensorBase::bufferSize () const
+```
+
+*pure virtual*
+
+Returns the number of bytes in this tensor's storage buffer.
+
+### size
+
+```cpp
+virtual std::vector < size_t > ImFusion::TensorBase::size () const
+```
+
+*pure virtual*
+
+Returns the size of the tensor.
+
+### kind
+
+```cpp
+Kind ImFusion::TensorBase::kind () const
+```
+
+*inline, override, virtual*
+
+Return the kind of this data.
+
+### matrixConvention
+
+```cpp
+Pose::TransformationConvention ImFusion::TensorBase::matrixConvention () const
+```
+
+*inline, override, virtual*
+
+Defines whether the internally stored matrices in derived classes map from or to the world coordinate system.
+
+Changes the behavior of the default implementations of [matrixToWorld](/cpp-sdk/4.5/api/classes/imfusion-data) and [matrixFromWorld](/cpp-sdk/4.5/api/classes/imfusion-data).
+
+### bounds
+
+```cpp
+Geometry::AlignedBox ImFusion::TensorBase::bounds () const
+```
+
+*inline, override, virtual*
+
+Returns the axis-aligned bounding box of this data in world space.
+
+**Warning:** Depending on the underlying data type this calling function may be computationally expensive! Do not call this method more often than needed, unless it is known that the caching behavior is implemented.
+
+### serialize
+
+```cpp
+virtual bool ImFusion::TensorBase::serialize (std::ostream & out) const
+```
+
+*pure virtual*
+
+Writes the tensor content into the given stream. Includes the tensor size, but not rank or data type.
+
+### deserialize
+
+```cpp
+virtual bool ImFusion::TensorBase::deserialize (std::istream & in)
+```
+
+*pure virtual*
+
+Clears the tensor and reads new content from the given stream. This can change the size of the tensor, but not its rank or type.

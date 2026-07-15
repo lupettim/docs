@@ -1,0 +1,38 @@
+---
+title: "ImFusion::ApplyRegistration"
+sidebarTitle: "ApplyRegistration"
+description: "Class that allows to apply registration results on algorithm input data."
+---
+
+`#include <ImFusion/Reg/RegistrationResultsAlgorithm.h>`
+
+## Overview
+
+Class that allows to apply registration results on algorithm input data.
+
+This is useful to convert an interactive workspace created with the registration results controller to an executed one. All that is needed is to rename "Registration Results" to "Apply Registration" and add input data.
+
+## Public Member Functions
+
+- **ApplyRegistration** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \* &gt; &data) — Constructor with one or multiple data sets to use.
+- void [compute](#compute) () override — Apply selected registration, or use best match with most data sets available.
+
+## Static Public Member Functions
+
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=nullptr) — Factory create method, one or more data sets are required.
+
+## Protected Attributes
+
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \* &gt; **m_data** — Input data to apply results on.
+
+## Member Function Documentation
+
+### compute
+
+```cpp
+void ImFusion::ApplyRegistration::compute ()
+```
+
+*override, virtual*
+
+Apply selected registration, or use best match with most data sets available.

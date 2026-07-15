@@ -1,0 +1,50 @@
+---
+title: "ImFusion::Dicom::RTStructureDataComponent::Contour"
+sidebarTitle: "Contour"
+description: "Represents a single item in the original ' Contour Sequence ' (3006,0040)."
+---
+
+`#include <ImFusion/Dicom/RTStructureDataComponent.h>`
+
+## Overview
+
+Represents a single item in the original '[Contour](/cpp-sdk/4.5/api/structs/imfusion-dicom-rtstructuredatacomponent-contour)[Sequence](/cpp-sdk/4.5/api/classes/imfusion-dicom-sequence)' (3006,0040).
+
+## Public Types
+
+- enum **GeometricType** &#123; **POINT** = 0 , **OPEN_PLANAR** = 1 , **CLOSED_PLANAR** = 2 , **OPEN_NONPLANAR** = 3 &#125;
+
+## Public Member Functions
+
+- bool **operator==** (const [Contour](/cpp-sdk/4.5/api/structs/imfusion-dicom-rtstructuredatacomponent-contour) &other) const
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; [extractPoints](#extractpoints) (const [PointCloud](/cpp-sdk/4.5/api/classes/imfusion-pointcloud) &pc) const — Convenient function to extract the contours points from the corresponding [PointCloud](/cpp-sdk/4.5/api/classes/imfusion-pointcloud).
+
+## Public Attributes
+
+- size_t **startIndex** = 0 — Index into the [PointCloud](/cpp-sdk/4.5/api/classes/imfusion-pointcloud)'s points where this contour starts.
+- size_t **length** = 0 — Number of points this contour uses.
+- GeometricType [type](#type) = POINT — How the points are connected.
+
+## Member Function Documentation
+
+### extractPoints
+
+```cpp
+std::vector < vec3 > ImFusion::Dicom::RTStructureDataComponent::Contour::extractPoints (const PointCloud & pc) const
+```
+
+Convenient function to extract the contours points from the corresponding [PointCloud](/cpp-sdk/4.5/api/classes/imfusion-pointcloud).
+
+Returns an empty list if the indices are not valid anymore.
+
+## Member Data Documentation
+
+### type
+
+```cpp
+GeometricType ImFusion::Dicom::RTStructureDataComponent::Contour::type = POINT
+```
+
+How the points are connected.
+
+The PLANAR types don't assure that the referenced points are actually planar!

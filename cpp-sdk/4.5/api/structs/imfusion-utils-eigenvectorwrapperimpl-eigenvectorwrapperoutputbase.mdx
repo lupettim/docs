@@ -1,0 +1,39 @@
+---
+title: "ImFusion::Utils::EigenVectorWrapperImpl::EigenVectorWrapperOutputBase< InsideScalar, InsideDimension, FillValue >"
+sidebarTitle: "EigenVectorWrapperOutputBase< InsideScalar, InsideDimension, FillValue >"
+---
+
+## Public Types
+
+- using **InsideType** = Eigen::Matrix&lt;InsideScalar, InsideDimension, 1&gt;
+
+## Public Member Functions
+
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; InsideType &gt; & **operator=** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; InsideType &gt; &vec)
+
+## Protected Member Functions
+
+- void **initFunc** ([std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; Eigen::Matrix&lt; OutsideScalar, OutsideDimension, 1 &gt; &gt; &vec)
+- void **moveOutput** ([EigenVectorWrapperOutputBase](/cpp-sdk/4.5/api/structs/imfusion-utils-eigenvectorwrapperimpl-eigenvectorwrapperoutputbase)&lt; InsideScalar, InsideDimension, FillValue &gt; &&o)
+
+## Protected Attributes
+
+- [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; void([EigenVectorWrapperOutputBase](/cpp-sdk/4.5/api/structs/imfusion-utils-eigenvectorwrapperimpl-eigenvectorwrapperoutputbase)&lt; InsideScalar, InsideDimension, FillValue &gt; \*)&gt; [m_destructorFunc](#m-destructorfunc)
+
+## Member Data Documentation
+
+### FillValue
+
+```cpp
+template<typename InsideScalar, int InsideDimension, int FillValue = 1> std::function <void(EigenVectorWrapperOutputBase <InsideScalar, InsideDimension, FillValue>*)> ImFusion::Utils::EigenVectorWrapperImpl::EigenVectorWrapperOutputBase < InsideScalar, InsideDimension, FillValue >::m_destructorFunc
+```
+
+*protected*
+
+**Initial value:**
+```cpp
+           =
+[](EigenVectorWrapperOutputBase<InsideScalar, InsideDimension, FillValue>*) {
+}
+```
+ fragment

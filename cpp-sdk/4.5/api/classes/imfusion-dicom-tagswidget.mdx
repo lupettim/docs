@@ -1,0 +1,91 @@
+---
+title: "ImFusion::Dicom::TagsWidget"
+sidebarTitle: "TagsWidget"
+description: "The TagsWidget class provides a widget to display dicom tags."
+---
+
+`#include <ImFusion/Dicom/GUI/TagsWidget.h>`
+
+## Overview
+
+The [TagsWidget](/cpp-sdk/4.5/api/classes/imfusion-dicom-tagswidget) class provides a widget to display dicom tags.
+
+All tags are displayed in a QTableView with 3 columns for tag id, tag name and tag value. Additionally a QLineEdit for filtering is provided. Modifying the displayed DcmDataset from outside is not supported. If the DcmDataset was modified call reloadTags or setDataset to keep the widget consistent.
+
+## Public Slots
+
+- void [setDataset](#setdataset) ([std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; DcmDataset &gt; dataset) — Inserts all tags from the dataset in the table.
+- void **setDatasets** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; DcmDataset &gt; &gt; &datasets)
+- void [setEditable](#seteditable) (bool editable) — If set, allows the user to modify the underlying DcmDatasets.
+- void [setCurrentFrame](#setcurrentframe) (int frame) — Shows the tags of the given frame.
+- void **reloadTags** () — Clears the tags and reloads all tags from the dataset.
+
+## Signals
+
+- void **editableChanged** (bool editable)
+- void [savedRawBuffer](#savedrawbuffer) (QString filepath) — Emitted when a binary element was written to disk.
+
+## Public Member Functions
+
+- **TagsWidget** (QWidget \*parent=nullptr) — Creates an empty [TagsWidget](/cpp-sdk/4.5/api/classes/imfusion-dicom-tagswidget).
+- **TagsWidget** ([std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; DcmDataset &gt; dataset, QWidget \*parent=nullptr) — Creates a [TagsWidget](/cpp-sdk/4.5/api/classes/imfusion-dicom-tagswidget) and initializes it with the tags from the given dataset.
+- bool **editable** () const
+- int **currentFrame** () const — Returns the currently displayed frame index.
+
+## Properties
+
+- bool **editable**
+
+## Member Function Documentation
+
+### setDataset
+
+```cpp
+void ImFusion::Dicom::TagsWidget::setDataset (std::shared_ptr < DcmDataset > dataset)
+```
+
+*slot*
+
+Inserts all tags from the dataset in the table.
+
+Clears tags from any previously displayed dataset. If dataset is 0, the widget will show an empty table.
+
+### setEditable
+
+```cpp
+void ImFusion::Dicom::TagsWidget::setEditable (bool editable)
+```
+
+*slot*
+
+If set, allows the user to modify the underlying DcmDatasets.
+
+The user can
+
+- modify the value of existing tags
+- add new tags
+- remove existing tags Disabled by default.
+
+### setCurrentFrame
+
+```cpp
+void ImFusion::Dicom::TagsWidget::setCurrentFrame (int frame)
+```
+
+*slot*
+
+Shows the tags of the given frame.
+
+frame will be clamped to the range of the underlying datasets.
+
+### savedRawBuffer
+
+```cpp
+void ImFusion::Dicom::TagsWidget::savedRawBuffer (QString filepath)
+```
+
+*signal*
+
+Emitted when a binary element was written to disk.
+
+Can be used to run an algorithm on the file.

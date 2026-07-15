@@ -1,0 +1,123 @@
+---
+title: "ImFusion::GlCurve"
+sidebarTitle: "GlCurve"
+description: "Spline annotation."
+---
+
+`#include <ImFusion/GL/GlCurve.h>`
+
+## Overview
+
+[Spline](/cpp-sdk/4.5/api/classes/imfusion-spline) annotation.
+
+Renders a spline. Splines are parameterized in the range [0,1]. Uses a y(x) cubic Hermite spline.
+
+## Public Member Functions
+
+- **GlCurve** () — Creates the spline.
+- **~GlCurve** () override — Destroy the spline.
+- const [Curve](/cpp-sdk/4.5/api/classes/imfusion-curve) \* **curve** () const — Returns encapsulated [Spline](/cpp-sdk/4.5/api/classes/imfusion-spline) instance.
+- void [draw](#draw) (const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &[view](/cpp-sdk/4.5/api/classes/imfusion-glannotation)) override — Render annotation.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [typeName](#typename) () const override — Return unique identifier for this object class used for serialization.
+- void **setShowControlPoints** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; bool &gt; &vec)
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Set one or multiple properties.
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Retrieve the properties of this object.
+- bool [hitTestLine2D](#hittestline2d) (int x, int y, const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &[view](/cpp-sdk/4.5/api/classes/imfusion-glannotation)) const override — Checks whether the line between handles gets hit (if not a straight line, override this in the annotation).
+- void **setInterpolationRate** (unsigned int v)
+- unsigned int **interpolationRate** ()
+- size_t **findClosestControlPoint** (const vec3 &pos) const — Returns index of the control point closest to a given position.
+- void [setPoints](#setpoints) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; &[points](/cpp-sdk/4.5/api/classes/imfusion-glpointbasedannotation)) override — Sets the annotation points.
+- void **addPoint** (const vec3 &x, int index)
+- void **removePoint** (int index)
+
+## Protected Member Functions
+
+- void [updatePoints](#updatepoints) () override — Update the internal point structure.
+
+## Protected Attributes
+
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [Curve](/cpp-sdk/4.5/api/classes/imfusion-curve) &gt; **m_spline**
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [GL::VertexBuffer](/cpp-sdk/4.5/api/classes/imfusion-gl-vertexbuffer) &gt; **m_curveVbo**
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; **m_interpolatedPoints**
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; bool &gt; **m_showControlPoints**
+- unsigned int **m_interpolationRate**
+
+## Member Function Documentation
+
+### draw
+
+```cpp
+void ImFusion::GlCurve::draw (const GlView & view)
+```
+
+*override, virtual*
+
+Render annotation.
+
+### typeName
+
+```cpp
+std::string ImFusion::GlCurve::typeName () const
+```
+
+*inline, override, virtual*
+
+Return unique identifier for this object class used for serialization.
+
+### configure
+
+```cpp
+void ImFusion::GlCurve::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Set one or multiple properties.
+
+### configuration
+
+```cpp
+void ImFusion::GlCurve::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Retrieve the properties of this object.
+
+### hitTestLine2D
+
+```cpp
+bool ImFusion::GlCurve::hitTestLine2D (int x, int y, const GlView & view) const
+```
+
+*override, virtual*
+
+Checks whether the line between handles gets hit (if not a straight line, override this in the annotation).
+
+### setPoints
+
+```cpp
+void ImFusion::GlCurve::setPoints (const std::vector < vec3 > & points)
+```
+
+*override, virtual*
+
+Sets the annotation points.
+
+Clears previous points.
+
+**Parameters:**
+
+- `points` — points
+
+### updatePoints
+
+```cpp
+void ImFusion::GlCurve::updatePoints ()
+```
+
+*override, protected, virtual*
+
+Update the internal point structure.
+
+Should be implemented by subtypes which have custom data depending on the point data. Derived implementation needs to call base class implementation.

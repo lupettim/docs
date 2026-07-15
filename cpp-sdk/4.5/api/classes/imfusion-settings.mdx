@@ -1,0 +1,212 @@
+---
+title: "ImFusion::Settings"
+sidebarTitle: "Settings"
+description: "This class provides a way for getting and setting base settings for ImFusionLib."
+---
+
+`#include <ImFusion/Base/Settings.h>`
+
+## Overview
+
+This class provides a way for getting and setting base settings for ImFusionLib.
+
+A [Settings](/cpp-sdk/4.5/api/classes/imfusion-settings) object should only be instantiated once [GlobalSettings](/cpp-sdk/4.5/api/classes/imfusion-globalsettings) has been initialized.
+
+```cpp
+bool showToolbarText = Settings().showToolbarText; // read from global settings
+Settings().showToolbarText = true;                 // write to global settings
+```
+ fragment
+This class also provides two deprecated interfaces:
+
+****Deprecated**:** [Setting](/cpp-sdk/4.5/api/classes/imfusion-settings-setting) is a type-safe way to access a setting value. A typical usage would require you to inherit from the [Settings](/cpp-sdk/4.5/api/classes/imfusion-settings) class, and pass the m_settings member to the [Setting](/cpp-sdk/4.5/api/classes/imfusion-settings-setting) constructor for each of your [Setting](/cpp-sdk/4.5/api/classes/imfusion-settings-setting) members. You can then use your Settings-derived class to access the settings in a similar manner to this class. Instead of this, it is recommended that you simply (de-)serialize your [Configurable](/cpp-sdk/4.5/api/classes/imfusion-configurable) classes directly using [GlobalSettings](/cpp-sdk/4.5/api/classes/imfusion-globalsettings).
+
+**See also:** [GlobalSettings](/cpp-sdk/4.5/api/classes/imfusion-globalsettings)
+
+****Deprecated**:** [addCustomSettings()](#addcustomsettings) is a way to register custom settings so they can be controlled through the [SettingsDialog](/cpp-sdk/4.5/api/classes/imfusion-settingsdialog). Use [SettingsDialog::addCustomSettings()](/cpp-sdk/4.5/api/classes/imfusion-settingsdialog) instead.
+
+## Classes
+
+- struct [LegacyInterfaceSettings](/cpp-sdk/4.5/api/structs/imfusion-settings-legacyinterfacesettings)
+- class [Setting](/cpp-sdk/4.5/api/classes/imfusion-settings-setting) — Provides a type-safe way to access a setting value.
+
+## Public Types
+
+- enum class **AnimationSpeed** : int &#123; **VerySlow** = 0 , **Slow** = 1 , **Normal** = 2 , **Fast** = 3 , **VeryFast** = 4 &#125;
+- enum class **OrientationMeshType** : int &#123; **Cube** = 0 , **Head** = 1 , **Body** = 2 &#125;
+- enum class **DicomOrientationType** : int &#123; **Biped** = 0 , **Quadruped** = 1 &#125;
+
+## Public Member Functions
+
+- **Settings** () — Creates a new [Settings](/cpp-sdk/4.5/api/classes/imfusion-settings) object.
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+## Static Public Member Functions
+
+- static double [animationDurationScale](#animationdurationscale) (AnimationSpeed speed) — Converts AnimationSpeed to a scale factor the animation duration should be multiplied with, e.g.
+- static void [addCustomSettings](#addcustomsettings) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) &p, bool ioSettings=false) — Adds customs settings.
+
+## Protected Attributes
+
+- struct [ImFusion::Settings::LegacyInterfaceSettings](/cpp-sdk/4.5/api/structs/imfusion-settings-legacyinterfacesettings) **m_settings**
+- [Setting](/cpp-sdk/4.5/api/classes/imfusion-settings-setting)&lt; bool &gt; **showToolbarText** — [Settings](/cpp-sdk/4.5/api/classes/imfusion-settings) of the ImFusionSuite.
+- [Setting](/cpp-sdk/4.5/api/classes/imfusion-settings-setting)&lt; bool &gt; **showLoadOptionsOnStart**
+- [Setting](/cpp-sdk/4.5/api/classes/imfusion-settings-setting)&lt; bool &gt; **showAnnotationsOnStart**
+- [Setting](/cpp-sdk/4.5/api/classes/imfusion-settings-setting)&lt; bool &gt; **ignorePatientTransform**
+- [Setting](/cpp-sdk/4.5/api/classes/imfusion-settings-setting)&lt; bool &gt; **showWindowingMinMax**
+- [Setting](/cpp-sdk/4.5/api/classes/imfusion-settings-setting)&lt; bool &gt; **alwaysShowController**
+- [Setting](/cpp-sdk/4.5/api/classes/imfusion-settings-setting)&lt; bool &gt; **launchSetModalityWhenLoadingImages**
+- [Setting](/cpp-sdk/4.5/api/classes/imfusion-settings-setting)&lt; bool &gt; **showConfirmationCloseAll**
+- [Setting](/cpp-sdk/4.5/api/classes/imfusion-settings-setting)&lt; bool &gt; **removePropertyDefaultsOnSave**
+- [Setting](/cpp-sdk/4.5/api/classes/imfusion-settings-setting)&lt; bool &gt; **removeEmptyPropertiesOnSave**
+- [Setting](/cpp-sdk/4.5/api/classes/imfusion-settings-setting)&lt; bool &gt; **rememberControllerLocation**
+- [Setting](/cpp-sdk/4.5/api/classes/imfusion-settings-setting)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **volumeRendererDefault**
+- [Setting](/cpp-sdk/4.5/api/classes/imfusion-settings-setting)&lt; int &gt; **volumeRendererInteractionLod**
+- [Setting](/cpp-sdk/4.5/api/classes/imfusion-settings-setting)&lt; int &gt; **volumeRendererInteractionLodSizeThreshold**
+- [Setting](/cpp-sdk/4.5/api/classes/imfusion-settings-setting)&lt; bool &gt; **orientViewsToNormalOnClick** — if true, orient slices to normal to surface on double click
+- [Setting](/cpp-sdk/4.5/api/classes/imfusion-settings-setting)&lt; int &gt; **volumeRendererMaxVolumes**
+- [Setting](/cpp-sdk/4.5/api/classes/imfusion-settings-setting)&lt; int &gt; **volumeRendererMode**
+- [Setting](/cpp-sdk/4.5/api/classes/imfusion-settings-setting)&lt; int &gt; **defaultPixelInterpolationMode** — 0 for nearest neighbor, 1 for linear, 2 for cubic
+- [Setting](/cpp-sdk/4.5/api/classes/imfusion-settings-setting)&lt; bool &gt; **sliceThickness**
+- [Setting](/cpp-sdk/4.5/api/classes/imfusion-settings-setting)&lt; bool &gt; **showOffscreenIndicators**
+- [Setting](/cpp-sdk/4.5/api/classes/imfusion-settings-setting)&lt; bool &gt; **animationsEnabled**
+- [Setting](/cpp-sdk/4.5/api/classes/imfusion-settings-setting)&lt; int &gt; **animationSpeed** — 0: very slow, 1: slow, 2: normal, 3: fast, 4: very fast
+- [Setting](/cpp-sdk/4.5/api/classes/imfusion-settings-setting)&lt; bool &gt; **showPointsAsCrosses**
+- [Setting](/cpp-sdk/4.5/api/classes/imfusion-settings-setting)&lt; int &gt; **customUiScaling**
+- [Setting](/cpp-sdk/4.5/api/classes/imfusion-settings-setting)&lt; int &gt; **patientInfoVisibility**
+- [Setting](/cpp-sdk/4.5/api/classes/imfusion-settings-setting)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **patientInfoFormatString**
+- [Setting](/cpp-sdk/4.5/api/classes/imfusion-settings-setting)&lt; int &gt; **scaleInfoVisibility**
+- [Setting](/cpp-sdk/4.5/api/classes/imfusion-settings-setting)&lt; bool &gt; **sliceIntersectionLines**
+- [Setting](/cpp-sdk/4.5/api/classes/imfusion-settings-setting)&lt; vec4 &gt; **bgColor**
+- [Setting](/cpp-sdk/4.5/api/classes/imfusion-settings-setting)&lt; vec4 &gt; **primarySliceBlendingColor**
+- [Setting](/cpp-sdk/4.5/api/classes/imfusion-settings-setting)&lt; vec4 &gt; **secondarySliceBlendingColor**
+- [Setting](/cpp-sdk/4.5/api/classes/imfusion-settings-setting)&lt; bool &gt; **showOrientationMarkersInMpr**
+- [Setting](/cpp-sdk/4.5/api/classes/imfusion-settings-setting)&lt; int &gt; **orientationMesh**
+- [Setting](/cpp-sdk/4.5/api/classes/imfusion-settings-setting)&lt; bool &gt; **useWorkspaceForDefaultSavePath**
+- [Setting](/cpp-sdk/4.5/api/classes/imfusion-settings-setting)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **defaultFolderMLModels**
+- [Setting](/cpp-sdk/4.5/api/classes/imfusion-settings-setting)&lt; int &gt; **logLevel**
+- [Setting](/cpp-sdk/4.5/api/classes/imfusion-settings-setting)&lt; int &gt; **maxLogFileSizeMB** — Maximum log file size in MB for log rotation, 0 to disable.
+- [Setting](/cpp-sdk/4.5/api/classes/imfusion-settings-setting)&lt; bool &gt; **dataWidgetQuickSelection** — "Visibility follow Selection" setting of [DataWidget](/cpp-sdk/4.5/api/classes/imfusion-datawidget)
+- [Setting](/cpp-sdk/4.5/api/classes/imfusion-settings-setting)&lt; bool &gt; **dataWidgetAutoLinkWindowing** — "Auto Link Windowing per Modality" setting of [DataWidget](/cpp-sdk/4.5/api/classes/imfusion-datawidget)
+- [Setting](/cpp-sdk/4.5/api/classes/imfusion-settings-setting)&lt; bool &gt; **dataWidgetAutoLinkPose** — "Auto Link Pose per Group" setting of [DataWidget](/cpp-sdk/4.5/api/classes/imfusion-datawidget)
+- [Setting](/cpp-sdk/4.5/api/classes/imfusion-settings-setting)&lt; bool &gt; **dataWidgetShowThumbnails** — Show thumbnails in [DataWidget](/cpp-sdk/4.5/api/classes/imfusion-datawidget).
+- [Setting](/cpp-sdk/4.5/api/classes/imfusion-settings-setting)&lt; bool &gt; **showPixelInfoOverlay**
+- [Setting](/cpp-sdk/4.5/api/classes/imfusion-settings-setting)&lt; bool &gt; **showPixelInfoOverlayUnits**
+- [Setting](/cpp-sdk/4.5/api/classes/imfusion-settings-setting)&lt; bool &gt; **showPixelInfoOverlayStorageValues**
+- [Setting](/cpp-sdk/4.5/api/classes/imfusion-settings-setting)&lt; bool &gt; **showPixelInfoOverlayLabelNames**
+- [Setting](/cpp-sdk/4.5/api/classes/imfusion-settings-setting)&lt; int &gt; **pixelInfoOverlayMode**
+- [Setting](/cpp-sdk/4.5/api/classes/imfusion-settings-setting)&lt; int &gt; **pixelInfoOverlayStyle**
+- [Setting](/cpp-sdk/4.5/api/classes/imfusion-settings-setting)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **licenseKey**
+- [Setting](/cpp-sdk/4.5/api/classes/imfusion-settings-setting)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **licenseToken**
+- [Setting](/cpp-sdk/4.5/api/classes/imfusion-settings-setting)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **licenseExpirationDate**
+- [Setting](/cpp-sdk/4.5/api/classes/imfusion-settings-setting)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **licenseProxyAddress**
+- [Setting](/cpp-sdk/4.5/api/classes/imfusion-settings-setting)&lt; int &gt; **defaultDicomOrientationType**
+- [Setting](/cpp-sdk/4.5/api/classes/imfusion-settings-setting)&lt; int &gt; **trackingQualityOverlayMode** — 0: all, 1: only main, 2: auto (all until 3), 3: none
+- [Setting](/cpp-sdk/4.5/api/classes/imfusion-settings-setting)&lt; bool &gt; **useNativeOpenDialog** — if true, uses the open dialog from the OS, else uses the custom one (default false)
+- [Setting](/cpp-sdk/4.5/api/classes/imfusion-settings-setting)&lt; int &gt; **dataGroupingOption** — Option for grouping data via the [DataGroupingModel](/cpp-sdk/4.5/api/classes/imfusion-datagroupingmodel).
+- [Setting](/cpp-sdk/4.5/api/classes/imfusion-settings-setting)&lt; bool &gt; **showToolbarQuitButton** — Shows/Hides the Quit Button at the right end of the ToolBar in the MainWindow.
+- [Setting](/cpp-sdk/4.5/api/classes/imfusion-settings-setting)&lt; bool &gt; **showSliceIndexInMPR** — Shows/Hides the slice index in the MPR views.
+
+## Member Function Documentation
+
+### animationDurationScale
+
+```cpp
+double ImFusion::Settings::animationDurationScale (AnimationSpeed speed)
+```
+
+*static*
+
+Converts AnimationSpeed to a scale factor the animation duration should be multiplied with, e.g.
+
+a scale factor of 2.0 should make the animation take twice as long
+
+### configure
+
+```cpp
+void ImFusion::Settings::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### configuration
+
+```cpp
+void ImFusion::Settings::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality
+
+### addCustomSettings
+
+```cpp
+void ImFusion::Settings::addCustomSettings (const Properties & p, bool ioSettings = false)
+```
+
+*static*
+
+Adds customs settings.
+
+Custom settings can be used by Plugins to register their own settings so that they are known to the rest of the framework (e.g. displayed in the [SettingsDialog](/cpp-sdk/4.5/api/classes/imfusion-settingsdialog)).
+
+Custom settings will only affect the behaviour of the configuration/configure, which will contain the properties for the custom settings.
+
+Example:
+
+```cpp
+Properties p("Example"); // name of the custom settings
+p.setParam("foo", 10, 10); // add a setting 'foo' with a initial and a default value of 10
+Settings::addCustomSettings(p);
+...
+Settings s;
+Properties p;
+s.configuration(&p);
+int foo;
+if (s.param("Example/foo", foo))
+...
+```
+ fragment
+The recommended way to add settings to a plugin is derive from [Settings](/cpp-sdk/4.5/api/classes/imfusion-settings):
+
+```cpp
+class YourPluginSettings: public Settings
+{
+public:
+ Setting<int> yourSetting;
+
+    YourPluginSettings():
+        yourSetting(m_settings, "YourPlugin/yourSetting", 10)
+    {}
+
+ // this method should be called in the Plugin constructor
+ static void registerCustomSettings()
+    {
+ Properties config("YourPlugin");
+        config.setParam("yourSetting", 10, 10);
+ // optionally set some attributes for the GUI:
+        config.setParamAttributes("yourSetting", 'min: 0, max: 20'");
+        Settings::addCustomSettings(config);
+    }
+}
+```
+ fragment
+The default value of a param will be used when a setting is reset through the [SettingsDialog](/cpp-sdk/4.5/api/classes/imfusion-settingsdialog). In general you want to make sure that the default value in the [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) is the same as in the [Setting](/cpp-sdk/4.5/api/classes/imfusion-settings-setting) instance.
+
+Custom settings are only available after calling this method. Even if the backend contains values for the custom setting, they will not be part of the configuration and will not be configured until addCustomSettings is called. This method should therefore be called in the Plugin constructor. If there is already a custom setting with same name, it will be overwritten.
+
+If ioSettings is true, the custom settings will be displayed under the Import/Export section of the [GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui).
+
+****Deprecated**:** "Use SettingsDialog::addCustomSettings"

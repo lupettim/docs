@@ -1,0 +1,65 @@
+---
+title: "ImFusion::DeformableIcp::AdvancedProperties"
+sidebarTitle: "AdvancedProperties"
+---
+
+## Public Attributes
+
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; double &gt; &gt; [p_relaxationLogLambda](#p-relaxationloglambda) = &#123;"relaxationLogLambda", std::nullopt, this&#125; — If set, the regularization parameter will be increased again after reaching p_stoppingLogLambda until its logarithm is larger than or equal to this value.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; double &gt; [p_stoppingRelRmse](#p-stoppingrelrmse) = &#123;"stoppingRelRmse", 0., this&#125; — If the relative RMSE in % is less than or equal to this value, iterations are stopped.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; double &gt; [p_stoppingRelRmseDiff](#p-stoppingrelrmsediff) = &#123;"stoppingRelRmseDiff", 0.001, this&#125; — If the difference of relative RMSE in % between successive iterations is less than or equal to this value, pre-alignment iterations are stopped.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; int &gt; **p_maxIter** = &#123;"maxIter", 200, this&#125; — Maximum number of ICP iterations.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; double &gt; [p_conjGradTolerance](#p-conjgradtolerance) = &#123;"conjGradTolerance", 1e-3, this&#125; — The tolerance threshold for stopping the conjugate gradient iterations used to solve the linear system (upper bound of relative residual error).
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; int &gt; [p_conjGradMaxIterations](#p-conjgradmaxiterations) = &#123;"conjGradMaxIterations", 4, this&#125; — Conjugate gradient (CG) with a complete Cholesky preconditioner is used to solve the linear system.
+
+## Member Data Documentation
+
+### p_relaxationLogLambda
+
+```cpp
+Parameter < std::optional <double> > ImFusion::DeformableIcp::AdvancedProperties::p_relaxationLogLambda = {"relaxationLogLambda", std::nullopt, this}
+```
+
+If set, the regularization parameter will be increased again after reaching p_stoppingLogLambda until its logarithm is larger than or equal to this value.
+
+The regularization parameter will be increased by dividing it by p_lambdaReductionFactor each iteration.
+
+### p_stoppingRelRmse
+
+```cpp
+Parameter <double> ImFusion::DeformableIcp::AdvancedProperties::p_stoppingRelRmse = {"stoppingRelRmse", 0., this}
+```
+
+If the relative RMSE in % is less than or equal to this value, iterations are stopped.
+
+The relative RMSE is the absolute RMSE divided by the RMS distance of fixed points from their centroid.
+
+### p_stoppingRelRmseDiff
+
+```cpp
+Parameter <double> ImFusion::DeformableIcp::AdvancedProperties::p_stoppingRelRmseDiff = {"stoppingRelRmseDiff", 0.001, this}
+```
+
+If the difference of relative RMSE in % between successive iterations is less than or equal to this value, pre-alignment iterations are stopped.
+
+This criterion is not used for the deformable registration.
+
+### p_conjGradTolerance
+
+```cpp
+Parameter <double> ImFusion::DeformableIcp::AdvancedProperties::p_conjGradTolerance = {"conjGradTolerance", 1e-3, this}
+```
+
+The tolerance threshold for stopping the conjugate gradient iterations used to solve the linear system (upper bound of relative residual error).
+
+If set to 0, the system is solved directly using a Cholesky factorization.
+
+### p_conjGradMaxIterations
+
+```cpp
+Parameter <int> ImFusion::DeformableIcp::AdvancedProperties::p_conjGradMaxIterations = {"conjGradMaxIterations", 4, this}
+```
+
+Conjugate gradient (CG) with a complete Cholesky preconditioner is used to solve the linear system.
+
+The Cholesky factorization is reused across ICP iterations and is only recomputed if the number of CG iterations needed during the previous ICP iteration is greater than or equal to this value. If set to 0, the system is solved directly using the Cholesky factorization.

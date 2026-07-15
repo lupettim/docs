@@ -1,0 +1,59 @@
+---
+title: "ImFusion::Compression::zip"
+sidebarTitle: "zip"
+description: "Compression using the ZIP file format"
+---
+
+## Overview
+
+Compression using the ZIP file format
+
+## Classes
+
+- struct [Error](/cpp-sdk/4.5/api/structs/imfusion-compression-zip-error) — Represents a zip/unzip error.
+- struct [EntryInfo](/cpp-sdk/4.5/api/structs/imfusion-compression-zip-entryinfo) — Info for an archive entry:
+- class [ZipArchive](/cpp-sdk/4.5/api/classes/imfusion-compression-zip-ziparchive) — Class representing a zip archive. A [ZipArchive](/cpp-sdk/4.5/api/classes/imfusion-compression-zip-ziparchive) instance can create a zip archive, add/extract files/memory buffers to/from it.
+
+## Enumerations
+
+- enum class ExistingArchivePolicy &#123; **Append** = 0 , **Overwrite** = 1 &#125; — Indicates the policy for existing archives.
+- enum class [Algorithm](#algorithm) &#123; Uncompressed = 0 , ZLib = 1 , ZStd = 2 , LZMA = 3 , BZip2 = 4 , XZ = 5 &#125; — Defines the compression algorithm.
+- enum class [Level](#level) &#123; Default = 0 , Fast = 1 , Normal = 2 , Best = 3 &#125; — Defines the compression level.
+
+## Enumeration Type Documentation
+
+### Algorithm
+
+```cpp
+enum class ImFusion::Compression::zip::Algorithm
+```
+
+*strong*
+
+Defines the compression algorithm.
+
+**Enumerator:**
+
+- `Uncompressed` — uncompressed/raw STORE method
+- `ZLib` — zlib/Deflate algorithm
+- `ZStd` — Zstandard algorithm.
+- `LZMA` — LZMA algorithm.
+- `BZip2` — bzip2 algorithm
+- `XZ` — xz algorithm
+
+### Level
+
+```cpp
+enum class ImFusion::Compression::zip::Level
+```
+
+*strong*
+
+Defines the compression level.
+
+**Enumerator:**
+
+- `Default` — Default.
+- `Fast` — Fast.
+- `Normal` — Middle.
+- `Best` — Best/Slowest.

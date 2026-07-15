@@ -1,0 +1,19 @@
+---
+title: "ImFusion::LightweightController"
+sidebarTitle: "LightweightController"
+description: "Interface to set a display instance on a Controller or DataController class."
+---
+
+`#include <ImFusion/GUI/LightweightController.h>`
+
+## Overview
+
+Interface to set a display instance on a [Controller](/cpp-sdk/4.5/api/classes/imfusion-controller) or [DataController](/cpp-sdk/4.5/api/classes/imfusion-datacontroller) class.
+
+This allows for lightweight controller instances which can be used in other applications, not requiring a full [MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase) instance. Controllers implementing this interface have to make sure they support m_main being nullptr.
+
+**See also:** [Controller](/cpp-sdk/4.5/api/classes/imfusion-controller), [DataController](/cpp-sdk/4.5/api/classes/imfusion-datacontroller), [MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase)
+
+## Public Member Functions
+
+- virtual void **setDisplay** ([GUI::RadiologyDisplay](/cpp-sdk/4.5/api/classes/imfusion-gui-radiologydisplay) \*disp)=0 — Set the display instance to use by this controller.

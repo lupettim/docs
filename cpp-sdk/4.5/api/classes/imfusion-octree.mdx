@@ -1,0 +1,33 @@
+---
+title: "ImFusion::Octree"
+sidebarTitle: "Octree"
+description: "Fast Octree space subdivision."
+---
+
+`#include <ImFusion/Base/Octree.h>`
+
+## Overview
+
+Fast [Octree](/cpp-sdk/4.5/api/classes/imfusion-octree) space subdivision.
+
+## Public Member Functions
+
+- **Octree** ([std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; const [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) &gt; image, int minCubeSize) — Creates and fills the [Octree](/cpp-sdk/4.5/api/classes/imfusion-octree) in a background thread with given image and minimum cube size.
+- **~Octree** () — Destructor, deletes the [Octree](/cpp-sdk/4.5/api/classes/imfusion-octree).
+- bool [setInsideRange](#setinsiderange) (int min, int max) — Set the intensity range defining 'inside' and update.
+- bool **setInsideRange** (double min, double max) — Convenience method, set range with normalized scale (0..1).
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; int &gt; & **enumerate** () — Enumerate all inside cube cells with their position and size.
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; int &gt; & **getCubesInside** () const
+- bool **isUsable** () const — Tells if the [Octree](/cpp-sdk/4.5/api/classes/imfusion-octree) is computed and ready to use.
+
+## Member Function Documentation
+
+### setInsideRange
+
+```cpp
+bool ImFusion::Octree::setInsideRange (int min, int max)
+```
+
+Set the intensity range defining 'inside' and update.
+
+Returns true if something has changed.

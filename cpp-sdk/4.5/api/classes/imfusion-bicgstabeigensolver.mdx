@@ -1,0 +1,30 @@
+---
+title: "ImFusion::BiCGStabEigenSolver"
+sidebarTitle: "BiCGStabEigenSolver"
+description: "Bi-conjugate gradient solver with stabilization (Eigen implementation)."
+---
+
+`#include <ImFusion/Base/LinearSystemSolvers.h>`
+
+## Overview
+
+Bi-conjugate gradient solver with stabilization (Eigen implementation).
+
+## Public Member Functions
+
+- **BiCGStabEigenSolver** (bool useDouble, int maxIterations, float minTolerance=1e-8f)
+- void [solve](#solve) (Eigen::SparseMatrix&lt; float &gt; &A, Eigen::VectorXf &b, Eigen::VectorXf &x, Eigen::VectorXf &x0) override
+
+## Protected Attributes
+
+- bool **m_useDouble**
+
+## Member Function Documentation
+
+### solve
+
+```cpp
+void ImFusion::BiCGStabEigenSolver::solve (Eigen::SparseMatrix< float > & A, Eigen::VectorXf & b, Eigen::VectorXf & x, Eigen::VectorXf & x0)
+```
+
+*override, virtual*

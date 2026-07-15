@@ -1,0 +1,51 @@
+---
+title: "ImFusion::ImageResamplingController"
+sidebarTitle: "ImageResamplingController"
+description: "Controller for image resampling."
+---
+
+`#include <ImFusion/GUI/ImageResamplingController.h>`
+
+## Overview
+
+[Controller](/cpp-sdk/4.5/api/classes/imfusion-controller) for image resampling.
+
+## Public Slots
+
+- void **enableResamplingParameters** ()
+- void **changeDimValue** (QSpinBox \*changedSpinBox)
+- void **changePercentValue** (QSpinBox \*changedSpinBox)
+- void **changeSpacingValue** (QDoubleSpinBox \*changedSpinBox)
+- void **changeBinningValue** (QSpinBox \*changedSpinBox)
+- void **onCompute** ()
+
+## Public Member Functions
+
+- **ImageResamplingController** ([ImageResamplingAlgorithm](/cpp-sdk/4.5/api/classes/imfusion-imageresamplingalgorithm) \*[algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithmcontroller)) — Constructor with the algorithm instance.
+- **~ImageResamplingController** () override — Destructor.
+- void [init](#init) () override — Two-step initialization function to be implemented by subclasses.
+- void [onAlgorithmParametersChanged](#onalgorithmparameterschanged) () override — Callback called when the [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm)'s signalParametersChanged signal was emitted.
+
+## Member Function Documentation
+
+### init
+
+```cpp
+void ImFusion::ImageResamplingController::init ()
+```
+
+*override, virtual*
+
+Two-step initialization function to be implemented by subclasses.
+
+This function is called by [setMainWindowBase()](/cpp-sdk/4.5/api/classes/imfusion-controller) after the [m_disp](/cpp-sdk/4.5/api/classes/imfusion-controller) and [m_main](/cpp-sdk/4.5/api/classes/imfusion-controller) attributes have been set and hence a complete initialization of the controller is possible at this point.
+
+### onAlgorithmParametersChanged
+
+```cpp
+void ImFusion::ImageResamplingController::onAlgorithmParametersChanged ()
+```
+
+*override, virtual*
+
+Callback called when the [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm)'s signalParametersChanged signal was emitted.

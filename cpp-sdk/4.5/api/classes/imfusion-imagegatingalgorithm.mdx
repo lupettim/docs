@@ -1,0 +1,86 @@
+---
+title: "ImFusion::ImageGatingAlgorithm"
+sidebarTitle: "ImageGatingAlgorithm"
+description: "Algorithm to bin image sets according to a gating signal."
+---
+
+`#include <ImFusion/Base/ImageGatingAlgorithm.h>`
+
+## Overview
+
+[Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) to bin image sets according to a gating signal.
+
+## Public Types
+
+- enum class GatingType &#123; **Binning** = 0 , **SimilarityThreshold** = 1 , **PeakDistance** = 2 &#125; — Different types of gating.
+
+## Public Member Functions
+
+- **ImageGatingAlgorithm** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*images, [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*refImgWithGatingInfo=0) — Creates the algorithm instance with a series of images.
+- virtual **~ImageGatingAlgorithm** () override — Destructor.
+
+## Parameters
+
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; GatingType &gt; [p_gatingType](#p-gatingtype) = &#123;"gatingType", GatingType::Binning, this&#125;
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; double &gt; **p_threshold** = &#123;"threshold", 0.5, this&#125; — Used for gating type SimilarityThreshold (in interval [0,1]) to generate two output sets.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; vec2i &gt; **p_peakDistances** = &#123;"peakDistances", vec2i(5, 10), this&#125; — Used for gating type PeakDistance (number of frames from the peaks before/after) to generate two output sets.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; int &gt; **p_numberOfBins** = &#123;"numberOfBins", 8, this&#125; — Number of bins. Only used for gating type Binning.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; int &gt; [p_reduceToSingleBin](#p-reducetosinglebin) = &#123;"reduceToSingleBin", -1, this&#125; — If set to a bin between 0 and p_numberOfBins-1, the input image set will to be reduced to this bin only, and all other images will be discarded.
+
+## Methods implementing the algorithm interface
+
+- void [compute](#compute) () override — Applies the processing.
+- [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) [takeOutput](#takeoutput) () override — If new data was created, make it available here.
+- static bool [createCompatible](#createcompatible) (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=nullptr)
+
+## Member Function Documentation
+
+### createCompatible
+
+```cpp
+bool ImFusion::ImageGatingAlgorithm::createCompatible (const DataList & data, Algorithm ** a = nullptr)
+```
+
+*static*
+
+Factory method to check for applicability or to create the algorithm
+
+### compute
+
+```cpp
+void ImFusion::ImageGatingAlgorithm::compute ()
+```
+
+*override, virtual*
+
+Applies the processing.
+
+### takeOutput
+
+```cpp
+OwningDataList ImFusion::ImageGatingAlgorithm::takeOutput ()
+```
+
+*override, virtual*
+
+If new data was created, make it available here.
+
+## Member Data Documentation
+
+### p_gatingType
+
+```cpp
+Parameter < GatingType > ImFusion::ImageGatingAlgorithm::p_gatingType = {"gatingType", GatingType::Binning, this}
+```
+
+Type of gating
+
+### p_reduceToSingleBin
+
+```cpp
+Parameter <int> ImFusion::ImageGatingAlgorithm::p_reduceToSingleBin = {"reduceToSingleBin", -1, this}
+```
+
+If set to a bin between 0 and p_numberOfBins-1, the input image set will to be reduced to this bin only, and all other images will be discarded.
+
+Only used for gating type Binning.

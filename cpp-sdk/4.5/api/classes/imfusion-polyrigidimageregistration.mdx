@@ -1,0 +1,72 @@
+---
+title: "ImFusion::PolyRigidImageRegistration"
+sidebarTitle: "PolyRigidImageRegistration"
+description: "Registers two images with a non-linear poly-rigid deformation."
+---
+
+`#include <ImFusion/Reg/PolyRigidImageRegistration.h>`
+
+## Overview
+
+Registers two images with a non-linear poly-rigid deformation.
+
+The algorithm modifies the [GlPolyRigidDeformation](/cpp-sdk/4.5/api/classes/imfusion-glpolyrigiddeformation) object attached to the moving image
+
+## Public Member Functions
+
+- **PolyRigidImageRegistration** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*image1, [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*image2, [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*labelMap=nullptr)
+- void [initializeTransformationModel](#initializetransformationmodel) () override
+- void [compute](#compute) () override — Starts the registration.
+- void **setDownsamplingLayers** (int v) — Sets the number of times a volume should be successively downsampled during registration This multiresolution approach is intended to avoid local optima in the registration.
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configures the registration.
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Gets the configuration of the registration.
+
+## Static Public Member Functions
+
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=0) — Expects two Volumes/Images.
+
+## Member Function Documentation
+
+### initializeTransformationModel
+
+```cpp
+void ImFusion::PolyRigidImageRegistration::initializeTransformationModel ()
+```
+
+*override, virtual*
+
+### compute
+
+```cpp
+void ImFusion::PolyRigidImageRegistration::compute ()
+```
+
+*override, virtual*
+
+Starts the registration.
+
+A optimizer has to be set before hand. During the registration the deformation of the moving image will be updated with temporary results. Upon return the deformation of the moving image is one that maximises the similarity measure.
+
+### configure
+
+```cpp
+void ImFusion::PolyRigidImageRegistration::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configures the registration.
+
+A sub-property with the name "Optimizer" can be used to create and initialize an optimizer The sub-property "SimilarityMeasure" can be used to set the configuration for the SimilarityMeasure
+
+### configuration
+
+```cpp
+void ImFusion::PolyRigidImageRegistration::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Gets the configuration of the registration.
+
+If an optimizer is set, the sub-property "Optimizer" contains its configuration. The sub-property "SimilarityMeasure" contains the properties of the SimilarityMeasure

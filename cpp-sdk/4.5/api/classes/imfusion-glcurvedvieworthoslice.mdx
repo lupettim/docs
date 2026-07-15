@@ -1,0 +1,94 @@
+---
+title: "ImFusion::GlCurvedViewOrthoSlice"
+sidebarTitle: "GlCurvedViewOrthoSlice"
+description: "Displays an ortho slice for a panorama curve."
+---
+
+`#include <ImFusion/GL/GlCurvedViewOrthoSlice.h>`
+
+## Overview
+
+Displays an ortho slice for a panorama curve.
+
+## Public Member Functions
+
+- [GlCurvedViewOrthoSlice](#glcurvedvieworthoslice) (const [Slice](/cpp-sdk/4.5/api/classes/imfusion-slice) &[slice](/cpp-sdk/4.5/api/classes/imfusion-glslice), [GlCurvedView](/cpp-sdk/4.5/api/classes/imfusion-glcurvedview) \*curvedView) — Constructs the ortho slice for the given curve.
+- void [setSlice](#setslice) (const [Slice](/cpp-sdk/4.5/api/classes/imfusion-slice) &s) override — Set a custom slice in 3D space.
+- void [draw](#draw) (const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &view) override — Render view.
+- void [setMatrix](#setmatrix) (const mat4 &m) override — Return the curve.
+- void **updateMatrix** ()
+- void [setData](#setdata) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::pair](http://en.cppreference.com/w/cpp/utility/pair.html)&lt; const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*, const [DisplayOptions2d](/cpp-sdk/4.5/api/classes/imfusion-displayoptions2d) \* &gt; &gt; &[data](/cpp-sdk/4.5/api/classes/imfusion-glslice)) override — Set image data, overwritten here to reset slice extent.
+- void **setCurrentSlice** (int [slice](/cpp-sdk/4.5/api/classes/imfusion-glslice)) — Set the index of the ortho slice in the related [CurvedViewPrimitive](/cpp-sdk/4.5/api/classes/imfusion-curvedviewprimitive).
+- int **currentSlice** () const — Get the index of the ortho slice in the related [CurvedViewPrimitive](/cpp-sdk/4.5/api/classes/imfusion-curvedviewprimitive).
+- void **computeAnnotationVertices** (vec2 &p1_, vec2 &p2_) const
+- void **setWidth** (double width)
+- double **width** () const
+- void **setHeight** (double height)
+- double **height** () const
+- [GlCurvedView](/cpp-sdk/4.5/api/classes/imfusion-glcurvedview) \* **curvedView** () const
+
+## Protected Attributes
+
+- [GlCurvedView](/cpp-sdk/4.5/api/classes/imfusion-glcurvedview) \* **m_curvedView** = nullptr
+- int **m_sliceIdx**
+- double **m_width**
+- double **m_height**
+
+## Constructor & Destructor Documentation
+
+### GlCurvedViewOrthoSlice
+
+```cpp
+ImFusion::GlCurvedViewOrthoSlice::GlCurvedViewOrthoSlice (const Slice & slice, GlCurvedView * curvedView)
+```
+
+Constructs the ortho slice for the given curve.
+
+**Parameters:**
+
+- `slice` — slice
+- `curvedViewAnnot` — curve to construct ortho slice for
+
+## Member Function Documentation
+
+### setSlice
+
+```cpp
+void ImFusion::GlCurvedViewOrthoSlice::setSlice (const Slice & s)
+```
+
+*inline, override, virtual*
+
+Set a custom slice in 3D space.
+
+### draw
+
+```cpp
+void ImFusion::GlCurvedViewOrthoSlice::draw (const GlView & view)
+```
+
+*override, virtual*
+
+Render view.
+
+### setMatrix
+
+```cpp
+void ImFusion::GlCurvedViewOrthoSlice::setMatrix (const mat4 & m)
+```
+
+*inline, override, virtual*
+
+Return the curve.
+
+**Returns:** curve
+
+### setData
+
+```cpp
+void ImFusion::GlCurvedViewOrthoSlice::setData (const std::vector < std::pair < const Data *, const DisplayOptions2d * > > & data)
+```
+
+*override, virtual*
+
+Set image data, overwritten here to reset slice extent.

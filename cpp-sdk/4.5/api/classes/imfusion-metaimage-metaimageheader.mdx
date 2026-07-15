@@ -1,0 +1,154 @@
+---
+title: "ImFusion::MetaImage::MetaImageHeader"
+sidebarTitle: "MetaImageHeader"
+---
+
+## Public Types
+
+- enum class [ByteOrder](#byteorder) &#123; BigEndian , LittleEndian &#125;
+- enum class **FileType** &#123; **MHA** , **MHD** , **MHD_MULTIFILE** &#125;
+
+## Public Member Functions
+
+- bool [load](#load) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &mhdFileName, bool strictSyntax=false, bool ignoreHalfPixelOffset=false) — Load a [MetaImage](/cpp-sdk/4.5/api/namespaces/imfusion-metaimage) header.
+- bool [save](#save) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &mhdFileName) const — Save a [MetaImage](/cpp-sdk/4.5/api/namespaces/imfusion-metaimage) header file.
+- void **fromImageDescriptor** (const [ImageDescriptor](/cpp-sdk/4.5/api/structs/imfusion-imagedescriptor) &desc) — Load values from [ImageDescriptor](/cpp-sdk/4.5/api/structs/imfusion-imagedescriptor).
+- bool **fromSharedImageSet** (const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &sis) — Load values from [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset). Returns false on failure.
+- void **fromFileName** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &headerFileName, int nFiles=1) — Load values based on the name + filesystem structure of the header file + number of slices .
+- [ImageDescriptor](/cpp-sdk/4.5/api/structs/imfusion-imagedescriptor) **createImageDescriptor** () const — Create an [ImageDescriptor](/cpp-sdk/4.5/api/structs/imfusion-imagedescriptor) corresponding to this header.
+- FileType **metaImageFileType** () — Getter and setter methods:
+- void **setMetaImageFileType** (FileType in)
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **rawFiles** ()
+- void **setRawFiles** ([std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Filesystem::File](/cpp-sdk/4.5/api/classes/imfusion-filesystem-file) &gt;)
+- [ByteOrder](#byteorder) **msb** ()
+- void **setMsb** ([ByteOrder](#byteorder) msb)
+- bool **compressed** ()
+- void **setCompressed** (bool compressed)
+- [Data::Modality](/cpp-sdk/4.5/api/classes/imfusion-data) **modality** ()
+- void **setModality** ([Data::Modality](/cpp-sdk/4.5/api/classes/imfusion-data) modality)
+- mat4 **matrix** ()
+- void **setMatrix** (const mat4 matrix)
+- int **ndims** ()
+- bool **keepScaleAndOffset** ()
+- void **setKeepScaleAndOffset** (bool keepScaleAndOffset)
+- PixelType **pixelType** ()
+- void **setPixelType** (PixelType pixelType)
+- bool **elementByteOrderMSB** ()
+- double **imfusionElementShift** ()
+- double **imfusionElementScale** ()
+
+## Static Public Member Functions
+
+- static [std::set](http://en.cppreference.com/w/cpp/container/set.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; [recognizedHeaderKeywords](#recognizedheaderkeywords) () — List of keywords of a [MetaImage](/cpp-sdk/4.5/api/namespaces/imfusion-metaimage) header that are read.
+
+## Protected Member Functions
+
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &gt; [loadSharedImageSet](#loadsharedimageset) (bool prepare=false, [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*outContainer=nullptr, bool \*outSuccess=nullptr, [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) \*prog=nullptr, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &mhdFileName="") — Load [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) content, return zero pointer on failure.
+- bool [saveSharedImageSet](#savesharedimageset) (const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*is, [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; const [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) &gt; &unscaledImageBuffer) const — Save selected [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) content (without header).
+
+## Protected Attributes
+
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **m_rawFiles** — Raw image file name.
+- FileType **m_metaImageFileType** = FileType::MHD — Whether this is a mhd, mha or multifile mhd file.
+- int **m_frames** = 1 — Number of frames for 4D data.
+- int **m_ndims** = -1 — Number of dimensions.
+- int **m_elementNumberOfChannels** = 1 — Number of channels.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; int &gt; **m_dimSize** — How many elements per dimension.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; **m_elementSpacing** — Spacing.
+- [ByteOrder](#byteorder) **m_msb** = ByteOrder::LittleEndian — Byte order of image data.
+- PixelType **m_pixelType** = PixelType::UByte
+- size_t **m_comSize** = 0 — Size of the compressed data.
+- int **m_offset** = 0 — Offset when loading MHA.
+- bool **m_isMetric** = false
+- mat4 **m_matrix** = mat4::Identity() — Transformation matrix.
+- [Data::Modality](/cpp-sdk/4.5/api/classes/imfusion-data) **m_modality** = [Data::NA](/cpp-sdk/4.5/api/classes/imfusion-data) — [Image](/cpp-sdk/4.5/api/classes/imfusion-image) modality.
+- double **m_imfusionElementShift** = 0.0 — Shift parameter.
+- double **m_imfusionElementScale** = 1.0 — Scale parameter.
+- double **m_imfusionMetaImageVersion** = -1 — Version parameter, see currentImFusionMetaImageVersion.
+- bool **m_keepScaleAndOffset** = false — Binary data does not have intensity scale+offset applied.
+- bool **m_compressed** = false — Binary data is compressed.
+
+## Member Enumeration Documentation
+
+### ByteOrder
+
+```cpp
+enum class ImFusion::MetaImage::MetaImageHeader::ByteOrder
+```
+
+*strong*
+
+**Enumerator:**
+
+- `BigEndian` — the most significant byte (MSB) in a multi-byte structure is stored first
+- `LittleEndian` — the least significant byte (LSB) in a multi-byte structure is stored first
+
+## Member Function Documentation
+
+### recognizedHeaderKeywords
+
+```cpp
+std::set < std::string > ImFusion::MetaImage::MetaImageHeader::recognizedHeaderKeywords ()
+```
+
+*inline, static*
+
+List of keywords of a [MetaImage](/cpp-sdk/4.5/api/namespaces/imfusion-metaimage) header that are read.
+
+Other keywords may be ignored. This list is kept for reference only.
+
+### load
+
+```cpp
+bool ImFusion::MetaImage::MetaImageHeader::load (const std::string & mhdFileName, bool strictSyntax = false, bool ignoreHalfPixelOffset = false)
+```
+
+Load a [MetaImage](/cpp-sdk/4.5/api/namespaces/imfusion-metaimage) header.
+
+**Parameters:**
+
+- `filename` — The absolute path to the [MetaImage](/cpp-sdk/4.5/api/namespaces/imfusion-metaimage) file. The extension of the given filename, either '.mhd' or '.mha', determines the type of the [MetaImage](/cpp-sdk/4.5/api/namespaces/imfusion-metaimage) file.
+- `strictSyntax` — determines whether or not to fail when unexpected data is encountered (such as trailing non-whitespace characters after numbers).
+- `ignoreHalfPixelOffset` — should be set if no half-pixel offset to the Position/Orientation provided should be applied. Returns true on success.
+
+### save
+
+```cpp
+bool ImFusion::MetaImage::MetaImageHeader::save (const std::string & mhdFileName) const
+```
+
+Save a [MetaImage](/cpp-sdk/4.5/api/namespaces/imfusion-metaimage) header file.
+
+Automatically appends .mhd extension if not present. Automatically creates the directory the file is in if not present. Does not save intensity shift+scale parameters if m_keepShiftAndScale is not set. Removes half-pixel offset from matrix when saving Position/Orientation Returns true on success.
+
+### loadSharedImageSet
+
+```cpp
+std::unique_ptr < SharedImageSet > ImFusion::MetaImage::MetaImageHeader::loadSharedImageSet (bool prepare = false, SharedImageSet * outContainer = nullptr, bool * outSuccess = nullptr, Progress * prog = nullptr, const std::string & mhdFileName = "")
+```
+
+*protected*
+
+Load [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) content, return zero pointer on failure.
+
+Multi-file 3D data is interpreted as one slice per file. Optionally the data will be prepared (i.e. normalized) after loading, and a custom derived data container instance will be used if provided.
+
+**Parameters:**
+
+- `prepare` — If (prepare || m_msb) call [MemImage::prepare](/cpp-sdk/4.5/api/classes/imfusion-memimage).
+
+### saveSharedImageSet
+
+```cpp
+bool ImFusion::MetaImage::MetaImageHeader::saveSharedImageSet (const SharedImageSet * is, std::unique_ptr < const MemImage > & unscaledImageBuffer) const
+```
+
+*protected*
+
+Save selected [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) content (without header).
+
+Location to save in is taken from m_rawFiles. If is.size() &gt; 1, then multifile mode is forced, we do not currently support multi-frame single-file [MetaImage](/cpp-sdk/4.5/api/namespaces/imfusion-metaimage) files.
+
+**Parameters:**
+
+- `unscaledImageBuffer` — should point to the result of img-&gt;unscaled() if m_keepScaleAndOffset is false where img is the first selected image.

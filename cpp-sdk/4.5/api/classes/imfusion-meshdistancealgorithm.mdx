@@ -1,0 +1,153 @@
+---
+title: "ImFusion::MeshDistanceAlgorithm"
+sidebarTitle: "MeshDistanceAlgorithm"
+description: "Algorithm to compute point-wise distances between two aligned meshes, between two aligned point clouds, or between aligned point cloud and mesh."
+---
+
+`#include <ImFusion/Mesh/MeshDistanceAlgorithm.h>`
+
+## Overview
+
+[Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) to compute point-wise distances between two aligned meshes, between two aligned point clouds, or between aligned point cloud and mesh.
+
+## Classes
+
+- struct [Stat](/cpp-sdk/4.5/api/structs/imfusion-meshdistancealgorithm-stat)
+
+## Public Types
+
+- enum DistanceType &#123; **PointToPoint** = 0 , **PointToSurface** = 1 &#125; — Set distance type: 0 = point-to-point, 1 = point-to-surface.
+- enum class [StatusExt](#statusext) &#123; InvalidDistanceType , DistanceComputationFailed , DiceCoefficientComputationFailed &#125; — Enumeration listing possible errors during the computation.
+
+## Public Member Functions
+
+- **MeshDistanceAlgorithm** ([Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) \*mesh, [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) \*referenceMesh) — Constructor.
+- **MeshDistanceAlgorithm** ([PointCloud](/cpp-sdk/4.5/api/classes/imfusion-pointcloud) \*pointCloud, [PointCloud](/cpp-sdk/4.5/api/classes/imfusion-pointcloud) \*referencePointCloud) — Constructor.
+- **MeshDistanceAlgorithm** ([PointCloud](/cpp-sdk/4.5/api/classes/imfusion-pointcloud) \*pointcloud, [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) \*referenceMesh) — Constructor.
+- **MeshDistanceAlgorithm** ([Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) \*mesh, [PointCloud](/cpp-sdk/4.5/api/classes/imfusion-pointcloud) \*referencePointCloud) — Constructor.
+- **~MeshDistanceAlgorithm** () override — Destructor.
+- void **setDistanceType** (DistanceType type)
+- int **distanceType** () const
+- void **setSignedDistance** (bool signedDistance)
+- bool **signedDistance** () const
+- void [setRangeOfInterest](#setrangeofinterest) (const vec2i &range) — Set the range of points/vertices (sorted by distance) to consider: min = range[0], max = range[1] in %.
+- vec2i **rangeOfInterest** () const
+- int **computationMode** () const — Computation mode (depends on the constructor): 0 - mesh to mesh distances, 1 - point cloud to point cloud distances, 2 - point cloud to mesh distances, 3 - mesh to point cloud distances.
+- [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) \* **mesh** ()
+- [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) \* **referenceMesh** ()
+- [PointCloud](/cpp-sdk/4.5/api/classes/imfusion-pointcloud) \* **pointCloud** ()
+- [PointCloud](/cpp-sdk/4.5/api/classes/imfusion-pointcloud) \* **referencePointCloud** ()
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; & **distances** () const
+- double **meshVolume** () const
+- double **referenceMeshVolume** () const
+- double [computeDiceCoefficient](#computedicecoefficient) () — Compute the dice coefficient for two closed mesh volumes (returns -1 if calculation could not be performed (i.e.
+- [Stat](/cpp-sdk/4.5/api/structs/imfusion-meshdistancealgorithm-stat) **statistics** () const
+- void **setDistancesOutputFile** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &distancesOutputFile)
+- void **exportDistances** () const
+
+## Static Public Member Functions
+
+- static bool **pointCloudDistance** (const [PointCloud](/cpp-sdk/4.5/api/classes/imfusion-pointcloud) \*pointCloudSrc, [PointCloud](/cpp-sdk/4.5/api/classes/imfusion-pointcloud) \*pointCloudDst, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; &dist, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; int &gt; \*srcToDstMapping=nullptr) — Compute the nearest neighbor distance to the source point cloud for every destination point cloud vertex.
+- static bool **pointCloudToMeshDistance** (const [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) \*meshSrc, [PointCloud](/cpp-sdk/4.5/api/classes/imfusion-pointcloud) \*pointCloudDst, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; &dist, bool computeSurfaceError=false, bool signedDistance=false, [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) \*[progress](/cpp-sdk/4.5/api/classes/imfusion-algorithm)=nullptr) — Compute the nearest neighbor distance to the source mesh for every destination point cloud vertex.
+- static bool **meshToPointCloudDistance** (const [PointCloud](/cpp-sdk/4.5/api/classes/imfusion-pointcloud) \*pointCloudSrc, const [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) \*meshDst, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; &dist)
+
+## Static Protected Member Functions
+
+- static bool **writeDistancesToFile** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; &distances, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &distancesOutputFile)
+
+## Protected Attributes
+
+- [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) \* **m_mesh** — Input mesh.
+- [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) \* **m_refMesh** — Input reference mesh.
+- [PointCloud](/cpp-sdk/4.5/api/classes/imfusion-pointcloud) \* **m_pointCloud** — Input point cloud.
+- [PointCloud](/cpp-sdk/4.5/api/classes/imfusion-pointcloud) \* **m_refPointCloud** — Input reference point cloud.
+- DistanceType **m_distanceType**
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; **m_distances**
+- const int **m_computationMode** — 0 - mesh to mesh distances, 1 - point cloud to point cloud distances, 2 - point cloud to mesh distances, 3 - mesh to point cloud distances
+- bool **m_signedDistance**
+- double **m_meshVolume**
+- double **m_referenceMeshVolume**
+- [Stat](/cpp-sdk/4.5/api/structs/imfusion-meshdistancealgorithm-stat) **m_statistics**
+- vec2i **m_rangeOfInterest** &#123;0, 100&#125;
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **m_distancesOutputFile**
+
+## Methods implementing the algorithm interface
+
+- void [compute](#compute) () override — Execute the algorithm.
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=0) — If data is compatible with algorithm return true. If a is not zero, create algorithm with input data.
+
+## Methods implementing the Configurable interface
+
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Set one or multiple properties.
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Retrieve the properties of this object.
+
+## Member Enumeration Documentation
+
+### StatusExt
+
+```cpp
+enum class ImFusion::MeshDistanceAlgorithm::StatusExt
+```
+
+*strong*
+
+Enumeration listing possible errors during the computation.
+
+**Enumerator:**
+
+- `InvalidDistanceType` — Attempt to compute point-to-surface distance for the point clouds occurred.
+This operation is not supported
+- `DistanceComputationFailed` — Something went wrong during computation.
+- `DiceCoefficientComputationFailed` — Something went wrong during the dice coefficient computation (most probably at least one of the meshes is not manifold).
+
+## Member Function Documentation
+
+### setRangeOfInterest
+
+```cpp
+void ImFusion::MeshDistanceAlgorithm::setRangeOfInterest (const vec2i & range)
+```
+
+Set the range of points/vertices (sorted by distance) to consider: min = range[0], max = range[1] in %.
+
+All distances that are outside of this range will be set to NAN!
+
+### compute
+
+```cpp
+void ImFusion::MeshDistanceAlgorithm::compute ()
+```
+
+*override, virtual*
+
+Execute the algorithm.
+
+### computeDiceCoefficient
+
+```cpp
+double ImFusion::MeshDistanceAlgorithm::computeDiceCoefficient ()
+```
+
+Compute the dice coefficient for two closed mesh volumes (returns -1 if calculation could not be performed (i.e.
+
+at least one of the meshes is not closed)) dice = 2 \* volume(intersection(mesh1, mesh2))/(volume(mesh1) + volume(mesh2))
+
+### configure
+
+```cpp
+void ImFusion::MeshDistanceAlgorithm::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Set one or multiple properties.
+
+### configuration
+
+```cpp
+void ImFusion::MeshDistanceAlgorithm::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Retrieve the properties of this object.

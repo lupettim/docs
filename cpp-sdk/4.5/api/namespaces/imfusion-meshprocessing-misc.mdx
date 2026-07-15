@@ -1,0 +1,95 @@
+---
+title: "ImFusion::MeshProcessing::Misc"
+sidebarTitle: "Misc"
+description: "Miscellaneous mesh processing functions."
+---
+
+## Overview
+
+Miscellaneous mesh processing functions.
+
+## Enumerations
+
+- enum class [FillType](#filltype) &#123; None = 0 , Bottom , Top &#125; — Filling type for the label map computation.
+
+## Functions
+
+- bool **invertNormals** ([Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) &mesh) — Invert the vertex normals of the [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh). Returns false if mesh has no vertex normals.
+- void [burnInTransformation](#burnintransformation) ([Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) &mesh, const mat4 &transformation) — Applies the transformation to all mesh vertices.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; unsigned char &gt; &gt; [computeLabelMap](#computelabelmap) (const [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) &mesh, const vec3 &resolution, unsigned int margin=10, unsigned int dir=2, [FillType](#filltype) fill=FillType::None, vec3i \*targetDim=nullptr, const [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; mat4 &gt; &transformation=std::nullopt) — Compute label map volume from the mesh, representing the inside of a closed surface.
+- void [erodeBoundary](#erodeboundary) ([Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) &mesh, int layers) — Removes mesh boundary faces (faces which have at least one boundary edge).
+- bool **transferMeshFaceLabels** (const [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) &meshSrc, [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) &meshDst) — Transfer face labels from source mesh to destination mesh by propagating the label of its nearest neighbor.
+
+## Enumeration Type Documentation
+
+### FillType
+
+```cpp
+enum class ImFusion::MeshProcessing::Misc::FillType
+```
+
+*strong*
+
+Filling type for the label map computation.
+
+**Enumerator:**
+
+- `None` — no closing
+- `Bottom` — close label map in the bottom of axis
+- `Top` — close label map on the top of axis
+
+## Function Documentation
+
+### burnInTransformation
+
+```cpp
+void ImFusion::MeshProcessing::Misc::burnInTransformation (Mesh & mesh, const mat4 & transformation)
+```
+
+Applies the transformation to all mesh vertices.
+
+Transformation is also applied to vertex normals, halfedge normals and face normals if present
+
+**Parameters:**
+
+- `mesh` — [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh)
+- `transformation` — The transformation matrix
+
+### computeLabelMap
+
+```cpp
+std::unique_ptr < TypedImage < unsigned char > > ImFusion::MeshProcessing::Misc::computeLabelMap (const Mesh & mesh, const vec3 & resolution, unsigned int margin = 10, unsigned int dir = 2, FillType fill = FillType::None, vec3i * targetDim = nullptr, const std::optional < mat4 > & transformation = std::nullopt)
+```
+
+Compute label map volume from the mesh, representing the inside of a closed surface.
+
+**Warning:** The mesh transformation matrix is ignored here. You can, however, supply any transformation matrix (including the meshes own one) as an optional argument.
+
+**Note:** It is expected that either the mesh is centered at the origin or transformed accordingly by *transformation*. If this is not the case it can not be assured that the label map fully covers the mesh.
+
+**Parameters:**
+
+- `mesh` — [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh)
+- `resolution` — Resolution of a single voxel
+- `margin` — Additional voxels added at the volume boundaries (will be ignored if *targetDim* is given)
+- `dir` — Axis along which ray-mesh intersection should be performed (0 is x-axis, 1 is y-axis, 2 is z-axis)
+- `fill` — Specifies whether the label map should be manually closed in case of an open mesh (optional, default is 'None')
+- `targetDim` — Optional target dimension of the computed volume. If not provided, the dimension will be computed as [mesh extent] \* [resolution] + [margin]
+- `transformation` — An optional transformation to be applied to the mesh (default none).
+
+**Returns:** Label map with inside voxels set to 1, outside voxels set to 0
+
+### erodeBoundary
+
+```cpp
+void ImFusion::MeshProcessing::Misc::erodeBoundary (Mesh & mesh, int layers)
+```
+
+Removes mesh boundary faces (faces which have at least one boundary edge).
+
+**Parameters:**
+
+- `mesh` — mesh
+- `layers` — number of layers of boundary faces to be removed
+
+**Note:** Consider removing duplicated vertices by calling [Cleaning::mergeCloseVertices](/cpp-sdk/4.5/api/namespaces/imfusion-meshprocessing-cleaning) before this

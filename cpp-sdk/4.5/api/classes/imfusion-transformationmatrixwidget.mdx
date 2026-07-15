@@ -1,0 +1,94 @@
+---
+title: "ImFusion::TransformationMatrixWidget"
+sidebarTitle: "TransformationMatrixWidget"
+description: "Widget to transform a matrix, with global/local and toWorld/fromWorld modifiers."
+---
+
+`#include <ImFusion/GUI/TransformationMatrixWidget.h>`
+
+## Overview
+
+Widget to transform a matrix, with global/local and toWorld/fromWorld modifiers.
+
+Flexible widget that can be inserted in a dialog, allows the user to modify a matrix. Supports copy/paste, using a different matrix convention, and reset/invert actions
+
+## Public Types
+
+- enum [Type](#type) &#123; Translation = 1 &lt;&lt; 0 , Rotation = 1 &lt;&lt; 1 , ScaleShear = 1 &lt;&lt; 2 , Rigid = Translation | Rotation , Affine = Translation | Rotation | ScaleShear &#125; — Bitset enumeration to define how to show the menu.
+- enum [Options](#options) &#123; Tools = 1 &lt;&lt; 0 , CopyPaste = 1 &lt;&lt; 1 , GlobalLocal = 1 &lt;&lt; 2 , ToFromWorld = 1 &lt;&lt; 3 , All = 0xFF &#125;
+
+## Public Slots
+
+- virtual void **setMatrixSilent** (const mat4 &matrix) — Sets the matrix without triggering signals. Expected matrix is from the convention specified in construction.
+- void **setMatrixAnimated** (const mat4 &matrix) — Sets the matrix that is displayed in the dialog with an animation.
+- void **setResetMatrix** (const mat4 &matrix) — Sets the matrix that will be set when the reset button is pressed. Does not change the currently displayed matrix.
+- void **resetMatrix** () — Sets transformation matrix to reset matrix.
+- void **setCoordinateFrameNames** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &worldName, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &dataName) — Updates the names of the coordinate frames in the dropbox list.
+
+## Signals
+
+- void **matrixChanged** (const mat4 &matrix) const — Signals when the transformation matrix changes.
+- void **coordinateChanged** (bool isLocal) const — Signals when the coordinate changes between local/global.
+
+## Public Member Functions
+
+- [TransformationMatrixWidget](#transformationmatrixwidget) (const mat4 &resetMat=mat4::Identity(), QWidget \*parent=nullptr, [Pose::TransformationConvention](/cpp-sdk/4.5/api/namespaces/imfusion-pose) convention=[Pose::FROMWORLD](/cpp-sdk/4.5/api/namespaces/imfusion-pose), const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &worldName="World", const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &dataName="Data", [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; [Type](#type) &gt; type=Affine, [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; [Options](#options) &gt; options=All) — TransformationMatrixWidged constructor.
+- mat4 **matrix** () const — Returns the transformation matrix, in the constructor convention.
+- void **setTranslationSilent** (const vec3 &trans) — Sets a translation without triggering signals, in the constructor convention.
+- void **setRotationSilent** (const vec3 &rot) — Sets a rotation without triggering signals, in the constructor convention.
+- void **setScaleSilent** (const vec3 &scale) — Sets a scale without triggering signals, in the constructor convention.
+- void **setShearSilent** (const vec3 &shear) — Sets a shear without triggering signals, in the constructor convention.
+- void **setIs2dTransform** (bool is2d) — Limits the transformation to 2D.
+- void **setShownConvention** ([Pose::TransformationConvention](/cpp-sdk/4.5/api/namespaces/imfusion-pose) convention) — Sets the convention shown in the widget.
+- bool **isReadOnly** () const — Returns whether UI elements are read-only.
+- void **setReadOnly** (const bool flag) — Sets all UI elements to read-only.
+
+## Protected Attributes
+
+- QVBoxLayout \* **m_layout** = nullptr
+
+## Member Enumeration Documentation
+
+### Type
+
+```cpp
+enum ImFusion::TransformationMatrixWidget::Type
+```
+
+Bitset enumeration to define how to show the menu.
+
+**Enumerator:**
+
+- `Translation` — Translation.
+- `Rotation` — Rotation.
+- `ScaleShear` — Scale, Shear.
+- `Rigid` — Translation, Rotation.
+- `Affine` — Translation, Rotation, Scale, Shear.
+
+### Options
+
+```cpp
+enum ImFusion::TransformationMatrixWidget::Options
+```
+
+**Enumerator:**
+
+- `Tools` — Set Identity, Reset, Invert.
+- `CopyPaste` — Copy, Paste.
+- `GlobalLocal` — Global or Local.
+- `ToFromWorld` — To world, from world.
+- `All` — Set Identity, Reset, Invert, Copy, Paste, To world, from world.
+
+## Constructor & Destructor Documentation
+
+### TransformationMatrixWidget
+
+```cpp
+ImFusion::TransformationMatrixWidget::TransformationMatrixWidget (const mat4 & resetMat = mat4::Identity(), QWidget * parent = nullptr, Pose::TransformationConvention convention = Pose::FROMWORLD, const std::string & worldName = "World", const std::string & dataName = "Data", Flags < Type > type = Affine, Flags < Options > options = All)
+```
+
+*explicit*
+
+TransformationMatrixWidged constructor.
+
+Sets the reset matrix, and is modular with types and options. Sets the convention to be used with this matrix. Calls to matrix() will return the matrix in this convention.

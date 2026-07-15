@@ -1,0 +1,124 @@
+---
+title: "ImFusion::MeshPickingManipulator"
+sidebarTitle: "MeshPickingManipulator"
+description: "Mesh picking manipulator The MeshPickingManipulator can return the list of selected vertices/faces/edges It offers several manipulation modes like DoubleClick,"
+---
+
+`#include <ImFusion/GUI/MeshPickingManipulator.h>`
+
+## Overview
+
+[Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) picking manipulator The [MeshPickingManipulator](/cpp-sdk/4.5/api/classes/imfusion-meshpickingmanipulator) can return the list of selected vertices/faces/edges It offers several manipulation modes like DoubleClick, hover, alt + mouse key press For proper use the [MeshPickingManipulator](/cpp-sdk/4.5/api/classes/imfusion-meshpickingmanipulator) object must be added to a view as mesh manipulator and the outer object should subscribe to its signals e.g.
+
+```cpp
+GlMesh* glMesh = ...;
+MeshPickingManipulator* manip = new MeshPickingManipulator(glMesh, *m_disp->view3D()->view());
+manip->setSelectionMode(MeshPickingManipulator::SelectionMode::Face);
+manip->signalSelectedFaceIndices.connect(this, &ExampleController::onSelectedFaceIndices);
+auto meshPickingManipulator = new Interactive<GlMesh, MeshPickingManipulator>(glMesh, manip, true);
+m_disp->view3D()->addObject(meshPickingManipulator.get());
+```
+ fragment
+The manipulator must be removed from the view before deleting!
+
+## Public Types
+
+- enum class [SelectionMode](#selectionmode) &#123; **None** = 0 , Face , Vertex , Edge , **Holes** , **NonManifoldVertices** &#125;
+- enum class [ManipulatorMode](#manipulatormode) &#123; DoubleClick = 0 , Hover , AltDrag &#125; — Enumeration to determine rendering order of GlObjects in [GlSliceView](/cpp-sdk/4.5/api/classes/imfusion-glsliceview) and [GlVolumeView](/cpp-sdk/4.5/api/classes/imfusion-glvolumeview).
+
+## Public Member Functions
+
+- **MeshPickingManipulator** ([GlMesh](/cpp-sdk/4.5/api/classes/imfusion-glmesh) \*glMesh, [ImageView3D](/cpp-sdk/4.5/api/classes/imfusion-imageview3d) &[view](/cpp-sdk/4.5/api/classes/imfusion-glannotation))
+- **MeshPickingManipulator** ([GlMesh](/cpp-sdk/4.5/api/classes/imfusion-glmesh) \*glMesh, [GUI::VolumeView](/cpp-sdk/4.5/api/classes/imfusion-gui-volumeview) &[view](/cpp-sdk/4.5/api/classes/imfusion-glannotation))
+- void **setSelectionMode** ([SelectionMode](#selectionmode) m)
+- [SelectionMode](#selectionmode) **selectionMode** () const
+- void **setManipulatorMode** ([ManipulatorMode](#manipulatormode) m)
+- [ManipulatorMode](#manipulatormode) **manipulatorMode** () const
+- void **setSelectionSize** (double size) — Set the size of the selection area (only used in AltDrag manipulator mode).
+- void **setAllowDragging** (bool v) — Allow dragging (only used in AltDrag manipulator mode).
+- void **setHoverFaceRenderCallback** ([std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; void(int faceIndex, [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; vec3 &gt; mousePosition, const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &[view](/cpp-sdk/4.5/api/classes/imfusion-glannotation))&gt; callback) — Set a callback which will be executed during the draw call using the face id above which the mouse was hovering.
+- bool [sceneEvent](#sceneevent) (QEvent \*event, const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &[view](/cpp-sdk/4.5/api/classes/imfusion-glannotation)) override
+- void [draw](#draw) (const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &[view](/cpp-sdk/4.5/api/classes/imfusion-glannotation)) override — Draw the object in 3D space.
+
+## Public Attributes
+
+- Signal&lt; const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; int &gt; &, const [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; vec3 &gt; & &gt; **signalSelectedFaceIndices** — Signal emitted when a face is selected, returns face ids and an exact 3d position on the mesh.
+- Signal&lt; const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; int &gt; &, const [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; vec3 &gt; & &gt; **signalSelectedVertexIndices** — Signal emitted when a vertex is selected, returns vertex ids and an exact 3d position on the mesh.
+- Signal&lt; const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::pair](http://en.cppreference.com/w/cpp/utility/pair.html)&lt; int, vec2i &gt; &gt; &, const [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; vec3 &gt; & &gt; **signalSelectedEdgeIndices** — Signal emitted when an edge is selected, returns a face id, pair of vertex ids and an exact 3d position on the mesh.
+- Signal&lt; double &gt; **signalChangedSelectionSize**
+
+## Protected Member Functions
+
+- bool **sceneEventAltDrag** (QEvent \*event, const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &[view](/cpp-sdk/4.5/api/classes/imfusion-glannotation))
+- int **findSelectedFaceIndex** (const vec2i &position, const [GlVolumeView](/cpp-sdk/4.5/api/classes/imfusion-glvolumeview) \*view3D)
+- int **findSelectedVertexIndex** (const vec2i &position, const [GlVolumeView](/cpp-sdk/4.5/api/classes/imfusion-glvolumeview) \*view3D)
+- int **findSelectedEdgeIndex** (const vec2i &position, const [GlVolumeView](/cpp-sdk/4.5/api/classes/imfusion-glvolumeview) \*view3D, vec2i &edgeVertexIndices)
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; int &gt; **findSelectedFaceIndices** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec2i &gt; &positions, int radius, const [GlVolumeView](/cpp-sdk/4.5/api/classes/imfusion-glvolumeview) \*view3D)
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; int &gt; **findSelectedVertexIndices** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec2i &gt; &positions, int radius, const [GlVolumeView](/cpp-sdk/4.5/api/classes/imfusion-glvolumeview) \*view3D)
+
+## Protected Attributes
+
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [GlVolumeView::PickingToken](/cpp-sdk/4.5/api/classes/imfusion-glvolumeview-pickingtoken) &gt; **m_pickingToken**
+- [GlMesh](/cpp-sdk/4.5/api/classes/imfusion-glmesh) \* **m_glMesh** = nullptr
+- [GUI::View](/cpp-sdk/4.5/api/classes/imfusion-gui-view) & **m_view**
+- [SelectionMode](#selectionmode) **m_selectionMode** = SelectionMode::None
+- [ManipulatorMode](#manipulatormode) **m_manipulatorMode** = ManipulatorMode::DoubleClick
+- double **m_size** = 1
+- bool **m_mouseDragging** = false
+- bool **m_allowDragging** = true
+- vec2i **m_storedPoint** = vec2i::Zero()
+- int **m_hoveredFaceIndex** = -1
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; vec3 &gt; **m_hoveredPosition**
+- [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; void(int, [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; vec3 &gt;, const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &[view](/cpp-sdk/4.5/api/classes/imfusion-glannotation))&gt; **m_renderFaceCallback**
+
+## Member Enumeration Documentation
+
+### SelectionMode
+
+```cpp
+enum class ImFusion::MeshPickingManipulator::SelectionMode
+```
+
+*strong*
+
+**Enumerator:**
+
+- `Face` — &lt; No signals will be emitted
+signalSelectedFaceIndices will be emitted when mesh face/faces are selected
+- `Vertex` — signalSelectedVertexIndices will be emitted when mesh vertex/vertices are selected
+- `Edge` — signalSelectedEdgeIndices will be emitted when mesh edge/edges are selected
+
+### ManipulatorMode
+
+```cpp
+enum class ImFusion::MeshPickingManipulator::ManipulatorMode
+```
+
+*strong*
+
+**Enumerator:**
+
+- `DoubleClick` — one index is picked up when the user double clicks on the element with the left mouse button
+- `Hover` — one index is picked up when the user hovers with the mouse above the element
+- `AltDrag` — several indices are picked up when the user presses ALT, clicks the left mouse button and drags above the elements (is not supported for edges),
+ALT + mouse wheel changes the size of the selection area
+
+## Member Function Documentation
+
+### sceneEvent
+
+```cpp
+bool ImFusion::MeshPickingManipulator::sceneEvent (QEvent * event, const GlView & view)
+```
+
+*override, virtual*
+
+### draw
+
+```cpp
+void ImFusion::MeshPickingManipulator::draw (const GlView & view)
+```
+
+*override, virtual*
+
+Draw the object in 3D space.

@@ -1,0 +1,35 @@
+---
+title: "ImFusion::Timer"
+sidebarTitle: "Timer"
+description: "Stopwatch class to measure execution time."
+---
+
+`#include <ImFusion/Core/Timer.h>`
+
+## Overview
+
+Stopwatch class to measure execution time.
+
+If you're looking for a class to execute actions repetitively, use [Threading::PlaybackTimer](/cpp-sdk/4.5/api/classes/imfusion-threading-playbacktimer).
+
+**See also:** [LoggingTimer](/cpp-sdk/4.5/api/classes/imfusion-loggingtimer), [Threading::PlaybackTimer](/cpp-sdk/4.5/api/classes/imfusion-threading-playbacktimer)
+
+## Public Member Functions
+
+- **Timer** (bool start=true) — Constructor, starting timer right away by default.
+- void **start** () — Start timer.
+- void **stop** () — Stop timer.
+- void **pause** () — Pause timer.
+- void **resume** () — Resume timer from both stopped or paused.
+- void **reset** () — Stop and reset timer.
+- void **restart** () — Reset and restart the timer.
+- bool **isRunning** () const — Returns if the timer is currently running.
+- bool **isPaused** () const — Returns if the timer is currently paused.
+- double **getPassedMs** () — Return elapsed time in ms.
+- double **getPassedMsAndReset** () — Return elapsed time in ms and reset the timer.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **formatPassed** () — Return elapsed time as human-readable string.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **formatPassedAndReset** () — Return elapsed time as human-readable and reset the timer.
+
+## Static Public Member Functions
+
+- static void **sleep** (int ms) — Sleep for specified period in ms.

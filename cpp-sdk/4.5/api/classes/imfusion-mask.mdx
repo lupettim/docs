@@ -1,0 +1,132 @@
+---
+title: "ImFusion::Mask"
+sidebarTitle: "Mask"
+description: "Base interface for implementing polymorphic image masks on the CPU."
+---
+
+`#include <ImFusion/Base/Mask.h>`
+
+## Overview
+
+[Base](/cpp-sdk/4.5/api/structs/imfusion-dicom-base) interface for implementing polymorphic image masks on the CPU.
+
+Every [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) can hold an optional [Mask](/cpp-sdk/4.5/api/classes/imfusion-mask) defining which pixels should be ignored in algorithms supporting this concept. Therefore, the interface provides methods to check whether a certain pixel is "inside" the mask (meaning that it should be considered) or not. The decision whether a pixel is inside can be performed based on the pixel coordinate and/or the pixel value. The actual logic for the mask depends on the concrete implementation of the interface and subclasses are free to only use one of the two inputs if sufficient.
+
+A mask value of 0 means the corresponding pixel is outside the mask, i.e. to be ignored. A value greater than 0 means it is inside, i.e. to be considered. Most mask will only return binary values of 0 and 1 but implementations are free to return any other uint8_t value as well.
+
+The basic [Mask](/cpp-sdk/4.5/api/classes/imfusion-mask) interface is meant for CPU-based algorithms only. See [GlMask](/cpp-sdk/4.5/api/classes/imfusion-glmask) for their OpenGL-based counterpart. Usually, concrete implementations inherit from both the [Mask](/cpp-sdk/4.5/api/classes/imfusion-mask) and [GlMask](/cpp-sdk/4.5/api/classes/imfusion-glmask) interfaces.
+
+**See also:** Image Masks, [GlMask](/cpp-sdk/4.5/api/classes/imfusion-glmask)
+
+## Public Types
+
+- enum class [CreateOption](#createoption) &#123; DeepCopy , ShallowCopyIfPossible &#125; — Enumeration of available behavior for [createExplicitMask()](#createexplicitmask).
+
+## Public Member Functions
+
+- virtual uint8_t [maskValue](#maskvalue) (const vec3i &coord, const vec4f &color) const =0 — Returns 0 if the given pixel is outside the mask (i.e.
+- uint8_t **maskValue** (const vec3i &coord, float value=-1.0f) const — Convenience overload that calls [maskValue](#maskvalue)(coord, vec4f(value, value, value, 1.0f)).
+- virtual bool [requiresPixelValue](#requirespixelvalue) () const =0 — Returns true if the [maskValue()](#maskvalue) rely on the pixel value.
+- virtual bool [isCompatible](#iscompatible) (const [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*image) const =0 — Returns true if the mask can be used with the given image or false otherwise.
+- virtual [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; uint8_t &gt; &gt; [createExplicitMask](#createexplicitmask) (const [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) &image, [CreateOption](#createoption) createOption=CreateOption::DeepCopy) const — Creates an explicit mask representation of this mask for a given image.
+- virtual [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [Mask](/cpp-sdk/4.5/api/classes/imfusion-mask) &gt; [resizedMask](#resizedmask) (const [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) &original, const [Image](/cpp-sdk/4.5/api/classes/imfusion-image) &target) const — Creates a copy of the current mask, resized to the dimensions of the target image.
+- virtual [GlMask](/cpp-sdk/4.5/api/classes/imfusion-glmask) \* [glMask](#glmask) () — Returns the OpenGL-based implementation of the mask interface if available.
+
+## Member Enumeration Documentation
+
+### CreateOption
+
+```cpp
+enum class ImFusion::Mask::CreateOption
+```
+
+*strong*
+
+Enumeration of available behavior for [createExplicitMask()](#createexplicitmask).
+
+**Enumerator:**
+
+- `DeepCopy` — Always create a full deep copy of the mask data.
+- `ShallowCopyIfPossible` — If the input mask already has a suitable image representation of the explicit mask, it will return a shallow copy of the pixel data.
+
+## Member Function Documentation
+
+### maskValue
+
+```cpp
+virtual uint8_t ImFusion::Mask::maskValue (const vec3i & coord, const vec4f & color) const
+```
+
+*pure virtual*
+
+Returns 0 if the given pixel is outside the mask (i.e.
+
+invisible/to be ignored) or a non-zero value if it is inside the mask (i.e. visible/to be considered).
+
+This function takes both the pixel coordinate and pixel value as input. Concrete implementations of the [Mask](/cpp-sdk/4.5/api/classes/imfusion-mask) interface are free to use only either input for their decision if it makes sense. Also, it is up to the implementation whether it supports multi-channel images or not. Subclasses only supporting grayscale images should only use the first channel.
+
+**Parameters:**
+
+- `coord` — Pixel coordinate to be tested against the mask, can be outside of the image.
+- `color` — Pixel value (not normalized) to be tested against the mask. This parameter is only needed if [requiresPixelValue()](#requirespixelvalue) returns true, which can allow for optimizations where pixel lookup is expensive.
+
+### requiresPixelValue
+
+```cpp
+virtual bool ImFusion::Mask::requiresPixelValue () const
+```
+
+*pure virtual*
+
+Returns true if the [maskValue()](#maskvalue) rely on the pixel value.
+
+If this method returns false, the [maskValue()](#maskvalue) method can be safely used with only the coordinate. This is useful to avoid an otherwise unnecessary and expensive pixel lookup.
+
+### isCompatible
+
+```cpp
+virtual bool ImFusion::Mask::isCompatible (const SharedImage * image) const
+```
+
+*pure virtual*
+
+Returns true if the mask can be used with the given image or false otherwise.
+
+### createExplicitMask
+
+```cpp
+virtual std::unique_ptr < TypedImage < uint8_t > > ImFusion::Mask::createExplicitMask (const SharedImage & image, CreateOption createOption = CreateOption::DeepCopy) const
+```
+
+*virtual*
+
+Creates an explicit mask representation of this mask for a given image.
+
+**Parameters:**
+
+- `image` — Reference image for which to create the mask, must be compatible.
+- `createOption` — Subclasses that already store an explicit representation of the mask can optionally return a non-owning [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage) (shallow copy). If the returned [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage) will outlive the source [Mask](/cpp-sdk/4.5/api/classes/imfusion-mask), make sure to use CreateOption::DeepCopy.
+
+### resizedMask
+
+```cpp
+virtual std::unique_ptr < Mask > ImFusion::Mask::resizedMask (const SharedImage & original, const Image & target) const
+```
+
+*virtual*
+
+Creates a copy of the current mask, resized to the dimensions of the target image.
+
+The default implementation calls createExplicitMask and resamples the result. Returns nullptr if the mask cannot be resized.
+
+### glMask
+
+```cpp
+virtual GlMask * ImFusion::Mask::glMask ()
+```
+
+*inline, virtual*
+
+Returns the OpenGL-based implementation of the mask interface if available.
+
+This function may return nullptr if this is not implemented (default).

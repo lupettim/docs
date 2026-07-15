@@ -1,0 +1,86 @@
+---
+title: "ImFusion::Dicom::ClinicalTrialSubjectDataComponent"
+sidebarTitle: "ClinicalTrialSubjectDataComponent"
+description: "Represents the Clinical Trial Subject Module https://dicom.nema.org/medical/dicom/current/output/chtml/part03/sect_C.7.html#table_C.7-2b ."
+---
+
+`#include <ImFusion/Dicom/ClinicalTrialSubjectDataComponent.h>`
+
+## Overview
+
+Represents the Clinical Trial Subject [Module](/cpp-sdk/4.5/api/classes/imfusion-dicom-module)[https://dicom.nema.org/medical/dicom/current/output/chtml/part03/sect_C.7.html#table_C.7-2b](https://dicom.nema.org/medical/dicom/current/output/chtml/part03/sect_C.7.html#table_C.7-2b).
+
+Note: This module can also be exported as a reference to another dataset (see Dicom::Export::ReferenceModule).
+
+## Classes
+
+- struct [OtherProtocolID](/cpp-sdk/4.5/api/structs/imfusion-dicom-clinicaltrialsubjectdatacomponent-otherprotocolid)
+
+## Public Member Functions
+
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [id](#id) () const override — Returns a unique string identifier for this type of data component.
+- bool **operator==** (const ClinicalTrialSubjectDataComponent &rhs) const
+- bool **operator!=** (const ClinicalTrialSubjectDataComponent &rhs) const
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+- void **loadFromDicom** (DcmItem &dataset)
+- void **saveToDicom** (DcmItem &dataset) const
+
+## Public Attributes
+
+- [DicomParameter](/cpp-sdk/4.5/api/classes/imfusion-dicom-dicomparameter)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **p_sponsorName**
+- [DicomParameter](/cpp-sdk/4.5/api/classes/imfusion-dicom-dicomparameter)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **p_protocolID**
+- [DicomParameter](/cpp-sdk/4.5/api/classes/imfusion-dicom-dicomparameter)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **p_protocolName**
+- [DicomParameter](/cpp-sdk/4.5/api/classes/imfusion-dicom-dicomparameter)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **p_issuerOfProtocolID**
+- [DicomParameter](/cpp-sdk/4.5/api/classes/imfusion-dicom-dicomparameter)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **p_siteID**
+- [DicomParameter](/cpp-sdk/4.5/api/classes/imfusion-dicom-dicomparameter)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **p_siteName**
+- [DicomParameter](/cpp-sdk/4.5/api/classes/imfusion-dicom-dicomparameter)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **p_issuerOfSiteID**
+- [DicomParameter](/cpp-sdk/4.5/api/classes/imfusion-dicom-dicomparameter)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **p_subjectID**
+- [DicomParameter](/cpp-sdk/4.5/api/classes/imfusion-dicom-dicomparameter)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **p_issuerOfSubjectID**
+- [DicomParameter](/cpp-sdk/4.5/api/classes/imfusion-dicom-dicomparameter)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **p_subjectReadingID**
+- [DicomParameter](/cpp-sdk/4.5/api/classes/imfusion-dicom-dicomparameter)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **p_issuerOfSubjectReadingID**
+- [DicomParameter](/cpp-sdk/4.5/api/classes/imfusion-dicom-dicomparameter)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **p_protocolEthicsCommitteeName**
+- [DicomParameter](/cpp-sdk/4.5/api/classes/imfusion-dicom-dicomparameter)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **p_protocolEthicsCommitteeApprovalNumber**
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [OtherProtocolID](/cpp-sdk/4.5/api/structs/imfusion-dicom-clinicaltrialsubjectdatacomponent-otherprotocolid) &gt; **m_otherProtocolIDs**
+
+## Member Function Documentation
+
+### id
+
+```cpp
+std::string ImFusion::Dicom::ClinicalTrialSubjectDataComponent::id () const
+```
+
+*override, virtual*
+
+Returns a unique string identifier for this type of data component.
+
+**Note:** To avoid conflicts make sure to include potential plugin names into this ID. Due to the modular architecture of the ImFusion library, uniqueness of IDs cannot be checked at compile time. However, [DataComponentFactory](/cpp-sdk/4.5/api/classes/imfusion-datacomponentfactory) will check the uniqueness of the ID during registration.
+
+### configure
+
+```cpp
+void ImFusion::Dicom::ClinicalTrialSubjectDataComponent::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### configuration
+
+```cpp
+void ImFusion::Dicom::ClinicalTrialSubjectDataComponent::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality

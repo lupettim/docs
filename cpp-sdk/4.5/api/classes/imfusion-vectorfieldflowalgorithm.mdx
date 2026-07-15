@@ -1,0 +1,99 @@
+---
+title: "ImFusion::VectorFieldFlowAlgorithm"
+sidebarTitle: "VectorFieldFlowAlgorithm"
+description: "Algorithm for computing solutions to (autonomous) ordinary differential equations (ODEs)."
+---
+
+`#include <ImFusion/GL/VectorFieldFlowAlgorithm.h>`
+
+## Overview
+
+[Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) for computing solutions to (autonomous) ordinary differential equations (ODEs).
+
+This class is designed to solve ODEs of type x'(t) = f(x(t)), where the right-hand side is given by a 2D or 3D vector field. The flow of this vector field (i.e. the solutions of this ODE, with initial value given by pixel centers) is computed and stored in a displacement field. Optionally, the vector field can be post-composed with another deformation.
+
+## Public Member Functions
+
+- [VectorFieldFlowAlgorithm](#vectorfieldflowalgorithm-1-2) ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &imgIn, [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*output, [GlDenseDeformation](/cpp-sdk/4.5/api/classes/imfusion-gldensedeformation) \*initialValues=nullptr, [GlDenseDeformation](/cpp-sdk/4.5/api/classes/imfusion-gldensedeformation) \*other=nullptr) — Constructor.
+- [VectorFieldFlowAlgorithm](#vectorfieldflowalgorithm-2-2) (int dim) — Constructor (only shader compilation).
+- void [compute](#compute) () override — Solve the ODE with rhs given by m_vectorField and initial values m_initialValues.
+- bool [setSharedImageSetForMask](#setsharedimagesetformask) ([std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &gt; imgForMask) — Sets a [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) to use its mask, ignoring the mask of imgIn.
+- void **setSamplerDimension** (int dim) — Set dimension of Gl sampler.
+- void **computeForDeformations** ([GlDenseDeformation](/cpp-sdk/4.5/api/classes/imfusion-gldensedeformation) &vectorField, [GlDenseDeformation](/cpp-sdk/4.5/api/classes/imfusion-gldensedeformation) &displacementField, [GlDenseDeformation](/cpp-sdk/4.5/api/classes/imfusion-gldensedeformation) \*initialValues=nullptr, [GlDenseDeformation](/cpp-sdk/4.5/api/classes/imfusion-gldensedeformation) \*other=nullptr) — Set deformations to avoid shader recompilation.
+- [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) [takeOutput](#takeoutput) () override — Return any new [Data](/cpp-sdk/4.5/api/classes/imfusion-data) that was created by the [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) during the last call to [compute()](#compute).
+
+## Static Public Member Functions
+
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=nullptr)
+
+## Public Attributes
+
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; int &gt; **p_numSteps** &#123;"numSteps", 10, this&#125;
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; float &gt; **p_dt** &#123;"dt", 0.1f, this&#125;
+
+## Constructor & Destructor Documentation
+
+### VectorFieldFlowAlgorithm
+
+```cpp
+ImFusion::VectorFieldFlowAlgorithm::VectorFieldFlowAlgorithm (SharedImageSet & imgIn, SharedImageSet * output, GlDenseDeformation * initialValues = nullptr, GlDenseDeformation * other = nullptr)
+```
+
+Constructor.
+
+**Parameters:**
+
+- `imgIn` — [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) input with vector field representing the right-hand side of the ODE.
+- `output` — Output [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) where the computed solution is stored. (If nullptr is provided, an explicit output will be returned.)
+- `initialValues` — Optional initial values for the ODE solution.
+- `other` — Optional additional deformation to be composed with the vector field. The constructor requires imgIn to have a deformation and output to have a [GlDenseDeformation](/cpp-sdk/4.5/api/classes/imfusion-gldensedeformation), or it will throw an exception. The constructor will also throw an exception, if the compilation of the shader fails. Note, the existing deformation of output will be ignored. If the deformation should be taken into account, it has to be passed via the initialValues argument.
+
+### VectorFieldFlowAlgorithm
+
+```cpp
+ImFusion::VectorFieldFlowAlgorithm::VectorFieldFlowAlgorithm (int dim)
+```
+
+Constructor (only shader compilation).
+
+**Parameters:**
+
+- `dim` — Sets dimension of sampler The constructor will throw an exception, if the compilation of the shader fails.
+
+## Member Function Documentation
+
+### compute
+
+```cpp
+void ImFusion::VectorFieldFlowAlgorithm::compute ()
+```
+
+*override, virtual*
+
+Solve the ODE with rhs given by m_vectorField and initial values m_initialValues.
+
+Optionally post-compose the vector field with the deformation in m_other. This function implements an approximation to the operator other \* exp(vectorField) \* initialValues, where \* denotes composition of deformations and exp() is the time-1 flow operator.
+
+### setSharedImageSetForMask
+
+```cpp
+bool ImFusion::VectorFieldFlowAlgorithm::setSharedImageSetForMask (std::shared_ptr < SharedImageSet > imgForMask)
+```
+
+Sets a [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) to use its mask, ignoring the mask of imgIn.
+
+Not needed if imgIn with mask is passed to the constructor.
+
+### takeOutput
+
+```cpp
+OwningDataList ImFusion::VectorFieldFlowAlgorithm::takeOutput ()
+```
+
+*override, virtual*
+
+Return any new [Data](/cpp-sdk/4.5/api/classes/imfusion-data) that was created by the [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) during the last call to [compute()](#compute).
+
+The default implementation will return an empty list.
+
+**Note:** Since ownership of the data is transferred, you can call this method only once between calls to [compute()](#compute).

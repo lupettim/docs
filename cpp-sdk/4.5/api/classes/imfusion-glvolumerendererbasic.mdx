@@ -1,0 +1,160 @@
+---
+title: "ImFusion::GlVolumeRendererBasic"
+sidebarTitle: "GlVolumeRendererBasic"
+description: "Basic implementation of a direct volume renderer that supports different compositing modes."
+---
+
+`#include <ImFusion/GL/GlVolumeRendererBasic.h>`
+
+## Overview
+
+Basic implementation of a direct volume renderer that supports different compositing modes.
+
+In DVR mode this renderer exhibits only local illumination implementing Phong shading. Besides classic shaded and unshaded DVR compositing, this renderer also supports iso-surface rendering, Maximum Intensity Projection, as well as Digitally Reconstructed Radiograph modes.
+
+The current implementation supports rendering multiple volumes at the same time, as well as masks and deformations.
+
+This renderer can also be run on legacy OpenGL 2.1 hardware.
+
+**See also:** [ImageView3D](/cpp-sdk/4.5/api/classes/imfusion-imageview3d), [GlVolumeView](/cpp-sdk/4.5/api/classes/imfusion-glvolumeview)
+
+## Classes
+
+- struct [OpacityPeelingParameters](/cpp-sdk/4.5/api/structs/imfusion-glvolumerendererbasic-opacitypeelingparameters) — Record of parameters for configuring Opacity Peeling in the [GlVolumeRendererBasic](/cpp-sdk/4.5/api/classes/imfusion-glvolumerendererbasic).
+
+## Public Types
+
+- enum [RenderMode](#rendermode) &#123; DRR , MIP , ISO , VRT , VRT_SHADED , BLANK &#125; — Supported rendering modes.
+
+## Public Member Functions
+
+- **GlVolumeRendererBasic** ([RenderMode](#rendermode) mode=DRR) — Create the renderer, optionally specifying the mode and a custom fragment program.
+- **~GlVolumeRendererBasic** () override — Destructor.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [name](#name) () const override — Returns the name for identification/GUI usage of this volume renderer.
+- void [render](#render) (const [GL::ViewState](/cpp-sdk/4.5/api/classes/imfusion-gl-viewstate) &viewState, const [RenderTextures](/cpp-sdk/4.5/api/structs/imfusion-glvolumerenderer-rendertextures) &renderTextures) override — Renders the data in the given configuration.
+- [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* [imageData](#imagedata) () const override — Returns the first [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) that is rendered by this [GlVolumeRenderer](/cpp-sdk/4.5/api/classes/imfusion-glvolumerenderer).
+- vec3 [center](#center) () const override — Returns the center in world coordinates of the first shown data.
+- bool [supportsDeformations](#supportsdeformations) () const override — Returns whether this renderer supports showing [Deformations](/cpp-sdk/4.5/api/classes/imfusion-deformation) attached to images.
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- [RenderMode](#rendermode) **mode** () const — Returns the volume rendering mode.
+- void **setMode** ([RenderMode](#rendermode) mode) — Sets the volume rendering mode (and hence one of the pre-defined shaders).
+- float **ambientAttenuationDistance** () const — Returns the ambient illumination attenuation distance fall-off. No attenuation if &lt;= 0..
+- void **setAmbientAttenuationDistance** (float value) — Sets the ambient illumination attenuation distance fall-off. No attenuation if &lt;= 0..
+- void **setIsoModulation** (double distance) — View-distance based modulation for 2 iso-layers.
+- [OpacityPeelingParameters](/cpp-sdk/4.5/api/structs/imfusion-glvolumerendererbasic-opacitypeelingparameters) **opacityPeeling** () const — Returns the flag whether to enable Opacity Peeling.
+- void **setOpacityPeeling** ([OpacityPeelingParameters](/cpp-sdk/4.5/api/structs/imfusion-glvolumerendererbasic-opacitypeelingparameters) value) — Sets the flag whether to enable Opacity Peeling.
+- void **setUseOctree** (bool value) — Configures whether to use an octree to accelerate rendering.
+- void **setRandomizeRayOffset** (bool value) — Set whether to randomize ray start positions to mitigate ring artifacts.
+
+## Member Enumeration Documentation
+
+### RenderMode
+
+```cpp
+enum ImFusion::GlVolumeRendererBasic::RenderMode
+```
+
+Supported rendering modes.
+
+**Enumerator:**
+
+- `DRR` — Digitally reconstructed radiograph (DRR).
+- `MIP` — Maximum intensity projection.
+- `ISO` — Iso-surface rendering.
+- `VRT` — General volume rendering technique (VRT).
+- `VRT_SHADED` — Shaded VRT.
+- `BLANK` — No rendering.
+
+## Member Function Documentation
+
+### name
+
+```cpp
+std::string ImFusion::GlVolumeRendererBasic::name () const
+```
+
+*override, virtual*
+
+Returns the name for identification/GUI usage of this volume renderer.
+
+### render
+
+```cpp
+void ImFusion::GlVolumeRendererBasic::render (const GL::ViewState & viewState, const RenderTextures & renderTextures)
+```
+
+*override, virtual*
+
+Renders the data in the given configuration.
+
+**Parameters:**
+
+- `viewState` — OpenGL state describing projection and model-view matrix to use for rendering
+- `renderTextures` — Struct holding all the render textures to use
+
+**Note:** The dimensions of all provided textures must be equivalent.
+
+### imageData
+
+```cpp
+SharedImageSet * ImFusion::GlVolumeRendererBasic::imageData () const
+```
+
+*override, virtual*
+
+Returns the first [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) that is rendered by this [GlVolumeRenderer](/cpp-sdk/4.5/api/classes/imfusion-glvolumerenderer).
+
+**Note:** This is merely a low-level convenience function. Please use [GlVolumeRenderer::data()](/cpp-sdk/4.5/api/classes/imfusion-glvolumerenderer) or [ImageView3D::visibleData()](/cpp-sdk/4.5/api/classes/imfusion-gui-view) on the parent view in order to get all shown data.
+
+### center
+
+```cpp
+vec3 ImFusion::GlVolumeRendererBasic::center () const
+```
+
+*override, virtual*
+
+Returns the center in world coordinates of the first shown data.
+
+### supportsDeformations
+
+```cpp
+bool ImFusion::GlVolumeRendererBasic::supportsDeformations () const
+```
+
+*override, virtual*
+
+Returns whether this renderer supports showing [Deformations](/cpp-sdk/4.5/api/classes/imfusion-deformation) attached to images.
+
+The default implementation returns false.
+
+**See also:** [setShowDeformations()](/cpp-sdk/4.5/api/classes/imfusion-glvolumerenderer)
+
+### configuration
+
+```cpp
+void ImFusion::GlVolumeRendererBasic::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality
+
+### configure
+
+```cpp
+void ImFusion::GlVolumeRendererBasic::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality

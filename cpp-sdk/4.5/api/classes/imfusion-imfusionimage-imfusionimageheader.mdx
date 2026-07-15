@@ -1,0 +1,44 @@
+---
+title: "ImFusion::ImFusionImage::ImFusionImageHeader"
+sidebarTitle: "ImFusionImageHeader"
+description: "For image types, the corresponding data block contains the following header."
+---
+
+`#include <ImFusion/Base/ImFusionImage.h>`
+
+## Overview
+
+For image types, the corresponding data block contains the following header.
+
+## Public Attributes
+
+- unsigned char [dataFormat](#dataformat) — [Data](/cpp-sdk/4.5/api/classes/imfusion-data) format and flags.
+- unsigned char [extra](#extra) — Previously the 8 high bits of dataFormat when it used to be a unsigned short.
+- unsigned short **imagesPerFrame** — Number of different images per frame.
+- unsigned int **numberOfFrames** — Number of frames in the data set.
+
+## Member Data Documentation
+
+### dataFormat
+
+```cpp
+unsigned char ImFusion::ImFusionImage::ImFusionImageHeader::dataFormat
+```
+
+[Data](/cpp-sdk/4.5/api/classes/imfusion-data) format and flags.
+
+- Bits 0..7: undocumented usage for compression options
+
+### extra
+
+```cpp
+unsigned char ImFusion::ImFusionImage::ImFusionImageHeader::extra
+```
+
+Previously the 8 high bits of dataFormat when it used to be a unsigned short.
+
+Now used to encode extra information:
+
+- Bits 0..2: [Image](/cpp-sdk/4.5/api/classes/imfusion-image) modality is greater than has a value in the range of 8..14. To get the correct modality interpret bits 0..2 as unsigned integer and add 7. (Let's hope that we have a ImFusion File Format 2.0 until we run out of space again)
+- Bit 3: Flag whether bit 4 encodes the isMetric flag (older versions of the format did not)
+- Bit 4: Flag whether the image's isMetric flag is set (only evaluated if bit 3 is set)

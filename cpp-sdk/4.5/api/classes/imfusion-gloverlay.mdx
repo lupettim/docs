@@ -1,0 +1,88 @@
+---
+title: "ImFusion::GlOverlay"
+sidebarTitle: "GlOverlay"
+description: "Abstract base class for OpenGL overlays."
+---
+
+`#include <ImFusion/GL/GlOverlay.h>`
+
+## Overview
+
+Abstract base class for OpenGL overlays.
+
+In contrast to a [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject), a [GlOverlay](/cpp-sdk/4.5/api/classes/imfusion-gloverlay) is rendered on top of a [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) and reside in viewport space. Furthermore, you can not add a [GlOverlay](/cpp-sdk/4.5/api/classes/imfusion-gloverlay) directly to a [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview). Instead it must always be wrapped in a [InteractiveOverlay](/cpp-sdk/4.5/api/classes/imfusion-interactiveoverlay) and added to an [InteractiveView](/cpp-sdk/4.5/api/classes/imfusion-interactiveview).
+
+**See also:** InteravtiveOverlay
+
+## Public Member Functions
+
+- **GlOverlay** (int widthHint, int heightHint, int minWidthHint, int minHeightHint) — Instantiate a new [GlOverlay](/cpp-sdk/4.5/api/classes/imfusion-gloverlay) with the given size hints.
+- virtual void **setVisible** (bool visible) — Set overlay visibility.
+- virtual bool **visible** () const — Return overlay visibility.
+- virtual void [setSizeHint](#setsizehint) (int width, int height) — Sets the preferred size of the overlay for a DPI scaling of 1.0.
+- virtual int **sizeHintWidth** () const — Gets the preferred width of the overlay.
+- virtual int **sizeHintHeight** () const — Gets the preferred height of the overlay.
+- virtual void [setMinimalSizeHint](#setminimalsizehint) (int width, int height) — Sets the minimal size of the overlay for a DPI scaling of 1.0.
+- virtual int **minimalSizeHintWidth** () const — Gets the minimal width of the overlay.
+- virtual int **minimalSizeHintHeight** () const — Gets the minimal height of the overlay.
+- virtual void [render](#render) (const [GL::Viewport](/cpp-sdk/4.5/api/structs/imfusion-gl-viewport) &viewport)=0 — render the overlay with the given width and height
+- virtual void [update](#update) () — updates any intermediate data the overlay uses for rendering
+
+## Public Attributes
+
+- Signal&lt; int, int &gt; **m_sizeChangedSignal** — Signal emitted when the size hint has changed.
+- Signal&lt; int, int &gt; **m_minSizeChangedSignal** — Signal emitted when the minimum size hint has changed.
+
+## Protected Attributes
+
+- bool **m_visible** = true — Overlay visibility.
+- int **m_sizeHintWidth** = 0
+- int **m_sizeHintHeight** = 0
+- int **m_minSizeHintWidth** = 0
+- int **m_minSizeHintHeight** = 0
+
+## Member Function Documentation
+
+### setSizeHint
+
+```cpp
+virtual void ImFusion::GlOverlay::setSizeHint (int width, int height)
+```
+
+*virtual*
+
+Sets the preferred size of the overlay for a DPI scaling of 1.0.
+
+The size hint should be the optimal size of the overlay to display all its information. If the overlay does not have a preferred size, the size hint should be set to to the minimalSizeHint.
+
+### setMinimalSizeHint
+
+```cpp
+virtual void ImFusion::GlOverlay::setMinimalSizeHint (int width, int height)
+```
+
+*virtual*
+
+Sets the minimal size of the overlay for a DPI scaling of 1.0.
+
+The minimal size should reflect the size to display the content in an undistorted way. The actual size of the overlay can still be lower than this, in which case the overlay should scale its content.
+
+### render
+
+```cpp
+virtual void ImFusion::GlOverlay::render (const GL::Viewport & viewport)
+```
+
+*pure virtual*
+
+render the overlay with the given width and height
+
+### update
+
+```cpp
+virtual void ImFusion::GlOverlay::update ()
+```
+
+*virtual*
+
+updates any intermediate data the overlay uses for rendering

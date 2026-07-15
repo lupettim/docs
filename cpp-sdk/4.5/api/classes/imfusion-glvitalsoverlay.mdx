@@ -1,0 +1,72 @@
+---
+title: "ImFusion::GlVitalsOverlay"
+sidebarTitle: "GlVitalsOverlay"
+description: "Overlay illustrating the ECG and other vitals data signals together with the current focus frame."
+---
+
+`#include <ImFusion/GL/GlVitalsOverlay.h>`
+
+## Overview
+
+Overlay illustrating the ECG and other vitals data signals together with the current focus frame.
+
+## Public Member Functions
+
+- void [render](#render) (const [GL::Viewport](/cpp-sdk/4.5/api/structs/imfusion-gl-viewport) &viewport) override — Renders the vitals overlay on top of the image or stream.
+- void [updateSignal](#updatesignal-1-2) (const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*sis) — Updates the signals to be shown on top of a [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) with vitals data.
+- void [updateSignal](#updatesignal-2-2) (const [VitalsDataComponent](/cpp-sdk/4.5/api/classes/imfusion-vitalsdatacomponent) &dc, [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; double &gt; horizontalRangeSeconds=&#123;&#125;) — Updates the signals to be shown for streaming use.
+- void [clearSignal](#clearsignal) () — Clears the signals to be shown.
+
+## Member Function Documentation
+
+### render
+
+```cpp
+void ImFusion::GlVitalsOverlay::render (const GL::Viewport & viewport)
+```
+
+*override, virtual*
+
+Renders the vitals overlay on top of the image or stream.
+
+The rendering information is updated on the [updateSignal()](#updatesignal-1-2) methods. Needs to be called from the main thread.
+
+### updateSignal
+
+```cpp
+void ImFusion::GlVitalsOverlay::updateSignal (const SharedImageSet * sis)
+```
+
+*threadsafe*
+
+Updates the signals to be shown on top of a [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) with vitals data.
+
+Will use image set timestamps as bounds for signal to be drawn, and its focus for a current frame indicator line. If there is an active selection, it will draw a selection box as well.
+
+Can be called concurrently from any thread.
+
+### updateSignal
+
+```cpp
+void ImFusion::GlVitalsOverlay::updateSignal (const VitalsDataComponent & dc, std::optional < double > horizontalRangeSeconds = {})
+```
+
+*threadsafe*
+
+Updates the signals to be shown for streaming use.
+
+To ensure constant horizontal scaling, the total number of seconds to be used to scale may be provided. If the signals are shorter than the specified range, they are shown left-aligned and the remaining time range of the plot is left empty. If the signals are longer than the range, the most recent portion of the signals is shown. If no horizontal range is given, the whole signal will be fit into the overlay.
+
+Can be called concurrently from any thread.
+
+### clearSignal
+
+```cpp
+void ImFusion::GlVitalsOverlay::clearSignal ()
+```
+
+*threadsafe*
+
+Clears the signals to be shown.
+
+Can be called concurrently from any thread.

@@ -1,0 +1,188 @@
+---
+title: "ExamplePointCloudAlgorithm.cpp"
+---
+
+```cpp
+#include "ExamplePointCloudAlgorithm.h"
+
+#include <ImFusion/Base/MeshToPointCloudAlgorithm.h>
+#include <ImFusion/Base/PointCloud.h>
+#include <ImFusion/Base/SharedImageSet.h>
+#include <ImFusion/IO/PointCloudIoAlgorithm.h>
+#include <ImFusion/Mesh/PoissonSurfaceReconstructionAlgorithm.h>
+#include <ImFusion/Vision/PointCloudFilteringAlgorithm.h>
+
+namespace ImFusion
+{
+    ExamplePointCloudAlgorithm::ExamplePointCloudAlgorithm(const ImFusion::PointCloud* pc)
+        : m_inputPointCloud(pc)
+    {
+        configureDefaults();    // initializes the algorithm with default values in configuration
+    }
+
+    ExamplePointCloudAlgorithm::ExamplePointCloudAlgorithm()
+        : m_inputPointCloud(nullptr)
+    {
+        configureDefaults();    // initializes the algorithm with default values in configuration
+    }
+
+    ExamplePointCloudAlgorithm::~ExamplePointCloudAlgorithm() {}
+
+ bool ExamplePointCloudAlgorithm::createCompatible(const DataList& data, Algorithm** a)
+    {
+ // extract all point clouds from the datalist
+ auto pointClouds = data.getPointClouds();
+
+ // algorithm needs a file path or exactly one point cloud to work with
+ if (pointClouds.size() == 0)
+        {
+ // if pointer is provided, create a new instance
+ if (a)
+                *a = new ExamplePointCloudAlgorithm();
+ return true;
+        }
+ if (pointClouds.size() == 1)
+        {
+ if (data.size() == 1)
+            {
+ // if pointer is provided, create a new instance
+ if (a)
+                    *a = new ExamplePointCloudAlgorithm(pointClouds[0]);
+ return true;
+            }
+        }
+
+ return false;
+    }
+
+ void ExamplePointCloudAlgorithm::compute()
+    {
+ if (m_inputPointCloud)
+            computePointCloudProcessing();
+ else
+            computePointCloudImport();
+    }
+
+    OwningDataList ExamplePointCloudAlgorithm::takeOutput()
+    {
+ if (m_outputPointCloud)
+        {
+            OwningDataList res(std::move(m_outputPointCloud));    // return point cloud as output of the algorithm (ownership is being transferred)
+ if (m_outputMesh)
+                res.add(std::move(m_outputMesh));    // also return mesh as output of the algorithm (ownership is being transferred)
+ return res;
+        }
+ else if (m_outputMesh)
+ return OwningDataList(std::move(m_outputMesh));    // return mesh as output of the algorithm (ownership is being transferred)
+ else
+ return OwningDataList();
+    }
+
+ void ExamplePointCloudAlgorithm::configure(const Properties* p)
+    {
+ //configure parameters from given Properties
+ if (!p)
+ return;
+
+ if (m_inputPointCloud)
+        {
+            p->param("normalRadius", m_normalRadius);
+            p->param("noiseStdDeviation", m_noiseStdDeviation);
+        }
+ else
+        {
+            p->param("filePath", m_filePath);
+        }
+    }
+
+ void ExamplePointCloudAlgorithm::configuration(Properties* p) const
+ {
+ //serialize parameters to Properties
+ if (!p)
+ return;
+
+ if (m_inputPointCloud)
+        {
+            p->setParam("normalRadius", m_normalRadius, 0.0);
+            p->setParam("noiseStdDeviation", m_noiseStdDeviation, 0.0);
+        }
+ else
+        {
+            p->setParam("filePath", m_filePath, "");
+            p->setParamType("filePath", Properties::ParamType::Path);
+        }
+    }
+
+ void ExamplePointCloudAlgorithm::computePointCloudImport()
+    {
+        m_status = Status::InvalidInput;
+ //PointCloudIoAlgorithm will check the file path and fail if it doesn't point to a valid mesh
+        PointCloudIoAlgorithm importAlgo;
+        importAlgo.setLocation(m_filePath);
+        importAlgo.compute();
+ if (importAlgo.status() != Status::Success)
+ return;
+        m_outputPointCloud = importAlgo.takeOutput().extractFirst<PointCloud>();
+ if (!m_outputPointCloud)
+ return;
+
+ // To make sure our point cloud is centered we compute its center of mass and transform this center
+ // into the world origin. We also compute its bounding box manually (note that we could also
+ // just use m_outputPointCloud->bounds() here) and log its dimensions to the console
+ // to make it easier to find appropriate parameters for the processing example.
+        vec3 bbMin = vec3(std::numeric_limits<double>::max(), std::numeric_limits<double>::max(), std::numeric_limits<double>::max());
+        vec3 bbMax = -bbMin;
+        vec3 com = vec3::Zero();
+ int numValid = 0;
+ for (const vec3& v : m_outputPointCloud->points())
+        {
+            bbMin = bbMin.cwiseMin(v);
+            bbMax = bbMax.cwiseMax(v);
+            com += v;
+            ++numValid;
+        }
+        com *= (1.0 / static_cast<double>(numValid));
+
+ //move point cloud into the origin
+        m_outputPointCloud->setMatrix(Eigen::Affine3d(Eigen::Translation3d(-com)).matrix() * m_outputPointCloud->matrix());
+ //log properties
+ const vec3 diameter = bbMax - bbMin;
+ LOG_INFO("Point Cloud dimensions: " << diameter[0] << " x " << diameter[1] << " x " << diameter[2]);
+        m_status = Status::Success;
+    }
+
+ void ExamplePointCloudAlgorithm::computePointCloudProcessing()
+    {
+        m_status = Status::Error;
+
+ // check the input
+ if (!m_inputPointCloud)
+        {
+            m_status = Status::IncompleteInput;
+ return;
+        }
+
+ // create copy of the mesh and process it
+        m_outputPointCloud = std::make_unique<PointCloud>(*m_inputPointCloud);
+
+        PointCloudFilteringAlgorithm processing({m_outputPointCloud.get()});
+        processing.setCreateNewPointCloud(false);    // we already copied it; just filter in-place
+
+ if (!m_outputPointCloud->hasNormals())
+        {
+            processing.setMode(PointCloudFilteringAlgorithm::FilteringMode::NORMAL_COMPUTATION);
+            processing.setNormalRadius(m_normalRadius);
+            processing.compute();
+        }
+
+        processing.setMode(PointCloudFilteringAlgorithm::FilteringMode::ADDITIVE_NOISE_FILTER);
+        processing.setNoiseStandardDeviation(m_noiseStdDeviation);
+        processing.compute();
+
+ //finally we use poisson reconstruction to create a mesh from our point cloud
+
+        m_status = Status::Success;
+    }
+}
+```
+ fragment

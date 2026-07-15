@@ -1,0 +1,52 @@
+---
+title: "ImFusion::Resource::Repository"
+sidebarTitle: "Repository"
+description: "Base interface for a ImFusion resource repository."
+---
+
+`#include <ImFusion/Core/Resource/Repository.h>`
+
+## Overview
+
+[Base](/cpp-sdk/4.5/api/structs/imfusion-dicom-base) interface for a ImFusion resource repository.
+
+Resource::query() will forward the request to [Repository::query()](#query) of each registered repo.
+
+## Public Member Functions
+
+- virtual **~Repository** () — Will automatically deregister this repository on deletion.
+- virtual [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [name](#name) () const =0 — Returns the repository name to allow for namespacing in case multiple repositories are registered.
+- virtual bool [contains](#contains) (const [std::string_view](http://en.cppreference.com/w/cpp/string/basic_string_view.html) &resourceName) const =0 — Checks whether this repository contains a resource of the given name.
+- virtual [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [ByteBuffer](/cpp-sdk/4.5/api/classes/imfusion-bytebuffer) &gt; [query](#query) (const [std::string_view](http://en.cppreference.com/w/cpp/string/basic_string_view.html) &resourceName) const =0 — Returns the requested resource name.
+
+## Member Function Documentation
+
+### name
+
+```cpp
+virtual std::string ImFusion::Resource::Repository::name () const
+```
+
+*pure virtual*
+
+Returns the repository name to allow for namespacing in case multiple repositories are registered.
+
+### contains
+
+```cpp
+virtual bool ImFusion::Resource::Repository::contains (const std::string_view & resourceName) const
+```
+
+*pure virtual*
+
+Checks whether this repository contains a resource of the given name.
+
+### query
+
+```cpp
+virtual std::optional < ByteBuffer > ImFusion::Resource::Repository::query (const std::string_view & resourceName) const
+```
+
+*pure virtual*
+
+Returns the requested resource name.

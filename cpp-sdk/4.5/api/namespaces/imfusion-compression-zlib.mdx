@@ -1,0 +1,67 @@
+---
+title: "ImFusion::Compression::zlib"
+sidebarTitle: "zlib"
+description: "Compression using the zlib algorithm."
+---
+
+## Overview
+
+Compression using the zlib algorithm.
+
+**See also:** [https://www.zlib.net/](https://www.zlib.net/)
+
+## Enumerations
+
+- enum class [CompressionLevel](#compressionlevel) &#123; **Default** = -1 , **None** = 0 , **BestSpeed** = 1 , **BestCompression** = 9 &#125; — Selection of available zlib compression levels.
+
+## Functions
+
+- [ByteBuffer](/cpp-sdk/4.5/api/classes/imfusion-bytebuffer) [compress](#compress) (const [ByteBufferView](/cpp-sdk/4.5/api/classes/imfusion-bytebufferview) &inputBuffer, [CompressionLevel](#compressionlevel) compressionLevel=CompressionLevel::Default) — Compress the given data using zlib.
+- [ByteBuffer](/cpp-sdk/4.5/api/classes/imfusion-bytebuffer) [decompress](#decompress) (const [ByteBufferView](/cpp-sdk/4.5/api/classes/imfusion-bytebufferview) &inputBuffer) — Decompress the given data using zlib into a newly created buffer.
+- bool [decompressTo](#decompressto) (const [ByteBufferView](/cpp-sdk/4.5/api/classes/imfusion-bytebufferview) &inputBuffer, [ByteBufferMutableView](/cpp-sdk/4.5/api/classes/imfusion-bytebuffermutableview) outputBuffer) — Decompress the given data using zlib into an already allocated buffer.
+
+## Enumeration Type Documentation
+
+### CompressionLevel
+
+```cpp
+enum class ImFusion::Compression::zlib::CompressionLevel
+```
+
+*strong*
+
+Selection of available zlib compression levels.
+
+see [https://www.zlib.net/manual.html](https://www.zlib.net/manual.html) for more details
+
+## Function Documentation
+
+### compress
+
+```cpp
+ByteBuffer ImFusion::Compression::zlib::compress (const ByteBufferView & inputBuffer, CompressionLevel compressionLevel = CompressionLevel::Default)
+```
+
+Compress the given data using zlib.
+
+Returns an empty buffer on failure.
+
+### decompress
+
+```cpp
+ByteBuffer ImFusion::Compression::zlib::decompress (const ByteBufferView & inputBuffer)
+```
+
+Decompress the given data using zlib into a newly created buffer.
+
+Use [decompressTo()](#decompressto) if you know the output size in advance and want to decompress into an already existing buffer. Returns an empty buffer on failure.
+
+### decompressTo
+
+```cpp
+bool ImFusion::Compression::zlib::decompressTo (const ByteBufferView & inputBuffer, ByteBufferMutableView outputBuffer)
+```
+
+Decompress the given data using zlib into an already allocated buffer.
+
+The output buffer must be of sufficient size and already allocated.

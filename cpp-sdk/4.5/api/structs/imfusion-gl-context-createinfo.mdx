@@ -1,0 +1,24 @@
+---
+title: "ImFusion::GL::Context::CreateInfo"
+sidebarTitle: "CreateInfo"
+---
+
+## Public Attributes
+
+- [Utils::Version](/cpp-sdk/4.5/api/structs/imfusion-utils-version) **requestedVersion** = &#123;0, 0&#125; — Requested OpenGL version, use 0 for the highest available.
+- bool **useCompatibilityProfile** = false — Flag whether to request a compatibility profile.
+- bool **useDebugContext** = false — Flag whether to request a debug context.
+- void \* **shareContext** = nullptr — Native handle to another OpenGL context to share textures and other data with.
+- bool [enableResetNotification](#enableresetnotification) = false — [Request](/cpp-sdk/4.5/api/classes/imfusion-request) support for notification in case of context loss.
+
+## Member Data Documentation
+
+### enableResetNotification
+
+```cpp
+bool ImFusion::GL::Context::CreateInfo::enableResetNotification = false
+```
+
+[Request](/cpp-sdk/4.5/api/classes/imfusion-request) support for notification in case of context loss.
+
+**Note:** Not all backends may support this feature. Furthermore, it may interfere with context sharing support.

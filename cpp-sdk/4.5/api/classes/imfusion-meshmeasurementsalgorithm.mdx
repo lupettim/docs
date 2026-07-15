@@ -1,0 +1,87 @@
+---
+title: "ImFusion::MeshMeasurementsAlgorithm"
+sidebarTitle: "MeshMeasurementsAlgorithm"
+description: "A class that provides functions for measuring the lengths of certain curves on a mesh."
+---
+
+`#include <ImFusion/Mesh/MeshMeasurementsAlgorithm.h>`
+
+## Overview
+
+A class that provides functions for measuring the lengths of certain curves on a mesh.
+
+See the function documentation for the different kinds of supported curves.
+
+## Public Member Functions
+
+- **MeshMeasurementsAlgorithm** ([Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) \*mesh)
+- void [compute](#compute) () override — Execute the algorithm.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; [computePlaneAndContour](#computeplaneandcontour) (const [std::pair](http://en.cppreference.com/w/cpp/utility/pair.html)&lt; unsigned int, vec3 &gt; &face1, const [std::pair](http://en.cppreference.com/w/cpp/utility/pair.html)&lt; unsigned int, vec3 &gt; &face2, mat4 &planeMat, double &planeWidth, double &planeHeight) — Compute a measurement plane and a countour resulting from its intersection with the mesh.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; [computeGeodesicContour](#computegeodesiccontour) (const [std::pair](http://en.cppreference.com/w/cpp/utility/pair.html)&lt; unsigned int, vec3 &gt; &face1, const [std::pair](http://en.cppreference.com/w/cpp/utility/pair.html)&lt; unsigned int, vec3 &gt; &face2) — Compute a coutour representing a geodesic distance between points on the mesh faces.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; &gt; [computeContours](#computecontours) (const mat4 &planeMat, const int &planeWidth, const int &planeHeight) — Compute countours resulting from intersection of plane with the mesh.
+- [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) \* **mesh** () const
+
+## Static Public Member Functions
+
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=0)
+
+## Member Function Documentation
+
+### compute
+
+```cpp
+void ImFusion::MeshMeasurementsAlgorithm::compute ()
+```
+
+*inline, override, virtual*
+
+Execute the algorithm.
+
+### computePlaneAndContour
+
+```cpp
+std::vector < vec3 > ImFusion::MeshMeasurementsAlgorithm::computePlaneAndContour (const std::pair < unsigned int, vec3 > & face1, const std::pair < unsigned int, vec3 > & face2, mat4 & planeMat, double & planeWidth, double & planeHeight)
+```
+
+Compute a measurement plane and a countour resulting from its intersection with the mesh.
+
+**Parameters:**
+
+- `face1` — face index and a point from this face. The normal of this face will be used as an x axis for the measurement plane
+- `face2` — face index and a point from this face. The vector connecting this point and a point from face1 will be used as a y axis of the measurement plane
+- `planeMat` — output matrix of the measurement plane
+- `planeWidth` — output width of the plane (computed as a dimension of the bounding box of intersections of the measurement plane with the connected faces starting from face1)
+- `planeHeight` — output height of the plane (computed as a dimension of the bounding box of intersections of the measurement plane with the connected faces starting from face2)
+
+**Returns:** contour resulting from intersecting a measurement plane with the mesh (only one connected contour that passes through face1 is returned)
+
+### computeGeodesicContour
+
+```cpp
+std::vector < vec3 > ImFusion::MeshMeasurementsAlgorithm::computeGeodesicContour (const std::pair < unsigned int, vec3 > & face1, const std::pair < unsigned int, vec3 > & face2)
+```
+
+Compute a coutour representing a geodesic distance between points on the mesh faces.
+
+**Parameters:**
+
+- `face1` — face index and a point from this face
+- `face2` — face index and a point from this face
+
+**Returns:** contour representing a geodesic distance between points from face1 and face2
+
+### computeContours
+
+```cpp
+std::vector < std::vector < vec3 > > ImFusion::MeshMeasurementsAlgorithm::computeContours (const mat4 & planeMat, const int & planeWidth, const int & planeHeight)
+```
+
+Compute countours resulting from intersection of plane with the mesh.
+
+**Parameters:**
+
+- `planeMat` — matrix of the measurement plane
+- `planeWidth` — width of the plane
+- `planeHeight` — height of the plane
+
+**Returns:** contours resulting from intersecting a measurement plane with the mesh (all connected contours are returned)

@@ -1,0 +1,20 @@
+---
+title: "ImFusion::LogWidgetOptions"
+sidebarTitle: "LogWidgetOptions"
+---
+
+## Signals
+
+- void **logLevelChanged** (Log::Level level)
+- void **filterTextChanged** (const QString &text)
+- void **clearAllClicked** ()
+
+## Public Member Functions
+
+- **LogWidgetOptions** (QTextEdit \*textArea, Log::Level minLogLevel, QWidget \*parent)
+- bool **eventFilter** (QObject \*obj, QEvent \*ev) override
+- void **updateCategoryFilter** (QString category)
+- void **onGlobalLogLevelChanged** ()
+- QString **categoryFilter** ()
+- Log::Level **minLogLevel** ()
+- void **paintEvent** (QPaintEvent \*event) override

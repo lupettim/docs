@@ -1,0 +1,16 @@
+---
+title: "ImFusion::Dicom::ModalityWorklist"
+sidebarTitle: "ModalityWorklist"
+description: "Basic implementation of a Service Class User (SCU) for the DICOM Modality Worklist standard."
+---
+
+## Overview
+
+Basic implementation of a Service Class User (SCU) for the DICOM Modality Worklist standard.
+
+It is used to retrieve worklist items from a Service Class Provider (SCP).
+
+## Functions
+
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; DcmDataset &gt; createMinimalRequest () — Creates a minimal request object.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; DcmDataset &gt; &gt; getWorklist ([DicomPacsConfiguration](/cpp-sdk/4.5/api/structs/imfusion-dicompacsconfiguration) config, DcmDataset &request, [std::atomic](http://en.cppreference.com/w/cpp/atomic/atomic.html)&lt; bool &gt; \*abortFlag=nullptr) — Retrieves a Modality Worklist from the given server.

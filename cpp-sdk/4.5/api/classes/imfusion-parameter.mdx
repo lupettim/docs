@@ -1,0 +1,178 @@
+---
+title: "ImFusion::Parameter< T >"
+sidebarTitle: "Parameter< T >"
+description: "The Parameter class represents a single parameter of a Configurable entity."
+---
+
+`#include <ImFusion/Core/Parameter.h>`
+
+## Overview
+
+template&lt;typename T&gt;
+
+class ImFusion::Parameter&lt; T &gt;
+The [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) class represents a single parameter of a [Configurable](/cpp-sdk/4.5/api/classes/imfusion-configurable) entity.
+
+It is intended to be used as member of [Configurable](/cpp-sdk/4.5/api/classes/imfusion-configurable) classes and enables you to reduce the amount of boilerplate code needed to implement the pair of [configure()](#configure)/configuration() functions for each individual class member that is supposed to be serialized. In order for this to work each [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) must be [registered](/cpp-sdk/4.5/api/classes/imfusion-configurable) with the parent [Configurable](/cpp-sdk/4.5/api/classes/imfusion-configurable) instance. This can be automatized by passing it as additional argument to the corresponding constructor overload. Registration is preserved across copies/moves/assignments, and removed on destruction.
+
+Parameters wrap a regular type T and make it serializable to/from the [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) interface. Since it provides a cast- and assignment operator, it can be used like a variable of type T directly:
+
+```cpp
+Parameter<int> count("count", 0);
+int other = count;
+count = 5;
+```
+ fragment
+Any getter access is restricted to const access. To change the parameter you need to explicitly set it. This ensures the [signalValueChanged](/cpp-sdk/4.5/api/classes/imfusion-parameterbase) to be emitted whenever the param changes.
+
+By convention, public [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) members use the p_ prefix for the variable name (instead of the common m_ prefix) in order to make their semantics easier to identify in code.
+
+**Template Parameters:** | T | Underlying type of the parameter, must be supported by [Properties::setParam()](/cpp-sdk/4.5/api/classes/imfusion-properties). |
+| --- | --- |
+
+**See also:** [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty), [SubPropertyList](/cpp-sdk/4.5/api/classes/imfusion-subpropertylist)
+
+**Examples:** [ExampleAlgorithm.h](/cpp-sdk/4.5/api/examples/example-algorithm-8h), and [Serialization.cpp](/cpp-sdk/4.5/api/examples/serialization-8cpp).
+
+## Public Member Functions
+
+- [Parameter](#parameter-1-2) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &[name](/cpp-sdk/4.5/api/classes/imfusion-parameterbase), U &&value) — Creates a [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) that will be configured under the given name and with the given initial value.
+- [Parameter](#parameter-2-2) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &[name](/cpp-sdk/4.5/api/classes/imfusion-parameterbase), U &&value, Configurable \*[parent](/cpp-sdk/4.5/api/classes/imfusion-parameterbase)) — Create a [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) that is directly registered with the parent [Configurable](/cpp-sdk/4.5/api/classes/imfusion-configurable) instance.
+- **Parameter** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &[name](/cpp-sdk/4.5/api/classes/imfusion-parameterbase), U &&value, Configurable &[parent](/cpp-sdk/4.5/api/classes/imfusion-parameterbase))
+- **Parameter** (const Parameter&lt; T &gt; &other)
+- **Parameter** (Parameter&lt; T &gt; &&other)
+- [Parameter](#parameter-1-2)&lt; T &gt; & [operator=](#operator-1-3) (const [Parameter](#parameter-1-2)&lt; T &gt; &other) — Assigns value, default value, type, and attributes from another [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) instance of the same type and emits signalValueChanged.
+- [Parameter](#parameter-1-2)&lt; T &gt; & [operator=](#operator-2-3) ([Parameter](#parameter-1-2)&lt; T &gt; &other) — Assigns value, default value, type, and attributes from another [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) instance of the same type and emits signalValueChanged.
+- [Parameter](#parameter-1-2)&lt; T &gt; & [operator=](#operator-3-3) ([Parameter](#parameter-1-2)&lt; T &gt; &&other) — Assigns value, default value, type, and attributes from another [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) instance of the same type and emits signalValueChanged.
+- [Parameter](#parameter-1-2)&lt; T &gt; & **operator=** (U &&value) — Updates the [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)'s stored value, emits the signalValueChanged if needed.
+- void **setValue** (U &&value) — Updates the [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)'s stored value, emits the signalValueChanged if needed.
+- const T & **value** () const — Returns the currently stored value.
+- **operator const T &** () const — Returns the currently stored value.
+- void **setDefault** (const T &defaultValue) — Sets the default value for this parameter.
+- void **removeDefault** () — Removes the default value for this parameter.
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; T &gt; **defaultValue** () const — Returns the default value of this parameter if specified.
+- void [setType](#settype) (Properties::ParamType type) — Sets an optional custom ParamType.
+- [std::enable_if_t](http://en.cppreference.com/w/cpp/types/enable_if.html)&lt; [std::is_arithmetic_v](http://en.cppreference.com/w/cpp/types/is_arithmetic.html)&lt; Q &gt; &gt; [setRange](#setrange-1-2) (T min, T max) — Set the min/max parameter attributes of arithmetic parameters.
+- [std::enable_if_t](http://en.cppreference.com/w/cpp/types/enable_if.html)&lt; [std::is_same_v](http://en.cppreference.com/w/cpp/types/is_same.html)&lt; Q, [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; typename Q::value_type &gt; &gt; &&[std::is_arithmetic_v](http://en.cppreference.com/w/cpp/types/is_arithmetic.html)&lt; typename Q::value_type &gt; &gt; [setRange](#setrange-2-2) (typename Q::value_type min, typename Q::value_type max) — Set the min/max parameter attributes of optional arithmetic parameters.
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this parameter/sub property by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current parameter/sub property state into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+## Protected Attributes
+
+- T **m_value**
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; T &gt; **m_defaultValue**
+- Properties::ParamType **m_type** = Properties::ParamType::Unknown
+
+## Constructor & Destructor Documentation
+
+### Parameter
+
+```cpp
+template<typename T> template<typename U> ImFusion::Parameter < T >::Parameter (const std::string & name, U && value)
+```
+
+Creates a [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) that will be configured under the given name and with the given initial value.
+
+The initial value will also be used as default value.
+
+### Parameter
+
+```cpp
+template<typename T> template<typename U> ImFusion::Parameter < T >::Parameter (const std::string & name, U && value, Configurable * parent)
+```
+
+Create a [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) that is directly registered with the parent [Configurable](/cpp-sdk/4.5/api/classes/imfusion-configurable) instance.
+
+The parent instance is stored and thus must have a lifetime longer than this object.
+
+## Member Function Documentation
+
+### operator
+
+```cpp
+template<typename T> Parameter < T > & ImFusion::Parameter < T >::operator= (const Parameter < T > & other)
+```
+
+Assigns value, default value, type, and attributes from another [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) instance of the same type and emits signalValueChanged.
+
+Expects name and deprecated names to be the same and will not change the parent relationship. Use \*this = other.value() if you want to assign *only* the value from *other*
+
+### operator
+
+```cpp
+template<typename T> Parameter < T > & ImFusion::Parameter < T >::operator= (Parameter < T > & other)
+```
+
+Assigns value, default value, type, and attributes from another [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) instance of the same type and emits signalValueChanged.
+
+Expects name and deprecated names to be the same and will not change the parent relationship. Use \*this = other.value() if you want to assign *only* the value from *other*
+
+**Note:** This implementation is required as otherwise operator=(U&&) will be picked up as non-const assign operator.
+
+### operator
+
+```cpp
+template<typename T> Parameter < T > & ImFusion::Parameter < T >::operator= (Parameter < T > && other)
+```
+
+Assigns value, default value, type, and attributes from another [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) instance of the same type and emits signalValueChanged.
+
+Expects name and deprecated names to be the same and will not change the parent relationship. Use \*this = other.value() if you want to assign *only* the value from *other*
+
+### setType
+
+```cpp
+template<typename T> void ImFusion::Parameter < T >::setType (Properties::ParamType type)
+```
+
+*inline*
+
+Sets an optional custom ParamType.
+
+If not set explicitly, it is deduced from T.
+
+**See also:** [Properties::setParamType()](/cpp-sdk/4.5/api/classes/imfusion-properties)
+
+### Q
+
+```cpp
+template<typename T> template<typename Q = T> std::enable_if_t < std::is_arithmetic_v < Q > > ImFusion::Parameter < T >::setRange (T min, T max)
+```
+
+*inline*
+
+Set the min/max parameter attributes of arithmetic parameters.
+
+**See also:** [Properties::setParamAttributes()](/cpp-sdk/4.5/api/classes/imfusion-properties)
+
+### Q
+
+```cpp
+template<typename T> template<typename Q = T> std::enable_if_t < std::is_same_v < Q, std::optional < typename Q::value_type > > && std::is_arithmetic_v < typename Q::value_type > > ImFusion::Parameter < T >::setRange (typename Q::value_type min, typename Q::value_type max)
+```
+
+*inline*
+
+Set the min/max parameter attributes of optional arithmetic parameters.
+
+**See also:** [Properties::setParamAttributes()](/cpp-sdk/4.5/api/classes/imfusion-properties)
+
+### configure
+
+```cpp
+template<typename T> void ImFusion::Parameter < T >::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this parameter/sub property by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+### configuration
+
+```cpp
+template<typename T> void ImFusion::Parameter < T >::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current parameter/sub property state into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.

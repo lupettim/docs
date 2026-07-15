@@ -1,0 +1,44 @@
+---
+title: "ImFusion::GlTrackingSequence::DisplayOptions"
+sidebarTitle: "DisplayOptions"
+description: "Record of settings to configure the appearance of a GlTrackingSequence ."
+---
+
+`#include <ImFusion/GL/GlTrackingSequence.h>`
+
+## Overview
+
+Record of settings to configure the appearance of a [GlTrackingSequence](/cpp-sdk/4.5/api/classes/imfusion-gltrackingsequence).
+
+Implements the [DataComponent](/cpp-sdk/4.5/api/classes/imfusion-datacomponent) interface so that it can be attached directly to the underlying [TrackingSequence](/cpp-sdk/4.5/api/classes/imfusion-trackingsequence).
+
+## Public Member Functions
+
+- bool **operator==** (const [DisplayOptions](/cpp-sdk/4.5/api/classes/imfusion-gltrackingsequence-displayoptions) &rhs) const
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [id](#id) () const override — Returns a unique string identifier for this type of data component.
+
+## Public Attributes
+
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; bool &gt; **p_showZeroQuality** = &#123;"showZeroQuality", true, this&#125; — Toggle visibility of zero quality points.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; bool &gt; **p_medianSkip** = &#123;"medianSkip", false, this&#125; — Toggle skipping of large gaps compared to median time-step.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; [IndicatorType](/cpp-sdk/4.5/api/classes/imfusion-gltrackingsequence) &gt; **p_indicatorType** = &#123;"indicatorType", [IndicatorType::None](/cpp-sdk/4.5/api/classes/imfusion-gltrackingsequence), this&#125; — Type of indicator.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; [IndicatorVisibility](/cpp-sdk/4.5/api/classes/imfusion-gltrackingsequence) &gt; **p_indicatorVisibility** = &#123;"indicatorVisibility", [IndicatorVisibility::Focus](/cpp-sdk/4.5/api/classes/imfusion-gltrackingsequence), this&#125; — Visibility of indicator.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; double &gt; **p_indicatorScale** = &#123;"indicatorScale", 1.0, this&#125; — Scale factor for the indicator.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; vec3 &gt; **p_indicatorColor** = &#123;"indicatorColor", vec3&#123;0.25, 0.41, 0.95&#125;, this&#125; — Color of indicator (CameraCone only).
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; double &gt; **p_lineWidth** = &#123;"lineWidth", 1.0, this&#125; — Width of the line.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; [LineStyle](/cpp-sdk/4.5/api/classes/imfusion-gltrackingsequence) &gt; **p_lineStyle** = &#123;"lineStyle", [LineStyle::Solid](/cpp-sdk/4.5/api/classes/imfusion-gltrackingsequence), this&#125; — Line style (solid or points).
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; [ColorOptions](/cpp-sdk/4.5/api/classes/imfusion-gltrackingsequence) &gt; **p_colorOption** = &#123;"colorOption", [ColorOptions::Quality](/cpp-sdk/4.5/api/classes/imfusion-gltrackingsequence), this&#125; — Color scheme of the sequence.
+
+## Member Function Documentation
+
+### id
+
+```cpp
+std::string ImFusion::GlTrackingSequence::DisplayOptions::id () const
+```
+
+*override, virtual*
+
+Returns a unique string identifier for this type of data component.
+
+**Note:** To avoid conflicts make sure to include potential plugin names into this ID. Due to the modular architecture of the ImFusion library, uniqueness of IDs cannot be checked at compile time. However, [DataComponentFactory](/cpp-sdk/4.5/api/classes/imfusion-datacomponentfactory) will check the uniqueness of the ID during registration.

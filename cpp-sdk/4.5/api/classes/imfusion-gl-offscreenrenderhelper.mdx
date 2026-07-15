@@ -1,0 +1,87 @@
+---
+title: "ImFusion::GL::OffscreenRenderHelper"
+sidebarTitle: "OffscreenRenderHelper"
+description: "Helper class to perform deferred off-screen rendering."
+---
+
+`#include <ImFusion/Core/GL/OffscreenRenderHelper.h>`
+
+## Overview
+
+Helper class to perform deferred off-screen rendering.
+
+This class helps you to accumulate your rendering calls into a temporary texture before eventually copying/blending the accumulated pixels back to the original/parent framebuffer. Internally, the temporary textures and framebuffer objects are cached and reused if compatible to avoid performance issues due to constant reallocation.
+
+A typical usage scenario looks like this:
+
+```cpp
+// setup custom FBO and attach temporary texture to render into
+auto renderBuffer = GL::OffscreenRenderHelper::cachedInstance().create(viewportSize);
+
+// render scene
+renderX();
+renderY();
+...
+
+// stop using the temporary FBO and copy/blend its contents back to the original framebuffer
+renderBuffer.blendToParent();
+```
+ fragment
+
+**Note:** This interface is still experimental and its API may change significantly in the future.
+
+## Classes
+
+- struct [RenderBuffer](/cpp-sdk/4.5/api/structs/imfusion-gl-offscreenrenderhelper-renderbuffer) — Helper structure to encapsulate OpenGL objects representing the temporary rendering buffer.
+
+## Public Types
+
+- enum class [ColorPostProcessing](#colorpostprocessing) &#123; None = 0 , DivideByAlpha = 1 , DivideBySqrtAlpha = 2 &#125; — Enumeration of optional additional color processing steps to perform in the copy shader.
+
+## Public Member Functions
+
+- [RenderBuffer](/cpp-sdk/4.5/api/structs/imfusion-gl-offscreenrenderhelper-renderbuffer) [create](#create) (const vec2i &viewportSize, [GL::InternalFormat](/cpp-sdk/4.5/api/classes/imfusion-gl-internalformat) colorFormat=GL::InternalFormat::RGBA8, [GL::InternalFormat](/cpp-sdk/4.5/api/classes/imfusion-gl-internalformat) depthFormat=GL::InternalFormat::DepthComponent24) — Creates a new temporary render buffer of the given configuration for off-screen rendering.
+- int **cacheSize** () const — Returns the maximum number of [RenderBuffer](/cpp-sdk/4.5/api/structs/imfusion-gl-offscreenrenderhelper-renderbuffer) instances that are cached by [OffscreenRenderHelper](/cpp-sdk/4.5/api/classes/imfusion-gl-offscreenrenderhelper).
+- void **setCacheSize** (int numElements) — Sets the maximum number of [RenderBuffer](/cpp-sdk/4.5/api/structs/imfusion-gl-offscreenrenderhelper-renderbuffer) instances that are cached by [OffscreenRenderHelper](/cpp-sdk/4.5/api/classes/imfusion-gl-offscreenrenderhelper); must not be negative.
+
+## Member Enumeration Documentation
+
+### ColorPostProcessing
+
+```cpp
+enum class ImFusion::GL::OffscreenRenderHelper::ColorPostProcessing
+```
+
+*strong*
+
+Enumeration of optional additional color processing steps to perform in the copy shader.
+
+**Enumerator:**
+
+- `None` — Write the original RGBA value of the color texture to the fragment shader output.
+- `DivideByAlpha` — Divide the RGB value by the alpha component.
+This is useful if you are using pre-multiplied alpha blending and want to reverse the pre-multiplication process in a single pass.
+- `DivideBySqrtAlpha` — Divide the RGBA value by sqrt(A).
+If your blending setup is (SrcAlpha, OneMinusSourceAlpha) this option allows for the final result after [RenderBuffer::blendToParent()](/cpp-sdk/4.5/api/structs/imfusion-gl-offscreenrenderhelper-renderbuffer) being the same as if you would directly render to the parent framebuffer without usage of [OffscreenRenderHelper](/cpp-sdk/4.5/api/classes/imfusion-gl-offscreenrenderhelper).
+
+## Member Function Documentation
+
+### create
+
+```cpp
+RenderBuffer ImFusion::GL::OffscreenRenderHelper::create (const vec2i & viewportSize, GL::InternalFormat colorFormat = GL::InternalFormat::RGBA8, GL::InternalFormat depthFormat = GL::InternalFormat::DepthComponent24)
+```
+
+*nodiscard*
+
+Creates a new temporary render buffer of the given configuration for off-screen rendering.
+
+After calling this function and capturing the returned [RenderBuffer](/cpp-sdk/4.5/api/structs/imfusion-gl-offscreenrenderhelper-renderbuffer) the current OpenGL context will have bound a dedicated FBO with one color and one depth texture of the given formats attached. The textures will be cleared with color vec4(0, 0, 0, 0) and depth 1 and the OpenGL viewport will be set to size *viewportSize* with offset (0, 0).
+
+The original FBO and viewport state will be restored when the [RenderBuffer](/cpp-sdk/4.5/api/structs/imfusion-gl-offscreenrenderhelper-renderbuffer) is destroyed or you call [RenderBuffer::blendToParent()](/cpp-sdk/4.5/api/structs/imfusion-gl-offscreenrenderhelper-renderbuffer).
+
+**Parameters:**
+
+- `viewportSize` — Size in pixels of the temporary render buffer
+- `colorFormat` — Internal texture format to use for the color attachment.
+- `depthFormat` — Internal texture format to use for the depth attachment.

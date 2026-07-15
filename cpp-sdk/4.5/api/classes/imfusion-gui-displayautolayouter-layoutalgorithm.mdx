@@ -1,0 +1,59 @@
+---
+title: "ImFusion::GUI::DisplayAutoLayouter::LayoutAlgorithm"
+sidebarTitle: "LayoutAlgorithm"
+description: "Interface to derive from to define custom display layout algorithms."
+---
+
+`#include <ImFusion/GUI/DisplayAutoLayouter.h>`
+
+## Overview
+
+Interface to derive from to define custom display layout algorithms.
+
+## Public Member Functions
+
+- virtual [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **name** () const =0 — Returns the name of the layouting algorithm, for instance to be shown in the [GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui).
+- virtual [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; [Feature](/cpp-sdk/4.5/api/classes/imfusion-gui-displayautolayouter) &gt; **features** () const =0 — Returns the list of layouting features this algorithms supports.
+- virtual [DisplayLayoutConfig](/cpp-sdk/4.5/api/classes/imfusion-gui-displaylayoutconfig) [createLayout](#createlayout) (const [LayoutInfo](/cpp-sdk/4.5/api/structs/imfusion-gui-displayautolayouter-layoutinfo) &layoutInfo) const =0 — Main implementation of the layouting algorithm.
+- virtual void [onLayoutSelected](#onlayoutselected) () — Callback function that is called just before the parent [DisplayAutoLayouter](/cpp-sdk/4.5/api/classes/imfusion-gui-displayautolayouter) switches to this layouting algorithm.
+- virtual void [onLayoutDeselected](#onlayoutdeselected) () — Callback function that is called just before the parent [DisplayAutoLayouter](/cpp-sdk/4.5/api/classes/imfusion-gui-displayautolayouter) switches away from this layouting algorithm to a different one.
+
+## Member Function Documentation
+
+### createLayout
+
+```cpp
+virtual DisplayLayoutConfig ImFusion::GUI::DisplayAutoLayouter::LayoutAlgorithm::createLayout (const LayoutInfo & layoutInfo) const
+```
+
+*pure virtual*
+
+Main implementation of the layouting algorithm.
+
+This function receives the [LayoutInfo](/cpp-sdk/4.5/api/structs/imfusion-gui-displayautolayouter-layoutinfo) record describing the current configuration of the [DisplayAutoLayouter](/cpp-sdk/4.5/api/classes/imfusion-gui-displayautolayouter) and is supposed to return a corresponding [DisplayLayoutConfig](/cpp-sdk/4.5/api/classes/imfusion-gui-displaylayoutconfig). A standard layout algorithm will only place views contained in layoutInfo.visibleViews in the resulting configuration. If it chooses to omit views this should be indicated in the return value of flags() if possible.
+
+A layouting algorithm is also allowed to include extra views in the final layout config. This way a controller could for instance enforce a specific fixed layout for a specific workflow. However, this functionality should be used with care and only for dedicated use cases because the user experience may degrade otherwise (e.g. user cannot hide certain views anymore).
+
+### onLayoutSelected
+
+```cpp
+virtual void ImFusion::GUI::DisplayAutoLayouter::LayoutAlgorithm::onLayoutSelected ()
+```
+
+*inline, virtual*
+
+Callback function that is called just before the parent [DisplayAutoLayouter](/cpp-sdk/4.5/api/classes/imfusion-gui-displayautolayouter) switches to this layouting algorithm.
+
+You can override it to implement custom setup logic.
+
+### onLayoutDeselected
+
+```cpp
+virtual void ImFusion::GUI::DisplayAutoLayouter::LayoutAlgorithm::onLayoutDeselected ()
+```
+
+*inline, virtual*
+
+Callback function that is called just before the parent [DisplayAutoLayouter](/cpp-sdk/4.5/api/classes/imfusion-gui-displayautolayouter) switches away from this layouting algorithm to a different one.
+
+You can override it to implement custom teardown logic.

@@ -1,0 +1,59 @@
+---
+title: "ImFusion::PlotView"
+sidebarTitle: "PlotView"
+description: "View for plotting data."
+---
+
+`#include <ImFusion/GUI/PlotView.h>`
+
+## Overview
+
+View for plotting data.
+
+## Public Slots
+
+- void **onDeleteLabel** (InteractivePlotViewLabelAnnotation \*gl)
+
+## Public Member Functions
+
+- **PlotView** ([std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [GlPlotView](/cpp-sdk/4.5/api/classes/imfusion-glplotview) &gt; view=nullptr, [DisplayWidgetMulti](/cpp-sdk/4.5/api/classes/imfusion-displaywidgetmulti) \*display=nullptr, bool enableLegend=false)
+- bool [acceptsData](#acceptsdata) (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data) const override — Returns whether this view is capable of displaying the given data.
+- const [GlPlotView](/cpp-sdk/4.5/api/classes/imfusion-glplotview) \* **view** () const — Read-only access to OpenGL view.
+- [GlPlotView](/cpp-sdk/4.5/api/classes/imfusion-glplotview) \* **view** () — Read-write access to OpenGL view.
+- PlotView \* **subPlot** () — Handle for manipulating the sub-plot. Ownership stays with this object.
+- void [setSubPlot](#setsubplot) ([std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; PlotView &gt; pv) — Replace sub-plot with another one and add it to the display.
+- void **setDisplayWidget** ([DisplayWidgetMulti](/cpp-sdk/4.5/api/classes/imfusion-displaywidgetmulti) \*display)
+- [InteractiveOverlay](/cpp-sdk/4.5/api/classes/imfusion-interactiveoverlay) \* **legend** () — return plot legend
+
+## Protected Attributes
+
+- [GlPlotView](/cpp-sdk/4.5/api/classes/imfusion-glplotview) \* **m_glPlotView** = nullptr
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; PlotView &gt; **m_subPlotView**
+- [DisplayWidgetMulti](/cpp-sdk/4.5/api/classes/imfusion-displaywidgetmulti) \* **m_display** = nullptr
+- [InteractiveOverlay](/cpp-sdk/4.5/api/classes/imfusion-interactiveoverlay) \* **m_legend** = nullptr
+
+## Member Function Documentation
+
+### acceptsData
+
+```cpp
+bool ImFusion::PlotView::acceptsData (const Data * data) const
+```
+
+*override, virtual*
+
+Returns whether this view is capable of displaying the given data.
+
+The default implementation checks whether there is any registered [DataDisplayHandler](/cpp-sdk/4.5/api/classes/imfusion-datadisplayhandler) that accepts this data for this type of view.
+
+**See also:** [setVisibleData()](/cpp-sdk/4.5/api/classes/imfusion-gui-view), [showData()](/cpp-sdk/4.5/api/classes/imfusion-gui-view)
+
+### setSubPlot
+
+```cpp
+void ImFusion::PlotView::setSubPlot (std::unique_ptr < PlotView > pv)
+```
+
+Replace sub-plot with another one and add it to the display.
+
+Ownership gets transferred to this object. Deletes the previous sub-plot.

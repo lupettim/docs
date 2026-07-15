@@ -1,0 +1,66 @@
+---
+title: "ImFusion::Seg::StructuresViewAlgorithmController"
+sidebarTitle: "StructuresViewAlgorithmController"
+description: "GUI for the StructuresViewAlgorithm ."
+---
+
+`#include <ImFusion/Seg/StructuresViewAlgorithmController.h>`
+
+## Overview
+
+[GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui) for the [StructuresViewAlgorithm](/cpp-sdk/4.5/api/classes/imfusion-seg-structuresviewalgorithm).
+
+## Public Member Functions
+
+- **StructuresViewAlgorithmController** ([StructuresViewAlgorithm](/cpp-sdk/4.5/api/classes/imfusion-seg-structuresviewalgorithm) \*alg)
+- bool **hidesLabelMapsInDataModel** () const — Returns the flag whether to hide all label maps of the shown Structures in the [DataModel](/cpp-sdk/4.5/api/classes/imfusion-datamodel).
+- void **setHideLabelMapsInDataModel** (bool value) — Sets the flag whether to hide all label maps of the shown Structures in the [DataModel](/cpp-sdk/4.5/api/classes/imfusion-datamodel).
+- void [init](#init) () override — Two-step initialization function to be implemented by subclasses.
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+## Protected Member Functions
+
+- void **triggerSegmentationAlgo** ([Structure](/cpp-sdk/4.5/api/classes/imfusion-seg-structure) \*s) — Creates a new label map.
+
+## Member Function Documentation
+
+### init
+
+```cpp
+void ImFusion::Seg::StructuresViewAlgorithmController::init ()
+```
+
+*override, virtual*
+
+Two-step initialization function to be implemented by subclasses.
+
+This function is called by [setMainWindowBase()](/cpp-sdk/4.5/api/classes/imfusion-controller) after the [m_disp](/cpp-sdk/4.5/api/classes/imfusion-controller) and [m_main](/cpp-sdk/4.5/api/classes/imfusion-controller) attributes have been set and hence a complete initialization of the controller is possible at this point.
+
+### configure
+
+```cpp
+void ImFusion::Seg::StructuresViewAlgorithmController::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### configuration
+
+```cpp
+void ImFusion::Seg::StructuresViewAlgorithmController::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality

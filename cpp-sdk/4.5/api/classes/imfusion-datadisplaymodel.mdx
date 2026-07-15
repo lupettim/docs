@@ -1,0 +1,81 @@
+---
+title: "ImFusion::DataDisplayModel"
+sidebarTitle: "DataDisplayModel"
+description: "This class extends a DataItemModel with data visibility information from a DisplayWidgetMulti ."
+---
+
+`#include <ImFusion/GUI/DataDisplayModel.h>`
+
+## Overview
+
+This class extends a [DataItemModel](/cpp-sdk/4.5/api/classes/imfusion-dataitemmodel) with data visibility information from a [DisplayWidgetMulti](/cpp-sdk/4.5/api/classes/imfusion-displaywidgetmulti).
+
+Instances of this class wrap a [DataItemModel](/cpp-sdk/4.5/api/classes/imfusion-dataitemmodel) and add one additional column. The columns are added at the end on each rows and do not override any existing columns. The DataVisibleRole of a column represent if the data in a row is visible in the [DisplayWidgetMulti](/cpp-sdk/4.5/api/classes/imfusion-displaywidgetmulti) or not. This is also represented by the Qt::CheckStateRole.
+
+**Note:** While this behaves like a QAbstractProxyModel it cannot be implemented as one because QAbstractProxyModel is expected to have a 1:1 mapping to the source model. Appending a column at the end would work but adding it in the front breaks editing.
+
+## Public Types
+
+- enum [Roles](#roles) &#123; DataVisibleRole = Qt::UserRole + 100 , DataIsShowableRole = Qt::UserRole + 101 &#125;
+- enum **Columns** &#123; **COLUMN_DATA** = 1 , **COLUMN_VISIBLE** = 0 &#125;
+
+## Public Member Functions
+
+- **DataDisplayModel** ([DataItemModel](/cpp-sdk/4.5/api/classes/imfusion-dataitemmodel) \*sourceModel, [DisplayWidgetMulti](/cpp-sdk/4.5/api/classes/imfusion-displaywidgetmulti) \*display, QObject \*parent=0)
+- QModelIndex **mapToSource** (const QModelIndex &proxyIndex) const — Maps an index in the proxy model to the corresponding index in the source model.
+- QModelIndex **mapFromSource** (const QModelIndex &sourceIndex) const — Maps an index in the source model to the corresponding index in the proxy model.
+- int **columnCount** (const QModelIndex &parent=QModelIndex()) const override — Returns the column count of the source model plus the number of scenes.
+- int **rowCount** (const QModelIndex &parent=QModelIndex()) const override — Returns the row count of the source model.
+- QModelIndex **index** (int row, int column, const QModelIndex &parent=QModelIndex()) const override — Creates an index.
+- QModelIndex **index** (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*[data](#data), int column) const
+- QModelIndex **parent** (const QModelIndex &index) const override — Returns the parent of index.
+- Qt::ItemFlags **flags** (const QModelIndex &index=QModelIndex()) const override — Returns Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsUserCheckable for all additional columns or the flags of the source model.
+- void **setSourceModel** ([DataItemModel](/cpp-sdk/4.5/api/classes/imfusion-dataitemmodel) \*model) — Sets the source model.
+- const [DataItemModel](/cpp-sdk/4.5/api/classes/imfusion-dataitemmodel) \* **sourceModel** () const
+- [DataItemModel](/cpp-sdk/4.5/api/classes/imfusion-dataitemmodel) \* **sourceModel** ()
+- QVariant [data](#data) (const QModelIndex &index, int role=Qt::DisplayRole) const override — Returns true or false for DataVisibleRole for the additional columns.
+- bool [setData](#setdata) (const QModelIndex &index, const QVariant &value, int role=Qt::EditRole) override — Adds or removes the [Data](/cpp-sdk/4.5/api/classes/imfusion-data) from the Display if role is DataVisibleRole.
+
+## Protected Slots
+
+- void **onDataRowsRemoved** (const QModelIndex &parent, int first, int last) — Removes data from the Display before it is deleted.
+- void **onVisibleDataChanged** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &before, const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &visible) — Updates model state.
+
+## Member Enumeration Documentation
+
+### Roles
+
+```cpp
+enum ImFusion::DataDisplayModel::Roles
+```
+
+**Enumerator:**
+
+- `DataVisibleRole` — Flag whether the data is currently shown in any view.
+- `DataIsShowableRole` — Flag whether data can be shown in any view.
+
+## Member Function Documentation
+
+### data
+
+```cpp
+QVariant ImFusion::DataDisplayModel::data (const QModelIndex & index, int role = Qt::DisplayRole) const
+```
+
+*override*
+
+Returns true or false for DataVisibleRole for the additional columns.
+
+The CheckStateRole of an additional column will returned Checked if the DataVisibleRole is true or false otherwise. All other columns are directed to the source model. The [DataItemModel::DataRole](/cpp-sdk/4.5/api/classes/imfusion-dataitemmodel) for the additional columns will return the Data\* represented by the row.
+
+### setData
+
+```cpp
+bool ImFusion::DataDisplayModel::setData (const QModelIndex & index, const QVariant & value, int role = Qt::EditRole)
+```
+
+*override*
+
+Adds or removes the [Data](/cpp-sdk/4.5/api/classes/imfusion-data) from the Display if role is DataVisibleRole.
+
+If value is true the [Data](/cpp-sdk/4.5/api/classes/imfusion-data) is added to the Display, otherwise it's removed. The CheckStateRole will be redirected to the DataVisibleRole and the value changed to true if it was Qt::Checked or false for Qt::Unchecked.

@@ -1,0 +1,52 @@
+---
+title: "ImFusion::GlFilterChain"
+sidebarTitle: "GlFilterChain"
+description: "Chain of two GlFilters."
+---
+
+`#include <ImFusion/GL/GlFilterChain.h>`
+
+## Overview
+
+Chain of two GlFilters.
+
+imgOut = GlFilter2(GlFilter1(imgIn))
+
+## Public Member Functions
+
+- **GlFilterChain** ([GL::Framebuffer](/cpp-sdk/4.5/api/classes/imfusion-gl-framebuffer) \*fbo=0)
+- void **setFirstFilter** ([GlFilter](/cpp-sdk/4.5/api/classes/imfusion-glfilter) \*f, bool own)
+- void **setSecondFilter** ([GlFilter](/cpp-sdk/4.5/api/classes/imfusion-glfilter) \*f, bool own)
+- [GlFilter](/cpp-sdk/4.5/api/classes/imfusion-glfilter) \* **getFirstFilter** ()
+- [GlFilter](/cpp-sdk/4.5/api/classes/imfusion-glfilter) \* **getSecondFilter** ()
+- void [compute](#compute) (const [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) &imgIn, [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) &imgOut) override — Execute the filter on the image.
+- bool [good](#good) () const override — Return true if the filter can be used, in particular if the shaders are available.
+
+## Protected Attributes
+
+- [GlFilter](/cpp-sdk/4.5/api/classes/imfusion-glfilter) \* **m_filter1**
+- [GlFilter](/cpp-sdk/4.5/api/classes/imfusion-glfilter) \* **m_filter2**
+- bool **m_own1**
+- bool **m_own2**
+
+## Member Function Documentation
+
+### compute
+
+```cpp
+void ImFusion::GlFilterChain::compute (const GlImage & imgIn, GlImage & imgOut)
+```
+
+*override, virtual*
+
+Execute the filter on the image.
+
+### good
+
+```cpp
+bool ImFusion::GlFilterChain::good () const
+```
+
+*override, virtual*
+
+Return true if the filter can be used, in particular if the shaders are available.

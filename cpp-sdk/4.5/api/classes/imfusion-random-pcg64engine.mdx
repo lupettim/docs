@@ -1,0 +1,36 @@
+---
+title: "ImFusion::Random::Pcg64Engine"
+sidebarTitle: "Pcg64Engine"
+description: "Wrapper class for a 64-bit PCG engine."
+---
+
+`#include <ImFusion/Core/RandomEngine.h>`
+
+## Overview
+
+Wrapper class for a 64-bit PCG engine.
+
+Auto-seeded by default (with a relatively high quality seed), but can be explicitly seeded for reproducibility. Used by [Generator](/cpp-sdk/4.5/api/classes/imfusion-random-generator).
+
+**See also:** [https://www.pcg-random.org/](https://www.pcg-random.org/)
+
+## Public Types
+
+- using **result_type** = uint64_t
+
+## Public Member Functions
+
+- **Pcg64Engine** () — Default constructor, automatically seeds itself.
+- **Pcg64Engine** (result_type seed) — Constructor with a low quality seed.
+- **Pcg64Engine** (const Pcg64Engine &other)
+- Pcg64Engine & **operator=** (const Pcg64Engine &other)
+- void **reseed** () — Re-seeds the engine with an automatically generated seed.
+- void **reseed** (result_type seed) — Re-seeds the engine with a low quality seed.
+- result_type **operator()** () — Returns a number between min() and max().
+- void **discard** (unsigned long long z) — Discards an arbitrary number of results.
+- void **makeThreadSafe** () — Makes the current engine instance thread safe.
+
+## Static Public Member Functions
+
+- static constexpr result_type **min** () — Returns the minimum number that this engine can generate.
+- static constexpr result_type **max** () — Returns the maximum number that this engine can generate.

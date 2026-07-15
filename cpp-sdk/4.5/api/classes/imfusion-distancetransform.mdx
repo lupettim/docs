@@ -1,0 +1,145 @@
+---
+title: "ImFusion::DistanceTransform"
+sidebarTitle: "DistanceTransform"
+description: "Distance transformation algorithm."
+---
+
+`#include <ImFusion/Base/DistanceTransform.h>`
+
+## Overview
+
+Distance transformation algorithm.
+
+## Static Public Member Functions
+
+- static [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; float &gt; &gt; [computeChamfer](#computechamfer) (const [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; unsigned char &gt; &mask, bool inverse=false, bool considerSpacing=false, int thresholdMask=0) — Computes a fast Chamfer distance transformation from mask of non-zero values.
+- static void [extendChamfer](#extendchamfer) ([TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; float &gt; &result, bool considerSpacing, float threshold=0.0) — Extends a given distance-volume by performing a forward-backward Chamfer pass.
+- static [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; float &gt; &gt; **computeChamferSigned** (const [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; unsigned char &gt; &mask, bool considerSpacing=false, int thresholdMask=0, double insideWeight=1.0) — Version of the method above which also computes distances inside the object (whose negative values are scaled with insideWeight).
+- static [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; float &gt; &gt; [computeSequentialEuclidean](#computesequentialeuclidean) (const [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; unsigned char &gt; &mask, int iterations=-1) — Computes an absolute Sequential Euclidean Distance [Transform](/cpp-sdk/4.5/api/classes/imfusion-transform).
+- static [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; float &gt; &gt; [computePreciseSigned](#computeprecisesigned-1-2) (const [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) &input, double resolution, int fillZ=0, double insideWeight=1.0, double offset=3.0) — Compute signed distance volume with sub-pixel precise distances in narrow band about surface.
+- static [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; float &gt; &gt; [computePreciseSigned](#computeprecisesigned-2-2) (const [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) &input, const vec3 &resolution, int fillZ=0, double insideWeight=1.0, double offset=3.0, vec3i \*targetDim=nullptr, [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; unsigned char &gt; \*inputMask=nullptr, bool distInPixels=true, int marginPx=10, [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; mat4 &gt; transformation=std::nullopt)
+- static [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; float &gt; &gt; [computePreciseSignedEigen](#computeprecisesignedeigen) (const [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) &input, const vec3 &resolution, int fillZ=0, double insideWeight=1.0, double offset=3.0, vec3i \*targetDim=nullptr, [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; unsigned char &gt; \*inputMask=nullptr, bool distInPixels=true, int marginPx=10, [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; mat4 &gt; transformation=std::nullopt) — Compute precise signed distance transform using portable Eigen-based vectorization.
+- static [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; float &gt; &gt; [computePreciseAbsolute](#computepreciseabsolute) (const [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) &input, const vec3 &resolution, double offset=3.0) — Compute absolute distance volume with sub-pixel precise distances in narrow band about surface.
+- static [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; float &gt; &gt; **computePreciseAbsolute** (const [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) &input, double resolution, double offset=3.0)
+- static [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; float &gt; &gt; [computeFastSweeping](#computefastsweeping) (const [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; unsigned char &gt; &label, bool considerSpacing) — Compute a distance volume with the fast sweeping method ([https://en.wikipedia.org/wiki/Fast_sweeping_method](https://en.wikipedia.org/wiki/Fast_sweeping_method)).
+
+## Member Function Documentation
+
+### computeChamfer
+
+```cpp
+std::unique_ptr < TypedImage < float > > ImFusion::DistanceTransform::computeChamfer (const TypedImage < unsigned char > & mask, bool inverse = false, bool considerSpacing = false, int thresholdMask = 0)
+```
+
+*static*
+
+Computes a fast Chamfer distance transformation from mask of non-zero values.
+
+**Parameters:**
+
+- `mask` — Input binary image, all values &gt; threshold will be interpreted as foreground.
+- `inverse` — If false, will compute the distances of the background to the foreground. If true, will compute the distances of the foreground to the background.
+- `considerSpacing` — Flag whether to approximate image distances (incorporating pixel spacing) instead of pixel distances.
+- `thresholdMask` — Optional threshold value for the mask, larger than it is considered foreground
+
+**Note:** The resulting distance map contains Chamfer distances that try to approximate Euclidean distances but are not exact. As a rule of thumb you can assume the resulting distances to underestimate the exact Euclidean distance by up to 10% for pixel distances and 15% for image distances (incorporating pixel spacing).
+
+### extendChamfer
+
+```cpp
+void ImFusion::DistanceTransform::extendChamfer (TypedImage < float > & result, bool considerSpacing, float threshold = 0.0)
+```
+
+*static*
+
+Extends a given distance-volume by performing a forward-backward Chamfer pass.
+
+**Parameters:**
+
+- `threshold` — - pixels with value less than this parameter are not updated. Ignored if zero.
+
+**Warning:** The threshold is applied during both the forward and the backward pass. If the value difference of neighboring pixels exceeds their chamfer distance, a pixel value originally above threshold can become smaller than threshold after the forward pass and as a result be incorrectly ignored during the backward pass
+
+### computeSequentialEuclidean
+
+```cpp
+std::unique_ptr < TypedImage < float > > ImFusion::DistanceTransform::computeSequentialEuclidean (const TypedImage < unsigned char > & mask, int iterations = -1)
+```
+
+*static*
+
+Computes an absolute Sequential Euclidean Distance [Transform](/cpp-sdk/4.5/api/classes/imfusion-transform).
+
+This function is more accurate than [computeChamfer()](#computechamfer) but also more expensive to compute.
+
+Unless a specific number of iterations is requested, this will run until it has converged to a final solution (typically 3-4 iterations). Note that the result is not always exact, as the scheme will fail in case of disconnected Voronoi regions. See 7.3 in [http://www.agencia.fapesp.br/arquivos/survey-final-fabbri-ACMCSurvFeb2008.pdf](http://www.agencia.fapesp.br/arquivos/survey-final-fabbri-ACMCSurvFeb2008.pdf) For random 2D input this occurs roughly every 10^7 pixels and leads to an error of typically 0.05 pixels.
+
+### computePreciseSigned
+
+```cpp
+std::unique_ptr < TypedImage < float > > ImFusion::DistanceTransform::computePreciseSigned (const Mesh & input, double resolution, int fillZ = 0, double insideWeight = 1.0, double offset = 3.0)
+```
+
+*static*
+
+Compute signed distance volume with sub-pixel precise distances in narrow band about surface.
+
+The region inside the object is weighted by the factor insideWeight The input mesh has to be closed for this method to work If it is not the case, the parameter fillZ can be set to 1 (resp. -1) in order to close the mesh in the upper (resp. lower) Z-part
+
+### computePreciseSigned
+
+```cpp
+std::unique_ptr < TypedImage < float > > ImFusion::DistanceTransform::computePreciseSigned (const Mesh & input, const vec3 & resolution, int fillZ = 0, double insideWeight = 1.0, double offset = 3.0, vec3i * targetDim = nullptr, TypedImage < unsigned char > * inputMask = nullptr, bool distInPixels = true, int marginPx = 10, std::optional < mat4 > transformation = std::nullopt)
+```
+
+*static*
+
+**Parameters:**
+
+- `inputMask` — Optional mask of the input mesh, will be recomputed if not provided.
+- `distInPixels` — If true, the distances will be computed in pixel units. Otherwise it will be in metric units.
+- `offset` — Distances smaller than this (in pixels, if distInPixels is set, otherwise metric) will be computed precisely from the [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh), the further distances are obtained from this via the Chamfer distance. If spacing is not isotropic, metric distance is recommended.
+- `transformation` — Optional transformation applied to each mesh vertex before it is used. Only supported when inputMask is provided; in that case the caller is responsible for ensuring that the transformed vertices live in the same coordinate frame as inputMask (typically the mask's image space). When inputMask is null, the mesh is centered internally and any user-supplied transformation is rejected.
+
+### computePreciseSignedEigen
+
+```cpp
+std::unique_ptr < TypedImage < float > > ImFusion::DistanceTransform::computePreciseSignedEigen (const Mesh & input, const vec3 & resolution, int fillZ = 0, double insideWeight = 1.0, double offset = 3.0, vec3i * targetDim = nullptr, TypedImage < unsigned char > * inputMask = nullptr, bool distInPixels = true, int marginPx = 10, std::optional < mat4 > transformation = std::nullopt)
+```
+
+*static*
+
+Compute precise signed distance transform using portable Eigen-based vectorization.
+
+This implementation uses Eigen's vectorization capabilities which auto-vectorize on all platforms (NEON on ARM, SSE/AVX on x86) without platform-specific intrinsics.
+
+**See also:** computePreciseSignedThreadpool for detailed parameter documentation
+
+### computePreciseAbsolute
+
+```cpp
+std::unique_ptr < TypedImage < float > > ImFusion::DistanceTransform::computePreciseAbsolute (const Mesh & input, const vec3 & resolution, double offset = 3.0)
+```
+
+*static*
+
+Compute absolute distance volume with sub-pixel precise distances in narrow band about surface.
+
+The input mesh can be either closed or open
+
+### computeFastSweeping
+
+```cpp
+std::unique_ptr < TypedImage < float > > ImFusion::DistanceTransform::computeFastSweeping (const TypedImage < unsigned char > & label, bool considerSpacing)
+```
+
+*static*
+
+Compute a distance volume with the fast sweeping method ([https://en.wikipedia.org/wiki/Fast_sweeping_method](https://en.wikipedia.org/wiki/Fast_sweeping_method)).
+
+Computes the (unsigned) distance transform to pixels that are nonzero in label.
+
+**Parameters:**
+
+- ``label`` — the input label map, where pixels that are non-zero yield zero values in the distance map.
+- ``considerSpacing`` — if true, the distance is computed in metric units, otherwise in pixel units. For nonisotropic spacing, distance values may be inexact relative to the precision obtained for isotropic spacing.

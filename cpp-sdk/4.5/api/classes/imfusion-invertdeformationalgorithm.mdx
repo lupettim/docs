@@ -1,0 +1,79 @@
+---
+title: "ImFusion::InvertDeformationAlgorithm"
+sidebarTitle: "InvertDeformationAlgorithm"
+description: "Algorithm to compute the inverse of a deformation."
+---
+
+`#include <ImFusion/GL/InvertDeformationAlgorithm.h>`
+
+## Overview
+
+[Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) to compute the inverse of a deformation.
+
+## Public Member Functions
+
+- **InvertDeformationAlgorithm** (const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &img, [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*imgOut=nullptr) — Creates the algorithm instance with a data, and optional output image.
+- **InvertDeformationAlgorithm** (const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &img, [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [Deformation](/cpp-sdk/4.5/api/classes/imfusion-deformation) &gt; deformation) — Creates the algorithm instance with a image descriptor and a given deformation.
+- **~InvertDeformationAlgorithm** () override — Deletes owned resources.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [GlDenseDeformation](/cpp-sdk/4.5/api/classes/imfusion-gldensedeformation) &gt; **inverseDeformation** () — take the [GlDenseDeformation](/cpp-sdk/4.5/api/classes/imfusion-gldensedeformation)
+- void **setInverseDeformation** ([std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [GlDenseDeformation](/cpp-sdk/4.5/api/classes/imfusion-gldensedeformation) &gt; inverse) — Set the [GlDenseDeformation](/cpp-sdk/4.5/api/classes/imfusion-gldensedeformation) that will be filled with the inverse If not set, a [GlDenseDeformation](/cpp-sdk/4.5/api/classes/imfusion-gldensedeformation) with the size of the input image is created automatically.
+
+## Methods implementing the algorithm interface
+
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Set one or multiple properties.
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Retrieve the properties of this object.
+- void [compute](#compute) () override — Applies the processing.
+- [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) [takeOutput](#takeoutput) () override — If new data was created, make it available here.
+- static bool [createCompatible](#createcompatible) (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=nullptr)
+
+## Member Function Documentation
+
+### createCompatible
+
+```cpp
+bool ImFusion::InvertDeformationAlgorithm::createCompatible (const DataList & data, Algorithm ** a = nullptr)
+```
+
+*static*
+
+Factory method to check for applicability or to create the algorithm
+
+### configure
+
+```cpp
+void ImFusion::InvertDeformationAlgorithm::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Set one or multiple properties.
+
+### configuration
+
+```cpp
+void ImFusion::InvertDeformationAlgorithm::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Retrieve the properties of this object.
+
+### compute
+
+```cpp
+void ImFusion::InvertDeformationAlgorithm::compute ()
+```
+
+*override, virtual*
+
+Applies the processing.
+
+### takeOutput
+
+```cpp
+OwningDataList ImFusion::InvertDeformationAlgorithm::takeOutput ()
+```
+
+*override, virtual*
+
+If new data was created, make it available here.

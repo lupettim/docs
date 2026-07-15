@@ -1,0 +1,161 @@
+---
+title: "ImFusion::GlTrackingSequence"
+sidebarTitle: "GlTrackingSequence"
+description: "Render-class for a TrackingSequence ."
+---
+
+`#include <ImFusion/GL/GlTrackingSequence.h>`
+
+## Overview
+
+Render-class for a [TrackingSequence](/cpp-sdk/4.5/api/classes/imfusion-trackingsequence).
+
+Implements [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) interface to be displayable in a view. The subclass [DisplayOptions](/cpp-sdk/4.5/api/classes/imfusion-gltrackingsequence-displayoptions) manages the visualization options of this rendered. These options are toggled in the [GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui) via the [TrackingSequenceDisplayOptionsWidget](/cpp-sdk/4.5/api/classes/imfusion-trackingsequencedisplayoptionswidget).
+
+## Classes
+
+- class [DisplayOptions](/cpp-sdk/4.5/api/classes/imfusion-gltrackingsequence-displayoptions) — Record of settings to configure the appearance of a [GlTrackingSequence](/cpp-sdk/4.5/api/classes/imfusion-gltrackingsequence).
+
+## Public Types
+
+- enum class [LineStyle](#linestyle) &#123; Solid = 0 , Points = 1 &#125; — Specifies the rendering style for the tracking sequence line.
+- enum class [IndicatorType](#indicatortype) &#123; None = 0 , CameraCone = 1 , CoordinateSystem = 2 &#125; — Specifies the type of indicator that will be shown at the focus point.
+- enum class [IndicatorVisibility](#indicatorvisibility) &#123; Focus = 0 , First = 1 , All = 2 &#125; — Specifies for which tracking samples the indicator should be shown.
+- enum class [ColorOptions](#coloroptions) &#123; Quality = 0 , Time = 1 , **Red** = 2 , **Cyan** = 3 , **Yellow** = 4 , **Green** = 5 , **Purple** = 6 , **Orange** = 7 &#125; — Specifies the color scheme of the sequence.
+
+## Public Member Functions
+
+- **GlTrackingSequence** ([TrackingSequence](/cpp-sdk/4.5/api/classes/imfusion-trackingsequence) \*trackingData) — Ctor with [TrackingSequence](/cpp-sdk/4.5/api/classes/imfusion-trackingsequence). Asserts that the [TrackingSequence](/cpp-sdk/4.5/api/classes/imfusion-trackingsequence) is not null.
+- [TrackingSequence](/cpp-sdk/4.5/api/classes/imfusion-trackingsequence) \* **trackingSequence** () const — Getter for [TrackingSequence](/cpp-sdk/4.5/api/classes/imfusion-trackingsequence).
+- void [setCustomDisplayOptions](#setcustomdisplayoptions) ([DisplayOptions](/cpp-sdk/4.5/api/classes/imfusion-gltrackingsequence-displayoptions) \*options) — Setter for display options.
+- [DisplayOptions](/cpp-sdk/4.5/api/classes/imfusion-gltrackingsequence-displayoptions) \* **customDisplayOptions** () const — Returns the custom [DisplayOptions](/cpp-sdk/4.5/api/classes/imfusion-gltrackingsequence-displayoptions) for this class if they have been set via setCustomDisplayOptions, else nullptr.
+- void [draw](#draw) (const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &view) override — Draw the object in 3D space.
+- [Geometry::AlignedBox](/cpp-sdk/4.5/api/classes/imfusion-geometry-alignedbox) [bounds](#bounds) () const override — Returns added bounds of [TrackingSequence](/cpp-sdk/4.5/api/classes/imfusion-trackingsequence) and [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject).
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [typeName](#typename) () const override — Return unique identifier for this object class used for serialization.
+- void **setDirty** ()
+
+## Protected Member Functions
+
+- [std::pair](http://en.cppreference.com/w/cpp/utility/pair.html)&lt; [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; mat4 &gt;, [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; mat4 &gt; &gt; **indicatorMatrices** ([IndicatorVisibility](#indicatorvisibility) indicatorVisibility) const
+- void **setTrackingSequence** ([TrackingSequence](/cpp-sdk/4.5/api/classes/imfusion-trackingsequence) \*val)
+- [DisplayOptions](/cpp-sdk/4.5/api/classes/imfusion-gltrackingsequence-displayoptions) & **getOrCreatedisplayOptions** ()
+- void **refreshPolyLines** ()
+- void **refreshVisualization** ()
+
+## Protected Attributes
+
+- [TrackingSequence](/cpp-sdk/4.5/api/classes/imfusion-trackingsequence) \* **m_tracking** = nullptr
+- bool **m_dirty** = true
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; **m_uniformColors**
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [GlPolyLine](/cpp-sdk/4.5/api/classes/imfusion-glpolyline) &gt; &gt; **m_polyLines**
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; GlObject &gt; &gt; **m_visualizations**
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3f &gt; **m_points**
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3f &gt; **m_pointColors**
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [GL::VertexBuffer](/cpp-sdk/4.5/api/classes/imfusion-gl-vertexbuffer) &gt; **m_vbo**
+- [DisplayOptions](/cpp-sdk/4.5/api/classes/imfusion-gltrackingsequence-displayoptions) \* **m_displayOptions** = nullptr
+
+## Member Enumeration Documentation
+
+### LineStyle
+
+```cpp
+enum class ImFusion::GlTrackingSequence::LineStyle
+```
+
+*strong*
+
+Specifies the rendering style for the tracking sequence line.
+
+**Enumerator:**
+
+- `Solid` — render as a solid line
+- `Points` — render as individual points
+
+### IndicatorType
+
+```cpp
+enum class ImFusion::GlTrackingSequence::IndicatorType
+```
+
+*strong*
+
+Specifies the type of indicator that will be shown at the focus point.
+
+**Enumerator:**
+
+- `None` — no indicator shown
+- `CameraCone` — a cone indicating the camera pose
+- `CoordinateSystem` — a cartesian coordinate system
+
+### IndicatorVisibility
+
+```cpp
+enum class ImFusion::GlTrackingSequence::IndicatorVisibility
+```
+
+*strong*
+
+Specifies for which tracking samples the indicator should be shown.
+
+**Enumerator:**
+
+- `Focus` — show the indicator for the focus sample
+- `First` — show the indicator only for the first sample
+- `All` — show the indicator for all samples
+
+### ColorOptions
+
+```cpp
+enum class ImFusion::GlTrackingSequence::ColorOptions
+```
+
+*strong*
+
+Specifies the color scheme of the sequence.
+
+**Enumerator:**
+
+- `Quality` — Colors the line according to the quality of each point in the tracking sequence. Falls-back to Yellow if the sequence has no quality information set.
+- `Time` — Colors the line according to the time-stamp values of the tracking sequence. Falls-back to Yellow if the sequence has no timestamp information set.
+
+## Member Function Documentation
+
+### setCustomDisplayOptions
+
+```cpp
+void ImFusion::GlTrackingSequence::setCustomDisplayOptions (DisplayOptions * options)
+```
+
+Setter for display options.
+
+If not set (or if nullptr is passed), the [DisplayOptions](/cpp-sdk/4.5/api/classes/imfusion-gltrackingsequence-displayoptions) attached to the [TrackingSequence](/cpp-sdk/4.5/api/classes/imfusion-trackingsequence) will be used.
+
+### draw
+
+```cpp
+void ImFusion::GlTrackingSequence::draw (const GlView & view)
+```
+
+*override, virtual*
+
+Draw the object in 3D space.
+
+### bounds
+
+```cpp
+Geometry::AlignedBox ImFusion::GlTrackingSequence::bounds () const
+```
+
+*override, virtual*
+
+Returns added bounds of [TrackingSequence](/cpp-sdk/4.5/api/classes/imfusion-trackingsequence) and [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject).
+
+### typeName
+
+```cpp
+std::string ImFusion::GlTrackingSequence::typeName () const
+```
+
+*inline, override, virtual*
+
+Return unique identifier for this object class used for serialization.

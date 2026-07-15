@@ -1,0 +1,64 @@
+---
+title: "ImFusion::AnnotationAction"
+sidebarTitle: "AnnotationAction"
+---
+
+## Public Member Functions
+
+- virtual void **init** ()
+- virtual bool **isProjectCompatible** () const =0
+- virtual bool **isProjectCompatible** (const Project::ProjectTypes &, bool) const =0
+- virtual bool **areActiveLayersCompatible** () const =0
+- virtual bool **isDataSetCompatible** (const [DataSet](/cpp-sdk/4.5/api/classes/imfusion-dataset) &) const =0
+- virtual void **dataSetChanged** ()
+- virtual QIcon **icon** () const =0
+- virtual QString **text** () const =0
+- virtual QString **description** () const =0
+- virtual QString **docPath** () const =0
+- virtual bool **isReadOnly** () const =0
+- virtual QWidget \* **ui** (QWidget \*=nullptr)=0
+- virtual void **activate** ()
+- virtual void **deactivate** ()
+- virtual bool **inputEvent** (QEvent \*)
+- virtual void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+- virtual void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+## Protected Attributes
+
+- bool **m_isActive** = false
+- [DataSet](/cpp-sdk/4.5/api/classes/imfusion-dataset) \* **m_dataSet** = nullptr
+- const [Project](/cpp-sdk/4.5/api/classes/imfusion-project) \* **m_project** = nullptr
+- [DisplayWidgetMultiAdapter](/cpp-sdk/4.5/api/classes/imfusion-displaywidgetmultiadapter) **m_disp**
+- [ThumbnailLoader](/cpp-sdk/4.5/api/classes/imfusion-thumbnailloader) \* **m_thumbnailLoader** = nullptr
+- [AnnotationActionSharedState](/cpp-sdk/4.5/api/structs/imfusion-annotationactionsharedstate) \* **m_sharedState** = nullptr
+- [AnnotationView](/cpp-sdk/4.5/api/classes/imfusion-annotationview) \* **m_annotationView** = nullptr
+
+## Member Function Documentation
+
+### configuration
+
+```cpp
+virtual void ImFusion::AnnotationAction::configuration (Properties * p) const
+```
+
+*inline, override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality
+
+### configure
+
+```cpp
+virtual void ImFusion::AnnotationAction::configure (const Properties * p)
+```
+
+*inline, override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality

@@ -1,0 +1,21 @@
+---
+title: "ImFusion::Dicom::Study"
+sidebarTitle: "Study"
+---
+
+## Public Member Functions
+
+- **Study** ([Patient](/cpp-sdk/4.5/api/structs/imfusion-dicom-patient) \*parent)
+- **Study** ([Patient](/cpp-sdk/4.5/api/structs/imfusion-dicom-patient) \*parent, DcmItem &item, bool loadSeries=true)
+- **Study** (const Study &rhs) — Copy constructor only copies study information, neither series nor parent are copied.
+
+## Public Attributes
+
+- [Patient](/cpp-sdk/4.5/api/structs/imfusion-dicom-patient) \* **parent**
+- QString **instanceUID** — Unique identifier to be used to identify the [Study](/cpp-sdk/4.5/api/structs/imfusion-dicom-study). (0020, 000d).
+- QString **id** — User or equipment generated [Study](/cpp-sdk/4.5/api/structs/imfusion-dicom-study) identifier. (0020, 0010).
+- QTime **time** — Time the [Study](/cpp-sdk/4.5/api/structs/imfusion-dicom-study) started. (0008, 0030).
+- QDate **date** — Date the [Study](/cpp-sdk/4.5/api/structs/imfusion-dicom-study) started. (0008, 0020).
+- QString **description** — Description of the [Study](/cpp-sdk/4.5/api/structs/imfusion-dicom-study). (0008, 1030).
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Series](/cpp-sdk/4.5/api/structs/imfusion-dicom-series) \* &gt; **series** — [Series](/cpp-sdk/4.5/api/structs/imfusion-dicom-series) included in the [Study](/cpp-sdk/4.5/api/structs/imfusion-dicom-study).
+- [PacsSeriesProxy](/cpp-sdk/4.5/api/structs/imfusion-dicom-pacsseriesproxy) \* **pacsSeriesProxy** — Proxy class to handle deferred loading of series from a PACS server.

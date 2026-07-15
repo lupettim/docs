@@ -1,0 +1,65 @@
+---
+title: "ImFusion::GlSharpenFilter"
+sidebarTitle: "GlSharpenFilter"
+description: "Unsharp Mask filter."
+---
+
+`#include <ImFusion/GL/GlSharpenFilter.h>`
+
+## Overview
+
+Unsharp [Mask](/cpp-sdk/4.5/api/classes/imfusion-mask) filter.
+
+## Public Member Functions
+
+- **GlSharpenFilter** ([GL::Framebuffer](/cpp-sdk/4.5/api/classes/imfusion-gl-framebuffer) \*fbo=0)
+- bool [setKernelSize](#setkernelsize) (int size, double k) override — Set kernel size and sharpen factor ([0;1]).
+- void [compute](#compute-1-2) (const [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) &imgIn, [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) &imgOut) override — Execute the filter on the image.
+- void [compute](#compute-2-2) ([SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) &imgIn, [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) &imgOut) override
+- void **computeBlurred** (const [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) &imgIn, [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) &blurredOut) — Compute only the blurred version of the image so that you can perform the unsharp masking yourself.
+- bool [good](#good) () const override — Return if the filter can be used, in particular if the shaders are available.
+
+## Protected Attributes
+
+- [GL::ImageProgram](/cpp-sdk/4.5/api/classes/imfusion-gl-imageprogram) \* **m_programSharpen**
+- float **m_k**
+
+## Member Function Documentation
+
+### setKernelSize
+
+```cpp
+bool ImFusion::GlSharpenFilter::setKernelSize (int size, double k)
+```
+
+*override, virtual*
+
+Set kernel size and sharpen factor ([0;1]).
+
+### compute
+
+```cpp
+void ImFusion::GlSharpenFilter::compute (const GlImage & imgIn, GlImage & imgOut)
+```
+
+*override, virtual*
+
+Execute the filter on the image.
+
+### compute
+
+```cpp
+void ImFusion::GlSharpenFilter::compute (SharedImage & imgIn, SharedImage & imgOut)
+```
+
+*override, virtual*
+
+### good
+
+```cpp
+bool ImFusion::GlSharpenFilter::good () const
+```
+
+*override, virtual*
+
+Return if the filter can be used, in particular if the shaders are available.

@@ -1,0 +1,77 @@
+---
+title: "ImFusion::PropertiesListWidget"
+sidebarTitle: "PropertiesListWidget"
+description: "The PropertiesListWidget shows as sub-properties as a list."
+---
+
+`#include <ImFusion/GUI/PropertiesListWidget.h>`
+
+## Overview
+
+The [PropertiesListWidget](/cpp-sdk/4.5/api/classes/imfusion-propertieslistwidget) shows as sub-properties as a list.
+
+All sub-properties of a [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object are treated as items of the list and are expected to have the same parameter structure. List items can be removed and edited. New list items can be added. Further sub-properties of the sub-properties are not represented by further PropertiesListWidgets.
+
+## Public Slots
+
+- void **addItem** ()
+- void **removeItem** (QListWidgetItem \*item)
+- void **editItem** (QListWidgetItem \*item)
+
+## Public Member Functions
+
+- **PropertiesListWidget** (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p=nullptr, QWidget \*parent=nullptr)
+- void [setAddTemplate](#setaddtemplate) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) &p) — Sets a template that is used when adding a new item.
+- void [setForceTemplateParamType](#setforcetemplateparamtype) (bool enable) — If enabled, each params type and type attribute is overridden with the corresponding value from the template (if available).
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+## Member Function Documentation
+
+### setAddTemplate
+
+```cpp
+void ImFusion::PropertiesListWidget::setAddTemplate (const Properties & p)
+```
+
+Sets a template that is used when adding a new item.
+
+If the template is empty (the default), adding new items is not possible.
+
+### setForceTemplateParamType
+
+```cpp
+void ImFusion::PropertiesListWidget::setForceTemplateParamType (bool enable)
+```
+
+If enabled, each params type and type attribute is overridden with the corresponding value from the template (if available).
+
+Default is disabled.
+
+### configure
+
+```cpp
+void ImFusion::PropertiesListWidget::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### configuration
+
+```cpp
+void ImFusion::PropertiesListWidget::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality

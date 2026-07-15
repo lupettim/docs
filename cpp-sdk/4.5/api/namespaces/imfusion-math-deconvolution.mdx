@@ -1,0 +1,42 @@
+---
+title: "ImFusion::Math::Deconvolution"
+sidebarTitle: "Deconvolution"
+description: "Provides deconvolution of a 1D signal."
+---
+
+## Overview
+
+Provides deconvolution of a 1D signal.
+
+## Functions
+
+- bool [wiener](#wiener) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; float &gt; &signal, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; float &gt; &kernel, int kernelCenter, float snrEstimate, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; float &gt; &result) — [https://en.wikipedia.org/wiki/Wiener_deconvolution](https://en.wikipedia.org/wiki/Wiener_deconvolution)
+- bool [richardsonLucy](#richardsonlucy) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; float &gt; &signal, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; float &gt; &kernel, int kernelCenter, int iterations, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; float &gt; &result) — [https://en.wikipedia.org/wiki/Richardson%E2%80%93Lucy_deconvolution](https://en.wikipedia.org/wiki/Richardson%E2%80%93Lucy_deconvolution)
+
+## Function Documentation
+
+### wiener
+
+```cpp
+bool ImFusion::Math::Deconvolution::wiener (const std::vector < float > & signal, const std::vector < float > & kernel, int kernelCenter, float snrEstimate, std::vector < float > & result)
+```
+
+[https://en.wikipedia.org/wiki/Wiener_deconvolution](https://en.wikipedia.org/wiki/Wiener_deconvolution)
+
+**Parameters:**
+
+- `kernelCenter` — determines which array index is considered as the 0 offset element in the regular convolution equation.
+- `snrEstimate` — controls the strength of the deconvolution, should ideally match the SNR of the unconvolved original data.
+
+### richardsonLucy
+
+```cpp
+bool ImFusion::Math::Deconvolution::richardsonLucy (const std::vector < float > & signal, const std::vector < float > & kernel, int kernelCenter, int iterations, std::vector < float > & result)
+```
+
+[https://en.wikipedia.org/wiki/Richardson%E2%80%93Lucy_deconvolution](https://en.wikipedia.org/wiki/Richardson%E2%80%93Lucy_deconvolution)
+
+**Parameters:**
+
+- `kernelCenter` — determines which array index is considered as the 0 offset element in the regular convolution equation.
+- `iterations` — controls how many iterations this algorithm performs.

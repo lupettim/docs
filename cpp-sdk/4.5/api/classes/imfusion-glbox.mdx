@@ -1,0 +1,123 @@
+---
+title: "ImFusion::GlBox"
+sidebarTitle: "GlBox"
+description: "Bounding box annotation."
+---
+
+`#include <ImFusion/GL/GlBox.h>`
+
+## Overview
+
+Bounding box annotation.
+
+## Public Member Functions
+
+- void [draw](#draw) (const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &[view](/cpp-sdk/4.5/api/classes/imfusion-glannotation)) override — Draw the object in 3D space.
+- void [draw2D](#draw2d) (const [GL::ViewState](/cpp-sdk/4.5/api/classes/imfusion-gl-viewstate) &viewState, [Slice](/cpp-sdk/4.5/api/classes/imfusion-slice) slice) override — Computes the cross-section with the slice and displays it with lines.
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Set one or multiple properties.
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Retrieve the properties of this object.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [typeName](#typename) () const override — Return unique identifier for this object class used for serialization.
+- void **createMesh** (const vec3 &topLeft, const vec3 &bottomRight, const mat3 &[orientation](#orientation)=mat3::Identity())
+- void **updateMesh** ()
+- void **clearMesh** () — Removes the internal mesh and clears the points (resets rendering to initial state).
+- vec3 & **boxExtent** ()
+- const vec3 & **boxExtent** () const
+- vec3 & **boxCenter** ()
+- const vec3 & **boxCenter** () const
+- mat3 & [orientation](#orientation) () — Returns the orientation of the box.
+- const mat3 & **orientation** () const
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; vec4i &gt; **isSideHit** (double x, double y, const [GlSliceView](/cpp-sdk/4.5/api/classes/imfusion-glsliceview) &[view](/cpp-sdk/4.5/api/classes/imfusion-glannotation)) const — Takes viewport coordinates as input and returns a vector of the corner indices if the side is "hit", returns a std::nullopt otherwise The 6 possible sides are: 0,1,2,3 top 4,5,6,7 bottom 0,1,4,5 left 2,3,6,7 right 0,3,4,7 back 1,2,5,6 front.
+- bool **isCenterHit** (double x, double y, const [GlSliceView](/cpp-sdk/4.5/api/classes/imfusion-glsliceview) &[view](/cpp-sdk/4.5/api/classes/imfusion-glannotation)) const — Takes viewport coordinates as input and returns true if the center is "hit", returns false otherwise.
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; int &gt; [isOutOfPlaneCornerHit](#isoutofplanecornerhit) (double x, double y, const [GlSliceView](/cpp-sdk/4.5/api/classes/imfusion-glsliceview) &[view](/cpp-sdk/4.5/api/classes/imfusion-glannotation)) const — Checks if the given viewport coordinates are close to where one of the 8 corners of the box is rendered.
+- bool [dataAnnotation](#dataannotation) () const — Specifies whether this annotation should be treated as a data annotation for the underlying mesh.
+- void **setDataAnnotation** (bool v)
+
+## Public Attributes
+
+- Signal **boxChanged** — Emitted every time the center or extent changes.
+
+## Member Function Documentation
+
+### draw
+
+```cpp
+void ImFusion::GlBox::draw (const GlView & view)
+```
+
+*override, virtual*
+
+Draw the object in 3D space.
+
+### draw2D
+
+```cpp
+void ImFusion::GlBox::draw2D (const GL::ViewState & viewState, Slice slice)
+```
+
+*override, virtual*
+
+Computes the cross-section with the slice and displays it with lines.
+
+### configure
+
+```cpp
+void ImFusion::GlBox::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Set one or multiple properties.
+
+### configuration
+
+```cpp
+void ImFusion::GlBox::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Retrieve the properties of this object.
+
+### typeName
+
+```cpp
+std::string ImFusion::GlBox::typeName () const
+```
+
+*inline, override, virtual*
+
+Return unique identifier for this object class used for serialization.
+
+### orientation
+
+```cpp
+mat3 & ImFusion::GlBox::orientation ()
+```
+
+*inline*
+
+Returns the orientation of the box.
+
+Each column vector of the matrix is one (normalized) basis vector.
+
+### isOutOfPlaneCornerHit
+
+```cpp
+std::optional < int > ImFusion::GlBox::isOutOfPlaneCornerHit (double x, double y, const GlSliceView & view) const
+```
+
+Checks if the given viewport coordinates are close to where one of the 8 corners of the box is rendered.
+
+If yes, returns the index of the corresponding vertex of the underlying [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh).
+
+### dataAnnotation
+
+```cpp
+bool ImFusion::GlBox::dataAnnotation () const
+```
+
+*inline*
+
+Specifies whether this annotation should be treated as a data annotation for the underlying mesh.
+
+If true, the algorithms available for meshes will be shown in the context menu when right-clicking on the annotation in the annotation widget, Otherwise they will not be listed

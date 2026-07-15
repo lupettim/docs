@@ -1,0 +1,110 @@
+---
+title: "ImFusion::Network::AuthorizationProvider"
+sidebarTitle: "AuthorizationProvider"
+description: "Interface for providing the Authorization header for WebRequests."
+---
+
+`#include <ImFusion/Base/AuthorizationProvider.h>`
+
+## Overview
+
+Interface for providing the Authorization header for WebRequests.
+
+All provided URLs should be the full URL of the desired requests. Implementations can use extractServerUrl for caching an authorization for a specific server.
+
+## Public Member Functions
+
+- virtual [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [authorization](#authorization) (const [Filesystem::Url](/cpp-sdk/4.5/api/classes/imfusion-filesystem-url) &url) const =0 — Get the Authorization header for the given url.
+- virtual bool [refreshAuthorization](#refreshauthorization) (const [Filesystem::Url](/cpp-sdk/4.5/api/classes/imfusion-filesystem-url) &url, int numFailedRequests)=0 — Try to refresh the authorization without user interaction.
+- virtual bool [acquireAuthorization](#acquireauthorization) (const [Filesystem::Url](/cpp-sdk/4.5/api/classes/imfusion-filesystem-url) &url, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &message)=0 — Acquire authorization by e.g.
+- virtual void [removeAuthorization](#removeauthorization) (const [Filesystem::Url](/cpp-sdk/4.5/api/classes/imfusion-filesystem-url) &url)=0 — Remove any cached authorization for the given server.
+- virtual [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [AccessToken](/cpp-sdk/4.5/api/structs/imfusion-network-accesstoken) &gt; [accessToken](#accesstoken) (const [Filesystem::Url](/cpp-sdk/4.5/api/classes/imfusion-filesystem-url) &url) const — Returns a complete [AccessToken](/cpp-sdk/4.5/api/structs/imfusion-network-accesstoken) if there is one.
+- [Filesystem::Url](/cpp-sdk/4.5/api/classes/imfusion-filesystem-url) [extractServerUrl](#extractserverurl) (const [Filesystem::Url](/cpp-sdk/4.5/api/classes/imfusion-filesystem-url) &url) const — Extract the server part of the URL.
+
+## Member Function Documentation
+
+### authorization
+
+```cpp
+virtual std::string ImFusion::Network::AuthorizationProvider::authorization (const Filesystem::Url & url) const
+```
+
+*pure virtual*
+
+Get the Authorization header for the given url.
+
+The url is the complete url for the request that is going to be performed. Implementation should cache the value according to the server URL (see extractServerUrl). When an empty string is returned, no Authorization header should be send. This method will be called from multiple threads.
+
+### refreshAuthorization
+
+```cpp
+virtual bool ImFusion::Network::AuthorizationProvider::refreshAuthorization (const Filesystem::Url & url, int numFailedRequests)
+```
+
+*pure virtual*
+
+Try to refresh the authorization without user interaction.
+
+Implementations should stop retrying after a certain number of failed attempts. This method will be called from multiple threads. If an auth scheme does not support refreshing without user interaction, implementations should return false after the first failed attempt.
+
+Implementations that cache authorization according to the url, should remove entries from the cache that cannot be refreshed after one failed request.
+
+This method can also be called without a previously failed request (numFailedRequests == 0) in case the token should be refreshed before it expires.
+
+E.g. if this method fails, the authorization method should return an empty string until acquireAuthorization was called again.
+
+### acquireAuthorization
+
+```cpp
+virtual bool ImFusion::Network::AuthorizationProvider::acquireAuthorization (const Filesystem::Url & url, const std::string & message)
+```
+
+*pure virtual*
+
+Acquire authorization by e.g.
+
+asking the user.
+
+This method might get called from another thread. In this case, implementations that require the main thread to show a [GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui) should just return false.
+
+An optional message can be provided (e.g. to display an error from a previous login attempt).
+
+Should return true if authorization could be acquired or false otherwise.
+
+This method is not expected to check whether the acquired authorization actually works, because this is simply not possible with some auth schemes.
+
+Code that requires authorization should call this method from the main thread before performing requests. If those requests fail with 401, this method should be called again from the main thread before retrying the requests. If multiple requests are run in parallel, it must be avoided to call this method multiple times simultaneous, because this might popup multiple dialogs.
+
+### removeAuthorization
+
+```cpp
+virtual void ImFusion::Network::AuthorizationProvider::removeAuthorization (const Filesystem::Url & url)
+```
+
+*pure virtual*
+
+Remove any cached authorization for the given server.
+
+This should essentially log out the user and let the user re-authenticate with the next acquireAuthorization call.
+
+### accessToken
+
+```cpp
+virtual std::optional < AccessToken > ImFusion::Network::AuthorizationProvider::accessToken (const Filesystem::Url & url) const
+```
+
+*virtual*
+
+Returns a complete [AccessToken](/cpp-sdk/4.5/api/structs/imfusion-network-accesstoken) if there is one.
+
+Not all implementations will use a full [AccessToken](/cpp-sdk/4.5/api/structs/imfusion-network-accesstoken) internally, but may use only a plain authorization header. The default implementation returns nullopt.
+
+### extractServerUrl
+
+```cpp
+Filesystem::Url ImFusion::Network::AuthorizationProvider::extractServerUrl (const Filesystem::Url & url) const
+```
+
+Extract the server part of the URL.
+
+E.g. [http://example.com:8080/dicomweb/studies](http://example.com:8080/dicomweb/studies) becomes [http://example.com:8080](http://example.com:8080)

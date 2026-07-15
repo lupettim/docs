@@ -1,0 +1,149 @@
+---
+title: "ImFusion::Network::LoginDialog"
+sidebarTitle: "LoginDialog"
+description: "Basic dialog for authentication with username and password TODO: Merge with Labels LoginDialog ."
+---
+
+`#include <ImFusion/GUI/LoginDialog.h>`
+
+## Overview
+
+Basic dialog for authentication with username and password TODO: Merge with Labels [LoginDialog](/cpp-sdk/4.5/api/classes/imfusion-network-logindialog).
+
+## Public Slots
+
+- void **reject** () override
+- void **startBasicAuthFlow** ()
+- void [startOAuthCodeFlow](#startoauthcodeflow) () — Starts the authorization code flow by redirecting.
+- void **startOAuthPasswordFlow** ()
+
+## Signals
+
+- void **oauth2DeviceCodeChanged** () — Internal. Emitted when the OAuth2 Device Flow has been started on the server.
+
+## Public Member Functions
+
+- [LoginDialog](#logindialog) ([Filesystem::Url](/cpp-sdk/4.5/api/classes/imfusion-filesystem-url) serverUrl, QWidget \*parent=nullptr) — Create a new [LoginDialog](/cpp-sdk/4.5/api/classes/imfusion-network-logindialog) without any authentication methods.
+- void **setMessage** (QString message) — Replace the default message of dialog.
+- QString **message** () const
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [AccessToken](/cpp-sdk/4.5/api/structs/imfusion-network-accesstoken) &gt; **authorization** () const — Return the entered credentials as a HTTP Authorization header.
+- void [addBasicAuthorization](#addbasicauthorization) () — Enables a username and password prompt for HTTP Basic authentication.
+- void [addOAuth2DeviceFlow](#addoauth2deviceflow) ([OAuth2::DeviceFlowConfig](/cpp-sdk/4.5/api/structs/imfusion-network-oauth2-deviceflowconfig) config) — Enables OAuth2 Device Flow.
+- void [addOAuth2AuthCodeFlow](#addoauth2authcodeflow) ([OAuth2::AuthorizationCodeFlowConfig](/cpp-sdk/4.5/api/structs/imfusion-network-oauth2-authorizationcodeflowconfig) config) — Enables OAuth2 Authorization Code Flow.
+- void [addOAuth2PasswordFlow](#addoauth2passwordflow) ([OAuth2::PasswordFlowConfig](/cpp-sdk/4.5/api/structs/imfusion-network-oauth2-passwordflowconfig) config) — Enables OAuth2 Password Flow.
+- void **setWarnUnencrypted** (bool enable) — If enabled, displays a warning, that the username and password is sent unencrypted.
+
+## Constructor & Destructor Documentation
+
+### LoginDialog
+
+```cpp
+ImFusion::Network::LoginDialog::LoginDialog (Filesystem::Url serverUrl, QWidget * parent = nullptr)
+```
+
+*explicit*
+
+Create a new [LoginDialog](/cpp-sdk/4.5/api/classes/imfusion-network-logindialog) without any authentication methods.
+
+Use one of the add... methods otherwise this dialog is useless. Multiple auth methods can be used and the user will be able to choose one.
+
+**Parameters:**
+
+- `message` — An explanation message to show in the dialog
+- `parent` — Parent Widget (optional, default is nullptr)
+
+## Member Function Documentation
+
+### addBasicAuthorization
+
+```cpp
+void ImFusion::Network::LoginDialog::addBasicAuthorization ()
+```
+
+Enables a username and password prompt for HTTP Basic authentication.
+
+This is the most basic and probably most insecure authentication method. The username and password are used *unencrypted* as access token. This method should only be used on https encrypted connections.
+
+### addOAuth2DeviceFlow
+
+```cpp
+void ImFusion::Network::LoginDialog::addOAuth2DeviceFlow (OAuth2::DeviceFlowConfig config)
+```
+
+Enables OAuth2 Device Flow.
+
+This starts a flow with an authentication server that is not necessarily the same server as the server providing some resources. The user will be presented with a URL which he needs to access in a browser (not necessarily a browser on the same device). After entering a code and authorizing the application, an access token is retrieved from the server. [https://developer.okta.com/blog/2019/02/19/add-oauth-device-flow-to-any-server](https://developer.okta.com/blog/2019/02/19/add-oauth-device-flow-to-any-server) Example for Keycloak:
+
+```cpp
+DeviceFlowConfig c;
+c.authEndpoint = "http://example.com/realms/<your-realm>/protocol/openid-connect/auth/device";
+c.tokenEndpoint = "http://localhost/realms/<your-realm>/protocol/openid-connect/token";
+c.clientId = "<your-client-id>";
+c.scope = "<your-scope-if-any>";
+```
+ fragment
+Example for Microsoft:
+
+```cpp
+DeviceFlowConfig c;
+c.authEndpoint = "https://login.microsoftonline.com/<your-tenant>/oauth2/v2.0/devicecode";
+c.tokenEndpoint = "https://login.microsoftonline.com/<your-tenant>/oauth2/v2.0/token";
+c.clientId = "<your-client-id>";
+c.scope = "<your-scope>";
+```
+ fragment
+
+### addOAuth2AuthCodeFlow
+
+```cpp
+void ImFusion::Network::LoginDialog::addOAuth2AuthCodeFlow (OAuth2::AuthorizationCodeFlowConfig config)
+```
+
+Enables OAuth2 Authorization Code Flow.
+
+This starts a flow that will redirect the user to the browser for login. Once the user is logged in, the browser will redirect to the application which can then acquire an access token. [https://developer.okta.com/blog/2018/04/10/oauth-authorization-code-grant-type](https://developer.okta.com/blog/2018/04/10/oauth-authorization-code-grant-type) Example for Keycloak:
+
+```cpp
+AuthorizationCodeFlowConfig c;
+c.authEndpoint = "http://example.com/realms/<your-realm>/protocol/openid-connect/auth";
+c.tokenEndpoint = "http://example.com/realms/<your-realm>/protocol/openid-connect/token";
+c.clientId = "<your-client-id>";
+c.clientSecret = "<your-client-secret>";
+c.scope = "<your-scope-if-any>";
+```
+ fragment
+Example for Microsoft:
+
+```cpp
+AuthorizationCodeFlowConfig c;
+c.authEndpoint = "https://login.microsoftonline.com/<your-tenant>/oauth2/v2.0/authorize";
+c.tokenEndpoint = "https://login.microsoftonline.com/<your-tenant>/oauth2/v2.0/token";
+c.clientId = "<your-client-id>";
+c.clientSecret = "<your-client-secret>";
+c.scope = "<your-scope-if-any>";
+```
+ fragment
+
+### addOAuth2PasswordFlow
+
+```cpp
+void ImFusion::Network::LoginDialog::addOAuth2PasswordFlow (OAuth2::PasswordFlowConfig config)
+```
+
+Enables OAuth2 Password Flow.
+
+Note that this flow is technically deprecated in OAuth2 and should only be used if there is a special trust relation between the client and server. The flow requires the user to provide a username and password, which are exchanged for an access token.
+
+WARNING: The password will be send in plaintext! This flow should only be used with https.
+
+### startOAuthCodeFlow
+
+```cpp
+void ImFusion::Network::LoginDialog::startOAuthCodeFlow ()
+```
+
+*slot*
+
+Starts the authorization code flow by redirecting.
+
+The redirect happens in a background thread and this method returns immediately. The dialog is automatically accepted when the flow succeeds. This method should not be called while a flow is still in progress.

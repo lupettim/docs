@@ -1,0 +1,52 @@
+---
+title: "ImFusion::PointTree"
+sidebarTitle: "PointTree"
+description: "Data structure for trees with nodes containing a 3D point."
+---
+
+`#include <ImFusion/Base/PointTree.h>`
+
+## Overview
+
+[Data](/cpp-sdk/4.5/api/classes/imfusion-data) structure for trees with nodes containing a 3D point.
+
+## Public Member Functions
+
+- [Node](/cpp-sdk/4.5/api/classes/imfusion-node) \* [addNode](#addnode) ([std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [Node](/cpp-sdk/4.5/api/classes/imfusion-node) &gt; [node](/cpp-sdk/4.5/api/classes/imfusion-tree), [Node](/cpp-sdk/4.5/api/classes/imfusion-node) \*parent) override — Add node-child.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [Tree](/cpp-sdk/4.5/api/classes/imfusion-tree) &gt; [detachNode](#detachnode) ([Node](/cpp-sdk/4.5/api/classes/imfusion-node) \*[node](/cpp-sdk/4.5/api/classes/imfusion-tree)) override — Detach a node with all its children, and form a new tree from it.
+- [PointNode](/cpp-sdk/4.5/api/classes/imfusion-pointnode) \* **root** () const — Get root.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [PointNode](/cpp-sdk/4.5/api/classes/imfusion-pointnode) \* &gt; **children** ([PointNode](/cpp-sdk/4.5/api/classes/imfusion-pointnode) \*[node](/cpp-sdk/4.5/api/classes/imfusion-tree)) const — Get children nodes.
+- [PointNode](/cpp-sdk/4.5/api/classes/imfusion-pointnode) \* **parent** ([PointNode](/cpp-sdk/4.5/api/classes/imfusion-pointnode) \*[node](/cpp-sdk/4.5/api/classes/imfusion-tree)) const — Get a parent node.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [typeName](#typename) () const override
+
+## Member Function Documentation
+
+### addNode
+
+```cpp
+Node * ImFusion::PointTree::addNode (std::unique_ptr < Node > node, Node * parent)
+```
+
+*inline, override, virtual*
+
+Add node-child.
+
+Returns true if node is added successfully, false otherwise (probably due to invalid parent). nullptr parent means that the node should be a root of the tree. If tree already has a root, the node will not be added
+
+### detachNode
+
+```cpp
+std::unique_ptr < Tree > ImFusion::PointTree::detachNode (Node * node)
+```
+
+*override, virtual*
+
+Detach a node with all its children, and form a new tree from it.
+
+### typeName
+
+```cpp
+std::string ImFusion::PointTree::typeName () const
+```
+
+*override, virtual*

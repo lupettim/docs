@@ -1,0 +1,56 @@
+---
+title: "ImFusion::InteractiveSegmentationAlgorithm"
+sidebarTitle: "InteractiveSegmentationAlgorithm"
+description: "Interactive segmentation algorithm."
+---
+
+`#include <ImFusion/Seg/InteractiveSegmentationAlgorithm.h>`
+
+## Overview
+
+[Interactive](/cpp-sdk/4.5/api/classes/imfusion-interactive) segmentation algorithm.
+
+## Public Member Functions
+
+- **InteractiveSegmentationAlgorithm** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &is, [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*labels=nullptr, [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*prior=nullptr) — Main constructor with an image set and possibly a labels set.
+- **~InteractiveSegmentationAlgorithm** () override — Main destructor.
+- [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) & **image** () — Get the input images.
+- [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* **labels** () — Get the current labels.
+- void **setLabels** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*labels) — Set the current labels.
+- virtual void [prepareForComputation](#prepareforcomputation) () override — Prepare before the computation.
+- virtual void [compute](#compute) () override — Actually execute the algorithm.
+- void **acceptSegmentation** () — Accept segmentation and fill the label map accordingly with the given object label.
+- bool **isPredictionAvailable** () const — Return true if a prediction algorithm has been registered.
+- bool **labelAlreadyCreated** () const — Return true if labels were already created.
+- bool **initFromPrediction** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &configFile, int inMarginPixels, int outMarginPixels, float threshold=0.5f) — Initialize the seeds from the result of a pixelwise prediction model.
+- bool **initFromSegmentation** ([Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) \*mesh, double narrowbandMM) — Initialize the seeds from another segmentation.
+- void **convertBinaryMapToNarrowBandLabels** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*binaryMap, int inMarginPixels, int outMarginPixels, [Progress::Task](/cpp-sdk/4.5/api/classes/imfusion-progress-task) \*pt=nullptr) — Initialize labels as a narrow band around a binary segmentation.
+- void **convertContourToLabels2D** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; &points, [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*labels, double narrowbandMM) — Fill labels with 2D contour.
+- void **convertDiameterToLabels3D** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; &points, [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*labels) — Fill labels with largest diameter of the object.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; &gt; **getStatistics** ([SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*lab) — Get statistics on a label map.
+
+## Static Public Member Functions
+
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=0) — If data is compatible with algorithm return true. If a is not zero, create algorithm with input data.
+
+## Member Function Documentation
+
+### prepareForComputation
+
+```cpp
+virtual void ImFusion::InteractiveSegmentationAlgorithm::prepareForComputation ()
+```
+
+*override, virtual*
+
+Prepare before the computation.
+
+### compute
+
+```cpp
+virtual void ImFusion::InteractiveSegmentationAlgorithm::compute ()
+```
+
+*override, virtual*
+
+Actually execute the algorithm.

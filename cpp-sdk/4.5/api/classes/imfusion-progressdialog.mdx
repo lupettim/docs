@@ -1,0 +1,89 @@
+---
+title: "ImFusion::ProgressDialog"
+sidebarTitle: "ProgressDialog"
+description: "QDialog-based progress reporter that shows one QProgressBar for each progress task."
+---
+
+`#include <ImFusion/GUI/ProgressDialog.h>`
+
+## Overview
+
+QDialog-based progress reporter that shows one QProgressBar for each progress task.
+
+## Classes
+
+- struct [PerTaskUI](/cpp-sdk/4.5/api/structs/imfusion-progressdialog-pertaskui)
+
+## Public Member Functions
+
+- **ProgressDialog** (QWidget \*parent=nullptr, Qt::WindowFlags flags=Qt::FramelessWindowHint)
+- void **setDisplay** ([DisplayWidget](/cpp-sdk/4.5/api/classes/imfusion-displaywidget) \*disp) — Provide an optional pointer to the [DisplayWidget](/cpp-sdk/4.5/api/classes/imfusion-displaywidget) that shall be updated if a progress task asks for it.
+- void **cancelAllTasks** ()
+- void **hideCancelButton** () — Hide the cancel button and disable the ESC keypress handler.
+- void **showCancelButton** () — Show the cancel button and enable the ESC keypress handler.
+
+## Protected Member Functions
+
+- bool **event** (QEvent \*event) override
+- void [onTaskAdded](#ontaskadded) ([Task](/cpp-sdk/4.5/api/classes/imfusion-progress-task) \*task) override — Function is called whenever a new [Task](/cpp-sdk/4.5/api/classes/imfusion-progress-task) has been created.
+- void [onTaskUpdated](#ontaskupdated) (const [Task](/cpp-sdk/4.5/api/classes/imfusion-progress-task) \*task) override — Function is called whenever the state of a [Task](/cpp-sdk/4.5/api/classes/imfusion-progress-task) has changed and the reporter should update its UI.
+- bool [onTaskRequestsThreadSafety](#ontaskrequeststhreadsafety) (const [Task](/cpp-sdk/4.5/api/classes/imfusion-progress-task) \*task) override — Function is called by Task::requestThreadSafety() in order to check whether the parent reporter supports concurrent access.
+- void [onTaskRemoved](#ontaskremoved) (const [Task](/cpp-sdk/4.5/api/classes/imfusion-progress-task) \*task) override — Function is called whenever a [Task](/cpp-sdk/4.5/api/classes/imfusion-progress-task) is about to be destroyed and its pointer will become invalid.
+- void **addTaskGUI** (const [Task](/cpp-sdk/4.5/api/classes/imfusion-progress-task) \*task) — Add a task [GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui) element.
+- void **updateTaskGUI** (const [Task](/cpp-sdk/4.5/api/classes/imfusion-progress-task) \*task) — Updates existing task [GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui) elements.
+- void **removeTaskGUI** ([PerTaskUI](/cpp-sdk/4.5/api/structs/imfusion-progressdialog-pertaskui) ui) — Deletes task [GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui) elements.
+- void **updateGUI** (bool updateDisplay)
+
+## Protected Attributes
+
+- [Timer](/cpp-sdk/4.5/api/classes/imfusion-timer) **m_timer** — [Timer](/cpp-sdk/4.5/api/classes/imfusion-timer) for deciding when to process application events.
+- [DisplayWidget](/cpp-sdk/4.5/api/classes/imfusion-displaywidget) \* **m_display** = nullptr
+- [std::unordered_map](http://en.cppreference.com/w/cpp/container/unordered_map.html)&lt; const [Task](/cpp-sdk/4.5/api/classes/imfusion-progress-task) \*, [PerTaskUI](/cpp-sdk/4.5/api/structs/imfusion-progressdialog-pertaskui) &gt; **m_perTaskUIs**
+- [std::recursive_mutex](http://en.cppreference.com/w/cpp/thread/recursive_mutex.html) **m_perTaskUIMutex**
+- QPushButton \* **m_btnCancel**
+- QVBoxLayout \* **m_mainLayout**
+- bool **m_updateRecursionGuard** = false
+
+## Member Function Documentation
+
+### onTaskAdded
+
+```cpp
+void ImFusion::ProgressDialog::onTaskAdded (Task * task)
+```
+
+*override, protected, virtual*
+
+Function is called whenever a new [Task](/cpp-sdk/4.5/api/classes/imfusion-progress-task) has been created.
+
+### onTaskUpdated
+
+```cpp
+void ImFusion::ProgressDialog::onTaskUpdated (const Task * task)
+```
+
+*override, protected, virtual*
+
+Function is called whenever the state of a [Task](/cpp-sdk/4.5/api/classes/imfusion-progress-task) has changed and the reporter should update its UI.
+
+### onTaskRequestsThreadSafety
+
+```cpp
+bool ImFusion::ProgressDialog::onTaskRequestsThreadSafety (const Task * task)
+```
+
+*override, protected, virtual*
+
+Function is called by Task::requestThreadSafety() in order to check whether the parent reporter supports concurrent access.
+
+Implementations are free to ignore this request and return false. Otherwise they must ensure that subsequent concurrent calls to any of the onTask...() callbacks are handled correctly without race conditions. Implementations are free to return to a unsynchronized implementation as soon as all multi-threaded tasks have been removed from the reporter.
+
+### onTaskRemoved
+
+```cpp
+void ImFusion::ProgressDialog::onTaskRemoved (const Task * task)
+```
+
+*override, protected, virtual*
+
+Function is called whenever a [Task](/cpp-sdk/4.5/api/classes/imfusion-progress-task) is about to be destroyed and its pointer will become invalid.

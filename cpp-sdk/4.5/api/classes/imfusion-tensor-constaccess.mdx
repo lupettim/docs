@@ -1,0 +1,34 @@
+---
+title: "ImFusion::Tensor< Order >::ConstAccess"
+sidebarTitle: "ConstAccess"
+description: "Helper class for read-only access to the data content of a Tensor ."
+---
+
+`#include <ImFusion/Base/Tensor.h>`
+
+## Overview
+
+template&lt;int Order&gt;
+
+class ImFusion::Tensor&lt; Order &gt;::ConstAccess
+Helper class for read-only access to the data content of a [Tensor](/cpp-sdk/4.5/api/classes/imfusion-tensor).
+
+This access and is not exclusive and not meant to guarantee thread safety.
+
+## Public Member Functions
+
+- **ConstAccess** (ConstAccess &&o) noexcept
+- ConstAccess & **operator=** (const ConstAccess &&o) noexcept
+- **ConstAccess** (const ConstAccess &)=delete
+- ConstAccess & **operator=** (const ConstAccess &)=delete
+- const double \* **data** () const — Direct const access to the underlying tensor data. Kindly do not delete this pointer, unless you plan on crashing the application.
+- const double & **operator()** (idxT... idx) const — Const access of an individual tensor element. The correct number of arguments is checked at compile time.
+
+## Protected Member Functions
+
+- **ConstAccess** (const Tensor&lt; Order &gt; &tensor)
+- void **onDataDeleted** (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data)
+
+## Protected Attributes
+
+- Tensor&lt; Order &gt; \* **m_tensor**

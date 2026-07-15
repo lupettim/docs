@@ -1,0 +1,86 @@
+---
+title: "ImFusion::DataLink"
+sidebarTitle: "DataLink"
+description: "Interface for linking properties between multiple Data instances."
+---
+
+`#include <ImFusion/Base/DataLink.h>`
+
+## Overview
+
+Interface for linking properties between multiple [Data](/cpp-sdk/4.5/api/classes/imfusion-data) instances.
+
+A [DataLink](/cpp-sdk/4.5/api/classes/imfusion-datalink) provides functionality to keep certain aspects of [Data](/cpp-sdk/4.5/api/classes/imfusion-data) (e.g. windowing information) in sync across multiple instances. Usually, syncing will be done in a bidirectional fashion (i.e. changes to any participating [Data](/cpp-sdk/4.5/api/classes/imfusion-data) instance will be synced to all other instances). If concrete subclasses of [DataLink](/cpp-sdk/4.5/api/classes/imfusion-datalink) behave differently (e.g. unidirectional linking single source -&gt; target(s)) they shall explicitly mention this in their class documentation.
+
+**Note:** When mentioning *properties* in the context of [DataLink](/cpp-sdk/4.5/api/classes/imfusion-datalink), this can refer to *any* aspect of a [Data](/cpp-sdk/4.5/api/classes/imfusion-data) instance and does *not* necessarily mean the [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) interface.
+
+## Public Member Functions
+
+- virtual bool [accepts](#accepts) (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) &[data](#data)) const =0 — Checks whether the given [Data](/cpp-sdk/4.5/api/classes/imfusion-data) instance is supported.
+- virtual void [add](#add) ([Data](/cpp-sdk/4.5/api/classes/imfusion-data) &[data](#data))=0 — Add the given [Data](/cpp-sdk/4.5/api/classes/imfusion-data) instance to the link.
+- virtual void [remove](#remove) ([Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*[data](#data))=0 — Remove the given [Data](/cpp-sdk/4.5/api/classes/imfusion-data) instance from the link.
+- virtual [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \* &gt; [data](#data) () const =0 — Return list of all linked [Data](/cpp-sdk/4.5/api/classes/imfusion-data) instances.
+- virtual [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [uiTitle](#uititle) () const =0 — Return a title of the link type for displaying in the UI.
+- virtual [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [uiIconPath](#uiiconpath) () const =0 — Return a path to an icon representing the link type to display in the UI.
+
+## Member Function Documentation
+
+### accepts
+
+```cpp
+virtual bool ImFusion::DataLink::accepts (const Data & data) const
+```
+
+*pure virtual*
+
+Checks whether the given [Data](/cpp-sdk/4.5/api/classes/imfusion-data) instance is supported.
+
+### add
+
+```cpp
+virtual void ImFusion::DataLink::add (Data & data)
+```
+
+*pure virtual*
+
+Add the given [Data](/cpp-sdk/4.5/api/classes/imfusion-data) instance to the link.
+
+### remove
+
+```cpp
+virtual void ImFusion::DataLink::remove (Data * data)
+```
+
+*pure virtual*
+
+Remove the given [Data](/cpp-sdk/4.5/api/classes/imfusion-data) instance from the link.
+
+### data
+
+```cpp
+virtual std::vector < Data * > ImFusion::DataLink::data () const
+```
+
+*pure virtual*
+
+Return list of all linked [Data](/cpp-sdk/4.5/api/classes/imfusion-data) instances.
+
+### uiTitle
+
+```cpp
+virtual std::string ImFusion::DataLink::uiTitle () const
+```
+
+*pure virtual*
+
+Return a title of the link type for displaying in the UI.
+
+### uiIconPath
+
+```cpp
+virtual std::string ImFusion::DataLink::uiIconPath () const
+```
+
+*pure virtual*
+
+Return a path to an icon representing the link type to display in the UI.

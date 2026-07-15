@@ -1,0 +1,153 @@
+---
+title: "ImFusion::Tree"
+sidebarTitle: "Tree"
+description: "Data structure for trees."
+---
+
+`#include <ImFusion/Base/Tree.h>`
+
+## Overview
+
+[Data](/cpp-sdk/4.5/api/classes/imfusion-data) structure for trees.
+
+## Public Member Functions
+
+- **Tree** (const Tree &)
+- Tree & **operator=** (const Tree &)
+- void **clear** ()
+- void **setFilename** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &[name](/cpp-sdk/4.5/api/classes/imfusion-data)) — Sets a filename from where this tree can be loaded.
+- const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) & **filename** () const — Returns the filename from where this tree can be loaded or an empty string if it's not on disk.
+- [Kind](/cpp-sdk/4.5/api/classes/imfusion-data) [kind](#kind) () const override — Return the kind of this data.
+- [Geometry::AlignedBox](/cpp-sdk/4.5/api/classes/imfusion-geometry-alignedbox) [bounds](#bounds) () const override — Returns the axis-aligned bounding box of this data in world space.
+- vec3 **center** () const — Returns the center in object space.
+- vec3 **extent** () const — Returns the extent in object space.
+- const mat4 & **matrixRef** () const
+- [Pose::TransformationConvention](/cpp-sdk/4.5/api/namespaces/imfusion-pose) [matrixConvention](#matrixconvention) () const override — Matrices of trees map to world coordinate system.
+- bool [isAnnotationType](#isannotationtype) () const override — Return whether this data type is visualized through an annotation (e.g. mesh).
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+- virtual [Node](/cpp-sdk/4.5/api/classes/imfusion-node) \* [addNode](#addnode) ([std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [Node](/cpp-sdk/4.5/api/classes/imfusion-node) &gt; node, [Node](/cpp-sdk/4.5/api/classes/imfusion-node) \*parent) — Insert node below parent into tree Returns a non-owning pointer to the node if node is added successfully, nullptr otherwise (probably due to invalid parent).
+- void **addTreeAsNode** ([Node](/cpp-sdk/4.5/api/classes/imfusion-node) \*node, [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; Tree &gt; tree) — Add tree as a child-node to node.
+- void **removeNode** ([Node](/cpp-sdk/4.5/api/classes/imfusion-node) \*node) — Remove node and all its children. Deletes all affected nodes.
+- bool **containsNode** ([Node](/cpp-sdk/4.5/api/classes/imfusion-node) \*node) const — Returns true if the tree contains the specified node.
+- bool **containsNode** ([Node](/cpp-sdk/4.5/api/classes/imfusion-node) \*parentNode, [Node](/cpp-sdk/4.5/api/classes/imfusion-node) \*possibleChildNode) const — Check whether parentNode contains possibleChildNode as a child somewhere down the tree.
+- virtual [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; Tree &gt; [detachNode](#detachnode) ([Node](/cpp-sdk/4.5/api/classes/imfusion-node) \*node) — Detach a node with all its children, and form a new tree from it.
+- void **detachNode** (Tree &tree, [Node](/cpp-sdk/4.5/api/classes/imfusion-node) \*node) — Detach a node with all its children, and fill a tree from it.
+- void **changeRoot** ([Node](/cpp-sdk/4.5/api/classes/imfusion-node) \*rootNode) — Change root of the tree to rootNode. rootNode must be a part of the tree.
+- [Node](/cpp-sdk/4.5/api/classes/imfusion-node) \* **node** (int id) const — Get node through its id.
+- [Node](/cpp-sdk/4.5/api/classes/imfusion-node) \* **root** () const — Get root node.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Node](/cpp-sdk/4.5/api/classes/imfusion-node) \* &gt; **children** ([Node](/cpp-sdk/4.5/api/classes/imfusion-node) \*node) const — Get child nodes.
+- [Node](/cpp-sdk/4.5/api/classes/imfusion-node) \* **parent** ([Node](/cpp-sdk/4.5/api/classes/imfusion-node) \*node) const — Get parent node.
+- int **nodeLevel** ([Node](/cpp-sdk/4.5/api/classes/imfusion-node) \*node) const — get level of the node (root being 0, its children 1 and so on)
+- void [traverse](#traverse) ([std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; void([Node](/cpp-sdk/4.5/api/classes/imfusion-node) \*, int level)&gt; fcn, bool breadthFirst, int maxLevel=-1) — Function which traverses the tree using breadth-first approach (if flag breadthFirst is set to true), or depth-first approach (if flag breadthFirst is set to false).
+- virtual [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **typeName** () const
+- int **size** () const — Return number of nodes in the tree.
+- bool **empty** () const — Check whether tree is empty.
+
+## Protected Attributes
+
+- [std::unordered_map](http://en.cppreference.com/w/cpp/container/unordered_map.html)&lt; int, [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [Node](/cpp-sdk/4.5/api/classes/imfusion-node) &gt; &gt; **m_nodes**
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **m_filename**
+- int **m_idCounter**
+
+## Member Function Documentation
+
+### kind
+
+```cpp
+Kind ImFusion::Tree::kind () const
+```
+
+*override, virtual*
+
+Return the kind of this data.
+
+### bounds
+
+```cpp
+Geometry::AlignedBox ImFusion::Tree::bounds () const
+```
+
+*override, virtual*
+
+Returns the axis-aligned bounding box of this data in world space.
+
+### matrixConvention
+
+```cpp
+Pose::TransformationConvention ImFusion::Tree::matrixConvention () const
+```
+
+*override, virtual*
+
+Matrices of trees map to world coordinate system.
+
+### isAnnotationType
+
+```cpp
+bool ImFusion::Tree::isAnnotationType () const
+```
+
+*inline, override, virtual*
+
+Return whether this data type is visualized through an annotation (e.g. mesh).
+
+### configure
+
+```cpp
+void ImFusion::Tree::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### configuration
+
+```cpp
+void ImFusion::Tree::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality
+
+### addNode
+
+```cpp
+virtual Node * ImFusion::Tree::addNode (std::unique_ptr < Node > node, Node * parent)
+```
+
+*virtual*
+
+Insert node below parent into tree Returns a non-owning pointer to the node if node is added successfully, nullptr otherwise (probably due to invalid parent).
+
+nullptr parent means that the node should become the root of the tree. If tree already has a root, the node will not be added.
+
+### detachNode
+
+```cpp
+virtual std::unique_ptr < Tree > ImFusion::Tree::detachNode (Node * node)
+```
+
+*virtual*
+
+Detach a node with all its children, and form a new tree from it.
+
+### traverse
+
+```cpp
+void ImFusion::Tree::traverse (std::function < void(Node *, int level)> fcn, bool breadthFirst, int maxLevel = -1)
+```
+
+Function which traverses the tree using breadth-first approach (if flag breadthFirst is set to true), or depth-first approach (if flag breadthFirst is set to false).
+
+During a traversal, fcn is applied to a newly visited node maxLevel specifies maximum level for traversal. -1 means that all the levels must be traversed

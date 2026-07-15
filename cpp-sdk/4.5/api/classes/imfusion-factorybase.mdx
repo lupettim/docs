@@ -1,0 +1,84 @@
+---
+title: "ImFusion::FactoryBase"
+sidebarTitle: "FactoryBase"
+description: "Abstract base class for all factories."
+---
+
+`#include <ImFusion/Base/FactoryBase.h>`
+
+## Overview
+
+Abstract base class for all factories.
+
+## Public Member Functions
+
+- [FactoryBase](#factorybase-1-2) () — No license check is performed for the module instantiated with this constructor.
+- [FactoryBase](#factorybase-2-2) ([std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) module, bool checkLicense=true)
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **moduleName** () const — Returns the module name of the factory.
+
+## Protected Member Functions
+
+- virtual **~FactoryBase** () — Virtual destructor.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [getComponentPath](#getcomponentpath-1-2) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &componentName) const — Returns the path to the component referred to by `name`.
+- bool **isLicensed** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name) — Return true if the license allows the use of the component referred to by `name`.
+
+## Static Protected Member Functions
+
+- static [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [getComponentPath](#getcomponentpath-2-2) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &moduleName, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &componentName) — Returns the path to the component referred to by `name`.
+- static bool **isLicensed** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &moduleName, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name) — Return true if the license allows the use of the component referred to by `name`.
+
+## Protected Attributes
+
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **m_factoryModule**
+- bool **m_checkLicense**
+
+## Constructor & Destructor Documentation
+
+### FactoryBase
+
+```cpp
+ImFusion::FactoryBase::FactoryBase ()
+```
+
+No license check is performed for the module instantiated with this constructor.
+
+****Deprecated**:** "Use factory with a module name."
+
+### FactoryBase
+
+```cpp
+ImFusion::FactoryBase::FactoryBase (std::string module, bool checkLicense = true)
+```
+
+*explicit*
+
+**Parameters:**
+
+- `module` — The module name of the factory.
+- `checkLicense` — If true, the license is checked for the module.
+
+## Member Function Documentation
+
+### getComponentPath
+
+```cpp
+std::string ImFusion::FactoryBase::getComponentPath (const std::string & componentName) const
+```
+
+*protected*
+
+Returns the path to the component referred to by `name`.
+
+e.g. Reg.Sim.name
+
+### getComponentPath
+
+```cpp
+std::string ImFusion::FactoryBase::getComponentPath (const std::string & moduleName, const std::string & componentName)
+```
+
+*static, protected*
+
+Returns the path to the component referred to by `name`.
+
+e.g. moduleName.name

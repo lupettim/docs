@@ -1,0 +1,81 @@
+---
+title: "ImFusion::GL::ViewState"
+sidebarTitle: "ViewState"
+description: "Encapsulates the OpenGL view state defined by the viewport, a projection matrix and a model-view matrix."
+---
+
+`#include <ImFusion/Core/GL/ViewState.h>`
+
+## Overview
+
+Encapsulates the OpenGL view state defined by the viewport, a projection matrix and a model-view matrix.
+
+Instances of this class are passed around to provide model-view-projection configuration to consumers such as [GL::FixedFunctionPipeline](/cpp-sdk/4.5/api/classes/imfusion-gl-fixedfunctionpipeline) or the [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) framework. Furthermore, it provides a couple of helper functions to convert points/locations between world coordinates and viewport coordinates.
+
+## Classes
+
+- struct [PixelIncrementWorld](/cpp-sdk/4.5/api/structs/imfusion-gl-viewstate-pixelincrementworld) — Helper struct to store the result of unprojectPixelIncrementOrtho() and unprojectPixelIncrementPerspective().
+
+## Public Member Functions
+
+- **ViewState** (const [Viewport](/cpp-sdk/4.5/api/structs/imfusion-gl-viewport) &viewport, const mat4 &projectionMatrix=mat4::Identity(), const mat4 &modelViewMatrix=mat4::Identity())
+- **ViewState** (const mat4 &projectionMatrix, const mat4 &modelViewMatrix=mat4::Identity())
+
+## Properties
+
+- const [Viewport](/cpp-sdk/4.5/api/structs/imfusion-gl-viewport) & **viewport** () const — Returns the viewport.
+- [Viewport](/cpp-sdk/4.5/api/structs/imfusion-gl-viewport) & **viewport** () — Returns the viewport.
+- void **setViewport** (const [Viewport](/cpp-sdk/4.5/api/structs/imfusion-gl-viewport) &value) — Sets the viewport.
+- const mat4 & **projectionMatrix** () const — Returns the projection matrix.
+- void **setProjectionMatrix** (const mat4 &value) — Sets the projection matrix.
+- const mat4 & **modelViewMatrix** () const — Returns the model-view matrix.
+- void **setModelViewMatrix** (const mat4 &value) — Sets the model-view matrix.
+- const mat4 & **modelViewProjectionMatrix** () const — Returns the full model-view-projection matrix.
+- const mat4 & **modelViewProjectionMatrixInverse** () const — Returns the inverse of the full model-view-projection matrix.
+
+## Convert between world space and viewport space
+
+- vec3 [project](#project) (const vec3 &worldCoord, bool \*outOnCameraPlane=nullptr) const — [Project](/cpp-sdk/4.5/api/classes/imfusion-project) the given point from world space to viewport space.
+- vec3 **unproject** (const vec3 &viewportCoord) const — Unprojects the given point from viewport space to world space.
+- [PixelIncrementWorld](/cpp-sdk/4.5/api/structs/imfusion-gl-viewstate-pixelincrementworld) [unprojectPixelIncrement](#unprojectpixelincrement) (const vec3 &worldCoord) const — Unprojects a single 2D pixel increment into 3D space.
+- [PixelIncrementWorld](/cpp-sdk/4.5/api/structs/imfusion-gl-viewstate-pixelincrementworld) **unprojectPixelIncrementOrtho** () const — Unprojects a single 2D pixel increment into 3D space assuming an orthographic projection.
+- [PixelIncrementWorld](/cpp-sdk/4.5/api/structs/imfusion-gl-viewstate-pixelincrementworld) **unprojectPixelIncrementPerspective** (const vec3 &worldCoord) const — Unprojects a single 2D pixel increment into 3D space relative to the given world coordinate assuming a perspective projection.
+- vec3 **xDir** () const — Return 3D space unit vector pointing in the direction of viewport x-axis.
+- vec3 **yDir** () const — Return 3D space unit vector pointing in the direction of viewport y-axis.
+- vec3 **zDir** () const — Return 3D space unit vector pointing in the direction of viewport z-axis.
+
+## Legacy methods
+
+- void [setLegacyGlMatrixStack](#setlegacyglmatrixstack) () const — Sets the legacy GL_PROJECTION and GL_MODELVIEW matrices to the matrices stored in this instance.
+
+## Member Function Documentation
+
+### project
+
+```cpp
+vec3 ImFusion::GL::ViewState::project (const vec3 & worldCoord, bool * outOnCameraPlane = nullptr) const
+```
+
+[Project](/cpp-sdk/4.5/api/classes/imfusion-project) the given point from world space to viewport space.
+
+**Note:** *worldCoord* must not lie in the camera plane, i.e. the following must be true: (modelViewProjectionMatrix() \* worldCoord.homogeneous())[3] != 0.0 If worldCorld lies on the camera plane, then \*outOnCameraPlane is set to true, else it is set to false.
+
+### unprojectPixelIncrement
+
+```cpp
+PixelIncrementWorld ImFusion::GL::ViewState::unprojectPixelIncrement (const vec3 & worldCoord) const
+```
+
+Unprojects a single 2D pixel increment into 3D space.
+
+This function will choose between unprojectPixelIncrementOrtho() and unprojectPixelIncrementPerspective() based on the underlying projection matrix.
+
+### setLegacyGlMatrixStack
+
+```cpp
+void ImFusion::GL::ViewState::setLegacyGlMatrixStack () const
+```
+
+Sets the legacy GL_PROJECTION and GL_MODELVIEW matrices to the matrices stored in this instance.
+
+**Warning:** Will do nothing if GlContextManager::useCoreContext() is true.

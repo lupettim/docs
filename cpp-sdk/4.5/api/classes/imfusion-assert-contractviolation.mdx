@@ -1,0 +1,20 @@
+---
+title: "ImFusion::Assert::ContractViolation"
+sidebarTitle: "ContractViolation"
+description: "Represents a violation of a contract assertion."
+---
+
+`#include <ImFusion/Core/Assert.h>`
+
+## Overview
+
+Represents a violation of a contract assertion.
+
+This exception type is thrown by IMFUSION_CONTRACT_ASSERT() when a contract check fails. It carries detailed diagnostic information about the violated condition, and its source location (file, function, and line).
+
+Contract violations represent **programming errors** or broken logical assumptions, not recoverable runtime conditions. They are primarily intended for enforcing correctness guarantees.
+
+## Public Member Functions
+
+- const char \* **what** () const noexcept override — Returns the user-provided message/comment.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **location** () const noexcept — Returns the file/function/line of the violation.

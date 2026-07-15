@@ -1,0 +1,30 @@
+---
+title: "ImFusion::Vec3Widget"
+sidebarTitle: "Vec3Widget"
+description: "Widget to represent a vec3 type."
+---
+
+`#include <ImFusion/GUI/CoreWidgets/Vec3Widget.h>`
+
+## Overview
+
+Widget to represent a vec3 type.
+
+Displays three QDoubleSpinBoxes, accessible through x(), y() and z() methods. The vec3 value can be set or read. A signal is emitted when the value has changed.
+
+## Signals
+
+- void **valueChanged** (const vec3 &value)
+
+## Public Member Functions
+
+- **Vec3Widget** (QWidget \*parent)
+- **Vec3Widget** (Qt::Orientation orientation=Qt::Orientation::Horizontal, QWidget \*parent=nullptr)
+- QDoubleSpinBox \* **x** ()
+- QDoubleSpinBox \* **y** ()
+- QDoubleSpinBox \* **z** ()
+- void **setValue** (const vec3 &value)
+- vec3 **value** ()
+- void **setLabels** (const QString &x, const QString &y, const QString &z) — Sets the labels of the spinboxes. Default is X,Y,Z.
+- void **setRange** (double min, double max) — Sets the min and max values of the spinboxes. Default is -inf to inf.
+- void **setSingleStep** (double value) — Sets the step size of the spinboxes. Default is 0.1;.

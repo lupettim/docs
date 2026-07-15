@@ -1,0 +1,97 @@
+---
+title: "ImFusion::MeshToLabelMapAlgorithm"
+sidebarTitle: "MeshToLabelMapAlgorithm"
+description: "Algorithm to perform a voxelization (conversion) of a mesh to a label map."
+---
+
+`#include <ImFusion/Base/MeshToLabelMapAlgorithm.h>`
+
+## Overview
+
+[Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) to perform a voxelization (conversion) of a mesh to a label map.
+
+The algorithm can work in two modes:
+
+- If no reference volume is provided then the output label map is created axis-aligned wrt. the input mesh coordinate system and with the pixel spacing as configured.
+- If a reference volume is provided the algorithm will create one label map for each image in the reference [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) matching its orientation and spacing.
+
+The input mesh must be manifold (watertight) in order to yield correct voxelization results. This algorithm provides an optional GPU implementation, which requires OpenGL 4.3. CPU and GPU versions may yield slightly different results due to numerical precision.
+
+## Public Member Functions
+
+- **MeshToLabelMapAlgorithm** (const [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) \*mesh, const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*refVolumes=nullptr)
+- void **setValues** (int insideValue, int outsideValue)
+- void **setOutSpacing** (double spacing)
+- void **setMargin** (int margin)
+- [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) [takeOutput](#takeoutput) () override — Return any new [Data](/cpp-sdk/4.5/api/classes/imfusion-data) that was created by the [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) during the last call to [compute()](#compute).
+- void [compute](#compute) () override — Execute the algorithm.
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &gt; **computeGPU** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*output=nullptr, ImageMath::ExprBase \*exprOut=nullptr)
+
+## Static Public Member Functions
+
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=0)
+
+## Public Attributes
+
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; double &gt; **p_outSpacing** = &#123;"outSpacing", 1.0, this&#125; — Spacing of the output image when no reference volume is provided.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; int &gt; **p_marginPx** = &#123;"marginPx", 10, this&#125; — Margin in pixels (sum of front and back margin). Actual margin may be larger than this value.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; uint8_t &gt; **p_outsideValue** = &#123;"outsideValue", static_cast&lt;uint8_t&gt;(0), this&#125; — Label value for voxels outside of the mesh.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; uint8_t &gt; **p_insideValue** = &#123;"insideValue", static_cast&lt;uint8_t&gt;(1), this&#125; — Label value for voxels inside the mesh.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; bool &gt; **p_useGPU** = &#123;"useGPU", true, \*this&#125; — Run on GPU if possible (requires OpenGL 4.3, falls back to CPU if unavailable).
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; bool &gt; **p_forceGPU** = &#123;"forceGPU", false, \*this&#125;
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; size_t &gt; &gt; **p_memoryLimitMB** = &#123;"memoryLimitMB", std::nullopt, this&#125; — Maximum memory in MB for total accumulation volume.
+
+## Protected Member Functions
+
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &gt; **computeCPU** ()
+
+## Protected Attributes
+
+- const [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) \* **m_mesh** — Input mesh.
+- const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* **m_refVolumes** — (Optional) Input reference volume
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &gt; **m_labels** — Output label map.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [GL::Program](/cpp-sdk/4.5/api/classes/imfusion-gl-program) &gt; **m_voxelizeProgram**
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [GL::ProgramCache](/cpp-sdk/4.5/api/classes/imfusion-gl-programcache) &gt; **m_copyProgManager**
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [GL::ShaderStorageBuffer](/cpp-sdk/4.5/api/classes/imfusion-gl-shaderstoragebuffer) &gt; **m_vertexBuffer**
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [GL::ShaderStorageBuffer](/cpp-sdk/4.5/api/classes/imfusion-gl-shaderstoragebuffer) &gt; **m_indexBuffer**
+
+## Member Function Documentation
+
+### takeOutput
+
+```cpp
+OwningDataList ImFusion::MeshToLabelMapAlgorithm::takeOutput ()
+```
+
+*override, virtual*
+
+Return any new [Data](/cpp-sdk/4.5/api/classes/imfusion-data) that was created by the [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) during the last call to [compute()](#compute).
+
+The default implementation will return an empty list.
+
+**Note:** Since ownership of the data is transferred, you can call this method only once between calls to [compute()](#compute).
+
+### compute
+
+```cpp
+void ImFusion::MeshToLabelMapAlgorithm::compute ()
+```
+
+*override, virtual*
+
+Execute the algorithm.
+
+### configure
+
+```cpp
+void ImFusion::MeshToLabelMapAlgorithm::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](/cpp-sdk/4.5/api/classes/imfusion-configurable) for the inverse functionality

@@ -1,0 +1,38 @@
+---
+title: "ImFusion::TransformLogger"
+sidebarTitle: "TransformLogger"
+description: "Support for logging transforms as coordinate systems in the Display."
+---
+
+`#include <ImFusion/Base/Utils/TransformLogger.h>`
+
+## Overview
+
+Support for logging transforms as coordinate systems in the Display.
+
+Run the [TransformLogger](/cpp-sdk/4.5/api/classes/imfusion-transformlogger) algorithm in the ImFusionSuite to start displaying the logged transforms. Use addTranform with a matrix to display a [GlCoordinateSystem](/cpp-sdk/4.5/api/classes/imfusion-glcoordinatesystem) in the Display, with the given name
+
+**See also:** [DataLogger](/cpp-sdk/4.5/api/classes/imfusion-datalogger)
+
+## Static Public Member Functions
+
+- static void [addTransform](#addtransform) (const mat4 &matrix, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name="") — Add a transform to the Display.
+- static void **addTransform** (const [Transform](/cpp-sdk/4.5/api/classes/imfusion-transform)&lt; To, From, mat4 &gt; &transform, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name="")
+- static void **addTransform** (const [Transform](/cpp-sdk/4.5/api/classes/imfusion-transform)&lt; To, From, isom3 &gt; &transform, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name="")
+
+## Member Function Documentation
+
+### addTransform
+
+```cpp
+void ImFusion::TransformLogger::addTransform (const mat4 & matrix, const std::string & name = "")
+```
+
+*static*
+
+Add a transform to the Display.
+
+**Parameters:**
+
+- `matrix` — 4x4 transformation matrix
+- `name` — Name for the coordinate system

@@ -1,0 +1,145 @@
+---
+title: "ImFusion::QtAuthorizationProvider"
+sidebarTitle: "QtAuthorizationProvider"
+description: "AuthorizationProvider that shows a Qt LoginDialog."
+---
+
+`#include <ImFusion/GUI/QtAuthorizationProvider.h>`
+
+## Overview
+
+AuthorizationProvider that shows a Qt LoginDialog.
+
+## Public Member Functions
+
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [Network::AccessToken](/cpp-sdk/4.5/api/structs/imfusion-network-accesstoken) &gt; [accessToken](#accesstoken) (const [Filesystem::Url](/cpp-sdk/4.5/api/classes/imfusion-filesystem-url) &url) const override — Like [authorization](#authorization), but returns the full AccessToken.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [authorization](#authorization) (const [Filesystem::Url](/cpp-sdk/4.5/api/classes/imfusion-filesystem-url) &url) const override — Get the Authorization header for the given url.
+- bool [refreshAuthorization](#refreshauthorization) (const [Filesystem::Url](/cpp-sdk/4.5/api/classes/imfusion-filesystem-url) &url, int numFailedRequests) override — Tries to obtain a new access token if a refresh token is available.
+- bool [acquireAuthorization](#acquireauthorization) (const [Filesystem::Url](/cpp-sdk/4.5/api/classes/imfusion-filesystem-url) &serverUrl, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &message) override — Acquire authorization by e.g.
+- void [removeAuthorization](#removeauthorization) (const [Filesystem::Url](/cpp-sdk/4.5/api/classes/imfusion-filesystem-url) &url) override — Remove any cached authorization for the given server.
+- void **addAuthorization** (const [Filesystem::Url](/cpp-sdk/4.5/api/classes/imfusion-filesystem-url) &url, [Network::AccessToken](/cpp-sdk/4.5/api/structs/imfusion-network-accesstoken) token) — Directly add an access token obtained through other means.
+- void [addBasicAuthorization](#addbasicauthorization) ()
+- void [addOAuth2DeviceFlow](#addoauth2deviceflow) ([Network::OAuth2::DeviceFlowConfig](/cpp-sdk/4.5/api/structs/imfusion-network-oauth2-deviceflowconfig) config)
+- void [addOAuth2AuthCodeFlow](#addoauth2authcodeflow) ([Network::OAuth2::AuthorizationCodeFlowConfig](/cpp-sdk/4.5/api/structs/imfusion-network-oauth2-authorizationcodeflowconfig) config)
+- void [addOAuth2PasswordFlow](#addoauth2passwordflow) ([Network::OAuth2::PasswordFlowConfig](/cpp-sdk/4.5/api/structs/imfusion-network-oauth2-passwordflowconfig) config)
+- void **setDialogParent** (QWidget \*parent) — Sets the parent that will be used for the LoginDialog.
+
+## Protected Types
+
+- using **ServerUrl** = [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html)
+
+## Protected Member Functions
+
+- virtual [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [Network::LoginDialog](/cpp-sdk/4.5/api/classes/imfusion-network-logindialog) &gt; **createDialog** (const [Filesystem::Url](/cpp-sdk/4.5/api/classes/imfusion-filesystem-url) &serverUrl) const
+
+## Protected Attributes
+
+- QWidget \* **m_parent** = nullptr
+- [std::shared_mutex](http://en.cppreference.com/w/cpp/thread/shared_mutex.html) **m_serverAuthorizationsMutex**
+- [std::unordered_map](http://en.cppreference.com/w/cpp/container/unordered_map.html)&lt; ServerUrl, [Network::AccessToken](/cpp-sdk/4.5/api/structs/imfusion-network-accesstoken) &gt; **m_serverAuthorizations**
+- bool **m_useBasicAuth** = false
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [Network::OAuth2::DeviceFlowConfig](/cpp-sdk/4.5/api/structs/imfusion-network-oauth2-deviceflowconfig) &gt; **m_useOAuth2DeviceFlow**
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [Network::OAuth2::AuthorizationCodeFlowConfig](/cpp-sdk/4.5/api/structs/imfusion-network-oauth2-authorizationcodeflowconfig) &gt; **m_useOAuth2AuthCodeFlow**
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [Network::OAuth2::PasswordFlowConfig](/cpp-sdk/4.5/api/structs/imfusion-network-oauth2-passwordflowconfig) &gt; **m_useOAuth2PasswordFlow**
+
+## Member Function Documentation
+
+### accessToken
+
+```cpp
+std::optional < Network::AccessToken > ImFusion::QtAuthorizationProvider::accessToken (const Filesystem::Url & url) const
+```
+
+*override, virtual*
+
+Like [authorization](#authorization), but returns the full AccessToken.
+
+### authorization
+
+```cpp
+std::string ImFusion::QtAuthorizationProvider::authorization (const Filesystem::Url & url) const
+```
+
+*override, virtual*
+
+Get the Authorization header for the given url.
+
+The url is the complete url for the request that is going to be performed. Implementation should cache the value according to the server URL (see extractServerUrl). When an empty string is returned, no Authorization header should be send. This method will be called from multiple threads.
+
+### refreshAuthorization
+
+```cpp
+bool ImFusion::QtAuthorizationProvider::refreshAuthorization (const Filesystem::Url & url, int numFailedRequests)
+```
+
+*override, virtual*
+
+Tries to obtain a new access token if a refresh token is available.
+
+Note that this class does *not* regularly refresh token in the background before they expire.
+
+### acquireAuthorization
+
+```cpp
+bool ImFusion::QtAuthorizationProvider::acquireAuthorization (const Filesystem::Url & url, const std::string & message)
+```
+
+*override, virtual*
+
+Acquire authorization by e.g.
+
+asking the user.
+
+This method might get called from another thread. In this case, implementations that require the main thread to show a [GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui) should just return false.
+
+An optional message can be provided (e.g. to display an error from a previous login attempt).
+
+Should return true if authorization could be acquired or false otherwise.
+
+This method is not expected to check whether the acquired authorization actually works, because this is simply not possible with some auth schemes.
+
+Code that requires authorization should call this method from the main thread before performing requests. If those requests fail with 401, this method should be called again from the main thread before retrying the requests. If multiple requests are run in parallel, it must be avoided to call this method multiple times simultaneous, because this might popup multiple dialogs.
+
+### removeAuthorization
+
+```cpp
+void ImFusion::QtAuthorizationProvider::removeAuthorization (const Filesystem::Url & url)
+```
+
+*override, virtual*
+
+Remove any cached authorization for the given server.
+
+This should essentially log out the user and let the user re-authenticate with the next acquireAuthorization call.
+
+### addBasicAuthorization
+
+```cpp
+void ImFusion::QtAuthorizationProvider::addBasicAuthorization ()
+```
+
+**See also:** [Network::LoginDialog::addBasicAuthorization](/cpp-sdk/4.5/api/classes/imfusion-network-logindialog)
+
+### addOAuth2DeviceFlow
+
+```cpp
+void ImFusion::QtAuthorizationProvider::addOAuth2DeviceFlow (Network::OAuth2::DeviceFlowConfig config)
+```
+
+**See also:** [Network::LoginDialog::addOAuth2DeviceFlow](/cpp-sdk/4.5/api/classes/imfusion-network-logindialog)
+
+### addOAuth2AuthCodeFlow
+
+```cpp
+void ImFusion::QtAuthorizationProvider::addOAuth2AuthCodeFlow (Network::OAuth2::AuthorizationCodeFlowConfig config)
+```
+
+**See also:** [Network::LoginDialog::addOAuth2AuthCodeFlow](/cpp-sdk/4.5/api/classes/imfusion-network-logindialog)
+
+### addOAuth2PasswordFlow
+
+```cpp
+void ImFusion::QtAuthorizationProvider::addOAuth2PasswordFlow (Network::OAuth2::PasswordFlowConfig config)
+```
+
+**See also:** [Network::LoginDialog::addOAuth2PasswordFlow](/cpp-sdk/4.5/api/classes/imfusion-network-logindialog)

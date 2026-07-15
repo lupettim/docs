@@ -1,0 +1,48 @@
+---
+title: "ImFusion::DataDescriptor::PixelwiseData"
+sidebarTitle: "PixelwiseData"
+---
+
+## Public Member Functions
+
+- **PixelwiseData** (DataDescriptor \*, const Project::PixelwiseData \*)
+- [Utils::Expected](/cpp-sdk/4.5/api/classes/imfusion-utils-expected)&lt; [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &gt;, [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; [loadLabelMap](#loadlabelmap) ([Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) \*progress) const — Loads the labelmap file from disk or the server.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &gt; **loadLabelMapVersion** (int version, [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) \*progress) const — Retrieves the given label map version – only for remote projects.
+- bool **saveLabelMap** (const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &labels, bool hasData, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &lockToken, [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) \*progress)
+- QString [dataPath](#datapath) () const override
+- QString [projectId](#projectid) () const override — Returns the ID of this layer as defined in the project.
+- QString **thumbnailPath** () const
+
+## Public Attributes
+
+- const Project::PixelwiseData \*const **m_projectData** = nullptr
+
+## Member Function Documentation
+
+### loadLabelMap
+
+```cpp
+Utils::Expected < std::unique_ptr < SharedImageSet >, std::string > ImFusion::DataDescriptor::PixelwiseData::loadLabelMap (Progress * progress) const
+```
+
+Loads the labelmap file from disk or the server.
+
+Returns a nullptr if the labelmap is completely empty. Throws an exception if the labelmap cannot be loaded due to an error.
+
+### dataPath
+
+```cpp
+QString ImFusion::DataDescriptor::PixelwiseData::dataPath () const
+```
+
+*override, virtual*
+
+### projectId
+
+```cpp
+QString ImFusion::DataDescriptor::PixelwiseData::projectId () const
+```
+
+*override, virtual*
+
+Returns the ID of this layer as defined in the project.

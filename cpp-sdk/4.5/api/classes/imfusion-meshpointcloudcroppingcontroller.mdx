@@ -1,0 +1,75 @@
+---
+title: "ImFusion::MeshPointCloudCroppingController"
+sidebarTitle: "MeshPointCloudCroppingController"
+description: "Controller for mesh (point cloud) cropping algorithm."
+---
+
+`#include <ImFusion/Mesh/MeshPointCloudCroppingController.h>`
+
+## Overview
+
+[Controller](/cpp-sdk/4.5/api/classes/imfusion-controller) for mesh (point cloud) cropping algorithm.
+
+## Public Member Functions
+
+- **MeshPointCloudCroppingController** ([MeshPointCloudCroppingAlgorithm](/cpp-sdk/4.5/api/classes/imfusion-meshpointcloudcroppingalgorithm) \*alg, bool addToAlgorithmDock=true) — Constructor with algorithm instance.
+- **~MeshPointCloudCroppingController** () override — Destructor.
+- void [init](#init) () override — Initalize the controller widget.
+- void [onManipulatorEvent](#onmanipulatorevent) ([Manipulator](/cpp-sdk/4.5/api/classes/imfusion-manipulator) \*src, void \*eventData) override — Called when an event occurs.
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+## Member Function Documentation
+
+### init
+
+```cpp
+void ImFusion::MeshPointCloudCroppingController::init ()
+```
+
+*override, virtual*
+
+Initalize the controller widget.
+
+### onManipulatorEvent
+
+```cpp
+void ImFusion::MeshPointCloudCroppingController::onManipulatorEvent (Manipulator * src, void * eventData)
+```
+
+*override, virtual*
+
+Called when an event occurs.
+
+**Parameters:**
+
+- `src` — source of the event
+- `eventData` — pointer to event data. Zero if no event data is provided.
+
+### configure
+
+```cpp
+void ImFusion::MeshPointCloudCroppingController::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### configuration
+
+```cpp
+void ImFusion::MeshPointCloudCroppingController::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality

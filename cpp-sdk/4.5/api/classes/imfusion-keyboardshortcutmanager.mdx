@@ -1,0 +1,64 @@
+---
+title: "ImFusion::KeyboardShortcutManager"
+sidebarTitle: "KeyboardShortcutManager"
+description: "Singleton class to manage global keyboard shortcuts."
+---
+
+`#include <ImFusion/GUI/KeyboardShortcutManager.h>`
+
+## Overview
+
+[Singleton](/cpp-sdk/4.5/api/classes/imfusion-singleton) class to manage global keyboard shortcuts.
+
+Before this class can be used you must register the QMainWindow of the application using setParent() so that [KeyboardShortcutManager](/cpp-sdk/4.5/api/classes/imfusion-keyboardshortcutmanager) can hook into its event loop to listen for keyboard user input.
+
+Shortcut actions are identified using a unique ID. Register shortcuts using [action()](#action) which returns an [Action](/cpp-sdk/4.5/api/structs/imfusion-keyboardshortcutmanager-action) struct containing both an ImFusion signal and a QShortcut. You can connect to either of it in order to get notified when the shortcut has been triggered.
+
+Example for registering an action an installing a handler for it:
+
+```cpp
+KeyboardShortcutManager::instance().action("InteractionView3D::Reset",
+ "3D View: reset",
+                                           QKeySequence("Ctrl+R"))
+                                   .signalTriggered.connect(this, &InteractionView3D::reset);
+```
+ fragment
+
+## Classes
+
+- struct [Action](/cpp-sdk/4.5/api/structs/imfusion-keyboardshortcutmanager-action) — Small structure encapsulating a shortcut action.
+
+## Public Member Functions
+
+- void **setParent** (QMainWindow \*mainWindow) — Register the window for which keyboard events are received.
+- void **setParent** (QMainWindow &mainWindow)
+- const [Action](/cpp-sdk/4.5/api/structs/imfusion-keyboardshortcutmanager-action) & [action](#action) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &uniqueId, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &description, QKeySequence defaultSequence) — Register a shortcut action and return the corresponding [Action](/cpp-sdk/4.5/api/structs/imfusion-keyboardshortcutmanager-action) struct.
+- bool **removeAction** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &uniqueId) — Remove a registered shortcut action with the given uniqueId. Returns false if no such action was registered.
+- void **setKeySequence** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &id, const QKeySequence &key) — Sets an already registered action, identified by id string, to a Key sequence.
+- void **saveMapping** () — Saves the [Action](/cpp-sdk/4.5/api/structs/imfusion-keyboardshortcutmanager-action) Shortcut mapping using QString.
+- const [std::map](http://en.cppreference.com/w/cpp/container/map.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html), [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [Action](/cpp-sdk/4.5/api/structs/imfusion-keyboardshortcutmanager-action) &gt; &gt; & **registeredActions** () const — Return a const reference of the map list.
+- void **clearActions** () — Clears all registered actions.
+
+## Static Public Member Functions
+
+- static KeyboardShortcutManager & **instance** ()
+
+## Member Function Documentation
+
+### action
+
+```cpp
+const Action & ImFusion::KeyboardShortcutManager::action (const std::string & uniqueId, const std::string & description, QKeySequence defaultSequence)
+```
+
+Register a shortcut action and return the corresponding [Action](/cpp-sdk/4.5/api/structs/imfusion-keyboardshortcutmanager-action) struct.
+
+If a shortcut with the same unique ID is already registered, this function will return the old shortcut [Action](/cpp-sdk/4.5/api/structs/imfusion-keyboardshortcutmanager-action) and not update description and/or default sequence.
+
+**Parameters:**
+
+- `uniqueId` — Unique identifier for the shortcut
+- `description` — Human readable description of the shortcut to show in the settings UI.
+- `defaultSequence` — Default keyboard sequence to trigger the shortcut.
+
+**Returns:** The [Action](/cpp-sdk/4.5/api/structs/imfusion-keyboardshortcutmanager-action) instance for the registered shortcut; connect to its ImFusion signal and/or its qtShortcut to react to the user pressing the shortcut.

@@ -1,0 +1,47 @@
+---
+title: "ImFusion::Dicom::FrameDescriptor"
+sidebarTitle: "FrameDescriptor"
+description: "Descriptor for a single DICOM frame that is used during the loading process as intermediate representation before eventually converting the image data to a Shar"
+---
+
+`#include <ImFusion/Dicom/DicomIOD.h>`
+
+## Overview
+
+Descriptor for a single DICOM frame that is used during the loading process as intermediate representation before eventually converting the image data to a [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset).
+
+**Examples:** [DicomExtensionExample2.cpp](/cpp-sdk/4.5/api/examples/dicom-extension2-8cpp).
+
+## Public Member Functions
+
+- [FrameDescriptor](#framedescriptor) ([IOD](/cpp-sdk/4.5/api/classes/imfusion-dicom-iod) \*iod, int index, const [ImageDescriptor](/cpp-sdk/4.5/api/structs/imfusion-imagedescriptor) &desc, const mat4 &matrix, bool hasMatrix) — Default constructor.
+
+## Public Attributes
+
+- [IOD](/cpp-sdk/4.5/api/classes/imfusion-dicom-iod) \* **iod** — Parent [IOD](/cpp-sdk/4.5/api/classes/imfusion-dicom-iod) that loaded the frame. Never nullptr and must not be re-assigned.
+- int **index** — Index of the frame in the iod.
+- [ImageDescriptor](/cpp-sdk/4.5/api/structs/imfusion-imagedescriptor) **desc** — Descriptor of the frame.
+- mat4 **matrix** — Plane transformation.
+- bool **hasMatrix** — Flag whether or not the plane transformation is available.
+- int **sharedImageIndex** — index of the [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) in the [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset)
+- int **sliceIndex** — slice index of the frame in the volume (or 0 for 2D images)
+
+## Constructor & Destructor Documentation
+
+### FrameDescriptor
+
+```cpp
+ImFusion::Dicom::FrameDescriptor::FrameDescriptor (IOD * iod, int index, const ImageDescriptor & desc, const mat4 & matrix, bool hasMatrix)
+```
+
+*inline*
+
+Default constructor.
+
+**Parameters:**
+
+- `iod` — Parent [IOD](/cpp-sdk/4.5/api/classes/imfusion-dicom-iod) that loaded the frame
+- `index` — Index of the frame in the iod
+- `desc` — Descriptor of the frame
+- `matrix` — Plane transformation
+- `hasMatrix` — Flag whether the plane transformation is available.

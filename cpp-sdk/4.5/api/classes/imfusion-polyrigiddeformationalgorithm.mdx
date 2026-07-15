@@ -1,0 +1,89 @@
+---
+title: "ImFusion::PolyRigidDeformationAlgorithm"
+sidebarTitle: "PolyRigidDeformationAlgorithm"
+description: "Set up a poly-rigid deformation on a volume and multiple labels."
+---
+
+`#include <ImFusion/Reg/PolyRigidDeformationAlgorithm.h>`
+
+## Overview
+
+Set up a poly-rigid deformation on a volume and multiple labels.
+
+A volume of arbitrary modality can be used, the label map can have a single or multiple images. If it has a single image, it is split into a multi-volume with smaller cropped label maps. A distance volume is computed from each individual label, which is used to define the rigid region. A poly-rigid deformation is defined on the image using the aforementioned scheme and as many control points as individual label values. As long as this algorithm is open, the matrices of the label map are linked to the control points of the actual deformation instance. If two label maps are provided, the first label map is registered to the second label map and this is used to set the initial parameters of the polyrigid deformation.
+
+## Public Member Functions
+
+- **PolyRigidDeformationAlgorithm** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &image, [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &label, [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*imageLabel=nullptr) — Constructor with a single volume, as well as a label map with one or multiple volumes The (optional) label map imageLabel is used to calculate initial transformations of rigid sections.
+- void **transformationChanged** (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data) — Update the deformation if label map transformations have changed.
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+## Public Attributes
+
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; bool &gt; [p_sphereMode](#p-spheremode) = &#123;"sphereMode", false, this&#125; — Use sphere approximation instead of distance volumes to crudely approximate the inverse displacement.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; [GlPolyRigidDeformation::Mode](/cpp-sdk/4.5/api/classes/imfusion-glpolyrigiddeformation) &gt; **p_mode** = &#123;"mode", GlPolyRigidDeformation::Mode::BACKWARD, this&#125;
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; int &gt; **p_inversionSteps** = &#123;"inversionSteps", 50, this&#125;
+
+## Methods implementing the Algorithm interface
+
+- void [compute](#compute) () override — Process the input label map, and setup control points and deformation instance.
+- [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) [takeOutput](#takeoutput) () override — If a single label volume with multiple values was provided, a split multi-volume is output here.
+- static bool [createCompatible](#createcompatible) (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=nullptr)
+
+## Member Function Documentation
+
+### createCompatible
+
+```cpp
+bool ImFusion::PolyRigidDeformationAlgorithm::createCompatible (const DataList & data, Algorithm ** a = nullptr)
+```
+
+*static*
+
+Factory method to create the algorithm
+
+### compute
+
+```cpp
+void ImFusion::PolyRigidDeformationAlgorithm::compute ()
+```
+
+*override, virtual*
+
+Process the input label map, and setup control points and deformation instance.
+
+### takeOutput
+
+```cpp
+OwningDataList ImFusion::PolyRigidDeformationAlgorithm::takeOutput ()
+```
+
+*override, virtual*
+
+If a single label volume with multiple values was provided, a split multi-volume is output here.
+
+### configure
+
+```cpp
+void ImFusion::PolyRigidDeformationAlgorithm::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](/cpp-sdk/4.5/api/classes/imfusion-configurable) for the inverse functionality
+
+## Member Data Documentation
+
+### p_sphereMode
+
+```cpp
+Parameter <bool> ImFusion::PolyRigidDeformationAlgorithm::p_sphereMode = {"sphereMode", false, this}
+```
+
+Use sphere approximation instead of distance volumes to crudely approximate the inverse displacement.
+
+The results of using the sphere mode should not be expected to be accurate.

@@ -1,0 +1,124 @@
+---
+title: "ImFusion::GL::AbstractInclude"
+sidebarTitle: "AbstractInclude"
+description: "Base class for abstract GLSL includes."
+---
+
+`#include <ImFusion/Core/GL/AbstractInclude.h>`
+
+## Overview
+
+[Base](/cpp-sdk/4.5/api/structs/imfusion-dicom-base) class for abstract GLSL includes.
+
+Abstract includes are a way to achieve runtime polymorphism in a shader program. They allow to include a GLSL header (.glh) without knowing its exact implementation during development. In a GLSL program they can be included with:
+
+```cpp
+#pragma abstract_include "<DEFINE_NAME>"
+```
+ fragment
+If a definition is set for &lt;DEFINE_NAME&gt;, the corresponding header will be included and &lt;DEFINE_NAME&gt; will be set as a define. Otherwise the define is not set and nothing is included. Define names are expected to be in ALL_CAPS.
+
+Example:
+
+```cpp
+// [RandomHeader.glh]
+int getRandomNumber() {
+ return 5;
+}
+```
+ fragment
+```cpp
+// [Random.frag]
+#pragma abstract_include "RANDOM"
+#ifndef RANDOM
+// default implementation if no definition was set
+int getRandomNumber() {
+ return 4;
+}
+#endif
+
+int main()
+{
+    getRandomNumber();
+}
+```
+ fragment
+Instead of defining a default implementation, the call to getRandomNumber() can also be wrapped with the RANDOM define. However, in the former case it is much clearer what the include header is supposed to implement.
+
+On the host side the header is represented by a derived class:
+
+```cpp
+class Random : public AbstractInclude
+{
+public:
+ Random()
+        : AbstractInclude("RANDOM", "RandomHeader.glh")
+    {}
+};
+```
+ fragment
+In the code with the Random.frag program, the implementation of getRandomNumber can be now easily exchanged:
+
+```cpp
+AbstractInclude* rand = new Random();
+GlProgram p("Random.gl");
+p.compute();    // getRandomNumber will return 4
+p.addAbstractInclude(rand);
+p.compute();    // getRandomNumber will return 5
+```
+ fragment
+
+**Note:** If the compilation of the shader fails with the abstract include definition, the definition is removed and the previous shader is used.
+
+**See also:** [Program](/cpp-sdk/4.5/api/classes/imfusion-gl-program)
+
+## Classes
+
+- struct [Fingerprint](/cpp-sdk/4.5/api/structs/imfusion-gl-abstractinclude-fingerprint) — AbstractIncludes provide a fingerprint to simplify duplicate detection.
+
+## Public Member Functions
+
+- **AbstractInclude** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &defineName, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &includePath) — Creates a [AbstractInclude](/cpp-sdk/4.5/api/classes/imfusion-gl-abstractinclude) for the given define and with the corresponding GLSL file at includePath.
+- const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) & **defineName** () const — Returns the name of define used by this include.
+- const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) & **includePath** () const — Returns the path to the included shader file.
+- virtual [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html)(const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &)&gt; [includeCodeSubstitution](#includecodesubstitution) () const — Optionally the abstract include can provide a function to change the shader code.
+- virtual [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; AbstractInclude \* &gt; [dependentIncludes](#dependentincludes) () const — Returns a list of dependent abstract includes that need to be included as well.
+- virtual [Fingerprint](/cpp-sdk/4.5/api/structs/imfusion-gl-abstractinclude-fingerprint) [fingerprint](#fingerprint) () const — Provides a finger print of the include.
+
+## Member Function Documentation
+
+### string
+
+```cpp
+virtual std::function < std::string (const std::string &)> ImFusion::GL::AbstractInclude::includeCodeSubstitution () const
+```
+
+*virtual*
+
+Optionally the abstract include can provide a function to change the shader code.
+
+This function will be called after the shader include has been loaded from includePath() and receives the include code as argument. The function can then modify the code and is supposed to return the modified GLSL code. This can be used to include two instances of the same include by for example prefixing every uniform and function. The default implementation returns NULL and therefore does not change the code.
+
+### dependentIncludes
+
+```cpp
+virtual std::vector < AbstractInclude * > ImFusion::GL::AbstractInclude::dependentIncludes () const
+```
+
+*virtual*
+
+Returns a list of dependent abstract includes that need to be included as well.
+
+The default implementation returns an empty vector, you may override this method to your needs. The returned vector must be empty or contain valid pointers.
+
+### fingerprint
+
+```cpp
+virtual Fingerprint ImFusion::GL::AbstractInclude::fingerprint () const
+```
+
+*virtual*
+
+Provides a finger print of the include.
+
+If two finger prints are equal this means that the two includes provide the very same code substitution. It does NOT mean that the two includes are equal. In particular the result of setArguments can be different.

@@ -1,0 +1,56 @@
+---
+title: "ImFusion::GlImageRenderer"
+sidebarTitle: "GlImageRenderer"
+description: "GlObject to render an image into a GlSliceView ."
+---
+
+`#include <ImFusion/GL/GlImageRenderer.h>`
+
+## Overview
+
+[GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) to render an image into a [GlSliceView](/cpp-sdk/4.5/api/classes/imfusion-glsliceview).
+
+In contrast to the default render path for images of a [GlSliceView](/cpp-sdk/4.5/api/classes/imfusion-glsliceview), [GlImageRenderer](/cpp-sdk/4.5/api/classes/imfusion-glimagerenderer) will not take part in the blending of multiple images that [GlSlice](/cpp-sdk/4.5/api/classes/imfusion-glslice) does. This can be useful if you want to blend multiple images and additionally show an non-blended image on top.
+
+## Public Member Functions
+
+- **GlImageRenderer** (const [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*img) — Creates a new image renderer for the given image.
+- void [draw](#draw) (const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &view) override — Draw the object in 3D space.
+- [Geometry::AlignedBox](/cpp-sdk/4.5/api/classes/imfusion-geometry-alignedbox) [bounds](#bounds) () const override — Get the axis-aligned bounding box of this [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) in world space.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [typeName](#typename) () const override — Return unique identifier for this object class used for serialization.
+- void **setImage** (const [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*img) — Updates the image.
+- const [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \* **image** () const — Returns the image to be rendered.
+
+## Member Function Documentation
+
+### draw
+
+```cpp
+void ImFusion::GlImageRenderer::draw (const GlView & view)
+```
+
+*override, virtual*
+
+Draw the object in 3D space.
+
+### bounds
+
+```cpp
+Geometry::AlignedBox ImFusion::GlImageRenderer::bounds () const
+```
+
+*override, virtual*
+
+Get the axis-aligned bounding box of this [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) in world space.
+
+Return an empty (default-constructed) AlignedBox object if the [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) does not reside in world space.
+
+### typeName
+
+```cpp
+std::string ImFusion::GlImageRenderer::typeName () const
+```
+
+*override, virtual*
+
+Return unique identifier for this object class used for serialization.

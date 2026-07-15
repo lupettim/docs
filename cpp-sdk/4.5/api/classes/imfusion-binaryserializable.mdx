@@ -1,0 +1,60 @@
+---
+title: "ImFusion::BinarySerializable"
+sidebarTitle: "BinarySerializable"
+description: "Interface for class which can be serialized and deserialized."
+---
+
+`#include <ImFusion/Base/BinarySerializable.h>`
+
+## Overview
+
+Interface for class which can be serialized and deserialized.
+
+Make sure to ensure platform independence, for instance by using fixed-sized types for binary serialization such as int32_t.
+
+**See also:** Object Serialization
+
+## Public Member Functions
+
+- virtual size_t [saveBufferSize](#savebuffersize) () const =0 — Returns the total amount of bytes required for serialization.
+- virtual void [loadFromBuffer](#loadfrombuffer) (const char \*buffer, size_t len)=0 — Restores the state of this object from a memory buffer, using maximum `len` bytes.
+- virtual void [saveToBuffer](#savetobuffer) (char \*buffer) const =0 — Saves the state of this object into a memory buffer, using maximum [saveBufferSize()](#savebuffersize) bytes.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **saveToString** () const — Saves the state of this object into a string. Internally uses [saveToBuffer](#savetobuffer).
+- void **loadFromString** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &str) — Restores the state of this object from a string, internally using [loadFromBuffer](#loadfrombuffer).
+
+## Protected Member Functions
+
+- size_t **serializeMember** (char \*&buffer, const T \*data, size_t n=1) const — Convenience method to memcpy `n*sizeof`(T) bytes of `data` to `buffer`, followed by an increment of `buffer` by `n*sizeof`(T).
+- size_t **deserializeMember** (const char \*&buffer, T \*data, size_t n=1) — Convenience method to memcpy `n*sizeof`(T) bytes of `buffer` to `data`, followed by an increment of `buffer` by `n*sizeof`(T).
+
+## Member Function Documentation
+
+### saveBufferSize
+
+```cpp
+virtual size_t ImFusion::BinarySerializable::saveBufferSize () const
+```
+
+*pure virtual*
+
+Returns the total amount of bytes required for serialization.
+
+### loadFromBuffer
+
+```cpp
+virtual void ImFusion::BinarySerializable::loadFromBuffer (const char * buffer, size_t len)
+```
+
+*pure virtual*
+
+Restores the state of this object from a memory buffer, using maximum `len` bytes.
+
+### saveToBuffer
+
+```cpp
+virtual void ImFusion::BinarySerializable::saveToBuffer (char * buffer) const
+```
+
+*pure virtual*
+
+Saves the state of this object into a memory buffer, using maximum [saveBufferSize()](#savebuffersize) bytes.

@@ -1,0 +1,83 @@
+---
+title: "ImFusion::BakeMeshDeformationAlgorithm"
+sidebarTitle: "BakeMeshDeformationAlgorithm"
+description: "Bakes an image's deformation into a mesh or point cloud."
+---
+
+`#include <ImFusion/Base/BakeMeshDeformationAlgorithm.h>`
+
+## Overview
+
+Bakes an image's deformation into a mesh or point cloud.
+
+## Public Member Functions
+
+- **BakeMeshDeformationAlgorithm** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*imgWithDef, [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) \*mesh)
+- **BakeMeshDeformationAlgorithm** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*imgWithDef, [PointCloud](/cpp-sdk/4.5/api/classes/imfusion-pointcloud) \*pc)
+- void [compute](#compute) () override — Applies the deformation.
+- [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) [takeOutput](#takeoutput) () override — Return any new [Data](/cpp-sdk/4.5/api/classes/imfusion-data) that was created by the [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) during the last call to [compute()](#compute).
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+## Static Public Member Functions
+
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=nullptr)
+
+## Protected Member Functions
+
+- void **bakeDeformation** ([Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) \*mesh, [Deformation](/cpp-sdk/4.5/api/classes/imfusion-deformation) \*def)
+- void **bakeDeformation** ([PointCloud](/cpp-sdk/4.5/api/classes/imfusion-pointcloud) \*pc, [Deformation](/cpp-sdk/4.5/api/classes/imfusion-deformation) \*def)
+
+## Member Function Documentation
+
+### compute
+
+```cpp
+void ImFusion::BakeMeshDeformationAlgorithm::compute ()
+```
+
+*override, virtual*
+
+Applies the deformation.
+
+### takeOutput
+
+```cpp
+OwningDataList ImFusion::BakeMeshDeformationAlgorithm::takeOutput ()
+```
+
+*override, virtual*
+
+Return any new [Data](/cpp-sdk/4.5/api/classes/imfusion-data) that was created by the [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) during the last call to [compute()](#compute).
+
+The default implementation will return an empty list.
+
+**Note:** Since ownership of the data is transferred, you can call this method only once between calls to [compute()](#compute).
+
+### configure
+
+```cpp
+void ImFusion::BakeMeshDeformationAlgorithm::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### configuration
+
+```cpp
+void ImFusion::BakeMeshDeformationAlgorithm::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality

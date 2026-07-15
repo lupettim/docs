@@ -1,0 +1,38 @@
+---
+title: "FAQ (Frequently Asked Questions)"
+description: "Please have a look at the available Tutorials/How-to Guides ."
+---
+
+Please have a look at the available [Tutorials/How-to Guides](/cpp-sdk/4.5/api/guides/tutorials). These include directions on how to [setup your build environment](/cpp-sdk/4.5/api/guides/build-environment-tutorial) as well as guides to the essential concepts and data structures of the ImFusion SDK.
+
+Ordered initialization and deinitialization of the ImFusion SDK (e.g. factories, OpenGL context handling) is handled by the functions located in the [Framework](/cpp-sdk/4.5/api/namespaces/imfusion-framework) namespace. Have a look at the documentation of [Framework::init()](/cpp-sdk/4.5/api/namespaces/imfusion-framework) for a code example of proper initialization. If you want do use additional plugins you must initialize them correctly either individually using [Framework::loadPlugin()](/cpp-sdk/4.5/api/namespaces/imfusion-framework) or all plugins that can be found in a set of search paths using [Framework::loadPlugins()](/cpp-sdk/4.5/api/namespaces/imfusion-framework).
+
+**Warning:** When linking directly against individual ImFusion plugins, you will still need to initialize it using the functions in the [Framework](/cpp-sdk/4.5/api/namespaces/imfusion-framework) namespace or the [ApplicationController](/cpp-sdk/4.5/api/classes/imfusion-applicationcontroller) class. Though technically, you can initialize the plugin by instantiating its corresponding ImFusionPlugin class, this will not ensure that dependent parts or even the core ImFusionLib are initialized correctly.
+
+The ImFusionLib will create its main OpenGL context in the thread which calls [Framework::init()](/cpp-sdk/4.5/api/namespaces/imfusion-framework). All calls to the ImFusionLib API are expected to originate from this thread (see also [Threading / Concurrency](/cpp-sdk/4.5/api/guides/threading)). Thus, it is usually appropriate to initialize the SDK from the main ([GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui)) thread.
+
+As alternative to the free functions in the [Framework](/cpp-sdk/4.5/api/namespaces/imfusion-framework) namespace, you can use the [ApplicationController](/cpp-sdk/4.5/api/classes/imfusion-applicationcontroller) class. Constructing an instance of [ApplicationController](/cpp-sdk/4.5/api/classes/imfusion-applicationcontroller) can also take care of correctly initializing the ImFusionLib and its destruction will eventually deinitialize it again.
+
+The simplest way to activate a license for an ImFusion product is by setting the environment variable IMFUSION_LICENSE_KEY to your key before starting the application. If you cannot or do not want to use the default framework behavior and need more control when integrating the SDK please refer to Programmatically activating a License.
+
+**Note:** Every ImFusion product (Suite, Labels, SDK, PythonSDK) needs to be license activated separately on the same machine, even if the same key is applicable.
+
+For questions regarding matrix conventions, please refer to the page on [Coordinate Systems](/cpp-sdk/4.5/api/guides/coordinate-systems).
+
+For questions regarding multi-threading within the ImFusion SDK, please refer to the page on [Threading / Concurrency](/cpp-sdk/4.5/api/guides/threading).
+
+Images can be synchronized across multiple locations ([MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage), [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage), ClImage) using the [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) class. When wrapping an [Image](/cpp-sdk/4.5/api/classes/imfusion-image), the [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) class will take care of automatically converting between the different representations. The individual representations will be cached in the [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) so that the conversion happens only when necessary. When altering an image wrapped in a [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage), make sure to mark it as dirty using e.g. [SharedImage::setDirtyMem()](/cpp-sdk/4.5/api/classes/imfusion-sharedimage), so that the changes are propagated correctly to the other representations.
+
+For more information, please have a look at the [Tutorial on Image Data](/cpp-sdk/4.5/api/guides/image-data-tutorial).
+
+By default, all annotations are specified in the world coordinate system. If you want to link a [GlAnnotation](/cpp-sdk/4.5/api/classes/imfusion-glannotation) to an image such that it is specified in the image coordinate system (i.e. when changing the image transformation, the annotation's transforms accordingly), you need to implement this manually. The easiest solution to this is to implement a TransformationListener and to subscribe to the `transformationChanged` event of the [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset). This enables you to keep the image's matrix and the annotation's matrix in sync.
+
+The [InteractiveView::setVisible](/cpp-sdk/4.5/api/classes/imfusion-interactiveview) method does not directly show a view but only asks the [DisplayWidgetMulti](/cpp-sdk/4.5/api/classes/imfusion-displaywidgetmulti) to add it to the current layout. Depending on the current DisplayWidgetMulti::LayoutMode, the display might reject this request for a particular kind of view and the view stays hidden. A view is only considered visible if its [InteractiveView::boundingRect](/cpp-sdk/4.5/api/classes/imfusion-interactiveview) is non-empty.
+
+Another issue could be that the display does not have a size yet and therefore cannot assign a valid size to a view. In this case you might want to set a dummy size right after creating the display, e.g.:
+
+```cpp
+auto display = std::make_unique<DisplayWidgetMulti>();
+display->setCustomViewport(QRect(0, 0, 100, 100));
+```
+ fragment

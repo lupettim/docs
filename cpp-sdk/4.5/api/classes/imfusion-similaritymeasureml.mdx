@@ -1,0 +1,87 @@
+---
+title: "ImFusion::SimilarityMeasureML"
+sidebarTitle: "SimilarityMeasureML"
+description: "Machine Learning based similarity measure."
+---
+
+`#include <ImFusion/Reg/SimilarityMeasureML.h>`
+
+## Overview
+
+Machine Learning based similarity measure.
+
+## Public Member Functions
+
+- **SimilarityMeasureML** ([SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*img1, [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*img2)
+- void **setPairingFunction** (const [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; bool(const [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*drr, const [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*fluoro, [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*&imgOut)&gt; &func) — Set a function that computes the dual-channel single image containing fixed and moving image.
+- void **setPredictionModelConfig** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &filename) — Set the filename of the prediction model configuration.
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Set one or multiple properties.
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Retrieve the properties of this object.
+- double [compute](#compute) (const [ImageTransformer](/cpp-sdk/4.5/api/classes/imfusion-imagetransformer) \*t, size_t \*overlap=nullptr) override — Computes and returns the similarity measure.
+- bool [supportsWeights](#supportsweights) () const override — Queries the capability whether this similarity measure supports pixel-wise weights.
+
+## Static Public Member Functions
+
+- static void **defaultConfiguration** ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p)
+- static bool **pairMriUs** (const [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*mri, const [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*us, [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*&imgOut)
+
+## Protected Attributes
+
+- GenerateSimMeasureLearningDataAlgorithm \* **m_smld** — Creating the dual-channel input for regression.
+- [GlReduction](/cpp-sdk/4.5/api/classes/imfusion-glreduction) \* **m_reducer** — Reduction class for computing final similarity.
+- [GL::Framebuffer](/cpp-sdk/4.5/api/classes/imfusion-gl-framebuffer) \* **m_fbo** — [Framebuffer](/cpp-sdk/4.5/api/classes/imfusion-gl-framebuffer) for reduction.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) &gt; **m_predAlgo** — The prediction model.
+- [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) **m_predAlgoInput**
+- [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* **m_imgDual** — Dual-channel image for regression.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **m_pwConfig**
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **m_pwLastConfig** — Config file for prediction model.
+- float **m_gradientScaling**
+- [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; bool(const [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*drr, const [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*fluoro, [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*&imgOut)&gt; **m_pairFunc** — Optional function to create paired image from fixed and moving.
+
+## Member Function Documentation
+
+### configure
+
+```cpp
+void ImFusion::SimilarityMeasureML::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Set one or multiple properties.
+
+The default implementation retrieves the mask mode (param names "maskModeImg1" and "maskModeImg2")
+
+### configuration
+
+```cpp
+void ImFusion::SimilarityMeasureML::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Retrieve the properties of this object.
+
+The default implementation stores the mask mode (param names "maskModeImg1" and "maskModeImg2")
+
+### compute
+
+```cpp
+double ImFusion::SimilarityMeasureML::compute (const ImageTransformer * t, size_t * overlap = nullptr)
+```
+
+*override, virtual*
+
+Computes and returns the similarity measure.
+
+The higher the value the higher the similarity between the two images. The returned value does not need to be normalized, therefore values from different similarity measures should not be compared directly. The computation always iterates each pixel of img1 and compares it to the related pixel of img2. If no [ImageTransformer](/cpp-sdk/4.5/api/classes/imfusion-imagetransformer) is supplied, the image coordinates of a pixel in img1 are used directly to lookup the value in img2, no transformation is assumed. In this case it's usually advisable that img1 and img2 have the same dimensions, but this is not enforced. If an [ImageTransformer](/cpp-sdk/4.5/api/classes/imfusion-imagetransformer) is given, it will be used to transfer from img1 pixel coordinates to img2 pixel coordinates including any world transformations. In this case the dimensions of the two images can be unrelated. The optional argument overlap contains the overlap of the two images in pixels.
+
+### supportsWeights
+
+```cpp
+bool ImFusion::SimilarityMeasureML::supportsWeights () const
+```
+
+*inline, override, virtual*
+
+Queries the capability whether this similarity measure supports pixel-wise weights.

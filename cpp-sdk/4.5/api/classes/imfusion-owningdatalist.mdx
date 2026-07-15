@@ -1,0 +1,186 @@
+---
+title: "ImFusion::OwningDataList"
+sidebarTitle: "OwningDataList"
+description: "Wrapper class to store a list of owned Data instances."
+---
+
+`#include <ImFusion/Base/OwningDataList.h>`
+
+## Overview
+
+Wrapper class to store a list of owned [Data](/cpp-sdk/4.5/api/classes/imfusion-data) instances.
+
+Internally, this class is merely a [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt;[std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt;[Data](/cpp-sdk/4.5/api/classes/imfusion-data)&gt;&gt;. However, it provides a couple of convenience functions for filtering and extracting data. Use a plain [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) to model a view on a list of [Data](/cpp-sdk/4.5/api/classes/imfusion-data) instances without ownership.
+
+**See also:** [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist)
+
+**Examples:** [ExampleAlgorithm.cpp](/cpp-sdk/4.5/api/examples/example-algorithm-8cpp), and [ExampleAlgorithm.h](/cpp-sdk/4.5/api/examples/example-algorithm-8h).
+
+## Public Member Functions
+
+- **OwningDataList** () — Default Constructor to create an empty list.
+- [OwningDataList](#owningdatalist-1-2) ([std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; T &gt; data) — Convenience constructor from a single unique_ptr&lt;Data&gt;.
+- [OwningDataList](#owningdatalist-2-2) ([std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; T &gt; &gt; &&data) — Constructor from a vector of data.
+- **OwningDataList** (OwningDataList &&rhs) noexcept — Move constructor will guarantee that *rhs* is empty and usable afterwards.
+- OwningDataList & **operator=** (OwningDataList &&rhs) noexcept — Move assignment will guarantee that *rhs* is empty and usable afterwards.
+- **OwningDataList** (const OwningDataList &)=delete
+- OwningDataList & **operator=** (const OwningDataList &)=delete
+- void **add** ([std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [Data](/cpp-sdk/4.5/api/classes/imfusion-data) &gt; data) — Add data to the list.
+- void **add** (OwningDataList &&dataList) — Add data to the list.
+- int **size** () const — Return the size of the list.
+- int **indexOf** (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data) const — Returns the index of *data* within the list or -1 if it is not present.
+- void **clear** () — Clear all data.
+- bool **operator==** (const OwningDataList &other) const — Returns true if the both [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) have the same elements in the same order, false otherwise.
+- bool **operator!=** (const OwningDataList &other) const — Returns false if the both [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) have the same elements in the same order, true otherwise.
+
+## Static Public Member Functions
+
+- static OwningDataList [create](#create) (Items &&... items) — Factory function creating an [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) from a list of [std::unique_ptr&lt;T&gt;](http://en.cppreference.com/w/cpp/memory/unique_ptr.html), with T derived from [Data](/cpp-sdk/4.5/api/classes/imfusion-data).
+
+## Retrieving items from a OwningDataList
+
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [Data](/cpp-sdk/4.5/api/classes/imfusion-data) &gt; **extractItem** (int which) — Extract the [Data](/cpp-sdk/4.5/api/classes/imfusion-data) instance of the given index.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [Data](/cpp-sdk/4.5/api/classes/imfusion-data) &gt; [extractFirst](#extractfirst-1-2) ([Data::Kind](/cpp-sdk/4.5/api/classes/imfusion-data) kind=[Data::UNKNOWN](/cpp-sdk/4.5/api/classes/imfusion-data)) — Extract the first [Data](/cpp-sdk/4.5/api/classes/imfusion-data) instance of the given kind.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; T &gt; [extractFirst](#extractfirst-2-2) ([Data::Kind](/cpp-sdk/4.5/api/classes/imfusion-data) kind=[Data::UNKNOWN](/cpp-sdk/4.5/api/classes/imfusion-data)) — Extract the first [Data](/cpp-sdk/4.5/api/classes/imfusion-data) instance of the given type and kind.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [Data](/cpp-sdk/4.5/api/classes/imfusion-data) &gt; &gt; [extractAll](#extractall-1-2) ([Data::Kind](/cpp-sdk/4.5/api/classes/imfusion-data) kind=[Data::UNKNOWN](/cpp-sdk/4.5/api/classes/imfusion-data)) — Extract all [Data](/cpp-sdk/4.5/api/classes/imfusion-data) instances of given kind.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; T &gt; &gt; [extractAll](#extractall-2-2) ([Data::Kind](/cpp-sdk/4.5/api/classes/imfusion-data) kind=[Data::UNKNOWN](/cpp-sdk/4.5/api/classes/imfusion-data)) — Extract all [Data](/cpp-sdk/4.5/api/classes/imfusion-data) instances of given type and kind.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &gt; [extractFirstImage](#extractfirstimage) ([Data::Kind](/cpp-sdk/4.5/api/classes/imfusion-data) kind=[Data::UNKNOWN](/cpp-sdk/4.5/api/classes/imfusion-data), [Data::Modality](/cpp-sdk/4.5/api/classes/imfusion-data) modality=[Data::NA](/cpp-sdk/4.5/api/classes/imfusion-data)) — Extract the first [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) instance of given kind and modality.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &gt; &gt; [extractAllImages](#extractallimages) ([Data::Kind](/cpp-sdk/4.5/api/classes/imfusion-data) kind=[Data::UNKNOWN](/cpp-sdk/4.5/api/classes/imfusion-data), [Data::Modality](/cpp-sdk/4.5/api/classes/imfusion-data) modality=[Data::NA](/cpp-sdk/4.5/api/classes/imfusion-data)) — Extract all [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) instances of given kind and modality.
+- [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \* **operator[]** (int idx) — Array access; returns the data located in the underlying vector at the given index.
+- const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \* **operator[]** (int idx) const — Array access; returns the data located in the underlying vector at the given index.
+- [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) [dataListView](#datalistview) () const — Return a view in form of a [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) onto this [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist).
+
+## Access to the underlying std::vector holding the data.
+
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [Data](/cpp-sdk/4.5/api/classes/imfusion-data) &gt; &gt; & **container** ()
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [Data](/cpp-sdk/4.5/api/classes/imfusion-data) &gt; &gt; & **container** () const
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [Data](/cpp-sdk/4.5/api/classes/imfusion-data) &gt; &gt;::const_iterator **begin** () const
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [Data](/cpp-sdk/4.5/api/classes/imfusion-data) &gt; &gt;::const_iterator **end** () const
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [Data](/cpp-sdk/4.5/api/classes/imfusion-data) &gt; &gt;::iterator **begin** ()
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [Data](/cpp-sdk/4.5/api/classes/imfusion-data) &gt; &gt;::iterator **end** ()
+
+## Constructor & Destructor Documentation
+
+### OwningDataList
+
+```cpp
+template<typename T> ImFusion::OwningDataList::OwningDataList (std::unique_ptr < T > data)
+```
+
+*explicit*
+
+Convenience constructor from a single unique_ptr&lt;Data&gt;.
+
+**Template Parameters:** | T | [Data](/cpp-sdk/4.5/api/classes/imfusion-data) type, must inherit from [Data](/cpp-sdk/4.5/api/classes/imfusion-data). |
+| --- | --- |
+
+### OwningDataList
+
+```cpp
+template<typename T> ImFusion::OwningDataList::OwningDataList (std::vector < std::unique_ptr < T > > && data)
+```
+
+Constructor from a vector of data.
+
+**Note:** This constructor is deliberately implicit to allow for easy assignment of [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) queries (i.e. extract-accessors) to OwningDataLists. For instance, you can write owningDataList2 = owningDataList1.extractAll&lt;[SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset)&gt;(); to extract all SharedImageSets from owningDataList1 and assign them to owningDataList2.
+
+**Template Parameters:** | T | [Data](/cpp-sdk/4.5/api/classes/imfusion-data) type stored in the vector, must inherit from [Data](/cpp-sdk/4.5/api/classes/imfusion-data). |
+| --- | --- |
+
+## Member Function Documentation
+
+### create
+
+```cpp
+template<typename... Items> OwningDataList ImFusion::OwningDataList::create (Items &&... items)
+```
+
+*static*
+
+Factory function creating an [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) from a list of [std::unique_ptr&lt;T&gt;](http://en.cppreference.com/w/cpp/memory/unique_ptr.html), with T derived from [Data](/cpp-sdk/4.5/api/classes/imfusion-data).
+
+```cpp
+auto dataList1 = OwningDataList::create(std::make_unique<SharedImageSet>(), std::make_unique<Mesh>(), ...);
+std::unique_ptr<Data> data1 = std::make_unique<SharedImageSet>(), data2 = std::make_unique<PointCloud>(), ...;
+auto dataList2 = OwningDataList::create(std::move(data1), std::move(data2), ...);
+```
+ fragment
+
+**Template Parameters:** | Items | parameter pack of [std::unique_ptr&lt;Data&gt;](http://en.cppreference.com/w/cpp/memory/unique_ptr.html). |
+| --- | --- |
+
+### extractFirst
+
+```cpp
+std::unique_ptr < Data > ImFusion::OwningDataList::extractFirst (Data::Kind kind = Data::UNKNOWN)
+```
+
+Extract the first [Data](/cpp-sdk/4.5/api/classes/imfusion-data) instance of the given kind.
+
+[Data::UNKNOWN](/cpp-sdk/4.5/api/classes/imfusion-data) will match all kinds.
+
+**Note:** This is a shortcut for [extractFirst](#extractfirst-1-2)&lt;[Data](/cpp-sdk/4.5/api/classes/imfusion-data)&gt;(kind).
+
+### extractFirst
+
+```cpp
+template<typename T> std::unique_ptr < T > ImFusion::OwningDataList::extractFirst (Data::Kind kind = Data::UNKNOWN)
+```
+
+*inline*
+
+Extract the first [Data](/cpp-sdk/4.5/api/classes/imfusion-data) instance of the given type and kind.
+
+[Data::UNKNOWN](/cpp-sdk/4.5/api/classes/imfusion-data) will match all kinds.
+
+### extractAll
+
+```cpp
+std::vector < std::unique_ptr < Data > > ImFusion::OwningDataList::extractAll (Data::Kind kind = Data::UNKNOWN)
+```
+
+Extract all [Data](/cpp-sdk/4.5/api/classes/imfusion-data) instances of given kind.
+
+[Data::UNKNOWN](/cpp-sdk/4.5/api/classes/imfusion-data) will match all kinds.
+
+**Note:** This is a shortcut for [extractAll](#extractall-1-2)&lt;[Data](/cpp-sdk/4.5/api/classes/imfusion-data)&gt;(kind).
+
+### extractAll
+
+```cpp
+template<typename T> std::vector < std::unique_ptr < T > > ImFusion::OwningDataList::extractAll (Data::Kind kind = Data::UNKNOWN)
+```
+
+Extract all [Data](/cpp-sdk/4.5/api/classes/imfusion-data) instances of given type and kind.
+
+[Data::UNKNOWN](/cpp-sdk/4.5/api/classes/imfusion-data) will match all kinds.
+
+### extractFirstImage
+
+```cpp
+std::unique_ptr < SharedImageSet > ImFusion::OwningDataList::extractFirstImage (Data::Kind kind = Data::UNKNOWN, Data::Modality modality = Data::NA)
+```
+
+Extract the first [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) instance of given kind and modality.
+
+[Data::UNKNOWN](/cpp-sdk/4.5/api/classes/imfusion-data) will match all kinds and [Data::NA](/cpp-sdk/4.5/api/classes/imfusion-data) will match all modalities.
+
+### extractAllImages
+
+```cpp
+std::vector < std::unique_ptr < SharedImageSet > > ImFusion::OwningDataList::extractAllImages (Data::Kind kind = Data::UNKNOWN, Data::Modality modality = Data::NA)
+```
+
+Extract all [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) instances of given kind and modality.
+
+[Data::UNKNOWN](/cpp-sdk/4.5/api/classes/imfusion-data) will match all kinds and [Data::NA](/cpp-sdk/4.5/api/classes/imfusion-data) will match all modalities.
+
+### dataListView
+
+```cpp
+DataList ImFusion::OwningDataList::dataListView () const
+```
+
+Return a view in form of a [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) onto this [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist).
+
+This can be useful to keep references to the data after passing ownership to another consumer.

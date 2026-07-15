@@ -1,0 +1,169 @@
+---
+title: "ImFusion::GatingMetadata"
+sidebarTitle: "GatingMetadata"
+description: "Metadata allowing to perform gating operations on periodic datasets acquired over time."
+---
+
+`#include <ImFusion/Base/GatingMetadata.h>`
+
+## Overview
+
+Metadata allowing to perform gating operations on periodic datasets acquired over time.
+
+## Public Member Functions
+
+- bool **operator==** (const GatingMetadata &other) const
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [id](#id) () const override — Returns a unique string identifier for this type of data component.
+- bool **hasPhase** (int numFrames) const — Returns true, of there are as many phase signal entries as desired.
+- bool **hasSimilarity** (int numFrames) const — Returns true if there are as many similarity signal entries as desired.
+- bool **hasPeriodicSimilarityMinima** (int numFrames) const — Returns true if there are as many similarity minimum signal entries as desired.
+- double [phase](#phase) (int frameIdx) const — Returns the phase signal for a given frame, taking the phase offset into account.
+- int **indexClosestToPhase** (int startingIndex, double [phase](#phase)) — Returns the frame index that is closest to *startingIndex* and matches the given phase.
+- int [referenceIndex](#referenceindex-1-2) (int frameIdx, int referenceSequenceSize) const — Returns the index of that element of a reference sequence that corresponds to the given frame, taking the phase offset into account.
+
+## Static Public Member Functions
+
+- static int [referenceIndex](#referenceindex-2-2) (double currentPhase, int referenceSequenceSize) — Returns the index of that element of a reference sequence that corresponds to the given phase.
+
+## Public Attributes
+
+- double **m_phaseOffset** = 0. — Phase offset in the interval [0,1] to adjust to a reference dataset.
+- double **m_averagePeriod** = 0. — Average period, i.e. number of frames until motion repeats.
+- int **m_bandSize** = 0 — Size of the similarity band used when computing this gating data.
+- bool **m_usedShiftCorrection** = false — Whether shift correction was used when computing this gating data.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; [m_phaseSignal](#m-phasesignal) — Phase signal for each frame in the interval [0,1] (ramp).
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; [m_similaritySignal](#m-similaritysignal) — Similarity of each frame its close neighboursm in [0,1].
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; [m_similaritySignalNormalized](#m-similaritysignalnormalized) — The content of m_similaritySignal, normalized and de-trended.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; [m_isPeriodicSimilarityMinimum](#m-isperiodicsimilarityminimum) — Value of 1 for each frame index that we expect to be a minimum point of the local similarity, i.e.
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — \ Name [Configurable](/cpp-sdk/4.5/api/classes/imfusion-configurable) Interface
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+## Member Function Documentation
+
+### id
+
+```cpp
+std::string ImFusion::GatingMetadata::id () const
+```
+
+*override, virtual*
+
+Returns a unique string identifier for this type of data component.
+
+**Note:** To avoid conflicts make sure to include potential plugin names into this ID. Due to the modular architecture of the ImFusion library, uniqueness of IDs cannot be checked at compile time. However, [DataComponentFactory](/cpp-sdk/4.5/api/classes/imfusion-datacomponentfactory) will check the uniqueness of the ID during registration.
+
+### configure
+
+```cpp
+void ImFusion::GatingMetadata::configure (const Properties * p)
+```
+
+*override, virtual*
+
+\ Name [Configurable](/cpp-sdk/4.5/api/classes/imfusion-configurable) Interface
+
+### configuration
+
+```cpp
+void ImFusion::GatingMetadata::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality
+
+### phase
+
+```cpp
+double ImFusion::GatingMetadata::phase (int frameIdx) const
+```
+
+Returns the phase signal for a given frame, taking the phase offset into account.
+
+**Parameters:**
+
+- `frameIdx` — Frame for phase signal look-up.
+
+**Returns:** Phase in the interval [0,1] for valid phase information, -1 otherwise.
+
+### referenceIndex
+
+```cpp
+int ImFusion::GatingMetadata::referenceIndex (int frameIdx, int referenceSequenceSize) const
+```
+
+Returns the index of that element of a reference sequence that corresponds to the given frame, taking the phase offset into account.
+
+**Parameters:**
+
+- `frameIdx` — Frame for phase signal look-up, e.g. US frame the gating information belongs to.
+- `referenceSequenceSize` — Number of reference images to map to, e.g. size of 4D CT.
+
+**Returns:** Returns an index in the interval [0,referenceSequenceSize-1] for valid phase information, -1 otherwise.
+
+Important: This method assumes that the reference sequence contains exactly one full cycle. If there are less or more images contained in it, the normalization factor referenceSequenceSize needs to be adjusted accordingly.
+
+This method uses [phase()](#phase) to compute the phase signal for the given frame.
+
+### referenceIndex
+
+```cpp
+int ImFusion::GatingMetadata::referenceIndex (double currentPhase, int referenceSequenceSize)
+```
+
+*static*
+
+Returns the index of that element of a reference sequence that corresponds to the given phase.
+
+**Parameters:**
+
+- `currentPhase` — Phase signal in the interval [0,1]
+- `referenceSequenceSize` — Number of reference images to map to, e.g. size of 4D CT.
+
+**Returns:** Returns an index in the interval [0,referenceSequenceSize-1] for valid phase information, -1 otherwise.
+
+## Member Data Documentation
+
+### m_phaseSignal
+
+```cpp
+std::vector <double> ImFusion::GatingMetadata::m_phaseSignal
+```
+
+Phase signal for each frame in the interval [0,1] (ramp).
+
+Values are computed by convolving the similarity matrix with a kernel taken around the current frame. This approach mostly matches via the duration of the oscillation pattern and will become unreliable if that changes significantly within 1 period. Noise tolerance is rather high though.
+
+### m_similaritySignal
+
+```cpp
+std::vector <double> ImFusion::GatingMetadata::m_similaritySignal
+```
+
+Similarity of each frame its close neighboursm in [0,1].
+
+Computes the average similarity with the m_averagePeriod/2 closest frames once before and once after the frame in question. Value supplied here is the higher of those 2 directional values. This choice was made because changes in visible anatomy not causes by the periodic motion will usually decrease the similarity value, so higher direction should be cleaner. There are no additional assumptions about the signal shape, in particular the result stays valid under rapid changes in oscillation frequency. Drawback: Noise in the input data is translated directly to noise in this curve.
+
+### m_similaritySignalNormalized
+
+```cpp
+std::vector <double> ImFusion::GatingMetadata::m_similaritySignalNormalized
+```
+
+The content of m_similaritySignal, normalized and de-trended.
+
+Normalization is performed by forcing the signal at the similarity minima positions in m_isPeriodicSimilarityMinimum to zero. Each individual interval between a neighbouring pair of such minima is then normalized to reach a maximum of 0. Reliability of the result depends on m_isPeriodicSimilarityMinimum, if that signal is off individual values may end up &lt; 0.
+
+### m_isPeriodicSimilarityMinimum
+
+```cpp
+std::vector <double> ImFusion::GatingMetadata::m_isPeriodicSimilarityMinimum
+```
+
+Value of 1 for each frame index that we expect to be a minimum point of the local similarity, i.e.
+
+the frame that is most different to all other frames within half a cycle. These typically mark events that are rare in the periodic motion, i.e. the short inhale in a breathing cycle. All other frames have a value of 0. Computed by taking the average similarity with the m_averagePeriod/2 closest frames once before and once after the frame in question. Then all points where the smoothed versions of both of the resulting curves have a local minimum are considered as candidates for these events. This is based on the assumption that the similarity change caused by external factors like probe movement does not completely compensate the loss due to the periodic tissue movement. Candidate rejection in case of clustering and filling of areas without candidates is performed by extrapolating safe candidates using m_averagePeriod. As such the resulting peaks may be slightly off in areas where the similarity contribution from tissue movement is weak and the period changes.

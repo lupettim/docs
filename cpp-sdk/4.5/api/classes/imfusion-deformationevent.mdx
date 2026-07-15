@@ -1,0 +1,39 @@
+---
+title: "ImFusion::DeformationEvent"
+sidebarTitle: "DeformationEvent"
+description: "Base class for customized deformation events."
+---
+
+`#include <ImFusion/GL/Deformation.h>`
+
+## Overview
+
+[Base](/cpp-sdk/4.5/api/structs/imfusion-dicom-base) class for customized deformation events.
+
+## Public Types
+
+- enum [EventType](#eventtype) &#123; PARAMETER_SET_CHANGED , PARAMETER_CHANGED &#125;
+
+## Public Member Functions
+
+- **DeformationEvent** ([Deformation](/cpp-sdk/4.5/api/classes/imfusion-deformation) \*deformation, [EventType](#eventtype) type)
+- [Deformation](/cpp-sdk/4.5/api/classes/imfusion-deformation) \* **deformation** () const
+- [EventType](#eventtype) **type** () const
+
+## Protected Attributes
+
+- [Deformation](/cpp-sdk/4.5/api/classes/imfusion-deformation) \* **m_deformation**
+- [EventType](#eventtype) **m_type**
+
+## Member Enumeration Documentation
+
+### EventType
+
+```cpp
+enum ImFusion::DeformationEvent::EventType
+```
+
+**Enumerator:**
+
+- `PARAMETER_SET_CHANGED` — The set of parameters has changed (e.g. control points).
+- `PARAMETER_CHANGED` — A parameter has changed (e.g. control point position).

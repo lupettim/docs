@@ -1,0 +1,65 @@
+---
+title: "ImFusion::AnnotationActionSharedState"
+sidebarTitle: "AnnotationActionSharedState"
+---
+
+## Classes
+
+- struct [Undo](/cpp-sdk/4.5/api/structs/imfusion-annotationactionsharedstate-undo)
+- struct [BrushSettings](/cpp-sdk/4.5/api/structs/imfusion-annotationactionsharedstate-brushsettings)
+- struct [LabelMapSettings](/cpp-sdk/4.5/api/structs/imfusion-annotationactionsharedstate-labelmapsettings)
+- struct [LandmarkSettings](/cpp-sdk/4.5/api/structs/imfusion-annotationactionsharedstate-landmarksettings)
+- struct [LineSettings](/cpp-sdk/4.5/api/structs/imfusion-annotationactionsharedstate-linesettings)
+
+## Public Member Functions
+
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+## Public Attributes
+
+- struct [ImFusion::AnnotationActionSharedState::Undo](/cpp-sdk/4.5/api/structs/imfusion-annotationactionsharedstate-undo) **m_undo**
+- [Seg::LabelPainter](/cpp-sdk/4.5/api/classes/imfusion-seg-labelpainter) **m_labelPainter**
+- [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; [std::pair](http://en.cppreference.com/w/cpp/utility/pair.html)&lt; bool, QColor &gt;(int)&gt; **m_customScrollbarNotchPainter**
+- const QColor **m_defaultAnnotatedFrameColor** = QColor(0, 200, 0, 100)
+- const QColor **m_defaultPropagatedFrameColor** = QColor(0, 200, 0, 50)
+- const QColor **m_defaultContouredFrameColor** = QColor(200, 200, 0, 100)
+- const QColor **m_defaultConsideredAnnotatedFrameColor** = QColor(200, 0, 0, 100)
+- struct [ImFusion::AnnotationActionSharedState::BrushSettings](/cpp-sdk/4.5/api/structs/imfusion-annotationactionsharedstate-brushsettings) **m_brushSettings**
+- struct [ImFusion::AnnotationActionSharedState::LabelMapSettings](/cpp-sdk/4.5/api/structs/imfusion-annotationactionsharedstate-labelmapsettings) **m_labelSettings**
+- struct [ImFusion::AnnotationActionSharedState::LandmarkSettings](/cpp-sdk/4.5/api/structs/imfusion-annotationactionsharedstate-landmarksettings) **m_landmarkSettings**
+- struct [ImFusion::AnnotationActionSharedState::LineSettings](/cpp-sdk/4.5/api/structs/imfusion-annotationactionsharedstate-linesettings) **m_lineSettings**
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::pair](http://en.cppreference.com/w/cpp/utility/pair.html)&lt; vec3, vec3 &gt; &gt; **m_distanceMeasurements**
+- Signal **signalDistanceMeasurementsChanged**
+- QString **preferredAlgorithmType**
+- Signal&lt; bool &gt; **signalRelatedData3DVisibilityChanged**
+
+## Member Function Documentation
+
+### configure
+
+```cpp
+void ImFusion::AnnotationActionSharedState::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### configuration
+
+```cpp
+void ImFusion::AnnotationActionSharedState::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality

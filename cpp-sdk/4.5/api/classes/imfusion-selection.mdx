@@ -1,0 +1,161 @@
+---
+title: "ImFusion::Selection"
+sidebarTitle: "Selection"
+description: "Utility class for describing a selection of elements out of a set."
+---
+
+`#include <ImFusion/Base/Selection.h>`
+
+## Overview
+
+Utility class for describing a selection of elements out of a set.
+
+Conceptually, a [Selection](/cpp-sdk/4.5/api/classes/imfusion-selection) pairs a range of indices that are selected with the index of a "focus" item and provides syntactic sugar on top. For instance, the set of selected items could define which ones to show in general while the focus item is additionally highlighted. The class is fully separate from the item set of which it describes the selection. This means for instance that it cannot know the actual number of items in the set and the user/parent class must manually make sure that they match. Also, a [Selection](/cpp-sdk/4.5/api/classes/imfusion-selection) only manages indices and offers no way of accessing the underlying elements.
+
+In order to iterate over all selected indices, you can do for instance the following:
+
+```cpp
+for (int index = selection.firstSelected(); index < selection.lastSelected(); ++index) {
+ if (selection.isSelected(index)) {
+        ...
+    }
+}
+```
+ fragment
+The same effect can also be achieved in a much more terse fashion:
+
+```cpp
+for (int index : selection.selectedIndices()) {
+    ...
+}
+```
+ fragment
+Sometimes it can be more convenient to "thin out" a selection by only selecting every N-th element. You can use the fromFirstLastSkip() or [setFirstLastSkip()](#setfirstlastskip) helper functions for defining such selections.
+
+## Public Types
+
+- enum class [NonePolicy](#nonepolicy) &#123; Empty , Focus , All &#125; — Enumeration to specify what elements of the set to consider if the [Selection](/cpp-sdk/4.5/api/classes/imfusion-selection) is none (cf. isNone()).
+
+## Public Member Functions
+
+- **Selection** () — A default-constructed selection is empty.
+- bool **operator==** (const Selection &other) const — Tells if two selections are equal.
+- bool **operator!=** (const Selection &other) const — Tells if two selections are different.
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+## Helper functions
+
+- static Selection **fromFirstLastSkip** (int first, int last, int [skip](#skip)) — Creates a [Selection](/cpp-sdk/4.5/api/classes/imfusion-selection) with first/last/skip convention (cf. [setFirstLastSkip()](#setfirstlastskip)).
+- static Selection **fromAll** (int range) — Creates a [Selection](/cpp-sdk/4.5/api/classes/imfusion-selection) where all indices in the range [0, range) are selected.
+
+## Setting the selection
+
+- void **setNone** () — Select nothing.
+- void **setAll** (int range) — Select all indices in the range [0, range).
+- void **clamp** (int range) — Clamp the range of selected indices and the focus item to [0, range).
+- void **setSingle** (int index) — Select a single element, all other indices will not be considered selected.
+- void [setFirstLastSkip](#setfirstlastskip) (int first, int last, int [skip](#skip)) — Set the first and the total range of the selection together with a skip of the selection.
+- void **setSelected** (int index, bool [isSelected](#isselected)) — Set selected status of an individual element.
+- void **setFocus** (int index) — Define a single focus item in addition to the selection.
+
+## Querying the selection
+
+- bool [isSelected](#isselected) (int index, [NonePolicy](#nonepolicy) noneHandling=NonePolicy::Empty) const — Return if a particular item is selected.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; int &gt; **selectedIndices** () const — Returns all selected indices.
+- bool **isNone** () const — Return if none is selected, cf. setNone().
+- int **range** () const — Return the total number of elements considered in the selection (both selected and non-selected).
+- int **size** () const — Return the number of selected elements.
+- int **firstSelected** () const — Return first selected element ( or -1 if the selection is None).
+- int **lastSelected** () const — Return last selected element ( or -1 if the selection is None).
+- bool [hasRegularSkip](#hasregularskip) () const — Returns true if there is an equidistant step between each selected element.
+- int [skip](#skip) () const — Returns the smallest increment - 1 such that each selected element is visited when iterating from firstSelected to lastSelected I.e.
+- int **focus** () const — Return the focus item.
+
+## Member Enumeration Documentation
+
+### NonePolicy
+
+```cpp
+enum class ImFusion::Selection::NonePolicy
+```
+
+*strong*
+
+Enumeration to specify what elements of the set to consider if the [Selection](/cpp-sdk/4.5/api/classes/imfusion-selection) is none (cf. isNone()).
+
+**Enumerator:**
+
+- `Empty` — Consider no images being selected.
+- `Focus` — Consider only the focus image being selected.
+- `All` — Consider all images being selected.
+
+## Member Function Documentation
+
+### setFirstLastSkip
+
+```cpp
+void ImFusion::Selection::setFirstLastSkip (int first, int last, int skip)
+```
+
+Set the first and the total range of the selection together with a skip of the selection.
+
+Afterwards only every N-th index in the range [first, last] is selected where N = skip+1. If last is smaller than first, the selection will be None
+
+### isSelected
+
+```cpp
+bool ImFusion::Selection::isSelected (int index, NonePolicy noneHandling = NonePolicy::Empty) const
+```
+
+Return if a particular item is selected.
+
+The user can provide a [NonePolicy](#nonepolicy) to specify the return value in the case isNone() is true.
+
+### hasRegularSkip
+
+```cpp
+bool ImFusion::Selection::hasRegularSkip () const
+```
+
+Returns true if there is an equidistant step between each selected element.
+
+The skip can be retrieved via [skip()](#skip).
+
+### skip
+
+```cpp
+int ImFusion::Selection::skip () const
+```
+
+Returns the smallest increment - 1 such that each selected element is visited when iterating from firstSelected to lastSelected I.e.
+
+if there is a equidistant skip between selected elements, this skip is returned. Otherwise the method returns 0.
+
+### configure
+
+```cpp
+void ImFusion::Selection::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### configuration
+
+```cpp
+void ImFusion::Selection::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality

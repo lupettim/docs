@@ -1,0 +1,56 @@
+---
+title: "ImFusion::DicomIOAlgorithmFolder"
+sidebarTitle: "DicomIOAlgorithmFolder"
+---
+
+## Public Member Functions
+
+- **DicomIOAlgorithmFolder** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*image, IoMode mode)
+- **DicomIOAlgorithmFolder** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* &gt; &images, IoMode mode)
+- int [supportedLocations](#supportedlocations) () const override — Return combination of supported location types from LocationType enum.
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+## Static Public Member Functions
+
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=0)
+
+## Member Function Documentation
+
+### supportedLocations
+
+```cpp
+int ImFusion::DicomIOAlgorithmFolder::supportedLocations () const
+```
+
+*override, virtual*
+
+Return combination of supported location types from LocationType enum.
+
+### configure
+
+```cpp
+void ImFusion::DicomIOAlgorithmFolder::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### configuration
+
+```cpp
+void ImFusion::DicomIOAlgorithmFolder::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality

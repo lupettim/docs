@@ -1,0 +1,23 @@
+---
+title: "ImFusion::GL::FullscreenSquare"
+sidebarTitle: "FullscreenSquare"
+description: "Helper class to easily render a full-screen quad."
+---
+
+`#include <ImFusion/Core/GL/FullscreenSquare.h>`
+
+## Overview
+
+Helper class to easily render a full-screen quad.
+
+The rectangle is created as a triangle strip with 4 vertices with the position ([-1..1], [-1..1], 0) and the texture coordinates ([0..1], [0..1], 0). Position attributes are always at location 0 and texture coordinate attributes at location 1 to be compatible with [GL::FixedFunctionPipeline](/cpp-sdk/4.5/api/classes/imfusion-gl-fixedfunctionpipeline).
+
+**Note:** This class is only a wrapper around a [VertexBuffer](/cpp-sdk/4.5/api/classes/imfusion-gl-vertexbuffer). You need to set the shader environ that performs the actual rendering yourself, e.g. using [FixedFunctionPipeline](/cpp-sdk/4.5/api/classes/imfusion-gl-fixedfunctionpipeline).
+
+**See also:** [GL::VertexBuffer::createFullscreenSquare()](/cpp-sdk/4.5/api/classes/imfusion-gl-vertexbuffer)
+
+## Public Member Functions
+
+- void **draw** (Primitive primitive)
+- void **drawOutline** ()
+- void **drawFilled** ()

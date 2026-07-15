@@ -1,0 +1,88 @@
+---
+title: "ImFusion::GlRectangleBillboard"
+sidebarTitle: "GlRectangleBillboard"
+description: "Renders a fixed size rectangle billboard in the world, always facing towards the camera."
+---
+
+`#include <ImFusion/GL/GlRectangleBillboard.h>`
+
+## Overview
+
+Renders a fixed size rectangle billboard in the world, always facing towards the camera.
+
+The size of the rectangle is specified in pixels, for the size of the side of the rectangle. It is always looking towards the view, without depth test, at the position in the world defined with [GlObject::setMatrix](/cpp-sdk/4.5/api/classes/imfusion-globject). It can be rotated in the view by applying a rotation along the Z axis on the given matrix.
+
+## Public Member Functions
+
+- **GlRectangleBillboard** (vec2i size)
+- **GlRectangleBillboard** (int width, int height)
+- virtual void [draw](#draw) (const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &view) override — Draw the object in 3D space.
+- virtual [Geometry::AlignedBox](/cpp-sdk/4.5/api/classes/imfusion-geometry-alignedbox) [bounds](#bounds) () const override — Get the axis-aligned bounding box of this [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) in world space.
+- virtual [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [typeName](#typename) () const override — Return unique identifier for this object class used for serialization.
+- void **setSize** (vec2i size) — Sets the size of the rectangle, in pixels.
+- void **setLineWidth** (double width) — Sets the line width.
+- void **setLineColor** (vec4 color) — Sets the line color.
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+## Member Function Documentation
+
+### draw
+
+```cpp
+virtual void ImFusion::GlRectangleBillboard::draw (const GlView & view)
+```
+
+*override, virtual*
+
+Draw the object in 3D space.
+
+### bounds
+
+```cpp
+virtual Geometry::AlignedBox ImFusion::GlRectangleBillboard::bounds () const
+```
+
+*override, virtual*
+
+Get the axis-aligned bounding box of this [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) in world space.
+
+Return an empty (default-constructed) AlignedBox object if the [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) does not reside in world space.
+
+### typeName
+
+```cpp
+virtual std::string ImFusion::GlRectangleBillboard::typeName () const
+```
+
+*override, virtual*
+
+Return unique identifier for this object class used for serialization.
+
+### configure
+
+```cpp
+void ImFusion::GlRectangleBillboard::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### configuration
+
+```cpp
+void ImFusion::GlRectangleBillboard::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality

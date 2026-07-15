@@ -1,0 +1,22 @@
+---
+title: "ImFusion::LC2"
+sidebarTitle: "LC2"
+description: "Linear correlation of linear combination ( LC2 ) similarity measure."
+---
+
+`#include <ImFusion/Base/LC2.h>`
+
+## Overview
+
+Linear correlation of linear combination ([LC2](/cpp-sdk/4.5/api/classes/imfusion-lc2)) similarity measure.
+
+## Static Public Member Functions
+
+- static double **compute** (int patchSize, const [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; float &gt; \*img, [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; float &gt; \*imgOut=0, double \*weightOut=0) — Compute the measure with a specified patch size.
+- static [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; float &gt; \* **createLC2Aux** ([TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; float &gt; \*moving, [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; T &gt; \*fixed) — Compute combined multi-channel auxiliary image to use for main [LC2](/cpp-sdk/4.5/api/classes/imfusion-lc2) method above.
+
+## Static Protected Member Functions
+
+- static void **updateLC2** (double \*ptrOut, double sgn, int x, int y, const [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; T &gt; &img) — Helper function for updating the working variables with a sliding-window approach.
+- static double **computeLC2** (int patchSize, const [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; T &gt; &img, [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; T &gt; \*imgOut=0, double \*weightOut=0) — Compute linear correlation of linear combination ([LC2](/cpp-sdk/4.5/api/classes/imfusion-lc2)) in software.
+- static double **computeLC2_3D** (int patchSize, const [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; T &gt; &img, [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; T &gt; \*imgOut=0, double \*weightOut=0) — Compute linear correlation of linear combination ([LC2](/cpp-sdk/4.5/api/classes/imfusion-lc2)) in software.

@@ -1,0 +1,179 @@
+---
+title: "ImFusion::MeshProcessing::Geometry"
+sidebarTitle: "Geometry"
+description: "Mesh processing algorithms related to geometrical operations."
+---
+
+## Overview
+
+[Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) processing algorithms related to geometrical operations.
+
+## Classes
+
+- struct [DominantPlaneOptimizerSettings](/cpp-sdk/4.5/api/structs/imfusion-meshprocessing-geometry-dominantplaneoptimizersettings) — Structure representing the settings for the optimizor used to compute dominant plane of the mesh.
+
+## Functions
+
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; &gt; [intersection](#intersection-1-2) (const [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) &mesh, const [ImFusion::Geometry::Plane](/cpp-sdk/4.5/api/classes/imfusion-geometry-plane) &plane) — Computes an intersection of a mesh and a plane.
+- bool [intersects](#intersects) (const [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) &mesh, const [ImFusion::Geometry::Plane](/cpp-sdk/4.5/api/classes/imfusion-geometry-plane) &plane, double tolerance=0.0, double \*outDistance=nullptr) — Computes an intersection of a mesh and a plane.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; [intersection](#intersection-2-2) (const [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) &mesh, const [ImFusion::Geometry::Line](/cpp-sdk/4.5/api/classes/imfusion-geometry-line) &line) — Computes all intersections between the given mesh and a line.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; **intersection** (const [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) &mesh, const [ImFusion::Geometry::LineSegment](/cpp-sdk/4.5/api/classes/imfusion-geometry-linesegment) &line)
+- bool [meshDistance](#meshdistance) (const [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) &meshSrc, const [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) &meshDst, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; &dist, bool computeSurfaceDistance=true, bool signedDistance=false) — Compute the nearest neighbor distance to the source mesh for every destination mesh vertex.
+- bool [pointToSurfaceDistance](#pointtosurfacedistance) (const [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) &meshSrc, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; &pointsDst, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; &dist, bool signedDistance=false, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; int &gt; \*closestFaceId=nullptr, [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) \*p=nullptr) — Compute the nearest neighbor distance to the source mesh for every destination point.
+- bool [pointToPointDistance](#pointtopointdistance) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; &pointsSrc, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; &pointsDst, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; &dist, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; int &gt; \*srcToDstMapping=nullptr) — Compute the nearest neighbor distance to the source points for every destination point.
+- bool [isPointInsideMesh](#ispointinsidemesh) (const [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) &mesh, const vec3 &p) — Estimate location of the point with respect to mesh.
+- [ImFusion::Geometry::Line](/cpp-sdk/4.5/api/classes/imfusion-geometry-line) [findMajorAxis](#findmajoraxis) (const [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) &mesh) — Estimate the major axis of the mesh.
+- [ImFusion::Geometry::Plane](/cpp-sdk/4.5/api/classes/imfusion-geometry-plane) [findDominantPlane](#finddominantplane) (const [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) &mesh, double \*inlierRatio=nullptr, const [ImFusion::MeshProcessing::Geometry::DominantPlaneOptimizerSettings](/cpp-sdk/4.5/api/structs/imfusion-meshprocessing-geometry-dominantplaneoptimizersettings) &settings=[ImFusion::MeshProcessing::Geometry::DominantPlaneOptimizerSettings](/cpp-sdk/4.5/api/structs/imfusion-meshprocessing-geometry-dominantplaneoptimizersettings)()) — Estimate a dominant plane of the mesh.
+
+## Function Documentation
+
+### intersection
+
+```cpp
+std::vector < std::vector < vec3 > > ImFusion::MeshProcessing::Geometry::intersection (const Mesh & mesh, const ImFusion::Geometry::Plane & plane)
+```
+
+Computes an intersection of a mesh and a plane.
+
+**Parameters:**
+
+- `mesh` — mesh
+- `plane` — plane
+
+**Returns:** vector of polylines representing connected contours formed from sorted intersection points An individual contour is closed if the returned Polygon has its first point equal to the last one.
+
+**Note:** If a mesh triangle lies in the same plane as the intersection plane, no intersection points are added for such triangle
+
+### intersects
+
+```cpp
+bool ImFusion::MeshProcessing::Geometry::intersects (const Mesh & mesh, const ImFusion::Geometry::Plane & plane, double tolerance = 0.0, double * outDistance = nullptr)
+```
+
+Computes an intersection of a mesh and a plane.
+
+**Parameters:**
+
+- `mesh` — mesh
+- `plane` — plane
+- `tolerance` — Optional tolerance in world units for the intersection computation
+- `outDistance` — Optional output parameter to return unsigned distance from the closest vertex to plane. Will be set to 0 if the plane intersects the mesh within the specified tolerance
+
+**Returns:** true if the mesh intersects with the plane.
+
+**Note:** This method is faster than [MeshProcessing::Geometry::intersection](#intersection-1-2).
+
+### intersection
+
+```cpp
+std::vector < vec3 > ImFusion::MeshProcessing::Geometry::intersection (const Mesh & mesh, const ImFusion::Geometry::Line & line)
+```
+
+Computes all intersections between the given mesh and a line.
+
+**Parameters:**
+
+- `mesh` — mesh
+- `line` — line
+
+**Returns:** intersections between the given mesh and a line. The result is ordered by where the points are on the line.
+
+### meshDistance
+
+```cpp
+bool ImFusion::MeshProcessing::Geometry::meshDistance (const Mesh & meshSrc, const Mesh & meshDst, std::vector < double > & dist, bool computeSurfaceDistance = true, bool signedDistance = false)
+```
+
+Compute the nearest neighbor distance to the source mesh for every destination mesh vertex.
+
+**Parameters:**
+
+- `meshSrc` — source mesh
+- `meshDst` — destination mesh
+- `dist` — vector of distances between vertices of meshDst and meshSrc, its size is the number of vertices in meshDst
+- `computeSurfaceDistance` — if false, the distance from each vertex of MeshDst to closest vertex of MeshSrc will be computed, otherwise the distance from each vertex of MeshDst to the surface of MeshSrc will be computed
+- `signedDistance` — if true, the signed distance will be computed, otherwise an absolute distance will be computed. Note that signed distances only work when computeSurfaceDistance is true
+
+**Returns:** true upon successful computation
+
+### pointToSurfaceDistance
+
+```cpp
+bool ImFusion::MeshProcessing::Geometry::pointToSurfaceDistance (const Mesh & meshSrc, const std::vector < vec3 > & pointsDst, std::vector < double > & dist, bool signedDistance = false, std::vector < int > * closestFaceId = nullptr, Progress * p = nullptr)
+```
+
+Compute the nearest neighbor distance to the source mesh for every destination point.
+
+**Parameters:**
+
+- `meshSrc` — source mesh
+- `pointsDst` — destination points
+- `dist` — vector of distances between meshSrc and pointsDst, its size is the size of pointsDst
+- `signedDistance` — if true, the signed distance will be computed, otherwise an absolute distance will be computed
+- `closestFaceId` — optional vector containing the ids of the closest faces from meshSrc
+
+**Returns:** true upon successful computation
+
+### pointToPointDistance
+
+```cpp
+bool ImFusion::MeshProcessing::Geometry::pointToPointDistance (const std::vector < vec3 > & pointsSrc, const std::vector < vec3 > & pointsDst, std::vector < double > & dist, std::vector < int > * srcToDstMapping = nullptr)
+```
+
+Compute the nearest neighbor distance to the source points for every destination point.
+
+**Parameters:**
+
+- `pointsSrc` — source points
+- `pointsDst` — destination points
+- `dist` — vector of distances between pointsSrc and pointsDst, its size is the size of pointsDst
+- `srcToDstMapping` — optional vector representing the mapping between pointsSrc to pointsDst, has the size of pointsDst
+
+**Returns:** true upon successful computation
+
+### isPointInsideMesh
+
+```cpp
+bool ImFusion::MeshProcessing::Geometry::isPointInsideMesh (const Mesh & mesh, const vec3 & p)
+```
+
+Estimate location of the point with respect to mesh.
+
+Points on the mesh will be considered as inside
+
+**Parameters:**
+
+- `mesh`
+- `p` — point
+
+**Returns:** point location
+
+### findMajorAxis
+
+```cpp
+ImFusion::Geometry::Line ImFusion::MeshProcessing::Geometry::findMajorAxis (const Mesh & mesh)
+```
+
+Estimate the major axis of the mesh.
+
+**Parameters:**
+
+- `mesh` — mesh
+
+**Returns:** estimated axis
+
+### findDominantPlane
+
+```cpp
+ImFusion::Geometry::Plane ImFusion::MeshProcessing::Geometry::findDominantPlane (const Mesh & mesh, double * inlierRatio = nullptr, const ImFusion::MeshProcessing::Geometry::DominantPlaneOptimizerSettings & settings = ImFusion::MeshProcessing::Geometry::DominantPlaneOptimizerSettings ())
+```
+
+Estimate a dominant plane of the mesh.
+
+**Parameters:**
+
+- `mesh` — mesh
+- `inlierRatio` — (optional) ratio of inlier faces wrt to total number of faces
+- `settings` — (optional) settings for the optimizor
+
+**Returns:** estimated plane

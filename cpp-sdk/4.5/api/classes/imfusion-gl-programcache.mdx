@@ -1,0 +1,89 @@
+---
+title: "ImFusion::GL::ProgramCache"
+sidebarTitle: "ProgramCache"
+description: "Helper class to manage instances of the same base shader with different abstract includes and/or defines."
+---
+
+`#include <ImFusion/Core/GL/ProgramCache.h>`
+
+## Overview
+
+Helper class to manage instances of the same base shader with different abstract includes and/or defines.
+
+Both [abstract shader includes](/cpp-sdk/4.5/api/classes/imfusion-gl-abstractinclude) and defines change the actual source code of an OpenGL shader. Often the same base shader is used for different combinations of shader includes/defines. [ProgramCache](/cpp-sdk/4.5/api/classes/imfusion-gl-programcache) class facilitates managing these shader instances for combinations of multiple abstract includes. Based on the type of the abstract include, it will return (and if needed lazy-instantiate it) the correct shader variant that has the corresponding include code expanded.
+
+```cpp
+// Instantiate the program cache with the shader base version
+GL::ProgramCache cache(GL::Program::createVertexFragment("...", "...");
+
+// Retrieve shader variant that has additionally `SOME_DEFINE` defined
+GL::Program& p1 = cache.getProgram("#define SOME_DEFINE");
+
+// Retrieve shader variant with two additional abstract shader includes and with `SOME_DEFINE`.
+GL::Program& p2 = cache.getProgram({abstractInclude1, abstractInclude2}, "#define SOME_DEFINE");
+```
+ fragment
+
+**Warning:** Make sure not to alter the abstract includes and/or defines of shaders returned by this class. Doing so may lead to subtle bugs or even crashes as [ProgramCache](/cpp-sdk/4.5/api/classes/imfusion-gl-programcache) does not track any changes to these shader settings done from the outside.
+
+**See also:** [GL::Program](/cpp-sdk/4.5/api/classes/imfusion-gl-program), [GL::AbstractInclude](/cpp-sdk/4.5/api/classes/imfusion-gl-abstractinclude)
+
+## Public Member Functions
+
+- [ProgramCache](#programcache) ([std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [GL::Program](/cpp-sdk/4.5/api/classes/imfusion-gl-program) &gt; referenceProgram, [std::size_t](http://en.cppreference.com/w/cpp/types/size_t.html) cacheSize=10) — Instantiates a [ProgramCache](/cpp-sdk/4.5/api/classes/imfusion-gl-programcache) based on the given reference shader.
+- [GL::Program](/cpp-sdk/4.5/api/classes/imfusion-gl-program) & [getProgram](#getprogram-1-2) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; const [GL::AbstractInclude](/cpp-sdk/4.5/api/classes/imfusion-gl-abstractinclude) \* &gt; &includes, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &additionalDefines="") — Retrieves the correct shader version w.r.t the given abstract includes.
+- [GL::Program](/cpp-sdk/4.5/api/classes/imfusion-gl-program) & [getProgram](#getprogram-2-2) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &additionalDefines) — Convenience overload that retrieves the shader with the given additional defines but without any additional includes.
+
+## Constructor & Destructor Documentation
+
+### ProgramCache
+
+```cpp
+ImFusion::GL::ProgramCache::ProgramCache (std::unique_ptr < GL::Program > referenceProgram, std::size_t cacheSize = 10)
+```
+
+Instantiates a [ProgramCache](/cpp-sdk/4.5/api/classes/imfusion-gl-programcache) based on the given reference shader.
+
+**Parameters:**
+
+- `referenceProgram` — Reference shader, must not be null.
+- `cacheSize` — Number of instances that can be cached.
+
+**Exceptions:**
+
+- `std::runtime_error` — if *referenceProgram* is invalid/null.
+
+## Member Function Documentation
+
+### getProgram
+
+```cpp
+GL::Program & ImFusion::GL::ProgramCache::getProgram (const std::vector < const GL::AbstractInclude * > & includes, const std::string & additionalDefines = "")
+```
+
+Retrieves the correct shader version w.r.t the given abstract includes.
+
+**Parameters:**
+
+- `includes` — [Vector](/cpp-sdk/4.5/api/classes/imfusion-vector) of abstract includes
+- `additionalDefines` — Set of defines inserted into the shader header.
+
+**Exceptions:**
+
+- `std::runtime_error` — if [GL::Program](/cpp-sdk/4.5/api/classes/imfusion-gl-program) instantiation for the requested combination of abstract includes and defines has failed.
+
+### getProgram
+
+```cpp
+GL::Program & ImFusion::GL::ProgramCache::getProgram (const std::string & additionalDefines)
+```
+
+Convenience overload that retrieves the shader with the given additional defines but without any additional includes.
+
+**Parameters:**
+
+- `additionalDefines` — Set of defines inserted into the shader header.
+
+**Exceptions:**
+
+- `std::runtime_error` — if [GL::Program](/cpp-sdk/4.5/api/classes/imfusion-gl-program) instantiation for the requested combination of abstract includes and defines has failed.

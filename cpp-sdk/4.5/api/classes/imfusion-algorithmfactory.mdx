@@ -1,0 +1,225 @@
+---
+title: "ImFusion::AlgorithmFactory"
+sidebarTitle: "AlgorithmFactory"
+description: "Interface for algorithm factories."
+---
+
+`#include <ImFusion/Base/AlgorithmFactory.h>`
+
+## Overview
+
+Interface for algorithm factories.
+
+Inherit from this class to create an algorithm factory for your module. You can register Algorithms with the factory (typically done in the constructor) and query or instantiate them later.
+
+An algorithm can be registered with registerAlgorithm&lt;T&gt;(id, name) where T is the algorithm type. The algorithm can later be queried with algorithmDescriptor(qualifiedId) and instantiated with instantiateAlgorithm(qualifiedId, data), where qualifiedId is *id* prepended with the factory module name.
+
+```cpp
+class VisionAlgorithmFactory : public AlgorithmFactory
+{
+    VisionAlgorithmFactory() : AlgorithmFactory("Vision")
+    {
+ registerAlgorithm<GaussianFilterAlgorithm>("GaussianFilter", "Filters;Gaussian");
+    }
+};
+
+std::unique_ptr<Algorithm> alg = instantiateAlgorithm("Vision.GaussianFilter", data); // using id
+std::unique_ptr<GaussianFilterAlgorithm> alg = instantiateAlgorithm<GaussianFilterAlgorithm>(data); // using type
+```
+ fragment
+You may also query algorithms compatible with a given set of data:
+
+```cpp
+std::vector<Descriptor> compatible = compatibleDescriptors(data);     // non-I/O algorithms
+std::vector<Descriptor> compatibleIo = compatibleIoDescriptors(data); // I/O algorithms
+```
+ fragment
+
+## Classes
+
+- struct [Descriptor](/cpp-sdk/4.5/api/structs/imfusion-algorithmfactory-descriptor) — Struct describing an algorithm registered with a factory.
+
+## Public Member Functions
+
+- [AlgorithmFactory](#algorithmfactory-1-3) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &module) — Create algorithm factory for the given module.
+- [AlgorithmFactory](#algorithmfactory-2-3) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &module, bool checkLicense)
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **moduleName** () const — Returns the module name of the factory.
+- void [registerAlgorithm](#registeralgorithm) ([std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) id, [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) guiName, [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; [Descriptor::AlgorithmAttributes](/cpp-sdk/4.5/api/structs/imfusion-algorithmfactory-descriptor) &gt; flags=&#123;&#125;, [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) &gt; configurationOverride=std::nullopt) — Register algorithm type *T* with the given *id* and [GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui) *name*.
+- void [registerDeprecatedAlgorithmId](#registerdeprecatedalgorithmid) ([std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) deprecatedId, [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) canonicalId) — Register a legacy algorithm ID that redirects to a current one, emitting a deprecation warning on use.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; T &gt; [instantiateAlgorithm](#instantiatealgorithm-1-2) (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data) const — Create an instance of the algorithm with the type *T*.
+- virtual [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) &gt; [instantiateAlgorithm](#instantiatealgorithm-2-2) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &id, const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data) const — Create an instance of the algorithm with the given *id*.
+- virtual [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [IoAlgorithm](/cpp-sdk/4.5/api/classes/imfusion-ioalgorithm) &gt; [instantiateIoAlgorithm](#instantiateioalgorithm) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &id, const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data) const — Convenience function to create an instance of an IO algorithm with the given *id*.
+- virtual [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Descriptor](/cpp-sdk/4.5/api/structs/imfusion-algorithmfactory-descriptor) &gt; **compatibleDescriptors** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data) const — Returns the descriptors of non-I/O algorithms registered with this factory which are compatible with *data*.
+- virtual [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Descriptor](/cpp-sdk/4.5/api/structs/imfusion-algorithmfactory-descriptor) &gt; **compatibleIoDescriptors** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data) const — Returns the descriptors of I/O algorithms registered with this factory which are compatible with *data*.
+- virtual [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Descriptor](/cpp-sdk/4.5/api/structs/imfusion-algorithmfactory-descriptor) &gt; **compatibleIoDescriptors** (const [Filesystem::Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path) &path) const — Returns the descriptors of algorithms registered with this factory which can load the given file path.
+- virtual [Descriptor](/cpp-sdk/4.5/api/structs/imfusion-algorithmfactory-descriptor) [algorithmDescriptor](#algorithmdescriptor) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &id, bool matchGuiName=false) const — Returns the descriptors of the algorithm with the given *id*.
+- virtual [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Descriptor](/cpp-sdk/4.5/api/structs/imfusion-algorithmfactory-descriptor) &gt; **algorithmDescriptors** () const — Returns all algorithm descriptors registered with this factory.
+- virtual [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Descriptor](/cpp-sdk/4.5/api/structs/imfusion-algorithmfactory-descriptor) &gt; **ioAlgorithmDescriptors** () const — Returns all I/O algorithm descriptors registered with this factory.
+- [Descriptor](/cpp-sdk/4.5/api/structs/imfusion-algorithmfactory-descriptor) **algorithmDescriptor** () const — Returns the descriptors of the algorithm type *T*.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **algorithmId** () const — Returns the id of the algorithm type *T*.
+- virtual bool [addAlgorithmFactoryToFront](#addalgorithmfactorytofront) () const — Returns whether to add this [AlgorithmFactory](/cpp-sdk/4.5/api/classes/imfusion-algorithmfactory) to the front of the list during registration.
+- [AlgorithmFactory](#algorithmfactory-3-3) ()
+
+## Static Protected Member Functions
+
+- static [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [nameFromId](#namefromid) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name) — Create a [GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui) name from the algorithm id.
+- static [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [idFromName](#idfromname) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name) — Create a standard algorithm id from the [GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui) name.
+
+## Protected Attributes
+
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **m_moduleName**
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Descriptor](/cpp-sdk/4.5/api/structs/imfusion-algorithmfactory-descriptor) &gt; **m_algorithmDescriptors**
+- [std::unordered_map](http://en.cppreference.com/w/cpp/container/unordered_map.html)&lt; [std::type_index](http://en.cppreference.com/w/cpp/types/type_index.html), [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **m_algorithmIds**
+- [std::unordered_map](http://en.cppreference.com/w/cpp/container/unordered_map.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html), [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **m_deprecatedAlgorithmIds** — Maps deprecated fully-qualified IDs to their canonical replacements.
+
+## Constructor & Destructor Documentation
+
+### AlgorithmFactory
+
+```cpp
+ImFusion::AlgorithmFactory::AlgorithmFactory (const std::string & module)
+```
+
+*explicit*
+
+Create algorithm factory for the given module.
+
+**Parameters:**
+
+- `module` — The name of the factory. This name is prepended to the algorithm IDs registered with this factory (e.g. "Vision" → "Vision.GaussianFilter"). The name must be unique as it is also used to identify the factory.
+
+**Note:** This name is independent of Plugin names and license feature codes, but it's good practice to use the same string for all three.
+
+### AlgorithmFactory
+
+```cpp
+ImFusion::AlgorithmFactory::AlgorithmFactory (const std::string & module, bool checkLicense)
+```
+
+*explicit*
+
+****Deprecated**:** The checkLicense parameter is no longer used.
+
+****Deprecated**:** "checkLicense parameter is deprecated and ignored. Use single-parameter constructor."
+
+### AlgorithmFactory
+
+```cpp
+ImFusion::AlgorithmFactory::AlgorithmFactory ()
+```
+
+****Deprecated**:** "AlgorithmFactory must have a module name."
+
+## Member Function Documentation
+
+### registerAlgorithm
+
+```cpp
+template<typename T> void ImFusion::AlgorithmFactory::registerAlgorithm (std::string id, std::string guiName, Flags < Descriptor::AlgorithmAttributes > flags = {}, std::optional < Properties > configurationOverride = std::nullopt)
+```
+
+Register algorithm type *T* with the given *id* and [GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui)*name*.
+
+**Parameters:**
+
+- `id` — The unique algorithm ID. The id will be automatically prepended by the factory module name (e.g. "GaussianFilter" -&gt; "Vision.GaussianFilter"). As a convention, the ID should be the same as the algorithm's class name excluding the "Algorithm" suffix (e.g. GaussianFilterAlgorithm -&gt; "GaussianFilter").
+- `guiName` — The name used by the [GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui) to represent this algorithm. Can contain semicolon delimited categories (e.g. [Filters](/cpp-sdk/4.5/api/namespaces/imfusion-filters);Gaussian). As a convention, IoAlgorithms should always be in the IO top-level category (e.g. IO;MyPlugin;MyIoAlgorithm).
+- `flags` — Optional AlgorithmAttributes to set for this algorithm.
+- `configurationOverride` — Optional properties applied when the algorithm is created.
+
+### registerDeprecatedAlgorithmId
+
+```cpp
+void ImFusion::AlgorithmFactory::registerDeprecatedAlgorithmId (std::string deprecatedId, std::string canonicalId)
+```
+
+Register a legacy algorithm ID that redirects to a current one, emitting a deprecation warning on use.
+
+**Parameters:**
+
+- `deprecatedId` — Full legacy ID (e.g. "OldModule.OldAlgorithm").
+- `canonicalId` — Full current ID the deprecated one should resolve to (e.g. "NewModule.NewAlgorithm"). Both IDs must be fully qualified (including module prefix).
+
+### instantiateAlgorithm
+
+```cpp
+template<typename T> std::unique_ptr < T > ImFusion::AlgorithmFactory::instantiateAlgorithm (const DataList & data) const
+```
+
+Create an instance of the algorithm with the type *T*.
+
+Will return nullptr if no such algorithm is registered, or if the algorithm creation fails.
+
+### instantiateAlgorithm
+
+```cpp
+virtual std::unique_ptr < Algorithm > ImFusion::AlgorithmFactory::instantiateAlgorithm (const std::string & id, const DataList & data) const
+```
+
+*virtual*
+
+Create an instance of the algorithm with the given *id*.
+
+Will return nullptr if no such algorithm is registered, or if the algorithm creation fails.
+
+### instantiateIoAlgorithm
+
+```cpp
+virtual std::unique_ptr < IoAlgorithm > ImFusion::AlgorithmFactory::instantiateIoAlgorithm (const std::string & id, const DataList & data) const
+```
+
+*virtual*
+
+Convenience function to create an instance of an IO algorithm with the given *id*.
+
+Will return nullptr if no such algorithm is registered, or if the algorithm is not an [IoAlgorithm](/cpp-sdk/4.5/api/classes/imfusion-ioalgorithm), or the algorithm creation fails.
+
+### algorithmDescriptor
+
+```cpp
+virtual Descriptor ImFusion::AlgorithmFactory::algorithmDescriptor (const std::string & id, bool matchGuiName = false) const
+```
+
+*virtual*
+
+Returns the descriptors of the algorithm with the given *id*.
+
+**Parameters:**
+
+- `matchGuiName` — If true, tries to find algorithms with matching [GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui) names if no algorithm with the given id is found. Returns a default constructed [Descriptor](/cpp-sdk/4.5/api/structs/imfusion-algorithmfactory-descriptor) if no matching algorithm is found.
+
+### addAlgorithmFactoryToFront
+
+```cpp
+virtual bool ImFusion::AlgorithmFactory::addAlgorithmFactoryToFront () const
+```
+
+*virtual*
+
+Returns whether to add this [AlgorithmFactory](/cpp-sdk/4.5/api/classes/imfusion-algorithmfactory) to the front of the list during registration.
+
+Per default return false. You may override this method to change the behavior.
+
+### nameFromId
+
+```cpp
+std::string ImFusion::AlgorithmFactory::nameFromId (const std::string & name)
+```
+
+*static, protected*
+
+Create a [GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui) name from the algorithm id.
+
+Used as a convenience fallback if no name is specified.
+
+### idFromName
+
+```cpp
+std::string ImFusion::AlgorithmFactory::idFromName (const std::string & name)
+```
+
+*static, protected*
+
+Create a standard algorithm id from the [GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui) name.
+
+Used as a deprecation fallback if no id is specified.

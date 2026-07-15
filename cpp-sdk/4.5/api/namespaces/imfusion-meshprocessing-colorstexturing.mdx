@@ -1,0 +1,15 @@
+---
+title: "ImFusion::MeshProcessing::ColorsTexturing"
+sidebarTitle: "ColorsTexturing"
+description: "Mesh processing algorithms related to mesh colors and texture processing."
+---
+
+## Overview
+
+[Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) processing algorithms related to mesh colors and texture processing.
+
+## Functions
+
+- void **inpaintVertexColors** ([Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) &mesh) — Inpaint all vertices with value (-1,-1,-1), using colors of surrounding vertices (or zero if there are none).
+- bool **transferMeshColors** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; const [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) \* &gt; &meshSrc, [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) &meshDst) — Transfer mesh colors from source mesh(es) to destination mesh by interpolating the colors from the three nearest neighbors in the source mesh(es), using inverse distance weighting.
+- bool **transferPointCloudColors** (const [PointCloud](/cpp-sdk/4.5/api/classes/imfusion-pointcloud) &pcSrc, [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) &meshDst) — Transfer mesh colors from source point cloud to destination mesh by interpolating the colors from the three nearest points in the source point cloud, using inverse distance weighting.

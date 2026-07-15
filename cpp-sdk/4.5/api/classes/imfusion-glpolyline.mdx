@@ -1,0 +1,87 @@
+---
+title: "ImFusion::GlPolyLine"
+sidebarTitle: "GlPolyLine"
+description: "Line annotation."
+---
+
+`#include <ImFusion/GL/GlPolyLine.h>`
+
+## Overview
+
+Line annotation.
+
+## Public Member Functions
+
+- void **setColors** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; &colors)
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; & **colors** () const
+- unsigned short [stipplePattern](#stipplepattern) () const — Returns the stipple pattern for stippled line rendering.
+- void **setStipplePattern** (unsigned short value) — Sets the stipple pattern for stippled line rendering.
+- double [stippleFactor](#stipplefactor) () const — Returns the length of each individual repetition of the stipple pattern.
+- void **setStippleFactor** (double value) — Sets the length of each individual repetition of the stipple pattern.
+- bool **isClosed** () const — Returns true if the polyline is closed (i.e. the first and the last point are connected).
+- void **setClosed** (bool v) — If called with true, the polyline will be closed (i.e. the first and the last point are connected).
+- void [draw](#draw) (const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &[view](/cpp-sdk/4.5/api/classes/imfusion-glannotation)) override — Draw the object in 3D space.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [typeName](#typename) () const override — Return unique identifier for this object class used for serialization.
+- double **length** () const
+
+## Protected Member Functions
+
+- void [updatePoints](#updatepoints) () override — Update the internal point structure.
+
+## Member Function Documentation
+
+### stipplePattern
+
+```cpp
+unsigned short ImFusion::GlPolyLine::stipplePattern () const
+```
+
+*inline*
+
+Returns the stipple pattern for stippled line rendering.
+
+**See also:** GlFixedFunctionPipeline::stipplePattern()
+
+### stippleFactor
+
+```cpp
+double ImFusion::GlPolyLine::stippleFactor () const
+```
+
+*inline*
+
+Returns the length of each individual repetition of the stipple pattern.
+
+**See also:** GlFixedFunctionPipeline::stippleFactor()
+
+### draw
+
+```cpp
+void ImFusion::GlPolyLine::draw (const GlView & view)
+```
+
+*override, virtual*
+
+Draw the object in 3D space.
+
+### typeName
+
+```cpp
+std::string ImFusion::GlPolyLine::typeName () const
+```
+
+*inline, override, virtual*
+
+Return unique identifier for this object class used for serialization.
+
+### updatePoints
+
+```cpp
+void ImFusion::GlPolyLine::updatePoints ()
+```
+
+*override, protected, virtual*
+
+Update the internal point structure.
+
+Should be implemented by subtypes which have custom data depending on the point data. Derived implementation needs to call base class implementation.

@@ -1,0 +1,73 @@
+---
+title: "ImFusion::IO::ExportFolder"
+sidebarTitle: "ExportFolder"
+---
+
+## Classes
+
+- struct [IndexedPath](/cpp-sdk/4.5/api/structs/imfusion-io-exportfolder-indexedpath)
+
+## Static Public Member Functions
+
+- static [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [IndexedPath](/cpp-sdk/4.5/api/structs/imfusion-io-exportfolder-indexedpath) &gt; [nextFile](#nextfile) (const [Filesystem::Directory](/cpp-sdk/4.5/api/classes/imfusion-filesystem-directory) &baseFolder, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &baseName, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &suffix="", const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &extension="") — Produces a non-existing but writable file name in the given `baseFolder`, of the form `baseName-XX-suffix`, where XX starts with 01 and counts up.
+- static [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [IndexedPath](/cpp-sdk/4.5/api/structs/imfusion-io-exportfolder-indexedpath) &gt; [nextFolder](#nextfolder) (const [Filesystem::Directory](/cpp-sdk/4.5/api/classes/imfusion-filesystem-directory) &baseFolder, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &baseName, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &suffix="") — Produces a non-existing but writeable folder name in the given `baseFolder`, of the form `baseName-XX-suffix`, where XX starts with 01 and counts up.
+- static [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [IndexedPath](/cpp-sdk/4.5/api/structs/imfusion-io-exportfolder-indexedpath) &gt; [lastFile](#lastfile) (const [Filesystem::Directory](/cpp-sdk/4.5/api/classes/imfusion-filesystem-directory) &baseFolder, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &baseName, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &suffix="", const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &extension="") — In `baseFolder`, searches for the last already existing file name of the form `baseName-XX`[-suffix], where XX starts with 01 and counts up.
+- static [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [IndexedPath](/cpp-sdk/4.5/api/structs/imfusion-io-exportfolder-indexedpath) &gt; [lastFolder](#lastfolder) (const [Filesystem::Directory](/cpp-sdk/4.5/api/classes/imfusion-filesystem-directory) &baseFolder, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &baseName, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &suffix="") — In `baseFolder`, searches for the last already existing directory name of the form `baseName-XX`[-suffix], where XX starts with 01 and counts up.
+
+## Member Function Documentation
+
+### nextFile
+
+```cpp
+std::optional < IndexedPath > ImFusion::IO::ExportFolder::nextFile (const Filesystem::Directory & baseFolder, const std::string & baseName, const std::string & suffix = "", const std::string & extension = "")
+```
+
+*static*
+
+Produces a non-existing but writable file name in the given `baseFolder`, of the form `baseName-XX-suffix`, where XX starts with 01 and counts up.
+
+Only the part without suffix is checked for determining XX, so that there are no two files with different suffix but identical XX.
+
+**Returns:** a path to the next empty file, and the corresponding index.
+
+### nextFolder
+
+```cpp
+std::optional < IndexedPath > ImFusion::IO::ExportFolder::nextFolder (const Filesystem::Directory & baseFolder, const std::string & baseName, const std::string & suffix = "")
+```
+
+*static*
+
+Produces a non-existing but writeable folder name in the given `baseFolder`, of the form `baseName-XX-suffix`, where XX starts with 01 and counts up.
+
+Only the part without suffix is checked for determining XX, so that there are no two files with different suffix but identical XX.
+
+**Returns:** a path to the next empty folder, and the corresponding index.
+
+### lastFile
+
+```cpp
+std::optional < IndexedPath > ImFusion::IO::ExportFolder::lastFile (const Filesystem::Directory & baseFolder, const std::string & baseName, const std::string & suffix = "", const std::string & extension = "")
+```
+
+*static*
+
+In `baseFolder`, searches for the last already existing file name of the form `baseName-XX`[-suffix], where XX starts with 01 and counts up.
+
+Only the part without suffix is checked for determining XX, so that there are no two files with different suffix but identical XX. Optionally, a `extension` can be added so that this method also works with file names.
+
+- **Returns:** a path to the last file, and the corresponding index.
+
+### lastFolder
+
+```cpp
+std::optional < IndexedPath > ImFusion::IO::ExportFolder::lastFolder (const Filesystem::Directory & baseFolder, const std::string & baseName, const std::string & suffix = "")
+```
+
+*static*
+
+In `baseFolder`, searches for the last already existing directory name of the form `baseName-XX`[-suffix], where XX starts with 01 and counts up.
+
+Only the part without suffix is checked for determining XX, so that there are no two folders with different suffix but identical XX.
+
+- **Returns:** a path to the last folder, and the corresponding index.

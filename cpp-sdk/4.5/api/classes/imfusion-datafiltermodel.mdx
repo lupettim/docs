@@ -1,0 +1,92 @@
+---
+title: "ImFusion::DataFilterModel"
+sidebarTitle: "DataFilterModel"
+description: "The DataFilterModel class is a proxy model to filter a DataItemModel ."
+---
+
+`#include <ImFusion/GUI/DataFilterModel.h>`
+
+## Overview
+
+The [DataFilterModel](/cpp-sdk/4.5/api/classes/imfusion-datafiltermodel) class is a proxy model to filter a [DataItemModel](/cpp-sdk/4.5/api/classes/imfusion-dataitemmodel).
+
+By default, nothing is filtered. A [DataFilterModel](/cpp-sdk/4.5/api/classes/imfusion-datafiltermodel) will only work correctly if the source model is of type [DataItemModel](/cpp-sdk/4.5/api/classes/imfusion-dataitemmodel).
+
+**Warning:** Do not change the filter model from within callbacks of DataModel/DataWidget-changed signals, since this can potentially corrupt the QModelIndex mapping inside.
+
+## Public Member Functions
+
+- **DataFilterModel** (QObject \*parent=0)
+- void [setFilterOutKind](#setfilteroutkind) ([Data::Kind](/cpp-sdk/4.5/api/classes/imfusion-data) kind) — [Filters](/cpp-sdk/4.5/api/namespaces/imfusion-filters) out any [Data](/cpp-sdk/4.5/api/classes/imfusion-data) that is of the specified kind.
+- void [setFilterOutKinds](#setfilteroutkinds) ([std::set](http://en.cppreference.com/w/cpp/container/set.html)&lt; [Data::Kind](/cpp-sdk/4.5/api/classes/imfusion-data) &gt; kinds) — [Filters](/cpp-sdk/4.5/api/namespaces/imfusion-filters) out any [Data](/cpp-sdk/4.5/api/classes/imfusion-data) that is of the specified kinds.
+- const [std::set](http://en.cppreference.com/w/cpp/container/set.html)&lt; [Data::Kind](/cpp-sdk/4.5/api/classes/imfusion-data) &gt; & **filteredOutKinds** () const — Returns the set of [Data](/cpp-sdk/4.5/api/classes/imfusion-data) Kinds which are currently filtered out.
+- void [setFilterOutModality](#setfilteroutmodality) ([Data::Modality](/cpp-sdk/4.5/api/classes/imfusion-data) modality) — [Filters](/cpp-sdk/4.5/api/namespaces/imfusion-filters) out any [Data](/cpp-sdk/4.5/api/classes/imfusion-data) that is of the specified modality.
+- void [setFilterOutModalities](#setfilteroutmodalities) ([std::set](http://en.cppreference.com/w/cpp/container/set.html)&lt; [Data::Modality](/cpp-sdk/4.5/api/classes/imfusion-data) &gt; modalities) — [Filters](/cpp-sdk/4.5/api/namespaces/imfusion-filters) out any [Data](/cpp-sdk/4.5/api/classes/imfusion-data) that is of the specified modality.
+- const [std::set](http://en.cppreference.com/w/cpp/container/set.html)&lt; [Data::Modality](/cpp-sdk/4.5/api/classes/imfusion-data) &gt; & **filteredOutModalities** () const — Returns the set of modalities which are currently filtered out.
+- void [setFilterOutData](#setfilteroutdata-1-2) ([Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data) — [Filters](/cpp-sdk/4.5/api/namespaces/imfusion-filters) out a specific [Data](/cpp-sdk/4.5/api/classes/imfusion-data).
+- void **setFilterOutData** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data) — [Filters](/cpp-sdk/4.5/api/namespaces/imfusion-filters) out all [Data](/cpp-sdk/4.5/api/classes/imfusion-data) in the given data list Overrides any previously set [Data](/cpp-sdk/4.5/api/classes/imfusion-data) filters.
+- void [setFilterOutData](#setfilteroutdata-2-2) (const [std::set](http://en.cppreference.com/w/cpp/container/set.html)&lt; [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \* &gt; &data) — [Filters](/cpp-sdk/4.5/api/namespaces/imfusion-filters) out all [Data](/cpp-sdk/4.5/api/classes/imfusion-data) in the given set.
+- const [std::set](http://en.cppreference.com/w/cpp/container/set.html)&lt; [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \* &gt; & **filteredOutData** () const — Returns the set of [Data](/cpp-sdk/4.5/api/classes/imfusion-data) which is currently filtered out.
+- bool **filterAcceptsRow** (int sourceRow, const QModelIndex &sourceParent) const override
+
+## Member Function Documentation
+
+### setFilterOutKind
+
+```cpp
+void ImFusion::DataFilterModel::setFilterOutKind (Data::Kind kind)
+```
+
+[Filters](/cpp-sdk/4.5/api/namespaces/imfusion-filters) out any [Data](/cpp-sdk/4.5/api/classes/imfusion-data) that is of the specified kind.
+
+Overrides any previously set Kind filters.
+
+### setFilterOutKinds
+
+```cpp
+void ImFusion::DataFilterModel::setFilterOutKinds (std::set < Data::Kind > kinds)
+```
+
+[Filters](/cpp-sdk/4.5/api/namespaces/imfusion-filters) out any [Data](/cpp-sdk/4.5/api/classes/imfusion-data) that is of the specified kinds.
+
+Overrides any previously set Kind filters.
+
+### setFilterOutModality
+
+```cpp
+void ImFusion::DataFilterModel::setFilterOutModality (Data::Modality modality)
+```
+
+[Filters](/cpp-sdk/4.5/api/namespaces/imfusion-filters) out any [Data](/cpp-sdk/4.5/api/classes/imfusion-data) that is of the specified modality.
+
+Overrides any previously set Modality filters.
+
+### setFilterOutModalities
+
+```cpp
+void ImFusion::DataFilterModel::setFilterOutModalities (std::set < Data::Modality > modalities)
+```
+
+[Filters](/cpp-sdk/4.5/api/namespaces/imfusion-filters) out any [Data](/cpp-sdk/4.5/api/classes/imfusion-data) that is of the specified modality.
+
+Overrides any previously set Modality filters.
+
+### setFilterOutData
+
+```cpp
+void ImFusion::DataFilterModel::setFilterOutData (Data * data)
+```
+
+[Filters](/cpp-sdk/4.5/api/namespaces/imfusion-filters) out a specific [Data](/cpp-sdk/4.5/api/classes/imfusion-data).
+
+Overrides any previously set [Data](/cpp-sdk/4.5/api/classes/imfusion-data) filters.
+
+### setFilterOutData
+
+```cpp
+void ImFusion::DataFilterModel::setFilterOutData (const std::set < Data * > & data)
+```
+
+[Filters](/cpp-sdk/4.5/api/namespaces/imfusion-filters) out all [Data](/cpp-sdk/4.5/api/classes/imfusion-data) in the given set.
+
+Overrides any previously set [Data](/cpp-sdk/4.5/api/classes/imfusion-data) filters.

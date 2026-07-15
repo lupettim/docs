@@ -1,0 +1,270 @@
+---
+title: "ImFusion::PluginManager"
+sidebarTitle: "PluginManager"
+description: "Global singleton for loading ImFusion plugins from shared libraries and initializing them."
+---
+
+`#include <ImFusion/Core/PluginManager.h>`
+
+## Overview
+
+Global singleton for loading ImFusion plugins from shared libraries and initializing them.
+
+ImFusion plugins use a two-phase initialization:
+
+- The first step is loading the library into the application memory, checking compatibility with the host application, and registering them with PluginManager ([registerPlugin()](#registerplugin), [registerPlugins()](#registerplugins)).
+- The second step is the actual initialization of a plugin where it will register it with the application's factories, etc ([initPlugin()](#initplugin), [initAllRegisteredPlugins()](#initallregisteredplugins)).
+
+For convenience, you can use the [loadPlugin()](#loadplugin) and [loadPlugins()](#loadplugins) functions that combine both steps into a single function call.
+
+![](/images/cpp-api/plugin-lifetime.png)
+
+**See also:** Plugin Architecture, [PluginBase](/cpp-sdk/4.5/api/classes/imfusion-pluginbase), IMFUSION_REGISTER_PLUGIN
+
+## Classes
+
+- struct [PluginInfo](/cpp-sdk/4.5/api/structs/imfusion-pluginmanager-plugininfo) — Record collecting metadata about registered plugins.
+
+## Public Types
+
+- enum class [PluginStatus](#pluginstatus) &#123; Unknown , Registered , Incompatible , Initialized , Failed &#125; — Enumeration of the set of states an ImFusion plugin can be in during its lifetime.
+- enum class [Status](#status) &#123; Success = 0 , FileNotFound , MissingSymbol , Skipped , Incompatible , PluginIdConflict , LicenseCheckFailed , DependencyInitFailed , UnknownPluginId , WrongPluginStatus , Unsupported , InvalidPluginVersion , UnknownError &#125; — Enumeration of status/error codes for the member functions of [PluginManager](/cpp-sdk/4.5/api/classes/imfusion-pluginmanager).
+
+## Public Member Functions
+
+- [std::pair](http://en.cppreference.com/w/cpp/utility/pair.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html), [Status](#status) &gt; [registerPlugin](#registerplugin) ([Filesystem::Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path) filename) — Load the shared library from *filename* and check whether it is compatible with the host application.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::tuple](http://en.cppreference.com/w/cpp/utility/tuple.html)&lt; [Filesystem::Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path), [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html), [Status](#status) &gt; &gt; [registerPlugins](#registerplugins) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Filesystem::Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path) &gt; &scanDirectories=[defaultPluginSearchDirectories](#defaultpluginsearchdirectories)(), [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; bool(const [Filesystem::Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path) &)&gt; filterFunction=nullptr, bool performMagicStringDetection=true) — Scans *scanDirectories* for shared library files and calls [registerPlugin()](#registerplugin) for each suitable file.
+- [Status](#status) [initPlugin](#initplugin) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &pluginId) — Initialize the given plugin and its dependencies by calling [PluginBase::init()](/cpp-sdk/4.5/api/classes/imfusion-pluginbase).
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::pair](http://en.cppreference.com/w/cpp/utility/pair.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html), [Status](#status) &gt; &gt; [initAllRegisteredPlugins](#initallregisteredplugins) (bool logAvailablePlugins=true) — Initialize all currently registered plugins by calling [PluginBase::init()](/cpp-sdk/4.5/api/classes/imfusion-pluginbase).
+- [std::pair](http://en.cppreference.com/w/cpp/utility/pair.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html), [Status](#status) &gt; [loadPlugin](#loadplugin) (const [Filesystem::Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path) &filename) — Convenience function combining [registerPlugin()](#registerplugin) and [initPlugin()](#initplugin) into a single function call.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::tuple](http://en.cppreference.com/w/cpp/utility/tuple.html)&lt; [Filesystem::Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path), [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html), [Status](#status) &gt; &gt; [loadPlugins](#loadplugins) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Filesystem::Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path) &gt; &scanDirectories=[defaultPluginSearchDirectories](#defaultpluginsearchdirectories)(), [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; bool(const [Filesystem::Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path) &)&gt; filterFunction=nullptr, bool performMagicStringDetection=true) — Convenience function first calling [registerPlugins()](#registerplugins) and subsequently calling [initPlugin()](#initplugin) for each previously registered plugin.
+- void [addLibraryNameToBlacklist](#addlibrarynametoblacklist) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &libraryName) — Add *libraryName* to the list of blacklisted library names to prevent it from being loaded via [loadPlugins()](#loadplugins).
+- bool [isCompatibleImFusionPlugin](#iscompatibleimfusionplugin) (const [Filesystem::Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path) &filename) const — Checks if *filename* looks like a library that contains a valid and compatible plugin without actually loading it via the OS.
+- [PluginStatus](#pluginstatus) [pluginStatus](#pluginstatus) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &pluginId) — Returns the current status of the given plugin.
+- [PluginBase](/cpp-sdk/4.5/api/classes/imfusion-pluginbase) \* [pluginInstance](#plugininstance-1-2) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &pluginId) — Returns the [PluginBase](/cpp-sdk/4.5/api/classes/imfusion-pluginbase) instance with status PluginStatus::Initialized and the given *pluginId*, or nullptr if no such plugin known, the plugin is not yet initialized, or initialization has failed.
+- T \* [pluginInstance](#plugininstance-2-2) () — Returns the first found [PluginBase](/cpp-sdk/4.5/api/classes/imfusion-pluginbase) instance with status PluginStatus::Initialized that is of type *T*, or nullptr if no such plugin known, the plugin is not yet initialized, or initialization has failed.
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [PluginInfo](/cpp-sdk/4.5/api/structs/imfusion-pluginmanager-plugininfo) &gt; & **allPlugins** () const — Returns the list of all known plugins, including plugins that are not yet initialized or failed to do so.
+- void [deinit](#deinit) () — Explicitly unload all plugins and deinitialize [PluginManager](/cpp-sdk/4.5/api/classes/imfusion-pluginmanager).
+
+## Static Public Member Functions
+
+- static PluginManager & **get** () — Return the singleton instance.
+- static [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Filesystem::Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path) &gt; [defaultPluginSearchDirectories](#defaultpluginsearchdirectories) () — Returns a list of default search directories for plugins:
+
+## Member Enumeration Documentation
+
+### PluginStatus
+
+```cpp
+enum class ImFusion::PluginManager::PluginStatus
+```
+
+*strong*
+
+Enumeration of the set of states an ImFusion plugin can be in during its lifetime.
+
+![](/images/cpp-api/plugin-lifetime.png)
+
+**Enumerator:**
+
+- `Unknown` — Plugin has not yet been registered.
+- `Registered` — Plugin library matches the requirements for an ImFusion plugin and was successfully registered.
+- `Incompatible` — Plugin was attempted to be registered but its library does not match the necessary requirements.
+- `Initialized` — Plugin was successfully [initialized](/cpp-sdk/4.5/api/classes/imfusion-pluginbase) and ready to be used.
+- `Failed` — Plugin initialization has failed and can not be used.
+
+### Status
+
+```cpp
+enum class ImFusion::PluginManager::Status
+```
+
+*strong*
+
+Enumeration of status/error codes for the member functions of [PluginManager](/cpp-sdk/4.5/api/classes/imfusion-pluginmanager).
+
+**Enumerator:**
+
+- `Success` — Operation succeeded without errors.
+- `FileNotFound` — The library file was not found.
+- `MissingSymbol` — The library does not export the necessary symbols.
+- `Skipped` — The library was skipped because it was blacklisted.
+- `Incompatible` — The library contains a plugin that is not compatible with the host application.
+- `PluginIdConflict` — A different library file already registered a plugin with the same ID.
+- `LicenseCheckFailed` — A license check failed.
+- `DependencyInitFailed` — A plugin dependency could not be initialized.
+- `UnknownPluginId` — The given plugin ID is unknown.
+- `WrongPluginStatus` — The current [PluginStatus](#pluginstatus) is not suitable for the requested operation.
+- `Unsupported` — The requested operation is unsupported by the plugin.
+- `InvalidPluginVersion` — The version of the plugin is not a valid [Utils::Version](/cpp-sdk/4.5/api/structs/imfusion-utils-version).
+- `UnknownError` — An unknown error error occurred during the requested operation.
+
+## Member Function Documentation
+
+### defaultPluginSearchDirectories
+
+```cpp
+std::vector < Filesystem::Path > ImFusion::PluginManager::defaultPluginSearchDirectories ()
+```
+
+*static*
+
+Returns a list of default search directories for plugins:
+
+- on Windows: &lt;executable-path&gt;/plugins and &lt;ImFusionCore.dll-path&gt;/plugins
+- on Linux: &lt;libImFusionCore.so-path&gt;/../lib/ImFusionLib/plugins
+- all platforms: directories in IMFUSION_PLUGIN_PATH environment variable (separated by ;)
+
+### registerPlugin
+
+```cpp
+std::pair < std::string, Status > ImFusion::PluginManager::registerPlugin (Filesystem::Path filename)
+```
+
+Load the shared library from *filename* and check whether it is compatible with the host application.
+
+Plugin state must be PluginStatus::Unknown. Afterwards, the plugin state will either be PluginStatus::Registered on success or PluginStatus::Incompatible in case of failure.
+
+**Returns:** Pair of the Plugin ID of the registered plugin (if successful) and the status code indicating whether plugin registration was successful.
+
+### registerPlugins
+
+```cpp
+std::vector < std::tuple < Filesystem::Path, std::string, Status > > ImFusion::PluginManager::registerPlugins (const std::vector < Filesystem::Path > & scanDirectories = defaultPluginSearchDirectories (), std::function < bool(const Filesystem::Path &)> filterFunction = nullptr, bool performMagicStringDetection = true)
+```
+
+Scans *scanDirectories* for shared library files and calls [registerPlugin()](#registerplugin) for each suitable file.
+
+This function will only consider files with the platform-specific default extension for shared libraries (Windows: .dll, Linux: .so, MacOS: .dylib), and files that are not blacklisted (cf. [addLibraryNameToBlacklist()](#addlibrarynametoblacklist)). Furthermore, each file's content will be scanned for the presence of a magic string before attempting to register it. This avoids loading unrelated libraries into the process memory and the OS executing their static initializers only to have them being unloaded again after realizing that they do not implement the necessary interface.
+
+**Parameters:**
+
+- `scanDirectories` — List of local filesystem directories to scan for suitable shared libraries.
+- `filterFunction` — Optional predicate function to override the built-in library blacklist (cf. [addLibraryNameToBlacklist()](#addlibrarynametoblacklist)) with a custom filter function and register only those files found in *scanDirectories* where the function returns true and ignore files where it returns false.
+- `performMagicStringDetection` — Some platforms (e.g. MacOS) support optional encryption of the text sections in shared libraries. In this case the detection of the magic string in will fail. You can set this to false as a workaround when working with encrypted libraries.
+
+**Returns:** A list of all found plugin libraries represented by a tuple containing the library filename, plugin ID, and plugin registration status.
+
+### initPlugin
+
+```cpp
+Status ImFusion::PluginManager::initPlugin (const std::string & pluginId)
+```
+
+Initialize the given plugin and its dependencies by calling [PluginBase::init()](/cpp-sdk/4.5/api/classes/imfusion-pluginbase).
+
+Plugin state must be PluginStatus::Registered. Afterwards, the plugin state will either be PluginStatus::Initialized on success or PluginStatus::Failed in case of failure.
+
+**Parameters:**
+
+- `pluginId` — Unique plugin ID as returned by the corresponding PluginBase::id() function.
+
+### initAllRegisteredPlugins
+
+```cpp
+std::vector < std::pair < std::string, Status > > ImFusion::PluginManager::initAllRegisteredPlugins (bool logAvailablePlugins = true)
+```
+
+Initialize all currently registered plugins by calling [PluginBase::init()](/cpp-sdk/4.5/api/classes/imfusion-pluginbase).
+
+Only plugins with state PluginStatus::Registered are considered. Afterwards, their plugin state will either be PluginStatus::Initialized on success or PluginStatus::Failed in case of failure.
+
+**Parameters:**
+
+- `logAvailablePlugins` — Flag whether to emit a log message with a list of all available plugins at the end of this function call using Log::Level::Info.
+
+**Returns:** A list of all plugins that were initialized, represented by a pair of the plugin ID and the corresponding success status of the attempted initialization.
+
+### loadPlugin
+
+```cpp
+std::pair < std::string, Status > ImFusion::PluginManager::loadPlugin (const Filesystem::Path & filename)
+```
+
+Convenience function combining [registerPlugin()](#registerplugin) and [initPlugin()](#initplugin) into a single function call.
+
+Plugin state must be PluginStatus::Unknown. Afterwards, the plugin state will either be PluginStatus::Initialized on success, or PluginStatus::Incompatible or PluginStatus::Failed in case of failure.
+
+**Returns:** Pair of the Plugin ID of the registered plugin (if available) and the status code indicating whether plugin registration was successful.
+
+### loadPlugins
+
+```cpp
+std::vector < std::tuple < Filesystem::Path, std::string, Status > > ImFusion::PluginManager::loadPlugins (const std::vector < Filesystem::Path > & scanDirectories = defaultPluginSearchDirectories (), std::function < bool(const Filesystem::Path &)> filterFunction = nullptr, bool performMagicStringDetection = true)
+```
+
+Convenience function first calling [registerPlugins()](#registerplugins) and subsequently calling [initPlugin()](#initplugin) for each previously registered plugin.
+
+**Returns:** A list of all found plugin libraries represented by a tuple containing the library filename, plugin ID, and plugin registration status.
+
+### addLibraryNameToBlacklist
+
+```cpp
+void ImFusion::PluginManager::addLibraryNameToBlacklist (const std::string & libraryName)
+```
+
+Add *libraryName* to the list of blacklisted library names to prevent it from being loaded via [loadPlugins()](#loadplugins).
+
+A library is considered blacklisted if any substring of the filename is part of the list. The blacklist is default-initialized by the value of the IMFUSION_PLUGIN_BLACKLIST environment variable.
+
+### isCompatibleImFusionPlugin
+
+```cpp
+bool ImFusion::PluginManager::isCompatibleImFusionPlugin (const Filesystem::Path & filename) const
+```
+
+Checks if *filename* looks like a library that contains a valid and compatible plugin without actually loading it via the OS.
+
+Internally, this function simply memory-maps the file and searches for the presence of a magic string containing the plugin descriptor. If found it will then check the descriptor for compatibility with the host application.
+
+**Note:** Some platforms (e.g. MacOS) support optional encryption of the text sections in shared libraries. In this case the detection of the magic string in will fail even if the library is a valid plugin.
+
+**Returns:** true if *filename* points to a shared library that can be loaded via [registerPlugin()](#registerplugin).
+false if it either could not locate the magic string or the plugin descriptor is incompatible.
+
+### pluginStatus
+
+```cpp
+PluginStatus ImFusion::PluginManager::pluginStatus (const std::string & pluginId)
+```
+
+Returns the current status of the given plugin.
+
+**Parameters:**
+
+- `pluginId` — Unique plugin ID as returned by the corresponding PluginBase::id() function.
+
+### pluginInstance
+
+```cpp
+PluginBase * ImFusion::PluginManager::pluginInstance (const std::string & pluginId)
+```
+
+Returns the [PluginBase](/cpp-sdk/4.5/api/classes/imfusion-pluginbase) instance with status PluginStatus::Initialized and the given *pluginId*, or nullptr if no such plugin known, the plugin is not yet initialized, or initialization has failed.
+
+**Parameters:**
+
+- `pluginId` — Unique plugin ID as returned by the corresponding PluginBase::id() function.
+
+### pluginInstance
+
+```cpp
+template<typename T> T * ImFusion::PluginManager::pluginInstance ()
+```
+
+Returns the first found [PluginBase](/cpp-sdk/4.5/api/classes/imfusion-pluginbase) instance with status PluginStatus::Initialized that is of type *T*, or nullptr if no such plugin known, the plugin is not yet initialized, or initialization has failed.
+
+**Template Parameters:** | T | Concrete type of the plugin instance to dynamic_cast for. |
+| --- | --- |
+
+### deinit
+
+```cpp
+void ImFusion::PluginManager::deinit ()
+```
+
+Explicitly unload all plugins and deinitialize [PluginManager](/cpp-sdk/4.5/api/classes/imfusion-pluginmanager).
+
+Call this function to avoid deinitialization happening during static teardown time ([PluginManager](/cpp-sdk/4.5/api/classes/imfusion-pluginmanager) singleton destructor).
+
+**Note:** After calling this function you must no longer use [PluginManager](/cpp-sdk/4.5/api/classes/imfusion-pluginmanager) or any of the previously loaded plugins.

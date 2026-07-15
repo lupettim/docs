@@ -1,0 +1,50 @@
+---
+title: "ImFusion::DisplayOptions2dWidget"
+sidebarTitle: "DisplayOptions2dWidget"
+description: "Widget to display and manipulate the per-data rendering options of a 2D view."
+---
+
+`#include <ImFusion/GUI/DisplayOptions2dWidget.h>`
+
+## Overview
+
+Widget to display and manipulate the per-data rendering options of a 2D view.
+
+## Public Types
+
+- enum class Sections &#123; **None** = 0 , **Windowing** = 1 &lt;&lt; 0 , **AutoWindowing** = 1 &lt;&lt; 1 , **TransferFunc** = 1 &lt;&lt; 2 , **Advanced** = 1 &lt;&lt; 3 , **Masking** = 1 &lt;&lt; 4 , **All** = 0xFF &#125; — Enumeration of sections that this widget can display.
+
+## Public Member Functions
+
+- [DisplayOptions2dWidget](#displayoptions2dwidget) ([GUI::DisplayBase](/cpp-sdk/4.5/api/classes/imfusion-gui-displaybase) \*display, [GUI::View](/cpp-sdk/4.5/api/classes/imfusion-gui-view) \*referenceView, QWidget \*parent=nullptr) — Standard constructor.
+- void **setDisplayOptions** ([DisplayOptions2d](/cpp-sdk/4.5/api/classes/imfusion-displayoptions2d) \*displayOptions, const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*refSis) — Sets the image whose rendering options will be manipulated through this widget.
+- [DisplayOptions2d](/cpp-sdk/4.5/api/classes/imfusion-displayoptions2d) \* **displayOptions** () const — Returns the DisplayOptions2D that are modified by this widget.
+- void **setShowMinMax** (bool value) — Sets whether to show min/max sliders (true) or window/level sliders (false).
+- void **setShowInvert** (bool value) — Sets visibility of "Invert" checkbox/label.
+- void **setVisibleDisplayOptionsSections** ([Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; Sections &gt; visibleSections) — Sets the list of all DisplayOptions widget sections to show.
+- QPushButton \* [_getAddPresetButton](#getaddpresetbutton) () const
+
+## Constructor & Destructor Documentation
+
+### DisplayOptions2dWidget
+
+```cpp
+ImFusion::DisplayOptions2dWidget::DisplayOptions2dWidget (GUI::DisplayBase * display, GUI::View * referenceView, QWidget * parent = nullptr)
+```
+
+Standard constructor.
+
+**Parameters:**
+
+- `display` — Pointer to the display so that we can notify it for updates.
+- `referenceView` — Pointer to an optional reference view in which the data is shown to be forwarded to the [TransferFunctionWidget](/cpp-sdk/4.5/api/classes/imfusion-transferfunctionwidget).
+
+## Member Function Documentation
+
+### _getAddPresetButton
+
+```cpp
+QPushButton * ImFusion::DisplayOptions2dWidget::_getAddPresetButton () const
+```
+
+Returns the button for adding windowing presets. This function is **NOT** part of the SDK and might be removed without further notice.

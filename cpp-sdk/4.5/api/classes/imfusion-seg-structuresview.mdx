@@ -1,0 +1,95 @@
+---
+title: "ImFusion::Seg::StructuresView"
+sidebarTitle: "StructuresView"
+description: "The StructuresView provides a flattened view onto a given set of label maps."
+---
+
+`#include <ImFusion/Seg/StructuresView.h>`
+
+## Overview
+
+The [StructuresView](/cpp-sdk/4.5/api/classes/imfusion-seg-structuresview) provides a flattened view onto a given set of label maps.
+
+It provides a list of [Structures](/cpp-sdk/4.5/api/classes/imfusion-seg-structure), each representing one label configuration of the underlying label maps. Furthermore, it provides a couple of convenience functions to manage their settings and lifetime, as well as a set of signals to notify potential listeners when structures change. You can use the [StructuresViewRenderer](/cpp-sdk/4.5/api/classes/imfusion-seg-structuresviewrenderer) to automatically visualize the structures in a [DisplayWidget](/cpp-sdk/4.5/api/classes/imfusion-displaywidget).
+
+**Note:** Apart from some internal bookkeeping information, [StructuresView](/cpp-sdk/4.5/api/classes/imfusion-seg-structuresview) does not store any data. Instead the structure configuration is stored in the label maps and their LabelDataComponents. Therefore, it is good practice to remove a label map from this [StructuresView](/cpp-sdk/4.5/api/classes/imfusion-seg-structuresview) before deleting it.
+
+**See also:** [Structure](/cpp-sdk/4.5/api/classes/imfusion-seg-structure), [StructuresViewRenderer](/cpp-sdk/4.5/api/classes/imfusion-seg-structuresviewrenderer), [LabelDataComponent](/cpp-sdk/4.5/api/classes/imfusion-labeldatacomponent)
+
+## Classes
+
+- struct [LabelMapInfo](/cpp-sdk/4.5/api/structs/imfusion-seg-structuresview-labelmapinfo) — Bookkeeping information to easily map between label maps and their structures.
+
+## Public Types
+
+- enum class **StructureSelection** &#123; **All** , **OnlyVisible** &#125;
+
+## Public Member Functions
+
+- **StructuresView** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* &gt; &labelMaps)
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Structure](/cpp-sdk/4.5/api/classes/imfusion-seg-structure) \* &gt; **structures** () — Returns the all Structures of all underlying label maps.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; const [Structure](/cpp-sdk/4.5/api/classes/imfusion-seg-structure) \* &gt; **structures** () const
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Structure](/cpp-sdk/4.5/api/classes/imfusion-seg-structure) \* &gt; **structuresOf** (const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*labelMap) — Returns the all Structures of the given label map.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; const [Structure](/cpp-sdk/4.5/api/classes/imfusion-seg-structure) \* &gt; **structuresOf** (const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*labelMap) const
+- void [setLabelMaps](#setlabelmaps) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* &gt; &labelMaps) — Sets the list of label maps that are currently represented by this [StructuresView](/cpp-sdk/4.5/api/classes/imfusion-seg-structuresview).
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* &gt; **labelMaps** () — Returns the list of label maps that are currently represented by this [StructuresView](/cpp-sdk/4.5/api/classes/imfusion-seg-structuresview).
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* &gt; **labelMaps** () const
+- void **addLabelMap** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*labelMap) — Adds the given label.
+- void **removeLabelMap** (const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*labelMap) — Adds the given label map to the list of label maps that are currently represented by this [StructuresView](/cpp-sdk/4.5/api/classes/imfusion-seg-structuresview).
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) &gt; [computeOtherLabelsMask](#computeotherlabelsmask-1-2) (const [Structure](/cpp-sdk/4.5/api/classes/imfusion-seg-structure) &s, StructureSelection selection) const — Returns a binary mask image of all other active labels in the reference grid of the given [Structure](/cpp-sdk/4.5/api/classes/imfusion-seg-structure).
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) &gt; [computeOtherLabelsMask](#computeotherlabelsmask-2-2) (const [Structure](/cpp-sdk/4.5/api/classes/imfusion-seg-structure) &s, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; const [Structure](/cpp-sdk/4.5/api/classes/imfusion-seg-structure) \* &gt; &structuresToMask) const — Returns a binary mask image of all other active labels in the reference grid of the given [Structure](/cpp-sdk/4.5/api/classes/imfusion-seg-structure).
+
+## Public Attributes
+
+- Signal&lt; [Structure](/cpp-sdk/4.5/api/classes/imfusion-seg-structure) \* &gt; **signalStructureAdded** — Signal emitted every time when a new [Structure](/cpp-sdk/4.5/api/classes/imfusion-seg-structure) has been added.
+- Signal&lt; [Structure](/cpp-sdk/4.5/api/classes/imfusion-seg-structure) \* &gt; **signalStructureChanged** — Signal emitted every time a [Structure](/cpp-sdk/4.5/api/classes/imfusion-seg-structure) of this [StructuresView](/cpp-sdk/4.5/api/classes/imfusion-seg-structuresview) has changed.
+- Signal&lt; [Structure](/cpp-sdk/4.5/api/classes/imfusion-seg-structure) \* &gt; **signalStructureDeleted** — Signal emitted every time when a [Structure](/cpp-sdk/4.5/api/classes/imfusion-seg-structure) has been removed and any corresponding pointer has become invalid.
+
+## Protected Member Functions
+
+- void **onLabelDataComponentChanged** ([LabelDataComponent](/cpp-sdk/4.5/api/classes/imfusion-labeldatacomponent) \*ldc)
+- [Structure](/cpp-sdk/4.5/api/classes/imfusion-seg-structure) & **addStructure** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &labelMap, int labelIndex)
+- void **removeStructure** ([Structure](/cpp-sdk/4.5/api/classes/imfusion-seg-structure) \*structure)
+
+## Protected Attributes
+
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [Structure](/cpp-sdk/4.5/api/classes/imfusion-seg-structure) &gt; &gt; **m_structures**
+- [std::unordered_map](http://en.cppreference.com/w/cpp/container/unordered_map.html)&lt; [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*, [LabelMapInfo](/cpp-sdk/4.5/api/structs/imfusion-seg-structuresview-labelmapinfo) &gt; **m_labelMapInfos**
+
+## Member Function Documentation
+
+### setLabelMaps
+
+```cpp
+void ImFusion::Seg::StructuresView::setLabelMaps (const std::vector < SharedImageSet * > & labelMaps)
+```
+
+Sets the list of label maps that are currently represented by this [StructuresView](/cpp-sdk/4.5/api/classes/imfusion-seg-structuresview).
+
+This function will first remove all current label maps and then add the new ones. Use addLabelMap()/removeLabelMap() instead if some label maps remain the same.
+
+### computeOtherLabelsMask
+
+```cpp
+std::unique_ptr < SharedImage > ImFusion::Seg::StructuresView::computeOtherLabelsMask (const Structure & s, StructureSelection selection) const
+```
+
+Returns a binary mask image of all other active labels in the reference grid of the given [Structure](/cpp-sdk/4.5/api/classes/imfusion-seg-structure).
+
+**Parameters:**
+
+- `s` — Reference structure for which to compute all other labels
+- `selection` — Enumeration whether to consider all other structures or only the currently visible ones.
+
+### computeOtherLabelsMask
+
+```cpp
+std::unique_ptr < SharedImage > ImFusion::Seg::StructuresView::computeOtherLabelsMask (const Structure & s, const std::vector < const Structure * > & structuresToMask) const
+```
+
+Returns a binary mask image of all other active labels in the reference grid of the given [Structure](/cpp-sdk/4.5/api/classes/imfusion-seg-structure).
+
+**Parameters:**
+
+- `s` — Reference structure for which to compute all other labels
+- `selection` — Enumeration whether to consider all other structures or only the currently visible ones.

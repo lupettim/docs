@@ -1,0 +1,46 @@
+---
+title: "ImFusion::NearestNeighborSearch"
+sidebarTitle: "NearestNeighborSearch"
+description: "Nearest neighbor search for points."
+---
+
+`#include <ImFusion/Base/NearestNeighborSearch.h>`
+
+## Overview
+
+Nearest neighbor search for points.
+
+**Author:** Alexander Ladikos
+
+All returned distances are squared Euclidean distances, all returned indices correspond to the point set used for building the index. The number of results per search point may be less than requested if there were no other points available. Templates are provided for vec3, vec2, vec3f, vec2f and Eigen::VectorXd. This class is not thread-safe. If you want to use the search in multiple threads, construct the index and then use the copy constructor to create an independent copy of the index for each thread.
+
+## Classes
+
+- class [OutputWrapper](/cpp-sdk/4.5/api/classes/imfusion-nearestneighborsearch-outputwrapper) — Helper class for optional distance output, implicitly created from output type T. Do not use directly.
+
+## Public Member Functions
+
+- **NearestNeighborSearch** (const NearestNeighborSearch &other)
+
+## Build index of points to search in
+
+- bool **buildIndex** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; Eigen::Matrix&lt; Scalar, Dim, 1, 0, Dim, 1 &gt; &gt; &points, const Eigen::Matrix&lt; Scalar, Dim+1, Dim+1, 0, Dim+1, Dim+1 &gt; &matrix=Eigen::Matrix&lt; Scalar, Dim+1, Dim+1 &gt;::Identity()) — Set points and optional matrix to apply to them.
+- bool **buildIndex** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vecX &gt; &points, [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; matX &gt; matrix=std::nullopt) — Set points of arbitrary dimension, which must be equal over all points and match the given matrix (if any).
+- bool **buildIndex** (const [PointCloud](/cpp-sdk/4.5/api/classes/imfusion-pointcloud) \*pc, bool useMatrix=true) — Set points from point cloud.
+- bool **buildIndex** (const [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) \*m, bool useMatrix=true) — Set points from mesh vertices.
+
+## Multiple search points
+
+- bool **findNearestNeighbors** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vecT &gt; &points, int k, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; int &gt; &gt; &indicesOut, [OutputWrapper](/cpp-sdk/4.5/api/classes/imfusion-nearestneighborsearch-outputwrapper)&lt; [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; &gt; &gt; distsSquaredOut=&#123;&#125;) const — Finds the k closest other points for each point.
+- bool **findNearestNeighbors** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vecT &gt; &points, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; int &gt; &indicesOut, [OutputWrapper](/cpp-sdk/4.5/api/classes/imfusion-nearestneighborsearch-outputwrapper)&lt; [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; &gt; distsSquaredOut=&#123;&#125;) const — Finds the closest other point to each point.
+- bool **findNearestNeighborsRadius** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vecT &gt; &points, double radius, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; int &gt; &gt; &indicesOut, [OutputWrapper](/cpp-sdk/4.5/api/classes/imfusion-nearestneighborsearch-outputwrapper)&lt; [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; &gt; &gt; distsSquaredOut=&#123;&#125;) const — For each point, finds all other points within the given radius.
+- bool **findNearestNeighborsCombined** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vecT &gt; &points, int k, double radius, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; int &gt; &gt; &indicesOut, [OutputWrapper](/cpp-sdk/4.5/api/classes/imfusion-nearestneighborsearch-outputwrapper)&lt; [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; &gt; &gt; distsSquaredOut=&#123;&#125;) const — Finds the k closest other points for each point within the given radius.
+- bool **findNearestNeighborsCombined** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vecT &gt; &points, double radius, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; int &gt; &indicesOut, [OutputWrapper](/cpp-sdk/4.5/api/classes/imfusion-nearestneighborsearch-outputwrapper)&lt; [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; &gt; distsSquaredOut=&#123;&#125;) const — Finds the closest other point to each point within the given radius.
+
+## Single search point
+
+- bool **findNearestNeighbors** (const vecT &point, int k, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; int &gt; &indicesOut, [OutputWrapper](/cpp-sdk/4.5/api/classes/imfusion-nearestneighborsearch-outputwrapper)&lt; [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; &gt; distsSquaredOut=&#123;&#125;) const — Finds the k other points closest to point.
+- bool **findNearestNeighbors** (const vecT &point, int &indexOut, [OutputWrapper](/cpp-sdk/4.5/api/classes/imfusion-nearestneighborsearch-outputwrapper)&lt; double &gt; distSquaredOut=&#123;&#125;) const — Finds the other point closest to point.
+- bool **findNearestNeighborsRadius** (const vecT &point, double radius, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; int &gt; &indicesOut, [OutputWrapper](/cpp-sdk/4.5/api/classes/imfusion-nearestneighborsearch-outputwrapper)&lt; [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; &gt; distsSquaredOut=&#123;&#125;) const — Finds all other points within the given radius of point.
+- bool **findNearestNeighborsCombined** (const vecT &point, int k, double radius, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; int &gt; &indicesOut, [OutputWrapper](/cpp-sdk/4.5/api/classes/imfusion-nearestneighborsearch-outputwrapper)&lt; [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; &gt; distsSquaredOut=&#123;&#125;) const — Finds the k closest other points within the given radius of point.
+- bool **findNearestNeighborsCombined** (const vecT &point, double radius, int &indexOut, [OutputWrapper](/cpp-sdk/4.5/api/classes/imfusion-nearestneighborsearch-outputwrapper)&lt; double &gt; distSquaredOut=&#123;&#125;) const — Finds the closest other point within the given radius of point.

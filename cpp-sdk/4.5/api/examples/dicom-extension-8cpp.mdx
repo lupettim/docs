@@ -1,0 +1,66 @@
+---
+title: "DicomExtensionExample.cpp"
+---
+
+```cpp
+#include <ImFusion/Base/DataComponentList.h>
+#include <ImFusion/Base/SharedImageSet.h>
+#include <ImFusion/Dicom/DicomElement.h>
+#include <ImFusion/Dicom/DicomIOD.h>
+#include <ImFusion/Dicom/Extension.h>
+
+#include <dcmtk/dcmdata/dctk.h>
+
+using namespace ImFusion;
+
+class ExampleDataComponent : public DataComponent<ExampleDataComponent>
+{
+public:
+    ExampleDataComponent() = default;
+    ExampleDataComponent(const ExampleDataComponent& other) = default;
+    ExampleDataComponent& operator=(const ExampleDataComponent& other) = default;
+ bool operator==(const ExampleDataComponent& other) const
+ {
+ return other.xrayTubeCurrent == xrayTubeCurrent && other.convolutionKernel == convolutionKernel;
+    }
+
+ std::string id() const override { return ""; }
+
+ void configure(const Properties* p) override {};
+ void configuration(Properties* p) const override {};
+
+ int xrayTubeCurrent = 0;
+ std::string convolutionKernel = "";
+};
+
+class ExtensionExample : public Dicom::Extension
+{
+public:
+ std::unique_ptr<Extension> clone() const override { return std::make_unique<ExtensionExample>(*this); };
+    std::string name() const override { return "Extension Example"; }
+
+    std::vector<std::unique_ptr<Data>> load(const Dicom::FrameDescriptor& frame, SharedImageSet& sis) const override
+ {
+ // In this example we load the tags once for the complete SharedImageSet.
+ // Therefore, we only perform the loading on the very first frame.
+ // Of course you could also load different metadata for different frames.
+ if (frame.sharedImageIndex != 0 || frame.sliceIndex != 0)
+ return {};
+
+ // Instead of using Dicom::Element, you can also use the DcmItem through `frame.iod->item()` directly.
+        Dicom::Element<int> xrayTubeCurrent(*frame.iod, DCM_XRayTubeCurrent);
+        Dicom::Element<std::string> convolutionKernel(*frame.iod, DCM_ConvolutionKernel);
+
+ auto& dc = sis.components().getOrCreate<ExampleDataComponent>();
+ if (xrayTubeCurrent.isValid())
+            dc.xrayTubeCurrent = xrayTubeCurrent.value();
+ if (convolutionKernel.isValid())
+            dc.convolutionKernel = convolutionKernel.value();
+
+ return {};    // If you loaded some additional data e.g. from private tags, you can return it here.
+    }
+
+ void save(const Dicom::FrameDescriptor& frame, const SharedImageSet& sis) const override {}
+};
+```
+ fragment

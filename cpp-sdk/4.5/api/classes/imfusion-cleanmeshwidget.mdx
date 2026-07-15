@@ -1,0 +1,34 @@
+---
+title: "ImFusion::CleanMeshWidget"
+sidebarTitle: "CleanMeshWidget"
+description: "Mesh clean widget."
+---
+
+`#include <ImFusion/GUI/CleanMeshWidget.h>`
+
+## Overview
+
+[Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) clean widget.
+
+## Signals
+
+- void **apply** ()
+- void **cancel** ()
+- void **minChanged** (int min)
+- void **maxChanged** (int max)
+
+## Public Member Functions
+
+- **CleanMeshWidget** (QWidget \*parent=0)
+- void **setNumSteps** (int steps)
+- int **min** () const
+- int **max** () const
+- void **setMinAreaLabel** (double area)
+- void **setMaxAreaLabel** (double area)
+- void **setSliderMinValue** (int val)
+- void **setSliderMaxValue** (int val)
+
+## Protected Member Functions
+
+- void **changeEvent** (QEvent \*event) override
+- void **paintEvent** (QPaintEvent \*) override

@@ -1,0 +1,161 @@
+---
+title: "ImFusion::GUI::InputEventMapper< T >"
+sidebarTitle: "InputEventMapper< T >"
+description: "Specialization of InputEventMapperBase with a templated action enumeration type to increase type safety."
+---
+
+`#include <ImFusion/GUI/InputEventMapper.h>`
+
+## Overview
+
+template&lt;typename T&gt;
+
+class ImFusion::GUI::InputEventMapper&lt; T &gt;
+Specialization of [InputEventMapperBase](/cpp-sdk/4.5/api/classes/imfusion-gui-inputeventmapperbase) with a templated action enumeration type to increase type safety.
+
+See the documentation of [InputEventMapperBase](/cpp-sdk/4.5/api/classes/imfusion-gui-inputeventmapperbase) for details and usage examples.
+
+## Public Member Functions
+
+- bool [addMapping](#addmapping-1-2) (T action, [MouseEvent::Button](/cpp-sdk/4.5/api/classes/imfusion-gui-mouseevent) button, [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; [InputEvent::KeyboardModifier](/cpp-sdk/4.5/api/classes/imfusion-gui-inputevent) &gt; modifiers) — Adds a new mouse interaction metaphor and map it to the given *action*.
+- bool [addMapping](#addmapping-2-2) (T action, [KeyEvent::Key](/cpp-sdk/4.5/api/classes/imfusion-gui-keyevent) button, [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; [InputEvent::KeyboardModifier](/cpp-sdk/4.5/api/classes/imfusion-gui-inputevent) &gt; modifiers) — Adds a new keyboard interaction metaphor and map it to the given *action*.
+- int [removeMapping](#removemapping-1-3) (T action) — Removes all existing mappings for the given *action* and returns the number of mappings removed.
+- bool [removeMapping](#removemapping-2-3) (T action, [MouseEvent::Button](/cpp-sdk/4.5/api/classes/imfusion-gui-mouseevent) button, [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; [InputEvent::KeyboardModifier](/cpp-sdk/4.5/api/classes/imfusion-gui-inputevent) &gt; modifiers) — Removes the given mouse interaction mapping.
+- bool [removeMapping](#removemapping-3-3) (T action, [KeyEvent::Key](/cpp-sdk/4.5/api/classes/imfusion-gui-keyevent) button, [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; [InputEvent::KeyboardModifier](/cpp-sdk/4.5/api/classes/imfusion-gui-inputevent) &gt; modifiers) — Removes the given keyboard interaction mapping.
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; T &gt; [matchAny](#matchany-1-3) (const [InputEvent](/cpp-sdk/4.5/api/classes/imfusion-gui-inputevent) &event) const
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; T &gt; [matchAny](#matchany-2-3) ([MouseEvent::Button](/cpp-sdk/4.5/api/classes/imfusion-gui-mouseevent) button, [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; [InputEvent::KeyboardModifier](/cpp-sdk/4.5/api/classes/imfusion-gui-inputevent) &gt; modifiers) const
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; T &gt; [matchAny](#matchany-3-3) ([KeyEvent::Key](/cpp-sdk/4.5/api/classes/imfusion-gui-keyevent) key, [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; [InputEvent::KeyboardModifier](/cpp-sdk/4.5/api/classes/imfusion-gui-inputevent) &gt; modifiers) const
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; T &gt; [matchAll](#matchall-1-3) (const [InputEvent](/cpp-sdk/4.5/api/classes/imfusion-gui-inputevent) &event) const
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; T &gt; [matchAll](#matchall-2-3) ([MouseEvent::Button](/cpp-sdk/4.5/api/classes/imfusion-gui-mouseevent) button, [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; [InputEvent::KeyboardModifier](/cpp-sdk/4.5/api/classes/imfusion-gui-inputevent) &gt; modifiers) const
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; T &gt; [matchAll](#matchall-3-3) ([KeyEvent::Key](/cpp-sdk/4.5/api/classes/imfusion-gui-keyevent) key, [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; [InputEvent::KeyboardModifier](/cpp-sdk/4.5/api/classes/imfusion-gui-inputevent) &gt; modifiers) const
+- bool [matches](#matches-1-3) (const [InputEvent](/cpp-sdk/4.5/api/classes/imfusion-gui-inputevent) &event, T action) const
+- bool [matches](#matches-2-3) ([MouseEvent::Button](/cpp-sdk/4.5/api/classes/imfusion-gui-mouseevent) button, [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; [InputEvent::KeyboardModifier](/cpp-sdk/4.5/api/classes/imfusion-gui-inputevent) &gt; modifiers, T action) const
+- bool [matches](#matches-3-3) ([KeyEvent::Key](/cpp-sdk/4.5/api/classes/imfusion-gui-keyevent) key, [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; [InputEvent::KeyboardModifier](/cpp-sdk/4.5/api/classes/imfusion-gui-inputevent) &gt; modifiers, T action) const
+
+## Member Function Documentation
+
+### addMapping
+
+```cpp
+template<typename T> bool ImFusion::GUI::InputEventMapper < T >::addMapping (T action, MouseEvent::Button button, Flags < InputEvent::KeyboardModifier > modifiers)
+```
+
+*inline*
+
+Adds a new mouse interaction metaphor and map it to the given *action*.
+
+Returns false if the given action was not added due to a conflict (same button+modifiers but different action and [allowsDuplicateMappings()](/cpp-sdk/4.5/api/classes/imfusion-gui-inputeventmapperbase) is off). You can use [matchAny()](#matchany-1-3) to query in advance if a particular mapping will conflict, e.g. matchAny(button, modifiers) != action.
+
+### addMapping
+
+```cpp
+template<typename T> bool ImFusion::GUI::InputEventMapper < T >::addMapping (T action, KeyEvent::Key button, Flags < InputEvent::KeyboardModifier > modifiers)
+```
+
+*inline*
+
+Adds a new keyboard interaction metaphor and map it to the given *action*.
+
+Returns false if the given action was not added due to a conflict (same button+modifiers but different action and [allowsDuplicateMappings()](/cpp-sdk/4.5/api/classes/imfusion-gui-inputeventmapperbase) is off). You can use [matchAny()](#matchany-1-3) to query in advance if a particular mapping will conflict, e.g. matchAny(button, modifiers) != action.
+
+### removeMapping
+
+```cpp
+template<typename T> int ImFusion::GUI::InputEventMapper < T >::removeMapping (T action)
+```
+
+*inline*
+
+Removes all existing mappings for the given *action* and returns the number of mappings removed.
+
+### removeMapping
+
+```cpp
+template<typename T> bool ImFusion::GUI::InputEventMapper < T >::removeMapping (T action, MouseEvent::Button button, Flags < InputEvent::KeyboardModifier > modifiers)
+```
+
+*inline*
+
+Removes the given mouse interaction mapping.
+
+### removeMapping
+
+```cpp
+template<typename T> bool ImFusion::GUI::InputEventMapper < T >::removeMapping (T action, KeyEvent::Key button, Flags < InputEvent::KeyboardModifier > modifiers)
+```
+
+*inline*
+
+Removes the given keyboard interaction mapping.
+
+### matchAny
+
+```cpp
+template<typename T> std::optional < T > ImFusion::GUI::InputEventMapper < T >::matchAny (const InputEvent & event) const
+```
+
+*inline*
+
+### matchAny
+
+```cpp
+template<typename T> std::optional < T > ImFusion::GUI::InputEventMapper < T >::matchAny (MouseEvent::Button button, Flags < InputEvent::KeyboardModifier > modifiers) const
+```
+
+*inline*
+
+### matchAny
+
+```cpp
+template<typename T> std::optional < T > ImFusion::GUI::InputEventMapper < T >::matchAny (KeyEvent::Key key, Flags < InputEvent::KeyboardModifier > modifiers) const
+```
+
+*inline*
+
+### matchAll
+
+```cpp
+template<typename T> std::vector < T > ImFusion::GUI::InputEventMapper < T >::matchAll (const InputEvent & event) const
+```
+
+*inline*
+
+### matchAll
+
+```cpp
+template<typename T> std::vector < T > ImFusion::GUI::InputEventMapper < T >::matchAll (MouseEvent::Button button, Flags < InputEvent::KeyboardModifier > modifiers) const
+```
+
+*inline*
+
+### matchAll
+
+```cpp
+template<typename T> std::vector < T > ImFusion::GUI::InputEventMapper < T >::matchAll (KeyEvent::Key key, Flags < InputEvent::KeyboardModifier > modifiers) const
+```
+
+*inline*
+
+### matches
+
+```cpp
+template<typename T> bool ImFusion::GUI::InputEventMapper < T >::matches (const InputEvent & event, T action) const
+```
+
+*inline*
+
+### matches
+
+```cpp
+template<typename T> bool ImFusion::GUI::InputEventMapper < T >::matches (MouseEvent::Button button, Flags < InputEvent::KeyboardModifier > modifiers, T action) const
+```
+
+*inline*
+
+### matches
+
+```cpp
+template<typename T> bool ImFusion::GUI::InputEventMapper < T >::matches (KeyEvent::Key key, Flags < InputEvent::KeyboardModifier > modifiers, T action) const
+```
+
+*inline*

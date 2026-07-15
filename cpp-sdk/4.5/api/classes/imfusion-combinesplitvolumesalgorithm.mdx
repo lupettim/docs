@@ -1,0 +1,57 @@
+---
+title: "ImFusion::CombineSplitVolumesAlgorithm"
+sidebarTitle: "CombineSplitVolumesAlgorithm"
+description: "Algorithm to combine a number of split volumes along the Z dimension."
+---
+
+`#include <ImFusion/Base/CombineSplitVolumesAlgorithm.h>`
+
+## Overview
+
+[Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) to combine a number of split volumes along the Z dimension.
+
+This algorithm takes a set of two or more volumes that can be combined along the Z dimension without interpolation. The typical use case is that of missing slices in a DICOM folder, where a single volume is needed nevertheless for image processing. The missing areas will be zero-filled or linearly interpolated based on the maxGapToFill parameter. Optionally, another image set with loose slices may be provided, that are also filled in. Last but not least, if only individual slices are available and not a single volume, the algorithm also will work if those slices are provided as the first parameter (volume).
+
+## Public Member Functions
+
+- **CombineSplitVolumesAlgorithm** (const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &volumes, const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*slices=nullptr) — Constructor with volumes and optional loose slices.
+
+## Static Public Member Functions
+
+- static bool **canCombine** (const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &volumes, const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*slices=nullptr) — Checks whether geometric requirements are satisfied to combine the volumes.
+
+## Public Attributes
+
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; int &gt; **p_maxGapToFill** = &#123;"maxGapToFill", 0, this&#125; — Gaps up to the specified size are filled by linear interpolation.
+
+## Methods implementing the algorithm interface
+
+- void [compute](#compute) () override — Execute the algorithm.
+- [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) [takeOutput](#takeoutput) () override — Return any new [Data](/cpp-sdk/4.5/api/classes/imfusion-data) that was created by the [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) during the last call to [compute()](#compute).
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=0)
+
+## Member Function Documentation
+
+### compute
+
+```cpp
+void ImFusion::CombineSplitVolumesAlgorithm::compute ()
+```
+
+*override, virtual*
+
+Execute the algorithm.
+
+### takeOutput
+
+```cpp
+OwningDataList ImFusion::CombineSplitVolumesAlgorithm::takeOutput ()
+```
+
+*override, virtual*
+
+Return any new [Data](/cpp-sdk/4.5/api/classes/imfusion-data) that was created by the [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) during the last call to [compute()](#compute).
+
+The default implementation will return an empty list.
+
+**Note:** Since ownership of the data is transferred, you can call this method only once between calls to [compute()](#compute).

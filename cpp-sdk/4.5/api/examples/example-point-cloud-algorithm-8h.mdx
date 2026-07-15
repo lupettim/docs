@@ -1,0 +1,59 @@
+---
+title: "ExamplePointCloudAlgorithm.h"
+---
+
+```cpp
+#ifndef EXAMPLE_POINTCLOUD_ALGORITHM_H
+#define EXAMPLE_POINTCLOUD_ALGORITHM_H
+
+#include <ImFusion/Base/Algorithm.h>
+#include <ImFusion/Mesh/Mesh.h>
+
+namespace ImFusion
+{
+ class PointCloud;
+ // An example algorithm that does some processing on a PointCloud and converts it to a Mesh.
+ //
+ // This algorithm demonstrates how to import a PointCloud, how to work directly on a given PointCloud,
+ // and how to use other algorithms to process a PointCloud.
+ //
+ // If started without input data the algorithm tries to open the filename given in the
+ // respective controller input as a PointCloud and return the loaded PointCloud.
+ // Supported file types are pcd, txt, xyz, and tiff.
+ //
+ // If started on a PointCloud the algorithm takes the PointCloud, computes normals if not present,
+ // then adds some user-defined amount of noise to the point cloud and generates a Mesh from it,
+ // which is then returned as the algorithm's output.
+ // The controller offers parameters for the processing.
+ //
+ class ExamplePointCloudAlgorithm : public Algorithm
+    {
+ public:
+        ExamplePointCloudAlgorithm();
+ explicit ExamplePointCloudAlgorithm(const ImFusion::PointCloud* mesh);
+        ~ExamplePointCloudAlgorithm();
+
+ static bool createCompatible(const DataList& data, Algorithm** a = 0);
+
+ void compute() override;
+        OwningDataList takeOutput() override;
+
+ void configure(const Properties* p) override;
+ void configuration(Properties* p) const override;
+
+ private:
+ void computePointCloudImport();
+ void computePointCloudProcessing();
+
+ const ImFusion::PointCloud* m_inputPointCloud;               // input
+ std::unique_ptr<ImFusion::PointCloud> m_outputPointCloud;    // output option 1
+ std::unique_ptr<Mesh> m_outputMesh;                          // output option 2
+ // parameters
+ std::string m_filePath;
+ double m_normalRadius;
+ double m_noiseStdDeviation;
+    };
+}
+#endif
+```
+ fragment

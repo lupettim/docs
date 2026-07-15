@@ -1,0 +1,435 @@
+---
+title: "ImFusion::GlLoop"
+sidebarTitle: "GlLoop"
+description: "Loop annotation."
+---
+
+`#include <ImFusion/GL/GlLoop.h>`
+
+## Overview
+
+Loop annotation.
+
+Renders a circle, ellipse or pseudo-spline, depending on number of points. In pseudo-spline mode, it also renders how the annotation would look without the currently active point. The pseudo-spline initially approximates the shape of the previous ellipse and tries to avoid intersecting itself. I strongly advise against inheriting from or otherwise trying to mess with the internals of this class.
+
+## Public Member Functions
+
+- **GlLoop** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; &[points](/cpp-sdk/4.5/api/classes/imfusion-glpointbasedannotation)=&#123;&#125;)
+- int [hitTestHandles2D](#hittesthandles2d) (int x, int y, const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &[view](/cpp-sdk/4.5/api/classes/imfusion-glannotation)) const override — Returns the index of the handle being hit, or -1 when missing.
+- int [hitTestHandles3D](#hittesthandles3d) (int x, int y, const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &[view](/cpp-sdk/4.5/api/classes/imfusion-glannotation)) const override
+- bool [hitTestLine2D](#hittestline2d) (int x, int y, const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &[view](/cpp-sdk/4.5/api/classes/imfusion-glannotation)) const override — Checks whether the line between handles gets hit (if not a straight line, override this in the annotation).
+- bool [hitTest](#hittest) (int x, int y, const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &[view](/cpp-sdk/4.5/api/classes/imfusion-glannotation)) const override — Perform hit test with points of underlying object. Return true if object is hit, false otherwise.
+- bool [addPoint](#addpoint) (const vec3 &p) override — Adds a new point at world coords p and sets it as active point.
+- void **undoAdd** () — Reverts to the state before adding the most recent point.
+- void **removePoint** (int idx) — Removes a single point without reverting the entire state.
+- void [setPoints](#setpoints) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; &[points](/cpp-sdk/4.5/api/classes/imfusion-glpointbasedannotation)) override — Create annotation from scratch using the given points.
+- void **updatePoint** (size_t idx, const vec3 &pos)
+- void **setActivePoint** (int idx) — [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags) a point as active for the purpose of deforming the spline and rendering the previous outline. Pass -1 for none.
+- void [setPointColor](#setpointcolor) (const vec3 &[color](/cpp-sdk/4.5/api/classes/imfusion-glannotation)) override — Set point color.
+- void [rotate](#rotate) (float angle) override — Change the [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) matrix to reflect a rotation around the current m_rotationPoint Since this matrix is ignored by most renderers at the moment, this does not currently rotate anything.
+- void [rotateNoMatrix](#rotatenomatrix) (float angle) override — Rotate the annotation by changing the handle positions instead of the matrix.
+- void [setRotationPoint](#setrotationpoint) (vec3 &point) override — Set the axis for rotation.
+- void [setPointSize](#setpointsize) (float s) override — Set the point size.
+- void [setShowPointsAsCrosses](#setshowpointsascrosses) (bool flag) override — Set the rendering of points.
+- void [setMatrix](#setmatrix) (const mat4 &m) override — Overwritten method to update points in world coordinates if the matrix has changed.
+- void [setMatrixWithoutMoving](#setmatrixwithoutmoving) (const mat4 &m) override — Change the matrix witout moving the annotation, e.g. for linking it with an image transformation.
+- bool [sampleRenderPath](#samplerenderpath) (int samples, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; &out) const override — For annotations where the rendered shape differs from the stored points, this method returns true and a set of points on the rendered curve.
+- void [setLineWidth](#setlinewidth) (float value) override — Set annotation line width.
+- void [setColor](#setcolor) (const vec3 &[color](/cpp-sdk/4.5/api/classes/imfusion-glannotation)) override — Set annotation color.
+- void [setAlpha](#setalpha) (double v) override — Set alpha channel.
+- void [setLabelVisible](#setlabelvisible) (bool [visible](/cpp-sdk/4.5/api/classes/imfusion-globject)) override — Set annotation label visibility.
+- void [setLabelDepthTest](#setlabeldepthtest) (bool depthTest) override — Set annotation label depth test flag.
+- void [setLabelColor](#setlabelcolor) (const vec3 &[color](/cpp-sdk/4.5/api/classes/imfusion-glannotation)) override — Set annotation label color.
+- void [setLabelText](#setlabeltext) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &label) override — Set annotation label text.
+- void [setLabelTextPrefix](#setlabeltextprefix) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &labelPrefix) override — Set annotation label text prefix.
+- void [setLabelTextSuffix](#setlabeltextsuffix) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &labelSuffix) override — Set annotation label text suffix.
+- void [setVisible](#setvisible) (bool [visible](/cpp-sdk/4.5/api/classes/imfusion-globject)) override — Set object visibility.
+- void [setAlwaysVisible](#setalwaysvisible) (bool [alwaysVisible](/cpp-sdk/4.5/api/classes/imfusion-globject)) override — Set if object is always visible.
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Set one or multiple properties.
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Retrieve the properties of this object.
+- void [setSelected](#setselected) (bool m) override — When a [GlAnnotation](/cpp-sdk/4.5/api/classes/imfusion-glannotation) is selected, it may be rendered differently to distinguish it from non-selected annotations.
+- bool **selected** ()
+- void [draw](#draw) (const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &[view](/cpp-sdk/4.5/api/classes/imfusion-glannotation)) override — Draw the object in 3D space.
+- [Geometry::AlignedBox](/cpp-sdk/4.5/api/classes/imfusion-geometry-alignedbox) [bounds](#bounds) () const override — Get the axis-aligned bounding box of this [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) in world space.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [typeName](#typename) () const override — Return unique identifier for this object class used for serialization.
+- void [setEditable](#seteditable) (bool [editable](/cpp-sdk/4.5/api/classes/imfusion-glannotation)) override — When a [GlAnnotation](/cpp-sdk/4.5/api/classes/imfusion-glannotation) is editable it may alter its visualization and render UI elements for its manipulation.
+- void [updatePoints](#updatepoints) () override — Update the internal point structure.
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; & **internalPoints** () const — Read access to the internal points used by the wrapped annotation.
+
+## Member Function Documentation
+
+### hitTestHandles2D
+
+```cpp
+int ImFusion::GlLoop::hitTestHandles2D (int x, int y, const GlView & view) const
+```
+
+*override, virtual*
+
+Returns the index of the handle being hit, or -1 when missing.
+
+### hitTestHandles3D
+
+```cpp
+int ImFusion::GlLoop::hitTestHandles3D (int x, int y, const GlView & view) const
+```
+
+*override, virtual*
+
+### hitTestLine2D
+
+```cpp
+bool ImFusion::GlLoop::hitTestLine2D (int x, int y, const GlView & view) const
+```
+
+*override, virtual*
+
+Checks whether the line between handles gets hit (if not a straight line, override this in the annotation).
+
+### hitTest
+
+```cpp
+bool ImFusion::GlLoop::hitTest (int, int, const GlView &) const
+```
+
+*override, virtual*
+
+Perform hit test with points of underlying object. Return true if object is hit, false otherwise.
+
+### addPoint
+
+```cpp
+bool ImFusion::GlLoop::addPoint (const vec3 & p)
+```
+
+*override, virtual*
+
+Adds a new point at world coords p and sets it as active point.
+
+### setPoints
+
+```cpp
+void ImFusion::GlLoop::setPoints (const std::vector < vec3 > & points)
+```
+
+*override, virtual*
+
+Create annotation from scratch using the given points.
+
+### setPointColor
+
+```cpp
+void ImFusion::GlLoop::setPointColor (const vec3 & color)
+```
+
+*override, virtual*
+
+Set point color.
+
+### rotate
+
+```cpp
+void ImFusion::GlLoop::rotate (float angle)
+```
+
+*override, virtual*
+
+Change the [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) matrix to reflect a rotation around the current m_rotationPoint Since this matrix is ignored by most renderers at the moment, this does not currently rotate anything.
+
+### rotateNoMatrix
+
+```cpp
+void ImFusion::GlLoop::rotateNoMatrix (float angle)
+```
+
+*override, virtual*
+
+Rotate the annotation by changing the handle positions instead of the matrix.
+
+### setRotationPoint
+
+```cpp
+void ImFusion::GlLoop::setRotationPoint (vec3 & point)
+```
+
+*override, virtual*
+
+Set the axis for rotation.
+
+### setPointSize
+
+```cpp
+void ImFusion::GlLoop::setPointSize (float s)
+```
+
+*override, virtual*
+
+Set the point size.
+
+### setShowPointsAsCrosses
+
+```cpp
+void ImFusion::GlLoop::setShowPointsAsCrosses (bool flag)
+```
+
+*override, virtual*
+
+Set the rendering of points.
+
+### setMatrix
+
+```cpp
+void ImFusion::GlLoop::setMatrix (const mat4 & m)
+```
+
+*override, virtual*
+
+Overwritten method to update points in world coordinates if the matrix has changed.
+
+### setMatrixWithoutMoving
+
+```cpp
+void ImFusion::GlLoop::setMatrixWithoutMoving (const mat4 & m)
+```
+
+*override, virtual*
+
+Change the matrix witout moving the annotation, e.g. for linking it with an image transformation.
+
+### sampleRenderPath
+
+```cpp
+bool ImFusion::GlLoop::sampleRenderPath (int samples, std::vector < vec3 > & out) const
+```
+
+*override, virtual*
+
+For annotations where the rendered shape differs from the stored points, this method returns true and a set of points on the rendered curve.
+
+Otherwise it returns false and the control points.
+
+### setLineWidth
+
+```cpp
+void ImFusion::GlLoop::setLineWidth (float value)
+```
+
+*override, virtual*
+
+Set annotation line width.
+
+**Parameters:**
+
+- `lineWidth` — line width
+
+### setColor
+
+```cpp
+void ImFusion::GlLoop::setColor (const vec3 & color)
+```
+
+*override, virtual*
+
+Set annotation color.
+
+**Parameters:**
+
+- `color` — color
+
+### setAlpha
+
+```cpp
+void ImFusion::GlLoop::setAlpha (double v)
+```
+
+*override, virtual*
+
+Set alpha channel.
+
+### setLabelVisible
+
+```cpp
+void ImFusion::GlLoop::setLabelVisible (bool visible)
+```
+
+*override, virtual*
+
+Set annotation label visibility.
+
+**Parameters:**
+
+- `visible` — visibility
+
+### setLabelDepthTest
+
+```cpp
+void ImFusion::GlLoop::setLabelDepthTest (bool depthTest)
+```
+
+*override, virtual*
+
+Set annotation label depth test flag.
+
+**Parameters:**
+
+- `Flag` — whether apply depth test during label rendering in 3D views.
+
+### setLabelColor
+
+```cpp
+void ImFusion::GlLoop::setLabelColor (const vec3 & color)
+```
+
+*override, virtual*
+
+Set annotation label color.
+
+**Parameters:**
+
+- `color` — color
+
+### setLabelText
+
+```cpp
+void ImFusion::GlLoop::setLabelText (const std::string & label)
+```
+
+*override, virtual*
+
+Set annotation label text.
+
+**Parameters:**
+
+- `label` — label text
+
+### setLabelTextPrefix
+
+```cpp
+void ImFusion::GlLoop::setLabelTextPrefix (const std::string & labelPrefix)
+```
+
+*override, virtual*
+
+Set annotation label text prefix.
+
+**Parameters:**
+
+- `label` — label text prefix
+
+### setLabelTextSuffix
+
+```cpp
+void ImFusion::GlLoop::setLabelTextSuffix (const std::string & labelSuffix)
+```
+
+*override, virtual*
+
+Set annotation label text suffix.
+
+**Parameters:**
+
+- `label` — label text suffix
+
+### setVisible
+
+```cpp
+void ImFusion::GlLoop::setVisible (bool visible)
+```
+
+*override, virtual*
+
+Set object visibility.
+
+### setAlwaysVisible
+
+```cpp
+void ImFusion::GlLoop::setAlwaysVisible (bool alwaysVisible)
+```
+
+*override, virtual*
+
+Set if object is always visible.
+
+### configure
+
+```cpp
+void ImFusion::GlLoop::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Set one or multiple properties.
+
+### configuration
+
+```cpp
+void ImFusion::GlLoop::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Retrieve the properties of this object.
+
+### setSelected
+
+```cpp
+void ImFusion::GlLoop::setSelected (bool m)
+```
+
+*override, virtual*
+
+When a [GlAnnotation](/cpp-sdk/4.5/api/classes/imfusion-glannotation) is selected, it may be rendered differently to distinguish it from non-selected annotations.
+
+### draw
+
+```cpp
+void ImFusion::GlLoop::draw (const GlView & view)
+```
+
+*override, virtual*
+
+Draw the object in 3D space.
+
+### bounds
+
+```cpp
+Geometry::AlignedBox ImFusion::GlLoop::bounds () const
+```
+
+*override, virtual*
+
+Get the axis-aligned bounding box of this [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) in world space.
+
+Return an empty (default-constructed) AlignedBox object if the [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) does not reside in world space.
+
+### typeName
+
+```cpp
+std::string ImFusion::GlLoop::typeName () const
+```
+
+*override, virtual*
+
+Return unique identifier for this object class used for serialization.
+
+### setEditable
+
+```cpp
+void ImFusion::GlLoop::setEditable (bool editable)
+```
+
+*override, virtual*
+
+When a [GlAnnotation](/cpp-sdk/4.5/api/classes/imfusion-glannotation) is editable it may alter its visualization and render UI elements for its manipulation.
+
+### updatePoints
+
+```cpp
+void ImFusion::GlLoop::updatePoints ()
+```
+
+*override, virtual*
+
+Update the internal point structure.
+
+Should be implemented by subtypes which have custom data depending on the point data. Derived implementation needs to call base class implementation.

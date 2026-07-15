@@ -1,0 +1,103 @@
+---
+title: "ImFusion::Dicom::CommonModule"
+sidebarTitle: "CommonModule"
+description: "Collection of the essential tags describing a Dicom data set combining."
+---
+
+`#include <ImFusion/Dicom/DicomModule.h>`
+
+## Overview
+
+Collection of the essential tags describing a [Dicom](/cpp-sdk/4.5/api/namespaces/imfusion-dicom) data set combining.
+
+- [Patient](/cpp-sdk/4.5/api/structs/imfusion-dicom-patient)[Module](/cpp-sdk/4.5/api/classes/imfusion-dicom-module) (PS 3.3 C.7.1.1)
+- General [Study](/cpp-sdk/4.5/api/structs/imfusion-dicom-study)[Module](/cpp-sdk/4.5/api/classes/imfusion-dicom-module) (PS 3.3 C.7.2.1)
+- General [Series](/cpp-sdk/4.5/api/structs/imfusion-dicom-series)[Module](/cpp-sdk/4.5/api/classes/imfusion-dicom-module) (PS 3.3 C.7.3.1)
+
+  **See also:** [http://dicom.nema.org/medical/dicom/current/output/chtml/part03/sect_C.7.html#sect_C.7.1.1](http://dicom.nema.org/medical/dicom/current/output/chtml/part03/sect_C.7.html#sect_C.7.1.1)[http://dicom.nema.org/medical/dicom/current/output/chtml/part03/sect_C.7.2.html#sect_C.7.2.1](http://dicom.nema.org/medical/dicom/current/output/chtml/part03/sect_C.7.2.html#sect_C.7.2.1)[http://dicom.nema.org/medical/dicom/current/output/chtml/part03/sect_C.7.3.html#sect_C.7.3.1](http://dicom.nema.org/medical/dicom/current/output/chtml/part03/sect_C.7.3.html#sect_C.7.3.1)[ImageInfoDataComponent](/cpp-sdk/4.5/api/classes/imfusion-imageinfodatacomponent)[AnatomyDataComponent](/cpp-sdk/4.5/api/classes/imfusion-anatomydatacomponent)
+
+## Public Member Functions
+
+- **CommonModule** ([ModuleList](/cpp-sdk/4.5/api/classes/imfusion-dicom-modulelist) &parent, [Type](/cpp-sdk/4.5/api/classes/imfusion-dicom-module) type)
+- void [load](#load-1-2) ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &sis) const — Load data from the module and store it in a [ImageInfoDataComponent](/cpp-sdk/4.5/api/classes/imfusion-imageinfodatacomponent) of *sis*.
+- void [load](#load-2-2) ([ImageInfoDataComponent](/cpp-sdk/4.5/api/classes/imfusion-imageinfodatacomponent) &iidc) const — Load data from the module into the [ImageInfoDataComponent](/cpp-sdk/4.5/api/classes/imfusion-imageinfodatacomponent).
+- void **save** (const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &sis, int sharedImageIndex, int sliceIndex, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &sopClassUID) — Save the data in the [ImageInfoDataComponent](/cpp-sdk/4.5/api/classes/imfusion-imageinfodatacomponent) of *sis* to DICOM.
+- void [save](#save) (const [ImageInfoDataComponent](/cpp-sdk/4.5/api/classes/imfusion-imageinfodatacomponent) \*iidc) — Writes the [ImageInfoDataComponent](/cpp-sdk/4.5/api/classes/imfusion-imageinfodatacomponent) to the dataset.
+- void [saveMandatory](#savemandatory) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &sopClassUID) — Writes all remaining mandatory tags not covered by save(ImageInfoDataComponent).
+
+## Public Attributes
+
+- [Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **sopClassUID**
+- [Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **sopInstanceUID**
+- [Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **specificCharacteSet** — Will always be set to ISO_IR 192 during save.
+- [Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **patientName**
+- [Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **patientID**
+- [Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **patientPosition**
+- [Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **patientBirthDate**
+- [Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **patientSex**
+- [Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **patientResponsiblePerson**
+- [Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **patientComment**
+- [Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **studyInstanceUID**
+- [Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **studyID**
+- [Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **studyDate**
+- [Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **studyTime**
+- [Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **studyDescription**
+- [Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **seriesInstanceUID**
+- [Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **seriesNumber**
+- [Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **seriesDate**
+- [Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **seriesTime**
+- [Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **seriesDescription**
+- [Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element)&lt; [Data::Modality](/cpp-sdk/4.5/api/classes/imfusion-data) &gt; **modality** — DICOM modality converted to ImFusion::Data::Modality.
+- [Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **modalityStr** — DICOM modality.
+- [Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **photometricInterpretation**
+- [Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **bodyPartExamined**
+- [Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **laterality**
+- [Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **anatomicalOrientationType** — Currently not written during save.
+- [Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element)&lt; int &gt; **instanceNumber**
+- [Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element)&lt; [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; &gt; **imageType** — Currently not written during save.
+- [Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **acquisitionTime** — Currently not written during save.
+- [Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **frameOfReferenceUID**
+- [Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **referringPhysicianName**
+- [Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **accessionNumber**
+
+## Member Function Documentation
+
+### load
+
+```cpp
+void ImFusion::Dicom::CommonModule::load (SharedImageSet & sis) const
+```
+
+Load data from the module and store it in a [ImageInfoDataComponent](/cpp-sdk/4.5/api/classes/imfusion-imageinfodatacomponent) of *sis*.
+
+Missing values will be set to empty strings in the datacomponent. If the dataset contains anatomical data, it is stored in a [AnatomyDataComponent](/cpp-sdk/4.5/api/classes/imfusion-anatomydatacomponent).
+
+### load
+
+```cpp
+void ImFusion::Dicom::CommonModule::load (ImageInfoDataComponent & iidc) const
+```
+
+Load data from the module into the [ImageInfoDataComponent](/cpp-sdk/4.5/api/classes/imfusion-imageinfodatacomponent).
+
+Missing values will be set to empty strings in the datacomponent. This is automatically called by the above load method for [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) and should only be used for non-image data (such as PointClouds).
+
+### save
+
+```cpp
+void ImFusion::Dicom::CommonModule::save (const ImageInfoDataComponent * iidc)
+```
+
+Writes the [ImageInfoDataComponent](/cpp-sdk/4.5/api/classes/imfusion-imageinfodatacomponent) to the dataset.
+
+This is automatically called by the above save method for [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) and should only be used for non-image data (such as PointClouds).
+
+### saveMandatory
+
+```cpp
+void ImFusion::Dicom::CommonModule::saveMandatory (const std::string & sopClassUID)
+```
+
+Writes all remaining mandatory tags not covered by save(ImageInfoDataComponent).
+
+This is automatically called by the above save method for [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) and should only be used for non-image data (such as PointClouds).

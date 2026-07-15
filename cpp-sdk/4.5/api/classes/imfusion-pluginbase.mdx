@@ -1,0 +1,133 @@
+---
+title: "ImFusion::PluginBase"
+sidebarTitle: "PluginBase"
+description: "Base interface to interact with a plugin that can be loaded into an application at runtime."
+---
+
+`#include <ImFusion/Core/Plugin.h>`
+
+## Overview
+
+[Base](/cpp-sdk/4.5/api/structs/imfusion-dicom-base) interface to interact with a plugin that can be loaded into an application at runtime.
+
+Plugins are a mechanism to dynamically extend an application with functionality without the application a-priori knowing all plugins that will be available at runtime. On the OS/filesystem level, they correspond to a dynamically linked shared library (on Windows: DLL). In the context of the ImFusion SDK such a plugin library must:
+
+1. Implement a plugin-specific specialization of the [PluginBase](/cpp-sdk/4.5/api/classes/imfusion-pluginbase) interface. The class must have a static member function const char\* id() that returns a unique identifier of the plugin. For consistency, we recommend to use the following scheme: &lt;Namespace&gt;.&lt;PluginName&gt;, where &lt;Namespace&gt; is a consistent identifier for all plugins from a single author/vendor.
+2. Export a set of C functions and symbols to query plugin ID and descriptor, and to instantiate the [PluginBase](/cpp-sdk/4.5/api/classes/imfusion-pluginbase) specialization instance. Use the IMFUSION_REGISTER_PLUGIN() macro in a **cpp file** (not a header file) to do so.
+
+**Warning:** You must not do any non-trivial initialization in the plugin class constructor. Otherwise you might deadlock the OS on library load if using the automatic plugin self-registration feature. All non-trivial initialization must happen in the [init()](#init) function.
+[https://learn.microsoft.com/en-us/windows/win32/dlls/dynamic-link-library-best-practices](https://learn.microsoft.com/en-us/windows/win32/dlls/dynamic-link-library-best-practices)
+
+**See also:** Plugin Architecture, [PluginManager](/cpp-sdk/4.5/api/classes/imfusion-pluginmanager), IMFUSION_REGISTER_PLUGIN, IMFUSION_REGISTER_PLUGIN_NO_AUTO
+
+**Examples:** [ExamplePlugin.cpp](/cpp-sdk/4.5/api/examples/example-plugin-8cpp).
+
+## Public Types
+
+- enum class [Status](#status) &#123; Success = 0 , LicenseCheckFailed , Unsupported , UnknownError &#125; — Enumeration of status codes for plugin initialization.
+
+## Public Member Functions
+
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [pluginId](#pluginid) () const — Convenience function to query the plugin ID of a concrete instance at runtime.
+- [PluginManager::PluginStatus](/cpp-sdk/4.5/api/classes/imfusion-pluginmanager) [pluginStatus](#pluginstatus) () const — Convenience function to query the plugin status of a concrete instance at runtime.
+- virtual [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [author](#author) () const =0 — Name of the author of the plugin for informative purposes.
+- virtual [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [description](#description) () const =0 — Description of the plugin purpose/functionality for informative purposes.
+- [Utils::Version](/cpp-sdk/4.5/api/structs/imfusion-utils-version) [version](#version) () const — Convenience function to query the version number of the plugin for informative purposes.
+- virtual [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; [dependencies](#dependencies) () const — Optional list of plugin IDs on which this plugin depends.
+
+## Protected Member Functions
+
+- virtual [Status](#status) [init](#init) ()=0 — Perform plugin initialization, for instance by populating factories and registering custom types with the host application.
+
+## Member Enumeration Documentation
+
+### Status
+
+```cpp
+enum class ImFusion::PluginBase::Status
+```
+
+*strong*
+
+Enumeration of status codes for plugin initialization.
+
+**Enumerator:**
+
+- `Success` — Requested action completed successfully.
+- `LicenseCheckFailed` — Failure due to failed license check.
+- `Unsupported` — The requested action is unsupported by the plugin.
+- `UnknownError` — Failure due to unknown/other error.
+
+## Member Function Documentation
+
+### pluginId
+
+```cpp
+std::string ImFusion::PluginBase::pluginId () const
+```
+
+Convenience function to query the plugin ID of a concrete instance at runtime.
+
+This function requires the plugin to be registered with [PluginManager](/cpp-sdk/4.5/api/classes/imfusion-pluginmanager).
+
+### pluginStatus
+
+```cpp
+PluginManager::PluginStatus ImFusion::PluginBase::pluginStatus () const
+```
+
+Convenience function to query the plugin status of a concrete instance at runtime.
+
+This function requires the plugin to be registered with [PluginManager](/cpp-sdk/4.5/api/classes/imfusion-pluginmanager).
+
+### author
+
+```cpp
+virtual std::string ImFusion::PluginBase::author () const
+```
+
+*pure virtual*
+
+Name of the author of the plugin for informative purposes.
+
+### description
+
+```cpp
+virtual std::string ImFusion::PluginBase::description () const
+```
+
+*pure virtual*
+
+Description of the plugin purpose/functionality for informative purposes.
+
+### version
+
+```cpp
+Utils::Version ImFusion::PluginBase::version () const
+```
+
+Convenience function to query the version number of the plugin for informative purposes.
+
+This function requires the plugin to be registered with [PluginManager](/cpp-sdk/4.5/api/classes/imfusion-pluginmanager).
+
+### dependencies
+
+```cpp
+virtual std::vector < std::string > ImFusion::PluginBase::dependencies () const
+```
+
+*inline, virtual*
+
+Optional list of plugin IDs on which this plugin depends.
+
+Initialization of this plugin will fail if any of the plugins in this list can not be loaded or initialized for any reason.
+
+### init
+
+```cpp
+virtual Status ImFusion::PluginBase::init ()
+```
+
+*protected, pure virtual*
+
+Perform plugin initialization, for instance by populating factories and registering custom types with the host application.

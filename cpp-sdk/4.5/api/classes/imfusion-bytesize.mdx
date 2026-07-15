@@ -1,0 +1,41 @@
+---
+title: "ImFusion::ByteSize"
+sidebarTitle: "ByteSize"
+description: "Helper class to facilitate handling byte sizes."
+---
+
+`#include <ImFusion/Core/ByteSize.h>`
+
+## Overview
+
+Helper class to facilitate handling byte sizes.
+
+[ByteSize](/cpp-sdk/4.5/api/classes/imfusion-bytesize) enables you to quickly convert between Bytes, Kilobytes, Megabytes, and Gigabytes using base 2 (i.e. 1KB = 1024 bytes). Futhermore, there is a set of custom custom literals, to specify larger quantities in a human-readable fashion.
+
+```cpp
+using namespace ImFusion::Literals;
+ByteSize fileSize = ...;
+if (fileSize > 100_MB)
+ LOG_WARN("large file detected");
+```
+ fragment
+
+**See also:** [Literals](/cpp-sdk/4.5/api/namespaces/imfusion-literals)
+
+## Public Member Functions
+
+- **ByteSize** (size_t numBytes) — Creates a new object from number of bytes.
+- **operator size_t** () const — Implicit conversion to number of bytes.
+- size_t **numBytes** () const — Returns the number of bytes.
+- size_t **numKB** () const — Returns the number of Kilobytes.
+- size_t **numMB** () const — Returns the number of Megabytes.
+- size_t **numGB** () const — Returns the number of Gigabytes.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **toString** () const — Convert to a pretty-printed, human readable string representation with a maximum of 4 digits.
+- ByteSize & **operator+=** (const ByteSize &rhs)
+- ByteSize & **operator-=** (const ByteSize &rhs)
+
+## Static Public Member Functions
+
+- static ByteSize **fromKB** (size_t numKB) — Creates a new object from number of Kilobytes.
+- static ByteSize **fromMB** (size_t numMB) — Creates a new object from number of Megabytes.
+- static ByteSize **fromGB** (size_t numGB) — Creates a new object from number of Gigabytes.

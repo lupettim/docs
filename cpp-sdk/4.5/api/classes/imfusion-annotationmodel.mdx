@@ -1,0 +1,203 @@
+---
+title: "ImFusion::AnnotationModel"
+sidebarTitle: "AnnotationModel"
+description: "Container class for annotations Each annotation is always related to exactly one dataset."
+---
+
+`#include <ImFusion/GUI/AnnotationModel.h>`
+
+## Overview
+
+[Container](/cpp-sdk/4.5/api/namespaces/imfusion-container) class for annotations Each annotation is always related to exactly one dataset.
+
+The model provides several methods to create annotations and move them between datasets.
+
+## Public Slots
+
+- QModelIndex [add](#add-1-2) (QString annotType, [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*dataset, const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p=0, int frameIndex=-1) — Creates an annotation with the given type and attaches it to dataset.
+- QModelIndex [add](#add-2-2) ([InteractiveObject](/cpp-sdk/4.5/api/classes/imfusion-interactiveobject) \*annotation, [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*dataset, int frameIndex=-1) — Adds annotation to the model and attaches it to dataset.
+- QModelIndex [move](#move) ([InteractiveObject](/cpp-sdk/4.5/api/classes/imfusion-interactiveobject) \*annotation, [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*dataset) — Moves the annotation from anywhere in the model to dataset The method will remove annotation from its previous attachment, add it to dataset and return the index to the new location.
+- void **moveToFrame** ([InteractiveObject](/cpp-sdk/4.5/api/classes/imfusion-interactiveobject) \*annotation, int frameIndex, [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*parentDataset=nullptr) — Moves the annotation to a specific frame. The parent data is inferred if not given.
+- void **showOnAllFrames** ([InteractiveObject](/cpp-sdk/4.5/api/classes/imfusion-interactiveobject) \*annotation) — Shows the annotation on all frames.
+- void [remove](#remove) ([InteractiveObject](/cpp-sdk/4.5/api/classes/imfusion-interactiveobject) \*annotation, bool deleteData=true) — Removes and deletes annotation.
+- void **removeAll** ([Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*dataset) — Removes and deletes all annotations that are attached to dataset (see also remove).
+- void **clear** () — Removes and deletes all annotations (see also remove).
+- void [updateAnnotationVisibility](#updateannotationvisibility) () — Updates the visibility of each annotation depending on the visible datasets Annotations are added to views that show the parent dataset and remove from views that don't show the parent dataset.
+
+## Signals
+
+- void **annotationAboutToBeRemoved** ([InteractiveObject](/cpp-sdk/4.5/api/classes/imfusion-interactiveobject) \*annotation) — Emitted just before annotation will be deleted.
+- void **annotationAdded** ([InteractiveObject](/cpp-sdk/4.5/api/classes/imfusion-interactiveobject) \*annotation) — Emitted after an annotation has been added.
+- void **annotationMoved** ([InteractiveObject](/cpp-sdk/4.5/api/classes/imfusion-interactiveobject) \*annotation) — Emitted after an annotation has been moved (from a parent dataset to another).
+- void **annotationsVisibilityUpdated** () — Per-frame annotations visibility updated.
+
+## Public Member Functions
+
+- **AnnotationModel** ([MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase) \*mw) — Creates an empty model.
+- **~AnnotationModel** () override — Deletes all annotations and removes them from any views.
+- [InteractiveObject](/cpp-sdk/4.5/api/classes/imfusion-interactiveobject) \* **convertToAnnotation** (const QModelIndex &index) const — Returns the annotation with the given index or nullptr if the index is not an [InteractiveObject](/cpp-sdk/4.5/api/classes/imfusion-interactiveobject).
+- [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \* **convertToData** (const QModelIndex &index) const — Returns the dataset with the given index. Returns nullptr if the index is not a dataset or if it is the global item.
+- QVector&lt; [InteractiveObject](/cpp-sdk/4.5/api/classes/imfusion-interactiveobject) \* &gt; **getAll** () const — Returns a list of all annotations.
+- QVector&lt; [InteractiveObject](/cpp-sdk/4.5/api/classes/imfusion-interactiveobject) \* &gt; [getAnnotations](#getannotations) (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*dataset, bool onlyDirectAnnotations=true) const — Returns a list of all annotations that are attached to the given dataset.
+- [InteractiveObject](/cpp-sdk/4.5/api/classes/imfusion-interactiveobject) \* **getAnnotation** (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*dataset, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name) const — Return the annotation with the specified name (with the provided dataset as direct parent or global), and zero pointer if it does not exist.
+- [InteractiveObject](/cpp-sdk/4.5/api/classes/imfusion-interactiveobject) \* **getDataAnnotation** (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data) const — Returns the annotation ([GlMesh](/cpp-sdk/4.5/api/classes/imfusion-glmesh), [GlPointCloud](/cpp-sdk/4.5/api/classes/imfusion-glpointcloud), [GlTree](/cpp-sdk/4.5/api/classes/imfusion-gltree)) which has the underlying data ([Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh), [PointCloud](/cpp-sdk/4.5/api/classes/imfusion-pointcloud), [Tree](/cpp-sdk/4.5/api/classes/imfusion-tree)) specified in the input.
+- [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \* **getParentDataset** ([InteractiveObject](/cpp-sdk/4.5/api/classes/imfusion-interactiveobject) \*annotation) const — Returns the dataset the given annotation is attached to or 0 if it is attached globally.
+- int **getAttachedFrame** (const [InteractiveObject](/cpp-sdk/4.5/api/classes/imfusion-interactiveobject) \*interactiveObject) const — Returns the frame the given annotation is attached to or -1 if it is not applicable for the data or not set.
+- void [linkPoseWithParent](#linkposewithparent) ([InteractiveObject](/cpp-sdk/4.5/api/classes/imfusion-interactiveobject) \*interactiveObject) — Links the annotation points with the pose of its parent dataset.
+- void **unlinkPoseWithParent** ([InteractiveObject](/cpp-sdk/4.5/api/classes/imfusion-interactiveobject) \*interactiveObject) — Unlinks the annotation points with the pose of its parent dataset (if it is linked).
+- bool **isPoseLinkedWithParent** (const [InteractiveObject](/cpp-sdk/4.5/api/classes/imfusion-interactiveobject) \*annotation) const — Returns whether the annotation points are linked with the pose of its parent dataset.
+- [Manipulator](/cpp-sdk/4.5/api/classes/imfusion-manipulator) \* [createDefaultManipulator](#createdefaultmanipulator) ([GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) \*object) const — Creates a default manipulator for object This method creates manipulators for any kind of [GlPointBasedAnnotation](/cpp-sdk/4.5/api/classes/imfusion-glpointbasedannotation) ([PointBasedAnnotationManipulator](/cpp-sdk/4.5/api/classes/imfusion-pointbasedannotationmanipulator)), [GlSmartSpline](/cpp-sdk/4.5/api/classes/imfusion-glsmartspline) ([SmartSplineManipulator](/cpp-sdk/4.5/api/classes/imfusion-smartsplinemanipulator)) and [GlMesh](/cpp-sdk/4.5/api/classes/imfusion-glmesh) ([MeshManipulator](/cpp-sdk/4.5/api/classes/imfusion-meshmanipulator)).
+- QStringList **types** () const — Returns a list of all supported types.
+- QString **name** (QString annotType) const — Returns the default basename for the given type.
+- QIcon **icon** (QString annotType) const — Returns the default icon for the given type.
+- int **columnCount** (const QModelIndex &parent=QModelIndex()) const override — Returns 1.
+- int **rowCount** (const QModelIndex &parent=QModelIndex()) const override — Returns the number of children for parent.
+- Qt::ItemFlags **flags** (const QModelIndex &index) const override — All items are selectable and enabled, annotation are also editable and checkable.
+- QVariant **data** (const QModelIndex &index, int role=Qt::DisplayRole) const override — Returns data for the given index DisplayRole and EditRole: name of the annotation.
+- bool **setData** (const QModelIndex &index, const QVariant &value, int role=Qt::EditRole) override — Sets a value to the data at index EditRole: sets the name of the annotation CheckStateRole: enables/disables an annotation.
+- QModelIndex **index** ([Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*dataset) const — Creates an index to the specified dataset.
+- QModelIndex **index** ([InteractiveObject](/cpp-sdk/4.5/api/classes/imfusion-interactiveobject) \*annotation) const — Creates an index to the specified annotation.
+- QModelIndex **index** (int row, int column, const QModelIndex &parent=QModelIndex()) const override — Creates an index to the specified item.
+- QModelIndex **parent** (const QModelIndex &index) const override — Returns the parent of index.
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void **onTransformationChanged** (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data)
+- void **setMoveWithData** (bool flag) — Specify whether annotations should be moved with the parent data transformation.
+- bool **moveWithData** () const — Return whether annotations are moved together with the parent data.
+- void **setShowPointsAsCrosses** (bool flag) — Show points as crosses in point-based annotations.
+- void **onDataDeleted** (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data)
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [InteractiveObject](/cpp-sdk/4.5/api/classes/imfusion-interactiveobject) &gt; [release](#release) ([InteractiveObject](/cpp-sdk/4.5/api/classes/imfusion-interactiveobject) \*annotation, bool deleteData=true) — Releases and deletes annotation.
+
+## Static Public Member Functions
+
+- static [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \* **getAnnotationData** ([InteractiveObject](/cpp-sdk/4.5/api/classes/imfusion-interactiveobject) \*annotation) — Returns the data corresponding to the annotation. If the annotation is not a data type returns null.
+
+## Member Function Documentation
+
+### getAnnotations
+
+```cpp
+QVector< InteractiveObject * > ImFusion::AnnotationModel::getAnnotations (const Data * dataset, bool onlyDirectAnnotations = true) const
+```
+
+Returns a list of all annotations that are attached to the given dataset.
+
+If onlyDirectAnnotations is true, only annotations that are directly attached to dataset are returned. Otherwise, also annotations that belong to any parent group get included in the result.
+
+### linkPoseWithParent
+
+```cpp
+void ImFusion::AnnotationModel::linkPoseWithParent (InteractiveObject * interactiveObject)
+```
+
+Links the annotation points with the pose of its parent dataset.
+
+Only works with a [GlPointBasedAnnotation](/cpp-sdk/4.5/api/classes/imfusion-glpointbasedannotation) that has a parent. Does nothing otherwise.
+
+### createDefaultManipulator
+
+```cpp
+Manipulator * ImFusion::AnnotationModel::createDefaultManipulator (GlObject * object) const
+```
+
+Creates a default manipulator for object This method creates manipulators for any kind of [GlPointBasedAnnotation](/cpp-sdk/4.5/api/classes/imfusion-glpointbasedannotation) ([PointBasedAnnotationManipulator](/cpp-sdk/4.5/api/classes/imfusion-pointbasedannotationmanipulator)), [GlSmartSpline](/cpp-sdk/4.5/api/classes/imfusion-glsmartspline) ([SmartSplineManipulator](/cpp-sdk/4.5/api/classes/imfusion-smartsplinemanipulator)) and [GlMesh](/cpp-sdk/4.5/api/classes/imfusion-glmesh) ([MeshManipulator](/cpp-sdk/4.5/api/classes/imfusion-meshmanipulator)).
+
+In the case of [PointBasedAnnotationManipulator](/cpp-sdk/4.5/api/classes/imfusion-pointbasedannotationmanipulator) and [SmartSplineManipulator](/cpp-sdk/4.5/api/classes/imfusion-smartsplinemanipulator) the interaction mode is set to None and interactions are allowed.
+
+### configuration
+
+```cpp
+void ImFusion::AnnotationModel::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality
+
+### configure
+
+```cpp
+void ImFusion::AnnotationModel::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### release
+
+```cpp
+std::unique_ptr < InteractiveObject > ImFusion::AnnotationModel::release (InteractiveObject * annotation, bool deleteData = true)
+```
+
+Releases and deletes annotation.
+
+The caller takes ownership of the released annotation. In the case of [CurvedViewPrimitive](/cpp-sdk/4.5/api/classes/imfusion-curvedviewprimitive), the [CurvedView](/cpp-sdk/4.5/api/classes/imfusion-curvedview) will be deleted, too. Also manipulators that are GlObjects and have been added to any views are removed from the display before deletion. If deleteData is true the data associated with this annotation is deleted, too.
+
+### add
+
+```cpp
+QModelIndex ImFusion::AnnotationModel::add (QString annotType, Data * dataset, const Properties * p = 0, int frameIndex = -1)
+```
+
+*slot*
+
+Creates an annotation with the given type and attaches it to dataset.
+
+The returned index will refer to the created annotation or is invalid in the case the annotation could not be created. In the case of [CurvedViewPrimitive](/cpp-sdk/4.5/api/classes/imfusion-curvedviewprimitive) a corresponding view will be created and added to the display. When the properties are set they are used to configure the annotation.
+
+### add
+
+```cpp
+QModelIndex ImFusion::AnnotationModel::add (InteractiveObject * annotation, Data * dataset, int frameIndex = -1)
+```
+
+*slot*
+
+Adds annotation to the model and attaches it to dataset.
+
+The model will take ownership of annotation. The returned index will refer to the created annotation or is invalid in the case the annotation could not be added. Each annotation can only occur once in the model. If dataset is 0, the annotation will be attached globally (i.e. will be visible in all datasets). For the attachment to dataset, see move. If annotation has no name, a name will be generated depending on the type. Otherwise the name might be changed if there is already an annotation with the same name (usually a number will be appended to the name). In the case of a [GlMesh](/cpp-sdk/4.5/api/classes/imfusion-glmesh) annotation, computeBoundingBox(), computeNormals() and uniteIndices() will be called if necessary in order to assure that [GlMesh](/cpp-sdk/4.5/api/classes/imfusion-glmesh) can display the mesh correctly.
+
+### move
+
+```cpp
+QModelIndex ImFusion::AnnotationModel::move (InteractiveObject * annotation, Data * dataset)
+```
+
+*slot*
+
+Moves the annotation from anywhere in the model to dataset The method will remove annotation from its previous attachment, add it to dataset and return the index to the new location.
+
+The annotation is also removed from all views showing the old attachment and added to the views for the new attachment. It will also remove/add any manipulators (such as the [MeshManipulator](/cpp-sdk/4.5/api/classes/imfusion-meshmanipulator)) that are GlObjects from/to the views. For [CurvedViewPrimitive](/cpp-sdk/4.5/api/classes/imfusion-curvedviewprimitive) annotations, the [CurvedView](/cpp-sdk/4.5/api/classes/imfusion-curvedview) will be updated with the new dataset.
+
+### remove
+
+```cpp
+void ImFusion::AnnotationModel::remove (InteractiveObject * annotation, bool deleteData = true)
+```
+
+*slot*
+
+Removes and deletes annotation.
+
+In the case of [CurvedViewPrimitive](/cpp-sdk/4.5/api/classes/imfusion-curvedviewprimitive), the [CurvedView](/cpp-sdk/4.5/api/classes/imfusion-curvedview) will be deleted, too. Also manipulators that are GlObjects and have been added to any views are removed from the display before deletion. If deleteData is true the data associated with this annotation is deleted, too.
+
+### updateAnnotationVisibility
+
+```cpp
+void ImFusion::AnnotationModel::updateAnnotationVisibility ()
+```
+
+*slot*
+
+Updates the visibility of each annotation depending on the visible datasets Annotations are added to views that show the parent dataset and remove from views that don't show the parent dataset.
+
+Global annotations are added to all views.

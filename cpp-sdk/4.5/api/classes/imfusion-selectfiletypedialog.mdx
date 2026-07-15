@@ -1,0 +1,25 @@
+---
+title: "ImFusion::SelectFileTypeDialog"
+sidebarTitle: "SelectFileTypeDialog"
+description: "Dialog for opening files without specified type."
+---
+
+`#include <ImFusion/GUI/SelectFileTypeDialog.h>`
+
+## Overview
+
+Dialog for opening files without specified type.
+
+## Public Slots
+
+- void **onSetFileType** (QString) — Translates the integer position in the list to a string corresponding to the list entry and saves that one under m_fileType.
+
+## Public Member Functions
+
+- **SelectFileTypeDialog** (IoAlgorithm::LocationType locType, QWidget \*parent=0)
+- QString **fileType** () const — Returns the string containing the choice of the user.
+
+## Protected Attributes
+
+- Ui_SelectFileTypeDialog \* **m_ui**
+- IoAlgorithm::LocationType **m_locType**

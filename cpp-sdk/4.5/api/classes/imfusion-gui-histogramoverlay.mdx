@@ -1,0 +1,70 @@
+---
+title: "ImFusion::GUI::HistogramOverlay"
+sidebarTitle: "HistogramOverlay"
+description: "ViewOverlay to show an intensity histogram of the first shown image in a SliceView ."
+---
+
+`#include <ImFusion/GUI/HistogramOverlay.h>`
+
+## Overview
+
+[ViewOverlay](/cpp-sdk/4.5/api/classes/imfusion-gui-viewoverlay) to show an intensity histogram of the first shown image in a [SliceView](/cpp-sdk/4.5/api/classes/imfusion-gui-sliceview).
+
+Additionally, it shows a the visual representation of the datasets window/level as configured in its [DisplayOptions2d](/cpp-sdk/4.5/api/classes/imfusion-displayoptions2d). Basic mouse interaction allows for manipulating window/level as well for configuring the overlay itself through a context menu.
+
+**See also:** GlHistogramOverlay
+
+## Public Member Functions
+
+- **HistogramOverlay** ([SliceView](/cpp-sdk/4.5/api/classes/imfusion-gui-sliceview) \*view2d)
+- const GlHistogramOverlay \* **glOverlay** () const — Get a pointer to the underlying GlHistogramOverlay.
+- GlHistogramOverlay \* **glOverlay** () — Get a pointer to the underlying GlHistogramOverlay.
+- void [render](#render) () override — Calls [GlOverlay::render()](/cpp-sdk/4.5/api/classes/imfusion-gloverlay) on the underlying glOverlay() using the current [viewport()](/cpp-sdk/4.5/api/classes/imfusion-gui-viewoverlay) shrunk by [margin()](/cpp-sdk/4.5/api/classes/imfusion-gui-viewoverlay).
+- [EventResult](/cpp-sdk/4.5/api/structs/imfusion-gui-eventresult) [handleInputEvent](#handleinputevent) (const [InputEvent](/cpp-sdk/4.5/api/classes/imfusion-gui-inputevent) &event) override — Handle a user event received from the parent [View](/cpp-sdk/4.5/api/classes/imfusion-gui-view).
+
+## Protected Types
+
+- enum class **InteractionMode** &#123; **None** , **Moving** , **ResizeLeft** , **ResizeRight** &#125;
+
+## Protected Member Functions
+
+- void **onViewDataChanged** ()
+- void **updateHistogram** ()
+- [Menu](/cpp-sdk/4.5/api/classes/imfusion-gui-menu) **createContextMenu** () const
+
+## Protected Attributes
+
+- GlHistogramOverlay \* **m_typedOverlay** = nullptr
+- [SliceView](/cpp-sdk/4.5/api/classes/imfusion-gui-sliceview) \* **m_view2D** = nullptr
+- const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* **m_currentSIS** = nullptr
+- int **m_currentFocus** = -1
+- [DisplayOptions2d](/cpp-sdk/4.5/api/classes/imfusion-displayoptions2d) \* **m_currentDisplayOptions** = nullptr
+- [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; SignalConnection &gt; **m_viewDataChangedConnection**
+- enum ImFusion::GUI::HistogramOverlay::InteractionMode **m_interactionMode** = InteractionMode::None
+- vec2 **m_mouseMoveStart** = vec2::Zero() — mouse position where the operation started
+- double **m_startLevel** = 0 — level when the operations started
+- double **m_startWindow** = 0 — window when the operations started
+
+## Member Function Documentation
+
+### render
+
+```cpp
+void ImFusion::GUI::HistogramOverlay::render ()
+```
+
+*override, virtual*
+
+Calls [GlOverlay::render()](/cpp-sdk/4.5/api/classes/imfusion-gloverlay) on the underlying glOverlay() using the current [viewport()](/cpp-sdk/4.5/api/classes/imfusion-gui-viewoverlay) shrunk by [margin()](/cpp-sdk/4.5/api/classes/imfusion-gui-viewoverlay).
+
+### handleInputEvent
+
+```cpp
+EventResult ImFusion::GUI::HistogramOverlay::handleInputEvent (const InputEvent & event)
+```
+
+*override, virtual*
+
+Handle a user event received from the parent [View](/cpp-sdk/4.5/api/classes/imfusion-gui-view).
+
+The default implementation is empty.

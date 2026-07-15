@@ -1,0 +1,98 @@
+---
+title: "ImFusion::DataAnnotationFactory"
+sidebarTitle: "DataAnnotationFactory"
+description: "Interface for data annotation factories."
+---
+
+`#include <ImFusion/Base/DataAnnotationFactory.h>`
+
+## Overview
+
+Interface for data annotation factories.
+
+## Classes
+
+- struct [DataAttribute](/cpp-sdk/4.5/api/structs/imfusion-dataannotationfactory-dataattribute)
+
+## Public Member Functions
+
+- virtual [InteractiveObject](/cpp-sdk/4.5/api/classes/imfusion-interactiveobject) \* [createDataAnnotation](#createdataannotation) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name, [Data](/cpp-sdk/4.5/api/classes/imfusion-data) &data) const =0 — Create data annotation.
+- virtual [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; [compatibleDataAnnotations](#compatibledataannotations) ([Data](/cpp-sdk/4.5/api/classes/imfusion-data) &data) const =0 — Return true when a data object supports having a data annotation.
+- virtual [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [dataDescription](#datadescription) (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) &) const — Return a description string to be shown in the data model for a data type.
+- virtual [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [dataIconPath](#dataiconpath) (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) &) const — Return a file path to an icon representing a data type, may point to a Qt resource.
+- virtual [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [DataAttribute](/cpp-sdk/4.5/api/structs/imfusion-dataannotationfactory-dataattribute) &gt; [dataAttributes](#dataattributes) (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) &) const — Return a list of attributes to be shown in the [DataWidget](/cpp-sdk/4.5/api/classes/imfusion-datawidget) [GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui) for a data type.
+- virtual [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [Data](/cpp-sdk/4.5/api/classes/imfusion-data) &gt; [cloneData](#clonedata) (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*) const — Return a clone of a given [Data](/cpp-sdk/4.5/api/classes/imfusion-data) instance.
+
+## Member Function Documentation
+
+### createDataAnnotation
+
+```cpp
+virtual InteractiveObject * ImFusion::DataAnnotationFactory::createDataAnnotation (const std::string & name, Data & data) const
+```
+
+*pure virtual*
+
+Create data annotation.
+
+**Parameters:**
+
+- `data` — input data
+
+**Returns:** pointer to generated annotation if successful, zero otherwise
+
+### compatibleDataAnnotations
+
+```cpp
+virtual std::vector < std::string > ImFusion::DataAnnotationFactory::compatibleDataAnnotations (Data & data) const
+```
+
+*pure virtual*
+
+Return true when a data object supports having a data annotation.
+
+### dataDescription
+
+```cpp
+virtual std::string ImFusion::DataAnnotationFactory::dataDescription (const Data &) const
+```
+
+*inline, virtual*
+
+Return a description string to be shown in the data model for a data type.
+
+Return an empty string for unsupported types.
+
+### dataIconPath
+
+```cpp
+virtual std::string ImFusion::DataAnnotationFactory::dataIconPath (const Data &) const
+```
+
+*inline, virtual*
+
+Return a file path to an icon representing a data type, may point to a Qt resource.
+
+Return an empty string for unsupported types.
+
+### dataAttributes
+
+```cpp
+virtual std::vector < DataAttribute > ImFusion::DataAnnotationFactory::dataAttributes (const Data &) const
+```
+
+*inline, virtual*
+
+Return a list of attributes to be shown in the [DataWidget](/cpp-sdk/4.5/api/classes/imfusion-datawidget)[GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui) for a data type.
+
+### cloneData
+
+```cpp
+virtual std::unique_ptr < Data > ImFusion::DataAnnotationFactory::cloneData (const Data *) const
+```
+
+*inline, virtual*
+
+Return a clone of a given [Data](/cpp-sdk/4.5/api/classes/imfusion-data) instance.
+
+This allows plugins to expose cloning logics for custom data types to the base ImFusionLib.

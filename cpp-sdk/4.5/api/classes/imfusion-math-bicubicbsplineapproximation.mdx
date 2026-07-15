@@ -1,0 +1,52 @@
+---
+title: "ImFusion::Math::BicubicBSplineApproximation"
+sidebarTitle: "BicubicBSplineApproximation"
+description: "Implements the approximation of a 2D scalar field with bicubic bsplines."
+---
+
+`#include <ImFusion/Base/BicubicBSplineApproximation.h>`
+
+## Overview
+
+Implements the approximation of a 2D scalar field with bicubic bsplines.
+
+Based on the paper "Scattered Data Interpolation with MultiLevel B-Splines" by Lee et al. (1997).
+
+## Public Member Functions
+
+- **BicubicBSplineApproximation** (const vec2i &gridSize, int numLevels)
+- **BicubicBSplineApproximation** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; &dataPoints, const vec2i &gridSize, int numLevels)
+- void [setPoints](#setpoints) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; &dataPoints) — Sets data points that should be approximated by the BSpline function.
+- double **evaluate** (double x, double y) const — Evaluate the value of the fitted surface at given x and y coordinate. Both x and y are assumed to be in [0, 1].
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) &gt; **generateSmoothImage** (const [ImageDescriptor](/cpp-sdk/4.5/api/structs/imfusion-imagedescriptor) &descriptor) const — Generates a smooth image based on the current control point grid.
+- PointGrid **calculateControlPoints** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; &dataPoints, const vec2i &gridSize) const — Update the control point values based on the current aggregates.
+- [std::pair](http://en.cppreference.com/w/cpp/utility/pair.html)&lt; PointGrid, PointGrid &gt; **calculatePointContributions** (const vec3 &point) const — Calculate the contribution of the given data point on its surrounding control points.
+- PointGrid **controlPointGrid** () const
+- void **setControlPointGrid** (PointGrid grid)
+- vec2i **gridSize** () const
+- void **setGridSize** (vec2i gridSize)
+- int **numLevels** () const
+- void **setNumLevels** (int numLevels)
+
+## Static Public Member Functions
+
+- static PointGrid **refineControlPoints** (PointGrid currentGrid) — Refine the current control point grid into a grid with twice the resolution.
+- static double **evaluateBasis** (double t, int basisIndex) — Evaluate the given basis function at t.
+
+## Protected Attributes
+
+- vec2i **m_gridSize**
+- int **m_numLevels**
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; &gt; **m_grid** — number of refinement levels for the estimation
+
+## Member Function Documentation
+
+### setPoints
+
+```cpp
+void ImFusion::Math::BicubicBSplineApproximation::setPoints (const std::vector < vec3 > & dataPoints)
+```
+
+Sets data points that should be approximated by the BSpline function.
+
+The first two entries of each point should lie between 0 and 1 and describe the position of the point as a fraction of the image size for x and y respectively. The third entry is the intensity value at that position.

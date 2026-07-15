@@ -1,0 +1,127 @@
+---
+title: "ImFusion::Transform< To, From, EigenType >"
+sidebarTitle: "Transform< To, From, EigenType >"
+description: "The Transform class provides a transformation from a Frame to another Frame , where each Frame is a coordinate system."
+---
+
+`#include <ImFusion/Core/Transform.h>`
+
+## Overview
+
+template&lt;auto To, auto From, typename EigenType = Eigen::Matrix4d&gt;
+
+class ImFusion::Transform&lt; To, From, EigenType &gt;
+The [Transform](/cpp-sdk/4.5/api/classes/imfusion-transform) class provides a transformation from a Frame to another Frame, where each Frame is a coordinate system.
+
+[Transform](/cpp-sdk/4.5/api/classes/imfusion-transform) is templated with a `To` and a `From` Frames.
+
+**Note:** To facilitate reading of the transformation chain, the order of the Frames in the template is &lt;To, From&gt;
+
+At compilation time, the validity of [Transform](/cpp-sdk/4.5/api/classes/imfusion-transform) operations is checked:
+
+- Assignment can only be from the same Frame
+- To Frame of the [Transform](/cpp-sdk/4.5/api/classes/imfusion-transform) right multiplied must match our From
+- The Frame of the [Vector](/cpp-sdk/4.5/api/classes/imfusion-vector) right multiplied must match our From
+
+To define Frames, create a user enumeration where each value represents each Frame.
+
+An example of the Robot transforms:
+
+```cpp
+enum class Robot { Base = 0, Arm, EndEffector };
+
+Transform<Robot::Base, Robot::Arm> base_T_arm; // from Arm to Base
+Transform<Robot::Arm, Robot::EndEffector> arm_T_ef; // from EndEffector to Arm
+Transform<Robot::Base, Robot::EndEffector> base_T_ef = base_T_arm * arm_T_ef; // from EndEffector to Base
+```
+ fragment
+The following code would **not** compile:
+
+```cpp
+enum class Robot { Base = 0, Arm, EndEffector };
+
+Transform<Robot::Base, Robot::Arm> base_T_arm;
+Transform<Robot::Arm, Robot::EndEffector> arm_T_ef = base_T_arm; // Frames do not match
+
+Transform<Robot::EndEffector, Robot::Arm> ef_T_arm;
+auto base_T_ef = base_T_arm * ef_T_arm; // From-Frame does not match To-Frame
+
+Vector<Robot::EndEffector> efVec;
+auto baseVec = base_T_arm * efVec; // From does not match vector Frame
+```
+ fragment
+By default, the [Transform](/cpp-sdk/4.5/api/classes/imfusion-transform) uses an Eigen::Matrix4d. A different Eigen matrix can also be used as supporting type, such as Eigen::Isometry3d, or Eigen::Matrix3d for 2D transforms.
+
+ Eigen supports operation optimizations, therefore the `EigenType` will change after calling an operation.
+
+ To support these optimizations, use auto as the return of the operation to implicitly hold a [Transform](/cpp-sdk/4.5/api/classes/imfusion-transform)&lt;To, From, EigenOperationType&gt; or chain operations in the same line.
+
+ For example:
+
+```cpp
+enum class Robot { Base = 0, Arm, EndEffector };
+Transform<Robot::Base, Robot::Arm> base_T_arm;
+Transform<Robot::Arm, Robot::EndEffector> arm_T_ef;
+auto base_T_ef = base_T_arm * arm_T_ef; // keeps the operation optimization and the To-From-Frames.
+Transform<Robot::EndEffector, Robot::Base> ef_T_base = base_T_ef.inverse() // inverse operation applied, and converted down to Eigen::Matrix4d
+```
+ fragment
+The cast() method is useful to skip [Transform](/cpp-sdk/4.5/api/classes/imfusion-transform) in the chain of operations when they're Identity, for example:
+
+```cpp
+Transform<Robot::Base, Robot::Arm> base_T_arm;
+// from EndEffector to Arm is Identity, lets skip it
+auto base_T_ef = base_T_arm.cast<Robot::Base, Robot::EndEffector>();
+```
+ fragment
+A [Transform](/cpp-sdk/4.5/api/classes/imfusion-transform) between different Frame enumerations can also be defined, for example:
+
+```cpp
+enum class House { World = 0, Building, Room };
+enum class Robot { Base = 0, Arm, EndEffector };
+
+Transform<House::Building, House::Room> build_T_room;
+// we assume Building to World transform is Identity
+auto world_T_room = build_T_room.cast<House::World, House::Room>();
+
+// transform Robot frames to House frames
+Transform<House::Room, Robot::Base> room_T_base;
+Transform<Robot::Base, Robot::EndEffector> base_T_ef;
+Transform<House::World, Robot::EndEffector> world_T_ef = world_T_room * room_T_base * base_T_ef;
+
+// pose of the end effector in house world frame
+auto ef_T_world = world_T_ef.inverse();
+```
+ fragment
+
+**Template Parameters:** | To | Frame where the transform maps to |
+| --- | --- |
+| From | Frame where the transform originates from |
+| EigenType | Underlying type of the [Transform](/cpp-sdk/4.5/api/classes/imfusion-transform), should be an Eigen type |
+
+**See also:** [Vector](/cpp-sdk/4.5/api/classes/imfusion-vector)
+
+## Public Types
+
+- using **TypeTo** = decltype(To)
+- using **TypeFrom** = decltype(From)
+
+## Public Member Functions
+
+- **Transform** (OtherEigenType m)
+- **Transform** (const Transform&lt; OtherTo, OtherFrom, OtherEigenType &gt; &other)
+- **Transform** (Transform&lt; OtherTo, OtherFrom &gt; &&other)
+- Transform&lt; FrameTo, FrameFrom, EigenType &gt; & **operator=** (Transform&lt; OtherTo, OtherFrom, EigenType &gt; other)
+- Transform&lt; FrameTo, FrameFrom, EigenType &gt; & **operator=** (const Transform&lt; OtherTo, OtherFrom, OtherEigenType &gt; &other)
+- auto **operator\*** (const Transform&lt; OtherTo, OtherFrom, OtherEigenType &gt; &other) const
+- auto **operator\*** (const [Vector](/cpp-sdk/4.5/api/classes/imfusion-vector)&lt; OtherFrom, OtherEigenVector &gt; &vector) const
+- auto **inverse** () const — Returns the inverse [Transform](/cpp-sdk/4.5/api/classes/imfusion-transform), internal value is inverted, and Frames are inverted.
+- Transform&lt; NewTo, NewFrom, EigenType &gt; **cast** () const — Casts the [Transform](/cpp-sdk/4.5/api/classes/imfusion-transform) to a new set of Frames. The internal value of the [Transform](/cpp-sdk/4.5/api/classes/imfusion-transform) is not modified.
+- EigenType & **matrix** ()
+- const EigenType & **matrix** () const
+- **operator EigenType** () const
+
+## Static Public Attributes
+
+- static constexpr TypeTo **FrameTo** = To
+- static constexpr TypeFrom **FrameFrom** = From

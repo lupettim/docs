@@ -1,0 +1,41 @@
+---
+title: "ImFusion::Dicom::DicomParameterBase"
+sidebarTitle: "DicomParameterBase"
+description: "Internal type-erased base class for DicomParameter<T> ."
+---
+
+`#include <ImFusion/Dicom/DicomParameter.h>`
+
+## Overview
+
+Internal type-erased base class for [DicomParameter&lt;T&gt;](/cpp-sdk/4.5/api/classes/imfusion-dicom-dicomparameter).
+
+## Public Member Functions
+
+- **DicomParameterBase** (const DcmTag &tag, WritePolicy policy)
+- **DicomParameterBase** (const DicomParameterBase &other)
+- DicomParameterBase & **operator=** (const DicomParameterBase &other)
+- virtual void [load](#load) (DcmItem &item)=0
+- virtual void [save](#save) (DcmItem &item) const =0
+
+## Protected Attributes
+
+- Impl \* **m_impl**
+
+## Member Function Documentation
+
+### load
+
+```cpp
+virtual void ImFusion::Dicom::DicomParameterBase::load (DcmItem & item)
+```
+
+*pure virtual*
+
+### save
+
+```cpp
+virtual void ImFusion::Dicom::DicomParameterBase::save (DcmItem & item) const
+```
+
+*pure virtual*

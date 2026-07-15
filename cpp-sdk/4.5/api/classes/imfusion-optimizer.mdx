@@ -1,0 +1,326 @@
+---
+title: "ImFusion::Optimizer"
+sidebarTitle: "Optimizer"
+description: "Non-linear optimization."
+---
+
+`#include <ImFusion/Base/Optimizer.h>`
+
+## Overview
+
+Non-linear optimization.
+
+In a derived class, the actual optimization routine has to be implemented. This class however provides all the tools needed for executing and evaluating the performance of non-linear optimization algorithms, including randomized studies and grid plots.
+
+## Public Types
+
+- enum [Mode](#mode) &#123; OPT = 0 , STUDY = 1 , PLOT = 2 , EVALUATE = 3 &#125; — [Mode](#mode) of operation when execute is called.
+
+## Public Member Functions
+
+- **Optimizer** (int n, int [type](#type), [CostFunction](/cpp-sdk/4.5/api/classes/imfusion-costfunction) \*cf=0, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; &paramNames=&#123;&#125;) — Constructor with dimension and optimization type.
+- **~Optimizer** () override — Destructor.
+- virtual void [setType](#settype) (int val) — Set the optimizer type.
+- void **setCostFunction** ([CostFunction](/cpp-sdk/4.5/api/classes/imfusion-costfunction) \*cf) — Set the cost function.
+- void **setErrorFunction** ([ErrorFunction](/cpp-sdk/4.5/api/classes/imfusion-errorfunction) \*ef) — Set an optional error function.
+- void **setProgress** ([Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) \*p) — Provide an optional progress callback.
+- void **setProgressUpdate** (bool flag) — Specify if a progress update shall be shown during optimization (does not apply for randomized studies).
+- bool **progressUpdate** () const
+- void **setProgressBetter** (bool flag) — Specify if progress update should only be called if cost function has improved.
+- bool **progressBetter** () const
+- void **setProgressUpdatesDisplay** (bool flag) — Specify if whether the [Optimizer](/cpp-sdk/4.5/api/classes/imfusion-optimizer) should set the Update Display flag when reporting progress.
+- bool **progressUpdatesDisplay** () const
+- void **setProgressText** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &description) — Specify optional custom description for progress reporting (ignored if empty).
+- const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) & **progressText** () const
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **paramName** (int i) const — Get the name of a parameter if it has been specified, otherwise defaults to "Parameter i".
+- void **setParamNames** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; &paramNames) — Set the names of the parameters.
+- bool **hasParamNames** () const — True, if m_paraNames is not empty.
+- void [setLogging](#setlogging) (int file, int console=0) — Set level of detail for logging to both text file and the console.
+- [std::pair](http://en.cppreference.com/w/cpp/utility/pair.html)&lt; int, int &gt; **logging** () const
+- void **setLogFilename** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &filename) — Set a custom log file name or path (file logging has to be enabled/disabled independently with setLogging).
+- void **setAddToStudy** (bool flag) — Specify whether individual optimization runs should be added to the [OptimizationStudy](/cpp-sdk/4.5/api/classes/imfusion-optimizationstudy).
+- void [repeatSelection](#repeatselection) (int n, int extra=0) — Reconfigures the optimizer to solve a problem with the size of n times the selection.
+- void **setMinimize** (bool flag) — Specify if the cost function is to be minimized or maximized.
+- void **setScale** (double scale) — Set an overall parameter scaling.
+- void **setScale** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; scale) — Set an individual parameter scaling.
+- void **setSelection** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; bool &gt; &sel) — Specify that only some of the parameters should be optimized.
+- void [setMode](#setmode) ([Mode](#mode) mode, double range=1.0, int steps=1, bool includeOrig=false) — Set the desired mode of operation, as well as range and steps for study or plot.
+- virtual int [execute](#execute) (double \*x) — Execute the optimization given initial parameters of full dimensionality. Negative return values indicate an error.
+- double [evaluate](#evaluate) (int n, const double \*x, double \*dx=0) override — Wraps the cost function evaluation.
+- void **shrink** (const double \*all, double \*sel) const — Shrink to selected parameters and/or divide by scaling.
+- void **expand** (const double \*sel, double \*all) const — Expand to all parameters and/or multiply by scaling.
+
+## Public Attributes
+
+- Signal&lt; int, int &gt; **signalStudyStepFinished** — Signal emitted after each step of a random study, arguments are &lt;current step&gt; and &lt;num total steps&gt;.
+
+## Protected Member Functions
+
+- virtual int **run** (double \*x)=0 — Run a single optimization with selected parameters. Negative return values indicate an error.
+- virtual const char \* **resultName** (int value) const — Return a string describing the optimizer's return value.
+- void **computeStats** (double \*pars, int n) const — Compute statistics on random study parameters.
+- void **randomOptimization** (double \*pars) — Executes successive optimizations with randomized initial parameters.
+- void **computePlot** (double \*pars) — Computes a 1D or 2D plot of selected parameters.
+- virtual int **percentageDone** (const double \*curPars) — Computes an approximation of how close we are to the abortion criteria.
+- void **logResultFile** (const double \*pInit, const double \*pOpt) — Auxiliary method to write the optimization result to a file.
+- void **logResultConsole** (const double \*pOpt, int result=0) — Auxiliary method to log the optimization result to the console.
+
+## Protected Attributes
+
+- [CostFunction](/cpp-sdk/4.5/api/classes/imfusion-costfunction) \* **m_cf** = nullptr — Cost function instance to be optimized.
+- [ErrorFunction](/cpp-sdk/4.5/api/classes/imfusion-errorfunction) \* **m_ef** = nullptr — Optional error function instance.
+- [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) \* **m_progress** = nullptr — Optional progress callback.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [Progress::Task](/cpp-sdk/4.5/api/classes/imfusion-progress-task) &gt; **m_progressTask** — progress reporting instance of [execute()](#execute)
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [Timer](/cpp-sdk/4.5/api/classes/imfusion-timer) &gt; **m_timer** — [Timer](/cpp-sdk/4.5/api/classes/imfusion-timer) instance.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [OptimizationStudy](/cpp-sdk/4.5/api/classes/imfusion-optimizationstudy) &gt; **m_study** — Results of random study.
+- bool **m_addToStudy** = false — Optimization study is automatically appended.
+
+## Configuration
+
+- int **m_dim** — Dimensions of the optimization problem.
+- int **m_selDim** — Dimensions of the selected parameters.
+- int **m_type** — Implementation-specific optimization type.
+- int **m_loggingF** = 0 — Level of detail for file logging.
+- int **m_loggingC** = 0 — Level of detail for console logging.
+- int **m_abortEval** = 0 — Maximum number of cost function evaluations.
+- double **m_abortTime** = 0.0 — Number of seconds after which to abort.
+- double **m_abortFunVal** = 0.0 — Abort when this function values is reached.
+- double **m_abortFunTol** = 0.0 — Cost function tolerance abortion criteria.
+- double **m_abortParTol** = 0.0 — [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) tolerance abortion criteria.
+- bool **m_minimize** = false — Shall the cost function be minimized or maximized.
+- bool **m_updateProgress** = true — [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) updates won't be called unless this is true.
+- bool **m_updateBetter** = false — Update progress only if cost function has improved.
+- bool **m_progressUpdateDisplay** = false — Flag whether the [Optimizer](/cpp-sdk/4.5/api/classes/imfusion-optimizer) should set the Update Display flag when reporting progress.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **m_progressText** — Optional custom description to use for progress reporting.
+- bool **m_studyOrig** = false — If true, random study includes original parameters.
+- [Mode](#mode) **m_mode** = OPT — [Mode](#mode) of operation (optimization, study or plot).
+- double **m_range** = 1.0 — Range for random study or plot.
+- int **m_steps** = 1 — Number of steps for random study or plot.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; **m_lowerBounds** — Lower bounds for bound-constrained optimization.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; **m_upperBounds** — Upper bounds for bound-constrained optimization.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; **m_scale** — [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) scaling (i.e. step sizes).
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; bool &gt; **m_sel** — [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) selection for optimization.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **m_paramNames** — Names of each parameter.
+
+## Working variables
+
+- bool **m_first** = true — Is this the first cost function evaluation.
+- bool **m_auxPars** = false — Are auxiliary parameters in use.
+- [std::atomic](http://en.cppreference.com/w/cpp/atomic/atomic.html)&lt; bool &gt; **m_aborted** &#123;false&#125; — [Optimizer](/cpp-sdk/4.5/api/classes/imfusion-optimizer) was aborted.
+- int **m_run** = 0 — Current run (for repeated optimization).
+- int **m_eval** = 0 — Actual number of cost function evaluations.
+- double **m_time** = 0.0 — Execution time of the optimizer.
+- double **m_firstVal** = 0.0 — First cost function value.
+- double **m_bestVal** = 0.0 — Best cost function value so far.
+- double **m_doneEst** = 0.0 — Estimation of completeness.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; **m_lastPars** — Last parameter vector for assessing completeness.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; **m_firstError** — First values of optional errors.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; **m_error** — Current values of optional errors.
+- double \* **m_pars** = nullptr — The original parameter vector.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; **m_parGradients**
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **m_logFilename** — Custom log file name or path.
+- [std::ofstream](http://en.cppreference.com/w/cpp/io/basic_ofstream.html) **m_logFile** — The log file.
+- float \* **m_plotData** = nullptr — Plot result data.
+
+## Abortion criteria, at least one of those should be set
+
+- void [setAbortEval](#setaborteval) (int num)
+- int **abortEval** () const
+- void **setAbortTime** (double sec) — Abort after a certain elapsed number of seconds.
+- double **abortTime** () const
+- void **setAbortFunVal** (double val) — Abort if this function value is reached.
+- double **abortFunVal** () const
+- void **setAbortFunTol** (double val) — Abort if change in cost function value is becomes too small.
+- double **abortFunTol** () const
+- void **setAbortParTol** (double val) — Abort if change in parameter values becomes too small.
+- double **abortParTol** () const
+
+## Different convenience methods to specify a linear bound constraint
+
+- void [setBounds](#setbounds) (double bounds) — A value of zero disables the bounds.
+- void **setBounds** (double lower, double upper) — Set the same lower and upper bounds for all parameters.
+- void **setBounds** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; &bounds) — Set individual symmetric bounds.
+- void **setBounds** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; &lower, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; &upper) — Set individual lower and upper bounds.
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; & **lowerBounds** () const
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; & **upperBounds** () const
+
+## Query some information
+
+- int [type](#type) () const
+- [Mode](#mode) **mode** () const — Return the mode of operation.
+- bool **minimize** () const — Return whether cost function is minimized.
+- double **range** () const — Return range for study or plot.
+- int **steps** () const — Return the number of steps for used for study or plot.
+- bool **studyIncludeOrig** () const — Return whether random studies shall include the original parameters.
+- double **firstVal** () const — Return cost function value of first evaluation.
+- double **bestVal** () const — Return best cost function value.
+- double **error** (int which=0) const — Return current value of error function.
+- int **numEval** () const — Return number of executed cost function evaluations.
+- bool **isAtBounds** ([std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; int &gt; \*indicesAtBounds=nullptr) const — Return whether the current parameters touch the specified bounds, and their indices if a vector is passed.
+- int **dimension** () const — Return the total number of parameters (dimension).
+- void **setDimension** (int d) — Sets the dimension and the number of selected parameters to `d` and clears the selection.
+- int **selDim** () const — Return number of selected parameters.
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; bool &gt; & **selection** () const — Return the selected parameters.
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; & **scale** () const — Return the parameter scaling.
+- [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) \* **progress** () — Return the progress callback.
+- [ErrorFunction](/cpp-sdk/4.5/api/classes/imfusion-errorfunction) \* **errorFunction** () — Return the error function pointer.
+- virtual void [abort](#abort) ()=0 — [Request](/cpp-sdk/4.5/api/classes/imfusion-request) to abort the optimization.
+- bool **aborted** () const — Return if the optimizer was aborted.
+- float \* **plotData** () — Return plot result data.
+- [OptimizationStudy](/cpp-sdk/4.5/api/classes/imfusion-optimizationstudy) \* **studyResults** () const — Return random study result. Do not delete returned Optimization study object. It is owned by the Optimization class.
+- bool **addToStudy** () const — Return whether optimization runs are added to the study.
+- const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) & **logFilename** () const — Return the custom log file name.
+
+## Implements the Configurable interface
+
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+## Member Enumeration Documentation
+
+### Mode
+
+```cpp
+enum ImFusion::Optimizer::Mode
+```
+
+[Mode](#mode) of operation when execute is called.
+
+**Enumerator:**
+
+- `OPT` — Single optimization.
+- `STUDY` — Randomized study.
+- `PLOT` — 1D or 2D plot
+- `EVALUATE` — Single cost function evaluation.
+
+## Member Function Documentation
+
+### setType
+
+```cpp
+virtual void ImFusion::Optimizer::setType (int val)
+```
+
+*virtual*
+
+Set the optimizer type.
+
+### setLogging
+
+```cpp
+void ImFusion::Optimizer::setLogging (int file, int console = 0)
+```
+
+*inline*
+
+Set level of detail for logging to both text file and the console.
+
+0 = none (default), 1 = init/result, 2 = every evaluation, 3 = only final result after study
+
+### repeatSelection
+
+```cpp
+void ImFusion::Optimizer::repeatSelection (int n, int extra = 0)
+```
+
+Reconfigures the optimizer to solve a problem with the size of n times the selection.
+
+Optionally, an extra number of parameters is appended at the end once. This method changes the dimensionality of the optimizer and clears the selection.
+
+### setAbortEval
+
+```cpp
+void ImFusion::Optimizer::setAbortEval (int num)
+```
+
+*inline*
+
+Abort after a certain number of cost function evaluations
+
+### setBounds
+
+```cpp
+void ImFusion::Optimizer::setBounds (double bounds)
+```
+
+A value of zero disables the bounds.
+
+Set the same symmetric bounds in all parameters
+
+### setMode
+
+```cpp
+void ImFusion::Optimizer::setMode (Mode mode, double range = 1.0, int steps = 1, bool includeOrig = false)
+```
+
+Set the desired mode of operation, as well as range and steps for study or plot.
+
+The last flag denotes whether the original parameters shall be included in a random study.
+
+### execute
+
+```cpp
+virtual int ImFusion::Optimizer::execute (double * x)
+```
+
+*virtual*
+
+Execute the optimization given initial parameters of full dimensionality. Negative return values indicate an error.
+
+### evaluate
+
+```cpp
+double ImFusion::Optimizer::evaluate (int n, const double * x, double * dx = 0)
+```
+
+*override, virtual*
+
+Wraps the cost function evaluation.
+
+### type
+
+```cpp
+int ImFusion::Optimizer::type () const
+```
+
+*inline*
+
+Return the optimizer type
+
+### abort
+
+```cpp
+virtual void ImFusion::Optimizer::abort ()
+```
+
+*pure virtual*
+
+[Request](/cpp-sdk/4.5/api/classes/imfusion-request) to abort the optimization.
+
+### configure
+
+```cpp
+void ImFusion::Optimizer::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### configuration
+
+```cpp
+void ImFusion::Optimizer::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality

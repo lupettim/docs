@@ -1,0 +1,39 @@
+---
+title: "ImFusion::Labels::Args"
+sidebarTitle: "Args"
+description: "Parsing of the Labels command line arguments."
+---
+
+## Overview
+
+Parsing of the Labels command line arguments.
+
+See the help message for what the individual options do.
+
+## Classes
+
+- struct [OpenProjectCommand](/cpp-sdk/4.5/api/structs/imfusion-labels-args-openprojectcommand)
+- struct [AnnotateCommand](/cpp-sdk/4.5/api/structs/imfusion-labels-args-annotatecommand)
+- struct [ExportCommand](/cpp-sdk/4.5/api/structs/imfusion-labels-args-exportcommand)
+- struct [NoCommand](/cpp-sdk/4.5/api/structs/imfusion-labels-args-nocommand)
+- struct [ParsedArgs](/cpp-sdk/4.5/api/structs/imfusion-labels-args-parsedargs)
+
+## Typedefs
+
+- using **Command** = [std::variant](http://en.cppreference.com/w/cpp/utility/variant.html)&lt;[OpenProjectCommand](/cpp-sdk/4.5/api/structs/imfusion-labels-args-openprojectcommand), [AnnotateCommand](/cpp-sdk/4.5/api/structs/imfusion-labels-args-annotatecommand), [ExportCommand](/cpp-sdk/4.5/api/structs/imfusion-labels-args-exportcommand), [NoCommand](/cpp-sdk/4.5/api/structs/imfusion-labels-args-nocommand)&gt;
+
+## Functions
+
+- [Utils::Expected](/cpp-sdk/4.5/api/classes/imfusion-utils-expected)&lt; [ParsedArgs](/cpp-sdk/4.5/api/structs/imfusion-labels-args-parsedargs), int &gt; [parse](#parse) (int argc, char \*\*argv) — Parses command-line arguments into a command.
+
+## Function Documentation
+
+### parse
+
+```cpp
+Utils::Expected < ParsedArgs, int > ImFusion::Labels::Args::parse (int argc, char ** argv)
+```
+
+Parses command-line arguments into a command.
+
+On failure (bad args) or early exit (–help), all output is written to stdout/stderr internally and the appropriate exit code is returned as the error value.

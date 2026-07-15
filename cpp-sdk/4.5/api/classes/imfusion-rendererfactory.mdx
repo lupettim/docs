@@ -1,0 +1,94 @@
+---
+title: "ImFusion::RendererFactory"
+sidebarTitle: "RendererFactory"
+description: "Static factory class to manage registered slice and volume renderers to be used in views."
+---
+
+`#include <ImFusion/GL/RendererFactory.h>`
+
+## Overview
+
+Static factory class to manage registered slice and volume renderers to be used in views.
+
+,
+
+## Classes
+
+- struct [SliceRenderer](/cpp-sdk/4.5/api/structs/imfusion-rendererfactory-slicerenderer) — Descriptor of a registered slice renderer.
+- struct [VolumeRenderer](/cpp-sdk/4.5/api/structs/imfusion-rendererfactory-volumerenderer) — Descriptor of a registered volume renderer.
+
+## Public Types
+
+- using [SliceRendererFactoryFunction](#slicerendererfactoryfunction) = [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt;[std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt;[GlSliceRenderer](/cpp-sdk/4.5/api/classes/imfusion-glslicerenderer)&gt;(bool is3d)&gt; — Factory function for a renderer used in a [GlSlice](/cpp-sdk/4.5/api/classes/imfusion-glslice).
+- using **VolumeRendererFactoryFunction** = [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt;[std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt;[GlVolumeRenderer](/cpp-sdk/4.5/api/classes/imfusion-glvolumerenderer)&gt;()&gt; — Factory function for a renderer used in [GlVolumeView](/cpp-sdk/4.5/api/classes/imfusion-glvolumeview).
+- using **CapabilityCheckFunction** = [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt;bool()&gt; — Function called to check whether the current OpenGL context supports the corresponding renderer.
+
+## Slice renderers
+
+- static void [registerRenderer](#registerrenderer-1-2) ([SliceRendererFactoryFunction](#slicerendererfactoryfunction) func) — Registers the given [GlSliceRenderer](/cpp-sdk/4.5/api/classes/imfusion-glslicerenderer) to be used in GlSliceViews.
+- static const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [SliceRenderer](/cpp-sdk/4.5/api/structs/imfusion-rendererfactory-slicerenderer) &gt; & **registeredSliceRenderers** () — Returns the list of all registered slice renderers.
+
+## Volume renderers
+
+- static void [registerRenderer](#registerrenderer-2-2) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name, VolumeRendererFactoryFunction factoryFunc, CapabilityCheckFunction capabilityCheckFunc=[]() &#123; return true;&#125;) — Registers the given [GlVolumeRenderer](/cpp-sdk/4.5/api/classes/imfusion-glvolumerenderer) to be used in GlVolumeViews.
+- static const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [VolumeRenderer](/cpp-sdk/4.5/api/structs/imfusion-rendererfactory-volumerenderer) &gt; & **registeredVolumeRenderers** () — Return the list of all registered volume renderers.
+- static [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [GlVolumeRenderer](/cpp-sdk/4.5/api/classes/imfusion-glvolumerenderer) &gt; **createVolumeRenderer** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name) — Create a new instance of the registered volume renderer with the given name.
+
+## Member Typedef Documentation
+
+### SliceRendererFactoryFunction
+
+```cpp
+using ImFusion::RendererFactory::SliceRendererFactoryFunction = std::function < std::unique_ptr < GlSliceRenderer >(bool is3d)>
+```
+
+Factory function for a renderer used in a [GlSlice](/cpp-sdk/4.5/api/classes/imfusion-glslice).
+
+**Parameters:**
+
+- `maskDecorator` — Constructor argument passed to the [GlSliceRenderer](/cpp-sdk/4.5/api/classes/imfusion-glslicerenderer) to create
+- `is3d` — Flag whether to create a MPR slice view or a 2D slice view
+
+## Member Function Documentation
+
+### registerRenderer
+
+```cpp
+void ImFusion::RendererFactory::registerRenderer (SliceRendererFactoryFunction func)
+```
+
+*static*
+
+Registers the given [GlSliceRenderer](/cpp-sdk/4.5/api/classes/imfusion-glslicerenderer) to be used in GlSliceViews.
+
+Example usage:
+
+```cpp
+RendererFactory::registerRenderer([](MaskRenderingDecorator& maskDecorator, bool is3d) -> std::unique_ptr<GlSliceRenderer> {
+ return (is3d ? std::make_unique<GlSliceRendererSweep>(maskDecorator) : return nullptr);
+});
+```
+ fragment
+
+**Note:** The selection of the renderer at runtime is handled by [GlSlice](/cpp-sdk/4.5/api/classes/imfusion-glslice) evaluating [GlSliceRenderer::accepts()](/cpp-sdk/4.5/api/classes/imfusion-glslicerenderer). Individual images can be rendered by different renderers.
+
+### registerRenderer
+
+```cpp
+void ImFusion::RendererFactory::registerRenderer (const std::string & name, VolumeRendererFactoryFunction factoryFunc, CapabilityCheckFunction capabilityCheckFunc = []() { return true;})
+```
+
+*static*
+
+Registers the given [GlVolumeRenderer](/cpp-sdk/4.5/api/classes/imfusion-glvolumerenderer) to be used in GlVolumeViews.
+
+Example usage:
+
+```cpp
+RendererFactory::registerRenderer("Global Illumination Volume Renderer",
+    []() -> std::unique_ptr<GlVolumeRenderer> { return std::make_unique<GlVolumeRendererGlobalIllum>(); },
+    []() { return GLAD_GL_VERSION_4_3 > 0; });
+```
+ fragment
+
+**Note:** The selection of the renderer at runtime is handled by the user. All images are rendered by the same renderer in a single pass.

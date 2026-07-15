@@ -1,0 +1,81 @@
+---
+title: "ImFusion::InteractiveAnnotation"
+sidebarTitle: "InteractiveAnnotation"
+---
+
+## Public Slots
+
+- void **setName** (QString name) — Opens a QInputDialog to pick a new name for this annotation.
+- void **plotLineProfile** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*is, bool clearPrevious=true) — Plot line profile, if the annotation already had a line plot with the same data source it is replaced.
+- void **plotLineProfiles** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* &gt; &images, bool clearPrevious=true)
+- void **createPlotData** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* &gt; &isVec)
+- void **updatePlotData** (const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*is)
+- void **sampleLineProfile** (const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*is, [Tensor](/cpp-sdk/4.5/api/classes/imfusion-tensor)&lt; 1 &gt; \*&x, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Tensor](/cpp-sdk/4.5/api/classes/imfusion-tensor)&lt; 1 &gt; \* &gt; &y, int interpolationRange=0) — Sample values from image. Creates one y-value tensor per channel. Interpolation is in pixels and over a line for 2D and slice for 3D data.
+- void **setShowStatistics** (bool showStatistics) — Add statistics.
+- bool **showStatistics** () const
+- void **updateStatistics** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*is)
+- void **sliceSpline** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*is) — [Slice](/cpp-sdk/4.5/api/classes/imfusion-slice) spline.
+- void **onViewUpdate** () — Called when view is updated to redraw additional information; such as statistics, line plots etc.
+- void **refineAnnotation** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*is) — Refine annotation.
+- void **convertToLabelMap** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*is) — Convert a closed spline to a label map.
+- void **closeLoopAnnotation** () — Close an open contour represented by a spline.
+
+## Public Member Functions
+
+- **InteractiveAnnotation** ([MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase) \*mw, [GlAnnotation](/cpp-sdk/4.5/api/classes/imfusion-glannotation) \*object, [Manipulator](/cpp-sdk/4.5/api/classes/imfusion-manipulator) \*[manipulator](/cpp-sdk/4.5/api/classes/imfusion-interactiveobject)=0, bool own=true)
+- bool [sceneEvent](#sceneevent) (QEvent \*event, [InteractiveView](/cpp-sdk/4.5/api/classes/imfusion-interactiveview) \*view) override — Called by the hosting [InteractiveView](/cpp-sdk/4.5/api/classes/imfusion-interactiveview) to notify on user input events.
+- [GlAnnotation](/cpp-sdk/4.5/api/classes/imfusion-glannotation) \* **gl** ()
+- const [GlAnnotation](/cpp-sdk/4.5/api/classes/imfusion-glannotation) \* **gl** () const
+- [MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase) \* **mw** ()
+- void **onTransformationChanged** (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data) — Used to redraw plots as necessary.
+- void **onDataDeleted** (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data) — Removes all associated plots if the source data gets deleted.
+- void [goTo](#goto-1-2) ([Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data=nullptr) const — Center the views contained in the default display widget which show data on the object.
+- void **removeFromLinePlot** () — Removes any plots sampled with this annotation, will also delete the plot view if this causes it to become empty.
+- void **onAnnotationChanged** (const [GlPointBasedAnnotation](/cpp-sdk/4.5/api/classes/imfusion-glpointbasedannotation) \*)
+- virtual void [goTo](#goto-2-2) ([DisplayWidgetMulti](/cpp-sdk/4.5/api/classes/imfusion-displaywidgetmulti) \*display, [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data=nullptr, int frame=-1) const — Center the views contained in the passed display widget which show data on the object.
+
+## Static Public Member Functions
+
+- static [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [InteractiveView](/cpp-sdk/4.5/api/classes/imfusion-interactiveview) \* &gt; **getRelevantViews** (const [InteractiveObject](/cpp-sdk/4.5/api/classes/imfusion-interactiveobject) \*object, const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data, [DisplayWidgetMulti](/cpp-sdk/4.5/api/classes/imfusion-displaywidgetmulti) \*display)
+
+## Protected Attributes
+
+- QMap&lt; QString, QAction \* &gt; **m_actions**
+
+## Member Function Documentation
+
+### sceneEvent
+
+```cpp
+bool ImFusion::InteractiveAnnotation::sceneEvent (QEvent * event, InteractiveView * view)
+```
+
+*override, virtual*
+
+Called by the hosting [InteractiveView](/cpp-sdk/4.5/api/classes/imfusion-interactiveview) to notify on user input events.
+
+Default implementation will forward the event to the [Manipulator](/cpp-sdk/4.5/api/classes/imfusion-manipulator) if the object is visible.
+
+**Returns:** true if the event has been handled and should no longer be passed to other objects.
+
+### goTo
+
+```cpp
+void ImFusion::InteractiveAnnotation::goTo (Data * data = nullptr) const
+```
+
+Center the views contained in the default display widget which show data on the object.
+
+If no data is specified, the default view group is centered.
+
+### goTo
+
+```cpp
+virtual void ImFusion::InteractiveObject::goTo (DisplayWidgetMulti * display, Data * data = nullptr, int frame = -1) const
+```
+
+*virtual*
+
+Center the views contained in the passed display widget which show data on the object.
+
+If no data is specified, the default view group is centered.

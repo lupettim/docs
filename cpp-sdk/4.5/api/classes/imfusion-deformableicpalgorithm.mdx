@@ -1,0 +1,126 @@
+---
+title: "ImFusion::DeformableIcpAlgorithm"
+sidebarTitle: "DeformableIcpAlgorithm"
+description: "Regularized-least-squares-based iterative closest point (ICP) algorithm for deformable registration of two meshes, a mesh to a point cloud, or two point clouds"
+---
+
+`#include <ImFusion/Reg/DeformableIcpAlgorithm.h>`
+
+## Overview
+
+Regularized-least-squares-based iterative closest point (ICP) algorithm for deformable registration of two meshes, a mesh to a point cloud, or two point clouds representing a curve.
+
+Deformation smoothness is promoted by using the Frobenius norm of the Laplacian applied to point displacements as regularization term. The Laplacian is computed on the initial configuration. The rigidity of the moving points is gradually reduced by multiplying the regularization parameter \(\lambda\) by a factor smaller than 1 each iteration. Point correspondences are re-established each iteration using bi- or unidirectional nearest neighbor search.
+
+Iterations are stopped if the relative RMSE or \(\lambda\) falls below a specified threshold or the maximum number of iterations has been reached. The same stopping criteria apply for an optional iterative rigid or rigid-then-rigid-and-scaling pre-alignment. Additionally, the pre-alignment is also stopped if the difference of relative RMSEs between successive iterations falls below a threshold.
+
+For more information, see the class [DeformableIcp](/cpp-sdk/4.5/api/classes/imfusion-deformableicp), which is used by this algorithm.
+
+## Public Types
+
+- enum class [MovingInput](#movinginput) &#123; First , Second &#125; — Used to define which input to use as moving input.
+- enum class [PointCloudInterpretation](#pointcloudinterpretation) &#123; ClosedCurve , OpenCurve &#125; — Used to define how to interpret point clouds provided as moving input.
+
+## Public Member Functions
+
+- **DeformableIcpAlgorithm** ([PointCloud](/cpp-sdk/4.5/api/classes/imfusion-pointcloud) &pointCloud1, [PointCloud](/cpp-sdk/4.5/api/classes/imfusion-pointcloud) &pointCloud2) — Constructor taking two point clouds.
+- **DeformableIcpAlgorithm** ([Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) &mesh1, [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) &mesh2) — Constructor taking two meshes.
+- **DeformableIcpAlgorithm** ([PointCloud](/cpp-sdk/4.5/api/classes/imfusion-pointcloud) &pointCloud, [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) &mesh) — Constructor taking a fixed point cloud and a moving mesh.
+- **~DeformableIcpAlgorithm** ()=default — Destructor.
+- void [compute](#compute) () override — Registers the moving input in-place to the fixed input.
+- [DeformableIcp](/cpp-sdk/4.5/api/classes/imfusion-deformableicp) & **deformableIcp** () — The deformable ICP instance used by this algorithm.
+
+## Static Public Member Functions
+
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=nullptr) — Used to create the algorithm from the ImFusion Suite.
+
+## Public Attributes
+
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; [MovingInput](#movinginput) &gt; **p_movingInput** = &#123;"movingInput", MovingInput::Second, this&#125; — Which of the inputs to use as moving input.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; [PointCloudInterpretation](#pointcloudinterpretation) &gt; **p_pointCloudInterpretation** = &#123;"pointCloudInterpretation", PointCloudInterpretation::ClosedCurve, this&#125; — How to interpret the moving point cloud, if provided as input.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; bool &gt; **p_pointToPlane** = &#123;"pointToPlane", false, this&#125; — Whether to perform point-to-plane instead of point-to-point ICP using normals of the fixed input.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; bool &gt; [p_useLabelsAsRegions](#p-uselabelsasregions) = &#123;"useLabelsAsRegions", false, this&#125; — Whether to use the labels of the inputs as regions.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; bool &gt; **p_updateWhileIterating** = &#123;"updateWhileIterating", false, this&#125; — Whether to update the moving input and the display while iterating.
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; bool &gt; **p_verbose** = &#123;"verbose", false, this&#125; — Whether to print additional information (current phase, iterations, timings) to the log.
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — [Configurable](/cpp-sdk/4.5/api/classes/imfusion-configurable) interface.
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+## Member Enumeration Documentation
+
+### MovingInput
+
+```cpp
+enum class ImFusion::DeformableIcpAlgorithm::MovingInput
+```
+
+*strong*
+
+Used to define which input to use as moving input.
+
+**Enumerator:**
+
+- `First` — First input is moving.
+- `Second` — Second input is moving.
+
+### PointCloudInterpretation
+
+```cpp
+enum class ImFusion::DeformableIcpAlgorithm::PointCloudInterpretation
+```
+
+*strong*
+
+Used to define how to interpret point clouds provided as moving input.
+
+**Enumerator:**
+
+- `ClosedCurve` — Moving point cloud is interpreted as closed curve.
+- `OpenCurve` — Moving point cloud is interpreted as open curve.
+
+## Member Function Documentation
+
+### configure
+
+```cpp
+void ImFusion::DeformableIcpAlgorithm::configure (const Properties * p)
+```
+
+*override, virtual*
+
+[Configurable](/cpp-sdk/4.5/api/classes/imfusion-configurable) interface.
+
+### configuration
+
+```cpp
+void ImFusion::DeformableIcpAlgorithm::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality
+
+### compute
+
+```cpp
+void ImFusion::DeformableIcpAlgorithm::compute ()
+```
+
+*override, virtual*
+
+Registers the moving input in-place to the fixed input.
+
+## Member Data Documentation
+
+### p_useLabelsAsRegions
+
+```cpp
+Parameter <bool> ImFusion::DeformableIcpAlgorithm::p_useLabelsAsRegions = {"useLabelsAsRegions", false, this}
+```
+
+Whether to use the labels of the inputs as regions.
+
+Each region is treated separately when establishing point correspondences.

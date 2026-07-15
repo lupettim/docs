@@ -1,0 +1,282 @@
+---
+title: "ImFusion::DicomBrowserModel"
+sidebarTitle: "DicomBrowserModel"
+description: "Hierarchical model of DICOM patients."
+---
+
+`#include <ImFusion/Dicom/GUI/DicomBrowserModel.h>`
+
+## Overview
+
+Hierarchical model of DICOM patients.
+
+The model has the following hierarchy:
+
+- patients
+  - studies
+    - series
+      - images
+
+[Series](/cpp-sdk/4.5/api/structs/imfusion-dicom-series) can be selected with their Qt::CheckStateRole. Patients and Studies reflect the checked states of their children, e.g. can be partially checked. The actual scanning and loading of DICOM data is performed internally by a [Dicom::Scanner](/cpp-sdk/4.5/api/classes/imfusion-dicom-scanner).
+
+Minimal Example:
+
+```cpp
+#include <ImFusion/Dicom/GUI/DicomBrowserModel.h>
+
+#include <QtWidgets/QBoxLayout>
+#include <QtWidgets/QDialog>
+#include <QtWidgets/QProgressBar>
+#include <QtWidgets/QTreeView>
+
+class DicomBrowser : public QDialog
+{
+    Q_OBJECT
+public:
+    DicomBrowser(const QString& directory, QWidget* parent = nullptr);
+};
+```
+ fragment
+```cpp
+DicomBrowser::DicomBrowser(const QString& directory, QWidget* parent)
+    : QDialog(parent)
+{
+ auto model = new ImFusion::DicomBrowserModel(nullptr, this);
+
+ auto view = new QTreeView(this);
+    view->setModel(model);
+
+ auto progress = new QProgressBar(this);
+    connect(model, &ImFusion::DicomBrowserModel::scanProgressRangeChanged, progress, &QProgressBar::setRange);
+    connect(model, &ImFusion::DicomBrowserModel::scanProgressValueChanged, progress, &QProgressBar::setValue);
+    model->scanDirectoryAsync(directory, true, false, true);
+
+ auto layout = new QVBoxLayout(this);
+    layout->addWidget(view);
+    layout->addWidget(progress);
+    setLayout(layout);
+}
+```
+ fragment
+
+**Examples:** [DicomBrowser.cpp](/cpp-sdk/4.5/api/examples/dicom-browser-8cpp).
+
+## Public Types
+
+- enum [Roles](#roles) &#123; ParameterRole = Qt::UserRole + 1 , SortRole , PatientRole = Qt::UserRole + 3 , StudyRole = Qt::UserRole + 4 , SeriesRole = Qt::UserRole + 5 , ImageRole = Qt::UserRole + 6 , PacsSeriesProxyRole &#125;
+- using **Image** = [Dicom::Image](/cpp-sdk/4.5/api/structs/imfusion-dicom-image)
+- using **Series** = [Dicom::Series](/cpp-sdk/4.5/api/structs/imfusion-dicom-series)
+- using **PacsSeriesProxy** = [Dicom::PacsSeriesProxy](/cpp-sdk/4.5/api/structs/imfusion-dicom-pacsseriesproxy)
+- using **Study** = [Dicom::Study](/cpp-sdk/4.5/api/structs/imfusion-dicom-study)
+- using **Patient** = [Dicom::Patient](/cpp-sdk/4.5/api/structs/imfusion-dicom-patient)
+- typedef QList&lt; QPair&lt; QString, QString &gt; &gt; **ParameterList** — List of parameters as a pair of name and value.
+
+## Public Slots
+
+- void [addPatient](#addpatient) (Patient \*patient) — Adds a new patient to the model.
+- void **remove** (PacsSeriesProxy \*psp) — Removes and deletes the given PacsSeriesProxy from the model.
+- void [scanDirectoryAsync](#scandirectoryasync) (const QString &directory, bool recursive, bool useDicomdirOnly, bool checkDicomHeader) — Scans a directory for dicom files.
+- void **scanDirectoryBlocking** (const QString &directory, bool recursive, bool useDicomdirOnly, bool checkDicomHeader) — Same as scanDirectoryAsync but blocks until scanning finishes.
+- void **scanDicomDirAsync** (const QString &dicomDirFile) — Same as scanDirectory for a DICOMDIR file.
+- void **scanDicomDirBlocking** (const QString &dicomDirFile) — Same as scanDicomDirAsync but blocks until scanning finishes.
+- void [scanWebAsync](#scanwebasync) (const [Filesystem::Url](/cpp-sdk/4.5/api/classes/imfusion-filesystem-url) &url) — Scans a DICOMweb compatible server (see [Scanner::scanWeb](/cpp-sdk/4.5/api/classes/imfusion-dicom-scanner) for details).
+- void **scanWebBlocking** (const [Filesystem::Url](/cpp-sdk/4.5/api/classes/imfusion-filesystem-url) &url) — Same as scanWebAsync, but blocks until scanning finishes.
+- void [scanPacsAsync](#scanpacsasync) ([DicomPacsConfiguration](/cpp-sdk/4.5/api/structs/imfusion-dicompacsconfiguration) pacs, const QString &patientNameFilter, const QString &studyFilter) — Scans the PACS server with the given configuration for existing patients and studies.
+- void **scanPacsBlocking** ([DicomPacsConfiguration](/cpp-sdk/4.5/api/structs/imfusion-dicompacsconfiguration) pacs, const QString &patientNameFilter, const QString &studyFilter) — Same as scanPacsAsync, but blocks until scanning finishes.
+- void **getPacsSeriesAsync** (PacsSeriesProxy \*pcp) — Retrieves all series of the [Study](/cpp-sdk/4.5/api/structs/imfusion-dicom-study) the PacsSeriesProxy is assigned to.
+- void **getPacsSeriesBlocking** (PacsSeriesProxy \*pcp) — Same as getPacsSeriesAsync but blocks until all series are received.
+- bool **cancelScan** ([std::chrono::milliseconds](http://en.cppreference.com/w/cpp/chrono/duration.html) timeout=[std::chrono::seconds](http://en.cppreference.com/w/cpp/chrono/duration.html)(2)) — Cancels any active scanning and returns whether the scanning could be cancelled in the given timeout.
+- bool **isScanning** () const — Returns whether DICOMs are still scanned in the background.
+- void **clear** () — Removes all patients from the model.
+
+## Signals
+
+- void **scanProgressRangeChanged** (int min, int max)
+- void **scanProgressValueChanged** (int value)
+- void **scanProgressTextChanged** (QString text)
+- void **isScanningChanged** (bool isScanning)
+- void **scanHttpError** (QString message, Network::HttpStatus status)
+
+## Public Member Functions
+
+- [DicomBrowserModel](#dicombrowsermodel-1-2) (Dicom::SharedDatasetCache cache=nullptr, QObject \*parent=nullptr) — Constructs an empty [DicomBrowserModel](/cpp-sdk/4.5/api/classes/imfusion-dicombrowsermodel).
+- [DicomBrowserModel](#dicombrowsermodel-2-2) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; DcmDataset &gt; &gt; &datasets, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; &datasetPaths, Dicom::SharedDatasetCache cache=nullptr, QObject \*parent=nullptr) — Constructs a new [DicomBrowserModel](/cpp-sdk/4.5/api/classes/imfusion-dicombrowsermodel) and initializes it with patients from the given datasets.
+- void [setDatasetCache](#setdatasetcache) (Dicom::SharedDatasetCache cache) — Replaces the current [DatasetCache](/cpp-sdk/4.5/api/classes/imfusion-dicom-datasetcache) with the given one.
+- Dicom::SharedDatasetCache **datasetCache** () const
+- void [setUpdateSeriesDimensionsAfterScan](#setupdateseriesdimensionsafterscan) (bool enable) — Sets whether the kind field of each [Series](/cpp-sdk/4.5/api/structs/imfusion-dicom-series) is updated automatically after scanning.
+- bool **isUpdatingSeriesDimensionsAfterScan** () const
+- int **columnCount** (const QModelIndex &parent=QModelIndex()) const override — Always return 1.
+- int **rowCount** (const QModelIndex &parent=QModelIndex()) const override
+- Qt::ItemFlags **flags** (const QModelIndex &index) const override
+- QVariant **data** (const QModelIndex &index, int role=Qt::DisplayRole) const override
+- bool [setData](#setdata) (const QModelIndex &index, const QVariant &value, int role=Qt::EditRole) override — Only accepted role is Qt::CheckStateRole, except for images which cannot be edited at all.
+- QModelIndex **index** (int row, int column, const QModelIndex &parent=QModelIndex()) const override
+- QModelIndex **parent** (const QModelIndex &index) const override
+- QModelIndex **index** (Patient \*patient) const
+- QModelIndex **index** ([Study](/cpp-sdk/4.5/api/structs/imfusion-dicom-study) \*study) const
+- QModelIndex **index** ([Series](/cpp-sdk/4.5/api/structs/imfusion-dicom-series) \*series) const
+- QModelIndex **index** (PacsSeriesProxy \*series) const
+- QList&lt; [Series](/cpp-sdk/4.5/api/structs/imfusion-dicom-series) \* &gt; **selectedSeries** () const — Returns all currently checked [Series](/cpp-sdk/4.5/api/structs/imfusion-dicom-series).
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; Patient \* &gt; & **patients** () const — Returns all patients currently belonging to this [DicomBrowserModel](/cpp-sdk/4.5/api/classes/imfusion-dicombrowsermodel).
+- bool [scanCompleted](#scancompleted) () const — Returns whether the last scan has been completed.
+
+## Static Public Member Functions
+
+- static [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [retrieveLocationString](#retrievelocationstring) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Series](/cpp-sdk/4.5/api/structs/imfusion-dicom-series) \* &gt; &series, bool ignoreNonDicomFiles=true) — Creates a location string from the given series.
+
+## Protected Member Functions
+
+- void **scanAsync** ([DicomPacsConfiguration](/cpp-sdk/4.5/api/structs/imfusion-dicompacsconfiguration) \*pacs, [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; void([Dicom::ScannerQt](/cpp-sdk/4.5/api/classes/imfusion-dicom-scannerqt) &)&gt; scanMethod)
+- void **scanBlocking** ([DicomPacsConfiguration](/cpp-sdk/4.5/api/structs/imfusion-dicompacsconfiguration) \*pacs, [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; void([Dicom::ScannerQt](/cpp-sdk/4.5/api/classes/imfusion-dicom-scannerqt) &)&gt; scanMethod)
+- void **updateSeriesDimensionsAsync** () — Starts a background task that calls [Series::updateDimensions](/cpp-sdk/4.5/api/structs/imfusion-dicom-series) on each [Series](/cpp-sdk/4.5/api/structs/imfusion-dicom-series).
+- Patient \* **toPatient** (const QModelIndex &index) const
+- [Series](/cpp-sdk/4.5/api/structs/imfusion-dicom-series) \* **toSeries** (const QModelIndex &index) const
+- [Study](/cpp-sdk/4.5/api/structs/imfusion-dicom-study) \* **toStudy** (const QModelIndex &index) const
+- Image \* **toImage** (const QModelIndex &index) const
+- PacsSeriesProxy \* **toPacsSeriesPlaceholder** (const QModelIndex &index) const
+- Qt::CheckState **isChecked** (Patient \*patient) const
+- Qt::CheckState **isChecked** ([Study](/cpp-sdk/4.5/api/structs/imfusion-dicom-study) \*study) const
+
+## Member Enumeration Documentation
+
+### Roles
+
+```cpp
+enum ImFusion::DicomBrowserModel::Roles
+```
+
+**Enumerator:**
+
+- `ParameterRole` — Role to retrieve all parameters of an index as a ParameterList.
+- `SortRole` — Special role used to compare indices (e.g. patients by name). Values should be unique to assure stable sorting.
+- `PatientRole` — Retrieves the Patient\* object from an index or QVariant() if index is not a patient.
+- `StudyRole` — Retrieves the Study\* object from an index or QVariant() if index is not a study.
+- `SeriesRole` — Retrieves the Series\* object from an index or QVariant() if index is not a series.
+- `ImageRole` — Retrieves the Image\* object from an index or QVariant() if index is not an image.
+- `PacsSeriesProxyRole` — Retrieves the PacsSeriesPlaceholder\* object from an index or QVariant() if index is not an image.
+
+## Constructor & Destructor Documentation
+
+### DicomBrowserModel
+
+```cpp
+ImFusion::DicomBrowserModel::DicomBrowserModel (Dicom::SharedDatasetCache cache = nullptr, QObject * parent = nullptr)
+```
+
+Constructs an empty [DicomBrowserModel](/cpp-sdk/4.5/api/classes/imfusion-dicombrowsermodel).
+
+If a cache cache is supplied, any dataset that is loaded during scanning will be added to the cache. The cache is NOT used to retrieve any datasets (to avoid threading issues).
+
+### DicomBrowserModel
+
+```cpp
+ImFusion::DicomBrowserModel::DicomBrowserModel (const std::vector < std::shared_ptr < DcmDataset > > & datasets, const std::vector < std::string > & datasetPaths, Dicom::SharedDatasetCache cache = nullptr, QObject * parent = nullptr)
+```
+
+Constructs a new [DicomBrowserModel](/cpp-sdk/4.5/api/classes/imfusion-dicombrowsermodel) and initializes it with patients from the given datasets.
+
+datasetPaths must contain the origin path to each dataset in datasets. datasets and datasetPaths must be of the same length.
+
+## Member Function Documentation
+
+### setDatasetCache
+
+```cpp
+void ImFusion::DicomBrowserModel::setDatasetCache (Dicom::SharedDatasetCache cache)
+```
+
+Replaces the current [DatasetCache](/cpp-sdk/4.5/api/classes/imfusion-dicom-datasetcache) with the given one.
+
+nullptr disables caching. Changing the cache while isScanning is true is **not** supported!
+
+### setUpdateSeriesDimensionsAfterScan
+
+```cpp
+void ImFusion::DicomBrowserModel::setUpdateSeriesDimensionsAfterScan (bool enable)
+```
+
+Sets whether the kind field of each [Series](/cpp-sdk/4.5/api/structs/imfusion-dicom-series) is updated automatically after scanning.
+
+Since this needs to iterate over all files of each series, this can take about as long as scanning itself. In the case of the scan...Async methods, the scanProgress will be used to report the progress of the update (starting from 0 again after the scan has finished but with a different text). Disabled by default.
+
+### setData
+
+```cpp
+bool ImFusion::DicomBrowserModel::setData (const QModelIndex & index, const QVariant & value, int role = Qt::EditRole)
+```
+
+*override*
+
+Only accepted role is Qt::CheckStateRole, except for images which cannot be edited at all.
+
+If a Patient/Study is (un)checked, it will (un)check all its children Studies/Series.
+
+### scanCompleted
+
+```cpp
+bool ImFusion::DicomBrowserModel::scanCompleted () const
+```
+
+Returns whether the last scan has been completed.
+
+If it has not, the information in patients() may not be complete!
+
+### retrieveLocationString
+
+```cpp
+std::string ImFusion::DicomBrowserModel::retrieveLocationString (const std::vector < Series * > & series, bool ignoreNonDicomFiles = true)
+```
+
+*static*
+
+Creates a location string from the given series.
+
+This string can be used as location parameter in the DicomIOAlgorithm to load the given series.
+
+### addPatient
+
+```cpp
+void ImFusion::DicomBrowserModel::addPatient (Patient * patient)
+```
+
+*slot*
+
+Adds a new patient to the model.
+
+Will be merged with existing patients of the same id.
+
+### scanDirectoryAsync
+
+```cpp
+void ImFusion::DicomBrowserModel::scanDirectoryAsync (const QString & directory, bool recursive, bool useDicomdirOnly, bool checkDicomHeader)
+```
+
+*slot*
+
+Scans a directory for dicom files.
+
+This method is executed async and returns immediately. When the scanner finds a series, it is not instantly added to the model but only the next time the Qt mainthread processes events. This means that the control flow must pass to the Qt main event loop at some point, otherwise patients() might still be empty even when isScanning() returns false. If you cannot return to the Qt main event loop use scanDirectoryBlocking instead. Check the class documentation for a common usage example.
+
+### scanWebAsync
+
+```cpp
+void ImFusion::DicomBrowserModel::scanWebAsync (const Filesystem::Url & url)
+```
+
+*slot*
+
+Scans a DICOMweb compatible server (see [Scanner::scanWeb](/cpp-sdk/4.5/api/classes/imfusion-dicom-scanner) for details).
+
+The scanDirectoryAsync on how the asynchronous part works.
+
+### scanPacsAsync
+
+```cpp
+void ImFusion::DicomBrowserModel::scanPacsAsync (DicomPacsConfiguration pacs, const QString & patientNameFilter, const QString & studyFilter)
+```
+
+*slot*
+
+Scans the PACS server with the given configuration for existing patients and studies.
+
+Will only download Patient and [Study](/cpp-sdk/4.5/api/structs/imfusion-dicom-study) data. [Series](/cpp-sdk/4.5/api/structs/imfusion-dicom-series) and [Image](/cpp-sdk/4.5/api/classes/imfusion-image) data will not be received in order to preserve bandwidth and time. Use getPacsSeries() to receive all [Series](/cpp-sdk/4.5/api/structs/imfusion-dicom-series) for a given [Study](/cpp-sdk/4.5/api/structs/imfusion-dicom-study).

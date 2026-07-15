@@ -1,0 +1,317 @@
+---
+title: "ImFusion::Geometry"
+sidebarTitle: "Geometry"
+description: "Classes to represent geometric primitives like lines or polygons, as well as functions dealing exclusively with such objects."
+---
+
+## Overview
+
+Classes to represent geometric primitives like lines or polygons, as well as functions dealing exclusively with such objects.
+
+**Note:** This namespace contains improved versions of what is in the original and now deprecated GeometryLegacy namespace.
+
+**See also:** ImFusionGeometry
+
+## Classes
+
+- class [AlignedBox](/cpp-sdk/4.5/api/classes/imfusion-geometry-alignedbox) — Class representing an axis aligned rectangular cuboid in 3D space.
+- class [Circle](/cpp-sdk/4.5/api/classes/imfusion-geometry-circle) — Class representing a circle (actually a disk, so including the inner part) in 3D space.
+- class [Ellipse2D](/cpp-sdk/4.5/api/classes/imfusion-geometry-ellipse2d) — Class representing an ellipse in 2D space.
+- class [LineBase](/cpp-sdk/4.5/api/classes/imfusion-geometry-linebase) — Common interface of [Line](/cpp-sdk/4.5/api/classes/imfusion-geometry-line) and [LineSegment](/cpp-sdk/4.5/api/classes/imfusion-geometry-linesegment).
+- class [Line](/cpp-sdk/4.5/api/classes/imfusion-geometry-line) — Class representing a full line, i.e.
+- class [LineSegment](/cpp-sdk/4.5/api/classes/imfusion-geometry-linesegment) — Class representing a line segment, i.e.
+- class [Plane](/cpp-sdk/4.5/api/classes/imfusion-geometry-plane) — Class representing an oriented plane in 3D space defined by a base point and a normal direction.
+- class [Polygon2D](/cpp-sdk/4.5/api/classes/imfusion-geometry-polygon2d) — Class representing a planar polygon.
+- class [AlignedRectangle2D](/cpp-sdk/4.5/api/classes/imfusion-geometry-alignedrectangle2d) — Class representing an axis aligned rectangle in 2D space.
+- class [Rectangle](/cpp-sdk/4.5/api/classes/imfusion-geometry-rectangle) — Arbitrary rectangle in 3D space.
+- class [Triangle](/cpp-sdk/4.5/api/classes/imfusion-geometry-triangle) — Class representing a triangle in 3D space.
+- struct [SpherePivotResult](/cpp-sdk/4.5/api/structs/imfusion-geometry-spherepivotresult)
+
+## Functions
+
+- [std::ostream](http://en.cppreference.com/w/cpp/io/basic_ostream.html) & **operator&lt;&lt;** ([std::ostream](http://en.cppreference.com/w/cpp/io/basic_ostream.html) &o, const [AlignedBox](/cpp-sdk/4.5/api/classes/imfusion-geometry-alignedbox) &b)
+- int [fitCircle](#fitcircle) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec2 &gt; &pts, vec2 &center, double &radius, bool fixed[3], double \*res=0, bool outlierRejection=false) — Fit circle to points, using the Levenberg-Marquardt algorithm.
+- double **fitCircleRANSAC** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec2 &gt; &pts, vec3 &circleOut, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec2 &gt; &inliersOut, double inlierThreshold=1.0, double diameter=-1)
+- double [fitCircleLeastSquares](#fitcircleleastsquares) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec2 &gt; &pts, vec2 &center, double &radius) — Fit circle to points, using a linear least squares fit.
+- int [fitCircle3D](#fitcircle3d) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; &pts, vec3 &outCenter, double &outRadius, mat3 &outR, double \*outRes=0, bool rejectOutliers=false) — Fit circle in 3D to points.
+- int [fitSphere](#fitsphere) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; &pts, vec3 &center, double &radius, bool fixed[4], double \*res=0) — Fit sphere to points.
+- double **fitSphereRANSAC** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; &pts, vec4 &circleOut, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; &inliersOut, double inlierThreshold, double diameter=-1)
+- [SpherePivotResult](/cpp-sdk/4.5/api/structs/imfusion-geometry-spherepivotresult) **fitSpherePivotingPoses** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; mat4 &gt; &pivotPoses)
+- int [fitConic](#fitconic) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec2 &gt; &pts, mat3 &C, double \*res=0) — Fit conic to points.
+- int [fitCylinder](#fitcylinder) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; &pts, vec3 &center, double &radius, mat3 &R, double \*res=0) — Fit cylinder to points.
+- int [fitPlane](#fitplane) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; &pts_, vec4 \*plane, double \*res=0, bool rejectOutliers=false) — Fit plane to points.
+- double **fitPlaneRANSAC** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; &pts, vec4 &planeOut, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; &inliersOut, double inlierThreshold, int maxIter=100)
+- void [fitAxesPCA](#fitaxespca) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; &pts_, vec3 &outCentroid_, vec4(&outPlanes_)[3], bool scalePoints=true, vec3 \*outEigenvalues=nullptr) — Performs a [PCA](/cpp-sdk/4.5/api/classes/imfusion-pca) to fit the principal component axes to points.
+- int [fitLine](#fitline) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec2 &gt; &pts_, vec3 \*line, double \*res=0) — Fit line to points.
+- double **fitLineRANSAC** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec2 &gt; &pts, vec3 &lineOut, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec2 &gt; &inliersOut, double inlierThreshold)
+- double [fitLineRANSAC](#fitlineransac) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; &pts, vec3 &lineOutOrigin, vec3 &lineOutDir, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; &inliersOut, double inlierThreshold) — Fit line to inlier points.
+- int **fitLine** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; &pts_, vec3 &lineOutOrigin, vec3 &lineOutDir, double \*res=0)
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [Geometry::Ellipse2D](/cpp-sdk/4.5/api/classes/imfusion-geometry-ellipse2d) &gt; [fitEllipse](#fitellipse) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec2 &gt; &pts) — Fit ellipse to points using least squares.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; [uniformDistributedPointsOnSphere](#uniformdistributedpointsonsphere) (const int N) — Picks uniform distributed points on the sphere, i.e.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec2 &gt; [uniformDistributedPointsOnCircle](#uniformdistributedpointsoncircle) (const int N) — Picks uniform distributed points on the circle, i.e.
+
+## Find intersection points or overlapping parts
+
+- [Utils::Variant](/cpp-sdk/4.5/api/structs/imfusion-utils-variant)&lt; [Line](/cpp-sdk/4.5/api/classes/imfusion-geometry-line), vec3, [std::nullptr_t](http://en.cppreference.com/w/cpp/types/nullptr_t.html) &gt; **intersection** (const [Line](/cpp-sdk/4.5/api/classes/imfusion-geometry-line) &l1, const [Line](/cpp-sdk/4.5/api/classes/imfusion-geometry-line) &l2) — Compute the intersection between two Lines or LineSegments.
+- [Utils::Variant](/cpp-sdk/4.5/api/structs/imfusion-utils-variant)&lt; [LineSegment](/cpp-sdk/4.5/api/classes/imfusion-geometry-linesegment), vec3, [std::nullptr_t](http://en.cppreference.com/w/cpp/types/nullptr_t.html) &gt; intersection (const [Line](/cpp-sdk/4.5/api/classes/imfusion-geometry-line) &l1, const [LineSegment](/cpp-sdk/4.5/api/classes/imfusion-geometry-linesegment) &l2) — Compute the intersection between two Lines or LineSegments.
+- [Utils::Variant](/cpp-sdk/4.5/api/structs/imfusion-utils-variant)&lt; [LineSegment](/cpp-sdk/4.5/api/classes/imfusion-geometry-linesegment), vec3, [std::nullptr_t](http://en.cppreference.com/w/cpp/types/nullptr_t.html) &gt; intersection (const [LineSegment](/cpp-sdk/4.5/api/classes/imfusion-geometry-linesegment) &l1, const [Line](/cpp-sdk/4.5/api/classes/imfusion-geometry-line) &l2) — Compute the intersection between two Lines or LineSegments.
+- [Utils::Variant](/cpp-sdk/4.5/api/structs/imfusion-utils-variant)&lt; [LineSegment](/cpp-sdk/4.5/api/classes/imfusion-geometry-linesegment), vec3, [std::nullptr_t](http://en.cppreference.com/w/cpp/types/nullptr_t.html) &gt; intersection (const [LineSegment](/cpp-sdk/4.5/api/classes/imfusion-geometry-linesegment) &l1, const [LineSegment](/cpp-sdk/4.5/api/classes/imfusion-geometry-linesegment) &l2) — Compute the intersection between two Lines or LineSegments.
+- [Utils::Variant](/cpp-sdk/4.5/api/structs/imfusion-utils-variant)&lt; [Line](/cpp-sdk/4.5/api/classes/imfusion-geometry-line), vec3, [std::nullptr_t](http://en.cppreference.com/w/cpp/types/nullptr_t.html) &gt; **intersection** (const [Line](/cpp-sdk/4.5/api/classes/imfusion-geometry-line) &l, const [Plane](/cpp-sdk/4.5/api/classes/imfusion-geometry-plane) &p) — Compute the intersection between a [Line](/cpp-sdk/4.5/api/classes/imfusion-geometry-line) or [LineSegment](/cpp-sdk/4.5/api/classes/imfusion-geometry-linesegment) and a [Plane](/cpp-sdk/4.5/api/classes/imfusion-geometry-plane).
+- [Utils::Variant](/cpp-sdk/4.5/api/structs/imfusion-utils-variant)&lt; [LineSegment](/cpp-sdk/4.5/api/classes/imfusion-geometry-linesegment), vec3, [std::nullptr_t](http://en.cppreference.com/w/cpp/types/nullptr_t.html) &gt; intersection (const [LineSegment](/cpp-sdk/4.5/api/classes/imfusion-geometry-linesegment) &l, const [Plane](/cpp-sdk/4.5/api/classes/imfusion-geometry-plane) &p) — Compute the intersection between a [Line](/cpp-sdk/4.5/api/classes/imfusion-geometry-line) or [LineSegment](/cpp-sdk/4.5/api/classes/imfusion-geometry-linesegment) and a [Plane](/cpp-sdk/4.5/api/classes/imfusion-geometry-plane).
+- [Utils::Variant](/cpp-sdk/4.5/api/structs/imfusion-utils-variant)&lt; [Line](/cpp-sdk/4.5/api/classes/imfusion-geometry-line), vec3, [std::nullptr_t](http://en.cppreference.com/w/cpp/types/nullptr_t.html) &gt; intersection (const [Plane](/cpp-sdk/4.5/api/classes/imfusion-geometry-plane) &p, const [Line](/cpp-sdk/4.5/api/classes/imfusion-geometry-line) &l) — Compute the intersection between a [Line](/cpp-sdk/4.5/api/classes/imfusion-geometry-line) or [LineSegment](/cpp-sdk/4.5/api/classes/imfusion-geometry-linesegment) and a [Plane](/cpp-sdk/4.5/api/classes/imfusion-geometry-plane).
+- [Utils::Variant](/cpp-sdk/4.5/api/structs/imfusion-utils-variant)&lt; [LineSegment](/cpp-sdk/4.5/api/classes/imfusion-geometry-linesegment), vec3, [std::nullptr_t](http://en.cppreference.com/w/cpp/types/nullptr_t.html) &gt; intersection (const [Plane](/cpp-sdk/4.5/api/classes/imfusion-geometry-plane) &p, const [LineSegment](/cpp-sdk/4.5/api/classes/imfusion-geometry-linesegment) &l) — Compute the intersection between a [Line](/cpp-sdk/4.5/api/classes/imfusion-geometry-line) or [LineSegment](/cpp-sdk/4.5/api/classes/imfusion-geometry-linesegment) and a [Plane](/cpp-sdk/4.5/api/classes/imfusion-geometry-plane).
+- [Utils::Variant](/cpp-sdk/4.5/api/structs/imfusion-utils-variant)&lt; [LineSegment](/cpp-sdk/4.5/api/classes/imfusion-geometry-linesegment), vec3, [std::nullptr_t](http://en.cppreference.com/w/cpp/types/nullptr_t.html) &gt; intersection (const [Line](/cpp-sdk/4.5/api/classes/imfusion-geometry-line) &l, const [Triangle](/cpp-sdk/4.5/api/classes/imfusion-geometry-triangle) &p) — Compute the intersection between a [Line](/cpp-sdk/4.5/api/classes/imfusion-geometry-line) or [LineSegment](/cpp-sdk/4.5/api/classes/imfusion-geometry-linesegment) and a [Triangle](/cpp-sdk/4.5/api/classes/imfusion-geometry-triangle).
+- [Utils::Variant](/cpp-sdk/4.5/api/structs/imfusion-utils-variant)&lt; [LineSegment](/cpp-sdk/4.5/api/classes/imfusion-geometry-linesegment), vec3, [std::nullptr_t](http://en.cppreference.com/w/cpp/types/nullptr_t.html) &gt; intersection (const [LineSegment](/cpp-sdk/4.5/api/classes/imfusion-geometry-linesegment) &l, const [Triangle](/cpp-sdk/4.5/api/classes/imfusion-geometry-triangle) &p) — Compute the intersection between a [Line](/cpp-sdk/4.5/api/classes/imfusion-geometry-line) or [LineSegment](/cpp-sdk/4.5/api/classes/imfusion-geometry-linesegment) and a [Triangle](/cpp-sdk/4.5/api/classes/imfusion-geometry-triangle).
+- [Utils::Variant](/cpp-sdk/4.5/api/structs/imfusion-utils-variant)&lt; [LineSegment](/cpp-sdk/4.5/api/classes/imfusion-geometry-linesegment), vec3, [std::nullptr_t](http://en.cppreference.com/w/cpp/types/nullptr_t.html) &gt; intersection (const [Triangle](/cpp-sdk/4.5/api/classes/imfusion-geometry-triangle) &t, const [Line](/cpp-sdk/4.5/api/classes/imfusion-geometry-line) &l) — Compute the intersection between a [Line](/cpp-sdk/4.5/api/classes/imfusion-geometry-line) or [LineSegment](/cpp-sdk/4.5/api/classes/imfusion-geometry-linesegment) and a [Triangle](/cpp-sdk/4.5/api/classes/imfusion-geometry-triangle).
+- [Utils::Variant](/cpp-sdk/4.5/api/structs/imfusion-utils-variant)&lt; [LineSegment](/cpp-sdk/4.5/api/classes/imfusion-geometry-linesegment), vec3, [std::nullptr_t](http://en.cppreference.com/w/cpp/types/nullptr_t.html) &gt; intersection (const [Triangle](/cpp-sdk/4.5/api/classes/imfusion-geometry-triangle) &t, const [LineSegment](/cpp-sdk/4.5/api/classes/imfusion-geometry-linesegment) &l) — Compute the intersection between a [Line](/cpp-sdk/4.5/api/classes/imfusion-geometry-line) or [LineSegment](/cpp-sdk/4.5/api/classes/imfusion-geometry-linesegment) and a [Triangle](/cpp-sdk/4.5/api/classes/imfusion-geometry-triangle).
+- [Utils::Variant](/cpp-sdk/4.5/api/structs/imfusion-utils-variant)&lt; [LineSegment](/cpp-sdk/4.5/api/classes/imfusion-geometry-linesegment), vec3, [std::nullptr_t](http://en.cppreference.com/w/cpp/types/nullptr_t.html) &gt; **intersection** (const [Line](/cpp-sdk/4.5/api/classes/imfusion-geometry-line) &l, const [AlignedBox](/cpp-sdk/4.5/api/classes/imfusion-geometry-alignedbox) &c) — Compute the intersection between a [Line](/cpp-sdk/4.5/api/classes/imfusion-geometry-line) or [LineSegment](/cpp-sdk/4.5/api/classes/imfusion-geometry-linesegment) and a [AlignedBox](/cpp-sdk/4.5/api/classes/imfusion-geometry-alignedbox).
+- [Utils::Variant](/cpp-sdk/4.5/api/structs/imfusion-utils-variant)&lt; [LineSegment](/cpp-sdk/4.5/api/classes/imfusion-geometry-linesegment), vec3, [std::nullptr_t](http://en.cppreference.com/w/cpp/types/nullptr_t.html) &gt; intersection (const [LineSegment](/cpp-sdk/4.5/api/classes/imfusion-geometry-linesegment) &l, const [AlignedBox](/cpp-sdk/4.5/api/classes/imfusion-geometry-alignedbox) &c) — Compute the intersection between a [Line](/cpp-sdk/4.5/api/classes/imfusion-geometry-line) or [LineSegment](/cpp-sdk/4.5/api/classes/imfusion-geometry-linesegment) and a [AlignedBox](/cpp-sdk/4.5/api/classes/imfusion-geometry-alignedbox).
+- [Utils::Variant](/cpp-sdk/4.5/api/structs/imfusion-utils-variant)&lt; [LineSegment](/cpp-sdk/4.5/api/classes/imfusion-geometry-linesegment), vec3, [std::nullptr_t](http://en.cppreference.com/w/cpp/types/nullptr_t.html) &gt; intersection (const [AlignedBox](/cpp-sdk/4.5/api/classes/imfusion-geometry-alignedbox) &c, const [Line](/cpp-sdk/4.5/api/classes/imfusion-geometry-line) &l) — Compute the intersection between a [Line](/cpp-sdk/4.5/api/classes/imfusion-geometry-line) or [LineSegment](/cpp-sdk/4.5/api/classes/imfusion-geometry-linesegment) and a [AlignedBox](/cpp-sdk/4.5/api/classes/imfusion-geometry-alignedbox).
+- [Utils::Variant](/cpp-sdk/4.5/api/structs/imfusion-utils-variant)&lt; [LineSegment](/cpp-sdk/4.5/api/classes/imfusion-geometry-linesegment), vec3, [std::nullptr_t](http://en.cppreference.com/w/cpp/types/nullptr_t.html) &gt; intersection (const [AlignedBox](/cpp-sdk/4.5/api/classes/imfusion-geometry-alignedbox) &c, const [LineSegment](/cpp-sdk/4.5/api/classes/imfusion-geometry-linesegment) &l) — Compute the intersection between a [Line](/cpp-sdk/4.5/api/classes/imfusion-geometry-line) or [LineSegment](/cpp-sdk/4.5/api/classes/imfusion-geometry-linesegment) and a [AlignedBox](/cpp-sdk/4.5/api/classes/imfusion-geometry-alignedbox).
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; intersection (const [AlignedBox](/cpp-sdk/4.5/api/classes/imfusion-geometry-alignedbox) &cuboid, const [Plane](/cpp-sdk/4.5/api/classes/imfusion-geometry-plane) &plane) — Compute the intersection between a [AlignedBox](/cpp-sdk/4.5/api/classes/imfusion-geometry-alignedbox) and a [Plane](/cpp-sdk/4.5/api/classes/imfusion-geometry-plane).
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; intersection (const [Plane](/cpp-sdk/4.5/api/classes/imfusion-geometry-plane) &plane, const [AlignedBox](/cpp-sdk/4.5/api/classes/imfusion-geometry-alignedbox) &cuboid) — Compute the intersection between a [AlignedBox](/cpp-sdk/4.5/api/classes/imfusion-geometry-alignedbox) and a [Plane](/cpp-sdk/4.5/api/classes/imfusion-geometry-plane).
+- [Utils::Variant](/cpp-sdk/4.5/api/structs/imfusion-utils-variant)&lt; [LineSegment](/cpp-sdk/4.5/api/classes/imfusion-geometry-linesegment), vec3, [std::nullptr_t](http://en.cppreference.com/w/cpp/types/nullptr_t.html) &gt; **intersection** (const [Rectangle](/cpp-sdk/4.5/api/classes/imfusion-geometry-rectangle) &p, const [LineSegment](/cpp-sdk/4.5/api/classes/imfusion-geometry-linesegment) &l) — Compute the intersection between a [LineSegment](/cpp-sdk/4.5/api/classes/imfusion-geometry-linesegment) and a [Rectangle](/cpp-sdk/4.5/api/classes/imfusion-geometry-rectangle).
+- [Utils::Variant](/cpp-sdk/4.5/api/structs/imfusion-utils-variant)&lt; [LineSegment](/cpp-sdk/4.5/api/classes/imfusion-geometry-linesegment), vec3, [std::nullptr_t](http://en.cppreference.com/w/cpp/types/nullptr_t.html) &gt; intersection (const [LineSegment](/cpp-sdk/4.5/api/classes/imfusion-geometry-linesegment) &l, const [Rectangle](/cpp-sdk/4.5/api/classes/imfusion-geometry-rectangle) &p) — Compute the intersection between a [LineSegment](/cpp-sdk/4.5/api/classes/imfusion-geometry-linesegment) and a [Rectangle](/cpp-sdk/4.5/api/classes/imfusion-geometry-rectangle).
+- [Utils::Variant](/cpp-sdk/4.5/api/structs/imfusion-utils-variant)&lt; [LineSegment](/cpp-sdk/4.5/api/classes/imfusion-geometry-linesegment), vec3, [std::nullptr_t](http://en.cppreference.com/w/cpp/types/nullptr_t.html) &gt; **intersection** (const [Rectangle](/cpp-sdk/4.5/api/classes/imfusion-geometry-rectangle) &p, const [Line](/cpp-sdk/4.5/api/classes/imfusion-geometry-line) &l) — Compute the intersection between a [Line](/cpp-sdk/4.5/api/classes/imfusion-geometry-line) and a [Rectangle](/cpp-sdk/4.5/api/classes/imfusion-geometry-rectangle).
+- [Utils::Variant](/cpp-sdk/4.5/api/structs/imfusion-utils-variant)&lt; [LineSegment](/cpp-sdk/4.5/api/classes/imfusion-geometry-linesegment), vec3, [std::nullptr_t](http://en.cppreference.com/w/cpp/types/nullptr_t.html) &gt; intersection (const [Line](/cpp-sdk/4.5/api/classes/imfusion-geometry-line) &l, const [Rectangle](/cpp-sdk/4.5/api/classes/imfusion-geometry-rectangle) &p) — Compute the intersection between a [Line](/cpp-sdk/4.5/api/classes/imfusion-geometry-line) and a [Rectangle](/cpp-sdk/4.5/api/classes/imfusion-geometry-rectangle).
+- [Utils::Variant](/cpp-sdk/4.5/api/structs/imfusion-utils-variant)&lt; [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt;, [LineSegment](/cpp-sdk/4.5/api/classes/imfusion-geometry-linesegment), vec3, [std::nullptr_t](http://en.cppreference.com/w/cpp/types/nullptr_t.html) &gt; **intersection** (const [Rectangle](/cpp-sdk/4.5/api/classes/imfusion-geometry-rectangle) &l, const [Rectangle](/cpp-sdk/4.5/api/classes/imfusion-geometry-rectangle) &p) — Compute the intersection between two Rectangles.
+- [Utils::Variant](/cpp-sdk/4.5/api/structs/imfusion-utils-variant)&lt; [AlignedBox](/cpp-sdk/4.5/api/classes/imfusion-geometry-alignedbox), [LineSegment](/cpp-sdk/4.5/api/classes/imfusion-geometry-linesegment), vec3, [std::nullptr_t](http://en.cppreference.com/w/cpp/types/nullptr_t.html) &gt; intersection (const [AlignedBox](/cpp-sdk/4.5/api/classes/imfusion-geometry-alignedbox) &c, const [AlignedBox](/cpp-sdk/4.5/api/classes/imfusion-geometry-alignedbox) &c2) — Returns intersection between 2 boxes or nullptr in case of no intersection.
+- [Utils::Variant](/cpp-sdk/4.5/api/structs/imfusion-utils-variant)&lt; [Plane](/cpp-sdk/4.5/api/classes/imfusion-geometry-plane), [Line](/cpp-sdk/4.5/api/classes/imfusion-geometry-line), [std::nullptr_t](http://en.cppreference.com/w/cpp/types/nullptr_t.html) &gt; **intersection** (const [Plane](/cpp-sdk/4.5/api/classes/imfusion-geometry-plane) &p1, const [Plane](/cpp-sdk/4.5/api/classes/imfusion-geometry-plane) &p2) — Compute the intersection between multiple planes.
+- [Utils::Variant](/cpp-sdk/4.5/api/structs/imfusion-utils-variant)&lt; [Plane](/cpp-sdk/4.5/api/classes/imfusion-geometry-plane), [Line](/cpp-sdk/4.5/api/classes/imfusion-geometry-line), vec3, [std::nullptr_t](http://en.cppreference.com/w/cpp/types/nullptr_t.html) &gt; intersection (const [Plane](/cpp-sdk/4.5/api/classes/imfusion-geometry-plane) &p1, const [Plane](/cpp-sdk/4.5/api/classes/imfusion-geometry-plane) &p2, const [Plane](/cpp-sdk/4.5/api/classes/imfusion-geometry-plane) &p3) — Compute the intersection between multiple planes.
+- [Utils::Variant](/cpp-sdk/4.5/api/structs/imfusion-utils-variant)&lt; [Triangle](/cpp-sdk/4.5/api/classes/imfusion-geometry-triangle), [LineSegment](/cpp-sdk/4.5/api/classes/imfusion-geometry-linesegment), vec3, [std::nullptr_t](http://en.cppreference.com/w/cpp/types/nullptr_t.html) &gt; **intersection** (const [Plane](/cpp-sdk/4.5/api/classes/imfusion-geometry-plane) &p, const [Triangle](/cpp-sdk/4.5/api/classes/imfusion-geometry-triangle) &t) — Compute the intersection between a [Plane](/cpp-sdk/4.5/api/classes/imfusion-geometry-plane) and a [Triangle](/cpp-sdk/4.5/api/classes/imfusion-geometry-triangle).
+- [Utils::Variant](/cpp-sdk/4.5/api/structs/imfusion-utils-variant)&lt; [Triangle](/cpp-sdk/4.5/api/classes/imfusion-geometry-triangle), [LineSegment](/cpp-sdk/4.5/api/classes/imfusion-geometry-linesegment), vec3, [std::nullptr_t](http://en.cppreference.com/w/cpp/types/nullptr_t.html) &gt; intersection (const [Triangle](/cpp-sdk/4.5/api/classes/imfusion-geometry-triangle) &t, const [Plane](/cpp-sdk/4.5/api/classes/imfusion-geometry-plane) &p) — Compute the intersection between a [Plane](/cpp-sdk/4.5/api/classes/imfusion-geometry-plane) and a [Triangle](/cpp-sdk/4.5/api/classes/imfusion-geometry-triangle).
+- [Utils::Variant](/cpp-sdk/4.5/api/structs/imfusion-utils-variant)&lt; [AlignedRectangle2D](/cpp-sdk/4.5/api/classes/imfusion-geometry-alignedrectangle2d), vec3, [std::nullptr_t](http://en.cppreference.com/w/cpp/types/nullptr_t.html) &gt; intersection (const [AlignedRectangle2D](/cpp-sdk/4.5/api/classes/imfusion-geometry-alignedrectangle2d) &r1, const [AlignedRectangle2D](/cpp-sdk/4.5/api/classes/imfusion-geometry-alignedrectangle2d) &r2) — Returns the intersection of 2 rectangles.
+- [Utils::Variant](/cpp-sdk/4.5/api/structs/imfusion-utils-variant)&lt; [LineSegment](/cpp-sdk/4.5/api/classes/imfusion-geometry-linesegment), vec3, [std::nullptr_t](http://en.cppreference.com/w/cpp/types/nullptr_t.html) &gt; intersectionFast (const [Line](/cpp-sdk/4.5/api/classes/imfusion-geometry-line) &l, const [Triangle](/cpp-sdk/4.5/api/classes/imfusion-geometry-triangle) &t) — Compute the intersection between a [Line](/cpp-sdk/4.5/api/classes/imfusion-geometry-line) and a [Triangle](/cpp-sdk/4.5/api/classes/imfusion-geometry-triangle).
+- [Utils::Variant](/cpp-sdk/4.5/api/structs/imfusion-utils-variant)&lt; [LineSegment](/cpp-sdk/4.5/api/classes/imfusion-geometry-linesegment), vec3, [std::nullptr_t](http://en.cppreference.com/w/cpp/types/nullptr_t.html) &gt; intersectionFast (const [Triangle](/cpp-sdk/4.5/api/classes/imfusion-geometry-triangle) &t, const [Line](/cpp-sdk/4.5/api/classes/imfusion-geometry-line) &l) — Compute the intersection between a [Line](/cpp-sdk/4.5/api/classes/imfusion-geometry-line) and a [Triangle](/cpp-sdk/4.5/api/classes/imfusion-geometry-triangle).
+
+## Check if, but not how, a pair of objects intersects
+
+- bool **intersects** (const [AlignedRectangle2D](/cpp-sdk/4.5/api/classes/imfusion-geometry-alignedrectangle2d) &r1, const [AlignedRectangle2D](/cpp-sdk/4.5/api/classes/imfusion-geometry-alignedrectangle2d) &r2) — Checks if the two rectangles intersect.
+- bool **intersects** (const [AlignedBox](/cpp-sdk/4.5/api/classes/imfusion-geometry-alignedbox) &c, const [Triangle](/cpp-sdk/4.5/api/classes/imfusion-geometry-triangle) &t) — Checks if the box and triangle intersect.
+- bool **intersects** (const [AlignedBox](/cpp-sdk/4.5/api/classes/imfusion-geometry-alignedbox) &c, const [AlignedBox](/cpp-sdk/4.5/api/classes/imfusion-geometry-alignedbox) &c2) — Checks if the two boxes intersect.
+- bool **intersects** (const [AlignedBox](/cpp-sdk/4.5/api/classes/imfusion-geometry-alignedbox) &cub, const [Plane](/cpp-sdk/4.5/api/classes/imfusion-geometry-plane) &plane) — Checks if the box and plane intersect.
+
+## Function Documentation
+
+### fitCircle
+
+```cpp
+int ImFusion::Geometry::fitCircle (const std::vector < vec2 > & pts, vec2 & center, double & radius, bool fixed [3], double * res = 0, bool outlierRejection = false)
+```
+
+Fit circle to points, using the Levenberg-Marquardt algorithm.
+
+**Parameters:**
+
+- `pts` — input points
+- `center` — estimated center
+- `radius` — estimated radius
+- `fixed` — fixed parameters (center x, y, radius)
+- `res` — residual
+
+**Returns:** 0 if successful
+
+### fitCircleLeastSquares
+
+```cpp
+double ImFusion::Geometry::fitCircleLeastSquares (const std::vector < vec2 > & pts, vec2 & center, double & radius)
+```
+
+Fit circle to points, using a linear least squares fit.
+
+**Parameters:**
+
+- `pts` — input points
+- `center` — estimated center
+- `radius` — estimated radius
+
+**Returns:** The residual
+
+**Note:** See `https://dtcenter.org/met/users/docs/write_ups/circle_fit.pdf` for technical details.
+
+### fitCircle3D
+
+```cpp
+int ImFusion::Geometry::fitCircle3D (const std::vector < vec3 > & pts, vec3 & outCenter, double & outRadius, mat3 & outR, double * outRes = 0, bool rejectOutliers = false)
+```
+
+Fit circle in 3D to points.
+
+**Parameters:**
+
+- `pts` — input points
+- `outCenter` — estimated center
+- `outRadius` — estimated radius
+- `outR` — estimated rotation matrix which transforms the circle normal to the z unit vector
+- `outRes` — residual
+
+**Returns:** 0 if successful, -1 otherwise
+
+### fitSphere
+
+```cpp
+int ImFusion::Geometry::fitSphere (const std::vector < vec3 > & pts, vec3 & center, double & radius, bool fixed [4], double * res = 0)
+```
+
+Fit sphere to points.
+
+**Parameters:**
+
+- `pts` — input points
+- `center` — estimated center and initial guess
+- `radius` — estimated radius and initial guess
+- `fixed` — fixed parameters (center x, y, z, radius)
+- `res` — residual
+
+**Returns:** 0 if successful
+
+### fitConic
+
+```cpp
+int ImFusion::Geometry::fitConic (const std::vector < vec2 > & pts, mat3 & C, double * res = 0)
+```
+
+Fit conic to points.
+
+**Parameters:**
+
+- `pts` — input points
+- `C` — conic
+- `res` — residual
+
+**Returns:** 0 if successful
+
+### fitCylinder
+
+```cpp
+int ImFusion::Geometry::fitCylinder (const std::vector < vec3 > & pts, vec3 & center, double & radius, mat3 & R, double * res = 0)
+```
+
+Fit cylinder to points.
+
+**Parameters:**
+
+- `pts` — input points
+- `center` — estimated center
+- `radius` — estimated radius
+- `R` — rotation matrix
+- `res` — residual
+
+**Returns:** 0 if successful
+
+### fitPlane
+
+```cpp
+int ImFusion::Geometry::fitPlane (const std::vector < vec3 > & pts_, vec4 * plane, double * res = 0, bool rejectOutliers = false)
+```
+
+Fit plane to points.
+
+**Parameters:**
+
+- `pts_` — input points
+- `plane` — estimated plane
+- `res` — residual
+
+**Returns:** 0 if successful
+
+For any point pt on the plane, plane.dot(pt.homogeneous()) == 0.0 holds, i.e. plane[3] is -d from the Hesse normal form
+
+### fitAxesPCA
+
+```cpp
+void ImFusion::Geometry::fitAxesPCA (const std::vector < vec3 > & pts_, vec3 & outCentroid_, vec4(&) outPlanes_ [3], bool scalePoints = true, vec3 * outEigenvalues = nullptr)
+```
+
+Performs a [PCA](/cpp-sdk/4.5/api/classes/imfusion-pca) to fit the principal component axes to points.
+
+**Parameters:**
+
+- `pts_` — input points
+- `outCentroid_` — estimated centroid
+- `outPlanes_` — estimated planes in homogeneous convenion (see [fitPlane()](#fitplane))
+- `scalePoints` — whether to scale the points
+- `outEigenvalues` — estimated eigenvalues
+
+The first three components of each estimated plane contain the normal vector, i.e. the principal component axis. [fitPlane()](#fitplane) returns the last of these planes.
+
+### fitLine
+
+```cpp
+int ImFusion::Geometry::fitLine (const std::vector < vec2 > & pts_, vec3 * line, double * res = 0)
+```
+
+Fit line to points.
+
+**Parameters:**
+
+- `pts_` — input points
+- `line` — estimated line in general form: a\*x + b\*y + c = 0
+- `res` — residual
+
+**Returns:** 0 if successful
+
+### fitLineRANSAC
+
+```cpp
+double ImFusion::Geometry::fitLineRANSAC (const std::vector < vec3 > & pts, vec3 & lineOutOrigin, vec3 & lineOutDir, std::vector < vec3 > & inliersOut, double inlierThreshold)
+```
+
+Fit line to inlier points.
+
+**Parameters:**
+
+- `pts` — input points
+- `lineOutOrigin` — point belonging to the line
+- `lineOutDir` — direction of the line, thus any point on the line can be estimated as: &lt;x, y, z&gt; = lineOutOrigin + t\*lineOutDir
+- `inliersOut` — input points that lie within inlierThreshold distance from the estimated line
+- `inlierThreshold` — threshold for distance between an inlier point and an estimated line
+
+**Returns:** average distance between inlier point and the line
+
+### fitEllipse
+
+```cpp
+std::optional < Geometry::Ellipse2D > ImFusion::Geometry::fitEllipse (const std::vector < vec2 > & pts)
+```
+
+Fit ellipse to points using least squares.
+
+**Parameters:**
+
+- `pts` — input points
+- `ellipse` — output fitted ellipse
+
+**Returns:** true if successful, false otherwise
+
+### uniformDistributedPointsOnSphere
+
+```cpp
+std::vector < vec3 > ImFusion::Geometry::uniformDistributedPointsOnSphere (const int N)
+```
+
+Picks uniform distributed points on the sphere, i.e.
+
+unit vectors in 3D
+
+**Parameters:**
+
+- `N` — number of points to be picked
+
+**Returns:** [Vector](/cpp-sdk/4.5/api/classes/imfusion-vector) of N uniform distributed unit vectors
+
+### uniformDistributedPointsOnCircle
+
+```cpp
+std::vector < vec2 > ImFusion::Geometry::uniformDistributedPointsOnCircle (const int N)
+```
+
+Picks uniform distributed points on the circle, i.e.
+
+unit vectors in 2D
+
+**Parameters:**
+
+- `N` — number of points to be picked
+
+**Returns:** [Vector](/cpp-sdk/4.5/api/classes/imfusion-vector) of N uniform distributed unit vectors

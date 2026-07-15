@@ -1,0 +1,72 @@
+---
+title: "ImFusion::PlottingAlgorithm"
+sidebarTitle: "PlottingAlgorithm"
+---
+
+## Public Member Functions
+
+- **PlottingAlgorithm** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Tensor](/cpp-sdk/4.5/api/classes/imfusion-tensor)&lt; 1 &gt; \* &gt; &data)
+- **PlottingAlgorithm** (const PlottingAlgorithm &)=delete
+- void [compute](#compute) () override — Execute the algorithm.
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+- bool [survivesDataDeletion](#survivesdatadeletion) (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data) const override — Indicates whether the algorithm can handle (partial) deletion of the specified data, by default this checks whether the data is in the input list.
+
+## Static Public Member Functions
+
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=0)
+
+## Protected Attributes
+
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Tensor](/cpp-sdk/4.5/api/classes/imfusion-tensor)&lt; 1 &gt; \* &gt; **m_data**
+- [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) **m_stashedProps**
+
+## Member Function Documentation
+
+### compute
+
+```cpp
+void ImFusion::PlottingAlgorithm::compute ()
+```
+
+*override, virtual*
+
+Execute the algorithm.
+
+### configure
+
+```cpp
+void ImFusion::PlottingAlgorithm::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### configuration
+
+```cpp
+void ImFusion::PlottingAlgorithm::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality
+
+### survivesDataDeletion
+
+```cpp
+bool ImFusion::PlottingAlgorithm::survivesDataDeletion (const Data *) const
+```
+
+*inline, override, virtual*
+
+Indicates whether the algorithm can handle (partial) deletion of the specified data, by default this checks whether the data is in the input list.

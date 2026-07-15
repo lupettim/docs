@@ -1,0 +1,37 @@
+---
+title: "ImFusion::DicomDataAnnotationFactory"
+sidebarTitle: "DicomDataAnnotationFactory"
+---
+
+## Public Member Functions
+
+- [InteractiveObject](/cpp-sdk/4.5/api/classes/imfusion-interactiveobject) \* [createDataAnnotation](#createdataannotation) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name, [Data](/cpp-sdk/4.5/api/classes/imfusion-data) &data) const override — Create data annotation.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; [compatibleDataAnnotations](#compatibledataannotations) ([Data](/cpp-sdk/4.5/api/classes/imfusion-data) &data) const override — Return true when a data object supports having a data annotation.
+
+## Member Function Documentation
+
+### createDataAnnotation
+
+```cpp
+InteractiveObject * ImFusion::DicomDataAnnotationFactory::createDataAnnotation (const std::string & name, Data & data) const
+```
+
+*override, virtual*
+
+Create data annotation.
+
+**Parameters:**
+
+- `data` — input data
+
+**Returns:** pointer to generated annotation if successful, zero otherwise
+
+### compatibleDataAnnotations
+
+```cpp
+std::vector < std::string > ImFusion::DicomDataAnnotationFactory::compatibleDataAnnotations (Data & data) const
+```
+
+*override, virtual*
+
+Return true when a data object supports having a data annotation.

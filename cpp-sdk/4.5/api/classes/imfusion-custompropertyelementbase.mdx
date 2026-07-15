@@ -1,0 +1,35 @@
+---
+title: "ImFusion::CustomPropertyElementBase"
+sidebarTitle: "CustomPropertyElementBase"
+description: "Basic interface for the value of a custom property on a single element."
+---
+
+`#include <ImFusion/Mesh/MeshCustomProperties.h>`
+
+## Overview
+
+Basic interface for the value of a custom property on a single element.
+
+## Public Member Functions
+
+- **CustomPropertyElementBase** (bool valid=false)
+- virtual [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; CustomPropertyElementBase &gt; [clone](#clone) (bool withData=true) const =0 — Creates a copy of this object. If not cloning withData, the result will always be invalid.
+- bool **valid** () const
+- virtual CustomPropertyElementBase & **operator=** (const CustomPropertyElementBase &other)
+- virtual bool **operator==** (const CustomPropertyElementBase &other) const
+
+## Protected Attributes
+
+- bool **m_valid** = false
+
+## Member Function Documentation
+
+### clone
+
+```cpp
+virtual std::unique_ptr < CustomPropertyElementBase > ImFusion::CustomPropertyElementBase::clone (bool withData = true) const
+```
+
+*pure virtual*
+
+Creates a copy of this object. If not cloning withData, the result will always be invalid.

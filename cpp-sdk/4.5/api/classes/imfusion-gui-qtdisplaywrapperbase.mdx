@@ -1,0 +1,83 @@
+---
+title: "ImFusion::GUI::QtDisplayWrapperBase"
+sidebarTitle: "QtDisplayWrapperBase"
+description: "Abstract base interface for wrappers of a Display that embed them in a Qt-based GUI application."
+---
+
+`#include <ImFusion/GUI/QtDisplayWrapperBase.h>`
+
+## Overview
+
+Abstract base interface for wrappers of a [Display](/cpp-sdk/4.5/api/classes/imfusion-gui-display) that embed them in a Qt-based [GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui) application.
+
+## Public Member Functions
+
+- **QtDisplayWrapperBase** ([Display](/cpp-sdk/4.5/api/classes/imfusion-gui-display) &display) — Constructor will subscribe to the [Display::signalUpdateRequested](/cpp-sdk/4.5/api/classes/imfusion-gui-display) signal.
+- [Display](/cpp-sdk/4.5/api/classes/imfusion-gui-display) & **display** () — Returns the [Display](/cpp-sdk/4.5/api/classes/imfusion-gui-display) shown by this widget.
+- QPointF **mapFromOpenGL** (const vec2 &point) const — Converts *point* from ImFusion::GUI's bottom-left-origin coordinates to Qt's top-left-origin coordinates.
+- vec2 **mapToOpenGL** (const QPointF &point) const — Converts *point* from Qt's top-left-origin coordinates to ImFusion::GUI's bottom-left-origin coordinates.
+- virtual QPointF [mapToGlobal](#maptoglobal) (const QPointF &pos) const =0 — Implementations shall forward to Qt's [mapToGlobal()](#maptoglobal) function of the wrapper class.
+
+## Protected Member Functions
+
+- bool **handleInputEvent** (QEvent \*event)
+- virtual void [onDisplayUpdateRequested](#ondisplayupdaterequested) ()=0 — Implementations shall make Qt rerender the display.
+- virtual double [getDevicePixelRatio](#getdevicepixelratio) () const =0 — Return the device pixel ratio of the screen the display is shown on.
+- virtual int [getHeight](#getheight) () const =0 — Return the height of the display wrapper in pixels.
+- virtual void [setCursor](#setcursor) (const QCursor &cursor)=0 — Implementations shall forward to Qt's [setCursor()](#setcursor) function of the wrapper class.
+
+## Protected Attributes
+
+- [Display](/cpp-sdk/4.5/api/classes/imfusion-gui-display) \* **m_display**
+
+## Member Function Documentation
+
+### mapToGlobal
+
+```cpp
+virtual QPointF ImFusion::GUI::QtDisplayWrapperBase::mapToGlobal (const QPointF & pos) const
+```
+
+*pure virtual*
+
+Implementations shall forward to Qt's [mapToGlobal()](#maptoglobal) function of the wrapper class.
+
+### onDisplayUpdateRequested
+
+```cpp
+virtual void ImFusion::GUI::QtDisplayWrapperBase::onDisplayUpdateRequested ()
+```
+
+*protected, pure virtual*
+
+Implementations shall make Qt rerender the display.
+
+### getDevicePixelRatio
+
+```cpp
+virtual double ImFusion::GUI::QtDisplayWrapperBase::getDevicePixelRatio () const
+```
+
+*protected, pure virtual*
+
+Return the device pixel ratio of the screen the display is shown on.
+
+### getHeight
+
+```cpp
+virtual int ImFusion::GUI::QtDisplayWrapperBase::getHeight () const
+```
+
+*protected, pure virtual*
+
+Return the height of the display wrapper in pixels.
+
+### setCursor
+
+```cpp
+virtual void ImFusion::GUI::QtDisplayWrapperBase::setCursor (const QCursor & cursor)
+```
+
+*protected, pure virtual*
+
+Implementations shall forward to Qt's [setCursor()](#setcursor) function of the wrapper class.

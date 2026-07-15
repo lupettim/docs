@@ -1,0 +1,74 @@
+---
+title: "ImFusion::Dicom::ScannerQt"
+sidebarTitle: "ScannerQt"
+description: "A scanner with Qt interop."
+---
+
+`#include <ImFusion/Dicom/GUI/Scanner.h>`
+
+## Overview
+
+A scanner with Qt interop.
+
+WARNING: This class is considered internal, use at your own risk!
+
+## Public Member Functions
+
+- **ScannerQt** (Dicom::SharedDatasetCache cache)
+
+## Protected Member Functions
+
+- void [addPatient](#addpatient) ([Patient](/cpp-sdk/4.5/api/structs/imfusion-dicom-patient) \*patient) override — Does not merge the patient but just adds it to the list of patients and emits patientAdded.
+- void [removePacsProxy](#removepacsproxy) ([PacsSeriesProxy](/cpp-sdk/4.5/api/structs/imfusion-dicom-pacsseriesproxy) \*psp) override — Only emits pacsProxyRemoved but does not remove the proxy.
+- void [updateProgress](#updateprogress) (int val, int max) override — Emits progressRangeChanged.
+- void [updateProgressText](#updateprogresstext) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &text) override — Emits progressValueChanged.
+
+## All these signal are potentially emitted by different threads. Those threads are also &lt;em&gt;not&lt;/em&gt; managed by QThread!
+
+- void **patientAdded** ()
+- void **pacsProxyRemoved** ([PacsSeriesProxy](/cpp-sdk/4.5/api/structs/imfusion-dicom-pacsseriesproxy) \*)
+- void **progressRangeChanged** (int min, int max)
+- void **progressValueChanged** (int value)
+- void **progressTextChanged** (QString text)
+
+## Member Function Documentation
+
+### addPatient
+
+```cpp
+void ImFusion::Dicom::ScannerQt::addPatient (Patient * patient)
+```
+
+*override, protected, virtual*
+
+Does not merge the patient but just adds it to the list of patients and emits patientAdded.
+
+### removePacsProxy
+
+```cpp
+void ImFusion::Dicom::ScannerQt::removePacsProxy (PacsSeriesProxy * psp)
+```
+
+*override, protected, virtual*
+
+Only emits pacsProxyRemoved but does not remove the proxy.
+
+### updateProgress
+
+```cpp
+void ImFusion::Dicom::ScannerQt::updateProgress (int val, int max)
+```
+
+*override, protected, virtual*
+
+Emits progressRangeChanged.
+
+### updateProgressText
+
+```cpp
+void ImFusion::Dicom::ScannerQt::updateProgressText (const std::string & text)
+```
+
+*override, protected, virtual*
+
+Emits progressValueChanged.

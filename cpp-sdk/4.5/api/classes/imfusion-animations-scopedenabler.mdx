@@ -1,0 +1,26 @@
+---
+title: "ImFusion::Animations::ScopedEnabler"
+sidebarTitle: "ScopedEnabler"
+description: "A scope guard to set the globally available enabled property for animations."
+---
+
+`#include <ImFusion/GUI/Animations.h>`
+
+## Overview
+
+A scope guard to set the globally available `enabled` property for animations.
+
+```cpp
+ImageView2D* view;
+// ...
+{
+ Animations::ScopedEnabler guard{false};
+    view->reset();
+}
+```
+ fragment
+In the above example [ImageView2D::reset()](/cpp-sdk/4.5/api/classes/imfusion-imageview2d) will animate the resetting if animationsEnabled() is currently true. Using the [ScopedEnabler](/cpp-sdk/4.5/api/classes/imfusion-animations-scopedenabler) scope guard will achieve that the view is reset without any animations, regardless of the current animationsEnabled() state, and that the enabled state is reset to its original value at the end of the scope.
+
+## Public Member Functions
+
+- **ScopedEnabler** (bool enabled)

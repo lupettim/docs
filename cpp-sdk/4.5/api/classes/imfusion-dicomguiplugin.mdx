@@ -1,0 +1,48 @@
+---
+title: "ImFusion::DicomGuiPlugin"
+sidebarTitle: "DicomGuiPlugin"
+---
+
+## Public Member Functions
+
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [author](#author) () const override — Name of the author of the plugin for informative purposes.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [description](#description) () const override — Description of the plugin purpose/functionality for informative purposes.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; [dependencies](#dependencies) () const override — Optional list of plugin IDs on which this plugin depends.
+
+## Static Public Member Functions
+
+- static const char \* **id** ()
+
+## Member Function Documentation
+
+### author
+
+```cpp
+std::string ImFusion::DicomGuiPlugin::author () const
+```
+
+*inline, override, virtual*
+
+Name of the author of the plugin for informative purposes.
+
+### description
+
+```cpp
+std::string ImFusion::DicomGuiPlugin::description () const
+```
+
+*inline, override, virtual*
+
+Description of the plugin purpose/functionality for informative purposes.
+
+### dependencies
+
+```cpp
+std::vector < std::string > ImFusion::DicomGuiPlugin::dependencies () const
+```
+
+*inline, override, virtual*
+
+Optional list of plugin IDs on which this plugin depends.
+
+Initialization of this plugin will fail if any of the plugins in this list can not be loaded or initialized for any reason.

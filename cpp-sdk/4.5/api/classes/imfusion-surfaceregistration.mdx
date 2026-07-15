@@ -1,0 +1,123 @@
+---
+title: "ImFusion::SurfaceRegistration"
+sidebarTitle: "SurfaceRegistration"
+description: "Surface registration using a distance volume."
+---
+
+`#include <ImFusion/Base/SurfaceRegistration.h>`
+
+## Overview
+
+Surface registration using a distance volume.
+
+## Public Member Functions
+
+- **SurfaceRegistration** ([Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) \*referenceMesh=nullptr, [PointCloud](/cpp-sdk/4.5/api/classes/imfusion-pointcloud) \*templatePtCloud=nullptr, [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*distVol=nullptr) — Constructor.
+- **~SurfaceRegistration** () override — Destructor.
+- bool **loadReferenceMesh** (const char \*filename) — Loads the reference mesh from a file, returning true if successful.
+- bool **setReferenceMesh** ([Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) \*mesh) — Sets the reference mesh.
+- int **loadTemplateMesh** (const char \*filename, int ignoredLegacyParam=0) — Loads the template mesh from a file, returning number of points if successful.
+- void **setTemplatePointCloud** ([PointCloud](/cpp-sdk/4.5/api/classes/imfusion-pointcloud) \*templatePtCloud)
+- void **setTemplatePoints** (int n, const double \*points) — Directly set the template points.
+- bool **hasInputReferenceMesh** () const
+- bool **hasInputTemplatePointCloud** () const
+- void **setResolution** (const double resolution) — Sets the resolution.
+- void **setInsideWeight** (const double insideWeight) — Sets the inside weight.
+- void **setInitialMatrix** (const mat4 &matrix) — Optionally provide an initial alignment matrix.
+- void [setOptimizer](#setoptimizer) ([std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [Optimizer](/cpp-sdk/4.5/api/classes/imfusion-optimizer) &gt; opt) — Set symmetric optimization boundaries.
+- void **setMeshExpansion** (double val) — Set the mesh expansion factor.
+- void **setAngleAxis** (bool flag) — Enable or disable angle-axis parameterization of the rotation.
+- void **setCenterPose** (bool flag) — Enable or disable centering of the transformation around the point cloud.
+- void **addPriorityBox** (const vec3 &minCorner, const vec3 &maxCorner, double weight) — Optionally defines rectangular regions with different weighting.
+- double **execute** (mat4 &matrixOut) — Executes registration and output the absolute registration matrix.
+- [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) \* **referenceMesh** () — Access the reference mesh.
+- [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) \* **templateMesh** () — Access the template mesh.
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; \* **templatePoints** () const — Access to the template points.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; \* **templatePoints** ()
+- const [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; float &gt; \* **distanceVolume** (vec3 \*offsetOut=0) const — Return read-only pointer to the distance volume.
+- const mat4 \* **matrix** () const — Access the current transformation matrix.
+- const mat4 & **initialMatrix** () const — Return the initial matrix.
+- bool **moveReference** () const — Return if the reference mesh is transformed.
+- void **setUseIcp** (bool useIcp)
+- void **setIcpMode** (int mode)
+- mat4 **groundTruthPose** () const
+- [OptimizationStudy](/cpp-sdk/4.5/api/classes/imfusion-optimizationstudy) \* **randomStudyICP** (double range, int runs, [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) \*[progress](/cpp-sdk/4.5/api/classes/imfusion-algorithm)=0)
+- [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [Optimizer](/cpp-sdk/4.5/api/classes/imfusion-optimizer) &gt; **opt** () — Access the optimizer.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **dataSets** () const — Return list of data set identifiers.
+- void **selectDataSet** (int id) — Select data set based on index into list returned by dataSets().
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; **evaluateError** (const mat4 &T, double \*distOut=0)
+- void **fiducialPoints** ([std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; &refPoints, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; &trackedPoints)
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **outputDistancesFilepath** () const
+- void **pcWithDistances** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; size_t &gt; \*&verts, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; \*&dist, int &displayMode) const
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; int &gt; **getClosestVerticesOnNormalizedMesh** ()
+
+## Static Public Member Functions
+
+- static bool **hasICP** ()
+
+## Protected Member Functions
+
+- bool **processReferenceMesh** () — Processes the reference mesh and compute distance volume, returning true if successful.
+- bool **transformReferenceMesh** () — Apply transformation of the mesh from image to anatomical coordinates, if specified in config.
+- bool **loadReferenceMesh** (int numVertices, int numTriangles, const double \*vertices, const int \*triangles) — Loads the reference mesh directly from memory, returning true if successful.
+- double **registerICP** (bool printError=true)
+- void **loadConfig** ()
+
+## Algorithm interface
+
+- void [compute](#compute) () override — Execute the algorithm.
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=0)
+
+## Member Function Documentation
+
+### compute
+
+```cpp
+void ImFusion::SurfaceRegistration::compute ()
+```
+
+*override, virtual*
+
+Execute the algorithm.
+
+### configure
+
+```cpp
+void ImFusion::SurfaceRegistration::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### configuration
+
+```cpp
+void ImFusion::SurfaceRegistration::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality
+
+### setOptimizer
+
+```cpp
+void ImFusion::SurfaceRegistration::setOptimizer (std::shared_ptr < Optimizer > opt)
+```
+
+*inline*
+
+Set symmetric optimization boundaries.
+
+Set selection of parameters to optimize Set the optimizer instance

@@ -1,0 +1,41 @@
+---
+title: "ImFusion::PropertiesInspector"
+sidebarTitle: "PropertiesInspector"
+description: "Small algorithm allowing the user to inspect a Data 's properties and DataComponents."
+---
+
+`#include <ImFusion/Base/PropertiesInspector.h>`
+
+## Overview
+
+Small algorithm allowing the user to inspect a [Data](/cpp-sdk/4.5/api/classes/imfusion-data)'s properties and DataComponents.
+
+The actual [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) does almost nothing. All the logic is done in the corresponding [Controller](/cpp-sdk/4.5/api/classes/imfusion-controller).
+
+**See also:** PropertiesInspectorController
+
+## Public Member Functions
+
+- **PropertiesInspector** ([Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data)
+- void [compute](#compute) () override — Execute the algorithm.
+- [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \* **data** () — Returns the data to be inspected through the controller.
+
+## Static Public Member Functions
+
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=0)
+
+## Protected Attributes
+
+- [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \* **m_data** — the data to be inspected.
+
+## Member Function Documentation
+
+### compute
+
+```cpp
+void ImFusion::PropertiesInspector::compute ()
+```
+
+*override, virtual*
+
+Execute the algorithm.

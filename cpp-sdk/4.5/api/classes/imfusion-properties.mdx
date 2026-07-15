@@ -1,0 +1,543 @@
+---
+title: "ImFusion::Properties"
+sidebarTitle: "Properties"
+description: "Storage container for serialization of arbitrary types, internally backed by strings."
+---
+
+`#include <ImFusion/Core/Properties.h>`
+
+## Overview
+
+Storage container for serialization of arbitrary types, internally backed by strings.
+
+[Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) storage is hierarchical in the sense that a [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) instance can have any number of nested subproperties. Parameters of subproperties can be set and retrieved by a path, for example [param](#param-1-2)("Views/window", val) will retrieve the value for window in the subproperties Views. The same works with [setParam()](#setparam-1-2), which will always create all subproperties on the way. The path separator is always /, which must not be used in the naming of parameters or subproperties.
+
+The following types are supported for parameter serialization:
+
+- most fundamental types except void and long double
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) and const char\*
+- [Filesystem::Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path) and [Filesystem::Url](/cpp-sdk/4.5/api/classes/imfusion-filesystem-url)
+- Most Eigen typedefs in Mat.h (vecX, vecXf, vecXi, matX, matXf in sizes 2-6)
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html) containers of the previous types
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html) containers of the previous types (including [std::vector](http://en.cppreference.com/w/cpp/container/vector.html))
+- [std::set](http://en.cppreference.com/w/cpp/container/set.html) and [std::unordered_set](http://en.cppreference.com/w/cpp/container/unordered_set.html) of fundamental types and string types
+
+If you want to store a custom type in [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) make it implement the [Configurable](/cpp-sdk/4.5/api/classes/imfusion-configurable) interface, implement the pair of configure()/configuration() functions and then serialize the type into a subproperty.
+
+**Note:** Since parameter serialization is implemented through explicit template specialization on the library side, using an unsupported type will yield a linker error instead of a compiler error.
+
+**See also:** Object Serialization, [Configurable](/cpp-sdk/4.5/api/classes/imfusion-configurable)
+
+**Examples:** [DicomExtensionExample.cpp](/cpp-sdk/4.5/api/examples/dicom-extension-8cpp), [DicomExtensionExample3.cpp](/cpp-sdk/4.5/api/examples/dicom-extension3-8cpp), [ExampleAlgorithm.cpp](/cpp-sdk/4.5/api/examples/example-algorithm-8cpp), [ExampleAlgorithm.h](/cpp-sdk/4.5/api/examples/example-algorithm-8h), [Serialization.cpp](/cpp-sdk/4.5/api/examples/serialization-8cpp), [SqrtAlgorithm.cpp](/cpp-sdk/4.5/api/examples/sqrt-algorithm-8cpp), and [SqrtAlgorithm.h](/cpp-sdk/4.5/api/examples/sqrt-algorithm-8h).
+
+## Public Types
+
+- enum class [Comparison](#comparison) &#123; ValuesOnly = 0 , Order = 1 &lt;&lt; 0 , Defaults = 1 &lt;&lt; 1 , Types = 1 &lt;&lt; 2 , Attributes = 1 &lt;&lt; 3 , SubProperties = 1 &lt;&lt; 4 , All = 0xFF &#125; — Bitflag enumeration to define which aspects to consider during comparison of two [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) objects.
+- enum class [CopyOptions](#copyoptions) &#123; Default = 0 , ReplaceSubProperties = 1 &lt;&lt; 0 , KeepType = 1 &lt;&lt; 1 , KeepAttributes = 1 &lt;&lt; 2 , ExistingParamsOnly = 1 &lt;&lt; 3 &#125; — Bitflag enumeration to configure behavior of [copyFrom()](#copyfrom).
+- using **ParamType** = PropertiesDetail::ParamType
+- using **Attribute** = [PropertiesDetail::Attribute](/cpp-sdk/4.5/api/structs/imfusion-propertiesdetail-attribute)
+- using **Param** = [PropertiesDetail::Param](/cpp-sdk/4.5/api/structs/imfusion-propertiesdetail-param)
+- using **StringAccepter** = [PropertiesDetail::StringAccepter](/cpp-sdk/4.5/api/structs/imfusion-propertiesdetail-stringaccepter)
+
+## Public Member Functions
+
+- **Properties** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name) — Instantiates a new empty [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) instance.
+- [Properties](#properties) ([std::initializer_list](http://en.cppreference.com/w/cpp/utility/initializer_list.html)&lt; [std::pair](http://en.cppreference.com/w/cpp/utility/pair.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html), StringAccepter &gt; &gt; list) — Convenience constructor enabling you to set parameters directly using an initializer list.
+- **Properties** (const Properties &p)
+- **Properties** (Properties &&rhs) noexcept
+- Properties & **operator=** (const Properties &rhs)
+- Properties & **operator=** (Properties &&rhs) noexcept
+- const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) & **name** () const — Return the name of the property.
+- void **setName** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name) — Set the name of the property.
+- bool **contains** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name) const — Return whether the param with the given name is part of the properties or not.
+- bool **isEmpty** () const — Return true if there are neither parameters nor sub-properties.
+- void **clearParamsOnly** () — Clear all parameters.
+- void **clear** () — Clear all parameters and sub properties.
+- bool [removeParam](#removeparam) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name) — Remove a single parameter.
+- void **removeDefault** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name) — Remove the default for a single parameter.
+- void **removeDefaultParams** () — Remove all parameters which current value is their default value.
+- void **renameParam** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &oldName, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &newName) — Rename a parameter.
+- void **setToDefaultParams** () — Set all parameters that have a default value to the default value.
+
+## Setting parameters
+
+- void [setParam](#setparam-1-2) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name, const T &value, const T &defaultValue) — Set a parameter with arbitrary type and a default value.
+- void **setParam** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name, const T &value, const T &defaultValue) — Set a parameter with arbitrary enum type and a default value. Internally uses int.
+- void [setParam](#setparam-2-2) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name, const T &value) — Set a parameter with arbitrary type without default value.
+- void **setParam** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name, const T &value) — Set a parameter with arbitrary enum type and a default value. Internally uses int.
+- void **setParam** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name, const char \*value, const char \*defaultValue) — Set a parameter as C string with default value.
+- void **setParam** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &value, const char \*defaultValue) — Set a parameter only the defaultValue given as C string.
+- void **setParam** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name, const char \*value) — Set a parameter as C string.
+- void **setParam** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &value, const [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; &defaultValue, ParamType type) — Set a parameter as string, specifying the type, passing std::nullopt as defaultValue resets the default.
+- void **setParamRange** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name, ForwardIterator first, ForwardIterator last) — Set a parameter to a sequence of elements.
+
+## Querying parameters
+
+- bool [param](#param-1-2) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name, T &value) const — Return the value of a parameter of arbitrary types.
+- bool **param** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name, T &value) const — Return the value of a parameter, enum version. internally uses int for representing enums.
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; T &gt; [param](#param-2-2) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name) const — Return the value of a parameter of arbitrary types.
+- bool **paramRange** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name, ForwardIterator first, ForwardIterator last) const — Return sequence of values from a parameter into an iterator.
+- const [std::map](http://en.cppreference.com/w/cpp/container/map.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html), Param &gt; & [paramMap](#parammap) () const — Return the map with name-value pairs for all parameters.
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; & **params** () const — Return all parameters in the order as they were inserted.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; [paramsRecursive](#paramsrecursive) () const — Recursively return all parameter names and those of the sub-properties.
+
+## Configure global and per-parameter attributes, used for instance by default-generated GUI
+
+- ParamType **paramType** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name) const — Return the type of a parameter.
+- void **setParamType** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name, ParamType type) — Overrides the ParamType set by setParam.
+- void [setAttributes](#setattributes) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; Attribute &gt; &attributes) — Set global attributes for this [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) instance.
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; Attribute &gt; & **attributes** () const — Return the list of global attributes assigned to this [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **attribute** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &key) const — Return the value of a global attribute if it exists.
+- bool [setParamAttributes](#setparamattributes-1-2) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; Attribute &gt; &attributes) — Set special attributes to a single parameter.
+- bool [setParamAttributes](#setparamattributes-2-2) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &attributes) — Set special attributes to a single parameter.
+- bool [setParamAttribute](#setparamattribute-1-2) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name, const Attribute &attribute) — Set a special attribute to a single parameter.
+- bool [setParamAttribute](#setparamattribute-2-2) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &attribute) — Set a special attribute to a single parameter.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; Attribute &gt; **paramAttributes** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name) const — Returns a list of attributes for the parameters type.
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **paramAttribute** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &key) const — Return the value of a parameter attribute if it exists.
+- void [setParamSchema](#setparamschema) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name, ParamType type, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; Attribute &gt; &attributes, const [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; &defaultValue) — Convenience function to set parameter type, attributes, and default value at once.
+
+## Dealing with sub-properties
+
+- Properties \* [addSubProperties](#addsubproperties) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name) — Add sub-properties with specified name and return the created instance.
+- void **addSubProperties** ([std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; Properties &gt; p) — Add the provided properties instance.
+- void **insertSubProperties** ([std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; Properties &gt; p, int location) — Insert the provided properties instance at a given location.
+- const Properties \* [subProperties](#subproperties-1-2) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name) const — Return (first) sub-properties instance with the specified name.
+- Properties \* [subProperties](#subproperties-2-2) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name, bool createIfDoesntExist=false) — Return (first) sub-properties instance with the specified name and optionally creates one if it doesn't exist.
+- PropertyList **subPropertiesAll** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name) const — Return all properties instances with the given name in the correct order.
+- PropertyList **subProperties** () const — Return a list of all sub-properties.
+- const [std::map](http://en.cppreference.com/w/cpp/container/map.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html), PropertyList &gt; & [propertyMap](#propertymap) () const — Return the map with for all sub-properties group by their name.
+- void **deleteSubProperty** (Properties \*p) — Delete a sub property.
+- bool [removeSubProperties](#removesubproperties) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name) — Remove (all) sub-properties with the specified name.
+- bool [removeEmptySubProperties](#removeemptysubproperties) () — Recursively removes all empty sub properties.
+
+## Utility functions
+
+- int [fillPlaceHolders](#fillplaceholders) (const [std::map](http://en.cppreference.com/w/cpp/container/map.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html), [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; &placeholders) — Replace all occurrences of placeholders of the form %(key).
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **getPlaceHolders** () const — Return list of all placeholders of the form %(key) in the properties values that have not been replaced yet.
+- void [iterate](#iterate) ([std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; void(const Properties \*properties, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &pathAndName)&gt; visitorFunction) const — Performs a recursive breadth-first iteration over this instance and all of its sub properties.
+- void **iterate** ([std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; void(Properties \*properties, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &pathAndName)&gt; visitorFunction)
+- bool [compareWith](#comparewith) (const Properties &other, [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; [Comparison](#comparison) &gt; compareFlags=Comparison::All) const — Compares the other [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) instance with this one.
+- void [copyFrom](#copyfrom) (const Properties &src, [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; [CopyOptions](#copyoptions) &gt; copyOptions=CopyOptions::Default, [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; bool(const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name, const Param &value)&gt; predicate=nullptr) — Copy properties from another instance You can optionally pass a predicate function, which gets evaluated for every parameter and every sub property.
+- void **sortParams** (const [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; bool(const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &)&gt; &lessThan=[std::less](http://en.cppreference.com/w/cpp/utility/functional/less.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt;()) — Sort parameters by name, default is lexicographical.
+- static bool [compare](#compare) (const [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; Properties &gt; &lhs, const [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; Properties &gt; &rhs, [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; [Comparison](#comparison) &gt; compareFlags) noexcept — Convenience function to compare [std::optional&lt;Properties&gt;](http://en.cppreference.com/w/cpp/utility/optional.html) instances.
+
+## Member Enumeration Documentation
+
+### Comparison
+
+```cpp
+enum class ImFusion::Properties::Comparison
+```
+
+*strong*
+
+Bitflag enumeration to define which aspects to consider during comparison of two [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) objects.
+
+**Enumerator:**
+
+- `ValuesOnly` — Compare only the param values (will always be compared).
+- `Order` — Compare the order of the parameters.
+- `Defaults` — Compare the optional default values of the parameters.
+- `Types` — Compare the parameter types.
+- `Attributes` — Compare the optional parameter attributes.
+- `SubProperties` — Recursively compare sub properties.
+- `All` — Compare all aspects of the [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+### CopyOptions
+
+```cpp
+enum class ImFusion::Properties::CopyOptions
+```
+
+*strong*
+
+Bitflag enumeration to configure behavior of [copyFrom()](#copyfrom).
+
+**Enumerator:**
+
+- `Default` — Overwrite existing parameters but not existing subproperties.
+- `ReplaceSubProperties` — Overwrite existing subproperties instead of adding new ones.
+- `KeepType` — Keep the original ParamType when overwriting existing parameters.
+- `KeepAttributes` — Keep the original attributes when overwriting existing parameters.
+- `ExistingParamsOnly` — Only copy parameters that exist in the target. Implies ReplaceSubProperties.
+
+## Constructor & Destructor Documentation
+
+### Properties
+
+```cpp
+ImFusion::Properties::Properties (std::initializer_list < std::pair < std::string, StringAccepter > > list)
+```
+
+Convenience constructor enabling you to set parameters directly using an initializer list.
+
+```cpp
+Properties p{{"name", "Frank"},
+             {"age", 42},
+             {"isResident", true}};
+```
+ fragment
+
+## Member Function Documentation
+
+### setParam
+
+```cpp
+template<class T, typename std::enable_if_t < std::is_enum_v < T > > *> void ImFusion::Properties::setParam (const std::string & name, const T & value, const T & defaultValue)
+```
+
+Set a parameter with arbitrary type and a default value.
+
+Also works with Eigen types, standard vectors, and vectors of Eigen types.
+
+**Examples:** [ExampleAlgorithm.cpp](/cpp-sdk/4.5/api/examples/example-algorithm-8cpp), [Serialization.cpp](/cpp-sdk/4.5/api/examples/serialization-8cpp), and [SqrtAlgorithm.cpp](/cpp-sdk/4.5/api/examples/sqrt-algorithm-8cpp).
+
+### setParam
+
+```cpp
+template<class T, typename std::enable_if_t < std::is_enum_v < T > > *> void ImFusion::Properties::setParam (const std::string & name, const T & value)
+```
+
+Set a parameter with arbitrary type without default value.
+
+Also works with Eigen types, standard vectors, and vectors of Eigen types.
+
+### param
+
+```cpp
+template<class T, typename std::enable_if_t < std::is_enum_v < T > > *> bool ImFusion::Properties::param (const std::string & name, T & value) const
+```
+
+Return the value of a parameter of arbitrary types.
+
+Also works with Eigen types, standard vectors, vectors of Eigen types, and standard (unordered) sets (of basic types only). Returns true on success, and false on failure (e.g. param not present or not of compatible type).
+
+**Examples:** [ExampleAlgorithm.cpp](/cpp-sdk/4.5/api/examples/example-algorithm-8cpp), [Serialization.cpp](/cpp-sdk/4.5/api/examples/serialization-8cpp), and [SqrtAlgorithm.cpp](/cpp-sdk/4.5/api/examples/sqrt-algorithm-8cpp).
+
+### param
+
+```cpp
+template<class T> std::optional < T > ImFusion::Properties::param (const std::string & name) const
+```
+
+Return the value of a parameter of arbitrary types.
+
+Also works with Eigen types, standard vectors, vectors of Eigen types, and standard (unordered) sets (of basic types only). Returns std::nullopt on failure (e.g. param not present or not of compatible type).
+
+### paramMap
+
+```cpp
+const std::map < std::string, Param > & ImFusion::Properties::paramMap () const
+```
+
+*inline*
+
+Return the map with name-value pairs for all parameters.
+
+This offers fast lookup for string value compared to the [param()](#param-1-2) method. Be aware that the order in the map is alphabetically which is not necessarily the actual order of parameters!
+
+### paramsRecursive
+
+```cpp
+std::vector < std::string > ImFusion::Properties::paramsRecursive () const
+```
+
+Recursively return all parameter names and those of the sub-properties.
+
+The parameter names of the sub-properties are prefix with the name of the sub-property, e.g. sub/par.
+
+### setAttributes
+
+```cpp
+void ImFusion::Properties::setAttributes (const std::vector < Attribute > & attributes)
+```
+
+Set global attributes for this [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) instance.
+
+Currently supported attributes are:
+
+1. label (string): Text to use for the label instead of the name when displaying this property as sub property.
+2. collapsible (bool): Flag whether to show this sub property in a collapsible group box.
+3. hidden (bool): If set the [PropertiesWidget](/cpp-sdk/4.5/api/classes/imfusion-propertieswidget) will not show controls for this sub property.
+4. invalid (bool): If set, the control’s value is highlighted as invalid in the [PropertiesWidget](/cpp-sdk/4.5/api/classes/imfusion-propertieswidget).
+5. tight (bool): If set, the [PropertiesWidget](/cpp-sdk/4.5/api/classes/imfusion-propertieswidget) will not show left/right margins for this sub property.
+
+### setParamAttributes
+
+```cpp
+bool ImFusion::Properties::setParamAttributes (const std::string & name, const std::vector < Attribute > & attributes)
+```
+
+Set special attributes to a single parameter.
+
+The attributes are specified in the form: &lt;attribute&gt;: &lt;value&gt;, &lt;attribute&gt;: &lt;value&gt;. Whitespace in between the elements (e.g. around the :) is automatically trimmed. Attributes must not contain whitespace. The value can be either a number or a string. Strings must be quoted with single quotes (') and are allowed to contain ,.
+
+The supported attributes depend on the type of the parameter. Currently supported attributes are:
+
+- General:
+  - label (string): text to use for the label when displaying this property in a default [PropertiesWidget](/cpp-sdk/4.5/api/classes/imfusion-propertieswidget).
+  - useroption ('r', 'w', or 'rw'): if this is set for a parameter of an [IoAlgorithm](/cpp-sdk/4.5/api/classes/imfusion-ioalgorithm), the parameter will be displayed in the global settings dialog.
+  - read-only (bool): if set, the user cannot change the value
+  - tooltip (string): tooltip that describes the parameter
+  - hidden (bool): if set, the [PropertiesWidget](/cpp-sdk/4.5/api/classes/imfusion-propertieswidget) will not show a control for this parameter
+  - invalid (bool): if set, the control’s value is highlighted as invalid in the [PropertiesWidget](/cpp-sdk/4.5/api/classes/imfusion-propertieswidget).
+  - Double, Integer:
+  - min (double or int): minimum allowed value
+  - max (double or int): maximum allowed value
+  - step (double or int): step by which the value is increased
+  - prefix (string): prefix displayed before the value (e.g. a unit)
+  - suffix (string): suffix displayed after the value (e.g. a unit)
+  - withSlider (bool): add a slider in the user interface
+- Double:
+  - decimals (int): number of decimals displayed. Setting this might alter min/max value (see [https://doc.qt.io/qt-5/qdoublespinbox.html#decimals-prop](https://doc.qt.io/qt-5/qdoublespinbox.html#decimals-prop))
+- Enum, EnumString:
+  - values (comma separated string, with or without whitespace around comma): [String](/cpp-sdk/4.5/api/namespaces/imfusion-string) representation of enumerators.
+  - keys (comma separated string, with or without whitespace around comma): Integer values assigned to enumerators. If not specified, integer values 0,1,2,3,... are assumed.
+- Path:
+  - type: specifies the dialog type and must be one of: OpenDirectory, OpenFile or SaveFile. The default is OpenFile.
+  - caption: sets the title of the dialog (the default is a generic caption depending on the type)
+  - filter: string of wildcard patterns to filter available files, separated by ;;, e.g.: Text files (\*.txt);;XML files (\*.xml) (see also QFileDialog)
+  - dontUseNativeDialog: when set to true use the Qt dialog instead of the native dialog. The default is false.
+- [String](/cpp-sdk/4.5/api/namespaces/imfusion-string):
+  - textBox (bool): if set, uses a text box instead of a line edit, making it more user-friendly for long or multi-line text. The default is false.
+  - password: whether or not to print the characters in the text box; must be one of Normal (show characters), NoEcho (show nothing at all), Password (show masked characters), PasswordEchoOnEdit (show characters during edit, otherwise mask them).
+- Color:
+  - type: specifies the dialog type and must be one of: normal, reduced, in-place.
+
+**Note:** Setting attributes will not change the value or restrict future values of the parameter in any way, e.g. setting a max value for an integer does not automatically clamp values assigned by setParam. Attributes are pure informational and can be used by other object to actually enforce these restrictions (e.g. [PropertiesWidget](/cpp-sdk/4.5/api/classes/imfusion-propertieswidget)).
+
+```cpp
+// a double value that is restricted between -1 and 1, and increases in steps of 0.1
+p.setParamAttributes("someDouble", "min: -1.0, max: 1.0, step: 0.1");
+
+// an enum value that can have three values\n
+p.setParamAttributes("someEnum", "values: 'value1, value2, value3'");
+```
+ fragment
+Returns true if the given string could be parsed or false otherwise.
+
+**See also:** String::join, [PropertiesWidget](/cpp-sdk/4.5/api/classes/imfusion-propertieswidget)
+
+### setParamAttributes
+
+```cpp
+bool ImFusion::Properties::setParamAttributes (const std::string & name, const std::string & attributes)
+```
+
+Set special attributes to a single parameter.
+
+The attributes are specified in the form: &lt;attribute&gt;: &lt;value&gt;, &lt;attribute&gt;: &lt;value&gt;. Whitespace in between the elements (e.g. around the :) is automatically trimmed. Attributes must not contain whitespace. The value can be either a number or a string. Strings must be quoted with single quotes (') and are allowed to contain ,.
+
+The supported attributes depend on the type of the parameter. Currently supported attributes are:
+
+- General:
+  - label (string): text to use for the label when displaying this property in a default [PropertiesWidget](/cpp-sdk/4.5/api/classes/imfusion-propertieswidget).
+  - useroption ('r', 'w', or 'rw'): if this is set for a parameter of an [IoAlgorithm](/cpp-sdk/4.5/api/classes/imfusion-ioalgorithm), the parameter will be displayed in the global settings dialog.
+  - read-only (bool): if set, the user cannot change the value
+  - tooltip (string): tooltip that describes the parameter
+  - hidden (bool): if set, the [PropertiesWidget](/cpp-sdk/4.5/api/classes/imfusion-propertieswidget) will not show a control for this parameter
+  - invalid (bool): if set, the control’s value is highlighted as invalid in the [PropertiesWidget](/cpp-sdk/4.5/api/classes/imfusion-propertieswidget).
+  - Double, Integer:
+  - min (double or int): minimum allowed value
+  - max (double or int): maximum allowed value
+  - step (double or int): step by which the value is increased
+  - prefix (string): prefix displayed before the value (e.g. a unit)
+  - suffix (string): suffix displayed after the value (e.g. a unit)
+  - withSlider (bool): add a slider in the user interface
+- Double:
+  - decimals (int): number of decimals displayed. Setting this might alter min/max value (see [https://doc.qt.io/qt-5/qdoublespinbox.html#decimals-prop](https://doc.qt.io/qt-5/qdoublespinbox.html#decimals-prop))
+- Enum, EnumString:
+  - values (comma separated string, with or without whitespace around comma): [String](/cpp-sdk/4.5/api/namespaces/imfusion-string) representation of enumerators.
+  - keys (comma separated string, with or without whitespace around comma): Integer values assigned to enumerators. If not specified, integer values 0,1,2,3,... are assumed.
+- Path:
+  - type: specifies the dialog type and must be one of: OpenDirectory, OpenFile or SaveFile. The default is OpenFile.
+  - caption: sets the title of the dialog (the default is a generic caption depending on the type)
+  - filter: string of wildcard patterns to filter available files, separated by ;;, e.g.: Text files (\*.txt);;XML files (\*.xml) (see also QFileDialog)
+  - dontUseNativeDialog: when set to true use the Qt dialog instead of the native dialog. The default is false.
+- [String](/cpp-sdk/4.5/api/namespaces/imfusion-string):
+  - textBox (bool): if set, uses a text box instead of a line edit, making it more user-friendly for long or multi-line text. The default is false.
+  - password: whether or not to print the characters in the text box; must be one of Normal (show characters), NoEcho (show nothing at all), Password (show masked characters), PasswordEchoOnEdit (show characters during edit, otherwise mask them).
+- Color:
+  - type: specifies the dialog type and must be one of: normal, reduced, in-place.
+
+**Note:** Setting attributes will not change the value or restrict future values of the parameter in any way, e.g. setting a max value for an integer does not automatically clamp values assigned by setParam. Attributes are pure informational and can be used by other object to actually enforce these restrictions (e.g. [PropertiesWidget](/cpp-sdk/4.5/api/classes/imfusion-propertieswidget)).
+
+```cpp
+// a double value that is restricted between -1 and 1, and increases in steps of 0.1
+p.setParamAttributes("someDouble", "min: -1.0, max: 1.0, step: 0.1");
+
+// an enum value that can have three values\n
+p.setParamAttributes("someEnum", "values: 'value1, value2, value3'");
+```
+ fragment
+Returns true if the given string could be parsed or false otherwise.
+
+**See also:** String::join, [PropertiesWidget](/cpp-sdk/4.5/api/classes/imfusion-propertieswidget)
+
+### setParamAttribute
+
+```cpp
+bool ImFusion::Properties::setParamAttribute (const std::string & name, const Attribute & attribute)
+```
+
+Set a special attribute to a single parameter.
+
+If parameter already has this attribute, its value gets updated. Otherwise a new attribute is added.
+
+**See also:** [setParamAttributes(const std::string&, const std::vector&lt;Attribute&gt;&)](#setparamattributes-1-2), [setParamAttributes(const std::string&, const std::string&)](#setparamattributes-2-2)
+
+### setParamAttribute
+
+```cpp
+bool ImFusion::Properties::setParamAttribute (const std::string & name, const std::string & attribute)
+```
+
+Set a special attribute to a single parameter.
+
+If parameter already has this attribute, its value gets updated. Otherwise a new attribute is added.
+
+**See also:** [setParamAttributes(const std::string&, const std::vector&lt;Attribute&gt;&)](#setparamattributes-1-2), [setParamAttributes(const std::string&, const std::string&)](#setparamattributes-2-2)
+
+### setParamSchema
+
+```cpp
+void ImFusion::Properties::setParamSchema (const std::string & name, ParamType type, const std::vector < Attribute > & attributes, const std::optional < std::string > & defaultValue)
+```
+
+Convenience function to set parameter type, attributes, and default value at once.
+
+This function will not change the param value. Will create the param with empty value if it does not yet exist.
+
+### addSubProperties
+
+```cpp
+Properties * ImFusion::Properties::addSubProperties (const std::string & name)
+```
+
+Add sub-properties with specified name and return the created instance.
+
+If the name is a path, all intermediate sub-properties will be created as well but only the last one is returned. E.g. foo/bar/test would create 3 sub-properties and return a pointer to test.
+
+**Examples:** [Serialization.cpp](/cpp-sdk/4.5/api/examples/serialization-8cpp).
+
+### subProperties
+
+```cpp
+const Properties * ImFusion::Properties::subProperties (const std::string & name) const
+```
+
+Return (first) sub-properties instance with the specified name.
+
+*name* can also be a path of sub-properties in which case always the first sub-properties on each level is used.
+
+**Examples:** [Serialization.cpp](/cpp-sdk/4.5/api/examples/serialization-8cpp).
+
+### subProperties
+
+```cpp
+Properties * ImFusion::Properties::subProperties (const std::string & name, bool createIfDoesntExist = false)
+```
+
+Return (first) sub-properties instance with the specified name and optionally creates one if it doesn't exist.
+
+If the *name* is a path of sub-properties all missing intermediate sub-properties will be created as well.
+
+### propertyMap
+
+```cpp
+const std::map < std::string, PropertyList > & ImFusion::Properties::propertyMap () const
+```
+
+*inline*
+
+Return the map with for all sub-properties group by their name.
+
+Be aware that the order in the map is alphabetically which is not necessarily the actual order of the sub-properties!
+
+### removeSubProperties
+
+```cpp
+bool ImFusion::Properties::removeSubProperties (const std::string & name)
+```
+
+Remove (all) sub-properties with the specified name.
+
+*name* can also be a path of sub-properties.
+
+**Returns:** true if any sub-properties were removed
+
+### removeEmptySubProperties
+
+```cpp
+bool ImFusion::Properties::removeEmptySubProperties ()
+```
+
+Recursively removes all empty sub properties.
+
+**Returns:** true if this Property is empty afterwards.
+
+### removeParam
+
+```cpp
+bool ImFusion::Properties::removeParam (const std::string & name)
+```
+
+Remove a single parameter.
+
+**Returns:** true if the parameter existed and was removed.
+
+### fillPlaceHolders
+
+```cpp
+int ImFusion::Properties::fillPlaceHolders (const std::map < std::string, std::string > & placeholders)
+```
+
+Replace all occurrences of placeholders of the form %(key).
+
+The method returns the number of replaced items.
+
+**Parameters:**
+
+- `placeholders` — Map of placeholder keys (as returned by getPlaceHolders(), i.e. including parenthesis) and their replacements
+
+### iterate
+
+```cpp
+void ImFusion::Properties::iterate (std::function < void(const Properties *properties, const std::string &pathAndName)> visitorFunction) const
+```
+
+Performs a recursive breadth-first iteration over this instance and all of its sub properties.
+
+The *visitorFunction* is called for this and each of the sub properties and receives a pointer to the instance and the absolute path (e.g. SubPropName/SubSubPropName/) to it as arguments.
+
+### compareWith
+
+```cpp
+bool ImFusion::Properties::compareWith (const Properties & other, Flags < Comparison > compareFlags = Comparison::All) const
+```
+
+Compares the other [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) instance with this one.
+
+Only those parts are compared that are listed in *compareFlags*, which can be useful if defaults/attributes are not configured in one of them.
+
+### compare
+
+```cpp
+bool ImFusion::Properties::compare (const std::optional < Properties > & lhs, const std::optional < Properties > & rhs, Flags < Comparison > compareFlags)
+```
+
+*static, noexcept*
+
+Convenience function to compare [std::optional&lt;Properties&gt;](http://en.cppreference.com/w/cpp/utility/optional.html) instances.
+
+Only those parts are compared that are listed in *compareFlags*, which can be useful if defaults/attributes are not configured in one of them. Returns false if any or both optionals are empty
+
+### copyFrom
+
+```cpp
+void ImFusion::Properties::copyFrom (const Properties & src, Flags < CopyOptions > copyOptions = CopyOptions::Default, std::function < bool(const std::string & name, const Param &value)> predicate = nullptr)
+```
+
+Copy properties from another instance You can optionally pass a predicate function, which gets evaluated for every parameter and every sub property.
+
+Only those parts of src are copied for which predicate yields true. The predicate function gets the parameter/sub property name as well as its Param record as arguments.

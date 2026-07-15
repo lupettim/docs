@@ -1,0 +1,52 @@
+---
+title: "ImFusion::BoolParamControl"
+sidebarTitle: "BoolParamControl"
+description: "Represent a ParamType::Bool with a QCheckBox."
+---
+
+`#include <ImFusion/GUI/PropertiesWidgetParamControls.h>`
+
+## Overview
+
+Represent a ParamType::Bool with a QCheckBox.
+
+## Public Member Functions
+
+- **BoolParamControl** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name, QCheckBox \*init=nullptr)
+- void [updateValue](#updatevalue) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &value, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; Properties::Attribute &gt; &) override — Updates the current value and adjusts the attributes.
+- void [retrieveValue](#retrievevalue) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Retrieves the value from the widget and writes it into the properties.
+- QWidget \* [widget](#widget) () const override — Returns the widget for this control.
+
+## Member Function Documentation
+
+### updateValue
+
+```cpp
+void ImFusion::BoolParamControl::updateValue (const std::string & value, const std::vector < Properties::Attribute > & attributes)
+```
+
+*override, virtual*
+
+Updates the current value and adjusts the attributes.
+
+### retrieveValue
+
+```cpp
+void ImFusion::BoolParamControl::retrieveValue (Properties * p) const
+```
+
+*override, virtual*
+
+Retrieves the value from the widget and writes it into the properties.
+
+### widget
+
+```cpp
+QWidget * ImFusion::BoolParamControl::widget () const
+```
+
+*override, virtual*
+
+Returns the widget for this control.
+
+The [ParamControl](/cpp-sdk/4.5/api/classes/imfusion-paramcontrol) does not own this widget, e.g. it must be re-parented to some other QWidget or deleted manually.

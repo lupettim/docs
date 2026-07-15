@@ -1,0 +1,33 @@
+---
+title: "ImFusion::PluginAutoRegistrationGuard"
+sidebarTitle: "PluginAutoRegistrationGuard"
+description: "Helper class to automatically register a plugin when the OS loads a library."
+---
+
+`#include <ImFusion/Core/Plugin.h>`
+
+## Overview
+
+Helper class to automatically register a plugin when the OS loads a library.
+
+Don't use directly but use the IMFUSION_REGISTER_PLUGIN() macro instead.
+
+## Public Types
+
+- using **PluginIdFunction** = const char\* (\*)() — Typedef for a pointer to a function that returns the unique plugin ID.
+
+## Public Member Functions
+
+- [PluginAutoRegistrationGuard](#pluginautoregistrationguard) (PluginIdFunction pluginIdFunctionPointer)
+
+## Constructor & Destructor Documentation
+
+### PluginAutoRegistrationGuard
+
+```cpp
+ImFusion::PluginAutoRegistrationGuard::PluginAutoRegistrationGuard (PluginIdFunction pluginIdFunctionPointer)
+```
+
+**Parameters:**
+
+- `pluginIdFunctionPointer` — Pointer the the static PluginBase::id() function. Technically, could be any function pointer that resides in the plugin's shared library.

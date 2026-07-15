@@ -1,0 +1,132 @@
+---
+title: "ImFusion::Workspace"
+sidebarTitle: "Workspace"
+description: "Workspaces allow for restoring a session or automate the execution of a series of data loading and algorithms in a similar fashion as scripting."
+---
+
+`#include <ImFusion/GUI/Workspace.h>`
+
+## Overview
+
+Workspaces allow for restoring a session or automate the execution of a series of data loading and algorithms in a similar fashion as scripting.
+
+This class serves as encapsulation of the individual aspects of workspaces. The workspace state can either be retrieved from an [ApplicationController](/cpp-sdk/4.5/api/classes/imfusion-applicationcontroller) and/or loaded from a workspace file (a XML-serialized form of a workspace). An existing workspace can then be run/executed in an [ApplicationController](/cpp-sdk/4.5/api/classes/imfusion-applicationcontroller) and/or saved to a workspace file.
+
+Workspaces can store the following information:
+
+- A set of algorithms, each described by:
+  - The [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) factory name
+  - The algorithm Configuration and optionally the corresponding [AlgorithmController](/cpp-sdk/4.5/api/classes/imfusion-algorithmcontroller) configuration (if any)
+  - A list of input [Data](/cpp-sdk/4.5/api/classes/imfusion-data) (if any), each described by a UID
+  - A list of output [Data](/cpp-sdk/4.5/api/classes/imfusion-data) (if any), each described by a UID
+  - An `executed` flag describing whether the algorithm shall be executed or only opened
+- A set of metadata blocks for of datasets, each described by:
+  - A unique ID (uid) used for cross-referencing within a workspace
+  - An optional name/title that shall be shown in the [DataModel](/cpp-sdk/4.5/api/classes/imfusion-datamodel)
+  - An optional transformation matrix
+  - Optional [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) (only for images)
+- A set of [DataLink](/cpp-sdk/4.5/api/classes/imfusion-datalink) instances that link datasets.
+- A set of annotations, each described by:
+  - An optional parent dataset (described by a UID) under which the annotation is stored in the [AnnotationModel](/cpp-sdk/4.5/api/classes/imfusion-annotationmodel)
+  - An optional reference dataset storing annotation data in case of meshes, point clouds, etc.
+  - [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) storing the configuration
+- Optional Display settings
+
+**See also:** Workspaces API, [WorkspaceConversionFunction](/cpp-sdk/4.5/api/structs/imfusion-workspaceconversionfunction), [Placeholders in Workspace Files](/cpp-sdk/4.5/api/guides/workspace-placeholders-tutorial)
+
+## Public Types
+
+- enum class [Mode](#mode) &#123; Replay = 0 , Snapshot = 1 &#125; — Save mode of a workspace file describing how algorithms and intermediate data are handled/stored.
+- enum &#123; **WORKSPACE_VERSION** = 36 &#125; — Current version number of written workspace files.
+
+## Public Member Functions
+
+- void [recordAlgorithm](#recordalgorithm) (const [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) &algorithm, const [AlgorithmController](/cpp-sdk/4.5/api/classes/imfusion-algorithmcontroller) \*controller, bool executed, const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &inputData, const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &outputData, bool keepControllerOpen=false, bool canUseReplayWorkspace=true) — Add an algorithm to be recorded by this workspace.
+- void **markAlgorithmAsRemoved** (const [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*alg) — Marks an algorithm as removed.
+- bool **updateAlgorithmDescription** (const [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*alg) — Update the description of a recorded algorithm.
+- void **recordSelectionChange** ([MainWindowBase](/cpp-sdk/4.5/api/classes/imfusion-mainwindowbase) &mwb, [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &sis) — Convenience method to record a SelectionChangeAlgorithm for the given image if needed.
+- void [retrieveState](#retrievestate) ([ApplicationController](/cpp-sdk/4.5/api/classes/imfusion-applicationcontroller) &appCtrl) — Retrieve workspace state from the current state of the given [ApplicationController](/cpp-sdk/4.5/api/classes/imfusion-applicationcontroller).
+- bool [execute](#execute) ([ApplicationController](/cpp-sdk/4.5/api/classes/imfusion-applicationcontroller) &appCtrl) — Execute the workspace in the given [ApplicationController](/cpp-sdk/4.5/api/classes/imfusion-applicationcontroller).
+- bool **loadFromFile** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &filename) — Load a workspace state from a file.
+- bool **saveToFile** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &filename, [Mode](#mode) mode) — Save the workspace state to an .iws file.
+- bool **saveToFile** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &filename) — Save the workspace state to an .iws file. Uses *p_saveMode* to determine the mode.
+- bool **exportAsPython** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &filename) — Export the workspace algorithms as python script.
+- void **clear** () — Clear the current workspace state.
+- bool **isComposed** () const — Returns whether the algorithm 'Run [Workspace](/cpp-sdk/4.5/api/classes/imfusion-workspace)' is in the current workspace.
+- void **registerData** ([Data](/cpp-sdk/4.5/api/classes/imfusion-data) &data, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &uid) — Register a data under a given uid.
+- void **setFallbackDataModel** (const [DataModel](/cpp-sdk/4.5/api/classes/imfusion-datamodel) \*dm)
+- void **setSelectedDataComponents** (const [std::set](http://en.cppreference.com/w/cpp/container/set.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; &selectedComps) — Sets the list of [DataComponent](/cpp-sdk/4.5/api/classes/imfusion-datacomponent) IDs that will be written to the workspace file on export.
+- const [std::set](http://en.cppreference.com/w/cpp/container/set.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; & **selectedDataComponents** () const — Retrieves the list of [DataComponent](/cpp-sdk/4.5/api/classes/imfusion-datacomponent) IDs that will be written to the workspace file on export.
+- bool **canUseReplayWorkspace** () const — Returns whether all algorithms in the history can be replayed (determined by the flag passed in recordAlgorithm).
+
+## Static Public Member Functions
+
+- static [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::map](http://en.cppreference.com/w/cpp/container/map.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html), [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; &gt; **loadPlaceholderBatchFile** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &filename, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; &placeholderKeys) — Loads a set of placeholders from a file for batch processing.
+
+## Public Attributes
+
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; [Mode](#mode) &gt; **p_saveMode** &#123;"saveMode", Mode::Replay, this&#125;
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; bool &gt; **p_removeDefaultProperties** &#123;"removeDefaultProperties", true, this&#125;
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; bool &gt; **p_removeEmptyProperties** &#123;"removeEmptyProperties", true, this&#125;
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; bool &gt; **p_saveAbsolutePaths** &#123;"saveAbsolutePaths", false, this&#125;
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; bool &gt; **p_saveDisplayState** &#123;"saveDisplayState", true, this&#125;
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; bool &gt; **p_composeWorkspacesInSaving** &#123;"composeWorkspacesInSaving", true, this&#125;
+
+## Member Enumeration Documentation
+
+### Mode
+
+```cpp
+enum class ImFusion::Workspace::Mode
+```
+
+*strong*
+
+Save mode of a workspace file describing how algorithms and intermediate data are handled/stored.
+
+**Enumerator:**
+
+- `Replay` — Do not save intermediate data generated by algorithms explicitly.
+Instead, the complete algorithm history is stored in the workspace.
+- `Snapshot` — Write the entire data model to a separate file.
+Only store open algorithms in workspace that have not yet been executed.
+
+## Member Function Documentation
+
+### recordAlgorithm
+
+```cpp
+void ImFusion::Workspace::recordAlgorithm (const Algorithm & algorithm, const AlgorithmController * controller, bool executed, const DataList & inputData, const DataList & outputData, bool keepControllerOpen = false, bool canUseReplayWorkspace = true)
+```
+
+Add an algorithm to be recorded by this workspace.
+
+**Parameters:**
+
+- `algorithm` — [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) to record
+- `controller` — Optional [AlgorithmController](/cpp-sdk/4.5/api/classes/imfusion-algorithmcontroller) whose configuration should be recorded as well
+- `executed` — Flag whether this algorithm has been executed
+- `outputData` — List of input data of the algorithm
+- `outputData` — List of output data of the algorithm
+- `keepControllerOpen` — Flag whether to create the controller even if execute is true
+- `canUseReplayWorkspace` — Flag whether a replay algorithm would be able to reproduce the algorithm execution exactly
+
+### retrieveState
+
+```cpp
+void ImFusion::Workspace::retrieveState (ApplicationController & appCtrl)
+```
+
+Retrieve workspace state from the current state of the given [ApplicationController](/cpp-sdk/4.5/api/classes/imfusion-applicationcontroller).
+
+**Note:** All [Data](/cpp-sdk/4.5/api/classes/imfusion-data) referenced in the workspace (e.g. by algorithms or annotations) should have been introduced already as part of the outputData in [recordAlgorithm()](#recordalgorithm). If a dataset referenced in the [ApplicationController](/cpp-sdk/4.5/api/classes/imfusion-applicationcontroller) state that is yet unknown by the workspace, subsequent replay of the workspace might not properly restore the dataset.
+
+### execute
+
+```cpp
+bool ImFusion::Workspace::execute (ApplicationController & appCtrl)
+```
+
+Execute the workspace in the given [ApplicationController](/cpp-sdk/4.5/api/classes/imfusion-applicationcontroller).
+
+**Note:** Placeholders values are taken and/or queried from the [ApplicationController](/cpp-sdk/4.5/api/classes/imfusion-applicationcontroller) interface.

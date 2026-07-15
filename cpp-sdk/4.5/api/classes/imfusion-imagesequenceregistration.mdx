@@ -1,0 +1,111 @@
+---
+title: "ImFusion::ImageSequenceRegistration"
+sidebarTitle: "ImageSequenceRegistration"
+description: "Registers a SharedImageSet of multiple images."
+---
+
+`#include <ImFusion/Reg/ImageSequenceRegistration.h>`
+
+## Overview
+
+Registers a [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) of multiple images.
+
+The images in the set are registered to each other, either to a fixed frame or to the predecessor of each frame. Internally an ImFusion::ImageRegistration to register two frames. The registration is only performed on the current selection.
+
+## Public Types
+
+- enum [ReferenceFrameMode](#referenceframemode) &#123; FixedFrame , PreviousFrame &#125; — [Status](/cpp-sdk/4.5/api/classes/imfusion-algorithm) codes.
+
+## Public Member Functions
+
+- **ImageSequenceRegistration** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*is)
+- void [compute](#compute) () override — Execute the algorithm.
+- void **reset** () — Resets the transformation of the sequence to its initial transformation (matrix and FFD).
+- const [ImageRegistration](/cpp-sdk/4.5/api/classes/imfusion-imageregistration) \* [registrationObject](#registrationobject) () const — Returns the ImFusion::ImageRegistration object used for the per-frame registration.
+- [ImageRegistration](/cpp-sdk/4.5/api/classes/imfusion-imageregistration) \* **registrationObject** ()
+- [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* **image** () const — Returns the input image.
+- void **setReferenceMode** ([ReferenceFrameMode](#referenceframemode) refMode)
+- [ReferenceFrameMode](#referenceframemode) **referenceMode** () const
+- void **setReferenceFrame** (int frame) — Sets the reference frame for the [FixedFrame](#referenceframemode) mode.
+- int **referenceFrame** () const
+- void [setBackwards](#setbackwards) (bool backwards) — Sets if the registration should start with the last frame or not.
+- bool **isBackwards** () const
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+## Static Public Member Functions
+
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=0)
+
+## Member Enumeration Documentation
+
+### ReferenceFrameMode
+
+```cpp
+enum ImFusion::ImageSequenceRegistration::ReferenceFrameMode
+```
+
+**Enumerator:**
+
+- `FixedFrame` — Registers all frames to fixed frame (by default the first frame).
+- `PreviousFrame` — Registers each frame to its predecessor.
+
+## Member Function Documentation
+
+### compute
+
+```cpp
+void ImFusion::ImageSequenceRegistration::compute ()
+```
+
+*override, virtual*
+
+Execute the algorithm.
+
+### registrationObject
+
+```cpp
+const ImageRegistration * ImFusion::ImageSequenceRegistration::registrationObject () const
+```
+
+Returns the ImFusion::ImageRegistration object used for the per-frame registration.
+
+The object is persistent and is used for all frames. The ImFusion::ImageRegistration is created with two dummy SharedImageSets that are filled with the current registering frames.
+
+### setBackwards
+
+```cpp
+void ImFusion::ImageSequenceRegistration::setBackwards (bool backwards)
+```
+
+Sets if the registration should start with the last frame or not.
+
+By default the registration starts with the first frame of the selection.
+
+### configure
+
+```cpp
+void ImFusion::ImageSequenceRegistration::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### configuration
+
+```cpp
+void ImFusion::ImageSequenceRegistration::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality

@@ -1,0 +1,53 @@
+---
+title: "ImFusion::Animations::AnimationBackendQt"
+sidebarTitle: "AnimationBackendQt"
+description: "Concrete implementation of AnimationBackendBase using the Qt event loop for dispatching the animation updates."
+---
+
+`#include <ImFusion/GUI/AnimationBackendQt.h>`
+
+## Overview
+
+Concrete implementation of [AnimationBackendBase](/cpp-sdk/4.5/api/classes/imfusion-animations-animationbackendbase) using the Qt event loop for dispatching the animation updates.
+
+All animations will be executed on the thread that instantiated the [AnimationBackendQt](/cpp-sdk/4.5/api/classes/imfusion-animations-animationbackendqt). This thread must have a running event loop on construction.
+
+## Signals
+
+- void **animationToBeDispatched** ([Animation](/cpp-sdk/4.5/api/classes/imfusion-animations-animation) \*)
+
+## Public Member Functions
+
+- [AnimationBackendQt](#animationbackendqt) () — Creates a new [AnimationBackendQt](/cpp-sdk/4.5/api/classes/imfusion-animations-animationbackendqt).
+
+## Protected Member Functions
+
+- void [runImpl](#runimpl) ([std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [Animation](/cpp-sdk/4.5/api/classes/imfusion-animations-animation) &gt; animation) override — Called by the base interface once *animation* is fully configured and ready to dispatch.
+
+## Constructor & Destructor Documentation
+
+### AnimationBackendQt
+
+```cpp
+ImFusion::Animations::AnimationBackendQt::AnimationBackendQt ()
+```
+
+Creates a new [AnimationBackendQt](/cpp-sdk/4.5/api/classes/imfusion-animations-animationbackendqt).
+
+**Exceptions:**
+
+- `std::runtime_error` — If the current thread does not have a running Qt event loop.
+
+## Member Function Documentation
+
+### runImpl
+
+```cpp
+void ImFusion::Animations::AnimationBackendQt::runImpl (std::shared_ptr < Animation > animation)
+```
+
+*override, protected, virtual*
+
+Called by the base interface once *animation* is fully configured and ready to dispatch.
+
+Derived classes must take care of actually dispatching the animation so that the interface invariants are met.

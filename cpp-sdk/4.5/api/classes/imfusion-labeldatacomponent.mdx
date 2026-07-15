@@ -1,0 +1,215 @@
+---
+title: "ImFusion::LabelDataComponent"
+sidebarTitle: "LabelDataComponent"
+description: "DataComponent to store meta data of a label map."
+---
+
+`#include <ImFusion/Base/LabelDataComponent.h>`
+
+## Overview
+
+[DataComponent](/cpp-sdk/4.5/api/classes/imfusion-datacomponent) to store meta data of a label map.
+
+Label maps are assumed to be always of type unsigned char, thus there is a maximum of 255 different labels since the value 0 is considered background. The set of labels is stored in a [LabelConfig](/cpp-sdk/4.5/api/structs/imfusion-labeldatacomponent-labelconfig) map storing metadata (e.g. name, color, visibility, ...) for each known label.
+
+[LabelDataComponent](/cpp-sdk/4.5/api/classes/imfusion-labeldatacomponent) offers helper methods to provide windowing information and color maps that can be used for rendering label maps. They will cover the entire unsigned char value range and use the default color/visibility for unconfigured label values.
+
+By default, labels are considered to be exclusive, which means that every pixel of the underlying label map image corresponds to exactly one of the known LabelConfigs. Special use cases may use the [LabelOverlapEncoder](/cpp-sdk/4.5/api/classes/imfusion-labeloverlapencoder) interface to define storage value representing multiple overlapping label configs. However, be advised that this is an optional and experimental extension and algorithms are not required to handle such values correctly.
+
+**See also:** [Data::Modality::LABEL](/cpp-sdk/4.5/api/classes/imfusion-data), [LabelDataComponentWidget](/cpp-sdk/4.5/api/classes/imfusion-labeldatacomponentwidget)
+
+## Classes
+
+- struct [LabelConfig](/cpp-sdk/4.5/api/structs/imfusion-labeldatacomponent-labelconfig) — Helper struct encapsulating the metadata of a label value.
+
+## Public Types
+
+- enum class [SegmentationAlgorithmType](#segmentationalgorithmtype) &#123; Unknown , Automatic , SemiAutomatic , Manual &#125; — Type of algorithm used to generate the segment.
+
+## Public Member Functions
+
+- [LabelDataComponent](#labeldatacomponent) (const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*labelMap=nullptr) — Instantiate a new [LabelDataComponent](/cpp-sdk/4.5/api/classes/imfusion-labeldatacomponent).
+- **LabelDataComponent** (const LabelDataComponent &rhs)
+- [LabelDataComponent](#labeldatacomponent) & **operator=** (const [LabelDataComponent](#labeldatacomponent) &rhs)
+- bool **operator==** (const [LabelDataComponent](#labeldatacomponent) &rhs) const
+- [Data::Modality](/cpp-sdk/4.5/api/classes/imfusion-data) **sourceModality** () const — Returns the modality the label map is based on.
+- void **setSourceModality** ([Data::Modality](/cpp-sdk/4.5/api/classes/imfusion-data) value) — Sets the modality the label map is based on.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [id](#id) () const override — Returns a unique string identifier for this type of data component.
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+## Static Public Member Functions
+
+- static [LabelConfig](/cpp-sdk/4.5/api/structs/imfusion-labeldatacomponent-labelconfig) [defaultLabelConfig](#defaultlabelconfig) (int pixelValue) — Returns a high-level default label configuration for the given pixel value:
+
+## Public Attributes
+
+- Signal&lt; [LabelDataComponent](#labeldatacomponent) \* &gt; **signalChanged** — Signal emitted if any setting of this [DataComponent](/cpp-sdk/4.5/api/classes/imfusion-datacomponent) has changed;.
+
+## Functions to get/set the label configuration
+
+- const [std::map](http://en.cppreference.com/w/cpp/container/map.html)&lt; int, [LabelConfig](/cpp-sdk/4.5/api/structs/imfusion-labeldatacomponent-labelconfig) &gt; & **labelConfigs** () const — Returns the map of known label configurations.
+- void **setLabelConfigs** ([std::map](http://en.cppreference.com/w/cpp/container/map.html)&lt; int, [LabelConfig](/cpp-sdk/4.5/api/structs/imfusion-labeldatacomponent-labelconfig) &gt; labelConfigs) — Sets the map of known label configurations.
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [LabelConfig](/cpp-sdk/4.5/api/structs/imfusion-labeldatacomponent-labelconfig) &gt; **labelConfig** (int pixelValue) const — Returns the label configuration for the given pixel value if existent.
+- void **setLabelConfig** (int pixelValue, const [LabelConfig](/cpp-sdk/4.5/api/structs/imfusion-labeldatacomponent-labelconfig) &labelConfig) — Sets the given label configuration for the given pixel value.
+- void [setDefaultLabelConfig](#setdefaultlabelconfig) (int pixelValue) — Sets the default label configuration for the given pixel value.
+- bool **hasLabel** (int pixelValue) const — Returns true if a label configuration exists for the given pixel value.
+- void **removeLabel** (int pixelValue) — Removes the label configuration for the given pixel value if existent.
+- void **setLabelColor** (int labelValue, const vec4 &color) — Sets the label color to use for the value *labelValue*, will create a new default [LabelConfig](/cpp-sdk/4.5/api/structs/imfusion-labeldatacomponent-labelconfig) if needed.
+- void **setVisibility2d** (int labelValue, bool isVisible) — Sets whether to show the label with value *labelValue* in 2D views, will create a new default [LabelConfig](/cpp-sdk/4.5/api/structs/imfusion-labeldatacomponent-labelconfig) if needed.
+- void **setVisibility3d** (int labelValue, bool isVisible) — Sets whether to show the label with value *labelValue* in 3D views, will create a new default [LabelConfig](/cpp-sdk/4.5/api/structs/imfusion-labeldatacomponent-labelconfig) if needed.
+- void **setLabelName** (int labelValue, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name) — Sets the label name for the value *labelValue*, will create a new default [LabelConfig](/cpp-sdk/4.5/api/structs/imfusion-labeldatacomponent-labelconfig) if needed.
+
+## Utility functions to derive label configuration from a given label map
+
+- void [detectLabels](#detectlabels) (const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &sis) — Checks the pixel intensities present in the given image(s) and creates a new default label configuration for each label that does not yet exist.
+- void [removeUnusedLabels](#removeunusedlabels) (const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &sis) — Checks the pixel intensities present in the given image(s) and removes all label configurations for non-existing pixel values.
+
+## Experimental support for overlapping label maps
+
+- [LabelOverlapEncoder](/cpp-sdk/4.5/api/classes/imfusion-labeloverlapencoder) \* **overlapEncoder** () const — Returns the overlap encoder instance if available.
+- void **setOverlapEncoder** ([std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [LabelOverlapEncoder](/cpp-sdk/4.5/api/classes/imfusion-labeloverlapencoder) &gt; encoder) — Sets an overlap encoder instance to add support for overlapping label values.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &gt; &gt; [convertOverlapEncoderToLayers](#convertoverlapencodertolayers) (const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &labelmap) const — Converts the given labelmap with overlapping labels into multiple layers without overlap.
+
+## Properties and helper functions for rendering label maps
+
+- const [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) & **colormap2d** () const — Returns the color map with 2d label visibility to use for rendering the label map.
+- const [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) & **colormap3d** () const — Returns the color map with 3d label visibility to use for rendering the label map.
+- const [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) & **colormap3dPreIntegrated** () const — Returns the pre-integrated 2D color map with 3d label visibility to use for rendering the label map.
+- vec2 **windowLevelNormalized** (const [ImageDescriptor](/cpp-sdk/4.5/api/structs/imfusion-imagedescriptor) &img) const — Returns window/level configuration to use the color map for the given image.
+- vec2 **windowLevelNormalized** (const [Image](/cpp-sdk/4.5/api/classes/imfusion-image) &img) const
+- vec2 **opaqueRange3d** () const — Returns the of intensities where the labels are visible in 3d.
+
+## Member Enumeration Documentation
+
+### SegmentationAlgorithmType
+
+```cpp
+enum class ImFusion::LabelDataComponent::SegmentationAlgorithmType
+```
+
+*strong*
+
+Type of algorithm used to generate the segment.
+
+**Enumerator:**
+
+- `Unknown` — Unknown.
+- `Automatic` — Label calculated fully automatically.
+- `SemiAutomatic` — Label calculated with user assistance.
+- `Manual` — Label defined fully manually.
+
+## Constructor & Destructor Documentation
+
+### LabelDataComponent
+
+```cpp
+ImFusion::LabelDataComponent::LabelDataComponent (const SharedImageSet * labelMap = nullptr)
+```
+
+*explicit*
+
+Instantiate a new [LabelDataComponent](/cpp-sdk/4.5/api/classes/imfusion-labeldatacomponent).
+
+**Parameters:**
+
+- `labelMap` — Optional pointer to the underlying label map. If not null, will call [detectLabels()](#detectlabels) to create a default [LabelConfig](/cpp-sdk/4.5/api/structs/imfusion-labeldatacomponent-labelconfig) for each label value present in *labelMap*.
+
+**Note:** The images are expected to be of type unsigned char.
+
+## Member Function Documentation
+
+### defaultLabelConfig
+
+```cpp
+LabelConfig ImFusion::LabelDataComponent::defaultLabelConfig (int pixelValue)
+```
+
+*static*
+
+Returns a high-level default label configuration for the given pixel value:
+
+- if *pixelValue* is 0: [LabelConfig](/cpp-sdk/4.5/api/structs/imfusion-labeldatacomponent-labelconfig)&#123;"Background", vec4(0, 0, 0, 1), false, false&#125;
+- if \a pixelValue is i &gt; 0: [LabelConfig](/cpp-sdk/4.5/api/structs/imfusion-labeldatacomponent-labelconfig)&#123;"Label i", defaultColor(i)&#125;
+
+### setDefaultLabelConfig
+
+```cpp
+void ImFusion::LabelDataComponent::setDefaultLabelConfig (int pixelValue)
+```
+
+Sets the default label configuration for the given pixel value.
+
+This is a convenience function with the same effect as setLabelConfig(pixelValue, defaultLabelConfig(pixelValue)).
+
+### detectLabels
+
+```cpp
+void ImFusion::LabelDataComponent::detectLabels (const SharedImageSet & sis)
+```
+
+Checks the pixel intensities present in the given image(s) and creates a new default label configuration for each label that does not yet exist.
+
+**Note:** The images are expected to be of type unsigned char.
+
+### removeUnusedLabels
+
+```cpp
+void ImFusion::LabelDataComponent::removeUnusedLabels (const SharedImageSet & sis)
+```
+
+Checks the pixel intensities present in the given image(s) and removes all label configurations for non-existing pixel values.
+
+**Note:** The images are expected to be of type unsigned char.
+
+### convertOverlapEncoderToLayers
+
+```cpp
+std::vector < std::unique_ptr < SharedImageSet > > ImFusion::LabelDataComponent::convertOverlapEncoderToLayers (const SharedImageSet & labelmap) const
+```
+
+Converts the given labelmap with overlapping labels into multiple layers without overlap.
+
+If no overlapEncoder is set or the encoder does not contain any overlaps, an empty list is returned. The number of returned layers depends on the number of overlaps. Which labels end up in which layer is unspecified. The resulting layers will also contain a [LabelDataComponent](/cpp-sdk/4.5/api/classes/imfusion-labeldatacomponent) with only the labels present in this layer.
+
+**See also:** LabelOverlapToLayersAlgorithm
+
+### id
+
+```cpp
+std::string ImFusion::LabelDataComponent::id () const
+```
+
+*override, virtual*
+
+Returns a unique string identifier for this type of data component.
+
+**Note:** To avoid conflicts make sure to include potential plugin names into this ID. Due to the modular architecture of the ImFusion library, uniqueness of IDs cannot be checked at compile time. However, [DataComponentFactory](/cpp-sdk/4.5/api/classes/imfusion-datacomponentfactory) will check the uniqueness of the ID during registration.
+
+### configure
+
+```cpp
+void ImFusion::LabelDataComponent::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### configuration
+
+```cpp
+void ImFusion::LabelDataComponent::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality

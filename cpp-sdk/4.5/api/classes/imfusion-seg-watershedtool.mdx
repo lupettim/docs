@@ -1,0 +1,80 @@
+---
+title: "ImFusion::Seg::WatershedTool"
+sidebarTitle: "WatershedTool"
+description: "Wrapper class around the WatershedComputer to simplify common use cases."
+---
+
+`#include <ImFusion/Seg/WatershedTool.h>`
+
+## Overview
+
+Wrapper class around the [WatershedComputer](/cpp-sdk/4.5/api/classes/imfusion-watershedcomputer) to simplify common use cases.
+
+## Public Types
+
+- enum [StopReason](#stopreason) &#123; **Success** , MissingBackground , MissingLabels , Canceled , Unknown &#125;
+
+## Public Member Functions
+
+- [WatershedTool](#watershedtool) (const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &image, [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &labelMap, [DisplayWidgetMultiAdapter](/cpp-sdk/4.5/api/classes/imfusion-displaywidgetmultiadapter) disp=&#123;&#125;)
+- **~WatershedTool** () — On destruction, disable() is called automatically if necessary.
+- void **enable** () — Enables the result preview.
+- void **disable** () — Disables the result preview.
+- bool **isEnabled** () const — Returns whether the tool is current enabled.
+- void **setMask** ([ExplicitMask](/cpp-sdk/4.5/api/classes/imfusion-explicitmask) \*mask) — Set a mask to prevent certain values from being modified by the refinement For performance reasons, only [ExplicitMask](/cpp-sdk/4.5/api/classes/imfusion-explicitmask) (of compatible dimensions) are supported.
+- void **setPreviewLightnessShift** (float val) — The preview is shown in the views with the same colors as those of the labelMap, with the lightness (in HSL colorspace) shifted by this value.
+- void **setShow3DPreview** (bool show) — Set whether to show the result preview in the 3D views False by default.
+- void **setPreviewOpacity** (float val) — Sets the opacity of the result preview.
+- void **setLocking** (uint8_t value, bool locked) — Set which labels should neither be propagated, nor overwritten by the algorithm This will be used on the next run of the algorithm.
+- void **setCropRegion** (vec3i cropDims, vec3i cropOffset) — Set the region of the image in which the algorithm should be executed This will be used on the next run of the algorithm.
+- void **setROI** (const vec3i &llf, const vec3i &urb) — Set the region of the image in which the algorithm should be executed This will be used on the next run of the algorithm Unlike setCropRegion, this does not create a temporary copy of the data.
+- void **setInputSmoothing** (int kernelSize) — Apply a smoothing step before sampling values from the image If the kernelSize is set to 0, no smoothing will take place.
+- void **setUseWindowLevel** (bool use) — Set whether the current window/level of the image is used by the algorithm This will be used on the next run of the algorithm.
+- void **startComputation** () — Start the computation in the background, using the current state of the labelMap.
+- bool **isIdle** () const — Returns true if no computation is currently taking place, false otherwise.
+- void **abortComputation** (bool synchronous) — Abort any currently running computation If synchronous is true, the function will block until the background is actually stopped.
+- void **discardResult** () — Removes the latest result of the algorithm.
+- [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) &gt; **resultImage** () — Get the result of the watershed algorithm May be null if it hasn't been computed successfully yet This image is reset as soon as a new computation is started.
+- bool **applyResult** () — Apply the result of the watershed algorithm to the labelmap.
+- bool **setBackgroundSeeds** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &seedsLabelMap, [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) \*progress=nullptr)
+- bool **removeSeedsFromLabelMap** (int frame=-1) — Set all background pixel values to 0 in the specified frame of the label map The focus frame is used by default Returns true if seeds were removed, false otherwise.
+
+## Public Attributes
+
+- Signal **signalStarted** — These signals are called from another thread, and synchronization must be ensured by the user.
+- Signal&lt; int, int &gt; **signalProgress**
+- Signal&lt; [StopReason](#stopreason) &gt; **signalStopped**
+
+## Static Public Attributes
+
+- static const uint8_t **BACKGROUND_VALUE** = 253 — Special reserved value of the algorithm for indicating what constitutes the background.
+
+## Member Enumeration Documentation
+
+### StopReason
+
+```cpp
+enum ImFusion::Seg::WatershedTool::StopReason
+```
+
+**Enumerator:**
+
+- `MissingBackground` — the computation was successful and the result can be retrieved
+- `MissingLabels` — there were no background seeds in the label map
+- `Canceled` — there were no label seeds in the label map
+- `Unknown` — the computation was cancelled by the user
+internal error
+
+## Constructor & Destructor Documentation
+
+### WatershedTool
+
+```cpp
+ImFusion::Seg::WatershedTool::WatershedTool (const SharedImageSet & image, SharedImageSet & labelMap, DisplayWidgetMultiAdapter disp = {})
+```
+
+**Parameters:**
+
+- `image` — the image that will be sampled for the. It must not be modified throughout the use of the class
+- `labelMap` — the labelmap which will be modified, must be compatible with the image
+- `disp` — is optional, and used for showing the result preview

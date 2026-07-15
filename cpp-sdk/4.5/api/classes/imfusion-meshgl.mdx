@@ -1,0 +1,163 @@
+---
+title: "ImFusion::MeshGl"
+sidebarTitle: "MeshGl"
+description: "Stores vertex and texture data of a Mesh on the GPU so that it can be rendered using OpenGL."
+---
+
+`#include <ImFusion/Mesh/Rendering/MeshGl.h>`
+
+## Overview
+
+Stores vertex and texture data of a [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) on the GPU so that it can be rendered using OpenGL.
+
+A [MeshGl](/cpp-sdk/4.5/api/classes/imfusion-meshgl) instance is always bound to a parent [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) instance for which it provides OpenGL buffers and textures with the same data as its parent CPU counterpart. It uses signals to monitor the parent for changes so that the data on the GPU is updated when necessary.
+
+Instances of this class serve as main input to the render() function of MeshRendererXyz classes. [MeshGl](/cpp-sdk/4.5/api/classes/imfusion-meshgl) provides a set of OpenGL VertexBuffers with individual attributes for the vertex positions, colors, texture coordinates, normals, as well as per-face and per-vertex indices and labels. They are split up into separate buffers and only computed lazily on-demand so that you can mix and match because different renderers require only an individual subset of these vertex attributes. All VertexBuffers share the same underlying primitive layout and are supposed to be rendered directly as GL::Primitive::Triangles without a [GL::IndexBuffer](/cpp-sdk/4.5/api/classes/imfusion-gl-indexbuffer).
+
+Use a [GL::VertexArrayObject](/cpp-sdk/4.5/api/classes/imfusion-gl-vertexarrayobject) to combine them into a single rendering call, e.g.:
+
+```cpp
+GL::VertexArrayObject vao;
+
+// select either per-face or per-vertex normals
+const GL::VertexBuffer* normalsBuffer = (useFaceNormals ? &meshGl.perFaceNormalsBuffer() : &meshGl.perVertexNormalsBuffer());
+
+// combine the buffer with vertex positions and colors with the previously selected normals buffer
+// - vertex positions will end up as vertex attribute 0
+// - normals will end up as vertex attribute 1
+// - colors will end up as vertex attribute 2
+// - texture coordinates will be dropped
+vao.setAttributes({{&meshGl.positionColorTexCoordBuffer(), {0, 2, -1}}, {normalsBuffer, {1}}});
+
+// draw the mesh
+vao.draw(GL::Primitive::Triangles);
+```
+ fragment
+
+**See also:** MeshRendererSurface, MeshRendererIntersection, MeshRendererNormals, MeshRendererOutline
+
+## Public Member Functions
+
+- **MeshGl** (const [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) &parentMesh)
+- const [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) & **mesh** () const — Returns the underlying parent mesh.
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3f &gt; & **customPerVertexColors** () const — Returns an optional list of custom per-vertex colors to use in [positionColorTexCoordBuffer()](#positioncolortexcoordbuffer) instead of the ones in the parent [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh).
+- void [setCustomPerVertexColors](#setcustompervertexcolors) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3f &gt; &colors) — Set an optional list of custom per-vertex colors to use in [positionColorTexCoordBuffer()](#positioncolortexcoordbuffer) instead of the ones in the parent [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh).
+- const [GL::VertexBuffer](/cpp-sdk/4.5/api/classes/imfusion-gl-vertexbuffer) & [positionColorTexCoordBuffer](#positioncolortexcoordbuffer) () const — Returns a vertex buffer with the following data:
+- const [GL::VertexBuffer](/cpp-sdk/4.5/api/classes/imfusion-gl-vertexbuffer) & [positionAdjacencyBuffer](#positionadjacencybuffer) () const — Returns a vertex buffer with the following data:
+- const [GL::VertexBuffer](/cpp-sdk/4.5/api/classes/imfusion-gl-vertexbuffer) & **perVertexNormalsBuffer** () const — Returns a vertex buffer with a single attribute containing the per-vertex normals.
+- const [GL::VertexBuffer](/cpp-sdk/4.5/api/classes/imfusion-gl-vertexbuffer) & **perFaceNormalsBuffer** () const — Returns a vertex buffer with a single attribute containing the per-face normals.
+- const [GL::VertexBuffer](/cpp-sdk/4.5/api/classes/imfusion-gl-vertexbuffer) & [perVertexNormalsWideLineBuffer](#pervertexnormalswidelinebuffer) () const — Returns a vertex buffer for rendering per-vertex normals as wide lines with the following layout:
+- const [GL::VertexBuffer](/cpp-sdk/4.5/api/classes/imfusion-gl-vertexbuffer) & [perFaceNormalsWideLineBuffer](#perfacenormalswidelinebuffer) () const — Returns a vertex buffer for rendering per-face normals as wide lines with the following layout:
+- const [GL::VertexBuffer](/cpp-sdk/4.5/api/classes/imfusion-gl-vertexbuffer) & [faceIndexLabelBuffer](#faceindexlabelbuffer) () const — Returns a vertex buffer with the following data:
+- const [GL::VertexBuffer](/cpp-sdk/4.5/api/classes/imfusion-gl-vertexbuffer) & [faceIndexLabelAdjacencyBuffer](#faceindexlabeladjacencybuffer) () const — Returns a vertex buffer with the following data:
+- const [GL::VertexBuffer](/cpp-sdk/4.5/api/classes/imfusion-gl-vertexbuffer) & [vertexIndexLabelBuffer](#vertexindexlabelbuffer) () const — Returns a vertex buffer with the following data:
+- const [GL::VertexBuffer](/cpp-sdk/4.5/api/classes/imfusion-gl-vertexbuffer) & [vertexIndexLabelAdjacencyBuffer](#vertexindexlabeladjacencybuffer) () const — Returns a vertex buffer with the following data:
+- const [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) \* **colorTexture** () const — Returns the optional color texture in case the mesh is textured.
+- const [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) \* **faceLabelTexture** () const — Returns the LUT for face labels.
+- const [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) \* **vertexLabelTexture** () const — Returns the LUT for vertex labels.
+- bool **isDirty** () const
+
+## Member Function Documentation
+
+### setCustomPerVertexColors
+
+```cpp
+void ImFusion::MeshGl::setCustomPerVertexColors (const std::vector < vec3f > & colors)
+```
+
+Set an optional list of custom per-vertex colors to use in [positionColorTexCoordBuffer()](#positioncolortexcoordbuffer) instead of the ones in the parent [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh).
+
+The number of provided colors must match the number of vertices of the parent mesh.
+
+### positionColorTexCoordBuffer
+
+```cpp
+const GL::VertexBuffer & ImFusion::MeshGl::positionColorTexCoordBuffer () const
+```
+
+Returns a vertex buffer with the following data:
+
+- attribute 0: vertex positions
+- attribute 1: vertex colors (if present)
+- attribute 2: vertex texture coordinates (if present)
+
+### positionAdjacencyBuffer
+
+```cpp
+const GL::VertexBuffer & ImFusion::MeshGl::positionAdjacencyBuffer () const
+```
+
+Returns a vertex buffer with the following data:
+
+- attribute 0: previous vertex positions
+- attribute 1: next vertex positions where previous and next are defined as follows. Consider a triangle with positions &#123;p0, p1, p2&#125; previous vertex positions are &#123;p2, p0, p1&#125; next vertex positions are &#123;p1, p2, p0&#125;
+
+### perVertexNormalsWideLineBuffer
+
+```cpp
+const GL::VertexBuffer & ImFusion::MeshGl::perVertexNormalsWideLineBuffer () const
+```
+
+Returns a vertex buffer for rendering per-vertex normals as wide lines with the following layout:
+
+- attribute 0: vertex position
+- attribute 1: per vertex normal The vertex buffer stores a series of triangle strips consisting of 4 vertices each, i.e. each position and normal is present 4 times. This allows computing the vertex positions of the 4 vertices that make up the wide line in the vertex shader without relying on a geometry shader (e.g. in OpenGL ES environments).
+
+### perFaceNormalsWideLineBuffer
+
+```cpp
+const GL::VertexBuffer & ImFusion::MeshGl::perFaceNormalsWideLineBuffer () const
+```
+
+Returns a vertex buffer for rendering per-face normals as wide lines with the following layout:
+
+- attribute 0: vertex position
+- attribute 1: per face normal See [perVertexNormalsWideLineBuffer()](#pervertexnormalswidelinebuffer)
+
+### faceIndexLabelBuffer
+
+```cpp
+const GL::VertexBuffer & ImFusion::MeshGl::faceIndexLabelBuffer () const
+```
+
+Returns a vertex buffer with the following data:
+
+- attribute 0: face index
+- attribute 1: face label
+
+### faceIndexLabelAdjacencyBuffer
+
+```cpp
+const GL::VertexBuffer & ImFusion::MeshGl::faceIndexLabelAdjacencyBuffer () const
+```
+
+Returns a vertex buffer with the following data:
+
+- attribute 0: previous face index
+- attribute 1: next face index
+- attribute 2: previous face label
+- attribute 3: next face label where previous and next are defined as in [positionAdjacencyBuffer()](#positionadjacencybuffer)
+
+### vertexIndexLabelBuffer
+
+```cpp
+const GL::VertexBuffer & ImFusion::MeshGl::vertexIndexLabelBuffer () const
+```
+
+Returns a vertex buffer with the following data:
+
+- attribute 0: vertex index
+- attribute 1: vertex label
+
+### vertexIndexLabelAdjacencyBuffer
+
+```cpp
+const GL::VertexBuffer & ImFusion::MeshGl::vertexIndexLabelAdjacencyBuffer () const
+```
+
+Returns a vertex buffer with the following data:
+
+- attribute 0: previous vertex index
+- attribute 1: next vertex index
+- attribute 2: previous vertex label
+- attribute 3: next vertex label where previous and next are defined as in [positionAdjacencyBuffer()](#positionadjacencybuffer)

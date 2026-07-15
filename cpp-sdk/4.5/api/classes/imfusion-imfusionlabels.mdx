@@ -1,0 +1,29 @@
+---
+title: "ImFusion::ImFusionLabels"
+sidebarTitle: "ImFusionLabels"
+---
+
+## Public Member Functions
+
+- void **initUI** ([std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) &gt; uiProps, bool reduced)
+- bool **serializeToFile** ()
+- void **switchToTab** (int tabNumber=0)
+- void **toggleFullscreen** (bool flag)
+
+## Static Public Member Functions
+
+- static [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; ImFusionLabels &gt; **openProject** (const QString &path, const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) &rootProps, bool readOnly)
+- static [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; ImFusionLabels &gt; **openRemoteProject** (const [ProjectWizard::RemoteInfo](/cpp-sdk/4.5/api/structs/imfusion-projectwizard-remoteinfo) &info)
+- static [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; ImFusionLabels &gt; **createRemoteProject** ([SettingsDialogResult](/cpp-sdk/4.5/api/structs/imfusion-settingsdialogresult) &settings)
+- static [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; ImFusionLabels &gt; **createLocalProject** ([SettingsDialogResult](/cpp-sdk/4.5/api/structs/imfusion-settingsdialogresult) &settings)
+- static [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; ImFusionLabels &gt; **quickAnnotation** ([std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; projectConfigPath=std::nullopt)
+- static [Export::ExportDataResult](/cpp-sdk/4.5/api/structs/imfusion-export-exportdataresult) **exportData** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &projectPath, const [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; &exportPropsPath, const [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; &exportTargetFolder)
+- static void **registerGlobals** ()
+
+## Public Attributes
+
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [Project](/cpp-sdk/4.5/api/classes/imfusion-project) &gt; **m_project**
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; QMainWindow &gt; **m_window**
+- bool **m_exitedWithCross** = false
+- [MainView](/cpp-sdk/4.5/api/classes/imfusion-mainview) \* **m_mainView** = nullptr
+- [AnnotationOnlyView](/cpp-sdk/4.5/api/classes/imfusion-annotationonlyview) \* **m_annotationOnly** = nullptr

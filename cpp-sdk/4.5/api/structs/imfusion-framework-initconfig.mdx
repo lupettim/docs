@@ -1,0 +1,123 @@
+---
+title: "ImFusion::Framework::InitConfig"
+sidebarTitle: "InitConfig"
+description: "Record to configure the initialization of the ImFusion SDK."
+---
+
+`#include <ImFusion/Base/Framework.h>`
+
+## Overview
+
+Record to configure the initialization of the ImFusion SDK.
+
+It provides a central place where you can configure all SDK initialization options and also shows the default settings if you simply call [Framework::init()](/cpp-sdk/4.5/api/namespaces/imfusion-framework).
+
+## Logging-related settings
+
+- bool **initLogging** = true — Flag whether to initialize logging.
+- Log::Level **minimumLogLevel** = Log::Level::Info — Minimum log level/severity to set during Log::init().
+- [Log::Mode](/cpp-sdk/4.5/api/namespaces/imfusion-log) **loggingMode** = [Log::Mode::Synchronous](/cpp-sdk/4.5/api/namespaces/imfusion-log) — Operation mode of the logging framework.
+- bool **addConsoleSink** = true — Flag whether to add a console logger ([Log::ConsoleSink](/cpp-sdk/4.5/api/classes/imfusion-log-consolesink)).
+- [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; [Log::ConsoleSink::Options](/cpp-sdk/4.5/api/classes/imfusion-log-consolesink) &gt; [consoleSinkOptions](#consolesinkoptions)
+- bool **addFileSink** = false — Flag whether to add a file logger ([Log::FileSink](/cpp-sdk/4.5/api/classes/imfusion-log-filesink)).
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **fileSinkFilename** = "" — Filename to use for the file logger (must not be empty if enabled).
+- [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; [Log::FileSink::Options](/cpp-sdk/4.5/api/classes/imfusion-log-filesink) &gt; **fileSinkOptions** = [Log::FileSink::None](/cpp-sdk/4.5/api/classes/imfusion-log-filesink) — &lt; Configuration options of created FileSink if enabled
+- [ByteSize](/cpp-sdk/4.5/api/classes/imfusion-bytesize) **fileSinkMaxFileSize** = [ByteSize](/cpp-sdk/4.5/api/classes/imfusion-bytesize)(0) — Maximum log file size for log rotation, 0 to disable.
+
+## OpenGL-related settings
+
+- bool **initOpenGL** = true — Flag whether to initialize OpenGL (GlContextManager).
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [GL::Context](/cpp-sdk/4.5/api/classes/imfusion-gl-context) &gt; [glContext](#glcontext) — Optional OpenGL context to use as main context for the framework.
+
+## Plugin loading-related settings
+
+- bool **loadPlugins** = false — Flag whether to search for plugins using [Framework::loadPlugins()](/cpp-sdk/4.5/api/namespaces/imfusion-framework).
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **pluginSearchFolders** — Search paths that are passed to [Framework::loadPlugins()](/cpp-sdk/4.5/api/namespaces/imfusion-framework) if *loadPlugins* is true.
+
+## Other settings
+
+- [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; void()&gt; [licenseInitFunction](#licenseinitfunction) = [defaultLicenseInitFunction](/cpp-sdk/4.5/api/namespaces/imfusion-framework)() — Function will be called once during framework initialization just before checking the license state.
+- [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; void(const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &errMsg, int gracePeriodSec)&gt; [licenseExpirationHandler](#licenseexpirationhandler) — Optional function to handle the case when a license expiration happens during runtime.
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; bool &gt; [installCrashHandler](#installcrashhandler) = std::nullopt — Flag whether to install platform-specific crash handlers (cf.
+- bool **installSignalHandler** = true — Flag whether to install platform-specific signal handlers (cf. [Framework::installSignalHandlers()](/cpp-sdk/4.5/api/namespaces/imfusion-framework)).
+- bool **initSettings** = true — Flag whether to initialize [GlobalSettings](/cpp-sdk/4.5/api/classes/imfusion-globalsettings).
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **organizationName** = "ImFusion" — Name of the organization to use for settings storage and other contexts.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **applicationName** = "ImFusionLib" — Name of the application to use for settings storage and other contexts.
+
+## Member Data Documentation
+
+### consoleSinkOptions
+
+```cpp
+Flags < Log::ConsoleSink::Options > ImFusion::Framework::InitConfig::consoleSinkOptions
+```
+
+**Initial value:**
+```cpp
+             = {
+ Log::ConsoleSink::UseColor,
+ Log::ConsoleSink::Utf8ConsoleCodepage,
+}
+```
+ fragment
+
+### glContext
+
+```cpp
+std::unique_ptr < GL::Context > ImFusion::Framework::InitConfig::glContext
+```
+
+Optional OpenGL context to use as main context for the framework.
+
+Use this for instance to enable context sharing with a context of your host application.
+
+### void
+
+```cpp
+std::function <void()> ImFusion::Framework::InitConfig::licenseInitFunction = defaultLicenseInitFunction ()
+```
+
+Function will be called once during framework initialization just before checking the license state.
+
+Enables you to implement a custom license-initialization function. The default tries to use the environment variable IMFUSION_LICENSE_KEY if no license is active (cf. [Framework::defaultLicenseInitFunction()](/cpp-sdk/4.5/api/namespaces/imfusion-framework)).
+
+### void
+
+```cpp
+std::function <void(const std::string & errMsg, int gracePeriodSec)> ImFusion::Framework::InitConfig::licenseExpirationHandler
+```
+
+Optional function to handle the case when a license expiration happens during runtime.
+
+Please use this to terminate your application gracefully within a given grace period (handler parameter in seconds). After the grace period expires ImFusion::Framework will be forcefully de-initialized, which could tier down your application un-gracefully.
+
+**Note:** This handler function will be called from a separate thread.
+
+Example code for a Qt application:
+
+```cpp
+Framework::InitConfig initConfig;
+initConfig.licenseExpirationHandler = [](const std::string& errMsg, int gracePeriodSec) {
+    QMetaObject::invokeMethod(
+        qApp,
+        [errMsg, gracePeriodSec]() {
+ std::stringstream ss;
+            ss << "License issue! Quitting application gracefully before ImFusion::Framework will be de-initialized in " << gracePeriodSec << " seconds. Details: " << errMsg;
+ LOG_ERROR(ss.str());
+            qApp->quit();
+        },
+        Qt::QueuedConnection);    // put it in the event queue of the main thread because Qt windowing is not thread-safe
+};
+Framework::init(std::move(initConfig));
+```
+ fragment
+
+### installCrashHandler
+
+```cpp
+std::optional <bool> ImFusion::Framework::InitConfig::installCrashHandler = std::nullopt
+```
+
+Flag whether to install platform-specific crash handlers (cf.
+
+Platform::installCrashHandler()). If it contains std::nullopt, it will fall back toinstallSignalHandlers. This is done to maintain backwards compatibility.

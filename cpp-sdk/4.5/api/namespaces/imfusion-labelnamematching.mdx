@@ -1,0 +1,34 @@
+---
+title: "ImFusion::LabelNameMatching"
+sidebarTitle: "LabelNameMatching"
+description: "Functions for matching labelnames."
+---
+
+## Overview
+
+Functions for matching labelnames.
+
+This is intended to match labels known to TotalSegmentator to labels defined in a Labels project. Matching is performed via an editing distance - we identify labels with editing distance smaller than 3.
+
+## Functions
+
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; [tokenize](#tokenize) ([std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) name) — Split into tokens i.e.
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; size_t &gt; **minDistanceIndex** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; &totalSegLabels, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; projectTokens)
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **match** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; &totalSegLabels, const T &projectLabel)
+- [std::map](http://en.cppreference.com/w/cpp/container/map.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html), T &gt; **match** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; &totalSegLabels, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; T &gt; &projectLabels)
+
+## Variables
+
+- const [std::map](http://en.cppreference.com/w/cpp/container/map.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html), [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **racoonMappings** — Hardcoded list of mappings from a RACOON labelname to the corresponding TotalSegmentator name.
+
+## Function Documentation
+
+### tokenize
+
+```cpp
+std::vector < std::string > ImFusion::LabelNameMatching::tokenize (std::string name)
+```
+
+Split into tokens i.e.
+
+words. "upper-right-lung" becomes &#123;"lung", "right", "upper"&#125; same as "Lung (upper-right)"

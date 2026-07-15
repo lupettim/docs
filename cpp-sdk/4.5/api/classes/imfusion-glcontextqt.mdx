@@ -1,0 +1,146 @@
+---
+title: "ImFusion::GlContextQt"
+sidebarTitle: "GlContextQt"
+description: "OpenGL context using Qt as backend."
+---
+
+`#include <ImFusion/GUI/GlContextQt.h>`
+
+## Overview
+
+OpenGL context using Qt as backend.
+
+If you want to render onto a Qt surface (e.g. using [DisplayWidget](/cpp-sdk/4.5/api/classes/imfusion-displaywidget)), you must make sure to use an instance of this class to initialize the ImFusion SDK.
+
+**Note:** Due to a restriction of Qt, a [GlContextQt](/cpp-sdk/4.5/api/classes/imfusion-glcontextqt) must be instantiated from the main [GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui) thread. You can move the object to a different thread using the [detachFromCurrentThread()](#detachfromcurrentthread) and [moveToCurrentThread()](#movetocurrentthread) functions.
+
+**Note:** The [clone()](#clone) method of this class will not create a [GlContextQt](/cpp-sdk/4.5/api/classes/imfusion-glcontextqt) but an instance of the corresponding native type (e.g. GlContectWindows or GlContextGLX). Thus, a cloned [GlContextQt](/cpp-sdk/4.5/api/classes/imfusion-glcontextqt) can *not* be used to render onto a Qt surface. Use the constructor instead if you need this functionality. This behavior can be disabled by setting the IMFUSION_CLONE_QT_CONTEXT environment variable.
+
+## Public Member Functions
+
+- [GlContextQt](#glcontextqt-1-2) ([CreateInfo](/cpp-sdk/4.5/api/structs/imfusion-gl-context-createinfo) createInfo) — Creates a new Qt-based OpenGL context.
+- [GlContextQt](#glcontextqt-2-2) (int majorVersion=0, int minorVersion=0, bool compatibilityProfile=false, QOpenGLContext \*shareContext=nullptr) — Creates a new Qt-based OpenGL context.
+- QOpenGLContext \* **qglContext** () const — Returns the internal QOpenGLContext.
+- bool [makeCurrent](#makecurrent) () const override — Make context current.
+- bool [doneCurrent](#donecurrent) () const override — Disable context.
+- void \* [internalHandle](#internalhandle) () const override — Returns the native handle of this OpenGL context that can be used with CreateInfo::shareContext.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [GL::Context](/cpp-sdk/4.5/api/classes/imfusion-gl-context) &gt; [clone](#clone) () override — Instantiates a new OpenGL context that is shared with this one.
+- void [detachFromCurrentThread](#detachfromcurrentthread) () override — Removes the binding of the OpenGL context to the current (i.e., calling) thread.
+- void [moveToCurrentThread](#movetocurrentthread) () override — Moves the OpenGL context to the current (i.e., calling) thread.
+
+## Static Public Member Functions
+
+- static void \* **internalHandleOf** (const QOpenGLContext \*context) — Returns the native handle of the given OpenGL *context* that can be used with CreateInfo::shareContext.
+
+## Constructor & Destructor Documentation
+
+### GlContextQt
+
+```cpp
+ImFusion::GlContextQt::GlContextQt (CreateInfo createInfo)
+```
+
+*explicit*
+
+Creates a new Qt-based OpenGL context.
+
+If you want to pass a shared context, createInfo.shareContext must be of type QOpenGLContext\*.
+
+**Exceptions:**
+
+- `std::runtime_error` — if the OpenGL context could not be created/initialized.
+- `std::runtime_error` — if createInfo.shareContext was given but context sharing could not be established.
+
+### GlContextQt
+
+```cpp
+ImFusion::GlContextQt::GlContextQt (int majorVersion = 0, int minorVersion = 0, bool compatibilityProfile = false, QOpenGLContext * shareContext = nullptr)
+```
+
+*explicit*
+
+Creates a new Qt-based OpenGL context.
+
+**Parameters:**
+
+- `majorVersion` — Requested OpenGL major version, use 0 for default
+- `minorVersion` — Requested OpenGL minor version, use 0 for default
+- `compatibilityProfile` — Flag whether to request a compatibility profile for OpenGL 3.0 and above
+- `shareContext` — Optional OpenGL context to share textures and other data with
+
+**Note:** This function will request a debug context only for debug builds or if the IMFUSION_USE_OPENGL_DEBUG_CONTEXT environment variable is set.
+
+**Exceptions:**
+
+- `std::runtime_error` — if the OpenGL context could not be created/initialized.
+- `std::runtime_error` — if createInfo.shareContext was given but context sharing could not be established.
+
+## Member Function Documentation
+
+### makeCurrent
+
+```cpp
+bool ImFusion::GlContextQt::makeCurrent () const
+```
+
+*override, virtual*
+
+Make context current.
+
+### doneCurrent
+
+```cpp
+bool ImFusion::GlContextQt::doneCurrent () const
+```
+
+*override, virtual*
+
+Disable context.
+
+### internalHandle
+
+```cpp
+void * ImFusion::GlContextQt::internalHandle () const
+```
+
+*override, virtual*
+
+Returns the native handle of this OpenGL context that can be used with CreateInfo::shareContext.
+
+### clone
+
+```cpp
+std::unique_ptr < GL::Context > ImFusion::GlContextQt::clone ()
+```
+
+*override, virtual*
+
+Instantiates a new OpenGL context that is shared with this one.
+
+The freshly created context will be made current. This method will throw if the context could not be initialized.
+
+**Note:** If you plan to use this context in a different thread, you will need to call [moveToCurrentThread()](#movetocurrentthread) on the returned context before.
+
+### detachFromCurrentThread
+
+```cpp
+void ImFusion::GlContextQt::detachFromCurrentThread ()
+```
+
+*override, virtual*
+
+Removes the binding of the OpenGL context to the current (i.e., calling) thread.
+
+**Note:** Before calling this method, make sure to release the context from the source thread (i.e. call [doneCurrent()](#donecurrent)). After calling this method, move the context to the new thread and make it current there.
+
+### moveToCurrentThread
+
+```cpp
+void ImFusion::GlContextQt::moveToCurrentThread ()
+```
+
+*override, virtual*
+
+Moves the OpenGL context to the current (i.e., calling) thread.
+
+**Note:** Before calling this method, make sure to release the context from the source thread (i.e. call [doneCurrent()](#donecurrent)). After calling this method, make the context current in the new thread.

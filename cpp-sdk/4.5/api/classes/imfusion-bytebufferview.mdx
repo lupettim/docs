@@ -1,0 +1,66 @@
+---
+title: "ImFusion::ByteBufferView"
+sidebarTitle: "ByteBufferView"
+description: "Const view onto a sized buffer of raw binary data."
+---
+
+`#include <ImFusion/Core/ByteBuffer.h>`
+
+## Overview
+
+Const view onto a sized buffer of raw binary data.
+
+This class can be used to represent any kind of raw data independent of encoding or other limitations. For instance, in contrast to a [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) it can properly represents 0-bytes (\0) at any location. It annotates the raw buffer pointer with the size of the data and offers convenience functions.
+
+This most base class of the ByteBuffer-class hierarchy that represents const read access to a contiguous buffer of raw bytes and can for instance be used as argument type for non-mutating processing functions. Two specializations of this class exist:
+
+- [ByteBufferMutableView](/cpp-sdk/4.5/api/classes/imfusion-bytebuffermutableview) additionally provides non-const access to the underlying buffer
+- [ByteBuffer](/cpp-sdk/4.5/api/classes/imfusion-bytebuffer) additionally models ownership of the underlying data
+
+ByteBuffer(Mutable)View does not own the underlying buffer. All copies/assignments of a ByteBuffer(Mutable)View will be shallow and not copy the underlying buffer. However, comparison of multiple ByteBuffer(Views) will always perform a deep comparison of the underlying data in a byte-wise fashion independent of the concrete specialized type.
+
+**See also:** [ByteBufferStream](/cpp-sdk/4.5/api/classes/imfusion-bytebufferstream)
+
+## Public Member Functions
+
+- **ByteBufferView** ()=default — Create an empty (invalid) buffer.
+- [ByteBufferView](#bytebufferview) (const char \*data, size_t size) — Create a non-owning buffer of the given size wrapping around the given array.
+- **ByteBufferView** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &string) — Create a new buffer referencing the content from *string*.
+- **ByteBufferView** ([std::string_view](http://en.cppreference.com/w/cpp/string/basic_string_view.html) string)
+- **ByteBufferView** (const ByteBufferView &rhs)=default
+- **ByteBufferView** (ByteBufferView &&rhs) noexcept=default
+- ByteBufferView & **operator=** (const ByteBufferView &rhs)=default
+- ByteBufferView & **operator=** (ByteBufferView &&rhs) noexcept=default
+- const char & **operator[]** (size_t which) const
+- const char \* **data** () const — Return the pointer to the buffer data.
+- [ByteSize](/cpp-sdk/4.5/api/classes/imfusion-bytesize) **size** () const — Return the number of bytes stored in the buffer.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) **toString** () const — Copy the data to a new [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html).
+- [std::string_view](http://en.cppreference.com/w/cpp/string/basic_string_view.html) **toStringView** () const — Create a [std::string_view](http://en.cppreference.com/w/cpp/string/basic_string_view.html) onto the underlying buffer.
+- bool **isEmpty** () const — Check whether the buffer is empty.
+- [ByteBuffer](/cpp-sdk/4.5/api/classes/imfusion-bytebuffer) **copy** () const — Create an owning deep copy of this buffer.
+- [ByteBuffer](/cpp-sdk/4.5/api/classes/imfusion-bytebuffer) **subCopy** (size_t offset, size_t size) const — Create an owning deep copy of a subregion of this buffer.
+- ByteBufferView **view** () const — Return a const view onto this buffer, same effect as calling the copy constructor.
+- ByteBufferView **subView** (size_t offset, size_t size) const — Create a read-only view onto a subregion of this buffer.
+- const char \* **begin** () const — Return iterator to the beginning of the buffer.
+- const char \* **end** () const — Return iterator to one past the end of the buffer.
+- **ByteBufferView** ([ByteBuffer](/cpp-sdk/4.5/api/classes/imfusion-bytebuffer) &&rhs)=delete
+- ByteBufferView & **operator=** ([ByteBuffer](/cpp-sdk/4.5/api/classes/imfusion-bytebuffer) &&rhs)=delete
+
+## Protected Attributes
+
+- char \* **m_data** = nullptr — Raw pointer to the buffer data.
+- size_t **m_size** = 0 — Number of bytes stored in m_data.
+
+## Constructor & Destructor Documentation
+
+### ByteBufferView
+
+```cpp
+ImFusion::ByteBufferView::ByteBufferView (const char * data, size_t size)
+```
+
+*explicit*
+
+Create a non-owning buffer of the given size wrapping around the given array.
+
+**Note:** *data* must remain valid for the entire lifetime of this object instance.

@@ -1,0 +1,46 @@
+---
+title: "ImFusion::ThumbnailLoader"
+sidebarTitle: "ThumbnailLoader"
+---
+
+## Public Types
+
+- enum **QueueOperation** &#123; **DoNotAdd** , **PushFront** , **PushBack** &#125;
+
+## Signals
+
+- void **thumbnailLoaded** (QString path, QString id)
+
+## Public Member Functions
+
+- **ThumbnailLoader** (unsigned int cacheSizeInMB, bool remoteMode)
+- void **setAuthProvider** ([std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [Network::AuthorizationProvider](/cpp-sdk/4.5/api/classes/imfusion-network-authorizationprovider) &gt; provider)
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; QImage &gt; [getThumbnail](#getthumbnail) (const QString &path, const QString &id, bool isLabels, QueueOperation) — Load the thumbnail from the given path.
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; QImage &gt; [getThumbnailBlocking](#getthumbnailblocking) (const QString &path, bool isLabels) — Load the thumbnail from the given path.
+- void **addThumbnail** (const QString &path, const QString &id, [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; QImage &gt; &image)
+- void **removeThumbnail** (const QString &path, const QString &id)
+- void **setCacheMinSize** (unsigned int size)
+- void **setCacheOverrideSize** (unsigned int size)
+- void **clearQueue** ()
+
+## Member Function Documentation
+
+### getThumbnail
+
+```cpp
+std::optional < QImage > ImFusion::ThumbnailLoader::getThumbnail (const QString & path, const QString & id, bool isLabels, QueueOperation)
+```
+
+Load the thumbnail from the given path.
+
+The thumbnail is directly returned if it's already cached. Otherwise, the thumbnail is loaded in the background (depending on the QueueOperation). When the thumbnail becomes ready, the thumbnailLoaded signal is emitted with the given id.
+
+### getThumbnailBlocking
+
+```cpp
+std::optional < QImage > ImFusion::ThumbnailLoader::getThumbnailBlocking (const QString & path, bool isLabels)
+```
+
+Load the thumbnail from the given path.
+
+If not in the cache and generate is true, the thumbnail is directly loaded from the path, without using the loading thread.

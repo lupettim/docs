@@ -1,0 +1,150 @@
+---
+title: "ImFusion::TransformationStashDataComponent"
+sidebarTitle: "TransformationStashDataComponent"
+description: "The TransformationStashDataComponent class is a DataComponent that stores transformations."
+---
+
+`#include <ImFusion/Base/TransformationStashDataComponent.h>`
+
+## Overview
+
+The [TransformationStashDataComponent](/cpp-sdk/4.5/api/classes/imfusion-transformationstashdatacomponent) class is a [DataComponent](/cpp-sdk/4.5/api/classes/imfusion-datacomponent) that stores transformations.
+
+An instance always contains a original transformation and optional a arbitrary number of stored transformations. Transformations are stored as a list of matrices to be able to save and restore the matrices of a [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset). For other [Data](/cpp-sdk/4.5/api/classes/imfusion-data) types the list usually contains only a single element.
+
+## Public Member Functions
+
+- **TransformationStashDataComponent** (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data) — Creates a new instance with the current matrix of data as the original matrix.
+- **TransformationStashDataComponent** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; mat4 &gt; &original=&#123;mat4::Identity()&#125;)
+- bool **operator==** (const TransformationStashDataComponent &rhs) const
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [id](#id) () const override — Returns a unique string identifier for this type of data component.
+- void **setOriginal** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; mat4 &gt; &matrix) — Sets the original transformation.
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; mat4 &gt; & **original** () const — Returns the original transformation.
+- void **append** (const mat4 &matrix) — Equivalent to append(&#123;matrix&#125;, "").
+- void **append** (const mat4 &matrix, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name) — Equivalent to append(&#123;matrix&#125;, name).
+- void **append** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; mat4 &gt; &[transformations](#transformations)) — Equivalent to append(transformations, name).
+- void [append](#append) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; mat4 &gt; &[transformations](#transformations), const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name) — Appends a new transformation to the stored matrices.
+- void [erase](#erase) (int index) — Erases the stored transformation at the given index.
+- void [rename](#rename) (int index, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name) — Renames the stored transformation at the given index.
+- int [numStored](#numstored) () const — Returns the number of stored transformations.
+- const [std::deque](http://en.cppreference.com/w/cpp/container/deque.html)&lt; [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; mat4 &gt; &gt; & [transformations](#transformations) () const — Returns all stored transformations.
+- const [std::deque](http://en.cppreference.com/w/cpp/container/deque.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; & [names](#names) () const — Returns the names of all stored transformations.
+- void [configure](#configure-1-2) (const TransformationStashDataComponent &other) — Convenient method to copy the configuration of this instance to the given instance.
+- void [configure](#configure-2-2) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+## Public Attributes
+
+- Signal **signalChanged** — Emitted when a transformation was added, removed or renamed.
+
+## Member Function Documentation
+
+### id
+
+```cpp
+std::string ImFusion::TransformationStashDataComponent::id () const
+```
+
+*override, virtual*
+
+Returns a unique string identifier for this type of data component.
+
+**Note:** To avoid conflicts make sure to include potential plugin names into this ID. Due to the modular architecture of the ImFusion library, uniqueness of IDs cannot be checked at compile time. However, [DataComponentFactory](/cpp-sdk/4.5/api/classes/imfusion-datacomponentfactory) will check the uniqueness of the ID during registration.
+
+### append
+
+```cpp
+void ImFusion::TransformationStashDataComponent::append (const std::vector < mat4 > & transformations, const std::string & name)
+```
+
+Appends a new transformation to the stored matrices.
+
+If name is empty, a default name is generated. In this case, the method ensures that name will be unique. On return, the reference will contain the final name.
+
+### erase
+
+```cpp
+void ImFusion::TransformationStashDataComponent::erase (int index)
+```
+
+Erases the stored transformation at the given index.
+
+Does nothing if the index is invalid.
+
+### rename
+
+```cpp
+void ImFusion::TransformationStashDataComponent::rename (int index, const std::string & name)
+```
+
+Renames the stored transformation at the given index.
+
+Does NOT ensure that the name is unique.
+
+### numStored
+
+```cpp
+int ImFusion::TransformationStashDataComponent::numStored () const
+```
+
+Returns the number of stored transformations.
+
+This does NOT contain the original transformation.
+
+### transformations
+
+```cpp
+const std::deque < std::vector < mat4 > > & ImFusion::TransformationStashDataComponent::transformations () const
+```
+
+Returns all stored transformations.
+
+This does NOT contain the original transformation.
+
+### names
+
+```cpp
+const std::deque < std::string > & ImFusion::TransformationStashDataComponent::names () const
+```
+
+Returns the names of all stored transformations.
+
+This does NOT contain the original transformation.
+
+### configure
+
+```cpp
+void ImFusion::TransformationStashDataComponent::configure (const TransformationStashDataComponent & other)
+```
+
+Convenient method to copy the configuration of this instance to the given instance.
+
+Contrary to the assignment operator, this does not modify the signals.
+
+### configure
+
+```cpp
+void ImFusion::TransformationStashDataComponent::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### configuration
+
+```cpp
+void ImFusion::TransformationStashDataComponent::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure-1-2) for the inverse functionality

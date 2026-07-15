@@ -1,0 +1,78 @@
+---
+title: "ImFusion::CombineImagesAsVolumeAlgorithm"
+sidebarTitle: "CombineImagesAsVolumeAlgorithm"
+description: "Algorithm to combine multiple images into a volume."
+---
+
+`#include <ImFusion/Base/CombineImagesAsVolumeAlgorithm.h>`
+
+## Overview
+
+[Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) to combine multiple images into a volume.
+
+## Public Member Functions
+
+- **CombineImagesAsVolumeAlgorithm** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &images, double spacing=0.0) — Creates the algorithm instance with a multi-image [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset).
+- **CombineImagesAsVolumeAlgorithm** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \* &gt; &images, double spacing=0.0) — Creates the algorithm instance with a series of images.
+- **~CombineImagesAsVolumeAlgorithm** () override — Destructor.
+
+## Public Attributes
+
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; [ImageProcessing::Axis](/cpp-sdk/4.5/api/namespaces/imfusion-imageprocessing) &gt; **p_axis** = &#123;"axis", [ImageProcessing::Axis::Z](/cpp-sdk/4.5/api/namespaces/imfusion-imageprocessing), this&#125;
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; double &gt; **p_sliceThickness** = &#123;"sliceThickness", 0.0, this&#125;
+
+## Methods implementing the algorithm interface
+
+- void [compute](#compute) () override — Applies the processing.
+- [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) [takeOutput](#takeoutput) () override — If new data was created, make it available here.
+- static bool [createCompatible](#createcompatible) (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=0)
+
+## Methods implementing the Configurable interface
+
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+## Member Function Documentation
+
+### createCompatible
+
+```cpp
+bool ImFusion::CombineImagesAsVolumeAlgorithm::createCompatible (const DataList & data, Algorithm ** a = 0)
+```
+
+*static*
+
+Factory method to check for applicability or to create the algorithm
+
+### compute
+
+```cpp
+void ImFusion::CombineImagesAsVolumeAlgorithm::compute ()
+```
+
+*override, virtual*
+
+Applies the processing.
+
+### takeOutput
+
+```cpp
+OwningDataList ImFusion::CombineImagesAsVolumeAlgorithm::takeOutput ()
+```
+
+*override, virtual*
+
+If new data was created, make it available here.
+
+### configure
+
+```cpp
+void ImFusion::CombineImagesAsVolumeAlgorithm::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](/cpp-sdk/4.5/api/classes/imfusion-configurable) for the inverse functionality

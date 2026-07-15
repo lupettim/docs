@@ -1,0 +1,44 @@
+---
+title: "ImFusion::Dicom::SequenceItem"
+sidebarTitle: "SequenceItem"
+description: "Base class for sequence items."
+---
+
+`#include <ImFusion/Dicom/DicomSequence.h>`
+
+## Overview
+
+[Base](/cpp-sdk/4.5/api/structs/imfusion-dicom-base) class for sequence items.
+
+Derived classes define the Elements each item in a sequence consists of.
+
+**See also:** [SequenceBase](/cpp-sdk/4.5/api/classes/imfusion-dicom-sequencebase), [Sequence](/cpp-sdk/4.5/api/classes/imfusion-dicom-sequence)
+
+## Public Member Functions
+
+- [SequenceItem](#sequenceitem) (DcmItem &item) — Creates a new sequence that retrieves its elements from *item*.
+- DcmItem & [dataset](#dataset) () override — Returns the DICOM dataset/item to retrieve the elements from.
+
+## Constructor & Destructor Documentation
+
+### SequenceItem
+
+```cpp
+ImFusion::Dicom::SequenceItem::SequenceItem (DcmItem & item)
+```
+
+Creates a new sequence that retrieves its elements from *item*.
+
+Derived classes need to provide a ctor of (DcmItem& item, bool createSequence = false) if the sequence is used for writing. The createSequence bool is set to true when exporting a sequence and indicates that the sequence was just created. For sequence items that are only meant to be read, this constructor has to be overridden. This can be used to e.g. create sub-sequences if required.
+
+## Member Function Documentation
+
+### dataset
+
+```cpp
+DcmItem & ImFusion::Dicom::SequenceItem::dataset ()
+```
+
+*override, virtual*
+
+Returns the DICOM dataset/item to retrieve the elements from.

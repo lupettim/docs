@@ -1,0 +1,44 @@
+---
+title: "ImFusion::Project::Settings"
+sidebarTitle: "Settings"
+---
+
+## Public Member Functions
+
+- int [projectId](#projectid) () const — Determined by the server. Usually increased after a [Project](/cpp-sdk/4.5/api/classes/imfusion-project) change.
+
+## Public Attributes
+
+- QString **m_name**
+- QString **m_projectPath**
+- ProjectTypes **m_projectTypes** = NoProjectType
+- DataTypes **m_dataTypes** = DataType::InvalidDataType
+- bool **m_internalDataStorage** = true
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [ExternalDataStorage](/cpp-sdk/4.5/api/structs/imfusion-externaldatastorage) &gt; **m_externalDataStorage**
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **m_groupingHierarchy** = &#123;"Patient", "Study", "Series"&#125;
+- QString [m_disabledActions](#m-disabledactions) — Semicolon-separated list of action names that are disabled.
+- int **m_revision** = 0
+
+## Member Function Documentation
+
+### projectId
+
+```cpp
+int ImFusion::Project::Settings::projectId () const
+```
+
+Determined by the server. Usually increased after a [Project](/cpp-sdk/4.5/api/classes/imfusion-project) change.
+
+Extracts the project id from the projectPath for remote projects. Returns -1 for local projects.
+
+## Member Data Documentation
+
+### m_disabledActions
+
+```cpp
+QString ImFusion::Project::Settings::m_disabledActions
+```
+
+Semicolon-separated list of action names that are disabled.
+
+Empty string means all actions are enabled (default).

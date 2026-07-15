@@ -1,0 +1,52 @@
+---
+title: "ImFusion::CombineIntoTrackedSharedImageSetAlgorithm"
+sidebarTitle: "CombineIntoTrackedSharedImageSetAlgorithm"
+description: "Algorithm for creating a TrackedSharedImageSet from a TrackingSequence and SharedImageSet ."
+---
+
+`#include <ImFusion/Base/CombineIntoTrackedSharedImageSetAlgorithm.h>`
+
+## Overview
+
+[Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) for creating a [TrackedSharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-trackedsharedimageset) from a [TrackingSequence](/cpp-sdk/4.5/api/classes/imfusion-trackingsequence) and [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset).
+
+## Public Member Functions
+
+- **CombineIntoTrackedSharedImageSetAlgorithm** (const [TrackingSequence](/cpp-sdk/4.5/api/classes/imfusion-trackingsequence) &trackingSequence, [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &sis) — Creates the algorithm instance from a tracking sequence and an image set.
+- void [compute](#compute) () override — Execute the algorithm.
+- [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) [takeOutput](#takeoutput) () override — Return any new [Data](/cpp-sdk/4.5/api/classes/imfusion-data) that was created by the [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) during the last call to [compute()](#compute).
+
+## Static Public Member Functions
+
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=nullptr) — Factory method to check for applicability or to create the algorithm.
+
+## Public Attributes
+
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; double &gt; **p_temporalOffset** &#123;"temporalOffset", 0, \*this&#125;
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; bool &gt; **p_shallowImageCopy** &#123;"shallowImageCopy", false, \*this&#125;
+
+## Member Function Documentation
+
+### compute
+
+```cpp
+void ImFusion::CombineIntoTrackedSharedImageSetAlgorithm::compute ()
+```
+
+*override, virtual*
+
+Execute the algorithm.
+
+### takeOutput
+
+```cpp
+OwningDataList ImFusion::CombineIntoTrackedSharedImageSetAlgorithm::takeOutput ()
+```
+
+*override, virtual*
+
+Return any new [Data](/cpp-sdk/4.5/api/classes/imfusion-data) that was created by the [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) during the last call to [compute()](#compute).
+
+The default implementation will return an empty list.
+
+**Note:** Since ownership of the data is transferred, you can call this method only once between calls to [compute()](#compute).

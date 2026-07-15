@@ -1,0 +1,33 @@
+---
+title: "ImFusion::GUI::ViewObject::EventHandler"
+sidebarTitle: "EventHandler"
+description: "Interface to be used as base class for event handlers of ViewObjects."
+---
+
+`#include <ImFusion/GUI/ViewObject.h>`
+
+## Overview
+
+Interface to be used as base class for event handlers of ViewObjects.
+
+In addition to the [InputEvent](/cpp-sdk/4.5/api/classes/imfusion-gui-inputevent) it receives the parent [View](/cpp-sdk/4.5/api/classes/imfusion-gui-view) where the event originates from as additional payload. This enables you to add the same [ViewObject](/cpp-sdk/4.5/api/classes/imfusion-gui-viewobject) to multiple views and still implement view-specific handling logic.
+
+**See also:** [TypedViewObject](/cpp-sdk/4.5/api/classes/imfusion-gui-typedviewobject)
+
+## Public Member Functions
+
+- virtual [EventResult](/cpp-sdk/4.5/api/structs/imfusion-gui-eventresult) [handleInputEvent](#handleinputevent) (const [InputEvent](/cpp-sdk/4.5/api/classes/imfusion-gui-inputevent) &event, const [View](/cpp-sdk/4.5/api/classes/imfusion-gui-view) &view)=0 — This function is called by sources of input events in order to dispatch them to the handlers.
+
+## Member Function Documentation
+
+### handleInputEvent
+
+```cpp
+virtual EventResult ImFusion::GUI::ViewObject::EventHandler::handleInputEvent (const InputEvent & event, const View & view)
+```
+
+*pure virtual*
+
+This function is called by sources of input events in order to dispatch them to the handlers.
+
+In case there are more than one InputEventHandlers dispatchers are intended call this function consecutively until the first handler indicates to stop by returning a result where [EventResult::stopPropagation()](/cpp-sdk/4.5/api/structs/imfusion-gui-eventresult) is true.

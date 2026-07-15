@@ -1,0 +1,94 @@
+---
+title: "ImFusion::Utils::Expected< T, E >"
+sidebarTitle: "Expected< T, E >"
+description: "An Expected <T, E> object is an object that contains the storage for another object and manages the lifetime of this contained object T ."
+---
+
+`#include <ImFusion/Core/Utils/Expected.h>`
+
+## Overview
+
+template&lt;class T, class E&gt;
+
+class ImFusion::Utils::Expected&lt; T, E &gt;
+An [Expected](/cpp-sdk/4.5/api/classes/imfusion-utils-expected)&lt;T, E&gt; object is an object that contains the storage for another object and manages the lifetime of this contained object T.
+
+Alternatively it could contain the storage for another unexpected object E. The contained object may not be initialized after the [Expected](/cpp-sdk/4.5/api/classes/imfusion-utils-expected) object has been initialized, and may not be destroyed before the [Expected](/cpp-sdk/4.5/api/classes/imfusion-utils-expected) object has been destroyed. The initialization state of the contained object is tracked by the [Expected](/cpp-sdk/4.5/api/classes/imfusion-utils-expected) object.
+
+## Public Types
+
+- typedef T **value_type**
+- typedef E **error_type**
+- typedef [Unexpected](/cpp-sdk/4.5/api/classes/imfusion-utils-unexpected)&lt; E &gt; **unexpected_type**
+
+## Public Member Functions
+
+- UTILS_EXPECTED_11_CONSTEXPR auto **and_then** (F &&f) &-&gt; decltype(and_then_impl([std::declval](http://en.cppreference.com/w/cpp/utility/declval.html)&lt; Expected & &gt;(), [std::forward](http://en.cppreference.com/w/cpp/utility/forward.html)&lt; F &gt;(f)))
+- UTILS_EXPECTED_11_CONSTEXPR auto **and_then** (F &&f) &&-&gt; decltype(and_then_impl([std::declval](http://en.cppreference.com/w/cpp/utility/declval.html)&lt; Expected && &gt;(), [std::forward](http://en.cppreference.com/w/cpp/utility/forward.html)&lt; F &gt;(f)))
+- constexpr auto **and_then** (F &&f) const &-&gt; decltype(and_then_impl([std::declval](http://en.cppreference.com/w/cpp/utility/declval.html)&lt; Expected const & &gt;(), [std::forward](http://en.cppreference.com/w/cpp/utility/forward.html)&lt; F &gt;(f)))
+- constexpr auto **and_then** (F &&f) const &&-&gt; decltype(and_then_impl([std::declval](http://en.cppreference.com/w/cpp/utility/declval.html)&lt; Expected const && &gt;(), [std::forward](http://en.cppreference.com/w/cpp/utility/forward.html)&lt; F &gt;(f)))
+- UTILS_EXPECTED_11_CONSTEXPR decltype(expected_map_impl([std::declval](http://en.cppreference.com/w/cpp/utility/declval.html)&lt; Expected & &gt;(), [std::declval](http://en.cppreference.com/w/cpp/utility/declval.html)&lt; F && &gt;())) **map** (F &&f) &
+- UTILS_EXPECTED_11_CONSTEXPR decltype(expected_map_impl([std::declval](http://en.cppreference.com/w/cpp/utility/declval.html)&lt; Expected &gt;(), [std::declval](http://en.cppreference.com/w/cpp/utility/declval.html)&lt; F && &gt;())) **map** (F &&f) &&
+- constexpr decltype(expected_map_impl([std::declval](http://en.cppreference.com/w/cpp/utility/declval.html)&lt; const Expected & &gt;(), [std::declval](http://en.cppreference.com/w/cpp/utility/declval.html)&lt; F && &gt;())) **map** (F &&f) const &
+- constexpr decltype(expected_map_impl([std::declval](http://en.cppreference.com/w/cpp/utility/declval.html)&lt; const Expected && &gt;(), [std::declval](http://en.cppreference.com/w/cpp/utility/declval.html)&lt; F && &gt;())) **map** (F &&f) const &&
+- UTILS_EXPECTED_11_CONSTEXPR decltype(expected_map_impl([std::declval](http://en.cppreference.com/w/cpp/utility/declval.html)&lt; Expected & &gt;(), [std::declval](http://en.cppreference.com/w/cpp/utility/declval.html)&lt; F && &gt;())) **transform** (F &&f) &
+- UTILS_EXPECTED_11_CONSTEXPR decltype(expected_map_impl([std::declval](http://en.cppreference.com/w/cpp/utility/declval.html)&lt; Expected &gt;(), [std::declval](http://en.cppreference.com/w/cpp/utility/declval.html)&lt; F && &gt;())) **transform** (F &&f) &&
+- constexpr decltype(expected_map_impl([std::declval](http://en.cppreference.com/w/cpp/utility/declval.html)&lt; const Expected & &gt;(), [std::declval](http://en.cppreference.com/w/cpp/utility/declval.html)&lt; F && &gt;())) **transform** (F &&f) const &
+- constexpr decltype(expected_map_impl([std::declval](http://en.cppreference.com/w/cpp/utility/declval.html)&lt; const Expected && &gt;(), [std::declval](http://en.cppreference.com/w/cpp/utility/declval.html)&lt; F && &gt;())) **transform** (F &&f) const &&
+- UTILS_EXPECTED_11_CONSTEXPR decltype(map_error_impl([std::declval](http://en.cppreference.com/w/cpp/utility/declval.html)&lt; Expected & &gt;(), [std::declval](http://en.cppreference.com/w/cpp/utility/declval.html)&lt; F && &gt;())) **map_error** (F &&f) &
+- UTILS_EXPECTED_11_CONSTEXPR decltype(map_error_impl([std::declval](http://en.cppreference.com/w/cpp/utility/declval.html)&lt; Expected && &gt;(), [std::declval](http://en.cppreference.com/w/cpp/utility/declval.html)&lt; F && &gt;())) **map_error** (F &&f) &&
+- constexpr decltype(map_error_impl([std::declval](http://en.cppreference.com/w/cpp/utility/declval.html)&lt; const Expected & &gt;(), [std::declval](http://en.cppreference.com/w/cpp/utility/declval.html)&lt; F && &gt;())) **map_error** (F &&f) const &
+- constexpr decltype(map_error_impl([std::declval](http://en.cppreference.com/w/cpp/utility/declval.html)&lt; const Expected && &gt;(), [std::declval](http://en.cppreference.com/w/cpp/utility/declval.html)&lt; F && &gt;())) **map_error** (F &&f) const &&
+- UTILS_EXPECTED_11_CONSTEXPR decltype(map_error_impl([std::declval](http://en.cppreference.com/w/cpp/utility/declval.html)&lt; Expected & &gt;(), [std::declval](http://en.cppreference.com/w/cpp/utility/declval.html)&lt; F && &gt;())) **transform_error** (F &&f) &
+- UTILS_EXPECTED_11_CONSTEXPR decltype(map_error_impl([std::declval](http://en.cppreference.com/w/cpp/utility/declval.html)&lt; Expected && &gt;(), [std::declval](http://en.cppreference.com/w/cpp/utility/declval.html)&lt; F && &gt;())) **transform_error** (F &&f) &&
+- constexpr decltype(map_error_impl([std::declval](http://en.cppreference.com/w/cpp/utility/declval.html)&lt; const Expected & &gt;(), [std::declval](http://en.cppreference.com/w/cpp/utility/declval.html)&lt; F && &gt;())) **transform_error** (F &&f) const &
+- constexpr decltype(map_error_impl([std::declval](http://en.cppreference.com/w/cpp/utility/declval.html)&lt; const Expected && &gt;(), [std::declval](http://en.cppreference.com/w/cpp/utility/declval.html)&lt; F && &gt;())) **transform_error** (F &&f) const &&
+- Expected UTILS_EXPECTED_11_CONSTEXPR **or_else** (F &&f) &
+- Expected UTILS_EXPECTED_11_CONSTEXPR **or_else** (F &&f) &&
+- Expected constexpr **or_else** (F &&f) const &
+- Expected constexpr **or_else** (F &&f) const &&
+- constexpr **Expected** (const Expected &rhs)=default
+- constexpr **Expected** (Expected &&rhs)=default
+- Expected & **operator=** (const Expected &rhs)=default
+- Expected & **operator=** (Expected &&rhs)=default
+- constexpr **Expected** (in_place_t, Args &&... args)
+- constexpr **Expected** (in_place_t, [std::initializer_list](http://en.cppreference.com/w/cpp/utility/initializer_list.html)&lt; U &gt; il, Args &&... args)
+- constexpr **Expected** (const [Unexpected](/cpp-sdk/4.5/api/classes/imfusion-utils-unexpected)&lt; G &gt; &e)
+- constexpr **Expected** ([Unexpected](/cpp-sdk/4.5/api/classes/imfusion-utils-unexpected)&lt; G &gt; const &e)
+- constexpr **Expected** ([Unexpected](/cpp-sdk/4.5/api/classes/imfusion-utils-unexpected)&lt; G &gt; &&e) noexcept([std::is_nothrow_constructible](http://en.cppreference.com/w/cpp/types/is_constructible.html)&lt; E, G && &gt;::value)
+- constexpr **Expected** ([Unexpected](/cpp-sdk/4.5/api/classes/imfusion-utils-unexpected)&lt; G &gt; &&e) noexcept([std::is_nothrow_constructible](http://en.cppreference.com/w/cpp/types/is_constructible.html)&lt; E, G && &gt;::value)
+- constexpr **Expected** (Unexpect_t, Args &&... args)
+- constexpr **Expected** (Unexpect_t, [std::initializer_list](http://en.cppreference.com/w/cpp/utility/initializer_list.html)&lt; U &gt; il, Args &&... args)
+- UTILS_EXPECTED_11_CONSTEXPR **Expected** (const Expected&lt; U, G &gt; &rhs)
+- UTILS_EXPECTED_11_CONSTEXPR **Expected** (const Expected&lt; U, G &gt; &rhs)
+- UTILS_EXPECTED_11_CONSTEXPR **Expected** (Expected&lt; U, G &gt; &&rhs)
+- UTILS_EXPECTED_11_CONSTEXPR **Expected** (Expected&lt; U, G &gt; &&rhs)
+- UTILS_EXPECTED_MSVC2015_CONSTEXPR **Expected** (U &&v)
+- UTILS_EXPECTED_MSVC2015_CONSTEXPR **Expected** (U &&v)
+- Expected & **operator=** (U &&v)
+- Expected & **operator=** (U &&v)
+- Expected & **operator=** (const [Unexpected](/cpp-sdk/4.5/api/classes/imfusion-utils-unexpected)&lt; G &gt; &rhs)
+- Expected & **operator=** ([Unexpected](/cpp-sdk/4.5/api/classes/imfusion-utils-unexpected)&lt; G &gt; &&rhs) noexcept
+- void **emplace** (Args &&... args)
+- void **emplace** (Args &&... args)
+- void **emplace** ([std::initializer_list](http://en.cppreference.com/w/cpp/utility/initializer_list.html)&lt; U &gt; il, Args &&... args)
+- void **emplace** ([std::initializer_list](http://en.cppreference.com/w/cpp/utility/initializer_list.html)&lt; U &gt; il, Args &&... args)
+- detail::enable_if_t&lt; [detail::is_swappable](/cpp-sdk/4.5/api/structs/imfusion-utils-detail-is-swappable)&lt; OT &gt;::value &&[detail::is_swappable](/cpp-sdk/4.5/api/structs/imfusion-utils-detail-is-swappable)&lt; OE &gt;::value &&([std::is_nothrow_move_constructible](http://en.cppreference.com/w/cpp/types/is_move_constructible.html)&lt; OT &gt;::value||[std::is_nothrow_move_constructible](http://en.cppreference.com/w/cpp/types/is_move_constructible.html)&lt; OE &gt;::value)&gt; **swap** (Expected &rhs) noexcept([std::is_nothrow_move_constructible](http://en.cppreference.com/w/cpp/types/is_move_constructible.html)&lt; T &gt;::value &&[detail::is_nothrow_swappable](/cpp-sdk/4.5/api/structs/imfusion-utils-detail-is-nothrow-swappable)&lt; T &gt;::value &&[std::is_nothrow_move_constructible](http://en.cppreference.com/w/cpp/types/is_move_constructible.html)&lt; E &gt;::value &&[detail::is_nothrow_swappable](/cpp-sdk/4.5/api/structs/imfusion-utils-detail-is-nothrow-swappable)&lt; E &gt;::value)
+- constexpr const T \* **operator-&gt;** () const
+- UTILS_EXPECTED_11_CONSTEXPR T \* **operator-&gt;** ()
+- constexpr const U & **operator\*** () const &
+- UTILS_EXPECTED_11_CONSTEXPR U & **operator\*** () &
+- constexpr const U && **operator\*** () const &&
+- UTILS_EXPECTED_11_CONSTEXPR U && **operator\*** () &&
+- constexpr bool **has_value** () const noexcept
+- constexpr **operator bool** () const noexcept
+- UTILS_EXPECTED_11_CONSTEXPR const U & **value** () const &
+- UTILS_EXPECTED_11_CONSTEXPR U & **value** () &
+- UTILS_EXPECTED_11_CONSTEXPR const U && **value** () const &&
+- UTILS_EXPECTED_11_CONSTEXPR U && **value** () &&
+- constexpr const E & **error** () const &
+- UTILS_EXPECTED_11_CONSTEXPR E & **error** () &
+- constexpr const E && **error** () const &&
+- UTILS_EXPECTED_11_CONSTEXPR E && **error** () &&
+- constexpr T **value_or** (U &&v) const &
+- UTILS_EXPECTED_11_CONSTEXPR T **value_or** (U &&v) &&

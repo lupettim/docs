@@ -1,0 +1,64 @@
+---
+title: "ImFusion::GUI::BoxAnnotationEventHandler"
+sidebarTitle: "BoxAnnotationEventHandler"
+description: "Event handler for creating and editing Box annotations ."
+---
+
+`#include <ImFusion/GUI/BoxAnnotationEventHandler.h>`
+
+## Overview
+
+Event handler for creating and editing [Box annotations](/cpp-sdk/4.5/api/classes/imfusion-glbox).
+
+This event handler operates in different InteractionModes: None: default InteractionMode, no action is performed Create: allows setting the first two points that define the box MoveCorner: allows moving a corner of the box with the mouse MoveSide: allows moving a side of the box with the mouse MoveCenter: allows moving the box's center by dragging it with the mouse
+
+## Public Types
+
+- enum class InteractionMode &#123; **None** = 0 , **Create** = 1 , **MoveCorner** = 1 &lt;&lt; 1 , **MoveSide** = 1 &lt;&lt; 2 , **MoveCenter** = 1 &lt;&lt; 3 &#125; — Enum class defining different interaction modes.
+
+## Public Member Functions
+
+- **BoxAnnotationEventHandler** ([GlBox](/cpp-sdk/4.5/api/classes/imfusion-glbox) &box, bool startInCreationMode=false) — Constructor from a [GlBox](/cpp-sdk/4.5/api/classes/imfusion-glbox) and an option to start the interaction in InteractionMode::Create.
+- void **setInteractionMode** (InteractionMode mode) — Setter/Getter pair for the InteractionMode.
+- InteractionMode **interactionMode** () const
+- void **enableCreationMode** () — If not currently in Create Mode, clears the current points and enables InteractionMode::Create.
+- void [setAdjustToViewAxis](#setadjusttoviewaxis) (bool enable) — Adjust the orientation of the box to the axis of the view.
+- bool **adjustToViewAxis** () const
+- void [setDefaultOrientation](#setdefaultorientation) (mat3 orientation) — Sets the default orientation of box when created by the user.
+- mat3 **defaultOrientation** () const
+- const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; vec3 &gt; & **points** () const — Returns the points that are currently set.
+- [EventResult](/cpp-sdk/4.5/api/structs/imfusion-gui-eventresult) [handleInputEvent](#handleinputevent) (const [InputEvent](/cpp-sdk/4.5/api/classes/imfusion-gui-inputevent) &event, const [View](/cpp-sdk/4.5/api/classes/imfusion-gui-view) &view) override — This function is called by sources of input events in order to dispatch them to the handlers.
+
+## Member Function Documentation
+
+### setAdjustToViewAxis
+
+```cpp
+void ImFusion::GUI::BoxAnnotationEventHandler::setAdjustToViewAxis (bool enable)
+```
+
+Adjust the orientation of the box to the axis of the view.
+
+If set, the box will always be aligned to the current axis of the view it is created in, e.g. the box will be aligned to the screen axes. Otherwise the box uses the defaultOrientation. This only has an effect when the annotation is created. Enabled by default.
+
+### setDefaultOrientation
+
+```cpp
+void ImFusion::GUI::BoxAnnotationEventHandler::setDefaultOrientation (mat3 orientation)
+```
+
+Sets the default orientation of box when created by the user.
+
+This only has an effect if adjustToViewAxis is disabled. By default, the orientation is mat3::Identity(), i.e. the box will be axis-aligned to the world coordinate system.
+
+### handleInputEvent
+
+```cpp
+EventResult ImFusion::GUI::BoxAnnotationEventHandler::handleInputEvent (const InputEvent & event, const View & view)
+```
+
+*override, virtual*
+
+This function is called by sources of input events in order to dispatch them to the handlers.
+
+In case there are more than one InputEventHandlers dispatchers are intended call this function consecutively until the first handler indicates to stop by returning a result where [EventResult::stopPropagation()](/cpp-sdk/4.5/api/structs/imfusion-gui-eventresult) is true.

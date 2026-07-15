@@ -1,0 +1,197 @@
+---
+title: "ImFusion::Platform::DynamicLib"
+sidebarTitle: "DynamicLib"
+description: "Provides access to functions of a shared library."
+---
+
+`#include <ImFusion/Core/DynamicLib.h>`
+
+## Overview
+
+Provides access to functions of a shared library.
+
+This class will load a shared library file with a OS dependent method (e.g. LoadLibrary on Windows or dlopen on unix). If the shared library was loaded successfully, symbols like functions can be loaded. This basically works with any shared library also once that the application is not linking against.
+
+Loading a shared library increases an OS internal reference counter. If this object goes out of scope, the reference counter is decreased again and the shared library might be unloaded from the process.
+
+## Public Types
+
+- enum class [Mode](#mode) &#123; Lazy , Now &#125; — These modes currently have no effect on Windows.
+- enum class [Flag](#flag) : int &#123; **None** = 0 , Global = 1 , Local = 2 , NoLoad = 4 &#125;
+
+## Public Member Functions
+
+- [DynamicLib](#dynamiclib-1-2) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &path, [Mode](#mode) mode=Mode::Lazy, [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags)&lt; [Flag](#flag) &gt; flags=Flag::None) — Tries to open the shared library at the given path.
+- [DynamicLib](#dynamiclib-2-2) (LIB_HANDLE existingHandle) — Creates an instance from an existing handle.
+- **~DynamicLib** () — Frees the internal handle to the shared library if it hasn't been released yet.
+- LIB_HANDLE [release](#release) () — Releases and returns the internal handle to the shared library.
+- void \* [findSymbol](#findsymbol-1-2) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &symbolName) noexcept — Loads the symbol with the given name from the library.
+- F [findSymbol](#findsymbol-2-2) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &symbolName) noexcept — Convenience variant to load the symbol with the given name from the library.
+- F [loadSymbol](#loadsymbol-1-2) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &symbolName) — Loads the symbol with the given name from the library.
+- void \* [loadSymbol](#loadsymbol-2-2) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &symbolName) — Same as the function above but does not cast to a concrete type.
+
+## Member Enumeration Documentation
+
+### Mode
+
+```cpp
+enum class ImFusion::Platform::DynamicLib::Mode
+```
+
+*strong*
+
+These modes currently have no effect on Windows.
+
+**Enumerator:**
+
+- `Lazy` — Symbols are loaded when needed. See RTLD_LAZY.
+- `Now` — Symbols are resolved right away. See RTLD_NOW.
+
+### int
+
+```cpp
+enum class ImFusion::Platform::DynamicLib::Flag : int
+```
+
+*strong*
+
+**Enumerator:**
+
+- `Global` — Symbols are available globally. See RTLD_GLOBAL.
+- `Local` — Symbols are only available in the current library. See RTLD_LOCAL.
+- `NoLoad` — Don't actual load the library. See RTLD_NOLOAD.
+
+## Constructor & Destructor Documentation
+
+### DynamicLib
+
+```cpp
+ImFusion::Platform::DynamicLib::DynamicLib (const std::string & path, Mode mode = Mode::Lazy, Flags < Flag > flags = Flag::None)
+```
+
+*explicit*
+
+Tries to open the shared library at the given path.
+
+For details about mode and flags see [https://linux.die.net/man/3/dlopen](https://linux.die.net/man/3/dlopen). Both mode and flags have no effect on Windows.
+
+**Exceptions:**
+
+- `std::runtime_error` — if the library cannot be loaded.
+
+### DynamicLib
+
+```cpp
+ImFusion::Platform::DynamicLib::DynamicLib (LIB_HANDLE existingHandle)
+```
+
+*explicit*
+
+Creates an instance from an existing handle.
+
+This assumes that the handle was received from either LoadLibrary (Windows) or dlopen (Linux/macOS). No checks are performed whether the handle is actually valid! Only use when you know what you are doing!
+
+## Member Function Documentation
+
+### release
+
+```cpp
+LIB_HANDLE ImFusion::Platform::DynamicLib::release ()
+```
+
+Releases and returns the internal handle to the shared library.
+
+This does not free the handle but only returns it and assures that it is no longer freed by the dtor. Shared libraries are always freed automatically when the process exists. This function is usually needed when a function pointer needs to be kept valid even when the corresponding [DynamicLib](/cpp-sdk/4.5/api/classes/imfusion-platform-dynamiclib) object goes out of scope.
+
+### findSymbol
+
+```cpp
+void * ImFusion::Platform::DynamicLib::findSymbol (const std::string & symbolName)
+```
+
+*noexcept*
+
+Loads the symbol with the given name from the library.
+
+In general, this only works with C-style symbols and not with C++ symbols. Returns nullptr if the symbol could not be found.
+
+**Warning:** The returned pointer is only valid as long as the underlying library is loaded. The pointer may become invalid as soon as the [DynamicLib](/cpp-sdk/4.5/api/classes/imfusion-platform-dynamiclib) instance is destroyed (unless [release()](#release) was called).
+
+Example:
+
+```cpp
+// load a function called "my_func" that receives an int and returns a float
+typedef float (*MY_FUNC)(int);
+if (auto my_func = reinterpret_cast<MY_FUNC>(lib.findSymbol("my_func")))
+    my_func(5);
+```
+ fragment
+
+### findSymbol
+
+```cpp
+template<typename F> F ImFusion::Platform::DynamicLib::findSymbol (const std::string & symbolName)
+```
+
+*inline, noexcept*
+
+Convenience variant to load the symbol with the given name from the library.
+
+In general, this only works with C-style symbols and not with C++ symbols. Returns nullptr if the symbol could not be found.
+
+**Template Parameters:** | F | Function signature for the searched symbol. This signature **must** match the actual signature of the function as defined by the shared library. Otherwise the behavior is undefined. |
+| --- | --- |
+
+**Warning:** The returned pointer is only valid as long as the underlying library is loaded. The pointer may become invalid as soon as the [DynamicLib](/cpp-sdk/4.5/api/classes/imfusion-platform-dynamiclib) instance is destroyed (unless [release()](#release) was called).
+
+Example:
+
+```cpp
+// load a function called "my_func" that receives an int and returns a float
+typedef float (*MY_FUNC)(int);
+if (auto my_func = lib.findSymbol<MY_FUNC>("my_func"))
+    my_func(5);
+```
+ fragment
+
+### loadSymbol
+
+```cpp
+template<typename F> F ImFusion::Platform::DynamicLib::loadSymbol (const std::string & symbolName)
+```
+
+*inline*
+
+Loads the symbol with the given name from the library.
+
+The template argument must be a function signature for the symbol. This signature **must** match the actual signature of the function as defined by the shared library. Otherwise the behaviour is undefined.
+
+In general, this only works with C-style symbols and not with C++ symbols.
+
+Throws an exception if the function does not exist. Never returns a nullptr.
+
+The returned pointer is only valid as long as the underlying library is loaded. When [DynamicLib](/cpp-sdk/4.5/api/classes/imfusion-platform-dynamiclib) goes out of scope, the pointer becomes invalid (unless [DynamicLib::release](#release) was called)!
+
+Example:
+
+```cpp
+// load a function called "my_func" that receives an int and returns a float
+try {
+ typedef float (*MY_FUNC)(int);
+ auto my_func = lib.loadSymbol<MY_FUNC>("my_func");
+    my_func(5);
+} catch { const std::runtime_error&) { }
+```
+ fragment
+
+****Deprecated**:** "Use non-throwing findSymbol() instead."
+
+### loadSymbol
+
+```cpp
+void * ImFusion::Platform::DynamicLib::loadSymbol (const std::string & symbolName)
+```
+
+Same as the function above but does not cast to a concrete type.
+
+****Deprecated**:** "Use non-throwing findSymbol() instead."

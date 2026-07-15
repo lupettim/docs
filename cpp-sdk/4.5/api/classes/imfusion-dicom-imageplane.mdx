@@ -1,0 +1,43 @@
+---
+title: "ImFusion::Dicom::ImagePlane"
+sidebarTitle: "ImagePlane"
+description: "Image Plane Module (PS 3.3 C.7.6.2)."
+---
+
+`#include <ImFusion/Dicom/DicomModule.h>`
+
+## Overview
+
+[Image](/cpp-sdk/4.5/api/structs/imfusion-dicom-image) Plane [Module](/cpp-sdk/4.5/api/classes/imfusion-dicom-module) (PS 3.3 C.7.6.2).
+
+**See also:** [http://dicom.nema.org/medical/dicom/current/output/chtml/part03/sect_C.7.6.2.html](http://dicom.nema.org/medical/dicom/current/output/chtml/part03/sect_C.7.6.2.html)
+
+## Classes
+
+- class [DetectorInformationSequence](/cpp-sdk/4.5/api/classes/imfusion-dicom-imageplane-detectorinformationsequence) — C.8.4.11 NM Detector [Module](/cpp-sdk/4.5/api/classes/imfusion-dicom-module).
+
+## Public Member Functions
+
+- **ImagePlane** ([ModuleList](/cpp-sdk/4.5/api/classes/imfusion-dicom-modulelist) &parent, [Type](/cpp-sdk/4.5/api/classes/imfusion-dicom-module) type, bool searchIntoSubs=false)
+- bool [computeTransformation](#computetransformation) (const [ImageDescriptor](/cpp-sdk/4.5/api/structs/imfusion-imagedescriptor) &desc, mat4 &matrixOut) const — Compute plane transformation from the position and orientation.
+- void **saveTransformation** (const [ImageDescriptor](/cpp-sdk/4.5/api/structs/imfusion-imagedescriptor) &desc, const mat4 &matrix, int sliceIndex)
+
+## Public Attributes
+
+- [Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element)&lt; double &gt; **sliceThickness**
+- [Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element)&lt; double &gt; **spacingBetweenSlices**
+- [Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element)&lt; [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; &gt; **imagePositionPatient**
+- [Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element)&lt; [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; &gt; **imageOrientationPatient**
+- [Dicom::Sequence](/cpp-sdk/4.5/api/classes/imfusion-dicom-sequence)&lt; [DetectorInformationSequence](/cpp-sdk/4.5/api/classes/imfusion-dicom-imageplane-detectorinformationsequence) &gt; **detectorInformationSequence**
+
+## Member Function Documentation
+
+### computeTransformation
+
+```cpp
+bool ImFusion::Dicom::ImagePlane::computeTransformation (const ImageDescriptor & desc, mat4 & matrixOut) const
+```
+
+Compute plane transformation from the position and orientation.
+
+The descriptor must already contain the final spacing in 2D. If the plane transformation could be determined, matrix will be set to the transformation and true is returned. Otherwise the matrix will be set to identity and false is returned. See also [ImFusion::Slice](/cpp-sdk/4.5/api/classes/imfusion-slice) on how the properties (e.g. normal or position) of the plane can be extracted.

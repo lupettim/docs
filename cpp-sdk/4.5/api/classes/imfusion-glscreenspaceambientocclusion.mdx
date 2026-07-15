@@ -1,0 +1,70 @@
+---
+title: "ImFusion::GlScreenSpaceAmbientOcclusion"
+sidebarTitle: "GlScreenSpaceAmbientOcclusion"
+description: "Post-processing filter implementing Screen Space Ambient Occlusion (SSAO)."
+---
+
+`#include <ImFusion/GL/GlScreenSpaceAmbientOcclusion.h>`
+
+## Overview
+
+Post-processing filter implementing Screen Space Ambient Occlusion (SSAO).
+
+SSAO is a post-processing effect providing an approximation of global illumination and improving depth perception for opaque scenes. However, semi-transparent surfaces will produce rendering artifacts in which case you may decide to disable it.
+
+**See also:** [https://en.wikipedia.org/wiki/Screen_space_ambient_occlusion](https://en.wikipedia.org/wiki/Screen_space_ambient_occlusion)
+
+## Public Member Functions
+
+- void [apply](#apply) (const [GL::Texture](/cpp-sdk/4.5/api/classes/imfusion-gl-texture) &inputColorTex, const [GL::Texture](/cpp-sdk/4.5/api/classes/imfusion-gl-texture) &inputDepthTex, const [GL::ViewState](/cpp-sdk/4.5/api/classes/imfusion-gl-viewstate) &viewState) — Applies depth darkening to the given input textures and renders the result directly to the screen.
+- double **strength** () const — Returns the strength of the SSAO effect in [0..1] range.
+- void **setStrength** (double value) — Sets the strength of the SSAO effect in [0..1] range.
+- double **occlusionRadius** () const — Returns the maximum distance (mm) for two fragments to occlude each other.
+- void **setOcclusionRadius** (double value) — Sets the maximum distance (mm) for two fragments to occlude each other.
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+## Member Function Documentation
+
+### apply
+
+```cpp
+void ImFusion::GlScreenSpaceAmbientOcclusion::apply (const GL::Texture & inputColorTex, const GL::Texture & inputDepthTex, const GL::ViewState & viewState)
+```
+
+Applies depth darkening to the given input textures and renders the result directly to the screen.
+
+If you have an active FBO with a texture attached, it will render to that.
+
+**Parameters:**
+
+- `inputColorTex` — Input color image, must not be 0.
+- `inputDepthTex` — Input depth image, must not be 0.
+
+### configure
+
+```cpp
+void ImFusion::GlScreenSpaceAmbientOcclusion::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### configuration
+
+```cpp
+void ImFusion::GlScreenSpaceAmbientOcclusion::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality

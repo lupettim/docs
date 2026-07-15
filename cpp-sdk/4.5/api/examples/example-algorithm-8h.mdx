@@ -1,0 +1,51 @@
+---
+title: "ExampleAlgorithm.h"
+---
+
+```cpp
+#pragma once
+
+#include <ImFusion/Base/Algorithm.h>
+#include <ImFusion/Base/SharedImageSet.h>
+#include <ImFusion/Core/Mat.h>
+#include <ImFusion/Core/Parameter.h>
+
+#include <vector>
+
+using namespace ImFusion;
+
+class ExampleAlgorithm : public Algorithm
+{
+public:
+ // Algorithm can have any kind of constructor
+ // Usually it's a good idea to use the input data as arguments
+ explicit ExampleAlgorithm(SharedImageSet* image);
+    ~ExampleAlgorithm();
+
+ static bool createCompatible(const DataList& data, Algorithm** a = 0);
+
+ void compute() override;
+ OwningDataList takeOutput() override;
+
+ void configure(const Properties* p) override;
+ void configuration(Properties* p) const override;
+
+private:
+ SharedImageSet* m_image;
+
+private:
+ std::unique_ptr<SharedImageSet> m_output;
+
+public:
+ // Use the Parameter class for convenience to save some boilerplate code for
+ // (de)serialization. Define the name and initial (and default) value here, and register
+ // the Parameter with the parent Configurable interface.
+ Parameter<int> p_paramInt = {"paramInt", 0, this};
+
+private:
+ // Alternatively, you can do the (de)serialization of members manually.
+ double m_paramDouble;
+    vec2 m_paramVec;
+};
+```
+ fragment

@@ -1,0 +1,50 @@
+---
+title: "ImFusion::SimilarityMeasureLC2"
+sidebarTitle: "SimilarityMeasureLC2"
+---
+
+## Public Member Functions
+
+- **SimilarityMeasureLC2** ([SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*img1, [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*img2)
+- void **setPatchSize** (int p)
+- int **patchSize** () const
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Set one or multiple properties.
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Retrieve the properties of this object.
+
+## Static Public Member Functions
+
+- static void **defaultConfiguration** ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p)
+
+## Protected Member Functions
+
+- void **checkPatchsizeAndSpacing** ()
+
+## Protected Attributes
+
+- int **m_patchSize**
+
+## Member Function Documentation
+
+### configure
+
+```cpp
+void ImFusion::SimilarityMeasureLC2::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Set one or multiple properties.
+
+The default implementation retrieves the mask mode (param names "maskModeImg1" and "maskModeImg2")
+
+### configuration
+
+```cpp
+void ImFusion::SimilarityMeasureLC2::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Retrieve the properties of this object.
+
+The default implementation stores the mask mode (param names "maskModeImg1" and "maskModeImg2")

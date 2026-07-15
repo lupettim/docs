@@ -1,0 +1,111 @@
+---
+title: "ImFusion::Dicom::DatasetCache"
+sidebarTitle: "DatasetCache"
+description: "The DatasetCache class provides caching of DcmDataset loaded from different locations."
+---
+
+`#include <ImFusion/Dicom/DicomDatasetCache.h>`
+
+## Overview
+
+The [DatasetCache](/cpp-sdk/4.5/api/classes/imfusion-dicom-datasetcache) class provides caching of DcmDataset loaded from different locations.
+
+The cache has a certain maximum size and will automatically remove datasets from the cache if the maximum size is exceeded. The least recent accessed datasets will be removed first.
+
+When loading a DcmDataset, all data is loaded into memory right away (see DcmItem::loadAllDataIntoMemory).
+
+## Public Member Functions
+
+- **DatasetCache** (int maxCost=2048)
+- [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; DcmDataset &gt; **loadFromFile** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &filepath, [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) \*progress=nullptr, bool loadIntoMemory=true) — Loads the local file (see load(Url)).
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; DcmDataset &gt; &gt; [loadFromFolder](#loadfromfolder) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &folderpath, bool recursive=false, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; \*filepathsOut=nullptr, [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) \*progress=nullptr, bool loadIntoMemory=true, bool ignoreNonDicomFiles=true) — Loads and returns all dicom files from the given folder.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; DcmDataset &gt; &gt; [loadFromPacs](#loadfrompacs) (const Url &url, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; \*filepathsOut=nullptr, [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) \*progress=nullptr) — Loads and returns all dicom files from a pacs series URL The method will first issue a find request for the given series `url`.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; DcmDataset &gt; &gt; [loadFromHttp](#loadfromhttp) (const Url &url, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; \*filepathsOut=nullptr, [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) \*progress=nullptr) — Loads and returns all dicom files from the given URL.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; DcmDataset &gt; &gt; [load](#load) (const Url &url, [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; \*filepathsOut=nullptr, [Progress](/cpp-sdk/4.5/api/classes/imfusion-progress) \*progress=nullptr, bool loadIntoMemory=true) — Loads and returns the dataset at the given url.
+- void **addDataset** ([std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; DcmDataset &gt; dataset, const Url &url) — Adds an external dataset to the cache.
+- bool **contains** (const Url &url) const — Returns true if the given url is available in the cache.
+- void **remove** (const Url &url) — Removes the given url from the cache. Does nothing if cache does not contain the url.
+- void **clear** () — Removes all items from the cache.
+- double **totalCost** () const — Returns the total cost of all datasets in the cache.
+- size_t **size** () const — Returns the number of datasets in the cache.
+- void **setAuthorizationProvider** ([std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [Network::AuthorizationProvider](/cpp-sdk/4.5/api/classes/imfusion-network-authorizationprovider) &gt; provider) — Sets the AuthorizationProvider for the internal [Dicom::WebClient](/cpp-sdk/4.5/api/classes/imfusion-dicom-webclient) object.
+- [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [Network::AuthorizationProvider](/cpp-sdk/4.5/api/classes/imfusion-network-authorizationprovider) &gt; **authorizationProvider** () const — Reteurns the AuthorizationProvider for the internal [Dicom::WebClient](/cpp-sdk/4.5/api/classes/imfusion-dicom-webclient) object.
+- void [setMaxCost](#setmaxcost) (int maxCost) — Sets the maximum allowed total cost of cache in MB.
+- int **maxCost** () const
+- void [registerError](#registererror) (const [Error](/cpp-sdk/4.5/api/structs/imfusion-dicom-error) &error) const override — Sends the given error to all error handler callbacks.
+- void **registerHttpError** (const [Network::HttpError](/cpp-sdk/4.5/api/structs/imfusion-network-httperror) &error)
+
+## Member Function Documentation
+
+### loadFromFolder
+
+```cpp
+std::vector < std::shared_ptr < DcmDataset > > ImFusion::Dicom::DatasetCache::loadFromFolder (const std::string & folderpath, bool recursive = false, std::vector < std::string > * filepathsOut = nullptr, Progress * progress = nullptr, bool loadIntoMemory = true, bool ignoreNonDicomFiles = true)
+```
+
+Loads and returns all dicom files from the given folder.
+
+Files are always returned in a naturally sorted order (e.g. 10.dcm after 1.dcm). The optional filepathsOut contains the paths to each of the return datasets. If the files in the folder are larger than the maximum cost, the alphabetical first files will be cached before the last ones. All files of the folder are always loaded and returned, independend of the caching behaviour. See load(QUrl) for details about loadIntoMemory.
+
+### loadFromPacs
+
+```cpp
+std::vector < std::shared_ptr < DcmDataset > > ImFusion::Dicom::DatasetCache::loadFromPacs (const Url & url, std::vector < std::string > * filepathsOut = nullptr, Progress * progress = nullptr)
+```
+
+Loads and returns all dicom files from a pacs series URL The method will first issue a find request for the given series `url`.
+
+For any listed dataset the method first checks if the dataset is already cached. If this is the case the cached instance will be used. Otherwise a move request will be send to the PACS server. Caching happens in the order in which the data is returned by the PACS server. All files of the series are always loaded and returned, independend of the caching behaviour. I.e. for files which are currently not cached a move request will be send to the PACS server.
+
+### loadFromHttp
+
+```cpp
+std::vector < std::shared_ptr < DcmDataset > > ImFusion::Dicom::DatasetCache::loadFromHttp (const Url & url, std::vector < std::string > * filepathsOut = nullptr, Progress * progress = nullptr)
+```
+
+Loads and returns all dicom files from the given URL.
+
+The URL can be for two DICOMweb endpoints:
+
+- For a single instance (e.g. /studies/&#123;study&#125;/series/&#123;series&#125;/instances/&#123;instance&#125;)
+- For a single series (e.g. /studies/&#123;study&#125;/series/&#123;series&#125;) In the second case, all instances belonging to the series are queried before downloading those instances.
+
+### load
+
+```cpp
+std::vector < std::shared_ptr < DcmDataset > > ImFusion::Dicom::DatasetCache::load (const Url & url, std::vector < std::string > * filepathsOut = nullptr, Progress * progress = nullptr, bool loadIntoMemory = true)
+```
+
+Loads and returns the dataset at the given url.
+
+If the cache already contains the dataset for the given url, the cached dataset is returned. Otherwise the dataset is loaded from the url and added to the cache. Returns nullptr if the dataset could not be loaded.
+
+If the loaded dataset is larger than the maximum cost of the cache, the dataset will not be cached but still returned normally.
+
+If the url is a folder and the query contains a key 'recursive' with a value of 1, the folder is loaded recursive.
+
+If the url is a folder and the query contains a key 'ignoreNonDicom' with a value of 0, then all files will be loaded as DICOMs. Without this option or with a value of 1, files without a valid DICOM header or with certain non-DICOM extensions (.pdf, .txt, .png...) are ignored.
+
+By default, the dataset is loaded completely into memory (and stored like this in the cache if applicable). This can use a lot of memory especially when the pixel data is not going to be used. In those cases loadIntoMemory should be set to false. The pixel data and all other tags will still be available through the DcmDataset but will be loaded on demand.
+
+### setMaxCost
+
+```cpp
+void ImFusion::Dicom::DatasetCache::setMaxCost (int maxCost)
+```
+
+Sets the maximum allowed total cost of cache in MB.
+
+If the cache exceeds the maximum cost, it will start to remove datasets until the total cost is below the maximum again. The actual memory requirements might still exceed the maximum cost because a dataset can grow in size (e.g. when it gets uncompressed). The cache has no means of detecting this and might therefore use the wrong cost. If the cache is too small, it might not be possible to cache big datasets. Passing a cost of 0 disables caching completely.
+
+### registerError
+
+```cpp
+void ImFusion::Dicom::DatasetCache::registerError (const Error & error) const
+```
+
+*override, virtual*
+
+Sends the given error to all error handler callbacks.
+
+If there is no handler registered yet, the error will be stored until the first registration of one.

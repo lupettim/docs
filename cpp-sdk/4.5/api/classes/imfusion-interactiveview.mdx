@@ -1,0 +1,257 @@
+---
+title: "ImFusion::InteractiveView"
+sidebarTitle: "InteractiveView"
+description: "Abstract base class for a view that can be hosted by a DisplayWidget ."
+---
+
+`#include <ImFusion/GUI/InteractiveView.h>`
+
+## Overview
+
+Abstract base class for a view that can be hosted by a [DisplayWidget](/cpp-sdk/4.5/api/classes/imfusion-displaywidget).
+
+An [InteractiveView](/cpp-sdk/4.5/api/classes/imfusion-interactiveview) is a wrapper around a [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) adding a [ViewInteraction](/cpp-sdk/4.5/api/classes/imfusion-viewinteraction), overlays, as well as a set of properties and signals. Each view has a certain size on the screen which is determined by the layout in [DisplayWidget](/cpp-sdk/4.5/api/classes/imfusion-displaywidget). Before rendering the actual view content with [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview), an [InteractiveView](/cpp-sdk/4.5/api/classes/imfusion-interactiveview) draws a rectangular border around the content. The color of the border can be set with setDrawBorder.
+
+[InteractiveView](/cpp-sdk/4.5/api/classes/imfusion-interactiveview) takes care of automatically layouting the hosted overlays, which are always drawn on top of the view content. Overlays can be placed at different anchors (e.g. corners, edges) of the view. If several overlays reside on the same Anchor, the view will position them in a way that they don't overlap.
+
+## Public Types
+
+- enum LayoutDirection &#123; **Horizontal** = int(GUI::ViewOverlay::LayoutDirection::Horizontal) , **Vertical** = int(GUI::ViewOverlay::LayoutDirection::Vertical) &#125; — Layout direction when stacking multiple InteractiveOverlays at the same anchor.
+
+## Public Slots
+
+- void **setVisible** (bool value) — Make view hidden/visible.
+- void **render** () override
+- virtual void **reset** ()
+
+## Signals
+
+- void **visibilityChanged** (bool visible)
+- void **rectChanged** (QRect rect)
+- void **updateRequested** ()
+- void **visibilityChangeRequested** (bool visible)
+- void **visibleDataChanged** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &before, const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &now) — Emitted in setVisibleData after the visible data has been changed from before to now.
+
+## Public Member Functions
+
+- **InteractiveView** ([std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &gt; [glView](/cpp-sdk/4.5/api/classes/imfusion-gui-view)) — Construct view with underlying [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview).
+- void **setInteractions** ([std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [ViewInteraction](/cpp-sdk/4.5/api/classes/imfusion-viewinteraction) &gt; &gt; interactions) — Replace all existing ViewInteractions with the ones in *interactions*.
+- void [addInteraction](#addinteraction) ([std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [ViewInteraction](/cpp-sdk/4.5/api/classes/imfusion-viewinteraction) &gt; interaction, int where=-1) — Add an interaction at the given position (default is at the end).
+- void **removeInteraction** ([ViewInteraction](/cpp-sdk/4.5/api/classes/imfusion-viewinteraction) \*interaction) — Delete the given interaction, if it exists. Note: This will make the pointer invalid.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [ViewInteraction](/cpp-sdk/4.5/api/classes/imfusion-viewinteraction) \* &gt; **interactions** () const — Returns all view interactions of this view.
+- T \* **findInteraction** () const — Returns the first [ViewInteraction](/cpp-sdk/4.5/api/classes/imfusion-viewinteraction) that dynamic_casts to T or nullptr if no such [ViewInteraction](/cpp-sdk/4.5/api/classes/imfusion-viewinteraction) exists.
+- void **setBorderColor** (const QColor &color) — Set border color.
+- void **setDrawBorder** (bool drawBorder) — Set whether to draw a border around the view.
+- bool **isBorderDrawn** () const — Get whether to draw a border around the view.
+- void **setBorderPixelSize** (int pixelSize) — Set the size of the border around the view.
+- int **borderPixelSize** () const — Get the size of the border around the view.
+- void **setBackgroundColor** (const QColor &color) — Set border color.
+- void **setViewGroup** ([ViewGroup](/cpp-sdk/4.5/api/classes/imfusion-viewgroup) \*group) — Set associated view group. The view is not automatically added to the view group.
+- [ViewGroup](/cpp-sdk/4.5/api/classes/imfusion-viewgroup) \* **viewGroup** () const — Get associated view group.
+- QRectF **boundingRect** () const — Bounding rect in item coordinates.
+- virtual void [setRect](#setrect) (const QRect &rect) — Set position and size of view in scene coordinates.
+- QRect **rect** () const — Get position and size of view in scene coordinates.
+- void [setViewport](#setviewport) (const [GL::Viewport](/cpp-sdk/4.5/api/structs/imfusion-gl-viewport) &rect) override — Sets the area where this view is drawn in [render()](/cpp-sdk/4.5/api/classes/imfusion-gui-view) wrt. the attached framebuffer.
+- virtual bool [sceneEvent](#sceneevent) (QEvent \*qtEvent, const [GUI::InputEvent](/cpp-sdk/4.5/api/classes/imfusion-gui-inputevent) &inputEvent) — Called by the [DisplayWidget](/cpp-sdk/4.5/api/classes/imfusion-displaywidget) if a user input event has happened on this view.
+- void [addObject](#addobject) ([GUI::ViewObject](/cpp-sdk/4.5/api/classes/imfusion-gui-viewobject) \*object) override — Add the given [InteractiveObject](/cpp-sdk/4.5/api/classes/imfusion-interactiveobject) to this view.
+- void [removeObject](#removeobject) (const [GUI::ViewObject](/cpp-sdk/4.5/api/classes/imfusion-gui-viewobject) \*object) override — Remove the given [InteractiveObject](/cpp-sdk/4.5/api/classes/imfusion-interactiveobject) from this view.
+- virtual bool **hasObject** (const [InteractiveObject](/cpp-sdk/4.5/api/classes/imfusion-interactiveobject) \*object) const
+- virtual void [addOverlay](#addoverlay) ([std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [InteractiveOverlay](/cpp-sdk/4.5/api/classes/imfusion-interactiveoverlay) &gt; overlay, int position=-1) — Add overlay to this view.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [GUI::ViewOverlay](/cpp-sdk/4.5/api/classes/imfusion-gui-viewoverlay) &gt; [removeOverlay](#removeoverlay) ([GUI::ViewOverlay](/cpp-sdk/4.5/api/classes/imfusion-gui-viewoverlay) \*overlay) override — Remove overlay. The user is responsible for deleting the overlay afterwards.
+- void **setWaterMark** ([SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*image) — Set a water mark to the view.
+- void **setAnchorLayoutDirection** ([InteractiveOverlay::AnchorPoint](/cpp-sdk/4.5/api/classes/imfusion-interactiveoverlay) anchor, LayoutDirection direction) — Sets in which direction multiple overlays at one anchor are laid out.
+- void **requestUpdate** () — Allows some outside interaction to request an update of the view.
+- bool **showOverlays** () const — Get flag whether to show overlays.
+- void [setAndRunAnimation](#setandrunanimation) ([std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [Animations::Animation](/cpp-sdk/4.5/api/classes/imfusion-animations-animation) &gt;) — Launch an animation while ensuring that only one animation is running at a time for this instance.
+
+## Public Attributes
+
+- Signal&lt; [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &gt; **signalRendered** — Emitted at the end of [render()](/cpp-sdk/4.5/api/classes/imfusion-gui-view); the passed [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) will hold all visible data.
+
+## Protected Member Functions
+
+- [GUI::EventResult](/cpp-sdk/4.5/api/structs/imfusion-gui-eventresult) [dispatchToViewOverlays](#dispatchtoviewoverlays) (const [GUI::InputEvent](/cpp-sdk/4.5/api/classes/imfusion-gui-inputevent) &event) override — Dispatch *event* to all known ViewOverlays considering m_mouseEventFocusObject and m_touchEventFocusObject.
+- [GUI::EventResult](/cpp-sdk/4.5/api/structs/imfusion-gui-eventresult) [dispatchToViewObjects](#dispatchtoviewobjects) (const [GUI::InputEvent](/cpp-sdk/4.5/api/classes/imfusion-gui-inputevent) &event) override — Dispatch *event* to all known ViewObjects considering m_mouseEventFocusObject and m_touchEventFocusObject.
+- [GUI::EventResult](/cpp-sdk/4.5/api/structs/imfusion-gui-eventresult) [dispatchToViewEventHandlers](#dispatchtovieweventhandlers) (const [GUI::InputEvent](/cpp-sdk/4.5/api/classes/imfusion-gui-inputevent) &event) override — Dispatch *event* to all known View::EventHandlers considering m_mouseEventFocusObject and m_touchEventFocusObject.
+- virtual bool [handleOverlayEvent](#handleoverlayevent) (QEvent \*qtEvent, const [GUI::InputEvent](/cpp-sdk/4.5/api/classes/imfusion-gui-inputevent) &inputEvent) — The default implementation will call [InteractiveOverlay::sceneEvent()](/cpp-sdk/4.5/api/classes/imfusion-interactiveoverlay) and set m_mouseEventTarget/m_touchEventTarget if needed.
+- virtual bool [handleObjectEvent](#handleobjectevent) (QEvent \*qtEvent, const [GUI::InputEvent](/cpp-sdk/4.5/api/classes/imfusion-gui-inputevent) &inputEvent) — Auxiliary method for forwarding the scene event to all registered objects.
+- virtual bool [handleInteractionEvent](#handleinteractionevent) (QEvent \*qtEvent, const [GUI::InputEvent](/cpp-sdk/4.5/api/classes/imfusion-gui-inputevent) &inputEvent) — Auxiliary method for forwarding the scene event to the view interaction.
+
+## Protected Attributes
+
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [ViewInteraction](/cpp-sdk/4.5/api/classes/imfusion-viewinteraction) &gt; &gt; **m_interactions** — ViewInteractions used for this view.
+- [ViewGroup](/cpp-sdk/4.5/api/classes/imfusion-viewgroup) \* **m_group** = nullptr — Optional [ViewGroup](/cpp-sdk/4.5/api/classes/imfusion-viewgroup) this view is part of.
+
+## Properties
+
+- QRect **rect**
+
+## Member Function Documentation
+
+### addInteraction
+
+```cpp
+void ImFusion::InteractiveView::addInteraction (std::unique_ptr < ViewInteraction > interaction, int where = -1)
+```
+
+Add an interaction at the given position (default is at the end).
+
+Note that events will be forwarded to the view interactions in the given order, and the first one accepting it will consume it. Thus, subsequent interactions will not receive events already taken care of.
+
+### setRect
+
+```cpp
+virtual void ImFusion::InteractiveView::setRect (const QRect & rect)
+```
+
+*virtual*
+
+Set position and size of view in scene coordinates.
+
+### setViewport
+
+```cpp
+void ImFusion::InteractiveView::setViewport (const GL::Viewport & rect)
+```
+
+*override, virtual*
+
+Sets the area where this view is drawn in [render()](/cpp-sdk/4.5/api/classes/imfusion-gui-view) wrt. the attached framebuffer.
+
+### sceneEvent
+
+```cpp
+virtual bool ImFusion::InteractiveView::sceneEvent (QEvent * qtEvent, const GUI::InputEvent & inputEvent)
+```
+
+*virtual*
+
+Called by the [DisplayWidget](/cpp-sdk/4.5/api/classes/imfusion-displaywidget) if a user input event has happened on this view.
+
+The default implementation will forward the event to the sub-objects in the following order:
+
+- InteractiveOverlays
+- InteractiveObjects
+- [ViewInteraction](/cpp-sdk/4.5/api/classes/imfusion-viewinteraction)
+
+  **Returns:** true if the event has been handled and should no longer be passed to other objects.
+
+### addObject
+
+```cpp
+void ImFusion::InteractiveView::addObject (GUI::ViewObject * object)
+```
+
+*override, virtual*
+
+Add the given [InteractiveObject](/cpp-sdk/4.5/api/classes/imfusion-interactiveobject) to this view.
+
+Will add the underlying [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) to the [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) and register the [Manipulator](/cpp-sdk/4.5/api/classes/imfusion-manipulator).
+
+### removeObject
+
+```cpp
+void ImFusion::InteractiveView::removeObject (const GUI::ViewObject * object)
+```
+
+*override, virtual*
+
+Remove the given [InteractiveObject](/cpp-sdk/4.5/api/classes/imfusion-interactiveobject) from this view.
+
+### addOverlay
+
+```cpp
+virtual void ImFusion::InteractiveView::addOverlay (std::unique_ptr < InteractiveOverlay > overlay, int position = -1)
+```
+
+*virtual*
+
+Add overlay to this view.
+
+If the overlay is not removed, it will be deleted with the view. The optional position argument defines where the overlay should be inserted in between the existing overlays. A position of -1 indicates the end.
+
+### removeOverlay
+
+```cpp
+std::unique_ptr < GUI::ViewOverlay > ImFusion::InteractiveView::removeOverlay (GUI::ViewOverlay * overlay)
+```
+
+*override, virtual*
+
+Remove overlay. The user is responsible for deleting the overlay afterwards.
+
+### setAndRunAnimation
+
+```cpp
+void ImFusion::InteractiveView::setAndRunAnimation (std::unique_ptr < Animations::Animation >)
+```
+
+Launch an animation while ensuring that only one animation is running at a time for this instance.
+
+A potentially running animation is canceled before launching the new animation.
+
+### dispatchToViewOverlays
+
+```cpp
+GUI::EventResult ImFusion::InteractiveView::dispatchToViewOverlays (const GUI::InputEvent & event)
+```
+
+*override, protected, virtual*
+
+Dispatch *event* to all known ViewOverlays considering m_mouseEventFocusObject and m_touchEventFocusObject.
+
+### dispatchToViewObjects
+
+```cpp
+GUI::EventResult ImFusion::InteractiveView::dispatchToViewObjects (const GUI::InputEvent & event)
+```
+
+*override, protected, virtual*
+
+Dispatch *event* to all known ViewObjects considering m_mouseEventFocusObject and m_touchEventFocusObject.
+
+### dispatchToViewEventHandlers
+
+```cpp
+GUI::EventResult ImFusion::InteractiveView::dispatchToViewEventHandlers (const GUI::InputEvent & event)
+```
+
+*override, protected, virtual*
+
+Dispatch *event* to all known View::EventHandlers considering m_mouseEventFocusObject and m_touchEventFocusObject.
+
+### handleOverlayEvent
+
+```cpp
+virtual bool ImFusion::InteractiveView::handleOverlayEvent (QEvent * qtEvent, const GUI::InputEvent & inputEvent)
+```
+
+*protected, virtual*
+
+The default implementation will call [InteractiveOverlay::sceneEvent()](/cpp-sdk/4.5/api/classes/imfusion-interactiveoverlay) and set m_mouseEventTarget/m_touchEventTarget if needed.
+
+Furthermore, it will evaluate m_lastMouseEventOverlay and post enter/leave events to the overlays. Returns true if the event affects any overlay, false otherwise.
+
+### handleObjectEvent
+
+```cpp
+virtual bool ImFusion::InteractiveView::handleObjectEvent (QEvent * qtEvent, const GUI::InputEvent & inputEvent)
+```
+
+*protected, virtual*
+
+Auxiliary method for forwarding the scene event to all registered objects.
+
+The default implementation will call [InteractiveObject::sceneEvent()](/cpp-sdk/4.5/api/classes/imfusion-interactiveobject) and set m_mouseEventTarget if needed. Returns true if the event affects any overlay, false otherwise.
+
+### handleInteractionEvent
+
+```cpp
+virtual bool ImFusion::InteractiveView::handleInteractionEvent (QEvent * qtEvent, const GUI::InputEvent & inputEvent)
+```
+
+*protected, virtual*
+
+Auxiliary method for forwarding the scene event to the view interaction.
+
+The default implementation will call [ViewInteraction::sceneEvent()](/cpp-sdk/4.5/api/classes/imfusion-interaction) and set m_mouseEventTarget if needed. It will also handle the ContextMenuEvent. Returns true if the event affects any overlay, false otherwise.

@@ -1,0 +1,191 @@
+---
+title: "ImFusion::InteractiveOverlay"
+sidebarTitle: "InteractiveOverlay"
+description: "Wraps a GlOverlay in order to display it at specific positions in an InteractiveView ."
+---
+
+`#include <ImFusion/GUI/InteractiveOverlay.h>`
+
+## Overview
+
+Wraps a [GlOverlay](/cpp-sdk/4.5/api/classes/imfusion-gloverlay) in order to display it at specific positions in an [InteractiveView](/cpp-sdk/4.5/api/classes/imfusion-interactiveview).
+
+**Note:** The size hint of an [InteractiveOverlay](/cpp-sdk/4.5/api/classes/imfusion-interactiveoverlay) is managed/defined by the underlying [GlOverlay](/cpp-sdk/4.5/api/classes/imfusion-gloverlay). Thus, the corresponding functions of this class are only a forwarding convenience API.
+
+**See also:** [GlOverlay](/cpp-sdk/4.5/api/classes/imfusion-gloverlay), [OverlayInteraction](/cpp-sdk/4.5/api/classes/imfusion-overlayinteraction)
+
+## Public Types
+
+- enum [AnchorPoint](#anchorpoint) &#123; BottomLeft = int(Anchor::BottomLeft) , BottomRight = int(Anchor::BottomRight) , TopLeft = int(Anchor::TopLeft) , TopRight = int(Anchor::TopRight) , Top = int(Anchor::Top) , Bottom = int(Anchor::Bottom) , Left = int(Anchor::Left) , Right = int(Anchor::Right) , Fill = int(Anchor::Fill) &#125; — [Anchor](/cpp-sdk/4.5/api/classes/imfusion-gui-viewoverlay) point of the overlay in the hosting [InteractiveView](/cpp-sdk/4.5/api/classes/imfusion-interactiveview).
+
+## Signals
+
+- void **anchorPointChanged** ([InteractiveOverlay::AnchorPoint](#anchorpoint) anchorPoint)
+
+## Public Member Functions
+
+- **InteractiveOverlay** ([std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [GlOverlay](/cpp-sdk/4.5/api/classes/imfusion-gloverlay) &gt; overlay, [AnchorPoint](#anchorpoint) anchor) — Instantiate a new [InteractiveOverlay](/cpp-sdk/4.5/api/classes/imfusion-interactiveoverlay) taking ownership of the underlying [GlOverlay](/cpp-sdk/4.5/api/classes/imfusion-gloverlay).
+- **InteractiveOverlay** ([GlOverlay](/cpp-sdk/4.5/api/classes/imfusion-gloverlay) &overlay, [AnchorPoint](#anchorpoint) anchor) — Instantiate a new [InteractiveOverlay](/cpp-sdk/4.5/api/classes/imfusion-interactiveoverlay) referencing the given overlay.
+- [InteractiveOverlay](#interactiveoverlay) ([GlOverlay](/cpp-sdk/4.5/api/classes/imfusion-gloverlay) \*overlay, [AnchorPoint](#anchorpoint) anchor, bool ownOverlay=true)
+- const [GlOverlay](/cpp-sdk/4.5/api/classes/imfusion-gloverlay) \* **overlay** () const — Get a pointer to the underlying overlay.
+- [GlOverlay](/cpp-sdk/4.5/api/classes/imfusion-gloverlay) \* **overlay** () — Get a pointer to the underlying overlay.
+- virtual void **setInteraction** ([std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [OverlayInteraction](/cpp-sdk/4.5/api/classes/imfusion-overlayinteraction) &gt; interaction) — Set an interaction event handler for this overlay.
+- QRect **rect** () const — Get position and actual size (including margins) of overlay in viewport coordinates.
+- void **setMargin** (int horizontal, int vertical) — Sets the margin in pixels between the border of the drawing area and the border of the overlay content.
+- int **horizontalMargin** () const — Gets the horizontal margin in pixels between the border of the drawing area and the border of the overlay content. Default is 2.
+- int **verticalMargin** () const — Gets the vertical margin in pixels between the border of the drawing area and the border of the overlay content. Default is 2.
+- virtual void [setSizeHint](#setsizehint) (int width, int height) — Sets the preferred size of the overlay for a DPI scaling of 1.0.
+- virtual int [sizeHintWidth](#sizehintwidth) () const — Gets the preferred width of the overlay.
+- virtual int [sizeHintHeight](#sizehintheight) () const — Gets the preferred height of the overlay.
+- virtual void [setMinimalSizeHint](#setminimalsizehint) (int width, int height) — Sets the minimal size of the overlay for a DPI scaling of 1.0.
+- virtual int [minimalSizeHintWidth](#minimalsizehintwidth) () const — Gets the minimal width of the overlay.
+- virtual int [minimalSizeHintHeight](#minimalsizehintheight) () const — Gets the minimal height of the overlay.
+- void [setAnchorPoint](#setanchorpoint) ([AnchorPoint](#anchorpoint) anchorPoint) — Set the anchor point of overlay.
+- [AnchorPoint](#anchorpoint) **anchorPoint** () const — Get the anchor point of overlay.
+- virtual bool [sceneEvent](#sceneevent) (QEvent \*event) — Called by the hosting [InteractiveView](/cpp-sdk/4.5/api/classes/imfusion-interactiveview), default implementation forwards it to the set [OverlayInteraction](/cpp-sdk/4.5/api/classes/imfusion-overlayinteraction).
+- [GUI::EventResult](/cpp-sdk/4.5/api/structs/imfusion-gui-eventresult) [handleInputEvent](#handleinputevent) (const [GUI::InputEvent](/cpp-sdk/4.5/api/classes/imfusion-gui-inputevent) &event) override — Calls the base interface's version and then continues propagation to [sceneEvent()](#sceneevent).
+
+## Protected Member Functions
+
+- void **setOverlay** ([GlOverlay](/cpp-sdk/4.5/api/classes/imfusion-gloverlay) \*overlay, bool ownOverlay) — Update the internal [GlOverlay](/cpp-sdk/4.5/api/classes/imfusion-gloverlay).
+
+## Protected Attributes
+
+- [GlOverlay](/cpp-sdk/4.5/api/classes/imfusion-gloverlay) \* **m_overlay** = nullptr — Underlying [GlOverlay](/cpp-sdk/4.5/api/classes/imfusion-gloverlay).
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [OverlayInteraction](/cpp-sdk/4.5/api/classes/imfusion-overlayinteraction) &gt; **m_interaction** — [Interaction](/cpp-sdk/4.5/api/classes/imfusion-interaction) class to handle overlay events.
+- [AnchorPoint](#anchorpoint) **m_anchorPoint** — [Anchor](/cpp-sdk/4.5/api/classes/imfusion-gui-viewoverlay) point within parent view.
+- bool **m_ownOverlay** = true — Flag whether *m_overlay* is owned by this instance.
+
+## Properties
+
+- [InteractiveOverlay::AnchorPoint](#anchorpoint) **anchorPoint**
+
+## Member Enumeration Documentation
+
+### AnchorPoint
+
+```cpp
+enum ImFusion::InteractiveOverlay::AnchorPoint
+```
+
+[Anchor](/cpp-sdk/4.5/api/classes/imfusion-gui-viewoverlay) point of the overlay in the hosting [InteractiveView](/cpp-sdk/4.5/api/classes/imfusion-interactiveview).
+
+**Enumerator:**
+
+- `BottomLeft` — Bottom left corner.
+- `BottomRight` — Bottom right corner.
+- `TopLeft` — Top left corner.
+- `TopRight` — Top right corner.
+- `Top` — Top center.
+- `Bottom` — Bottom center.
+- `Left` — Left center.
+- `Right` — Right center.
+- `Fill` — Always fills the complete view.
+
+## Constructor & Destructor Documentation
+
+### InteractiveOverlay
+
+```cpp
+ImFusion::InteractiveOverlay::InteractiveOverlay (GlOverlay * overlay, AnchorPoint anchor, bool ownOverlay = true)
+```
+
+****Deprecated**:** "Unclear ownership semantics: use one of the other ctor overloads."
+
+## Member Function Documentation
+
+### setSizeHint
+
+```cpp
+virtual void ImFusion::InteractiveOverlay::setSizeHint (int width, int height)
+```
+
+*virtual*
+
+Sets the preferred size of the overlay for a DPI scaling of 1.0.
+
+The size hint should be the optimal size of the overlay to display all its information. If the overlay does not have a preferred size, the size hint should be set to to the minimalSizeHint.
+
+### sizeHintWidth
+
+```cpp
+virtual int ImFusion::InteractiveOverlay::sizeHintWidth () const
+```
+
+*virtual*
+
+Gets the preferred width of the overlay.
+
+### sizeHintHeight
+
+```cpp
+virtual int ImFusion::InteractiveOverlay::sizeHintHeight () const
+```
+
+*virtual*
+
+Gets the preferred height of the overlay.
+
+### setMinimalSizeHint
+
+```cpp
+virtual void ImFusion::InteractiveOverlay::setMinimalSizeHint (int width, int height)
+```
+
+*virtual*
+
+Sets the minimal size of the overlay for a DPI scaling of 1.0.
+
+The minimal size should reflect the size to display the content in an undistorted way. The actual size of the overlay can still be lower than this, in which case the overlay should scale its content.
+
+### minimalSizeHintWidth
+
+```cpp
+virtual int ImFusion::InteractiveOverlay::minimalSizeHintWidth () const
+```
+
+*virtual*
+
+Gets the minimal width of the overlay.
+
+### minimalSizeHintHeight
+
+```cpp
+virtual int ImFusion::InteractiveOverlay::minimalSizeHintHeight () const
+```
+
+*virtual*
+
+Gets the minimal height of the overlay.
+
+### setAnchorPoint
+
+```cpp
+void ImFusion::InteractiveOverlay::setAnchorPoint (AnchorPoint anchorPoint)
+```
+
+Set the anchor point of overlay.
+
+If several overlays use the same anchor point the will be rendered above/below (depending on Bottom or Top) the previous overlays.
+
+### sceneEvent
+
+```cpp
+virtual bool ImFusion::InteractiveOverlay::sceneEvent (QEvent * event)
+```
+
+*virtual*
+
+Called by the hosting [InteractiveView](/cpp-sdk/4.5/api/classes/imfusion-interactiveview), default implementation forwards it to the set [OverlayInteraction](/cpp-sdk/4.5/api/classes/imfusion-overlayinteraction).
+
+**Returns:** true if the event has been handled and should no longer be passed to other objects.
+
+### handleInputEvent
+
+```cpp
+GUI::EventResult ImFusion::InteractiveOverlay::handleInputEvent (const GUI::InputEvent & event)
+```
+
+*override, virtual*
+
+Calls the base interface's version and then continues propagation to [sceneEvent()](#sceneevent).

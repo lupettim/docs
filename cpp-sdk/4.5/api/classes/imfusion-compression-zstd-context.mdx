@@ -1,0 +1,89 @@
+---
+title: "ImFusion::Compression::zstd::Context"
+sidebarTitle: "Context"
+description: "When (de)compressing many times it is recommended to allocate the context only once and reuse it for each successive operations."
+---
+
+`#include <ImFusion/Core/Compression.h>`
+
+## Overview
+
+When (de)compressing many times it is recommended to allocate the context only once and reuse it for each successive operations.
+
+This will save execution time and memory.
+
+```cpp
+std::vector<ByteBuffer> inputBuffer = ...
+std::vector<ByteBuffer> compressedData;
+zstd::Context zstdContext;
+for (const auto& bb : inputBuffer)
+    compressedData.push_back(zstdContext.compress(bb), zstd::CompressionLevel::High);
+```
+ fragment
+
+## Public Member Functions
+
+- [ByteBuffer](/cpp-sdk/4.5/api/classes/imfusion-bytebuffer) [compress](#compress) (const [ByteBufferView](/cpp-sdk/4.5/api/classes/imfusion-bytebufferview) &inputBuffer, [CompressionLevel](/cpp-sdk/4.5/api/namespaces/imfusion-compression-zstd) compressionLevel=CompressionLevel::Average) const — Compress the given input data using the zstd algorithm.
+- size_t [compressTo](#compressto) (const [ByteBufferView](/cpp-sdk/4.5/api/classes/imfusion-bytebufferview) &inputBuffer, [ByteBufferMutableView](/cpp-sdk/4.5/api/classes/imfusion-bytebuffermutableview) outputBuffer, [CompressionLevel](/cpp-sdk/4.5/api/namespaces/imfusion-compression-zstd) compressionLevel=CompressionLevel::Average) const — Compress the given input data to the given buffer using the zstd algorithm.
+- [ByteBuffer](/cpp-sdk/4.5/api/classes/imfusion-bytebuffer) [decompress](#decompress) (const [ByteBufferView](/cpp-sdk/4.5/api/classes/imfusion-bytebufferview) &inputBuffer) const — Decompress the given input data using the zstd algorithm.
+- bool [decompressTo](#decompressto) (const [ByteBufferView](/cpp-sdk/4.5/api/classes/imfusion-bytebufferview) &inputBuffer, [ByteBufferMutableView](/cpp-sdk/4.5/api/classes/imfusion-bytebuffermutableview) outputBuffer) const — Decompress the given data using zstd into an already allocated buffer.
+
+## Member Function Documentation
+
+### compress
+
+```cpp
+ByteBuffer ImFusion::Compression::zstd::Context::compress (const ByteBufferView & inputBuffer, CompressionLevel compressionLevel = CompressionLevel::Average) const
+```
+
+Compress the given input data using the zstd algorithm.
+
+Returns an empty buffer on failure.
+
+**Parameters:**
+
+- `inputBuffer` — Input data to compress
+- `compressionLevel` — Compression level to choose
+
+### compressTo
+
+```cpp
+size_t ImFusion::Compression::zstd::Context::compressTo (const ByteBufferView & inputBuffer, ByteBufferMutableView outputBuffer, CompressionLevel compressionLevel = CompressionLevel::Average) const
+```
+
+Compress the given input data to the given buffer using the zstd algorithm.
+
+This variant will fail if the output buffer is not of sufficient size. Returns The size of the compressed data, or 0 if the output buffer was not of sufficient size.
+
+**Parameters:**
+
+- `inputBuffer` — Input data to compress
+- `outputBuffer` — Output buffer to compress into
+- `compressionLevel` — Compression level to choose
+
+### decompress
+
+```cpp
+ByteBuffer ImFusion::Compression::zstd::Context::decompress (const ByteBufferView & inputBuffer) const
+```
+
+Decompress the given input data using the zstd algorithm.
+
+Returns an empty buffer on failure.
+
+**Parameters:**
+
+- `inputBuffer` — Input data to decompress, must have been created using zstd compression
+
+### decompressTo
+
+```cpp
+bool ImFusion::Compression::zstd::Context::decompressTo (const ByteBufferView & inputBuffer, ByteBufferMutableView outputBuffer) const
+```
+
+Decompress the given data using zstd into an already allocated buffer.
+
+**Parameters:**
+
+- `inputBuffer` — Input data to decompress, must have been created using zstd compression
+- `outputBuffer` — Output buffer to decompress into, must be of sufficient size and already allocated

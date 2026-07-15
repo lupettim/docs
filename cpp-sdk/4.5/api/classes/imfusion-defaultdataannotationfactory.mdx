@@ -1,0 +1,94 @@
+---
+title: "ImFusion::DefaultDataAnnotationFactory"
+sidebarTitle: "DefaultDataAnnotationFactory"
+description: "Factory for default data annotations."
+---
+
+`#include <ImFusion/GUI/DefaultDataAnnotationFactory.h>`
+
+## Overview
+
+Factory for default data annotations.
+
+## Public Member Functions
+
+- [InteractiveObject](/cpp-sdk/4.5/api/classes/imfusion-interactiveobject) \* [createDataAnnotation](#createdataannotation) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name, [Data](/cpp-sdk/4.5/api/classes/imfusion-data) &data) const override — Create data annotation.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; [compatibleDataAnnotations](#compatibledataannotations) ([Data](/cpp-sdk/4.5/api/classes/imfusion-data) &data) const override — Return true when a data object supports having a data annotation.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [dataDescription](#datadescription) (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) &data) const override — Return a description string to be shown in the data model for a data type.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [dataIconPath](#dataiconpath) (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) &data) const override — Return a file path to an icon representing a data type, may point to a Qt resource.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [DataAttribute](/cpp-sdk/4.5/api/structs/imfusion-dataannotationfactory-dataattribute) &gt; [dataAttributes](#dataattributes) (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) &data) const override — Return a list of attributes to be shown in the [DataWidget](/cpp-sdk/4.5/api/classes/imfusion-datawidget) [GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui) for a data type.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [Data](/cpp-sdk/4.5/api/classes/imfusion-data) &gt; [cloneData](#clonedata) (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*data) const override — Return a clone of a given [Data](/cpp-sdk/4.5/api/classes/imfusion-data) instance.
+
+## Member Function Documentation
+
+### createDataAnnotation
+
+```cpp
+InteractiveObject * ImFusion::DefaultDataAnnotationFactory::createDataAnnotation (const std::string & name, Data & data) const
+```
+
+*override, virtual*
+
+Create data annotation.
+
+**Parameters:**
+
+- `data` — input data
+
+**Returns:** pointer to generated annotation if successful, zero otherwise
+
+### compatibleDataAnnotations
+
+```cpp
+std::vector < std::string > ImFusion::DefaultDataAnnotationFactory::compatibleDataAnnotations (Data & data) const
+```
+
+*override, virtual*
+
+Return true when a data object supports having a data annotation.
+
+### dataDescription
+
+```cpp
+std::string ImFusion::DefaultDataAnnotationFactory::dataDescription (const Data &) const
+```
+
+*override, virtual*
+
+Return a description string to be shown in the data model for a data type.
+
+Return an empty string for unsupported types.
+
+### dataIconPath
+
+```cpp
+std::string ImFusion::DefaultDataAnnotationFactory::dataIconPath (const Data &) const
+```
+
+*override, virtual*
+
+Return a file path to an icon representing a data type, may point to a Qt resource.
+
+Return an empty string for unsupported types.
+
+### dataAttributes
+
+```cpp
+std::vector < DataAttribute > ImFusion::DefaultDataAnnotationFactory::dataAttributes (const Data &) const
+```
+
+*override, virtual*
+
+Return a list of attributes to be shown in the [DataWidget](/cpp-sdk/4.5/api/classes/imfusion-datawidget)[GUI](/cpp-sdk/4.5/api/namespaces/imfusion-gui) for a data type.
+
+### cloneData
+
+```cpp
+std::unique_ptr < Data > ImFusion::DefaultDataAnnotationFactory::cloneData (const Data *) const
+```
+
+*override, virtual*
+
+Return a clone of a given [Data](/cpp-sdk/4.5/api/classes/imfusion-data) instance.
+
+This allows plugins to expose cloning logics for custom data types to the base ImFusionLib.

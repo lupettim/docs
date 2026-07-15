@@ -1,0 +1,57 @@
+---
+title: "ImFusion::GlOrientationMeshOverlay"
+sidebarTitle: "GlOrientationMeshOverlay"
+description: "The GlOrientationMeshOverlay class draws an overlay that shows the current camera orientation of a view on a proxy mesh."
+---
+
+`#include <ImFusion/GL/GlOrientationMeshOverlay.h>`
+
+## Overview
+
+The [GlOrientationMeshOverlay](/cpp-sdk/4.5/api/classes/imfusion-glorientationmeshoverlay) class draws an overlay that shows the current camera orientation of a view on a proxy mesh.
+
+The maximum extent of the mesh should be between -1 and 1 in every dimension otherwise the mesh will be clipped. The overlay also supports texturing if the mesh has a texture and texture coordinates.
+
+## Public Member Functions
+
+- [GlOrientationMeshOverlay](#glorientationmeshoverlay) (const [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) &mesh, [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) \*view) — Constructs a new [GlOrientationMeshOverlay](/cpp-sdk/4.5/api/classes/imfusion-glorientationmeshoverlay) from a mesh which will use the orientation of view.
+- void [render](#render) (const [GL::Viewport](/cpp-sdk/4.5/api/structs/imfusion-gl-viewport) &viewport) override — render the overlay with the given width and height
+- void **setOpacity** (double alpha) — Sets the opacity of the mesh (default: 0.75).
+- double **opacity** () const
+- void [loadMesh](#loadmesh) (const [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) &mesh) — Updates the mesh of the overlay.
+- bool **hasMesh** () const — Returns whether it currently has a valid mesh set.
+- void **setBackgroundImage** ([std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) &gt; backgroundImage) — Set an optional background image to show behind the mesh.
+
+## Constructor & Destructor Documentation
+
+### GlOrientationMeshOverlay
+
+```cpp
+ImFusion::GlOrientationMeshOverlay::GlOrientationMeshOverlay (const Mesh & mesh, GlView * view)
+```
+
+Constructs a new [GlOrientationMeshOverlay](/cpp-sdk/4.5/api/classes/imfusion-glorientationmeshoverlay) from a mesh which will use the orientation of view.
+
+The mesh is not stored and can be deleted after this call. An exception is raised if the rendering resources like the shader program could not be initialized.
+
+## Member Function Documentation
+
+### render
+
+```cpp
+void ImFusion::GlOrientationMeshOverlay::render (const GL::Viewport & viewport)
+```
+
+*override, virtual*
+
+render the overlay with the given width and height
+
+### loadMesh
+
+```cpp
+void ImFusion::GlOrientationMeshOverlay::loadMesh (const Mesh & mesh)
+```
+
+Updates the mesh of the overlay.
+
+The mesh is not stored and can be deleted after this call.

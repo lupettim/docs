@@ -1,0 +1,159 @@
+---
+title: "ImFusion::SyntheticDataAlgorithm"
+sidebarTitle: "SyntheticDataAlgorithm"
+description: "Creates synthetic data for various test scenarios."
+---
+
+`#include <ImFusion/Base/SyntheticDataAlgorithm.h>`
+
+## Overview
+
+Creates synthetic data for various test scenarios.
+
+## Public Types
+
+- enum **Mode** &#123; **LINEAR_GRADIENT_X_2D** , **LINEAR_GRADIENT_Y_2D** , **BILINEAR_GRADIENT_2D** , **MANDELBROT_2D** , **RANDOM_CONTENT_2D** , **OSCILLATION_2D** , **MANDELBROT_3D** , **REGISTRATION_TEST_IMAGE** , **LINEAR_GRADIENT_X_3D** , **LINEAR_GRADIENT_Y_3D** , **LINEAR_GRADIENT_Z_3D** , **TRILINEAR_GRADIENT** , **BEAM_HARDENING_PHANTOM_3D** , **GRID_3D** , **CONTRAST_TEST_IMAGE_2D** , **TENSOR1D** , **NR_MODES** &#125; — [Status](/cpp-sdk/4.5/api/classes/imfusion-algorithm) codes.
+
+## Public Member Functions
+
+- **SyntheticDataAlgorithm** () — Default constructor without data.
+- **~SyntheticDataAlgorithm** () override — Destructor.
+- void **setMode** (int mode) — Set the type of synthetic data to create.
+- void **setDescriptor** (const [ImageDescriptor](/cpp-sdk/4.5/api/structs/imfusion-imagedescriptor) &desc) — Set optional descriptor for desired image properties.
+- void **setDescriptor** (const [Image](/cpp-sdk/4.5/api/classes/imfusion-image) &desc)
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) &gt; [generateContrastTestImage2D](#generatecontrasttestimage2d) () — Generate synthetic test image for contrast filter.
+
+## Static Public Member Functions
+
+- static [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) &gt; [generateImage2D](#generateimage2d) (int contentType, const [ImageDescriptor](/cpp-sdk/4.5/api/structs/imfusion-imagedescriptor) &desc) — Generates a memory image with specified content.
+- static [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) &gt; [generateImage3D](#generateimage3d) (const [ImageDescriptor](/cpp-sdk/4.5/api/structs/imfusion-imagedescriptor) &desc) — Generates a 3D image of specified size with fractal content.
+- static [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) &gt; [generateLinearImage3D](#generatelinearimage3d) (int contentType, const [ImageDescriptor](/cpp-sdk/4.5/api/structs/imfusion-imagedescriptor) &desc) — Generates a 3D image of specified size with specified content.
+- static [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) &gt; [generateRegImage](#generateregimage) (const [ImageDescriptor](/cpp-sdk/4.5/api/structs/imfusion-imagedescriptor) &desc) — Generates a registration test image in 2D or 3D according to image descriptor.
+
+## Methods implementing the Algorithm interface
+
+- void [compute](#compute) () override — Execute the algorithm.
+- [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) [takeOutput](#takeoutput) () override — Return any new [Data](/cpp-sdk/4.5/api/classes/imfusion-data) that was created by the [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) during the last call to [compute()](#compute).
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=0)
+
+## Member Function Documentation
+
+### compute
+
+```cpp
+void ImFusion::SyntheticDataAlgorithm::compute ()
+```
+
+*override, virtual*
+
+Execute the algorithm.
+
+### takeOutput
+
+```cpp
+OwningDataList ImFusion::SyntheticDataAlgorithm::takeOutput ()
+```
+
+*override, virtual*
+
+Return any new [Data](/cpp-sdk/4.5/api/classes/imfusion-data) that was created by the [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) during the last call to [compute()](#compute).
+
+The default implementation will return an empty list.
+
+**Note:** Since ownership of the data is transferred, you can call this method only once between calls to [compute()](#compute).
+
+### configure
+
+```cpp
+void ImFusion::SyntheticDataAlgorithm::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### configuration
+
+```cpp
+void ImFusion::SyntheticDataAlgorithm::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality
+
+### generateImage2D
+
+```cpp
+template<typename T> std::unique_ptr < MemImage > ImFusion::SyntheticDataAlgorithm::generateImage2D (int contentType, const ImageDescriptor & desc)
+```
+
+*static*
+
+Generates a memory image with specified content.
+
+**Parameters:**
+
+- `desc` — Setting width and/or height to zero will create an image with random width and/or height
+
+### generateImage3D
+
+```cpp
+template<typename T> std::unique_ptr < MemImage > ImFusion::SyntheticDataAlgorithm::generateImage3D (const ImageDescriptor & desc)
+```
+
+*static*
+
+Generates a 3D image of specified size with fractal content.
+
+**Parameters:**
+
+- `desc` — The width of the descriptor specifies the image dimensions. They are set to 256 if width &lt;= 1.
+
+### generateLinearImage3D
+
+```cpp
+template<typename T> std::unique_ptr < MemImage > ImFusion::SyntheticDataAlgorithm::generateLinearImage3D (int contentType, const ImageDescriptor & desc)
+```
+
+*static*
+
+Generates a 3D image of specified size with specified content.
+
+**Parameters:**
+
+- `desc` — If a dimension is zero, it is set to 256 by default. If slices &lt;= 1, it is set to 256.
+
+### generateRegImage
+
+```cpp
+template<typename T> std::unique_ptr < MemImage > ImFusion::SyntheticDataAlgorithm::generateRegImage (const ImageDescriptor & desc)
+```
+
+*static*
+
+Generates a registration test image in 2D or 3D according to image descriptor.
+
+**Parameters:**
+
+- `desc` — If a dimension is zero, it is set to 256 by default.
+
+### generateContrastTestImage2D
+
+```cpp
+std::unique_ptr < MemImage > ImFusion::SyntheticDataAlgorithm::generateContrastTestImage2D ()
+```
+
+Generate synthetic test image for contrast filter.
+
+**Note:** Width, height and datatype are fixed.

@@ -1,0 +1,113 @@
+---
+title: "ImFusion::MeshToPointCloudAlgorithm"
+sidebarTitle: "MeshToPointCloudAlgorithm"
+description: "Algorithm to convert a mesh to a point cloud."
+---
+
+`#include <ImFusion/Base/MeshToPointCloudAlgorithm.h>`
+
+## Overview
+
+[Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) to convert a mesh to a point cloud.
+
+## Public Types
+
+- enum [ColorSource](#colorsource) &#123; TexturePreferred = 0 , ColorPreferred , Texture , Color &#125;
+- enum [Mode](#mode) &#123; Vertex = 0 , Interior &#125; — [Status](/cpp-sdk/4.5/api/classes/imfusion-algorithm) codes.
+
+## Public Member Functions
+
+- **MeshToPointCloudAlgorithm** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) \* &gt; &mesh) — Main constructor.
+- **MeshToPointCloudAlgorithm** ([Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) \*mesh)
+- **~MeshToPointCloudAlgorithm** () override — Destructor.
+- void [setColorSource](#setcolorsource) ([ColorSource](#colorsource) source) — Set source for point cloud colors.
+- [ColorSource](#colorsource) [colorSource](#colorsource) () const — Get source for point cloud colors.
+- [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) [takeOutput](#takeoutput) () override — If new data was created, make it available here.
+- void [compute](#compute) () override — Execute the algorithm.
+
+## Static Public Member Functions
+
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=nullptr) — If data is compatible with algorithm return true. If a is not zero, create algorithm with input data.
+
+## Public Attributes
+
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; [Mode](#mode) &gt; **p_samplingMode** = &#123;"mode", Vertex, this&#125;
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; [ColorSource](#colorsource) &gt; **p_colorSource** = &#123;"colorSource", TexturePreferred, this&#125;
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; double &gt; **p_density** = &#123;"density", 1.0, this&#125; — density determining the pixels per mm^3 in interior mode
+
+## Protected Attributes
+
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) \* &gt; **m_meshes**
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [PointCloud](/cpp-sdk/4.5/api/classes/imfusion-pointcloud) &gt; &gt; **m_outPointClouds**
+
+## Member Enumeration Documentation
+
+### ColorSource
+
+```cpp
+enum ImFusion::MeshToPointCloudAlgorithm::ColorSource
+```
+
+**Enumerator:**
+
+- `TexturePreferred` — Take texture if present, color otherwise.
+- `ColorPreferred` — Take color if present, texture otherwise.
+- `Texture` — Only take texture.
+- `Color` — Only take color.
+
+### Mode
+
+```cpp
+enum ImFusion::MeshToPointCloudAlgorithm::Mode
+```
+
+**Enumerator:**
+
+- `Vertex` — Points are taken from the mesh surface.
+- `Interior` — Points are sampled from within the mesh volume. To avoid the output being a subset of a regular grid, we add a pseudo-random offset to each point. For non-convex meshes, this can cause points to be slightly outside of the mesh.
+
+## Member Function Documentation
+
+### setColorSource
+
+```cpp
+void ImFusion::MeshToPointCloudAlgorithm::setColorSource (ColorSource source)
+```
+
+*inline*
+
+Set source for point cloud colors.
+
+****Deprecated**:** "setColorSource() is deprecated. Please assign directly to 'p_colorSource' instead."
+
+### colorSource
+
+```cpp
+ColorSource ImFusion::MeshToPointCloudAlgorithm::colorSource () const
+```
+
+*inline*
+
+Get source for point cloud colors.
+
+****Deprecated**:** "colorSource() is deprecated. Please access 'p_colorSource' directly."
+
+### takeOutput
+
+```cpp
+OwningDataList ImFusion::MeshToPointCloudAlgorithm::takeOutput ()
+```
+
+*override, virtual*
+
+If new data was created, make it available here.
+
+### compute
+
+```cpp
+void ImFusion::MeshToPointCloudAlgorithm::compute ()
+```
+
+*override, virtual*
+
+Execute the algorithm.

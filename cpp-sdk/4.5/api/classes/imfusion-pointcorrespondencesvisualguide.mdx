@@ -1,0 +1,84 @@
+---
+title: "ImFusion::PointCorrespondencesVisualGuide"
+sidebarTitle: "PointCorrespondencesVisualGuide"
+description: "This class calculates visual guides to assist in identifying corresponding points between different modalities."
+---
+
+`#include <ImFusion/GL/PointCorrespondencesVisualGuide.h>`
+
+## Overview
+
+This class calculates visual guides to assist in identifying corresponding points between different modalities.
+
+The likely region for the new point in the suspect data is estimated by analyzing the distances between points in both modalities. Specifically, for each pixel in the visual guide, we compare its distance to existing points in the suspect data. A pixel is considered a likely candidate for the new point if its distances to the existing suspect points closely match the distances between the corresponding trusted point and the other points in the trusted data. Here, suspect data refers to the data for which the visual guide is displayed, and trusted data refers to the data used as reference for the distances.
+
+## Public Types
+
+- enum DataSelection &#123; **None** = 0x0 , **First** = 0x1 , **Second** = 0x2 , **Both** = 0x3 &#125; — Enum to define for which data the visual guide should be shown.
+
+## Public Member Functions
+
+- [PointCorrespondencesVisualGuide](#pointcorrespondencesvisualguide) ([PointCorrespondences](/cpp-sdk/4.5/api/classes/imfusion-pointcorrespondences) \*correspondences, [PointsOnDataManipulator](/cpp-sdk/4.5/api/classes/imfusion-pointsondatamanipulator) \*first, [PointsOnDataManipulator](/cpp-sdk/4.5/api/classes/imfusion-pointsondatamanipulator) \*second) — Constructor for [PointCorrespondencesVisualGuide](/cpp-sdk/4.5/api/classes/imfusion-pointcorrespondencesvisualguide).
+- void [update](#update) (int suspectDataIndex) — Updates the visual guide.
+- void **hide** () — Hides the visual guide.
+- void [setShowForData](#setshowfordata) (DataSelection dataSelection) — Updates for which data the visual guide should be shown.
+- DataSelection **supportedDataSelection** () const — Returns the data selection that is available.
+- const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* [visualGuideImage](#visualguideimage) (int dataIndex) const — Returns the visual guide image for the specified data.
+
+## Constructor & Destructor Documentation
+
+### PointCorrespondencesVisualGuide
+
+```cpp
+ImFusion::PointCorrespondencesVisualGuide::PointCorrespondencesVisualGuide (PointCorrespondences * correspondences, PointsOnDataManipulator * first, PointsOnDataManipulator * second)
+```
+
+Constructor for [PointCorrespondencesVisualGuide](/cpp-sdk/4.5/api/classes/imfusion-pointcorrespondencesvisualguide).
+
+**Parameters:**
+
+- `correspondences` — The point correspondences for which the visual guide is created
+- `first` — The first [PointsOnDataManipulator](/cpp-sdk/4.5/api/classes/imfusion-pointsondatamanipulator) for the point correspondences
+- `second` — The other [PointsOnDataManipulator](/cpp-sdk/4.5/api/classes/imfusion-pointsondatamanipulator) for the point correspondences
+
+**Exceptions:**
+
+- `std::runtime_error` — if correspondences or manipulator elements are nullptr, or if the shader could not be compiled.
+
+## Member Function Documentation
+
+### update
+
+```cpp
+void ImFusion::PointCorrespondencesVisualGuide::update (int suspectDataIndex)
+```
+
+Updates the visual guide.
+
+**Parameters:**
+
+- `suspectDataIndex` — The index which specifies the suspect data
+
+### setShowForData
+
+```cpp
+void ImFusion::PointCorrespondencesVisualGuide::setShowForData (DataSelection dataSelection)
+```
+
+Updates for which data the visual guide should be shown.
+
+**Parameters:**
+
+- `dataSelection` — Specifies the data for which the visual guide should be shown.
+
+### visualGuideImage
+
+```cpp
+const SharedImageSet * ImFusion::PointCorrespondencesVisualGuide::visualGuideImage (int dataIndex) const
+```
+
+Returns the visual guide image for the specified data.
+
+**Parameters:**
+
+- `dataIndex` — The index of the data for which the visual guide should be returned

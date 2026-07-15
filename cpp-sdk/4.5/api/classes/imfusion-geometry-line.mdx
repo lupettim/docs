@@ -1,0 +1,63 @@
+---
+title: "ImFusion::Geometry::Line"
+sidebarTitle: "Line"
+description: "Class representing a full line, i.e."
+---
+
+`#include <ImFusion/Core/Geometry/Line.h>`
+
+## Overview
+
+Class representing a full line, i.e.
+
+one of infinite length.
+
+**See also:** Intersections between geometry primitives can be computed using the sets of free functions Geometry::intersection() and Geometry::intersects().
+
+## Public Member Functions
+
+- **Line** (const vec3 &[point](/cpp-sdk/4.5/api/classes/imfusion-geometry-linebase), const vec3 &[direction](#direction)) — Creates a line going through point along direction.
+- **Line** (const Line &)=default
+- Line & **operator=** (const Line &)=default
+- vec3 [direction](#direction) () const override — Returns the normalized direction vector.
+- bool **isApprox** (const Line &) const — Comparison using the same epsilon as Eigen::isApprox.
+- [Utils::Variant](/cpp-sdk/4.5/api/structs/imfusion-utils-variant)&lt; [LineSegment](/cpp-sdk/4.5/api/classes/imfusion-geometry-linesegment), vec3, [std::nullptr_t](http://en.cppreference.com/w/cpp/types/nullptr_t.html) &gt; [shortestConnectingLine](#shortestconnectingline) (const LineBase &l) const — Returns the shortest connection to l as a [LineSegment](/cpp-sdk/4.5/api/classes/imfusion-geometry-linesegment).
+- double [clampLambda](#clamplambda) (double lambda) const override — Returns the input without doing anything, since this line has no end points.
+
+## Protected Attributes
+
+- vec3 **m_direction** — Normalized direction.
+- bool **operator==** (const Line &) const — Exact comparisons.
+- bool **operator!=** (const Line &) const
+
+## Member Function Documentation
+
+### direction
+
+```cpp
+vec3 ImFusion::Geometry::Line::direction () const
+```
+
+*override, virtual*
+
+Returns the normalized direction vector.
+
+### shortestConnectingLine
+
+```cpp
+Utils::Variant < LineSegment, vec3, std::nullptr_t > ImFusion::Geometry::Line::shortestConnectingLine (const LineBase & l) const
+```
+
+Returns the shortest connection to l as a [LineSegment](/cpp-sdk/4.5/api/classes/imfusion-geometry-linesegment).
+
+If the objects intersect or overlap, a point on both lines is returned instead. Empty return indicates that either object is not well defined, i.e. contains NAN.
+
+### clampLambda
+
+```cpp
+double ImFusion::Geometry::Line::clampLambda (double lambda) const
+```
+
+*override, virtual*
+
+Returns the input without doing anything, since this line has no end points.

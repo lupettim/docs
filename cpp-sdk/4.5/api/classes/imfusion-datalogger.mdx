@@ -1,0 +1,41 @@
+---
+title: "ImFusion::DataLogger"
+sidebarTitle: "DataLogger"
+description: "Support for logging data."
+---
+
+`#include <ImFusion/Base/Utils/DataLogger.h>`
+
+## Overview
+
+Support for logging data.
+
+## Static Public Member Functions
+
+- static void **addImage** (const [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) \*img, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name="") — Add an image to the log, it will be copied here.
+- static void **addImage** (const [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) \*img, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name="")
+- static void **addImage** (const [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*img, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name="")
+- static void **addImage** (const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*img, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name="")
+- static void **addPlot** (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; &data, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name="") — Add a vector of data values for plotting, it will be copied here.
+- static void **addMesh** (const [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) \*mesh, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name="") — Add a mesh to the log, it will be copied here.
+- static void **addPointCloud** (const [PointCloud](/cpp-sdk/4.5/api/classes/imfusion-pointcloud) \*pc, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name="") — Add a point cloud to the log, it will be copied here.
+- static void **addTree** (const [Tree](/cpp-sdk/4.5/api/classes/imfusion-tree) \*tree, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name="") — Add a tree to the log, it will be copied here.
+- static void **addAnnotation** ([std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [GlAnnotation](/cpp-sdk/4.5/api/classes/imfusion-glannotation) &gt; annotation, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name="") — Add an annotation to the log.
+- static void [addAsFile](#addasfile) (const [Data](/cpp-sdk/4.5/api/classes/imfusion-data) \*img, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name="") — Add data as a temporary file, which can be retrieved from a Suite instance on the same computer.
+- static void **addAsFile** (const [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) \*img, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name="") — Add a [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) as temporary file.
+- static void **addAsFile** (const [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) \*img, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name="") — Add a [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) as temporary file.
+- static void **addAsFile** (const [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*img, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name="") — Add a [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) as temporary file.
+
+## Member Function Documentation
+
+### addAsFile
+
+```cpp
+void ImFusion::DataLogger::addAsFile (const Data * img, const std::string & name = "")
+```
+
+*static*
+
+Add data as a temporary file, which can be retrieved from a Suite instance on the same computer.
+
+This method can hence be called from any other executable or script.

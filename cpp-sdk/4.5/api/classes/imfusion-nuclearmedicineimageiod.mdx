@@ -1,0 +1,60 @@
+---
+title: "ImFusion::NuclearMedicineImageIOD"
+sidebarTitle: "NuclearMedicineImageIOD"
+description: "PS 3.3 A.5 Nuclear Medicine Image IOD Does not support saving yet."
+---
+
+`#include <ImFusion/Dicom/NuclearMedicineImageIOD.h>`
+
+## Overview
+
+PS 3.3 A.5 Nuclear Medicine [Image](/cpp-sdk/4.5/api/classes/imfusion-image)[IOD](/cpp-sdk/4.5/api/classes/imfusion-dicom-iod) Does not support saving yet.
+
+## Public Member Functions
+
+- **NuclearMedicineImageIOD** (DcmDataset &[dataset](/cpp-sdk/4.5/api/classes/imfusion-dicom-iod), const OFString &[sopClassUID](/cpp-sdk/4.5/api/classes/imfusion-dicom-iod))
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [Dicom::FrameDescriptor](/cpp-sdk/4.5/api/structs/imfusion-dicom-framedescriptor) &gt; [loadFrames](#loadframes) () override — Loads all frames contained in this [IOD](/cpp-sdk/4.5/api/classes/imfusion-dicom-iod).
+- void [save](#save) ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &imageSet, int sharedImageIndex, int sliceIndex) override — Stores the general image descriptor and metadata of *imageSet* in the DICOM data set.
+- void [savePixelData](#savepixeldata) ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &imageSet, int sharedImageIndex, int sliceIndex) override — Writes the pixel data of *imageSet* in the DICOM data set.
+
+## Public Attributes
+
+- [Dicom::Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element)&lt; [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; &gt; **imageType**
+
+## Member Function Documentation
+
+### loadFrames
+
+```cpp
+std::vector < Dicom::FrameDescriptor > ImFusion::NuclearMedicineImageIOD::loadFrames ()
+```
+
+*override, virtual*
+
+Loads all frames contained in this [IOD](/cpp-sdk/4.5/api/classes/imfusion-dicom-iod).
+
+Might be multiple frames depending on numberOfFrames.
+
+### save
+
+```cpp
+void ImFusion::NuclearMedicineImageIOD::save (SharedImageSet & imageSet, int sharedImageIndex, int sliceIndex)
+```
+
+*override, virtual*
+
+Stores the general image descriptor and metadata of *imageSet* in the DICOM data set.
+
+*sharedImageIndex* and *sliceIndex* describe which part of the image set should be stored.
+
+### savePixelData
+
+```cpp
+void ImFusion::NuclearMedicineImageIOD::savePixelData (SharedImageSet & imageSet, int sharedImageIndex, int sliceIndex)
+```
+
+*override, virtual*
+
+Writes the pixel data of *imageSet* in the DICOM data set.
+
+*sharedImageIndex* and *sliceIndex* describe which part of the image set should be stored.

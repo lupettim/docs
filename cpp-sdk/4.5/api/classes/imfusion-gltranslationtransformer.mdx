@@ -1,0 +1,113 @@
+---
+title: "ImFusion::GlTranslationTransformer"
+sidebarTitle: "GlTranslationTransformer"
+---
+
+## Public Member Functions
+
+- **GlTranslationTransformer** (int axis, double axialOffset=35, bool isFixed=false, const isom3 &offset=isom3::Identity(), double topRadius=0, double coneHeight=20, double baseRadius=10, vec2 tailDims=vec2(10, 1), bool contour=true)
+- void [draw](#draw) (const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &view) override — Draw the object in 3D space.
+- [Geometry::AlignedBox](/cpp-sdk/4.5/api/classes/imfusion-geometry-alignedbox) [bounds](#bounds) () const override — Get the axis-aligned bounding box of this [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) in world space.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [typeName](#typename) () const override — Return unique identifier for this object class used for serialization.
+- bool [isInside](#isinside) (const vec2 &pos, const [GL::ViewState](/cpp-sdk/4.5/api/classes/imfusion-gl-viewstate) &state) override
+- void [moveTo](#moveto) (const vec2 &pos, const vec2 &start, const [GL::ViewState](/cpp-sdk/4.5/api/classes/imfusion-gl-viewstate) &state) override
+- void [deactivate](#deactivate) () override
+
+## Public Attributes
+
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; bool &gt; **p_isFixed** = &#123;"fixed", false, this&#125;
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; double &gt; **p_topRadius** = &#123;"topRadius", 10, this&#125;
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; double &gt; **p_coneHeight** = &#123;"coneHeight", 20, this&#125;
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; double &gt; **p_baseRadius** = &#123;"baseRadius", 10, this&#125;
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; double &gt; **p_tailLength** = &#123;"tailLength", 10, this&#125;
+- [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter)&lt; double &gt; **p_tailRadius** = &#123;"tailRadius", 1, this&#125;
+
+## Protected Member Functions
+
+- vec3 [axisVector](#axisvector) () const override — The normal depends on the camera position if available.
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; vec3 &gt; [project](#project) (const vec2 &pos, const [GL::ViewState](/cpp-sdk/4.5/api/classes/imfusion-gl-viewstate) &state) const override
+- double [distanceTo](#distanceto) (const vec3 &val) const override
+
+## Member Function Documentation
+
+### draw
+
+```cpp
+void ImFusion::GlTranslationTransformer::draw (const GlView & view)
+```
+
+*override, virtual*
+
+Draw the object in 3D space.
+
+### bounds
+
+```cpp
+Geometry::AlignedBox ImFusion::GlTranslationTransformer::bounds () const
+```
+
+*override, virtual*
+
+Get the axis-aligned bounding box of this [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) in world space.
+
+Return an empty (default-constructed) AlignedBox object if the [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) does not reside in world space.
+
+### typeName
+
+```cpp
+std::string ImFusion::GlTranslationTransformer::typeName () const
+```
+
+*override, virtual*
+
+Return unique identifier for this object class used for serialization.
+
+### isInside
+
+```cpp
+bool ImFusion::GlTranslationTransformer::isInside (const vec2 & pos, const GL::ViewState & state)
+```
+
+*override, virtual*
+
+### moveTo
+
+```cpp
+void ImFusion::GlTranslationTransformer::moveTo (const vec2 & pos, const vec2 & start, const GL::ViewState & state)
+```
+
+*override, virtual*
+
+### deactivate
+
+```cpp
+void ImFusion::GlTranslationTransformer::deactivate ()
+```
+
+*override, virtual*
+
+### axisVector
+
+```cpp
+vec3 ImFusion::GlTranslationTransformer::axisVector () const
+```
+
+*override, protected, virtual*
+
+The normal depends on the camera position if available.
+
+### project
+
+```cpp
+std::optional < vec3 > ImFusion::GlTranslationTransformer::project (const vec2 & pos, const GL::ViewState & state) const
+```
+
+*override, protected, virtual*
+
+### distanceTo
+
+```cpp
+double ImFusion::GlTranslationTransformer::distanceTo (const vec3 & val) const
+```
+
+*override, protected, virtual*

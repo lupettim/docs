@@ -1,0 +1,249 @@
+---
+title: "ImFusion::GL::Texture"
+sidebarTitle: "Texture"
+description: "Wrapper of an OpenGL Texture to store image data on the GPU."
+---
+
+`#include <ImFusion/Core/GL/Texture.h>`
+
+## Overview
+
+Wrapper of an OpenGL Texture to store image data on the GPU.
+
+A texture is defined by its size and an internal format. Optionally, you can define a custom OpenGL texture [Target](#target) type if you don't want to rely on the automatic deduction from the size.
+
+The following default texture parameters will be set:
+
+- Filtering: Linear for normalized textures, Nearest for integer textures
+- Wrapping: ClampToBorder for all dimensions
+- Swizzling: &#123;R, R, R, 1&#125; for single channel textures, &#123;R, G, B, A&#125; for all other textures
+
+**Note:** Be aware that most member functions will implicitly change the OpenGL texture binding state as they will bind the texture to texture unit 0 and unbind it again at the end. However, no binding state of any other texture unit than 0 will be touched implicitly.
+
+**See also:** [https://www.khronos.org/opengl/wiki/Texture](https://www.khronos.org/opengl/wiki/Texture)
+
+## Public Types
+
+- enum class [Target](#target) &#123; Tex1D = 0x0DE0 , Tex1DArray = 0x8C18 , Tex2D = 0x0DE1 , Tex2DArray = 0x8C1A , Tex3D = 0x806F &#125; — Enumeration of supported target types.
+
+## Public Member Functions
+
+- [Texture](#texture-1-2) ([Target](#target) type, const vec3i &size, [InternalFormat](/cpp-sdk/4.5/api/classes/imfusion-gl-internalformat) internalFormat) — Creates a new OpenGL texture of given type, size and internal format.
+- [Texture](#texture-2-2) (const vec3i &size, [InternalFormat](/cpp-sdk/4.5/api/classes/imfusion-gl-internalformat) internalFormat) — Creates a new OpenGL texture of given size and internal format.
+- **Texture** (Texture &&rhs) noexcept
+- void **bind** (int unit=0) const — Binds the image to a texture unit.
+- void [upload](#upload) (const T \*data, PixelFormat pixelFormat) — Uploads pixel data to the OpenGL texture.
+- void [download](#download-1-2) (T \*outData, PixelFormat pixelFormat) const — Downloads pixel data from the OpenGL texture into an existing buffer.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; T[]&gt; [download](#download-2-2) (PixelFormat pixelFormat, size_t \*outNumElementsInReturnValue=nullptr) const — Downloads pixel data from the OpenGL texture into a newly allocated buffer.
+- void [clear](#clear) (const Eigen::Matrix&lt; T, 4, 1 &gt; &color) — Fills the entire texture with a constant value.
+- void **generateMipmaps** () — Generates mipmaps for this texture.
+- void [setFiltering](#setfiltering) ([Sampler::MinFilter](/cpp-sdk/4.5/api/classes/imfusion-gl-sampler) min, [Sampler::MagFilter](/cpp-sdk/4.5/api/classes/imfusion-gl-sampler) mag) — Sets the minification and magnification filters.
+- void [setWrapping](#setwrapping-1-2) ([Sampler::Wrap](/cpp-sdk/4.5/api/classes/imfusion-gl-sampler) s, [Sampler::Wrap](/cpp-sdk/4.5/api/classes/imfusion-gl-sampler) t, [Sampler::Wrap](/cpp-sdk/4.5/api/classes/imfusion-gl-sampler) r) — Sets the wrapping parameters for each dimension.
+- void [setWrapping](#setwrapping-2-2) ([Sampler::Wrap](/cpp-sdk/4.5/api/classes/imfusion-gl-sampler) all) — Sets all wrapping parameters for all dimensions to the same value.
+- void [setBorderColor](#setbordercolor) (const vec4f &color) — Sets the border color that is used for ClampToBorder.
+- uint32_t **id** () const — Returns the internal OpenGL texture ID.
+- const vec3i & **size** () const — Returns the dimensions (number of pixels) of this texture.
+- int **width** () const — Returns the width (number of pixels) of this texture.
+- int **height** () const — Returns the height (number of pixels) of this texture.
+- int **slices** () const — Returns the depth (number of slices) of this texture.
+- const vec3i & **dimensions** () const — Returns the dimensions of this texture.
+- [Target](#target) **target** () const — Returns the target type this texture is bound to.
+- [InternalFormat](/cpp-sdk/4.5/api/classes/imfusion-gl-internalformat) **internalFormat** () const — Returns the requested internal format of this texture.
+
+## Static Public Member Functions
+
+- static void **unbind** (uint32_t textureUnit, [Target](#target) target) — Unbinds any potentially bound texture from the specified texture unit (binds 0).
+- static [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [Texture](#texture-1-2) &gt; [createFromExisting](#createfromexisting-1-2) ([Target](#target) type, uint32_t glTexId) — Creates a new [Texture](/cpp-sdk/4.5/api/classes/imfusion-gl-texture) instance wrapping around an already existing OpenGL texture object and taking ownership.
+- static [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [Texture](#texture-1-2) &gt; [createFromExisting](#createfromexisting-2-2) ([Target](#target) type, uint32_t glTexId, [InternalFormat](/cpp-sdk/4.5/api/classes/imfusion-gl-internalformat) internalFormat) — Creates a new [Texture](/cpp-sdk/4.5/api/classes/imfusion-gl-texture) instance wrapping around an already existing OpenGL texture object with specified internal format and taking ownership.
+
+## Member Enumeration Documentation
+
+### Target
+
+```cpp
+enum class ImFusion::GL::Texture::Target
+```
+
+*strong*
+
+Enumeration of supported target types.
+
+**See also:** [https://www.khronos.org/opengl/wiki/Texture#Theory](https://www.khronos.org/opengl/wiki/Texture#Theory)
+
+**Enumerator:**
+
+- `Tex1D` — 1D texture
+- `Tex1DArray` — Array of 1D textures.
+- `Tex2D` — 2D texture
+- `Tex2DArray` — Array of 2D textures.
+- `Tex3D` — 3D texture
+
+## Constructor & Destructor Documentation
+
+### Texture
+
+```cpp
+ImFusion::GL::Texture::Texture (Target type, const vec3i & size, InternalFormat internalFormat)
+```
+
+Creates a new OpenGL texture of given type, size and internal format.
+
+**Exceptions:**
+
+- `std::runtime_error` — if the corresponding OpenGL texture object could not be created.
+
+### Texture
+
+```cpp
+ImFusion::GL::Texture::Texture (const vec3i & size, InternalFormat internalFormat)
+```
+
+Creates a new OpenGL texture of given size and internal format.
+
+The texture's target type will Tex1D, Tex2D, or Tex3D based on the dimensionality of *size*.
+
+**Exceptions:**
+
+- `std::runtime_error` — if the corresponding OpenGL texture object could not be created.
+
+## Member Function Documentation
+
+### createFromExisting
+
+```cpp
+std::unique_ptr < Texture > ImFusion::GL::Texture::createFromExisting (Target type, uint32_t glTexId)
+```
+
+*static*
+
+Creates a new [Texture](/cpp-sdk/4.5/api/classes/imfusion-gl-texture) instance wrapping around an already existing OpenGL texture object and taking ownership.
+
+glTexId must point to a valid OpenGL texture object matching the provided target type.
+
+### createFromExisting
+
+```cpp
+std::unique_ptr < Texture > ImFusion::GL::Texture::createFromExisting (Target type, uint32_t glTexId, InternalFormat internalFormat)
+```
+
+*static*
+
+Creates a new [Texture](/cpp-sdk/4.5/api/classes/imfusion-gl-texture) instance wrapping around an already existing OpenGL texture object with specified internal format and taking ownership.
+
+glTexId must point to a valid OpenGL texture object matching the provided target type.
+
+### upload
+
+```cpp
+template<typename T> void ImFusion::GL::Texture::upload (const T * data, PixelFormat pixelFormat)
+```
+
+Uploads pixel data to the OpenGL texture.
+
+Format conversion will operated as specified by OpenGL.
+
+**See also:** [https://www.khronos.org/opengl/wiki/Pixel_Transfer#Format_conversion](https://www.khronos.org/opengl/wiki/Pixel_Transfer#Format_conversion)
+
+**Parameters:**
+
+- `data` — Pointer to the raw pixel data, must match the given pixel format and type and be of sufficient size
+- `pixelFormat` — Pixel format of the raw pixel buffer in *data*.
+
+### download
+
+```cpp
+template<typename T> void ImFusion::GL::Texture::download (T * outData, PixelFormat pixelFormat) const
+```
+
+Downloads pixel data from the OpenGL texture into an existing buffer.
+
+Format conversion will operated as specified by OpenGL.
+
+**Warning:** Only texture where [InternalFormat::isColorRenderable](/cpp-sdk/4.5/api/classes/imfusion-gl-internalformat) is true can be downloaded.
+
+**See also:** [https://www.khronos.org/opengl/wiki/Pixel_Transfer#Format_conversion](https://www.khronos.org/opengl/wiki/Pixel_Transfer#Format_conversion)
+
+**Parameters:**
+
+- `outData` — Pointer to the raw pixel data, must match the given pixel format and type and be of sufficient size
+- `pixelFormat` — Pixel format of the raw pixel buffer in *data*.
+
+### download
+
+```cpp
+template<typename T> std::unique_ptr < T[]> ImFusion::GL::Texture::download (PixelFormat pixelFormat, size_t * outNumElementsInReturnValue = nullptr) const
+```
+
+Downloads pixel data from the OpenGL texture into a newly allocated buffer.
+
+Format conversion will operated as specified by OpenGL.
+
+**Parameters:**
+
+- `outNumElementsInReturnValue` — Optional output value returning the number of elements in the return value.
+
+**Warning:** OpenGL ES cannot download 3 channel texture directly, but only into a 4 channel buffer.
+
+**See also:** [https://www.khronos.org/opengl/wiki/Pixel_Transfer#Format_conversion](https://www.khronos.org/opengl/wiki/Pixel_Transfer#Format_conversion)
+
+**Parameters:**
+
+- `pixelFormat` — Pixel format of the raw pixel buffer in *data*.
+
+### clear
+
+```cpp
+template<typename T> void ImFusion::GL::Texture::clear (const Eigen::Matrix< T, 4, 1 > & color)
+```
+
+Fills the entire texture with a constant value.
+
+Format conversion will be operated as specified by OpenGL.
+
+**See also:** [https://www.khronos.org/opengl/wiki/Pixel_Transfer#Format_conversion](https://www.khronos.org/opengl/wiki/Pixel_Transfer#Format_conversion)
+
+**Parameters:**
+
+- `color` — RGBA pixel value to assign to all pixels, extra channels will be ignored.
+
+### setFiltering
+
+```cpp
+void ImFusion::GL::Texture::setFiltering (Sampler::MinFilter min, Sampler::MagFilter mag)
+```
+
+Sets the minification and magnification filters.
+
+Mipmap types will only work when the texture has mipmap levels (see generateMipmaps()).
+
+**Note:** Texture parameters are global for all usages of this texture, prefer using a [Sampler](/cpp-sdk/4.5/api/classes/imfusion-gl-sampler) instead.
+
+### setWrapping
+
+```cpp
+void ImFusion::GL::Texture::setWrapping (Sampler::Wrap s, Sampler::Wrap t, Sampler::Wrap r)
+```
+
+Sets the wrapping parameters for each dimension.
+
+**Note:** Texture parameters are global for all usages of this texture, prefer using a [Sampler](/cpp-sdk/4.5/api/classes/imfusion-gl-sampler) instead.
+
+### setWrapping
+
+```cpp
+void ImFusion::GL::Texture::setWrapping (Sampler::Wrap all)
+```
+
+Sets all wrapping parameters for all dimensions to the same value.
+
+**Note:** Texture parameters are global for all usages of this texture, prefer using a [Sampler](/cpp-sdk/4.5/api/classes/imfusion-gl-sampler) instead.
+
+### setBorderColor
+
+```cpp
+void ImFusion::GL::Texture::setBorderColor (const vec4f & color)
+```
+
+Sets the border color that is used for ClampToBorder.
+
+**Note:** Texture parameters are global for all usages of this texture, prefer using a [Sampler](/cpp-sdk/4.5/api/classes/imfusion-gl-sampler) instead.

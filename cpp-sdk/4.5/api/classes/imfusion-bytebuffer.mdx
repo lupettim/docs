@@ -1,0 +1,31 @@
+---
+title: "ImFusion::ByteBuffer"
+sidebarTitle: "ByteBuffer"
+description: "Specialization of the ByteBufferView class that has ownership of the underlying data."
+---
+
+`#include <ImFusion/Core/ByteBuffer.h>`
+
+## Overview
+
+Specialization of the [ByteBufferView](/cpp-sdk/4.5/api/classes/imfusion-bytebufferview) class that has ownership of the underlying data.
+
+In contrast to the base class, [ByteBuffer](/cpp-sdk/4.5/api/classes/imfusion-bytebuffer) is movable and move-assignable and copy construction/ copy assignment will deep copy the underlying data.
+
+**See also:** [ByteBufferStream](/cpp-sdk/4.5/api/classes/imfusion-bytebufferstream)
+
+## Public Member Functions
+
+- **ByteBuffer** ()=default — Create an empty (invalid) owning buffer.
+- **ByteBuffer** (size_t [size](/cpp-sdk/4.5/api/classes/imfusion-bytebufferview)) — Create an uninitialized owning buffer of the given size.
+- **ByteBuffer** ([std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; char[]&gt; [data](/cpp-sdk/4.5/api/classes/imfusion-bytebuffermutableview), size_t [size](/cpp-sdk/4.5/api/classes/imfusion-bytebufferview)) — Creates buffer taking ownership of the passed data.
+- **ByteBuffer** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &string) — Create a new buffer copying the content from *string*.
+- **ByteBuffer** (const ByteBuffer &rhs) — Copy constructor will always deep copy all data.
+- ByteBuffer & **operator=** (const ByteBuffer &rhs) — Copy assignment will always deep copy all data.
+- **ByteBuffer** (ByteBuffer &&rhs) noexcept — Move constructor will move all data into this instance. *rhs* will be empty/invalid afterwards.
+- ByteBuffer & **operator=** (ByteBuffer &&rhs) noexcept — Move assignment will move all data into this instance. *rhs* will be empty/invalid afterwards.
+- char \* **release** () — Release any potential ownership and return the raw pointer now owning the underlying data.
+
+## Static Public Member Functions
+
+- static ByteBuffer **copyFrom** (const char \*buffer, size_t [size](/cpp-sdk/4.5/api/classes/imfusion-bytebufferview)) — Creates a new [ByteBuffer](/cpp-sdk/4.5/api/classes/imfusion-bytebuffer) copying the data from the given buffer.

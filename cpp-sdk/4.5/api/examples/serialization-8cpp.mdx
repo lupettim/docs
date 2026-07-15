@@ -1,0 +1,63 @@
+---
+title: "Serialization.cpp"
+---
+
+```cpp
+#include <ImFusion/Core/Configurable.h>
+#include <ImFusion/Core/Parameter.h>
+#include <ImFusion/Core/Properties.h>
+#include <ImFusion/Core/SubProperty.h>
+
+using namespace ImFusion;
+
+// Inherit from Configurable to make your class serializable
+class ExampleClass : public Configurable
+{
+public:
+ // Serializes object state to the provided Properties instance
+ void configuration(Properties* p) const override
+ {
+ if (!p)
+ return;
+ Configurable::configuration(p);
+
+ // store a single primitive type with default value
+        p->setParam("count", m_count, 42);
+
+ // store a complex type in a nested subproperty
+        m_nestedClass.configuration(p->addSubProperties("NestedClass"));
+    }
+
+ // Restores object state from the provided Properties instance
+ void configure(const Properties* p) override
+ {
+ if (!p)
+ return;
+ Configurable::configure(p);
+
+ // restore a single primitive type
+        p->param("count", m_count);
+
+ // restore a complex type from a nested property
+        m_nestedClass.configure(p->subProperties("NestedClass"));
+    }
+
+private:
+ int m_count = 42;
+    SomeOtherConfigurableClass m_nestedClass;
+};
+
+// More terse implementation of the same logic as above
+class ExampleClass : public Configurable
+{
+public:
+ // Here we use a Parameter<T> instead of a naked T.
+ // Initializing it in the header communicates its parameter key and the default value to the user.
+ // Passing this to the constructor will register it with the Configurable interface.
+ Parameter<int> p_count = {"count", 42, this};
+
+ // You can nest multiple Configurable instances using the SubProperty<T> type
+    SubProperty<SomeOtherConfigurableClass> p_nestedClass = {"NestedClass", SomeOtherConfigurableClass(), this};
+}
+```
+ fragment

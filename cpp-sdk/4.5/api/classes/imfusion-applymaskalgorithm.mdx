@@ -1,0 +1,100 @@
+---
+title: "ImFusion::ApplyMaskAlgorithm"
+sidebarTitle: "ApplyMaskAlgorithm"
+description: "Algorithm for applying a mask and a cropping to an image."
+---
+
+`#include <ImFusion/Base/ApplyMaskAlgorithm.h>`
+
+## Overview
+
+[Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) for applying a mask and a cropping to an image.
+
+## Public Member Functions
+
+- **ApplyMaskAlgorithm** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*imgIn, [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*mask) — Main constructor of the algorithm.
+- **ApplyMaskAlgorithm** ([SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*imgIn, [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [Mask](/cpp-sdk/4.5/api/classes/imfusion-mask) &gt; mask) — Main Constructor for images that have a mask embedded [Mask](/cpp-sdk/4.5/api/classes/imfusion-mask) is supplied explicitly to make this requirement strict.
+- **~ApplyMaskAlgorithm** () override — Destructor of the algorithm.
+- void **setCreateNew** (bool flag) — Specify whether a new image should be created (true by default).
+- void **setAutoCropping** (bool flag) — Specify whether the images should be cropped automatically after masking (true by default).
+- void **setElevateInside** (bool flag) — If enabled, zero intensity values inside the mask are elevated to one (false by default).
+- void **setAboveThreshold** (bool flag) — If enabled, values above threshold are kept (true by default).
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Set one or multiple properties.
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Retrieve the properties of this object.
+- void [compute](#compute) () override — Compute the result.
+- [std::pair](http://en.cppreference.com/w/cpp/utility/pair.html)&lt; [std::shared_ptr](http://en.cppreference.com/w/cpp/memory/shared_ptr.html)&lt; [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) &gt;, [DataComponentList](/cpp-sdk/4.5/api/classes/imfusion-datacomponentlist) &gt; [processImage](#processimage) (const [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) &image, const [DataComponentList](/cpp-sdk/4.5/api/classes/imfusion-datacomponentlist) &components) const override — Processes a single image without modifying the algorithm's status.
+- [OwningDataList](/cpp-sdk/4.5/api/classes/imfusion-owningdatalist) [takeOutput](#takeoutput) () override — If the algorithm creates new image data, it has to be transferred here.
+- [std::pair](http://en.cppreference.com/w/cpp/utility/pair.html)&lt; [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; vec3i &gt;, [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; vec3i &gt; &gt; **cropping** () — Retrieve the cropping bounds if image was cropped.
+
+## Static Public Member Functions
+
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a) — If data is compatible with algorithm return true. If a is not zero, create algorithm with input data.
+
+## Protected Attributes
+
+- [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* **m_inImg**
+- [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \* **m_mask**
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &gt; **m_outImg** = nullptr
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) &gt; **m_optionalMask**
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; vec3i &gt; **m_cropUp**
+- [std::optional](http://en.cppreference.com/w/cpp/utility/optional.html)&lt; vec3i &gt; **m_cropDown**
+- bool **m_createNew** = true — Whether to compute the result in-place or not.
+- bool **m_autoCrop** = true — Whether to automatically crop the images.
+- bool **m_elevateInside** = false — Elevate pixels inside the mask from zero to one.
+- double **m_thresholdValue** = 0.5 — Threshold value used for the mask image.
+- bool **m_aboveThreshold** = true — If true, valid pixels have mask intensities higher than the threshold.
+- double **m_outsideValue** = 0 — The value to be set in the 'outside' of the mask.
+
+## Member Function Documentation
+
+### configure
+
+```cpp
+void ImFusion::ApplyMaskAlgorithm::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Set one or multiple properties.
+
+### configuration
+
+```cpp
+void ImFusion::ApplyMaskAlgorithm::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Retrieve the properties of this object.
+
+### compute
+
+```cpp
+void ImFusion::ApplyMaskAlgorithm::compute ()
+```
+
+*override, virtual*
+
+Compute the result.
+
+### processImage
+
+```cpp
+std::pair < std::shared_ptr < SharedImage >, DataComponentList > ImFusion::ApplyMaskAlgorithm::processImage (const SharedImage & image, const DataComponentList & components) const
+```
+
+*override, virtual*
+
+Processes a single image without modifying the algorithm's status.
+
+For performance reasons, it is possible to do this in-place, i.e. with m_createNew=false, in which case the input image is const-cast and modified directly. Proceed with care. If you intend to run this algorithm with the StreamAlgorithmExecutor, ensure that m_createNew=true (default).
+
+### takeOutput
+
+```cpp
+OwningDataList ImFusion::ApplyMaskAlgorithm::takeOutput ()
+```
+
+*override, virtual*
+
+If the algorithm creates new image data, it has to be transferred here.

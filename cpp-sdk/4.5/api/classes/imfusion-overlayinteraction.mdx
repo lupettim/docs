@@ -1,0 +1,23 @@
+---
+title: "ImFusion::OverlayInteraction"
+sidebarTitle: "OverlayInteraction"
+description: "Base class for all overlay interactions."
+---
+
+`#include <ImFusion/GUI/OverlayInteraction.h>`
+
+## Overview
+
+[Base](/cpp-sdk/4.5/api/structs/imfusion-dicom-base) class for all overlay interactions.
+
+The sceneEvent method receives all events, regardless if they are inside the area of the overlay or not. However, the interaction receives Enter and Leave events when the overlay area is entered or left.
+
+**Note:** After instantiation of the [OverlayInteraction](/cpp-sdk/4.5/api/classes/imfusion-overlayinteraction) you must explicitly assign it to an overlay via [InteractiveOverlay::setInteraction()](/cpp-sdk/4.5/api/classes/imfusion-interactiveoverlay).
+
+## Public Member Functions
+
+- **OverlayInteraction** ([InteractiveOverlay](/cpp-sdk/4.5/api/classes/imfusion-interactiveoverlay) &overlay)
+
+## Protected Attributes
+
+- [InteractiveOverlay](/cpp-sdk/4.5/api/classes/imfusion-interactiveoverlay) & **m_overlay**

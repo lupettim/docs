@@ -1,0 +1,35 @@
+---
+title: "ImFusion::Seg::StructuresViewRenderer"
+sidebarTitle: "StructuresViewRenderer"
+description: "Helper class to automatically visualize the content of a StructuresView in a DisplayWidget ."
+---
+
+`#include <ImFusion/Seg/StructuresViewRenderer.h>`
+
+## Overview
+
+Helper class to automatically visualize the content of a [StructuresView](/cpp-sdk/4.5/api/classes/imfusion-seg-structuresview) in a [DisplayWidget](/cpp-sdk/4.5/api/classes/imfusion-displaywidget).
+
+[StructuresViewRenderer](/cpp-sdk/4.5/api/classes/imfusion-seg-structuresviewrenderer) will listen to all changes provide the following visualizations:
+
+- A [GlLabelRenderer](/cpp-sdk/4.5/api/classes/imfusion-gllabelrenderer) instance to render labeled pixels in 2D/MPR views. Since multiple structures may be backed by the same label map, they will also shared the same [GlLabelRenderer](/cpp-sdk/4.5/api/classes/imfusion-gllabelrenderer).
+- An outline rendering of each structure in the 2D/MPR views.
+- A raycasting-based visualization in the 3D view.
+
+You can enable setUseMeshBasedVisualization() to gain a more high-quality visualization. If enabled, [StructuresViewRenderer](/cpp-sdk/4.5/api/classes/imfusion-seg-structuresviewrenderer) will compute a mesh for each [Structure](/cpp-sdk/4.5/api/classes/imfusion-seg-structure) and use this for outline rendering in MPR views and for rendering in the 3D view.
+
+This class will forward changes of the structure configuration (e.g. color, visibility) to the corresponding renderer objects.
+
+**Note:** Due to its computational complexity the process of extracting a [Mesh](/cpp-sdk/4.5/api/classes/imfusion-mesh) from the label map is performed asynchronously in a background thread. Therefore, changes of the underlying pixel data may not be visible instantly everywhere if setUseMeshBasedVisualization() is enabled.
+
+## Public Member Functions
+
+- **StructuresViewRenderer** ([DisplayWidgetMulti](/cpp-sdk/4.5/api/classes/imfusion-displaywidgetmulti) &display)
+- [StructuresView](/cpp-sdk/4.5/api/classes/imfusion-seg-structuresview) \* **structuresView** () const — Returns the [StructuresView](/cpp-sdk/4.5/api/classes/imfusion-seg-structuresview) to visualize in the [DisplayWidget](/cpp-sdk/4.5/api/classes/imfusion-displaywidget).
+- void **setStructuresView** ([StructuresView](/cpp-sdk/4.5/api/classes/imfusion-seg-structuresview) \*value) — Sets the [StructuresView](/cpp-sdk/4.5/api/classes/imfusion-seg-structuresview) to visualize in the [DisplayWidget](/cpp-sdk/4.5/api/classes/imfusion-displaywidget).
+- double **labelRendererOpacity** () const — Returns the global opacity of the [GlLabelRenderer](/cpp-sdk/4.5/api/classes/imfusion-gllabelrenderer) instances used for visualization.
+- void **setLabelRendererOpacity** (double value) — Sets the global opacity of the [GlLabelRenderer](/cpp-sdk/4.5/api/classes/imfusion-gllabelrenderer) instances used for visualization.
+- double **lineThicknessPx** () const — Returns the thickness of the outline rendered for the structures in 2D/MPR views.
+- void **setLineThicknessPx** (double value) — Sets the thickness of the outline rendered for the structures in 2D/MPR views.
+- bool **usesMeshBasedVisualization** () const — Returns the flag whether to use a mesh-based visualization (higher quality but more expensive) of the structures.
+- void **setUseMeshBasedVisualization** (bool value) — Sets the flag whether to use a mesh-based visualization (higher quality but more expensive) of the structures.

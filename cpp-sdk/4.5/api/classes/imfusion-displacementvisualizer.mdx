@@ -1,0 +1,105 @@
+---
+title: "ImFusion::DisplacementVisualizer"
+sidebarTitle: "DisplacementVisualizer"
+description: "Algorithm/GlObject hybrid to display an image's displacement as a vector field in an ImageView2D ."
+---
+
+`#include <ImFusion/Reg/DisplacementVisualizer.h>`
+
+## Overview
+
+Algorithm/GlObject hybrid to display an image's displacement as a vector field in an [ImageView2D](/cpp-sdk/4.5/api/classes/imfusion-imageview2d).
+
+The [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) interface does not perform anything but enabling instantiation from the data model/algorithm factory. The [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) interface will render the vector field into any ImageView2D/GlSliceView it is added to.
+
+## Public Member Functions
+
+- **DisplacementVisualizer** (const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &img) — Instantiates the displacement visualizer for the given image.
+- const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) & **image** () const — Returns the image for which to display the displacement.
+- void **updateOriginalMatrix** () — Sets the current image's matrix as original matrix.
+- double **vectorThickness** () const — Returns the thickness of the rendered vectors (px).
+- void **setVectorThickness** (double value) — Sets the thickness of the rendered vectors (px).
+- int **vectorDensity** () const — Returns the distance between the individual vectors (px).
+- void **setVectorDensity** (int value) — Sets the distance between the individual vectors (px).
+- void [compute](#compute) () override — Execute the algorithm.
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+- void [draw](#draw) (const [GlView](/cpp-sdk/4.5/api/classes/imfusion-glview) &view) override — Draw the object in 3D space.
+- [Geometry::AlignedBox](/cpp-sdk/4.5/api/classes/imfusion-geometry-alignedbox) [bounds](#bounds) () const override — Get the axis-aligned bounding box of this [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) in world space.
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [typeName](#typename) () const override — Return unique identifier for this object class used for serialization.
+
+## Static Public Member Functions
+
+- static bool **createCompatible** (const [DataList](/cpp-sdk/4.5/api/classes/imfusion-datalist) &data, [Algorithm](/cpp-sdk/4.5/api/classes/imfusion-algorithm) \*\*a=0)
+
+## Member Function Documentation
+
+### compute
+
+```cpp
+void ImFusion::DisplacementVisualizer::compute ()
+```
+
+*override, virtual*
+
+Execute the algorithm.
+
+### configure
+
+```cpp
+void ImFusion::DisplacementVisualizer::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### configuration
+
+```cpp
+void ImFusion::DisplacementVisualizer::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality
+
+### draw
+
+```cpp
+void ImFusion::DisplacementVisualizer::draw (const GlView & view)
+```
+
+*override, virtual*
+
+Draw the object in 3D space.
+
+### bounds
+
+```cpp
+Geometry::AlignedBox ImFusion::DisplacementVisualizer::bounds () const
+```
+
+*override, virtual*
+
+Get the axis-aligned bounding box of this [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) in world space.
+
+Return an empty (default-constructed) AlignedBox object if the [GlObject](/cpp-sdk/4.5/api/classes/imfusion-globject) does not reside in world space.
+
+### typeName
+
+```cpp
+std::string ImFusion::DisplacementVisualizer::typeName () const
+```
+
+*override, virtual*
+
+Return unique identifier for this object class used for serialization.

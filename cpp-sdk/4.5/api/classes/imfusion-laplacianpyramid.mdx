@@ -1,0 +1,62 @@
+---
+title: "ImFusion::LaplacianPyramid"
+sidebarTitle: "LaplacianPyramid"
+description: "Represents a pyramid of image details with decreasing resolution."
+---
+
+`#include <ImFusion/Base/LaplacianPyramid.h>`
+
+## Overview
+
+Represents a pyramid of image details with decreasing resolution.
+
+The first level will always be the same size of the original image. All levels and the background image (smoothest residual image) are generated and owned by the object.
+
+## Public Member Functions
+
+- **LaplacianPyramid** ([SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*input, bool subsampleImages=true) — Creates a pyramid with one level.
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \* &gt; **levels** () const — Returns a list of all levels sorted from highest to lowest resolution.
+- [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \* **backgroundImage** () — Returns the background image (residual image with the coarsest resolution).
+- [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \* **detailLevel** (int i) const — Returns the details at level i or nullptr if the level does not exist.
+- [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \* **imageLevel** (int i) const — Returns the image at level i or nullptr if the level does not exist.
+- [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \* **extractLevels** () — Returns and gives up ownership of pyramid details levels ([createLevels()](#createlevels) must be called again afterwards).
+- int [createLevels](#createlevels) (int numLevels) — Creates and initializes the levels of the pyramid.
+- [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \* [reconstructImage](#reconstructimage) () — Reconstructs the image at full resolution using all levels of the Laplacian pyramid.
+- int **size** () const — Returns the current number of levels.
+
+## Protected Member Functions
+
+- void **clear** () — Clears the pyramid levels.
+
+## Protected Attributes
+
+- [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \* **m_inputImage**
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) &gt; &gt; **m_levels**
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) &gt; &gt; **m_imageLevels**
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [ImageDownsampler](/cpp-sdk/4.5/api/classes/imfusion-imagedownsampler) &gt; **m_samplers**
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) &gt; **m_backgroundImage**
+- bool **m_subsampleImages**
+
+## Member Function Documentation
+
+### createLevels
+
+```cpp
+int ImFusion::LaplacianPyramid::createLevels (int numLevels)
+```
+
+Creates and initializes the levels of the pyramid.
+
+Existing levels are deleted. The minimum number of levels will always be one. Each level is computed by downsampling the previous level by factor 2. Once a dimension reach a size of 2 pixels, it will not be downsampled any further. When all dimension reach this minimum before the desired number of levels is reached, no more levels will be added. Masks are not used.
+
+**Returns:** the actual number of levels.
+
+### reconstructImage
+
+```cpp
+SharedImage * ImFusion::LaplacianPyramid::reconstructImage ()
+```
+
+Reconstructs the image at full resolution using all levels of the Laplacian pyramid.
+
+**Returns:** the created reconstructed image (ownership is transferred).

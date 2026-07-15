@@ -1,0 +1,42 @@
+---
+title: "ImFusion::EntryExitPointRenderer"
+sidebarTitle: "EntryExitPointRenderer"
+description: "Class for high-performance rendering of entry-exit points to be used for direct volume rendering."
+---
+
+`#include <ImFusion/GL/EntryExitPointRenderer.h>`
+
+## Overview
+
+Class for high-performance rendering of entry-exit points to be used for direct volume rendering.
+
+**See also:** [GlVolumeRenderer](/cpp-sdk/4.5/api/classes/imfusion-glvolumerenderer)
+
+## Public Member Functions
+
+- bool **useOctree** () const — Returns the flag whether to use an [Octree](/cpp-sdk/4.5/api/classes/imfusion-octree) acceleration structure.
+- void **setUseOctree** (bool value) — Sets the flag whether to use an [Octree](/cpp-sdk/4.5/api/classes/imfusion-octree) acceleration structure.
+- const [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) & **frontTexColor** () const — Returns the front face color texture.
+- const [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) & **frontTexDepth** () const — Returns the front face depth texture.
+- const [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) & **backTexColor** () const — Returns the back face color texture.
+- const [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) & **backTexDepth** () const — Returns the back face depth texture.
+- void [render](#render) (const [GL::ViewState](/cpp-sdk/4.5/api/classes/imfusion-gl-viewstate) &viewState, const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) &sis, int which, const [DisplayOptions3d](/cpp-sdk/4.5/api/classes/imfusion-displayoptions3d) &dop, bool clear, bool renderNearClippingPlane) — Renders the entry/exit points for the given image.
+
+## Member Function Documentation
+
+### render
+
+```cpp
+void ImFusion::EntryExitPointRenderer::render (const GL::ViewState & viewState, const SharedImageSet & sis, int which, const DisplayOptions3d & dop, bool clear, bool renderNearClippingPlane)
+```
+
+Renders the entry/exit points for the given image.
+
+**Parameters:**
+
+- `viewState` — [Viewport](/cpp-sdk/4.5/api/structs/imfusion-gl-viewport) used for output texture size, view/projection matrices used for rendering.
+- `sis` — [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) to render EEP for.
+- `which` — Index of the [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) in *sis* to render the EEP for
+- `dop` — DisplayOptions used during rendering (needed for [Octree](/cpp-sdk/4.5/api/classes/imfusion-octree) culling)
+- `clear` — Flag whether to clear the existing EEP textures
+- `renderNearClippingPlane` — Flag whether to render a near clipping plane

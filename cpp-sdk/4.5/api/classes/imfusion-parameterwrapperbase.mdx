@@ -1,0 +1,77 @@
+---
+title: "ImFusion::ParameterWrapperBase"
+sidebarTitle: "ParameterWrapperBase"
+description: "Base class for classes that wish to expose zero or more optimization parameters."
+---
+
+`#include <ImFusion/Base/ParameterOptimization.h>`
+
+## Overview
+
+[Base](/cpp-sdk/4.5/api/structs/imfusion-dicom-base) class for classes that wish to expose zero or more optimization parameters.
+
+Classes that inherit from this one serialize and deserialize C++ objects (stored by reference) into an array of double parameters. Such a parameter wrapper can be combined with a double-valued cost function (acting on the C++ objects) to yield an instance of the [CostFunction](/cpp-sdk/4.5/api/classes/imfusion-costfunction) interface (
+
+**See also:** [ParameterOptimization](/cpp-sdk/4.5/api/classes/imfusion-parameteroptimization)). This [CostFunction](/cpp-sdk/4.5/api/classes/imfusion-costfunction) can be optimized with an instance of the [Optimizer](/cpp-sdk/4.5/api/classes/imfusion-optimizer) class. Effectively this allows users to optimize over suitable C++ types, and abstracts away the machinery required to [serialize](#serialize) to double\*
+
+**See also:** [Optimizer](/cpp-sdk/4.5/api/classes/imfusion-optimizer)
+
+## Public Member Functions
+
+- virtual int [dim](#dim) () const =0 — The number of (scalar) parameters wrapped by this object.
+- virtual void [deserialize](#deserialize) (const double \*v)=0 — Update the stored references from a double representation.
+- virtual void [serialize](#serialize) (double \*v) const =0 — Updates a double representation from the stored references.
+- virtual [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [name](#name) (int i) const =0 — Name of the ith parameter, used for display purposes.
+- virtual [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; ParameterWrapperBase &gt; [clone](#clone) () const =0 — Clone function.
+
+## Member Function Documentation
+
+### dim
+
+```cpp
+virtual int ImFusion::ParameterWrapperBase::dim () const
+```
+
+*pure virtual*
+
+The number of (scalar) parameters wrapped by this object.
+
+### deserialize
+
+```cpp
+virtual void ImFusion::ParameterWrapperBase::deserialize (const double * v)
+```
+
+*pure virtual*
+
+Update the stored references from a double representation.
+
+### serialize
+
+```cpp
+virtual void ImFusion::ParameterWrapperBase::serialize (double * v) const
+```
+
+*pure virtual*
+
+Updates a double representation from the stored references.
+
+### name
+
+```cpp
+virtual std::string ImFusion::ParameterWrapperBase::name (int i) const
+```
+
+*pure virtual*
+
+Name of the ith parameter, used for display purposes.
+
+### clone
+
+```cpp
+virtual std::unique_ptr < ParameterWrapperBase > ImFusion::ParameterWrapperBase::clone () const
+```
+
+*pure virtual*
+
+Clone function.

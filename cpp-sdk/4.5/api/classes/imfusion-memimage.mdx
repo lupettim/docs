@@ -1,0 +1,351 @@
+---
+title: "ImFusion::MemImage"
+sidebarTitle: "MemImage"
+description: "Abstract base class for an image residing in main memory."
+---
+
+`#include <ImFusion/Base/MemImage.h>`
+
+## Overview
+
+Abstract base class for an image residing in main memory.
+
+Use the templated [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage) to instantiate a MemImage for a concrete pixel type.
+
+**See also:** [Using Image Data](/cpp-sdk/4.5/api/guides/image-data-tutorial), [ImageProcessing](/cpp-sdk/4.5/api/namespaces/imfusion-imageprocessing)
+
+**Examples:** [SqrtAlgorithm.cpp](/cpp-sdk/4.5/api/examples/sqrt-algorithm-8cpp).
+
+## Public Types
+
+- enum class [Ownership](#ownership) &#123; NotOwning = 0 , Owning = 1 &#125; — Enumeration to describe image data pointer ownership.
+- using [ImageVariant](#imagevariant)
+- using [ConstImageVariant](#constimagevariant) — Pixel/voxel data type, equivalent to OpenGL defines.
+
+## Public Member Functions
+
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; MemImage &gt; **clone** () const — Create a deep copy of the image.
+- virtual bool [update](#update) (const MemImage &img)=0 — Update image data.
+- [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; T &gt; \* [typed](#typed) () — Convenience function to perform a dynamic_cast&lt;[TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt;T&gt;&gt; of this instance.
+- const [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; T &gt; \* **typed** () const
+- ImageVariant [asVariant](#asvariant-1-2) () — Returns a [std::variant](http://en.cppreference.com/w/cpp/utility/variant.html) containing a pointer to the concrete [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage) type.
+- ConstImageVariant [asVariant](#asvariant-2-2) () const — Returns a [std::variant](http://en.cppreference.com/w/cpp/utility/variant.html) containing a const pointer to the concrete [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage) type.
+- [Location](/cpp-sdk/4.5/api/classes/imfusion-image) [location](#location) () const override — Specifies that the image resides in main memory.
+- bool **load** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &filename, int64_t offset=0) — Loads the image content from a file, returns true if successful.
+- bool **save** (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &filename) const — Saves the image content to a file, returns true if successful.
+- virtual const void \* [data](#data) () const =0 — Returns a void pointer to the underlying raw pixel buffer of the image.
+- virtual void \* **data** ()=0
+- virtual double [valueDouble](#valuedouble-1-3) (size_t [index](/cpp-sdk/4.5/api/classes/imfusion-image)) const =0 — Return the pixel intensity at the given index without interpolation casted to double.
+- virtual double [valueDouble](#valuedouble-2-3) (int x, int y, int z=0, int c=0) const =0 — Return the pixel intensity at the coordinate without interpolation casted to double.
+- virtual double [valueDouble](#valuedouble-3-3) (double x, double y, double z=0, int c=0, bool clamp=true, bool \*valid=nullptr) const =0 — Return the pixel intensity at the given coordinate using linear interpolation casted to double.
+- virtual void [setValueDouble](#setvaluedouble-1-2) (double value, size_t [index](/cpp-sdk/4.5/api/classes/imfusion-image)) const =0 — Set the pixel intensity at the given index to *value* casted to the underlying type without any clamping or normalization.
+- virtual void [setValueDouble](#setvaluedouble-2-2) (double value, int x, int y, int z=0, int c=0) const =0 — Set the pixel intensity at the given coordinate to *value* casted to the underlying type without any clamping or normalization.
+- [std::pair](http://en.cppreference.com/w/cpp/utility/pair.html)&lt; double, double &gt; **getRangeDouble** () const — Computes the minimum and maximum image intensity of the entire image casted to double.
+- virtual void [getRangeDouble](#getrangedouble) (double &minVal, double &maxVal) const =0
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; MemImage &gt; [getSliceView](#getsliceview) (int slice) const — Extract a [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) representing a view onto the specified *slice* of this image.
+- virtual void [fillDouble](#filldouble-1-2) (double value)=0 — Fill image with the given *double* value for all channels and pixels.
+- virtual void [fillDouble](#filldouble-2-2) (const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; double &gt; &channelValues)=0 — Fill image with the given *double* channel values for all pixels.
+
+## Static Public Member Functions
+
+- static [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; MemImage &gt; [create](#create-1-2) (const [ImageDescriptor](/cpp-sdk/4.5/api/structs/imfusion-imagedescriptor) &[descriptor](/cpp-sdk/4.5/api/classes/imfusion-image)) — Factory method to instantiate a [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) from an [ImageDescriptor](/cpp-sdk/4.5/api/structs/imfusion-imagedescriptor).
+- static [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; MemImage &gt; [create](#create-2-2) (const [ImageDescriptor](/cpp-sdk/4.5/api/structs/imfusion-imagedescriptor) &[descriptor](/cpp-sdk/4.5/api/classes/imfusion-image), void \*[data](#data), [Ownership](#ownership) own=Ownership::NotOwning) — Factory method to instantiate a [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) from an [ImageDescriptor](/cpp-sdk/4.5/api/structs/imfusion-imagedescriptor) and pointer to existing image data.
+- static [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; MemImage &gt; **zeros** (const [ImageDescriptor](/cpp-sdk/4.5/api/structs/imfusion-imagedescriptor) &[descriptor](/cpp-sdk/4.5/api/classes/imfusion-image)) — Factory method to create a zero-initialized image.
+
+## Protected Member Functions
+
+- **MemImage** (MemImage &&other) noexcept
+- MemImage & **operator=** (MemImage &&other) noexcept
+- **MemImage** (const MemImage &other)=delete
+- MemImage & **operator=** (const MemImage &other)=delete
+- **MemImage** (const [ImageDescriptor](/cpp-sdk/4.5/api/structs/imfusion-imagedescriptor) &desc)
+- virtual MemImage \* **cloneImpl** () const =0
+- virtual [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; MemImage &gt; **getSliceViewImpl** (int slice) const =0
+
+## Deprecated Interface
+
+- virtual [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; MemImage &gt; [prepare](#prepare) (bool msb=false, bool shiftOnly=false)=0 — Optimal rescaling and conversion to unsigned data type if applicable.
+- virtual [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; MemImage &gt; [unscaled](#unscaled) () const =0 — Return copy of this image with intensity scale and shift undone, if necessary.
+
+## Member Typedef Documentation
+
+### ImageVariant
+
+```cpp
+using ImFusion::MemImage::ImageVariant
+```
+
+**Initial value:**
+```cpp
+Utils::Variant<TypedImage<char>*,
+ TypedImage<signed char>*,
+ TypedImage<unsigned char>*,
+ TypedImage<short>*,
+ TypedImage<unsigned short>*,
+ TypedImage<int>*,
+ TypedImage<unsigned int>*,
+ TypedImage<float>*,
+ TypedImage<double>*>
+```
+ fragment
+
+### ConstImageVariant
+
+```cpp
+using ImFusion::MemImage::ConstImageVariant
+```
+
+**Initial value:**
+```cpp
+Utils::Variant<const TypedImage<char>*,
+ const TypedImage<signed char>*,
+ const TypedImage<unsigned char>*,
+ const TypedImage<short>*,
+ const TypedImage<unsigned short>*,
+ const TypedImage<int>*,
+ const TypedImage<unsigned int>*,
+ const TypedImage<float>*,
+ const TypedImage<double>*>
+```
+ fragment
+
+## Member Enumeration Documentation
+
+### Ownership
+
+```cpp
+enum class ImFusion::MemImage::Ownership
+```
+
+*strong*
+
+Enumeration to describe image data pointer ownership.
+
+**Enumerator:**
+
+- `NotOwning` — [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) will not take ownership of the pointer, pointer must remain valid for the lifetime of the image.
+- `Owning` — [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) will take ownership of the pointer, will delete it on destruction.
+
+## Member Function Documentation
+
+### create
+
+```cpp
+std::unique_ptr < MemImage > ImFusion::MemImage::create (const ImageDescriptor & descriptor)
+```
+
+*static*
+
+Factory method to instantiate a [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) from an [ImageDescriptor](/cpp-sdk/4.5/api/structs/imfusion-imagedescriptor).
+
+**Note:** This method does *not* initialize the underlying buffer Will internally dispatch to [TypedImage&lt;T&gt;::create()](/cpp-sdk/4.5/api/classes/imfusion-typedimage) based on the pixel type of *descriptor*.
+
+### create
+
+```cpp
+std::unique_ptr < MemImage > ImFusion::MemImage::create (const ImageDescriptor & descriptor, void * data, Ownership own = Ownership::NotOwning)
+```
+
+*static*
+
+Factory method to instantiate a [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) from an [ImageDescriptor](/cpp-sdk/4.5/api/structs/imfusion-imagedescriptor) and pointer to existing image data.
+
+Will internally dispatch to [TypedImage&lt;T&gt;::create()](/cpp-sdk/4.5/api/classes/imfusion-typedimage) based on the pixel type of *descriptor*.
+
+**Parameters:**
+
+- `descriptor` — [ImageDescriptor](/cpp-sdk/4.5/api/structs/imfusion-imagedescriptor) of the new image.
+- `data` — Pointer to image data, must match the descriptor layout.
+- `own` — Flag whether the newly created image shall take ownership of *data*.
+
+### update
+
+```cpp
+virtual bool ImFusion::MemImage::update (const MemImage & img)
+```
+
+*pure virtual*
+
+Update image data.
+
+### typed
+
+```cpp
+template<typename T> TypedImage < T > * ImFusion::MemImage::typed ()
+```
+
+Convenience function to perform a dynamic_cast&lt;[TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt;T&gt;&gt; of this instance.
+
+Returns nullptr if image is not of type T.
+
+### asVariant
+
+```cpp
+ImageVariant ImFusion::MemImage::asVariant ()
+```
+
+Returns a [std::variant](http://en.cppreference.com/w/cpp/utility/variant.html) containing a pointer to the concrete [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage) type.
+
+The variant will hold the appropriate [TypedImage&lt;T&gt;](/cpp-sdk/4.5/api/classes/imfusion-typedimage)\* based on the actual pixel type.
+
+MemImage\* mem = ... [std::visit](http://en.cppreference.com/w/cpp/utility/variant/visit.html)([](auto\* typedImage) &#123; auto pixelvalue = typedImage-&gt;value(x,y,z,channel); Process data... &#125;, mem-&gt;[asVariant()](#asvariant-1-2));
+
+### asVariant
+
+```cpp
+ConstImageVariant ImFusion::MemImage::asVariant () const
+```
+
+Returns a [std::variant](http://en.cppreference.com/w/cpp/utility/variant.html) containing a const pointer to the concrete [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage) type.
+
+The variant will hold the appropriate [TypedImage&lt;T&gt;](/cpp-sdk/4.5/api/classes/imfusion-typedimage)\* based on the actual pixel type. MemImage\* mem = ... [std::visit](http://en.cppreference.com/w/cpp/utility/variant/visit.html)([](const auto\* typedImage) &#123; auto pixelvalue = typedImage-&gt;value(x,y,z,channel); Process data... &#125;, mem-&gt;[asVariant()](#asvariant-1-2));
+
+### location
+
+```cpp
+Location ImFusion::MemImage::location () const
+```
+
+*inline, override, virtual*
+
+Specifies that the image resides in main memory.
+
+### data
+
+```cpp
+virtual const void * ImFusion::MemImage::data () const
+```
+
+*pure virtual*
+
+Returns a void pointer to the underlying raw pixel buffer of the image.
+
+**Note:** The [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt;T&gt; specialization provides pointer() as type-safe alternative.
+
+### valueDouble
+
+```cpp
+virtual double ImFusion::MemImage::valueDouble (size_t index) const
+```
+
+*pure virtual*
+
+Return the pixel intensity at the given index without interpolation casted to double.
+
+**Examples:** [SqrtAlgorithm.cpp](/cpp-sdk/4.5/api/examples/sqrt-algorithm-8cpp).
+
+### valueDouble
+
+```cpp
+virtual double ImFusion::MemImage::valueDouble (int x, int y, int z = 0, int c = 0) const
+```
+
+*pure virtual*
+
+Return the pixel intensity at the coordinate without interpolation casted to double.
+
+**Note:** Try to avoid calling this function repeatedly because the coordinate-to-index computation is slow. When accessing entire regions of the image prefer use the index-based overload incrementing the index by a suitable stride after each function call instead of always fully recomputing the index.
+
+### valueDouble
+
+```cpp
+virtual double ImFusion::MemImage::valueDouble (double x, double y, double z = 0, int c = 0, bool clamp = true, bool * valid = nullptr) const
+```
+
+*pure virtual*
+
+Return the pixel intensity at the given coordinate using linear interpolation casted to double.
+
+**Note:** Be aware that this function is rather slow, use it only if you really need interpolation. Consider using the set of free functions in [Math::Interpolation](/cpp-sdk/4.5/api/namespaces/imfusion-math-interpolation) as they provide more control on the interpolation behavior.
+
+### setValueDouble
+
+```cpp
+virtual void ImFusion::MemImage::setValueDouble (double value, size_t index) const
+```
+
+*pure virtual*
+
+Set the pixel intensity at the given index to *value* casted to the underlying type without any clamping or normalization.
+
+**Examples:** [SqrtAlgorithm.cpp](/cpp-sdk/4.5/api/examples/sqrt-algorithm-8cpp).
+
+### setValueDouble
+
+```cpp
+virtual void ImFusion::MemImage::setValueDouble (double value, int x, int y, int z = 0, int c = 0) const
+```
+
+*pure virtual*
+
+Set the pixel intensity at the given coordinate to *value* casted to the underlying type without any clamping or normalization.
+
+**Note:** Try to avoid calling this function repeatedly because the coordinate-to-index computation is slow. When accessing entire regions of the image prefer use the index-based overload incrementing the index by a suitable stride after each function call instead of always fully recomputing the index.
+
+### getRangeDouble
+
+```cpp
+virtual void ImFusion::MemImage::getRangeDouble (double & minVal, double & maxVal) const
+```
+
+*pure virtual*
+
+### getSliceView
+
+```cpp
+std::unique_ptr < MemImage > ImFusion::MemImage::getSliceView (int slice) const
+```
+
+Extract a [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) representing a view onto the specified *slice* of this image.
+
+The returned image only points to the data and does not own it. It is therefore only valid as long this image is valid. Returns nullptr if slice is out of range.
+
+### fillDouble
+
+```cpp
+virtual void ImFusion::MemImage::fillDouble (double value)
+```
+
+*pure virtual*
+
+Fill image with the given *double* value for all channels and pixels.
+
+**Note:** The passed value will be casted to the underlying type of the image.
+
+### fillDouble
+
+```cpp
+virtual void ImFusion::MemImage::fillDouble (const std::vector < double > & channelValues)
+```
+
+*pure virtual*
+
+Fill image with the given *double* channel values for all pixels.
+
+**Note:** The passed value will be casted to the underlying type of the image. The number of elements in *channelValues* must match the number of channels of this image.
+
+### prepare
+
+```cpp
+virtual std::unique_ptr < MemImage > ImFusion::MemImage::prepare (bool msb = false, bool shiftOnly = false)
+```
+
+*pure virtual*
+
+Optimal rescaling and conversion to unsigned data type if applicable.
+
+****Deprecated**:** "Use ImageProcessing::createConverted() and/or ImageProcessing::swapEndianness() instead."
+
+### unscaled
+
+```cpp
+virtual std::unique_ptr < MemImage > ImFusion::MemImage::unscaled () const
+```
+
+*pure virtual*
+
+Return copy of this image with intensity scale and shift undone, if necessary.
+
+The method returns a zero pointer if there is no scale and shift and if the image has a floating-point data type.
+
+****Deprecated**:** "Use ImageProcessing::createConverted() instead."

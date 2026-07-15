@@ -1,0 +1,96 @@
+---
+title: "ImFusion::LoggingTimer"
+sidebarTitle: "LoggingTimer"
+description: "Scope guard-like stopwatch class to automatically log measured execution time on destruction of the guard object."
+---
+
+`#include <ImFusion/Core/Timer.h>`
+
+## Overview
+
+Scope guard-like stopwatch class to automatically log measured execution time on destruction of the guard object.
+
+**See also:** [Timer](/cpp-sdk/4.5/api/classes/imfusion-timer)
+
+Example:
+
+```cpp
+{
+ auto tmpTimer = LoggingTimer("my algorithm task 1", "component");
+ std::this_thread::sleep_for(std::chrono::milliseconds(106));
+}  // <-- the run time is logged in this line upon LoggingTimer destruction
+```
+ fragment
+Also, this class can be used to log the average execution time of a code snippet without flooding the logs, as illustrated in the example below:
+
+```cpp
+// when constructing the LoggingTimer, make sure to set 'start' to false to prevent starting the timer before the code we want to measure
+LoggingTimer myTimer("my algorithm", "component", false);
+
+for (int i = 0; i < 12; ++i)
+{
+ auto scopedTimer = myTimer.startScopedTimer(std::chrono::milliseconds(500)); // this makes sure that we only log the average run time each 500 ms
+ std::this_thread::sleep_for(std::chrono::milliseconds(100));
+}
+```
+ fragment
+
+## Public Types
+
+- using **msec** = [std::chrono::milliseconds](http://en.cppreference.com/w/cpp/chrono/duration.html)
+
+## Public Member Functions
+
+- [LoggingTimer](#loggingtimer) (const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &name="", const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &component="", bool start=true, Log::Level logLevel=Log::Level::Info, bool resetStatsAfterLogging=true) — Create a new [LoggingTimer](/cpp-sdk/4.5/api/classes/imfusion-loggingtimer) instance, make sure to capture it in a variable.
+- **~LoggingTimer** () — destructor, also calls [pause()](#pause) which logs the run time
+- void **resume** () — starts or resumes the timer
+- void [pause](#pause) (msec logSilencePeriod=msec(0)) — it pauses the timer and logs the output unless 'logSilencePeriod' is set non zero value
+- [Utils::ScopeGuard](/cpp-sdk/4.5/api/classes/imfusion-utils-scopeguard)&lt; [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; void()&gt; &gt; [startScopedTimer](#startscopedtimer) (msec logSilencePeriod=msec(0)) — returns ScopeGuard stopwatch to automatically calls [pause()](#pause) on destruction of the guard object.
+- void **reset** () — Stop and reset timer.
+
+## Constructor & Destructor Documentation
+
+### LoggingTimer
+
+```cpp
+ImFusion::LoggingTimer::LoggingTimer (const std::string & name = "", const std::string & component = "", bool start = true, Log::Level logLevel = Log::Level::Info, bool resetStatsAfterLogging = true)
+```
+
+*explicit*
+
+Create a new [LoggingTimer](/cpp-sdk/4.5/api/classes/imfusion-loggingtimer) instance, make sure to capture it in a variable.
+
+**Parameters:**
+
+- `name` — Name of the section, will be appended to the log message.
+- `component` — Logger component to use
+- `start` — If true then it starts the timer upon class construction
+- `logLevel` — [Log](/cpp-sdk/4.5/api/namespaces/imfusion-log) level to use.
+- `resetStatsAfterLogging` — If set to true, then the stats used for the average run time calculation are reset after each time we log a message
+
+## Member Function Documentation
+
+### pause
+
+```cpp
+void ImFusion::LoggingTimer::pause (msec logSilencePeriod = msec(0))
+```
+
+it pauses the timer and logs the output unless 'logSilencePeriod' is set non zero value
+
+**Parameters:**
+
+- `logSilencePeriod` — if not set to zero, then the run time is only logged once during this duration
+
+### void
+
+```cpp
+Utils::ScopeGuard < std::function < void()> > ImFusion::LoggingTimer::startScopedTimer (msec logSilencePeriod = msec(0))
+```
+
+returns ScopeGuard stopwatch to automatically calls [pause()](#pause) on destruction of the guard object.
+
+**Parameters:**
+
+- `logSilencePeriod` — if not set to zero, then the run time is only logged once during this duration Example: auto timerScope = m_timer.startScopedTimer();  // m_timer is a member variable in this case
+ fragment

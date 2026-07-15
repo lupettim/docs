@@ -1,0 +1,105 @@
+---
+title: "ImFusion::TimestampDataComponent"
+sidebarTitle: "TimestampDataComponent"
+description: "Data component to record both arrival and device timestamps, intended for element-wise usage."
+---
+
+`#include <ImFusion/Base/TimestampDataComponent.h>`
+
+## Overview
+
+[Data](/cpp-sdk/4.5/api/classes/imfusion-data) component to record both arrival and device timestamps, intended for element-wise usage.
+
+## Public Member Functions
+
+- **TimestampDataComponent** (uint64_t device, uint64_t arrival)
+- **TimestampDataComponent** (const TimestampDataComponent &rhs)=default
+- TimestampDataComponent & **operator=** (const TimestampDataComponent &rhs)=default
+- bool **operator==** (const TimestampDataComponent &rhs) const
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [id](#id) () const override — Returns a unique string identifier for this type of data component.
+- uint64_t **deviceTimestamp** () const
+- uint64_t **arrivalTimestamp** () const
+
+## Configurable Interface
+
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+- void **configurationHumanReadable** ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const
+
+## BinarySerializable Interface
+
+- size_t [saveBufferSize](#savebuffersize) () const override — Returns the total amount of bytes required for serialization.
+- void [loadFromBuffer](#loadfrombuffer) (const char \*buffer, size_t len) override — Restores the state of this object from a memory buffer, using maximum `len` bytes.
+- void [saveToBuffer](#savetobuffer) (char \*buffer) const override — Saves the state of this object into a memory buffer, using maximum [saveBufferSize()](#savebuffersize) bytes.
+
+## Member Function Documentation
+
+### id
+
+```cpp
+std::string ImFusion::TimestampDataComponent::id () const
+```
+
+*override, virtual*
+
+Returns a unique string identifier for this type of data component.
+
+**Note:** To avoid conflicts make sure to include potential plugin names into this ID. Due to the modular architecture of the ImFusion library, uniqueness of IDs cannot be checked at compile time. However, [DataComponentFactory](/cpp-sdk/4.5/api/classes/imfusion-datacomponentfactory) will check the uniqueness of the ID during registration.
+
+### configure
+
+```cpp
+void ImFusion::TimestampDataComponent::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### configuration
+
+```cpp
+void ImFusion::TimestampDataComponent::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality
+
+### saveBufferSize
+
+```cpp
+size_t ImFusion::TimestampDataComponent::saveBufferSize () const
+```
+
+*override, virtual*
+
+Returns the total amount of bytes required for serialization.
+
+### loadFromBuffer
+
+```cpp
+void ImFusion::TimestampDataComponent::loadFromBuffer (const char * buffer, size_t len)
+```
+
+*override, virtual*
+
+Restores the state of this object from a memory buffer, using maximum `len` bytes.
+
+### saveToBuffer
+
+```cpp
+void ImFusion::TimestampDataComponent::saveToBuffer (char * buffer) const
+```
+
+*override, virtual*
+
+Saves the state of this object into a memory buffer, using maximum [saveBufferSize()](#savebuffersize) bytes.

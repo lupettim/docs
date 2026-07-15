@@ -1,0 +1,18 @@
+---
+title: "ImFusion::VideoFileRecorder"
+sidebarTitle: "VideoFileRecorder"
+---
+
+## Public Types
+
+- enum class **InitializeResult** &#123; **Valid** , **SizeInvalid** , **FormatUnknown** , **FormatError** , **IOContextError** , **EncoderUnknown** , **ContextCreateError** , **CodecOpenError** , **VideoStreamError** , **CodecParamCopyError** , **HeaderWriteError** , **FrameAllocateError** , **FrameBufferError** , **PacketError** , **UnsupportedOutputPixelFormat** , **OutputFormatInvalid** &#125;
+- enum class **OutputPixelFormat** &#123; **YUV420P** , **YUV444P** , **GRAY8** , **GRAY16** , **RGB24** , **RGBA** , **BGRA** , **BGR0** &#125;
+
+## Public Member Functions
+
+- InitializeResult **initialize** (int width, int height, int fps, OutputPixelFormat format, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &formatShortName, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &encoderName, const [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::pair](http://en.cppreference.com/w/cpp/utility/pair.html)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html), [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; &gt; encoderParameters, const [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &outputPath)
+- bool **ok** () const
+- bool **finalize** ()
+- void **clear** ()
+- bool **encodeFrame** (const [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) &image)
+- void **encodeFrame** (const [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; unsigned char &gt; &image)

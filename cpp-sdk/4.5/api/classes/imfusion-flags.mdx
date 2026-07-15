@@ -1,0 +1,81 @@
+---
+title: "ImFusion::Flags< Enum >"
+sidebarTitle: "Flags< Enum >"
+description: "Utility class to store a type-safe combination of enum-based bit fields."
+---
+
+`#include <ImFusion/Core/Flags.h>`
+
+## Overview
+
+template&lt;typename Enum&gt;
+
+class ImFusion::Flags&lt; Enum &gt;
+Utility class to store a type-safe combination of enum-based bit fields.
+
+**Template Parameters:** | Enum | Enumeration to use for accessing individual bits. You must ensure yourself that the underlying enum values are chosen to form a proper bit field. [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags) can not perform any checks on this. |
+| --- | --- |
+
+```cpp
+// Definition of enum bitfield and function that takes Flags
+enum CompareOptions {
+    CompareNothing = 0,
+    CompareFirst = 1 << 0,
+    CompareSecond = 1 << 1,
+    CompareThird = 1 << 2,
+};
+void setCompareFlags(Flags<CompareOptions> compareOptions);
+
+[...]
+
+// Use initializer list to create a CompareOptions bit field that has the first and second bit set
+setCompareFlags({CompareFirst, CompareSecond});
+```
+ fragment
+
+## Public Types
+
+- using **BaseType** = typename [std::underlying_type](http://en.cppreference.com/w/cpp/types/underlying_type.html)&lt;Enum&gt;::type
+
+## Public Member Functions
+
+- **Flags** ()=default — Default constructor creates an empty bitfield.
+- **Flags** (Enum f) — Constructs a [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags) instance with a single bit set.
+- **Flags** (BaseType val) — Construct a [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags) instance from an integer value, no range checks are performed.
+- **Flags** ([std::initializer_list](http://en.cppreference.com/w/cpp/utility/initializer_list.html)&lt; Enum &gt; initializerList) — Constructs a [Flags](/cpp-sdk/4.5/api/classes/imfusion-flags) instance from an initializer list of enum values, all given bits will be set.
+- bool [testFlag](#testflag) (Enum flag) const — Returns whether all bits of the given flag are set.
+- void **setFlag** (Enum flag, bool value=true) — Sets all bits of the given flag to *value*.
+- void **toggleFlag** (Enum flag) — Toggles all bits of the given *flag*.
+- BaseType **value** () const — Returns the underlying value as integral type.
+- Flags & **operator&=** (Flags f)
+- Flags & **operator&=** (Enum mask)
+- Flags & **operator|=** (Flags f)
+- Flags & **operator|=** (Enum f)
+- Flags & **operator^=** (Flags f)
+- Flags & **operator^=** (Enum f)
+- **operator Enum** () const
+- Flags **operator|** (Flags f) const
+- Flags **operator|** (Enum f) const
+- Flags **operator^** (Flags f) const
+- Flags **operator^** (Enum f) const
+- Flags **operator&** (Flags f) const
+- Flags **operator&** (Enum f) const
+- Flags **operator~** () const
+- bool **operator!** () const
+- bool **operator==** (Enum f) const
+- bool **operator==** (const Flags&lt; Enum &gt; &f) const
+- bool **operator!=** (Enum f) const
+
+## Member Function Documentation
+
+### testFlag
+
+```cpp
+template<typename Enum> bool ImFusion::Flags < Enum >::testFlag (Enum flag) const
+```
+
+*inline*
+
+Returns whether all bits of the given flag are set.
+
+If *flag* is 0, returns whether no bit is set.

@@ -1,0 +1,51 @@
+---
+title: "ImFusion::WorkspaceConversionFunction"
+sidebarTitle: "WorkspaceConversionFunction"
+description: "Structure to describe a conversion of workspace files between different versions."
+---
+
+`#include <ImFusion/GUI/WorkspaceConversion.h>`
+
+## Overview
+
+Structure to describe a conversion of workspace files between different versions.
+
+**See also:** [WorkspaceConversionRegistry](/cpp-sdk/4.5/api/classes/imfusion-workspaceconversionregistry)
+
+## Public Attributes
+
+- [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) [name](#name) — [String](/cpp-sdk/4.5/api/namespaces/imfusion-string) describing the intent of the conversion.
+- int [version](#version) — Minimum workspace version when the conversion is to be applied.
+- [std::function](http://en.cppreference.com/w/cpp/utility/functional/function.html)&lt; bool([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) &p, const [Filesystem::Path](/cpp-sdk/4.5/api/classes/imfusion-filesystem-path) &workspaceFile)&gt; [function](#function) — Conversion function applied to a workspace file if its version is less or equal to *version*.
+
+## Member Data Documentation
+
+### name
+
+```cpp
+std::string ImFusion::WorkspaceConversionFunction::name
+```
+
+[String](/cpp-sdk/4.5/api/namespaces/imfusion-string) describing the intent of the conversion.
+
+Will be used for log output to provide better traceability of workspace conversions.
+
+### version
+
+```cpp
+int ImFusion::WorkspaceConversionFunction::version
+```
+
+Minimum workspace version when the conversion is to be applied.
+
+The conversion will be applied if source_version &lt;= version &lt; target_version. The current workspace version is defined by Workspace::WORKSPACE_VERSION
+
+### bool
+
+```cpp
+std::function <bool(Properties & p, const Filesystem::Path & workspaceFile)> ImFusion::WorkspaceConversionFunction::function
+```
+
+Conversion function applied to a workspace file if its version is less or equal to *version*.
+
+The function may alter the [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) directly. The return value indicates whether any changes took place. The provided absolute workspace file path may be used to resolve relative paths in the workspace.

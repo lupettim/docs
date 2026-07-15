@@ -1,0 +1,51 @@
+---
+title: "ImFusion::HistogramInteraction"
+sidebarTitle: "HistogramInteraction"
+description: "Implements mouse interaction logic for the InteractiveHistogramOverlay ."
+---
+
+`#include <ImFusion/GUI/HistogramInteraction.h>`
+
+## Overview
+
+Implements mouse interaction logic for the [InteractiveHistogramOverlay](/cpp-sdk/4.5/api/classes/imfusion-interactivehistogramoverlay).
+
+## Public Member Functions
+
+- **HistogramInteraction** ([InteractiveHistogramOverlay](/cpp-sdk/4.5/api/classes/imfusion-interactivehistogramoverlay) &interactiveOverlay)
+- void **setImage** (const [SharedImageSet](/cpp-sdk/4.5/api/classes/imfusion-sharedimageset) \*sis, int index)
+- bool [sceneEvent](#sceneevent) (QEvent \*event) override — Handles the event and returns true if the event was handles and should not passed to other interactions.
+- void [contextMenuCreate](#contextmenucreate) (QMenu &m) override — Create context menu entries.
+- void [contextMenuEvaluate](#contextmenuevaluate) (QAction \*action) override — Evaluate action chosen in context menu or by shortcut.
+
+## Member Function Documentation
+
+### sceneEvent
+
+```cpp
+bool ImFusion::HistogramInteraction::sceneEvent (QEvent * event)
+```
+
+*override, virtual*
+
+Handles the event and returns true if the event was handles and should not passed to other interactions.
+
+### contextMenuCreate
+
+```cpp
+void ImFusion::HistogramInteraction::contextMenuCreate (QMenu &)
+```
+
+*override, virtual*
+
+Create context menu entries.
+
+### contextMenuEvaluate
+
+```cpp
+void ImFusion::HistogramInteraction::contextMenuEvaluate (QAction *)
+```
+
+*override, virtual*
+
+Evaluate action chosen in context menu or by shortcut.

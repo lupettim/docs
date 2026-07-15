@@ -1,0 +1,115 @@
+---
+title: "ImFusion::Dicom::Sequence< T >"
+sidebarTitle: "Sequence< T >"
+description: "Concrete sequence of items of type T, which must be derived from SequenceItem ."
+---
+
+`#include <ImFusion/Dicom/DicomSequence.h>`
+
+## Overview
+
+template&lt;typename T&gt;
+
+class ImFusion::Dicom::Sequence&lt; T &gt;
+Concrete sequence of items of type T, which must be derived from [SequenceItem](/cpp-sdk/4.5/api/classes/imfusion-dicom-sequenceitem).
+
+A sequence is an [Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element) by itself (i.e. it has a DICOM tag) but its value is usually meaningless. Instead, it provides a list of DcmItems that consist of one or multiple Elements again. These Elements are usually not directly accessed from the root DcmDataset (expect when searching recursively with searchIntoSubs). While in the root dataset each tag can only occur once, the same tag can occur in each item of the sequence, e.g. there can be multiple 'VOI LUT Descriptor' Elements. The template type defines which Elements make up a single item (all items must have those Elements).
+
+When creating a sequence, the SequenceItems are initialized with the corresponding child DcmItem of the sequence.
+
+Example for a imaginary [Dicom](/cpp-sdk/4.5/api/namespaces/imfusion-dicom) file with following elements:
+
+> Rescale Intercept: 0.0 Modality Lut [Sequence](/cpp-sdk/4.5/api/classes/imfusion-dicom-sequence): 2 items
+>
+> > Rescale Intercept: 100.0 Rescale Intercept: 200.0
+
+```cpp
+class Example: public Module
+{
+public:
+ Element<double> rescaleIntercept;
+
+ class LutItem: public SequenceItem
+       {
+ Element<double> rescaleIntercept;
+
+           LutItem(DcmItem& item, bool createSequence):
+ SequenceItem(item),
+               rescaleIntercept(*this, DCM_RescaleIntercept, 0, ElementBase::UserOption)
+           {}
+       }
+ Sequence<LutItem> lut;
+
+       Example(ModuleList& parent, Type type):
+ Module(parent, type),
+           rescaleIntercept(*this, DCM_RescaleIntercept, 0, ElementBase::UserOption),
+           lut(*this, DCM_ModalityLUTSequence, ElementBase::UserOption)
+       {}
+}
+
+Example e;
+e.rescaleIntercept.value(); // -> 0.0
+e.lut.item(0).rescaleIntercept.value(); // -> 100.0
+e.lut.item(1).rescaleIntercept.value(); // -> 200.0
+```
+ fragment
+
+## Public Member Functions
+
+- **Sequence** ([ElementList](/cpp-sdk/4.5/api/classes/imfusion-dicom-elementlist) &parent, DcmTag [tag](/cpp-sdk/4.5/api/classes/imfusion-dicom-elementbase), [ElementBase::Type](/cpp-sdk/4.5/api/classes/imfusion-dicom-elementbase) type) — Creates a new [Sequence](/cpp-sdk/4.5/api/classes/imfusion-dicom-sequence) instance.
+- **Sequence** (DcmItem &[item](#item), DcmTag [tag](/cpp-sdk/4.5/api/classes/imfusion-dicom-elementbase), [ElementBase::Type](/cpp-sdk/4.5/api/classes/imfusion-dicom-elementbase) type)
+- void **reload** () — Reloads the list of items from the parent data set.
+- int **count** () const — Returns the number of items in this sequence.
+- T & [item](#item) (int i) — Returns the sequence item at the given index.
+- const T & **item** (int i) const
+- T \* [insertItem](#insertitem) () — Appends a new sequence item to the list.
+- void [checkErrors](#checkerrors) (bool ignoreMandatory=false) const override — Checks the sequence for errors.
+- bool [isValid](#isvalid) () const override — Returns true if the element exists and is in a valid range.
+
+## Protected Attributes
+
+- [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; T &gt; &gt; **m_items**
+
+## Member Function Documentation
+
+### item
+
+```cpp
+template<typename T> T & ImFusion::Dicom::Sequence < T >::item (int i)
+```
+
+Returns the sequence item at the given index.
+
+Throws an out-of-range exception if i is smaller than 0 and not smaller than count().
+
+### insertItem
+
+```cpp
+template<typename T> T * ImFusion::Dicom::Sequence < T >::insertItem ()
+```
+
+Appends a new sequence item to the list.
+
+Returns the newly created item. Throws a [value_error](/cpp-sdk/4.5/api/classes/imfusion-dicom-value-error) in case the item could not be created in the wrapped DICOM dataset.
+
+### checkErrors
+
+```cpp
+template<typename T> void ImFusion::Dicom::Sequence < T >::checkErrors (bool ignoreMandatory = false) const
+```
+
+*override, virtual*
+
+Checks the sequence for errors.
+
+This assures that all mandatory and conditional elements are present and that all existing elements have a valid value. If ignoreMandatory is true, missing mandatory elements are not counted as errors (e.g. useful when the sequence itself is optional).
+
+### isValid
+
+```cpp
+template<typename T> bool ImFusion::Dicom::Sequence < T >::isValid () const
+```
+
+*override, virtual*
+
+Returns true if the element exists and is in a valid range.

@@ -1,0 +1,66 @@
+---
+title: "ImFusion::Dicom::SegmentItem"
+sidebarTitle: "SegmentItem"
+description: "Element in the (0062,0002) SegmentSequence."
+---
+
+`#include <ImFusion/Dicom/DicomIOD_SegmentationStorage.h>`
+
+## Overview
+
+[Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element) in the (0062,0002) SegmentSequence.
+
+## Classes
+
+- class [SegmentedPropertyCode](/cpp-sdk/4.5/api/classes/imfusion-dicom-segmentitem-segmentedpropertycode)
+
+## Public Member Functions
+
+- **SegmentItem** (DcmItem &item, bool createSequence=false)
+- void [configure](#configure) (const [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) override — Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+- void [configuration](#configuration) ([Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) \*p) const override — Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+- vec4 **color** () const
+- void **setColor** (const vec4 &c)
+
+## Public Attributes
+
+- [Sequence](/cpp-sdk/4.5/api/classes/imfusion-dicom-sequence)&lt; [SegmentedPropertyCode](/cpp-sdk/4.5/api/classes/imfusion-dicom-segmentitem-segmentedpropertycode) &gt; **segmentedPropertyCategoryCodeSequence**
+- [Sequence](/cpp-sdk/4.5/api/classes/imfusion-dicom-sequence)&lt; [SegmentedPropertyCode](/cpp-sdk/4.5/api/classes/imfusion-dicom-segmentitem-segmentedpropertycode) &gt; **segmentedPropertyTypeCodeSequence**
+- [Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element)&lt; int &gt; **segmentNumber**
+- [Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element)&lt; int &gt; **pixelValue**
+- [Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **segmentLabel**
+- [Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **segmentAlgorithmType**
+- [Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **segmentAlgorithmName**
+- [Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element)&lt; [std::vector](http://en.cppreference.com/w/cpp/container/vector.html)&lt; int &gt; &gt; **recommendedDisplayCIELabValue**
+- [Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **trackingID**
+- [Element](/cpp-sdk/4.5/api/classes/imfusion-dicom-element)&lt; [std::string](http://en.cppreference.com/w/cpp/string/basic_string.html) &gt; **trackingUID**
+
+## Member Function Documentation
+
+### configure
+
+```cpp
+void ImFusion::Dicom::SegmentItem::configure (const Properties * p)
+```
+
+*override, virtual*
+
+Configure this object instance by de-serializing the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties).
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configuration()](#configuration) for the inverse functionality
+
+### configuration
+
+```cpp
+void ImFusion::Dicom::SegmentItem::configuration (Properties * p) const
+```
+
+*override, virtual*
+
+Serialize the current object configuration into the given [Properties](/cpp-sdk/4.5/api/classes/imfusion-properties) object.
+
+The default implementation will do so automatically for all registered [Parameter](/cpp-sdk/4.5/api/classes/imfusion-parameter) and [SubProperty](/cpp-sdk/4.5/api/classes/imfusion-subproperty) instances.
+
+**See also:** [configure()](#configure) for the inverse functionality

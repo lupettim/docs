@@ -1,0 +1,182 @@
+---
+title: "ImFusion::GlHistogram"
+sidebarTitle: "GlHistogram"
+description: "Provides an interface to calculate the histogram of an image either on the CPU or on the GPU."
+---
+
+`#include <ImFusion/GL/GlHistogram.h>`
+
+## Overview
+
+Provides an interface to calculate the histogram of an image either on the CPU or on the GPU.
+
+The GPU implementation supports two modes:
+
+- If your hardware/driver combination supports OpenGL 4.3 (more precisely the ARB_shader_image_load_store and ARB_compute_shader extensions), [GlHistogram](/cpp-sdk/4.5/api/classes/imfusion-glhistogram) will use OpenGL compute shaders.
+- If your hardware/driver combination does not support OpenGL 4.3, [GlHistogram](/cpp-sdk/4.5/api/classes/imfusion-glhistogram) will fall back to an OpenGL 3.3 implementation based on "Efficient Histogram Generation Using Scattering on GPUs" (Scheuermann, Hensley). Please be aware that this implementation is slower and may be less precise due to float arithmetic.
+
+Usage Example:
+
+```cpp
+GlHistogram histogrammer;
+histogrammer.setBinCount(128);
+histogrammer.setMinMaxIntensity(vec2{0.0, 42.0});
+if (!histogrammer.update(img))
+ return error();
+const TypedImage<float>* histogram = histogrammer.typedData();
+```
+ fragment
+
+**Note:** - This class can calculate histograms for images with up to 4 channels.
+- Due to using float as internal representation the histogram counts may become inaccurate or even saturate for values beyond 2^24.
+- Due to the needed shaders and buffers, the instantiation of a [GlHistogram](/cpp-sdk/4.5/api/classes/imfusion-glhistogram) instance is rather expensive. You should cache it if possible.
+
+**See also:** [HistogramDataComponent](/cpp-sdk/4.5/api/classes/imfusion-histogramdatacomponent), [GlJointHistogram](/cpp-sdk/4.5/api/classes/imfusion-gljointhistogram)
+
+## Public Types
+
+- enum [Device](#device) &#123; Device_CPU = 0 , Device_GPU = 1 &#125;
+
+## Public Member Functions
+
+- [GlHistogram](#glhistogram) () — Creates a new [GlHistogram](/cpp-sdk/4.5/api/classes/imfusion-glhistogram) instance with default settings.
+
+## Configure Histogram Computation
+
+- int **binCount** () const — Returns the number of histogram bins.
+- void **setBinCount** (int bins) — Sets the number of histogram bins.
+- bool **mergesChannels** () const — Returns the flag whether to compute a single histogram of the averages over all channels or an individual histogram for each channel.
+- void **setMergeChannels** (bool value) — Sets the flag whether to compute a single histogram of the averages over all channels or an individual histogram for each channel.
+- vec2 [minmaxIntensity](#minmaxintensity) () const — Returns the minimum/maximum intensity to use during binning.
+- void [setMinmaxIntensity](#setminmaxintensity) (vec2 value) — Sets the minimum/maximum intensity to use during binning.
+
+## Run Histogram Computation
+
+- bool [update](#update-1-3) ([SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \*image, [Device](#device) device=Device_GPU, bool considerMask=false) — Computes the histogram of the provided image and returns true on success.
+- bool [update](#update-2-3) (const [GlImage](/cpp-sdk/4.5/api/classes/imfusion-glimage) \*image, const [GlMask](/cpp-sdk/4.5/api/classes/imfusion-glmask) \*mask=nullptr) — Computes the histogram of the provided image on the GPU and returns true on success.
+- bool [update](#update-3-3) (const [MemImage](/cpp-sdk/4.5/api/classes/imfusion-memimage) \*image, const [Mask](/cpp-sdk/4.5/api/classes/imfusion-mask) \*mask=nullptr) — Computes the histogram of the provided image on the CPU and returns true on success.
+
+## Access Results of the Computation
+
+- const [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) \* [data](#data) () const — Returns the histogram data as a 1D float image while maintaining its ownership.
+- const [TypedImage](/cpp-sdk/4.5/api/classes/imfusion-typedimage)&lt; float &gt; \* **typedData** () const — Returns the histogram data as 1D float image while maintaining its ownership.
+- [std::unique_ptr](http://en.cppreference.com/w/cpp/memory/unique_ptr.html)&lt; [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) &gt; **releaseData** () — Returns the histogram data as a 1D float image and passes ownership of the returned pointer to the caller.
+- int **pixelCount** (int channel=0) const — Returns the total amount of pixels (sum of all bins) for the specified channel.
+- double [entropy](#entropy) (bool normalized=false, int channel=0) — Return the image entropy based on the computed histogram.
+
+## Member Enumeration Documentation
+
+### Device
+
+```cpp
+enum ImFusion::GlHistogram::Device
+```
+
+**Enumerator:**
+
+- `Device_CPU` — Compute the histogram on the CPU.
+- `Device_GPU` — Compute the histogram on the GPU, automatically detect OpenGL version to use.
+
+## Constructor & Destructor Documentation
+
+### GlHistogram
+
+```cpp
+ImFusion::GlHistogram::GlHistogram ()
+```
+
+Creates a new [GlHistogram](/cpp-sdk/4.5/api/classes/imfusion-glhistogram) instance with default settings.
+
+**Exceptions:**
+
+- `std::runtime_error` — if initialization of the OpenGL resources fails.
+
+## Member Function Documentation
+
+### minmaxIntensity
+
+```cpp
+vec2 ImFusion::GlHistogram::minmaxIntensity () const
+```
+
+Returns the minimum/maximum intensity to use during binning.
+
+If the minmax interval is empty (i.e. min == max) [GlHistogram](/cpp-sdk/4.5/api/classes/imfusion-glhistogram) will use the following ranges during binning:
+
+- Integral types: [[std::numeric_limits](http://en.cppreference.com/w/cpp/types/numeric_limits.html)&lt;&gt;::min(), [std::numeric_limits](http://en.cppreference.com/w/cpp/types/numeric_limits.html)&lt;&gt;::max()]
+- Float types: [0, 1]
+
+### setMinmaxIntensity
+
+```cpp
+void ImFusion::GlHistogram::setMinmaxIntensity (vec2 value)
+```
+
+Sets the minimum/maximum intensity to use during binning.
+
+If the minmax interval is empty (i.e. min == max) [GlHistogram](/cpp-sdk/4.5/api/classes/imfusion-glhistogram) will use the following ranges during binning:
+
+- Integral types: [[std::numeric_limits](http://en.cppreference.com/w/cpp/types/numeric_limits.html)&lt;&gt;::min(), [std::numeric_limits](http://en.cppreference.com/w/cpp/types/numeric_limits.html)&lt;&gt;::max()]
+- Float types: [0, 1]
+
+### update
+
+```cpp
+bool ImFusion::GlHistogram::update (SharedImage * image, Device device = Device_GPU, bool considerMask = false)
+```
+
+Computes the histogram of the provided image and returns true on success.
+
+**Parameters:**
+
+- `image` — Input image
+- `device` — [Device](#device) to use for computation
+- `considerMask` — Flag whether to consider a [Mask](/cpp-sdk/4.5/api/classes/imfusion-mask) attached to the [SharedImage](/cpp-sdk/4.5/api/classes/imfusion-sharedimage) during histogram computation
+
+### update
+
+```cpp
+bool ImFusion::GlHistogram::update (const GlImage * image, const GlMask * mask = nullptr)
+```
+
+Computes the histogram of the provided image on the GPU and returns true on success.
+
+**Parameters:**
+
+- `image` — Input image
+- `mask` — Optional [GlMask](/cpp-sdk/4.5/api/classes/imfusion-glmask) to consider during during histogram computation
+
+### update
+
+```cpp
+bool ImFusion::GlHistogram::update (const MemImage * image, const Mask * mask = nullptr)
+```
+
+Computes the histogram of the provided image on the CPU and returns true on success.
+
+**Parameters:**
+
+- `image` — Input image
+- `mask` — Optional [Mask](/cpp-sdk/4.5/api/classes/imfusion-mask) to consider during during histogram computation
+
+### data
+
+```cpp
+const SharedImage * ImFusion::GlHistogram::data () const
+```
+
+Returns the histogram data as a 1D float image while maintaining its ownership.
+
+If the object was constructed with mergeChannels set to true, the data will be returned in a single channel image. If the object was constructed with mergeChannels set to false, the data will be returned in a 4-channel image.
+
+### entropy
+
+```cpp
+double ImFusion::GlHistogram::entropy (bool normalized = false, int channel = 0)
+```
+
+Return the image entropy based on the computed histogram.
+
+**Parameters:**
+
+- `normalized` — Normalize result with respect to number of bins (cf. Donath, Beckmann, 2006)
